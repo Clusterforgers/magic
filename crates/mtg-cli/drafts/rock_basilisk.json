@@ -1,0 +1,51 @@
+{
+  "oracle_id": "6e7bb687-8243-4377-80b5-67ce6b65f9b7",
+  "name": "Rock Basilisk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rock Basilisk",
+      "oracle_fingerprint": "a15e0375b32de5361b49403d17678611",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }],
+                "by": ["This"]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": ["This"],
+                "by": [{ "Type": "Creature" }, { "Not": { "Subtype": "Wall" } }]
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "event" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Bound": "event" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

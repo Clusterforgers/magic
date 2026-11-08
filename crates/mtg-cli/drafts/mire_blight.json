@@ -1,0 +1,20 @@
+{
+  "oracle_id": "fcfbe3b8-a955-45d8-9329-3af565a3b53c",
+  "name": "Mire Blight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mire Blight",
+      "oracle_fingerprint": "555a0cac078d8aace2cabbcfda58a7c5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Attached" } } },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

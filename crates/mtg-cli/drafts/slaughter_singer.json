@@ -1,0 +1,37 @@
+{
+  "oracle_id": "1c832491-6b78-49c6-baf2-63f17847f5f5",
+  "name": "Slaughter Singer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slaughter Singer",
+      "oracle_fingerprint": "63adcdca4fab8b93af01f2e452cd58fc",
+      "abilities": [
+        { "Keyword": { "Toxic": 2 } },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "HasKeywordNamed": "Toxic" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

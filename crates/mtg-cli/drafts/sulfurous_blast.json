@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f2b4f37b-270b-4746-83b3-51ff88ee3491",
+  "name": "Sulfurous Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sulfurous Blast",
+      "oracle_fingerprint": "b75de8ee9c920efea148de58459a96bf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }] },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "All": ["YourTurn", { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }]
+                      },
+                      "then": 3,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "EachPlayer",
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "All": ["YourTurn", { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }]
+                      },
+                      "then": 3,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

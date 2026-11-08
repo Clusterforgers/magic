@@ -197,6 +197,7 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::FullControl { .. } => "full control".into(),
         ServerMessage::EndTurnByHand { .. } => "end turn by hand".into(),
         ServerMessage::AutoChoices { .. } => "auto choices".into(),
+        ServerMessage::AutoYields { .. } => "auto yields".into(),
         ServerMessage::Bank { .. } => "bank".into(),
         ServerMessage::Presence { .. } => "presence".into(),
     }

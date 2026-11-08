@@ -1,0 +1,41 @@
+{
+  "oracle_id": "35ad9e15-3e00-4bd2-96cf-36a6ef49059f",
+  "name": "Red Mage's Rapier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Mage's Rapier",
+      "oracle_fingerprint": "583ac60b4bb2208e96bad1f8f673ca2b",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddSubtype": "Wizard" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" }
+                    },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

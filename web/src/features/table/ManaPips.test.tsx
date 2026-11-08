@@ -62,6 +62,13 @@ describe('ManaPips', () => {
     expect(pip?.textContent).toBe('ϕ')
   })
 
+  it('draws {S} as a colourless disc marked S that names its source', () => {
+    const [pip] = draw('{S}').pips
+    expect(pip?.className).toContain('bg-mana-colorless')
+    expect(pip?.textContent).toBe('S')
+    expect(pip?.getAttribute('data-pip')).toBe('S')
+  })
+
   it('draws a hybrid Phyrexian symbol split in two with the phi mark between', () => {
     const [pip] = draw('{G/U/P}').pips
     expect(pip?.className).toContain('bg-linear-to-br')

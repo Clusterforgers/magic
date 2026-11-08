@@ -1,0 +1,57 @@
+{
+  "oracle_id": "87300967-1a59-4dce-8876-f008ff3bfb0b",
+  "name": "Song of Stupefaction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Song of Stupefaction",
+      "oracle_fingerprint": "9d738d9dae06fe32e2b0c2451a86305e",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "May": { "effects": [{ "Mill": { "count": 2 } }] } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": -1,
+                      "of": {
+                        "Count": [
+                          { "OwnedBy": "You" },
+                          {
+                            "AnyOf": [
+                              { "Type": "Artifact" },
+                              { "Type": "Battle" },
+                              { "Type": "Creature" },
+                              { "Type": "Enchantment" },
+                              { "Type": "Land" },
+                              { "Type": "Planeswalker" }
+                            ]
+                          },
+                          { "In": "Graveyard" }
+                        ]
+                      }
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "7b51a979-47e0-4b98-8ec5-8064c83422e1",
+  "name": "Knight of Grace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of Grace",
+      "oracle_fingerprint": "e872c50188127fb1ffed93e3c57299f1",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": { "HexproofFrom": [{ "Color": "Black" }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": {
+              "Compare": { "left": { "Count": [{ "Color": "Black" }] }, "op": "Ge", "right": 1 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a08c599e-ee75-4d2b-ae9b-0987c233dd17",
+  "name": "Repeating Barrage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repeating Barrage",
+      "oracle_fingerprint": "84d7eeb3d09f5eaf00c53f648f6ae60f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{R}{R}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

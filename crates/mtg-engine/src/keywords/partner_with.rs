@@ -40,16 +40,19 @@ impl KeywordRules for PartnerWith {
                     effects: vec![
                         Effect::Search {
                             who: player(),
+                            of: None,
                             zone: ZoneKind::Library,
                             also: Vec::new(),
                             filter: Selector(vec![Pred::Named(name.clone())]),
                             count: Bounds::default(),
                             reveal: false,
+                            distinct: false,
                             bind: "partner".into(),
                         },
                         Effect::Move {
                             what: Ref::Bound("partner".into()),
                             to: Destination::Hand,
+                            bind: None,
                         },
                     ],
                 },

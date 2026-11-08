@@ -1,0 +1,56 @@
+{
+  "oracle_id": "3bcfc82c-3523-40e3-b236-78ece8a8d69f",
+  "name": "Elemental Appeal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elemental Appeal",
+      "oracle_fingerprint": "d6dc6f1b5aef04432190ed01e20baebd",
+      "abilities": [
+        { "Keyword": { "Kicker": "{5}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 7,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Haste" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "token" } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "token" },
+                        "mods": [{ "ModifyPT": { "power": 7, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

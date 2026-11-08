@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6c29add6-8524-4a33-9f2e-f792032dd6cd",
+  "name": "Avenging Arrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avenging Arrow",
+      "oracle_fingerprint": "1c1a4dcf103ca5bdcd5defda474c5a22",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "DidThisTurn": { "event": "Damaged" } }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

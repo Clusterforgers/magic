@@ -1,0 +1,42 @@
+{
+  "oracle_id": "022dae2e-7fc3-486e-9168-59652d9ab21c",
+  "name": "Prismatic Circle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prismatic Circle",
+      "oracle_fingerprint": "7af8f00dcac44fb7f607edfc8e0d4f6b",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      "ChosenColor"
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

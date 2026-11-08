@@ -1,0 +1,90 @@
+{
+  "oracle_id": "b291d046-7649-4a05-98c4-224ecaece912",
+  "name": "Crystal Fragments // Summon: Alexander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystal Fragments",
+      "oracle_fingerprint": "b0065455a4d8113e741c40ebad26e998",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{W}{W}",
+            "timing": "Sorcery",
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "transformed": true } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    },
+    {
+      "name": "Summon: Alexander",
+      "oracle_fingerprint": "e1f0911e4c562cacb21e1f8bbeaffc17",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "9f4093a6-83f1-4c1d-8b03-8fe15647fb11",
+  "name": "The Falcon, Airship Restored",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Falcon, Airship Restored",
+      "oracle_fingerprint": "40b3c18414d2115ad2dfc56028e5e29d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{B}",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

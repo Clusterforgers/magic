@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "cbb503ef-31a4-492d-9c7d-26b72c36904b",
+  "oracle_id": "ee55ca31-73f3-4e9d-8373-0a44009a25bd",
+  "multiverse_ids": [
+    4019
+  ],
+  "tcgplayer_id": 2429,
+  "cardmarket_id": 9569,
+  "name": "Venom",
+  "lang": "en",
+  "released_at": "1997-03-24",
+  "uri": "https://api.scryfall.com/cards/cbb503ef-31a4-492d-9c7d-26b72c36904b",
+  "scryfall_uri": "https://scryfall.com/card/5ed/336/venom?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:48:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/b/cbb503ef-31a4-492d-9c7d-26b72c36904b.jpg?1783946888",
+    "normal": "https://cards.scryfall.io/normal/front/c/b/cbb503ef-31a4-492d-9c7d-26b72c36904b.jpg?1783946888",
+    "large": "https://cards.scryfall.io/large/front/c/b/cbb503ef-31a4-492d-9c7d-26b72c36904b.jpg?1783946888",
+    "png": "https://cards.scryfall.io/png/front/c/b/cbb503ef-31a4-492d-9c7d-26b72c36904b.png?1783946888",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/b/cbb503ef-31a4-492d-9c7d-26b72c36904b.jpg?1783946888",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/b/cbb503ef-31a4-492d-9c7d-26b72c36904b.jpg?1783946888",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/b/cbb503ef-31a4-492d-9c7d-26b72c36904b.webp?1783946888",
+    "grid": "https://cards.scryfall.io/grid/front/c/b/cbb503ef-31a4-492d-9c7d-26b72c36904b.webp?1783946888",
+    "display": "https://cards.scryfall.io/display/front/c/b/cbb503ef-31a4-492d-9c7d-26b72c36904b.webp?1783946888",
+    "art": "https://cards.scryfall.io/art/front/c/b/cbb503ef-31a4-492d-9c7d-26b72c36904b.webp?1783946888",
+    "crop": "https://cards.scryfall.io/crop/front/c/b/cbb503ef-31a4-492d-9c7d-26b72c36904b.webp?1783946888",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/b/cbb503ef-31a4-492d-9c7d-26b72c36904b.jpg?1783946888"
+  },
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhenever enchanted creature blocks or becomes blocked by a non-Wall creature, destroy the other creature at end of combat.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5afd2f4b-8309-4f45-a2b2-3785018474cb",
+  "set": "5ed",
+  "set_name": "Fifth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/5afd2f4b-8309-4f45-a2b2-3785018474cb",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A5ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/5ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cbb503ef-31a4-492d-9c7d-26b72c36904b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aee55ca31-73f3-4e9d-8373-0a44009a25bd&unique=prints",
+  "collector_number": "336",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"I told him it was just a flesh wound, but the next time I looked at him, poor Tadhg was dead and gone.\"\n—Maeveen O'Donagh,\n*Memoirs of a Soldier*",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tom Wänerstrand",
+  "artist_ids": [
+    "c4e0aa7c-a008-4d71-80ce-d5a1ca0b251b"
+  ],
+  "illustration_id": "7b89b81b-7b32-42a0-acf0-67784015b59a",
+  "border_color": "white",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25227,
+  "prices": {
+    "usd": "0.14",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=4019&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVenom",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVenom",
+    "edhrec": "https://edhrec.com/route/?cc=Venom"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F2429%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=9569&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Venom&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

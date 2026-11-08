@@ -1,0 +1,64 @@
+{
+  "oracle_id": "12afe8e6-eaf0-45c9-8086-4c658db7cb7e",
+  "name": "Throne of Empires",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Throne of Empires",
+      "oracle_fingerprint": "e5f88a619c249b70cedba7653553c87a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Product": [
+                              {
+                                "Count": [
+                                  { "Type": "Artifact" },
+                                  { "Named": "Crown of Empires" },
+                                  { "ControlledBy": "You" }
+                                ]
+                              },
+                              {
+                                "Count": [
+                                  { "Type": "Artifact" },
+                                  { "Named": "Scepter of Empires" },
+                                  { "ControlledBy": "You" }
+                                ]
+                              }
+                            ]
+                          },
+                          "op": "Gt",
+                          "right": 0
+                        }
+                      },
+                      "then": 5,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

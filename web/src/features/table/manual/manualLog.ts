@@ -21,6 +21,10 @@ const CHANGES: Record<ActionKind, readonly string[]> = {
   Damage: ['DamageDealt'],
   AddMana: ['ManaAdded'],
   Pump: ['EffectCreated'],
+  Transform: ['Transformed'],
+  MoveBack: ['ZoneChanged', 'Transformed'],
+  AttackDespiteDefender: ['RuleCreated'],
+  BlockAdditional: ['EffectCreated'],
   LookTop: ['LibraryLooked'],
   ArrangeTop: ['Scried', 'Surveilled', 'ZoneChanged'],
   Shuffle: ['LibraryShuffled'],
@@ -31,6 +35,7 @@ const CHANGES: Record<ActionKind, readonly string[]> = {
   Tutor: ['ZoneChanged', 'LibraryShuffled'],
   RemoveSickness: [],
   Sacrifice: ['ZoneChanged'],
+  GrantAbility: ['EffectCreated'],
   GiveControl: ['ZoneChanged', 'Entered', 'EffectCreated', 'CountersChanged'],
 }
 

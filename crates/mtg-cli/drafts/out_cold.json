@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2d16d51b-47e0-4cdc-83dd-a805ba50bd83",
+  "name": "Out Cold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Out Cold",
+      "oracle_fingerprint": "ee39c1b09b22c4cf17414dfbef9baf50",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } },
+              { "CreateToken": { "token": { "Named": "clue" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

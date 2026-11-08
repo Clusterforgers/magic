@@ -95,6 +95,7 @@ impl Class {
             | DecisionKind::ChooseOption(_)
             | DecisionKind::ChooseMode(_)
             | DecisionKind::ChooseNumber(_)
+            | DecisionKind::ChooseName(_)
             | DecisionKind::DivideAmount(_)
             | DecisionKind::ChooseCosts(_)
             | DecisionKind::ChooseCards(_)
@@ -209,7 +210,7 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
     match &decision.kind {
         DecisionKind::Priority(_) => Some(pass()),
         DecisionKind::DeclareBlockers(options) => {
-            Some(Answer::DeclareBlockers(options.required_blocks()))
+            Some(Answer::DeclareBlockers(options.legal_blocks()))
         }
         DecisionKind::ChooseTargets(options) => {
             Some(Answer::ChooseTargets(if options.can_cancel {
@@ -238,6 +239,10 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         } else {
             NumberChoice::Number(options.min)
         })),
+        // No card named: the answer that decides the least, and the same for every seat.
+        DecisionKind::ChooseName(_) => Some(Answer::ChooseName(mtg_engine::choose::NameChoice(
+            String::new(),
+        ))),
         DecisionKind::ChooseCosts(options) => Some(Answer::ChooseCosts(if options.can_cancel {
             CostsChoice::Cancel
         } else {
@@ -264,7 +269,7 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         ))),
         DecisionKind::PayMana(options) => pay_fallback(options).map(Answer::PayMana),
         DecisionKind::DeclareAttackers(options) => {
-            Some(Answer::DeclareAttackers(options.required_attack()))
+            Some(Answer::DeclareAttackers(options.legal_attack()))
         }
         DecisionKind::AssignDamage(options) => damage_in_order(options).map(Answer::AssignDamage),
         DecisionKind::Discard(options) => {
@@ -324,7 +329,8 @@ fn even_division(options: &DivideOptions) -> Option<DivideChoice> {
     Some(DivideChoice::Division(shares))
 }
 
-/// Backing out of the cast when the options allow it, else the first modes of the list: one, or as many as the
+/// Backing out of the cast when the options allow it, else the cheapest modes when they cost something, else the first
+/// modes of the list: one, or as many as the
 /// choice has to have at least. When the list is shorter than that, a choice that may repeat a mode repeats the first.
 fn first_modes(options: &ModeOptions) -> Option<ModeChoice> {
     if options.can_cancel {
@@ -332,6 +338,11 @@ fn first_modes(options: &ModeOptions) -> Option<ModeChoice> {
     }
     let first = options.modes.first()?;
     let wanted = usize::try_from(options.min.max(1)).unwrap_or(1);
+    if !options.cheapest.is_empty() {
+        return Some(ModeChoice::Modes(
+            options.cheapest.iter().copied().take(wanted).collect(),
+        ));
+    }
     let mut chosen: Vec<usize> = options
         .modes
         .iter()
@@ -553,9 +564,11 @@ mod tests {
             abilities: Vec::new(),
             suspendable: Vec::new(),
             foretellable: Vec::new(),
+            plottable: Vec::new(),
             companion: false,
             turnable: Vec::new(),
             unlockable: Vec::new(),
+            endable: Vec::new(),
             faces: Vec::new(),
             unplayable: Vec::new(),
             can_act,
@@ -567,6 +580,8 @@ mod tests {
         DecisionKind::DeclareBlockers(BlockOptions {
             most: None,
             blockers: Vec::new(),
+            must_be_blocked: Vec::new(),
+            cant_alone: Vec::new(),
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
             required: Vec::new(),
@@ -604,6 +619,8 @@ mod tests {
             sources: Vec::new(),
             auto_available,
             can_cancel,
+            attack: false,
+            block: false,
             life: 20,
             max_life: 0,
             help: Box::default(),
@@ -615,6 +632,7 @@ mod tests {
         DecisionKind::DeclareAttackers(AttackOptions {
             most: None,
             most_at: Vec::new(),
+            cant_alone: Vec::new(),
             attackers: (10..13)
                 .map(|n| AttackerOption::free(ObjectId(n), vec![AttackTarget::Player(PlayerId(0))]))
                 .collect(),
@@ -632,6 +650,7 @@ mod tests {
             blockers: (20..).map(ObjectId).take(lethal.len()).collect(),
             excess: trample.then_some(DamageTarget::Player(PlayerId(0))),
             lethal: lethal.to_vec(),
+            unblocked: false,
         })
     }
 
@@ -676,6 +695,8 @@ mod tests {
             wording: String::new(),
             triggered: !can_cancel,
             apart: Vec::new(),
+            together: None,
+            total: None,
         })
     }
 
@@ -740,13 +761,24 @@ mod tests {
                 .map(|n| ModeOption {
                     index: 2 * n + 1,
                     label: None,
+                    cost: None,
                 })
                 .collect(),
             min,
             max,
             repeat,
             can_cancel,
+            cheapest: Vec::new(),
         })
+    }
+
+    /// `count` modes on offer with costs, of which the modes `cheapest` (by index) are the ones the player can pay for together.
+    fn costed(count: usize, min: u32, cheapest: Vec<usize>) -> DecisionKind {
+        let DecisionKind::ChooseMode(mut options) = modes(count, min, min, false, false) else {
+            unreachable!("modes() builds a mode decision");
+        };
+        options.cheapest = cheapest;
+        DecisionKind::ChooseMode(options)
     }
 
     fn number(min: u32, max: Option<u32>, can_cancel: bool) -> DecisionKind {
@@ -803,6 +835,7 @@ mod tests {
 
     fn cards(count: usize, min: u32, max: u32) -> DecisionKind {
         DecisionKind::ChooseCards(CardsOptions {
+            one_per_name: false,
             source: ObjectId(1),
             from: offered(count),
             min,
@@ -1058,6 +1091,7 @@ mod tests {
         modes(4, 2, 2, false, true),
         Some(Answer::ChooseMode(ModeChoice::Cancel))
     )]
+    #[case::costed_modes_take_the_cheapest_set(costed(4, 2, vec![3, 1]), Some(Answer::ChooseMode(ModeChoice::Modes(vec![3, 1]))))]
     #[case::a_trigger_takes_the_first_mode(modes(3, 1, 1, false, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1]))))]
     #[case::the_index_of_the_mode_and_not_its_place(modes(1, 1, 1, false, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1]))))]
     #[case::a_choice_of_two_takes_the_first_two(modes(4, 2, 2, false, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1, 3]))))]
@@ -1072,6 +1106,14 @@ mod tests {
     #[case::the_lowest_number_when_it_cannot_be_taken_back(
         number(2, None, false),
         Some(Answer::ChooseNumber(NumberChoice::Number(2)))
+    )]
+    #[case::no_card_is_named(
+        DecisionKind::ChooseName(mtg_engine::choose::NameOptions {
+            source: ObjectId(1),
+            text: String::new(),
+            nonland: true,
+        }),
+        Some(Answer::ChooseName(mtg_engine::choose::NameChoice(String::new())))
     )]
     #[case::optional_costs_are_taken_back(
         costs(2, true),
@@ -1216,6 +1258,8 @@ mod tests {
                     extra: 0,
                 },
             ],
+            must_be_blocked: Vec::new(),
+            cant_alone: Vec::new(),
             min_blockers: Vec::new(),
             max_blockers: Vec::new(),
             required: vec![ObjectId(2)],

@@ -9,8 +9,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
-            "from": "Stack",
+            "when": { "SpellCast": { "what": ["This"] } },
             "effects": [{ "Draw": { "count": 4 } }]
           }
         },
@@ -18,15 +17,13 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
-            "from": "Graveyard",
             "effects": [
               {
                 "Move": {
-                  "what": { "Each": [{ "In": "Graveyard" }, "This"] },
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "OwnerOf": "This" } }] },
                   "to": { "Library": { "place": "Shuffled" } }
                 }
-              },
-              { "LookAtTop": { "as": "graveyard" } }
+              }
             ]
           }
         }

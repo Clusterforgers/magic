@@ -1,0 +1,45 @@
+{
+  "oracle_id": "4f0c72ff-cd93-46a6-8649-2cd9ce8b8625",
+  "name": "Shadow of the Enemy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow of the Enemy",
+      "oracle_fingerprint": "4c72bfa8bdd9468964d06e5698dfda10",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

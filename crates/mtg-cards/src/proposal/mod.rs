@@ -1,5 +1,5 @@
 //! Proposed rules: a rules file written by a person or a model, checked against the printed card
-//! without trusting it (`docs/cards-dsl.md`, Model-assisted reading).
+//! without trusting it (`docs/cards-dsl.md`, Proposals and drafts).
 //!
 //! The text of the card is the only ground truth. A proposal is accepted when it is valid (the
 //! levels of a rules file), when every ability is written back by the renderers as a clause of the
@@ -8,17 +8,22 @@
 mod blame;
 mod blocks;
 mod complete;
+mod e15c_beheld;
+mod merge;
 mod pairing;
+pub mod partial;
+mod r6c_bare;
 mod render;
 mod repair;
 
+pub use merge::{MergeRefusal, merge, refusal};
 pub(crate) use pairing::pair_card;
 pub use repair::{Repair, RepairClass};
 
 use std::collections::BTreeSet;
 
 use crate::card::{Card, Span};
-use crate::compile::{ClauseKind, compile};
+use crate::compile::{Clause, ClauseKind, compile};
 use crate::load::{Library, LoadError, slug};
 use crate::support::{Caps, PrintedCard, SupportRecord, support};
 
@@ -150,6 +155,17 @@ impl Report {
     }
 }
 
+/// The clauses of the printed text that rules already made (a rules file, a compiled row, a draft) are written back as
+/// other text: the read-back verdict `Differs`, which keeps a card from playing automatically.
+pub fn differing(rules: &Card, printed: &PrintedCard) -> Vec<ClauseReport> {
+    let clauses = compile(printed).clauses;
+    pairing::pair_card(rules, &clauses, printed)
+        .clauses
+        .into_iter()
+        .filter(|clause| matches!(clause.state, ClauseState::Differs { .. }))
+        .collect()
+}
+
 /// Checks the JSON of a proposed rules file against an imported card.
 ///
 /// The file may leave out what the card gives: the oracle id, the names, the status and the
@@ -162,6 +178,29 @@ pub fn check(
     hand_written: &Library,
     names: &BTreeSet<String>,
     caps: &Caps,
+) -> Report {
+    check_with(text, printed, hand_written, names, caps, true)
+}
+
+/// Like [`check`] without the repairs: a translator draft is judged as written, so a slip makes it a problem and is
+/// never changed into other rules.
+pub fn check_exact(
+    text: &str,
+    printed: &PrintedCard,
+    hand_written: &Library,
+    names: &BTreeSet<String>,
+    caps: &Caps,
+) -> Report {
+    check_with(text, printed, hand_written, names, caps, false)
+}
+
+fn check_with(
+    text: &str,
+    printed: &PrintedCard,
+    hand_written: &Library,
+    names: &BTreeSet<String>,
+    caps: &Caps,
+    repairs: bool,
 ) -> Report {
     let file = format!("cards/{}.json", slug(&printed.name));
     let mut report = Report {
@@ -180,7 +219,9 @@ pub fn check(
             return report;
         }
     };
-    report.repairs = repair::repair(&mut value, printed);
+    if repairs {
+        report.repairs = repair::repair(&mut value, printed);
+    }
     let proposed = match complete::parse(value, printed, &file) {
         Ok(card) => card,
         Err(error) => {
@@ -189,7 +230,24 @@ pub fn check(
         }
     };
     let clauses = compile(printed).clauses;
-    let paired = pairing::pair_card(&proposed, &clauses, printed);
+    judge(
+        report,
+        proposed,
+        &clauses,
+        printed,
+        (hand_written, names, caps),
+    )
+}
+
+/// Pairs, completes and judges parsed rules; `report` carries the card and the repairs.
+fn judge(
+    mut report: Report,
+    proposed: Card,
+    clauses: &[Clause],
+    printed: &PrintedCard,
+    (hand_written, names, caps): (&Library, &BTreeSet<String>, &Caps),
+) -> Report {
+    let paired = pairing::pair_card(&proposed, clauses, printed);
     let card = complete::finish(proposed, &paired, printed);
     report.problems = hand_written.check_generated(&card, printed, names);
     if report.problems.is_empty() {

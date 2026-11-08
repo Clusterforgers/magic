@@ -1,0 +1,83 @@
+{
+  "oracle_id": "8173e160-9a22-43f7-90d1-9ada043bc1b7",
+  "name": "Grub's Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grub's Command",
+      "oracle_fingerprint": "6e18b4f4b6f5d4f77166ec63a413bc23",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              { "AddKeyword": "Haste" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        { "Mill": { "who": { "Target": 0 }, "count": 5, "as": "milled" } },
+                        {
+                          "Move": {
+                            "what": {
+                              "Each": [
+                                { "Subtype": "Goblin" },
+                                { "Is": { "Bound": "milled" } },
+                                { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                              ]
+                            },
+                            "to": "Hand"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

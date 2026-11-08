@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d2da26d6-b0f7-4af0-9ce8-fb8d82fe2d85",
+  "name": "Sunfire Torch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunfire Torch",
+      "oracle_fingerprint": "b1e1375e21865d6d7267e4daf0beed41",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 0 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "Pay": {
+                          "cost": [{ "Sacrifice": { "filter": [{ "Is": "Granter" }] } }],
+                          "paid": [
+                            {
+                              "Reflexive": {
+                                "targets": [{ "what": "AnyTarget" }],
+                                "effects": [
+                                  { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

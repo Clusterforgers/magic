@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When this enchantment enters, exile cards from the top of your library until you exile a nonland card. You may cast it without paying its mana cost if that spell's mana value is 8 or less. If you don't, put that card into your hand.",
+      "abilities": [],
+      "gap": "key:Play.ForgetPlayed"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When a Dragon you control enters, return this enchantment to its owner's hand.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 232
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 233,
+          "end": 311
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

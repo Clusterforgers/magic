@@ -1,0 +1,50 @@
+{
+  "oracle_id": "824abca7-b5e2-4ddb-ac7d-b7d04758a3c9",
+  "name": "Gimli's Reckless Might",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gimli's Reckless Might",
+      "oracle_fingerprint": "117b173df337327dd9e9cfadf97ef637",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Total": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Attacking"]
+                }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -146,6 +146,9 @@ pub enum PaymentError {
         /// Mana the payment would produce.
         got: u32,
     },
+    /// The cost needs more mana from snow sources than the payment spends.
+    #[error("the cost needs more mana from snow sources")]
+    MissingSnow,
     /// A colored or colorless requirement is not covered.
     #[error("the cost needs more {0:?} mana")]
     MissingMana(ManaType),
@@ -220,12 +223,18 @@ pub enum IllegalAnswer {
     /// The chosen item is not among the offered options.
     #[error("{0} is not among the legal options")]
     NotOffered(&'static str),
+    /// The choice adds a cost that its player cannot pay with the rest of the cost.
+    #[error("{0} cannot be paid for with the rest of the cost")]
+    Unaffordable(&'static str),
     /// An item was chosen more than once.
     #[error("{0} was chosen more than once")]
     Duplicate(&'static str),
     /// A rule requires an item that the answer leaves out.
     #[error("a rule requires the {0}")]
     Required(&'static str),
+    /// A rule keeps the only one of its kind from being declared.
+    #[error("the {0} can't be declared alone")]
+    NotAlone(&'static str),
     /// The wrong number of items was chosen.
     #[error("expected {expected} items but got {got}")]
     WrongCount {
@@ -235,8 +244,15 @@ pub enum IllegalAnswer {
         got: usize,
     },
     /// The attack costs more than its player can pay (CR 508.1h): an effect taxes the creatures that attack.
-    #[error("the attack costs {0}, which its player cannot pay")]
+    #[error(
+        "the attack costs {0}, which you cannot pay with the mana you can tap. Change the attackers and try again"
+    )]
     AttackUnaffordable(String),
+    /// The block costs more than its player can pay (CR 509.1d): an effect taxes the creatures that block.
+    #[error(
+        "the block costs {0}, which you cannot pay with the mana you can tap. Change the blockers and try again"
+    )]
+    BlockUnaffordable(String),
     /// The creatures tapped for a cost have less total power than it asks (crew).
     #[error("the creatures tapped have total power {got} but the cost asks {needed}")]
     TooLittlePower {
@@ -245,6 +261,17 @@ pub enum IllegalAnswer {
         /// The total power of the creatures chosen.
         got: u32,
     },
+    /// The cards exiled for a cost have less total mana value than it asks (collect evidence).
+    #[error("the cards exiled have total mana value {got} but the cost asks {needed}")]
+    TooLittleValue {
+        /// The total mana value the cost asks.
+        needed: u32,
+        /// The total mana value of the cards chosen.
+        got: u32,
+    },
+    /// The objects chosen for a cost are not what it takes.
+    #[error("the cost takes {0}")]
+    WrongPick(&'static str),
     /// An attacker that needs several blockers (menace) was blocked by fewer.
     #[error("the attacker needs {needed} blockers together but got {got}")]
     TooFewBlockers {

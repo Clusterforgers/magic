@@ -1,0 +1,30 @@
+{
+  "oracle_id": "300ad0f7-92a7-450d-a9de-b658836fe3cb",
+  "name": "Sunstone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunstone",
+      "oracle_fingerprint": "8ec95e4c30033754c522c0f0320fa194",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              { "Sacrifice": { "filter": [{ "Type": "Land" }, { "Supertype": "Snow" }] } }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

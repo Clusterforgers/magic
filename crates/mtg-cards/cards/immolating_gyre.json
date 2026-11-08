@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1888b473-e26a-4882-ae18-5a0a6caee410",
+  "name": "Immolating Gyre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Immolating Gyre",
+      "oracle_fingerprint": "1ed44d457be9723d221852e2f2d436a8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "Not": { "ControlledBy": "You" } }
+                    ]
+                  },
+                  "amount": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

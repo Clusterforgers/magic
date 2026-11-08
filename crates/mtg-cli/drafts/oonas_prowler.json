@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4f87252e-3218-4759-accc-a4f186fa8857",
+  "name": "Oona's Prowler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oona's Prowler",
+      "oracle_fingerprint": "1ab77bf81e9d9a7fbcf606986e9dd7a8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

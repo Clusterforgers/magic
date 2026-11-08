@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ad786230-4045-46af-bc89-078d45891e5b",
+  "name": "Colfenor's Plans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colfenor's Plans",
+      "oracle_fingerprint": "963e0cf70dc90936ba3320f2bb1c88fc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "ExileTop": { "count": 7, "as": "exiled", "sealed": true } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "ExiledWith": "This" }], "from": "Exile", "play": true }
+            }
+          }
+        },
+        { "Rule": { "rule": { "Cant": { "who": "You", "action": { "SkipStep": "Draw" } } } } },
+        {
+          "Rule": { "rule": { "Cant": { "who": "You", "action": { "Cast": { "more_than": 1 } } } } }
+        },
+        {
+          "Rule": {
+            "rule": { "LookAtExiled": { "what": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

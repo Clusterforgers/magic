@@ -37,6 +37,7 @@ fn move_to(bound: &str, to: Destination) -> Effect {
     Effect::Move {
         what: Ref::Bound(bound.to_owned()),
         to,
+        bind: None,
     }
 }
 
@@ -140,10 +141,12 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
             Effect::Move {
                 what: Ref::Bound(found),
                 to: found_to,
+                ..
             },
             Effect::Move {
                 what: Ref::Bound(rest),
                 to: rest_to,
+                ..
             },
             ..,
         ] if found == FOUND && rest == REVEALED => {
@@ -162,6 +165,7 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
             Effect::Move {
                 what: Ref::Bound(rest),
                 to: rest_to,
+                ..
             },
             ..,
         ] if one && rest == REVEALED => {
@@ -169,6 +173,7 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
                 Effect::Move {
                     what: Ref::Bound(found),
                     to: found_to,
+                    ..
                 },
             ] = put.as_slice()
             else {
@@ -186,6 +191,7 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
             Effect::Move {
                 what: Ref::Bound(all),
                 to,
+                ..
             },
             ..,
         ] if one && all == REVEALED => {

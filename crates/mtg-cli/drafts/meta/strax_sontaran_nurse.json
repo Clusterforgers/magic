@@ -1,0 +1,76 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Vigilance",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Trample",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Choose a player at random. When you do, NICKNAME fights another target creature that player controls.",
+      "abilities": [],
+      "gap": "effect:ChoosePlayer"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Glory of Battle — Whenever NICKNAME deals damage to a creature, put a +1/+1 counter on NICKNAME.",
+      "abilities": [
+        2
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 9
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 11,
+          "end": 18
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 19,
+          "end": 162
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 163,
+          "end": 253
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

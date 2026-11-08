@@ -1,0 +1,62 @@
+{
+  "oracle_id": "58f12f0d-e2c1-48f9-9e27-d1de8db743cb",
+  "name": "Soul Search",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Search",
+      "oracle_fingerprint": "582b9aaa8798b3e1ae8ef73fc8aeb7bd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled2" },
+                      "selector": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 1 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "colors": ["White", "Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

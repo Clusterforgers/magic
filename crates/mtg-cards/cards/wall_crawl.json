@@ -1,0 +1,49 @@
+{
+  "oracle_id": "4a09536e-dfc1-4b15-adc1-07ef866ebda0",
+  "name": "Wall Crawl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall Crawl",
+      "oracle_fingerprint": "75f394ac75e1f23d1f15b21c9c378a49",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spider",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spider"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Subtype": "Spider" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Spider" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "CantBeBlockedBy": [{ "Type": "Creature" }, { "HasKeyword": "Defender" }] }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

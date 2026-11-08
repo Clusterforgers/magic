@@ -1,0 +1,37 @@
+{
+  "oracle_id": "9c9cd0fd-bfe9-409c-a9a9-146f5f4a2ef4",
+  "name": "Doctor Doom, King of Latveria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doctor Doom, King of Latveria",
+      "oracle_fingerprint": "adfa9e418a2c773cb29eed451a1600a7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "what": [{ "Type": "Land" }], "by": "You" } } },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Villain" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Connive": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

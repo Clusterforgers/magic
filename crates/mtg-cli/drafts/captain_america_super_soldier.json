@@ -1,0 +1,46 @@
+{
+  "oracle_id": "ac1b6ffc-12a9-4d9c-a9fc-68a839a40738",
+  "name": "Captain America, Super-Soldier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain America, Super-Soldier",
+      "oracle_fingerprint": "01d1561b317e815ad551217b01efe492",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "shield" }, "count": 1 } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "You",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": { "Other": "shield" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Hero" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": { "Other": "shield" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "81776a16-bf38-450b-995b-beb29121cab2",
+  "name": "Huddle Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Huddle Up",
+      "oracle_fingerprint": "9276cfe0355c9f10292dbb1878047718",
+      "abilities": [
+        { "Keyword": "Assist" },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player", "bounds": { "min": 2, "max": 2 } }],
+            "effects": [{ "Draw": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "72d1c789-e79f-4f15-80d0-981d4120b085",
+  "name": "Martyr's Cause",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyr's Cause",
+      "oracle_fingerprint": "07dae85394e5abab7965aa41e324bf79",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Target": 0 }, "source": [{ "Is": { "Bound": "source" } }] }
+                  },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

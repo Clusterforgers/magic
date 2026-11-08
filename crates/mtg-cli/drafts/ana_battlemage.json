@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c37537ae-616a-41e4-890c-f4b9475dbf31",
+  "name": "Ana Battlemage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ana Battlemage",
+      "oracle_fingerprint": "8474ff54d4ed40b50a76bb7005a73935",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{U}" } },
+        { "Keyword": { "Kicker": "{1}{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "KickedWith": "{2}{U}" },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "KickedWith": "{1}{B}" },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Untapped"] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "629133e2-af20-4107-bc82-11ba32d5e2a6",
+  "name": "Chronomantic Escape",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chronomantic Escape",
+      "oracle_fingerprint": "285ae8d6ca22ce41eefe939bc529c15e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "CantAttackYou": "Player" }],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "exiled" },
+                  "counter": { "Other": "time" },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 3, "cost": "{2}{W}" } } }
+      ]
+    }
+  ]
+}

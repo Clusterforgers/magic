@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e5b29094-0bb4-4c18-ad47-dce4d4379a4f",
+  "name": "Stream of Thought",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stream of Thought",
+      "oracle_fingerprint": "e52886c26d3ba0b4dceb94794b4ab6a4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": 4 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                  "count": { "min": 0, "max": 4 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Replicate": "{2}{U}{U}" } }
+      ]
+    }
+  ]
+}

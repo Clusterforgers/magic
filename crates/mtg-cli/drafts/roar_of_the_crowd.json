@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0ab56978-7add-4427-b10d-4f59ab4b2c5d",
+  "name": "Roar of the Crowd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roar of the Crowd",
+      "oracle_fingerprint": "350b06c117de3e589e5393f88fb29794",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "ChosenAs": "chosen" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

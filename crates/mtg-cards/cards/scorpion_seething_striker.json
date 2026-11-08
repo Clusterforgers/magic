@@ -1,0 +1,42 @@
+{
+  "oracle_id": "c357230a-afde-4c2a-b390-9f6928599236",
+  "name": "Scorpion, Seething Striker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scorpion, Seething Striker",
+      "oracle_fingerprint": "c8f27e9ac47fbb21d21dd832b80ac4e0",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Connive": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

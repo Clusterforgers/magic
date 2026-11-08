@@ -1,0 +1,70 @@
+{
+  "oracle_id": "fc3353e9-fe24-4ca7-bff8-9da767f2903a",
+  "name": "Countersculpt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Countersculpt",
+      "oracle_fingerprint": "5c4095d6cd77dd61d2889a23a2ecacef",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "OneOf": [[{ "Behold": { "filter": [{ "Subtype": "Jace" }] } }], "{1}"] }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }]
+                      },
+                      "op": "Lt",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Jace",
+                            "colors": ["Blue"],
+                            "types": ["Planeswalker"],
+                            "subtypes": ["Jace"],
+                            "abilities": [
+                              {
+                                "Loyalty": {
+                                  "cost": { "Minus": 1 },
+                                  "effects": [{ "Surveil": {} }]
+                                }
+                              },
+                              { "Loyalty": { "cost": { "Minus": 3 }, "effects": [{ "Draw": {} }] } }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "jace"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "jace" }, "counter": "loyalty" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

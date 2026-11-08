@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "de2b0c63-c929-42ec-aada-dddb2a26550c",
+  "oracle_id": "1f65c853-5262-4b75-b324-1fe0c165170d",
+  "multiverse_ids": [
+    534834
+  ],
+  "resource_id": "4C4EC98FF52010FF947688E0B27DF9E2B98540920FBAB24C79D02620CA610225",
+  "mtgo_id": 93082,
+  "arena_id": 78405,
+  "tcgplayer_id": 248061,
+  "cardmarket_id": 574879,
+  "name": "Patrician Geist",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/de2b0c63-c929-42ec-aada-dddb2a26550c",
+  "scryfall_uri": "https://scryfall.com/card/mid/69/patrician-geist?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:53:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/e/de2b0c63-c929-42ec-aada-dddb2a26550c.jpg?1783925634",
+    "normal": "https://cards.scryfall.io/normal/front/d/e/de2b0c63-c929-42ec-aada-dddb2a26550c.jpg?1783925634",
+    "large": "https://cards.scryfall.io/large/front/d/e/de2b0c63-c929-42ec-aada-dddb2a26550c.jpg?1783925634",
+    "png": "https://cards.scryfall.io/png/front/d/e/de2b0c63-c929-42ec-aada-dddb2a26550c.png?1783925634",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/e/de2b0c63-c929-42ec-aada-dddb2a26550c.jpg?1783925634",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/e/de2b0c63-c929-42ec-aada-dddb2a26550c.jpg?1783925634",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/e/de2b0c63-c929-42ec-aada-dddb2a26550c.webp?1783925634",
+    "grid": "https://cards.scryfall.io/grid/front/d/e/de2b0c63-c929-42ec-aada-dddb2a26550c.webp?1783925634",
+    "display": "https://cards.scryfall.io/display/front/d/e/de2b0c63-c929-42ec-aada-dddb2a26550c.webp?1783925634",
+    "art": "https://cards.scryfall.io/art/front/d/e/de2b0c63-c929-42ec-aada-dddb2a26550c.webp?1783925634",
+    "crop": "https://cards.scryfall.io/crop/front/d/e/de2b0c63-c929-42ec-aada-dddb2a26550c.webp?1783925634",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/e/de2b0c63-c929-42ec-aada-dddb2a26550c.jpg?1783925634"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Spirit Knight",
+  "oracle_text": "Flying\nOther Spirits you control get +1/+1.\nSpells you cast from your graveyard cost {1} less to cast.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set": "mid",
+  "set_name": "Innistrad: Midnight Hunt",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amid&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mid?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/de2b0c63-c929-42ec-aada-dddb2a26550c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1f65c853-5262-4b75-b324-1fe0c165170d&unique=prints",
+  "collector_number": "69",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "He rides in agitated circles, snapping orders at servants who've long since found their peace.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Marta Nael",
+  "artist_ids": [
+    "266ab861-ed64-4ba5-865c-f18758421cc3"
+  ],
+  "illustration_id": "c028aacf-42f8-4a1f-be8a-f39f264477cc",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10492,
+  "penny_rank": 5851,
+  "preview": {
+    "source": "Charles Wickham",
+    "source_uri": "https://twitter.com/WickedFridge/status/1434812632054345730",
+    "previewed_at": "2021-09-06"
+  },
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": "0.23",
+    "usd_etched": null,
+    "eur": "0.45",
+    "eur_foil": "0.50",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=534834&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPatrician%2BGeist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPatrician%2BGeist",
+    "edhrec": "https://edhrec.com/route/?cc=Patrician+Geist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F248061%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=574879&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/93082?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

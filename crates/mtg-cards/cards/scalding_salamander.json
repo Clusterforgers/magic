@@ -1,0 +1,38 @@
+{
+  "oracle_id": "fcca3c9d-a2b6-4f29-b43c-2f061074a332",
+  "name": "Scalding Salamander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scalding Salamander",
+      "oracle_fingerprint": "37e70b7275d276573fef15f155065189",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Not": { "HasKeyword": "Flying" } },
+                            { "ControlledBy": "Defending" }
+                          ]
+                        },
+                        "amount": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

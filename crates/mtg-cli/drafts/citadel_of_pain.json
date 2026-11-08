@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2233c079-5ca6-4992-8bd2-84dbf9ed53a9",
+  "name": "Citadel of Pain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Citadel of Pain",
+      "oracle_fingerprint": "8bdf569fdbc7c7c0f2d9ed28fbf86c77",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Count": [{ "Type": "Land" }, "Untapped", { "ControlledBy": "ActivePlayer" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

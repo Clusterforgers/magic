@@ -1,0 +1,56 @@
+{
+  "oracle_id": "c6b3f924-806d-47d3-b044-72b48470196c",
+  "name": "Pirate Ship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pirate Ship",
+      "oracle_fingerprint": "2b8100949dc8ffd854e3f55b529331db",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

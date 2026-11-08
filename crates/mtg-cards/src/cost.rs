@@ -8,7 +8,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::ability::CostChange;
 use crate::mana::ManaCostX;
-use crate::refs::Selector;
+use crate::refs::{Selector, ZoneKind};
 use crate::value::{Amount, Condition, CounterKind};
 
 /// One part of a cost.
@@ -48,6 +48,10 @@ pub enum CostItem {
     },
     /// Mill cards from the top of the payer's library ("Mill a card").
     Mill(Amount),
+    /// Draw cards ("Draw a card"): paid only when the library holds that many.
+    Draw(Amount),
+    /// Discard cards from the hand at random ("Discard a card at random"): the payer picks nothing.
+    DiscardRandom(Amount),
     /// Pay energy (`{E}`, CR 107.14): remove that many energy counters from the payer.
     PayEnergy(Amount),
     /// Remove counters of a kind from the source ("Remove a charge counter from this land"), or one from each of `count`
@@ -64,6 +68,14 @@ pub enum CostItem {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         from: Option<Selector>,
     },
+    /// Put counters on the source ("Put a -1/-1 counter on this creature").
+    PutCounters {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
     /// Tap untapped permanents the payer controls that match ("Tap an untapped creature you control").
     TapPermanents {
         /// Which permanents may be chosen.
@@ -71,6 +83,32 @@ pub enum CostItem {
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
+    },
+    /// Untap tapped permanents the payer controls that match ("Untap two tapped creatures you control").
+    UntapPermanents {
+        /// Which permanents may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// Exert the source (CR 701.43): it does not untap during its controller's next untap step.
+    Exert,
+    /// The mana cost printed on the card the keyword is on: a static ability that gives a keyword to cards of other zones
+    /// ("its escape cost is equal to its mana cost") writes it, and the layers read it off each card it reaches.
+    OwnManaCost,
+    /// Remove that many counters in all from among the permanents the payer controls that match ("Remove three counters
+    /// from among artifacts you control"), of the kind named or of any kind; the engine takes them from the permanents in
+    /// play order.
+    RemoveCountersAmong {
+        /// The kind of counter; any kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
+        /// How many counters in all.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// The permanents the counters come from.
+        from: Selector,
     },
     /// Tap any number of untapped permanents the payer controls that match, with total power at least that much
     /// (crew, CR 702.122a: "Tap any number of untapped creatures you control with total power 3 or more").
@@ -84,6 +122,9 @@ pub enum CostItem {
     ExileFromGraveyard {
         /// Which cards may be chosen.
         filter: Selector,
+        /// The cards may come from any player's graveyard ("from a graveyard"), not only the payer's own.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        any_player: bool,
         /// How many.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
@@ -113,6 +154,68 @@ pub enum CostItem {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// The source deals damage to the payer ("{CARDNAME} deals 2 damage to you").
+    DamageToYou(Amount),
+    /// Unattach the source, an Equipment or Aura attached to a permanent (CR 701.3d); in an ability an Equipment or Aura
+    /// gives the permanent it is attached to, that Equipment or Aura ("{T}, Unattach Shuriken: ...").
+    Unattach,
+    /// Exile the top cards of the payer's library face up.
+    ExileTop(Amount),
+    /// Collect evidence (CR 701.59): exile cards from the payer's graveyard with total mana value at least that much.
+    CollectEvidence(u32),
+    /// Blight (Lorwyn Eclipsed): put that many -1/-1 counters on a creature the payer controls and picks.
+    Blight(Amount),
+    /// Behold (Lorwyn Eclipsed): choose a permanent the payer controls or reveal a card from their hand that matches.
+    Behold {
+        /// Which permanents and cards may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// "Behold an Elemental and exile it": what is beheld is then exiled, and a permanent spell remembers it.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        exile: bool,
+    },
+    /// Put cards that match from exile into their owners' graveyards ("Put two cards your opponents own from exile into
+    /// their owners' graveyards"): exiled cards of any owner.
+    ExiledToGraveyard {
+        /// Which exiled cards may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// Put cards the payer picks from one of their zones (hand, graveyard or battlefield) into their library.
+    ToLibrary {
+        /// The zone the cards come from.
+        from: ZoneKind,
+        /// Which cards may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// They go to the bottom of the library; the top when false.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        bottom: bool,
+    },
+    /// Waterbend (Avatar): that much generic mana, which the payer may pay in part by tapping untapped artifacts and creatures
+    /// they control, each paying {1}.
+    Waterbend(u32),
+    /// The X announced for the cost is at least this much ("X can't be 0"); pays nothing itself.
+    XAtLeast(u32),
+    /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
+    Forage,
+    /// Craft materials (CR 702.167): exile permanents the payer controls and/or cards in their graveyard that match, other than the source.
+    Craft {
+        /// Which permanents and cards may be chosen.
+        filter: Selector,
+        /// How many; X for "one or more".
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+        /// The least X when the count is X (1 when absent).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        least: Option<u32>,
+    },
     /// One of these costs, chosen by the caster as the spell is announced ("discard a card or pay 3 life"): the only item of
     /// the required additional cost of a spell.
     OneOf(Vec<Cost>),
@@ -136,6 +239,37 @@ pub enum CostItem {
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default)]
 pub struct Cost(pub Vec<CostItem>);
 
+impl CostItem {
+    /// The amount a part counts (its life, energy, cards, counters or objects), `None` for a part that counts nothing.
+    pub fn amount_mut(&mut self) -> Option<&mut Amount> {
+        match self {
+            CostItem::PayLife(amount)
+            | CostItem::PayEnergy(amount)
+            | CostItem::Mill(amount)
+            | CostItem::Draw(amount)
+            | CostItem::DiscardRandom(amount)
+            | CostItem::DamageToYou(amount)
+            | CostItem::ExileTop(amount)
+            | CostItem::Blight(amount) => Some(amount),
+            CostItem::RemoveCounters { count, .. }
+            | CostItem::RemoveCountersAmong { count, .. }
+            | CostItem::PutCounters { count, .. }
+            | CostItem::UntapPermanents { count, .. }
+            | CostItem::Sacrifice { count, .. }
+            | CostItem::Discard { count, .. }
+            | CostItem::TapPermanents { count, .. }
+            | CostItem::ExileFromGraveyard { count, .. }
+            | CostItem::ExileFromHand { count, .. }
+            | CostItem::RevealFromHand { count, .. }
+            | CostItem::ReturnToHand { count, .. }
+            | CostItem::Behold { count, .. }
+            | CostItem::ExiledToGraveyard { count, .. }
+            | CostItem::ToLibrary { count, .. } => Some(count),
+            _ => None,
+        }
+    }
+}
+
 impl Cost {
     /// A cost of mana only.
     pub fn mana(cost: ManaCostX) -> Cost {
@@ -146,17 +280,28 @@ impl Cost {
     pub fn has_x(&self) -> bool {
         self.0.iter().any(|item| match item {
             CostItem::Mana(mana) => mana.has_x(),
-            CostItem::PayLife(amount) | CostItem::PayEnergy(amount) | CostItem::Mill(amount) => {
-                *amount == Amount::X
-            }
-            CostItem::RemoveCounters { count, .. }
+            CostItem::PayLife(amount)
+            | CostItem::PayEnergy(amount)
+            | CostItem::Mill(amount)
+            | CostItem::Draw(amount)
+            | CostItem::DiscardRandom(amount)
+            | CostItem::DamageToYou(amount)
+            | CostItem::ExileTop(amount)
+            | CostItem::Blight(amount) => *amount == Amount::X,
+            CostItem::RemoveCountersAmong { count, .. }
+            | CostItem::PutCounters { count, .. }
+            | CostItem::UntapPermanents { count, .. }
+            | CostItem::RemoveCounters { count, .. }
             | CostItem::Sacrifice { count, .. }
             | CostItem::Discard { count, .. }
             | CostItem::TapPermanents { count, .. }
             | CostItem::ExileFromGraveyard { count, .. }
             | CostItem::ExileFromHand { count, .. }
             | CostItem::RevealFromHand { count, .. }
-            | CostItem::ReturnToHand { count, .. } => *count == Amount::X,
+            | CostItem::ReturnToHand { count, .. }
+            | CostItem::Behold { count, .. }
+            | CostItem::ExiledToGraveyard { count, .. }
+            | CostItem::ToLibrary { count, .. } => *count == Amount::X,
             CostItem::OneOf(costs) => costs.iter().any(Cost::has_x),
             _ => false,
         })
@@ -205,7 +350,7 @@ mod tests {
     use mtg_core::card::CardType;
     use rstest::rstest;
 
-    use crate::refs::Pred;
+    use crate::refs::{Pred, Ref};
 
     fn mana(text: &str) -> CostItem {
         CostItem::Mana(text.parse().unwrap())
@@ -233,6 +378,33 @@ mod tests {
         Cost(vec![CostItem::Sacrifice { filter: Selector(vec![Pred::Type(CardType::Creature)]), count: Amount::Fixed(2) }]),
         r#"[{"Sacrifice":{"filter":[{"Type":"Creature"}],"count":2}}]"#
     )]
+    #[case::damage_to_you(Cost(vec![CostItem::DamageToYou(Amount::Fixed(2))]), r#"[{"DamageToYou":2}]"#)]
+    #[case::unattach(Cost(vec![CostItem::Unattach]), r#"["Unattach"]"#)]
+    #[case::exile_top(Cost(vec![CostItem::ExileTop(Amount::Fixed(3))]), r#"[{"ExileTop":3}]"#)]
+    #[case::evidence(Cost(vec![CostItem::CollectEvidence(6)]), r#"[{"CollectEvidence":6}]"#)]
+    #[case::blight(Cost(vec![CostItem::Blight(Amount::Fixed(1))]), r#"[{"Blight":1}]"#)]
+    #[case::forage(Cost(vec![CostItem::Forage]), r#"["Forage"]"#)]
+    #[case::waterbend(Cost(vec![CostItem::Waterbend(3)]), r#"[{"Waterbend":3}]"#)]
+    #[case::exiled_to_graveyard(
+        Cost(vec![CostItem::ExiledToGraveyard { filter: Selector(vec![Pred::OwnedBy(Ref::Opponents)]), count: Amount::Fixed(2) }]),
+        r#"[{"ExiledToGraveyard":{"filter":[{"OwnedBy":"Opponents"}],"count":2}}]"#
+    )]
+    #[case::behold(
+        Cost(vec![CostItem::Behold { filter: Selector(vec![Pred::Type(CardType::Creature)]), count: Amount::one(), exile: false }]),
+        r#"[{"Behold":{"filter":[{"Type":"Creature"}]}}]"#
+    )]
+    #[case::behold_exile(
+        Cost(vec![CostItem::Behold { filter: Selector(vec![Pred::Type(CardType::Creature)]), count: Amount::one(), exile: true }]),
+        r#"[{"Behold":{"filter":[{"Type":"Creature"}],"exile":true}}]"#
+    )]
+    #[case::to_library(
+        Cost(vec![CostItem::ToLibrary { from: ZoneKind::Hand, filter: Selector(vec![]), count: Amount::one(), bottom: true }]),
+        r#"[{"ToLibrary":{"from":"Hand","filter":[],"bottom":true}}]"#
+    )]
+    #[case::from_any_graveyard(
+        Cost(vec![CostItem::ExileFromGraveyard { filter: Selector(vec![]), any_player: true, count: Amount::one() }]),
+        r#"[{"ExileFromGraveyard":{"filter":[],"any_player":true}}]"#
+    )]
     fn costs_have_stable_json(#[case] value: Cost, #[case] json: &str) {
         assert_eq!(serde_json::to_string(&value).unwrap(), json);
         assert_eq!(serde_json::from_str::<Cost>(json).unwrap(), value);
@@ -240,7 +412,7 @@ mod tests {
 
     #[rstest]
     #[case::number("3", "invalid type")]
-    #[case::bad_symbol(r#""{S}""#, "unsupported mana symbol")]
+    #[case::bad_symbol(r#""{Y}""#, "unsupported mana symbol")]
     #[case::bad_part(r#"["Teleport"]"#, "unknown variant `Teleport`")]
     fn bad_costs_say_why(#[case] json: &str, #[case] expected: &str) {
         let error = serde_json::from_str::<Cost>(json).unwrap_err().to_string();

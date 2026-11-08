@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f457f182-69d0-468d-9bf0-7170363bac26",
+  "name": "Hinterland Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hinterland Drake",
+      "oracle_fingerprint": "de5aae2e952374c6145976b3fa5e6dc4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CanBlockOnly": [
+                  {
+                    "AnyOf": [{ "Not": { "Type": "Creature" } }, { "Not": { "Type": "Artifact" } }]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

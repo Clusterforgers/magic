@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a176924c-78fc-4151-b2b5-1547b1114a40",
+  "name": "Peat Bog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peat Bog",
+      "oracle_fingerprint": "ef8ec849d5dc6c77574e1ea5c594fd24",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": { "Other": "depletion" }, "count": 2, "tapped": true }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": { "Other": "depletion" } } }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Black", "Black"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": ["This", { "Not": { "HasCounter": { "Other": "depletion" } } }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

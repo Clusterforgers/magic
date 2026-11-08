@@ -1,0 +1,37 @@
+{
+  "oracle_id": "b6fe779f-b20d-49cc-96dd-54f1ffb312e1",
+  "name": "Sequestered Stash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sequestered Stash",
+      "oracle_fingerprint": "24ea81a2d3af5354b63d907b8e92a486",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "Mill": { "count": 5 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

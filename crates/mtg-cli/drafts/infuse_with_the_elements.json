@@ -1,0 +1,30 @@
+{
+  "oracle_id": "beea5db2-1771-417f-9a31-028b3d31aa66",
+  "name": "Infuse with the Elements",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infuse with the Elements",
+      "oracle_fingerprint": "807505c6dffb2f15a00d3b4e650dbf21",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "ColorsSpent" }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

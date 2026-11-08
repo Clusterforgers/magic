@@ -1,0 +1,45 @@
+{
+  "oracle_id": "169a26d2-7bc9-4403-9c92-98d4bd5ca4f3",
+  "name": "Temple of the Dragon Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temple of the Dragon Queen",
+      "oracle_fingerprint": "b9c051e2a72483f0e3453f663a652089",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [{ "Subtype": "Dragon" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+            },
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Subtype": "Dragon" },
+                      { "In": "Battlefield" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

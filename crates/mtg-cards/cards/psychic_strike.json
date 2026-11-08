@@ -1,0 +1,22 @@
+{
+  "oracle_id": "17694111-5623-48b3-8c54-c383418e8d2b",
+  "name": "Psychic Strike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Strike",
+      "oracle_fingerprint": "afcb35e332b4dbedbd9d586c5f69030a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Mill": { "who": { "ControllerOf": { "Target": 0 } }, "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

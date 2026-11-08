@@ -20,6 +20,7 @@ use crate::combat::{AttackTarget, DamageTarget};
 use crate::counters::CountersChanged;
 use crate::events::{DeathCause, Event, ZoneCause};
 use crate::fixtures::{creature, state};
+use crate::library::Scried;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -217,11 +218,15 @@ fn cards_put_into_your_graveyard_from_your_library_together_trigger_once_and_cou
 const COUNTER_BATCH: &str = r#"{"Batch":{"CountersPut":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"counter":"+1/+1"}}}"#;
 
 #[rstest]
-#[case::two_creatures_are_one_batch(&[("Bear", 1), ("Watcher", 2)], 1)]
-#[case::one_counter_is_enough(&[("Bear", 1)], 1)]
-#[case::an_opponents_creature(&[("Ogre", 1)], 0)]
-#[case::mine_among_theirs(&[("Ogre", 1), ("Bear", 1)], 1)]
-fn counters_put_together_trigger_once(#[case] puts: &[(&str, i32)], #[case] expected: usize) {
+#[case::two_creatures_are_one_batch(&[("Bear", 1), ("Watcher", 2)], 1, 3)]
+#[case::one_counter_is_enough(&[("Bear", 1)], 1, 1)]
+#[case::an_opponents_creature(&[("Ogre", 1)], 0, 0)]
+#[case::mine_among_theirs(&[("Ogre", 1), ("Bear", 1)], 1, 1)]
+fn counters_put_together_trigger_once(
+    #[case] puts: &[(&str, i32)],
+    #[case] expected: usize,
+    #[case] that_many: u32,
+) {
     let pre = board(COUNTER_BATCH);
     let events: Vec<Event> = puts
         .iter()
@@ -233,7 +238,10 @@ fn counters_put_together_trigger_once(#[case] puts: &[(&str, i32)], #[case] expe
             })
         })
         .collect();
-    assert_eq!(fires(&pre, &events).len(), expected);
+    let found = fires(&pre, &events);
+    assert_eq!(found.len(), expected);
+    // "Put that many": the counters of the batch, not its events.
+    assert_eq!(found.iter().map(|t| t.cause.amount).sum::<u32>(), that_many);
 }
 
 const SECOND_DRAW: &str = r#"{"Nth":{"event":{"Drew":{"who":"You"}},"nth":2}}"#;
@@ -329,6 +337,7 @@ fn life_gained_is_counted_for_each_event(
 #[case::counters_put(r#"{"CountersPut":{"what":[]}}"#, "put", 2)]
 #[case::counters_removed(r#"{"CountersRemoved":{"what":[]}}"#, "removed", 2)]
 #[case::attackers(r#"{"GroupAttacks":{"what":[]}}"#, "attack", 2)]
+#[case::scried(r#"{"Did":{"action":"Scried","who":"You"}}"#, "scry", 3)]
 fn the_cause_carries_the_amount_of_the_event(
     #[case] when: &str,
     #[case] what: &str,
@@ -354,6 +363,11 @@ fn the_cause_carries_the_amount_of_the_event(
         },
         "put" => counters(2),
         "removed" => counters(-2),
+        "scry" => Event::Scried(Scried {
+            player: ME,
+            top: vec![id(&pre, "Bear")],
+            bottom: vec![id(&pre, "Watcher"), id(&pre, "Bear")],
+        }),
         _ => Event::AttackersDeclared {
             player: ME,
             attackers: vec![

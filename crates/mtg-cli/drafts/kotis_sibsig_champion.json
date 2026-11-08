@@ -1,0 +1,48 @@
+{
+  "oracle_id": "0177b410-b559-491f-b393-ac3ed774653c",
+  "name": "Kotis, Sibsig Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kotis, Sibsig Champion",
+      "oracle_fingerprint": "dfb9c57338425edda25d30712e5578dc",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Graveyard",
+                "once": true,
+                "additional": [{ "ExileFromGraveyard": { "filter": [], "count": 3 } }]
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "ArrivedFrom": "Graveyard" },
+                        { "WasCast": { "from": "Graveyard" } }
+                      ]
+                    }
+                  ],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

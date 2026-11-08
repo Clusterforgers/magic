@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3bd066d3-5b07-4986-9e6c-39d1ae6212ff",
+  "name": "Pixie Illusionist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pixie Illusionist",
+      "oracle_fingerprint": "d2941bdbc85ec8bfdfc93af4f643e963",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{G}" } },
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": "Kicked"
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "a86e7de8-8448-406c-b162-22c62bdc3813",
+  "name": "Monsoon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monsoon",
+      "oracle_fingerprint": "6858959131db5e010c4b83744d15bc88",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "Tap": {
+                  "what": {
+                    "Each": [
+                      { "Subtype": "Island" },
+                      { "ControlledBy": "ActivePlayer" },
+                      "Untapped"
+                    ]
+                  },
+                  "as": "tapped"
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Count": [
+                      { "Is": { "Bound": "tapped" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c7b235e1-746e-4467-be54-4e11e2bf6362",
+  "name": "Johann's Stopgap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Johann's Stopgap",
+      "oracle_fingerprint": "76a5ffb99df79ca5cde13238535a008e",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": "AdditionalCostPaid"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

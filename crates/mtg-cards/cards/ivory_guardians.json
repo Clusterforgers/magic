@@ -1,0 +1,29 @@
+{
+  "oracle_id": "78171447-1bc8-4588-b427-5b82701324c5",
+  "name": "Ivory Guardians",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ivory Guardians",
+      "oracle_fingerprint": "666f070e3e1e66325a83815e18cce7cb",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Red" }] } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Named": "Ivory Guardians" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Color": "Red" }, { "Not": "Token" }, { "ControlledBy": "Opponents" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

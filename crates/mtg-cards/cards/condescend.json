@@ -1,0 +1,29 @@
+{
+  "oracle_id": "96cf3c10-733d-4110-9dab-43d0cd4e6629",
+  "name": "Condescend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Condescend",
+      "oracle_fingerprint": "3443cf21ba1a56d8b453f4c21a8af9cd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": "X",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              },
+              { "Scry": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

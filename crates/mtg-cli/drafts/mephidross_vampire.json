@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a6763205-47c7-4d7f-be8c-2f69e8321048",
+  "name": "Mephidross Vampire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mephidross Vampire",
+      "oracle_fingerprint": "181310a8b985d19d1de2522ecb672d51",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddSubtype": "Vampire" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": {
+                        "source": ["This"],
+                        "to": { "Each": [{ "Type": "Creature" }] }
+                      }
+                    },
+                    "effects": [{ "PutCounters": { "on": "Dealer", "counter": "+1/+1" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

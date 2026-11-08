@@ -1,0 +1,69 @@
+{
+  "oracle_id": "3d416f83-32b8-4dad-8e4d-3acd182bbe44",
+  "name": "Cunning Bandit // Azamuki, Treachery Incarnate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cunning Bandit",
+      "oracle_fingerprint": "71b1d43682cdacbbb7d76561200ceed2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "ki" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "ki" }, "op": "Ge", "to": 2 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Flip": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Azamuki, Treachery Incarnate",
+      "oracle_fingerprint": "b8caab15315774389db13cf91a3bbd9d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "ki" } } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

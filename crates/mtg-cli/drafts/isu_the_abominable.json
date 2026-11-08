@@ -1,0 +1,73 @@
+{
+  "oracle_id": "b34823a3-7bee-4e71-a3df-9b533c8ddf15",
+  "name": "Isu the Abominable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Isu the Abominable",
+      "oracle_fingerprint": "7a677aa3618b07ceeb64748b7aa2d9ce",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["TopOfLibrary", { "Supertype": "Snow" }],
+                "from": "Library",
+                "play": true
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Supertype": "Snow" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "options": [
+                          [
+                            {
+                              "Pay": {
+                                "cost": "{G}",
+                                "paid": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Pay": {
+                                "cost": "{W}",
+                                "paid": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Pay": {
+                                "cost": "{U}",
+                                "paid": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

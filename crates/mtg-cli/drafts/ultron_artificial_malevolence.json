@@ -1,0 +1,54 @@
+{
+  "oracle_id": "a8f25e67-2112-4355-9298-363ed04a5cb8",
+  "name": "Ultron, Artificial Malevolence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultron, Artificial Malevolence",
+      "oracle_fingerprint": "29639158f446a895a183c92121c2041d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Artifact" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } }, "as": "copy" }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [{ "Is": { "Bound": "copy" } }, { "Not": { "Type": "Creature" } }]
+                        },
+                        "mods": [
+                          { "SetPT": { "power": 2, "toughness": 2 } },
+                          { "AddSubtype": "Robot" },
+                          { "AddSubtype": "Villain" },
+                          { "AddType": "Creature" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

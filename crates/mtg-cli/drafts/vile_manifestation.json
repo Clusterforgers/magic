@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3d747c43-a09b-4209-b042-2b89156612d8",
+  "name": "Vile Manifestation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vile Manifestation",
+      "oracle_fingerprint": "c4b5b9969672867427481f9dc63753cd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "OwnedBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "HasKeywordNamed": "Cycling" },
+                          { "HasKeywordNamed": "Typecycling" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

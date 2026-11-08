@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f6cd939e-6b45-4d47-b251-7a09a149dedd",
+  "name": "Saddle of the Cavalier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saddle of the Cavalier",
+      "oracle_fingerprint": "2c505f7f1660f3061f191ea30f5baa3b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 3, "toughness": 3 } },
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 3 } }
+                ]
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

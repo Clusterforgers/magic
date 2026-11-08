@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e37416cc-f343-44cd-8676-4ce4d4068e85",
+  "name": "Ice Cage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ice Cage",
+      "oracle_fingerprint": "191b63045f637343b7aa92e26c1f128d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "Is": "Attached" }]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "Destroy": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "1f65c853-5262-4b75-b324-1fe0c165170d",
+  "name": "Patrician Geist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patrician Geist",
+      "oracle_fingerprint": "b02a126fdc6864b84f17c754f28db4d6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Spirit" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "WasCast": { "from": "Graveyard" } },
+              { "OwnedBy": "You" },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

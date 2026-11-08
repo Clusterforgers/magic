@@ -1,0 +1,29 @@
+{
+  "oracle_id": "99024aa8-5687-4d38-8a4b-feef42d6c1ff",
+  "name": "Death Baron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death Baron",
+      "oracle_fingerprint": "3333d44572ebce541a97f374cd6bebe4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Not": { "AnyOf": [{ "Not": { "Subtype": "Zombie" } }, { "Not": "Other" }] } },
+                    { "Subtype": "Skeleton" }
+                  ]
+                },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Deathtouch" }]
+          }
+        }
+      ]
+    }
+  ]
+}

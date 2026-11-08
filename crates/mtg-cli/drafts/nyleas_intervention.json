@@ -1,0 +1,49 @@
+{
+  "oracle_id": "acf388b2-c4e3-4f1b-a16c-88f991d5c17b",
+  "name": "Nylea's Intervention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nylea's Intervention",
+      "oracle_fingerprint": "aab0dac22e4f0a44bd115eb7b83c13ae",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "filter": [{ "Type": "Land" }],
+                            "count": { "min": 0, "max": "X" },
+                            "reveal": true,
+                            "as": "found"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+                            "amount": { "Times": { "by": 2, "of": "X" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

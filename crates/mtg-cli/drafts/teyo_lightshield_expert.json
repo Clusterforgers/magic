@@ -1,0 +1,55 @@
+{
+  "oracle_id": "77a9fac6-3c26-4456-9e0b-f5839a3dcae2",
+  "name": "Teyo, Lightshield Expert",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teyo, Lightshield Expert",
+      "oracle_fingerprint": "9f2c29bac24847ac9aba0c629df10ea4",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Type": "Planeswalker" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "loyalty" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

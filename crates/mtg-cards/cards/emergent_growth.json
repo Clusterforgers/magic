@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2afd64dd-94b3-4bc6-8411-465b3e07f3c9",
+  "name": "Emergent Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emergent Growth",
+      "oracle_fingerprint": "dc2f3c7c01976e727923e08a90c59afd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 5, "toughness": 5 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "AtLeastOne" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

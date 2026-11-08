@@ -1,0 +1,30 @@
+{
+  "oracle_id": "407a0761-7ccc-4607-8df6-e744d30a81a0",
+  "name": "Phyrexian Gremlins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Gremlins",
+      "oracle_fingerprint": "b571b9210760edc737899735b94c2bec",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

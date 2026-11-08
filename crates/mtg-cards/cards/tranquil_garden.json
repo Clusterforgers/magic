@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d9dfef08-b824-4d56-a0e9-3dcefb7e4612",
+  "name": "Tranquil Garden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tranquil Garden",
+      "oracle_fingerprint": "d336d2222dbdd800613000e3d16a55cb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Green", "White"] } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

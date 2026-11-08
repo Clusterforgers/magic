@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ae3da0be-2a3f-498a-8854-73d0a5526ec2",
+  "name": "Mascot Interception",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mascot Interception",
+      "oracle_fingerprint": "d5e6cf8a00d9017ab4cafb67141dedab",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This", { "Targeting": [{ "Type": "Creature" }, "Token"] }],
+            "change": "Reduce",
+            "mana": "{3}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

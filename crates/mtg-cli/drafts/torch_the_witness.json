@@ -1,0 +1,35 @@
+{
+  "oracle_id": "51473069-68dc-4e87-b345-d7cbcfdeea74",
+  "name": "Torch the Witness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torch the Witness",
+      "oracle_fingerprint": "23a94c078ca9f6c2ccff625121a0abcb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Times": { "by": 2, "of": "X" } },
+                  "excess": { "as": "excess" }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "excess" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

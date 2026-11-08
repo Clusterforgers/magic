@@ -1,0 +1,42 @@
+{
+  "oracle_id": "c246cdb4-2fd8-487e-944e-3e52fbd1bbaa",
+  "name": "Confiscation Coup",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Confiscation Coup",
+      "oracle_fingerprint": "2ec8154c09983708977c6a0d9edf4db2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 4 } },
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 1 }],
+                  "times": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "a96387fb-ff10-4299-8f42-aa61da693d07",
+  "name": "Skullcage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skullcage",
+      "oracle_fingerprint": "7d5a3a4cfaff7b26cb43476633ee097b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                      "op": "Lt",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                      "op": "Gt",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "bc899d5c-0a91-4f19-a3e4-3078ae966110",
+  "name": "Abstract Paintmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abstract Paintmage",
+      "oracle_fingerprint": "ef35a6a335cc423eac9134ab0c84805c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Blue", "Red"] },
+                  "only": [{ "Spell": { "types": ["Instant", "Sorcery"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

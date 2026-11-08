@@ -9,6 +9,7 @@ import type { StateView } from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 import { buildFixture } from './dev/fixture'
+import { POD_CRAMPED_PX } from './cornerFit'
 import { NO_ROOM, PodRoomContext } from './podRoom'
 import type { PodRoom } from './podRoom'
 import { SeatPanel } from './SeatPanel'
@@ -373,5 +374,28 @@ describe('the size of the pictures', () => {
     expect(within(bo).queryAllByRole('list', { name: "Bo's command zone" })).toHaveLength(
       form === 'picture' ? 1 : 0,
     )
+  })
+})
+
+describe('a cramped column', () => {
+  const above = (height: number) =>
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(height)
+
+  it('keeps the name row and life over the corner and lays the pool, sources and other chips under it', () => {
+    above(34)
+    show({ room: { height: 119, card: 120 } })
+    const bo = pod('Bo')
+    expect(bo.querySelector('[data-slot="mana-slot"]')).toBeNull()
+    expect(
+      must(bo.querySelector('[data-slot="pod-top"]')).querySelector('[data-slot="mana-sources"]'),
+    ).toBeNull()
+    const picture = must(bo.querySelector('[data-slot="seat-corner"]'))
+    expect(picture.nextElementSibling).toBe(bo.querySelector('[data-slot="pod-more"]'))
+  })
+
+  it('leaves a column at the cramped limit with the full blocks', () => {
+    show({ room: { height: POD_CRAMPED_PX, card: 120 } })
+    expect(pod('Bo').querySelector('[data-slot="mana-slot"]')).not.toBeNull()
+    expect(pod('Bo').querySelector('[data-slot="pod-more"]')).toBeNull()
   })
 })

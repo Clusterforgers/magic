@@ -1,0 +1,30 @@
+{
+  "oracle_id": "411137a5-7054-42bc-a731-88a15e5e6b9d",
+  "name": "Moonbow Illusionist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonbow Illusionist",
+      "oracle_fingerprint": "d112ab87df95fadd981912d7836fc771",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "ReturnToHand": { "filter": [{ "Type": "Land" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "LandType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

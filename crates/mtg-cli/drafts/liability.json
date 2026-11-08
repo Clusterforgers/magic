@@ -1,0 +1,25 @@
+{
+  "oracle_id": "65f1bebb-6441-4189-b6de-993ec9d24a59",
+  "name": "Liability",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liability",
+      "oracle_fingerprint": "28ed96e8e3920ffbcecea2883178180d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": "Token" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "LoseLife": { "who": { "OwnerOf": "Triggering" }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

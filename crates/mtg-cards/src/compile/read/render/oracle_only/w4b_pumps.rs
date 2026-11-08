@@ -29,7 +29,10 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         "where X is the number of cards in your hand",
         "where X is the amount of life you gained this turn",
     )];
-    let written = swap_all(ability, &value, &gained, &hand, &swaps);
+    let mut written = swap_all(ability, &value, &gained, &hand, &swaps);
+    // The stand-in replaced every life total gained: one left outside the swapped words (an intervening "if") would read
+    // as a count of the hand.
+    written.retain(|text| !text.contains("cards in hand") && !text.contains("cards in your hand"));
     let then: Vec<String> = written.iter().filter_map(|text| then_form(text)).collect();
     texts.extend(written);
     texts.extend(then);

@@ -1,0 +1,103 @@
+{
+  "oracle_id": "70697ad7-d4bb-4b63-b895-bbb69e9d04e1",
+  "name": "Phabine, Boss's Confidant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phabine, Boss's Confidant",
+      "oracle_fingerprint": "44c8bab8fee46a4d7ce8dd835c7465dd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "who": "EachPlayer", "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Citizen",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Citizen"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Type": "Land" }
+                    ]
+                  }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Is": { "Bound": "top" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        },
+                        "toughness": {
+                          "Count": [
+                            { "Is": { "Bound": "top" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": { "who": "EachPlayer" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

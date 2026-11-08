@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7f1a9248-8e7b-46a8-942b-ca18c7da8c4a",
+  "name": "Traitorous Blood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Traitorous Blood",
+      "oracle_fingerprint": "70812a1919bb0c04081f3b9189671bf8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }, { "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

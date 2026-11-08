@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "ff561f01-8dbc-4988-be00-592d1e417396",
+  "oracle_id": "5297f646-8235-47da-a290-a6883b374977",
+  "multiverse_ids": [
+    443038
+  ],
+  "mtgo_id": 67765,
+  "arena_id": 67404,
+  "tcgplayer_id": 162187,
+  "cardmarket_id": 319883,
+  "name": "Warcry Phoenix",
+  "lang": "en",
+  "released_at": "2018-04-27",
+  "uri": "https://api.scryfall.com/cards/ff561f01-8dbc-4988-be00-592d1e417396",
+  "scryfall_uri": "https://scryfall.com/card/dom/150/warcry-phoenix?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:29:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/f/ff561f01-8dbc-4988-be00-592d1e417396.jpg?1783934984",
+    "normal": "https://cards.scryfall.io/normal/front/f/f/ff561f01-8dbc-4988-be00-592d1e417396.jpg?1783934984",
+    "large": "https://cards.scryfall.io/large/front/f/f/ff561f01-8dbc-4988-be00-592d1e417396.jpg?1783934984",
+    "png": "https://cards.scryfall.io/png/front/f/f/ff561f01-8dbc-4988-be00-592d1e417396.png?1783934984",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/f/ff561f01-8dbc-4988-be00-592d1e417396.jpg?1783934984",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/f/ff561f01-8dbc-4988-be00-592d1e417396.jpg?1783934984",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/f/ff561f01-8dbc-4988-be00-592d1e417396.webp?1783934984",
+    "grid": "https://cards.scryfall.io/grid/front/f/f/ff561f01-8dbc-4988-be00-592d1e417396.webp?1783934984",
+    "display": "https://cards.scryfall.io/display/front/f/f/ff561f01-8dbc-4988-be00-592d1e417396.webp?1783934984",
+    "art": "https://cards.scryfall.io/art/front/f/f/ff561f01-8dbc-4988-be00-592d1e417396.webp?1783934984",
+    "crop": "https://cards.scryfall.io/crop/front/f/f/ff561f01-8dbc-4988-be00-592d1e417396.webp?1783934984",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/f/ff561f01-8dbc-4988-be00-592d1e417396.jpg?1783934984"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Phoenix",
+  "oracle_text": "Flying, haste\nWhenever you attack with three or more creatures, you may pay {2}{R}. If you do, return this card from your graveyard to the battlefield tapped and attacking.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying",
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "be1daba3-51c9-4e7e-9212-36e68addc26c",
+  "set": "dom",
+  "set_name": "Dominaria",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/be1daba3-51c9-4e7e-9212-36e68addc26c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adom&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dom?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ff561f01-8dbc-4988-be00-592d1e417396/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5297f646-8235-47da-a290-a6883b374977&unique=prints",
+  "collector_number": "150",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "War begins with one red ember.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daarken",
+  "artist_ids": [
+    "e607a0d4-fc12-4c01-9e3f-501f5269b9cb"
+  ],
+  "illustration_id": "91f27629-c717-4597-aefd-a4143f9d0e19",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17731,
+  "penny_rank": 14001,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.63",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=443038&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWarcry%2BPhoenix",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWarcry%2BPhoenix",
+    "edhrec": "https://edhrec.com/route/?cc=Warcry+Phoenix"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F162187%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=319883&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/67765?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

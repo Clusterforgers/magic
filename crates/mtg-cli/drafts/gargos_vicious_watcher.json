@@ -1,0 +1,38 @@
+{
+  "oracle_id": "378fcd0f-1096-4769-9149-55b4a889ff56",
+  "name": "Gargos, Vicious Watcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gargos, Vicious Watcher",
+      "oracle_fingerprint": "5c9668904c260d1478e76717e8a68960",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Hydra" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{4}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [{ "Type": "Creature" }, { "In": "Battlefield" }, { "ControlledBy": "You" }],
+                "by": ["Spell"]
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

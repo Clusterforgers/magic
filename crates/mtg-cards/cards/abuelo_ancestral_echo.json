@@ -1,0 +1,42 @@
+{
+  "oracle_id": "eaa9baac-72f2-4bde-9146-860878d9860b",
+  "name": "Abuelo, Ancestral Echo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abuelo, Ancestral Echo",
+      "oracle_fingerprint": "ae970c48edf87073d10af0fb3081e651",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Activated": {
+            "cost": "{1}{W}{U}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

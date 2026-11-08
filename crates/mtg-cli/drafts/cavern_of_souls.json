@@ -1,0 +1,41 @@
+{
+  "oracle_id": "89ca686a-7c72-4d8f-9290-e89635624a83",
+  "name": "Cavern of Souls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cavern of Souls",
+      "oracle_fingerprint": "b1c88eba423eef1887b71016ed325682",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [
+                    { "Spell": { "types": ["Creature"], "chosen_type": true } },
+                    { "Uncounterable": { "types": ["Creature"], "chosen_type": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

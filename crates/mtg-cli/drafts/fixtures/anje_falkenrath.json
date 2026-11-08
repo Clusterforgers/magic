@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "913dd06f-ed2f-4128-9c9d-9cd0d8a55425",
+  "oracle_id": "4dab6a96-4376-4aea-983d-406167993214",
+  "multiverse_ids": [
+    470583
+  ],
+  "mtgo_id": 77128,
+  "tcgplayer_id": 196270,
+  "cardmarket_id": 390247,
+  "name": "Anje Falkenrath",
+  "lang": "en",
+  "released_at": "2019-08-23",
+  "uri": "https://api.scryfall.com/cards/913dd06f-ed2f-4128-9c9d-9cd0d8a55425",
+  "scryfall_uri": "https://scryfall.com/card/c19/37/anje-falkenrath?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:53:21Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/1/913dd06f-ed2f-4128-9c9d-9cd0d8a55425.jpg?1783932801",
+    "normal": "https://cards.scryfall.io/normal/front/9/1/913dd06f-ed2f-4128-9c9d-9cd0d8a55425.jpg?1783932801",
+    "large": "https://cards.scryfall.io/large/front/9/1/913dd06f-ed2f-4128-9c9d-9cd0d8a55425.jpg?1783932801",
+    "png": "https://cards.scryfall.io/png/front/9/1/913dd06f-ed2f-4128-9c9d-9cd0d8a55425.png?1783932801",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/1/913dd06f-ed2f-4128-9c9d-9cd0d8a55425.jpg?1783932801",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/1/913dd06f-ed2f-4128-9c9d-9cd0d8a55425.jpg?1783932801",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/1/913dd06f-ed2f-4128-9c9d-9cd0d8a55425.webp?1783932801",
+    "grid": "https://cards.scryfall.io/grid/front/9/1/913dd06f-ed2f-4128-9c9d-9cd0d8a55425.webp?1783932801",
+    "display": "https://cards.scryfall.io/display/front/9/1/913dd06f-ed2f-4128-9c9d-9cd0d8a55425.webp?1783932801",
+    "art": "https://cards.scryfall.io/art/front/9/1/913dd06f-ed2f-4128-9c9d-9cd0d8a55425.webp?1783932801",
+    "crop": "https://cards.scryfall.io/crop/front/9/1/913dd06f-ed2f-4128-9c9d-9cd0d8a55425.webp?1783932801",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/1/913dd06f-ed2f-4128-9c9d-9cd0d8a55425.jpg?1783932801"
+  },
+  "mana_cost": "{1}{B}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Vampire",
+  "oracle_text": "Haste\n{T}, Discard a card: Draw a card.\nWhenever you discard a card, if it has madness, untap Anje Falkenrath.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": false,
+  "finishes": [
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2",
+  "set": "c19",
+  "set_name": "Commander 2019",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac19&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c19?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/913dd06f-ed2f-4128-9c9d-9cd0d8a55425/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4dab6a96-4376-4aea-983d-406167993214&unique=prints",
+  "collector_number": "37",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"We all hide a little madness behind our sophistication, do we not?\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Cynthia Sheppard",
+  "artist_ids": [
+    "9dfbdd58-65e6-40cf-951a-80e141061939"
+  ],
+  "illustration_id": "5fac2aed-1a6a-4a3f-80f5-08d232dfbbc3",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8731,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2019-08-01"
+  },
+  "prices": {
+    "usd": null,
+    "usd_foil": "0.91",
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": "1.07",
+    "tix": "3.38"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=470583&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAnje%2BFalkenrath",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAnje%2BFalkenrath",
+    "edhrec": "https://edhrec.com/route/?cc=Anje+Falkenrath"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F196270%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=390247&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/77128?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e8180024-1979-4677-9a0d-e08d4b7c825a",
+  "name": "Hazel's Brewmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hazel's Brewmaster",
+      "oracle_fingerprint": "8b0de30bb6507a5fca4614bddf7b41ad",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "CreateToken": { "token": { "Named": "food" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Food" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [{ "Type": "Creature" }, { "ExiledWith": "This" }, { "In": "Exile" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

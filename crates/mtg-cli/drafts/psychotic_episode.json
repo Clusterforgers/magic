@@ -1,0 +1,69 @@
+{
+  "oracle_id": "0ac7bacd-944d-44f4-927b-28e8c0a4371d",
+  "name": "Psychotic Episode",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychotic Episode",
+      "oracle_fingerprint": "79c3220ab91ccef3b0b50dc86f4f9650",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked2" },
+                  "to": { "Library": { "place": "Bottom" } },
+                  "as": "moved3"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved3" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "LookAtTop": { "who": { "Target": 0 }, "as": "top4" } },
+                    { "Choose": { "from": { "Bound": "top4" }, "as": "kept5", "rest_as": "rest6" } },
+                    { "Reveal": { "what": { "Bound": "top4" } } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept5" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "rest6" },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Madness": "{1}{B}" } }
+      ]
+    }
+  ]
+}

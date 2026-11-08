@@ -1,0 +1,25 @@
+{
+  "oracle_id": "263408e6-b315-4af5-8cb8-3fd1aa88e48c",
+  "name": "Archetype of Aggression",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archetype of Aggression",
+      "oracle_fingerprint": "d66210ff568f2161b8f212133da35b70",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+            "mods": [{ "LockKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

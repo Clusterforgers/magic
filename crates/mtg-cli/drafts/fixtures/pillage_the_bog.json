@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "fa3b415f-7901-4ab4-84fe-60b90d40ac90",
+  "oracle_id": "91740570-1a97-4513-8af9-b32c363daf15",
+  "multiverse_ids": [
+    655165
+  ],
+  "mtgo_id": 124359,
+  "arena_id": 90570,
+  "tcgplayer_id": 544484,
+  "cardmarket_id": 764278,
+  "name": "Pillage the Bog",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/fa3b415f-7901-4ab4-84fe-60b90d40ac90",
+  "scryfall_uri": "https://scryfall.com/card/otj/224/pillage-the-bog?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:03:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/a/fa3b415f-7901-4ab4-84fe-60b90d40ac90.jpg?1783911786",
+    "normal": "https://cards.scryfall.io/normal/front/f/a/fa3b415f-7901-4ab4-84fe-60b90d40ac90.jpg?1783911786",
+    "large": "https://cards.scryfall.io/large/front/f/a/fa3b415f-7901-4ab4-84fe-60b90d40ac90.jpg?1783911786",
+    "png": "https://cards.scryfall.io/png/front/f/a/fa3b415f-7901-4ab4-84fe-60b90d40ac90.png?1783911786",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/a/fa3b415f-7901-4ab4-84fe-60b90d40ac90.jpg?1783911786",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/a/fa3b415f-7901-4ab4-84fe-60b90d40ac90.jpg?1783911786",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/a/fa3b415f-7901-4ab4-84fe-60b90d40ac90.webp?1783911786",
+    "grid": "https://cards.scryfall.io/grid/front/f/a/fa3b415f-7901-4ab4-84fe-60b90d40ac90.webp?1783911786",
+    "display": "https://cards.scryfall.io/display/front/f/a/fa3b415f-7901-4ab4-84fe-60b90d40ac90.webp?1783911786",
+    "art": "https://cards.scryfall.io/art/front/f/a/fa3b415f-7901-4ab4-84fe-60b90d40ac90.webp?1783911786",
+    "crop": "https://cards.scryfall.io/crop/front/f/a/fa3b415f-7901-4ab4-84fe-60b90d40ac90.webp?1783911786",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/a/fa3b415f-7901-4ab4-84fe-60b90d40ac90.jpg?1783911786"
+  },
+  "mana_cost": "{B}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Look at the top X cards of your library, where X is twice the number of lands you control. Put one of them into your hand and the rest on the bottom of your library in a random order.\nPlot {1}{B}{G} (You may pay {1}{B}{G} and exile this card from your hand. Cast it as a sorcery on a later turn without paying its mana cost. Plot only as a sorcery.)",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Plot"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "c05939b7-1877-4464-98fe-d3b9ae754fb9",
+      "component": "combo_piece",
+      "name": "Pillage the Bog",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/c05939b7-1877-4464-98fe-d3b9ae754fb9"
+    },
+    {
+      "object": "related_card",
+      "id": "f07677af-88a4-4ff5-b591-e1e3ac05235d",
+      "component": "combo_piece",
+      "name": "Plot",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/f07677af-88a4-4ff5-b591-e1e3ac05235d"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set": "otj",
+  "set_name": "Outlaws of Thunder Junction",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/55a85ebe-644e-4bef-8be8-5290408be3d1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotj&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otj?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fa3b415f-7901-4ab4-84fe-60b90d40ac90/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A91740570-1a97-4513-8af9-b32c363daf15&unique=prints",
+  "collector_number": "224",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Forrest Imel",
+  "artist_ids": [
+    "64fc383d-de34-4151-87d6-27b82e58086e"
+  ],
+  "illustration_id": "df55d16a-0162-45cd-b288-5c82a31cd99a",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9388,
+  "penny_rank": 869,
+  "preview": {
+    "source": "MrBevers MTG",
+    "source_uri": "https://twitter.com/Mr_Bevers/status/1773381255964295376",
+    "previewed_at": "2024-03-28"
+  },
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": "0.41",
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": "0.38",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=655165&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPillage%2Bthe%2BBog",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPillage%2Bthe%2BBog",
+    "edhrec": "https://edhrec.com/route/?cc=Pillage+the+Bog"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F544484%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764278&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/124359?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

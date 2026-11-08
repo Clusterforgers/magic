@@ -19,11 +19,16 @@
         },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [{ "Is": "Attached" }], "to": "EachPlayer" } },
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
             "effects": [
               {
                 "DealDamage": {
-                  "source": "This",
                   "to": "Triggering",
                   "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
                 }

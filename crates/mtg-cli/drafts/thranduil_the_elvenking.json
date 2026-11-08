@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4a5f76e7-40be-4b06-9935-4a3b2672e1c2",
+  "name": "Thranduil, the Elvenking",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thranduil, the Elvenking",
+      "oracle_fingerprint": "ed7d1bb98652ed5f16fa6eb3b8986884",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [{ "Subtype": "Elf" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Subtype": "Elf" },
+                  { "Supertype": "Legendary" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": { "count": 2 } }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

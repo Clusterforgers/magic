@@ -1,0 +1,50 @@
+{
+  "oracle_id": "0b768f8f-2213-45b9-bced-8fb1bbb441c3",
+  "name": "Tibalt, Rakish Instigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tibalt, Rakish Instigator",
+      "oracle_fingerprint": "62367b20a2e9767383d2dc47ff2ed802",
+      "abilities": [
+        { "Rule": { "rule": { "CantGainLife": "Opponents" } } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Devil",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Devil"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "targets": [{ "what": "AnyTarget" }],
+                            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

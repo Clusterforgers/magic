@@ -1,0 +1,59 @@
+{
+  "oracle_id": "4a2233de-50bd-49be-ac49-4a3c0f02dd52",
+  "name": "Display of Dominance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Display of Dominance",
+      "oracle_fingerprint": "25ff653b19aae06d81e3dd896c9abfdc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Not": { "Type": "Creature" } },
+                              { "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Cant": {
+                                "who": { "Each": [{ "ControlledBy": "You" }] },
+                                "action": {
+                                  "BeTargeted": [
+                                    { "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] },
+                                    { "ControlledBy": "Opponents" },
+                                    "Spell"
+                                  ]
+                                }
+                              }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

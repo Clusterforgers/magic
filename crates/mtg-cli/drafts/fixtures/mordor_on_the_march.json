@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "6d553b1e-701b-4f09-80ce-2a16ab53e316",
+  "oracle_id": "60fa9f5f-2360-4d5e-b291-1318803e3c9f",
+  "multiverse_ids": [
+    636356
+  ],
+  "mtgo_id": 120114,
+  "tcgplayer_id": 517258,
+  "cardmarket_id": 736468,
+  "name": "Mordor on the March",
+  "lang": "en",
+  "released_at": "2023-11-03",
+  "uri": "https://api.scryfall.com/cards/6d553b1e-701b-4f09-80ce-2a16ab53e316",
+  "scryfall_uri": "https://scryfall.com/card/ltc/512/mordor-on-the-march?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T03:43:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/d/6d553b1e-701b-4f09-80ce-2a16ab53e316.jpg?1783914194",
+    "normal": "https://cards.scryfall.io/normal/front/6/d/6d553b1e-701b-4f09-80ce-2a16ab53e316.jpg?1783914194",
+    "large": "https://cards.scryfall.io/large/front/6/d/6d553b1e-701b-4f09-80ce-2a16ab53e316.jpg?1783914194",
+    "png": "https://cards.scryfall.io/png/front/6/d/6d553b1e-701b-4f09-80ce-2a16ab53e316.png?1783914194",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/d/6d553b1e-701b-4f09-80ce-2a16ab53e316.jpg?1783914194",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/d/6d553b1e-701b-4f09-80ce-2a16ab53e316.jpg?1783914194",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/d/6d553b1e-701b-4f09-80ce-2a16ab53e316.webp?1783914194",
+    "grid": "https://cards.scryfall.io/grid/front/6/d/6d553b1e-701b-4f09-80ce-2a16ab53e316.webp?1783914194",
+    "display": "https://cards.scryfall.io/display/front/6/d/6d553b1e-701b-4f09-80ce-2a16ab53e316.webp?1783914194",
+    "art": "https://cards.scryfall.io/art/front/6/d/6d553b1e-701b-4f09-80ce-2a16ab53e316.webp?1783914194",
+    "crop": "https://cards.scryfall.io/crop/front/6/d/6d553b1e-701b-4f09-80ce-2a16ab53e316.webp?1783914194",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/d/6d553b1e-701b-4f09-80ce-2a16ab53e316.jpg?1783914194"
+  },
+  "mana_cost": "{3}{B}{R}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile a creature card from your graveyard. Create a token that's a copy of it. It gains haste until end of turn. Exile it at the beginning of the next end step.\nStorm (When you cast this spell, copy it for each spell cast before it this turn.)",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Storm"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "32009b5b-7b6e-44d5-be7d-cea058ec5df9",
+      "component": "combo_piece",
+      "name": "Mordor on the March",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/32009b5b-7b6e-44d5-be7d-cea058ec5df9"
+    },
+    {
+      "object": "related_card",
+      "id": "4b976756-e988-4211-95c2-0e3587118488",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/4b976756-e988-4211-95c2-0e3587118488"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set": "ltc",
+  "set_name": "Tales of Middle-earth Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6d553b1e-701b-4f09-80ce-2a16ab53e316/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A60fa9f5f-2360-4d5e-b291-1318803e3c9f&unique=prints",
+  "collector_number": "512",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Campbell White",
+  "artist_ids": [
+    "d281eab4-463a-4ba8-9039-8943737960a0"
+  ],
+  "illustration_id": "8bfdf6b0-a589-477c-8ecd-481c68535a32",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "boosterfun"
+  ],
+  "edhrec_rank": 15733,
+  "penny_rank": 7508,
+  "prices": {
+    "usd": "0.55",
+    "usd_foil": "0.36",
+    "usd_etched": null,
+    "eur": "0.39",
+    "eur_foil": "0.60",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=636356&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMordor%2Bon%2Bthe%2BMarch",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMordor%2Bon%2Bthe%2BMarch",
+    "edhrec": "https://edhrec.com/route/?cc=Mordor+on+the+March"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F517258%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=736468&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/120114?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

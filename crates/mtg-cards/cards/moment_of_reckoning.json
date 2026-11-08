@@ -1,0 +1,57 @@
+{
+  "oracle_id": "8e9576c1-b0c2-4be5-9005-35b51164f78e",
+  "name": "Moment of Reckoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moment of Reckoning",
+      "oracle_fingerprint": "25455da911bc6cc6a8c5983d911bbc9e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 4 },
+                  "repeat": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Not": { "Type": "Land" } },
+                              { "OwnedBy": "You" },
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

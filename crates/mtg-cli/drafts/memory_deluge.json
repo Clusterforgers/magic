@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e6fd55f2-7e26-469c-a44a-ea2eb90e19a9",
+  "name": "Memory Deluge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memory Deluge",
+      "oracle_fingerprint": "9b3b2337d5132b80480ea14201f3496e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": { "ManaSpent": { "of": null } }, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{U}{U}" } }
+      ]
+    }
+  ]
+}

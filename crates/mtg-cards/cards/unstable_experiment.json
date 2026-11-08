@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5b7bbc76-22cc-482e-8d65-34cff34c93c8",
+  "name": "Unstable Experiment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unstable Experiment",
+      "oracle_fingerprint": "8a15b59562c77a0999a40087f60a5552",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 } } },
+              { "Connive": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

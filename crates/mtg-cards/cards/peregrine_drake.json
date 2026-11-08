@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0bd67481-6bd9-48d6-92bd-8933b5ea1eae",
+  "name": "Peregrine Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peregrine Drake",
+      "oracle_fingerprint": "4d126168d49ee74d0a6667b542fdbda4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }] },
+                  "count": { "min": 0, "max": 5 },
+                  "as": "untap"
+                }
+              },
+              { "Untap": { "what": { "Bound": "untap" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

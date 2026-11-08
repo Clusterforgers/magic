@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4ed04ece-64d2-41a4-bf36-b993cbbf2aac",
+  "name": "Bull Elephant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bull Elephant",
+      "oracle_fingerprint": "bd7d4dcdec8b9f0e30e489bc4f4fb7da",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Subtype": "Forest" }], "count": 2 } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

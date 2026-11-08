@@ -1,0 +1,21 @@
+{
+  "oracle_id": "eb64ece7-e75f-4812-89cc-9522beb5219e",
+  "name": "Gate to Manorborn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gate to Manorborn",
+      "oracle_fingerprint": "453ff8adb5a1b46adf33e52c348ea3b5",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}" }, "Tap"],
+            "limit": "OncePerGame",
+            "effects": [{ "Seek": { "filter": [{ "Not": { "Type": "Land" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

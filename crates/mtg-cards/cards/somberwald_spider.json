@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8b3526c4-efc8-42be-a0ab-de10c4cc986d",
+  "name": "Somberwald Spider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Somberwald Spider",
+      "oracle_fingerprint": "55b19ab32946154a30d0e80b3628fef6",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

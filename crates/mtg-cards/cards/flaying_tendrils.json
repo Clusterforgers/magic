@@ -1,0 +1,40 @@
+{
+  "oracle_id": "cc2d016a-af44-427b-a25a-593274369449",
+  "name": "Flaying Tendrils",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flaying Tendrils",
+      "oracle_fingerprint": "3b5ac215b14dfdde94521106f7c28365",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

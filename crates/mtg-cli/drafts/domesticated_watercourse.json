@@ -1,0 +1,50 @@
+{
+  "oracle_id": "c11d2241-078f-4f1a-a7c5-d974316f1901",
+  "name": "Domesticated Watercourse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Domesticated Watercourse",
+      "oracle_fingerprint": "1d6335ba4d2aa2de9628fb836a8c0fe9",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Equipment" },
+                    { "SetTypes": ["Artifact"] },
+                    { "AddKeyword": { "Equip": "{2}" } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

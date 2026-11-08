@@ -1,0 +1,34 @@
+{
+  "oracle_id": "fc988ce3-0cad-41a5-8f13-656caca732df",
+  "name": "Shivan Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shivan Wurm",
+      "oracle_fingerprint": "db551e4d2f75f375b0966d2a671d23c6",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

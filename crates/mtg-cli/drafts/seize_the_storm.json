@@ -1,0 +1,89 @@
+{
+  "oracle_id": "d3455e93-3a05-42db-945d-c4c85f4ac827",
+  "name": "Seize the Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seize the Storm",
+      "oracle_fingerprint": "82e457e0977d74173dcd2366ab784e6a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        { "Keyword": "Trample" },
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "Sum": [
+                                      {
+                                        "Count": [
+                                          {
+                                            "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }]
+                                          },
+                                          { "OwnedBy": "You" },
+                                          { "In": "Graveyard" }
+                                        ]
+                                      },
+                                      {
+                                        "Count": [
+                                          { "OwnedBy": "You" },
+                                          { "HasKeywordNamed": "Flashback" },
+                                          { "In": "Exile" }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "toughness": {
+                                    "Sum": [
+                                      {
+                                        "Count": [
+                                          {
+                                            "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }]
+                                          },
+                                          { "OwnedBy": "You" },
+                                          { "In": "Graveyard" }
+                                        ]
+                                      },
+                                      {
+                                        "Count": [
+                                          { "OwnedBy": "You" },
+                                          { "HasKeywordNamed": "Flashback" },
+                                          { "In": "Exile" }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{6}{R}" } }
+      ]
+    }
+  ]
+}

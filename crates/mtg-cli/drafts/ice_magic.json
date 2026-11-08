@@ -1,0 +1,74 @@
+{
+  "oracle_id": "88b0bd3b-d832-4059-b0d9-04630917ae94",
+  "name": "Ice Magic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ice Magic",
+      "oracle_fingerprint": "7854f374371bb8b5fde9f8e3d802ac0a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "mode_costs": ["{0}", "{2}", "{5}{U}"],
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "ChooseValue": {
+                            "who": { "OwnerOf": { "Target": 0 } },
+                            "kind": { "Options": ["Top", "Bottom"] },
+                            "as": "way"
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": { "ChosenWord": { "name": "way", "word": "Bottom" } },
+                            "then": [
+                              {
+                                "Move": {
+                                  "what": { "Target": 0 },
+                                  "to": { "Library": { "place": "Bottom" } }
+                                }
+                              }
+                            ],
+                            "otherwise": [
+                              {
+                                "Move": {
+                                  "what": { "Target": 0 },
+                                  "to": { "Library": { "place": "Top" } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": "Shuffled" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

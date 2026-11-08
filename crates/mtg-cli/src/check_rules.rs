@@ -1,5 +1,5 @@
 //! `check-rules`: proposed rules files (written by hand or by a model) checked against the stored cards without trusting
-//! them: valid, read back as the printed text, and the support state they give (`docs/cards-dsl.md`, Model-assisted reading).
+//! them: valid, read back as the printed text, and the support state they give (`docs/cards-dsl.md`, Proposals and drafts).
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;

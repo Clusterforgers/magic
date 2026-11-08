@@ -1,0 +1,50 @@
+{
+  "oracle_id": "d97a0e41-9dd7-4466-afb7-3d8bd6cd0eed",
+  "name": "Foreboding Steamboat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foreboding Steamboat",
+      "oracle_fingerprint": "a8104153aeeb27b020d33b8a07ce5ebf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": "Token" },
+                      { "Not": { "Subtype": "Vehicle" } },
+                      { "ControlledBy": "Chooser" }
+                    ]
+                  },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ExiledToGraveyard": { "filter": [{ "ExiledWith": "This" }] } }],
+                  "paid": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

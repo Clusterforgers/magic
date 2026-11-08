@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f6175cca-0e19-4db8-a175-3369fb650f24",
+  "name": "Predatory Urge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Predatory Urge",
+      "oracle_fingerprint": "a66a3bbe9f74a3c8d9b7cdb7eee431a7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                    "effects": [
+                      {
+                        "DealDamage": {
+                          "to": { "Target": 0 },
+                          "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      },
+                      {
+                        "DealDamage": {
+                          "source": { "Target": 0 },
+                          "to": "This",
+                          "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "037c49e4-39ca-4d72-8f5c-9adc5687601b",
+  "name": "Moonring Mirror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonring Mirror",
+      "oracle_fingerprint": "6af816f713cfd63d94acd2d363983945",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [{ "ExileTop": { "as": "exiled", "sealed": true } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ExileHidden": {
+                        "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                        "sealed": true,
+                        "as": "exiled"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Not": { "Is": { "Bound": "exiled" } } },
+                            { "ExiledWith": "This" },
+                            { "OwnedBy": "You" },
+                            { "In": "Exile" }
+                          ]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

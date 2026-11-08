@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9991c9f2-cb6e-4cfe-a3b7-650212454195",
+  "name": "Fan Favorite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fan Favorite",
+      "oracle_fingerprint": "04faf41a9b767655950181243a22736f",
+      "abilities": [
+        { "Keyword": "Assist" },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

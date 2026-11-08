@@ -1,0 +1,19 @@
+{
+  "oracle_id": "83865eee-709a-4a34-94f1-9b818f31323f",
+  "name": "Springmantle Cleric",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Springmantle Cleric",
+      "oracle_fingerprint": "2342f02955047b9ab77da827c0950add",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "ColorsSpent" } }
+          }
+        }
+      ]
+    }
+  ]
+}

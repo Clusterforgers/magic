@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2f3c66db-efc1-4571-a4db-371a3d532615",
+  "name": "Latulla's Orders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Latulla's Orders",
+      "oracle_fingerprint": "bf4e52c3d1da28b62e863efabdbd0eb2",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": { "source": [{ "Is": "Attached" }], "to": "Defending", "combat": true }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [{ "May": { "effects": [{ "Destroy": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

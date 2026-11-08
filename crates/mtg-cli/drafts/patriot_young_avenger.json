@@ -1,0 +1,27 @@
+{
+  "oracle_id": "6c44d62f-52de-446c-9824-6b474534a612",
+  "name": "Patriot, Young Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patriot, Young Avenger",
+      "oracle_fingerprint": "2cba2a003885958e59d6e0fae96329db",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasAttached": [{ "Subtype": "Equipment" }] }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

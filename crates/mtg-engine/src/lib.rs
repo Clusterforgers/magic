@@ -5,17 +5,23 @@
 //! [`Answer`]; illegal answers never change state. Characteristics are always derived through
 //! [`characteristics`], never stored.
 
+mod activation_kind;
 mod announce;
 mod answers;
 mod attach;
 mod attack_tax;
 pub mod battle;
+pub mod block_tax;
 mod c10_xp_copy_ends;
 mod c11a_less;
 mod c7_untap;
+mod cant_named;
 mod cast;
+mod combat_quirks;
 mod commanders;
 mod damage;
+#[cfg(test)]
+mod e14a_spend_facts;
 mod encoded;
 mod exile_return;
 mod face_down;
@@ -27,6 +33,9 @@ mod flow;
 mod help_tests;
 mod land_types;
 mod layers;
+mod legal_declaration;
+#[cfg(test)]
+mod legal_declaration_tests;
 mod legend;
 mod mana_ability;
 mod mana_bonus;
@@ -38,6 +47,12 @@ mod mana_plan;
 mod mana_repeat;
 #[cfg(test)]
 mod mana_repeat_tests;
+mod mana_replace;
+mod mana_snow;
+#[cfg(test)]
+mod mana_snow_tests;
+#[cfg(test)]
+mod mana_sources_tests;
 mod mana_takes;
 mod mulligan;
 mod parts;
@@ -48,6 +63,7 @@ mod price;
 mod replace_dry;
 mod saga;
 mod sba;
+mod sneak;
 mod soulbond;
 mod spell_keywords;
 mod spend_rider;
@@ -75,11 +91,13 @@ pub mod choose;
 mod citys_blessing;
 pub mod combat;
 pub mod companions;
+pub mod conjure;
 pub mod copies;
 pub mod counters;
 pub mod day_night;
 pub mod decision;
 pub mod dk1c5_rooms;
+pub(crate) mod e15g_paid;
 pub mod effects;
 pub mod engine;
 pub mod error;
@@ -97,9 +115,12 @@ pub mod mana;
 pub mod manual;
 mod manual_control;
 mod manual_effects;
+mod manual_faces;
+pub mod manual_grant;
 mod manual_library;
 mod manual_roll;
 mod manual_show;
+pub mod memory;
 pub mod merged;
 pub mod monarch;
 pub mod object;
@@ -107,19 +128,29 @@ mod party;
 pub mod phasing;
 pub mod player;
 pub mod priority;
+pub mod prohibit;
 pub mod replace;
 pub mod resolve;
+pub mod retargeted;
+mod ring;
 pub mod rng;
+#[cfg(test)]
+mod rule_options;
 pub mod rules;
 pub mod setup;
 pub mod sight;
 pub mod snapshot;
+pub mod speed;
 pub mod spend;
 pub mod stack;
 pub mod state;
 pub mod tokens;
 pub mod triggers;
 pub mod turn;
+mod turn_log;
+#[cfg(test)]
+mod turn_log_tests;
+mod turn_summary;
 pub mod w11d_dungeon;
 pub mod w15a_initiative;
 pub mod w17b_statics;

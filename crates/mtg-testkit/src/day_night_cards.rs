@@ -62,6 +62,7 @@ pub fn mass_landing(name: &str) -> Arc<CardDefinition> {
                         transformed: false,
                         counters: Vec::new(),
                     },
+                    bind: None,
                 }],
             }),
     )

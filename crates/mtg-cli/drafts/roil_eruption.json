@@ -1,0 +1,27 @@
+{
+  "oracle_id": "6798163a-864f-4844-96b1-77585a7e7ab4",
+  "name": "Roil Eruption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roil Eruption",
+      "oracle_fingerprint": "3c3c11960dbd87921ca862b51b2e165e",
+      "abilities": [
+        { "Keyword": { "Kicker": "{5}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "When": { "condition": "Kicked", "then": 5, "otherwise": 3 } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e95f22dd-b89a-4836-86ad-5a9a1627af38",
+  "name": "Famished Foragers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Famished Foragers",
+      "oracle_fingerprint": "eaf50ea06c2a2fd5af15462cd004e256",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, { "Discard": {} }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

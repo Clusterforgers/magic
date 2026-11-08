@@ -1,0 +1,80 @@
+{
+  "oracle_id": "b047cd3f-9129-41cc-8b91-b0dc970f5068",
+  "name": "Brilliance Unleashed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brilliance Unleashed",
+      "oracle_fingerprint": "982314576c3262723701ce665e406378",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Artifact" },
+                              { "OwnedBy": "You" },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Target": 0 },
+                                "selector": [{ "Type": "Artifact" }, { "Type": "Creature" }],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [
+                              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                            ]
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Battlefield": {} },
+                            "as": "moved"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Bound": "moved" },
+                            "mods": [
+                              { "SetPT": { "power": 3, "toughness": 3 } },
+                              { "AddType": "Artifact" },
+                              { "AddType": "Creature" },
+                              { "AddSubtype": "Robot" },
+                              { "AddKeyword": "Flying" }
+                            ],
+                            "duration": "Forever"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

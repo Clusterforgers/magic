@@ -1,0 +1,64 @@
+{
+  "oracle_id": "66914a34-59b3-48a0-9305-ebd956d34f02",
+  "name": "Invasion of Kaldheim // Pyre of the World Tree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Kaldheim",
+      "oracle_fingerprint": "c595eb1939b97a36f49435053627e793",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                  "as": "exiled"
+                }
+              },
+              { "Draw": { "count": { "Bound": "exiled~moved" } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pyre of the World Tree",
+      "oracle_fingerprint": "a281253b5577ddca0b01cb9ad52f3d95",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": { "filter": [{ "Type": "Land" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

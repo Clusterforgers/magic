@@ -1,0 +1,38 @@
+{
+  "oracle_id": "8104e454-77f5-4d38-894e-41ed0d74c17c",
+  "name": "Overburden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overburden",
+      "oracle_fingerprint": "daa34c61cf57042e7f6fe42f8ead1429",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "from": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "ControlledBy": { "ControllerOf": "Triggering" } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

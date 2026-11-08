@@ -1,0 +1,43 @@
+{
+  "oracle_id": "1c95b7cf-be4d-4961-9073-3e39487492c8",
+  "name": "Plagon, Lord of the Beach",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Plagon, Lord of the Beach",
+      "oracle_fingerprint": "5bab75b7c2f938224c06100c2fdb4585",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      {
+                        "Test": {
+                          "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                          "op": "Lt",
+                          "right": { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 101, "end": 213 }
+          }
+        }
+      ]
+    }
+  ]
+}

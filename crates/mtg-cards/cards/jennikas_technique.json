@@ -1,0 +1,47 @@
+{
+  "oracle_id": "90b1226f-4c90-47fd-98f3-ad4edd3b3518",
+  "name": "Jennika's Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jennika's Technique",
+      "oracle_fingerprint": "b7876c1cfbd684113bcc9d4d278a2689",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "Sneak",
+            "cost": [
+              { "Mana": "{R}" },
+              {
+                "ReturnToHand": {
+                  "filter": [
+                    "Attacking",
+                    "Unblocked",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "condition": { "Step": "DeclareBlockers" },
+            "flash": true
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": { "CastWith": "Sneak" }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

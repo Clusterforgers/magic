@@ -374,7 +374,11 @@ fn check_legends(engine: &Engine) -> Result<(), Violation> {
             continue;
         };
         let controller = controller_of(state, id).unwrap_or(object.controller());
-        if object.card().supertypes.contains(&Supertype::Legendary) && state.is_alive(controller) {
+        if object.card().supertypes.contains(&Supertype::Legendary)
+            && state.is_alive(controller)
+            && !mtg_engine::rules::no_legend_rule(state, controller)
+            && !mtg_engine::rules::no_legend_rule_for(state, id)
+        {
             groups
                 .entry((controller, object.card().name.clone()))
                 .or_default()
@@ -601,7 +605,8 @@ fn check_bookkeeping(state: &GameState) -> Result<(), Violation> {
             let t = waiting.trigger();
             // A token that ceased to exist as a state-based action (a copy of a legendary permanent spell) leaves the
             // triggers it caused waiting, and they read its last known information (CR 603.10a).
-            let gone = state.object(t.source.id).is_none() && t.snapshot.zone != Zone::Battlefield;
+            let gone = state.object(t.source.id).is_none()
+                && !matches!(t.snapshot.zone, Zone::Battlefield | Zone::Stack);
             if !state.is_alive(t.controller) || gone {
                 return Err(book(format!(
                     "a triggered ability of {:?} waits for the stack but its controller or source has left the game",
@@ -873,6 +878,7 @@ impl InvariantChecker {
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn observe_event(&mut self, event: &Event) -> Result<(), Violation> {
         // An ability ceases to exist when its resolution ends, and the fold removes it, so look first.
         let ability_ends = matches!(event, Event::ResolutionEnded { object, .. }
@@ -930,7 +936,7 @@ impl InvariantChecker {
             let expected = if *extra {
                 self.shadow.extra_turns().last().map(|turn| turn.player)
             } else {
-                self.shadow.next_alive_after(regular)
+                self.next_turn_taker(regular)
             };
             if expected != Some(*active) || *number != self.shadow.turn().number() + 1 {
                 return Err(Violation::Bookkeeping(format!(
@@ -952,7 +958,10 @@ impl InvariantChecker {
         }
         if matches!(
             event,
-            Event::TokenCreated(_) | Event::EmblemCreated(_) | Event::CompanionBrought { .. }
+            Event::TokenCreated(_)
+                | Event::CardConjured(_)
+                | Event::EmblemCreated(_)
+                | Event::CompanionBrought { .. }
         ) {
             self.expected_objects += 1;
         }
@@ -1115,7 +1124,9 @@ impl InvariantChecker {
                 self.move_counters_along(*object);
                 Ok(())
             }
-            Event::ZoneChanged { object, .. } => {
+            Event::ZoneChanged { object, .. }
+            | Event::LandPlayed { object, .. }
+            | Event::SpellCast { object, .. } => {
                 self.move_counters_along(*object);
                 Ok(())
             }
@@ -1128,6 +1139,20 @@ impl InvariantChecker {
     }
 
     /// What an attach, an attach to a player and an unattach leave every attachment attached to.
+    /// The player who takes the regular turn after the one of `regular`: the next player in turn order whose turns are
+    /// not skipped (CR 614.10), or the next player when every turn is skipped.
+    fn next_turn_taker(&self, regular: PlayerId) -> Option<PlayerId> {
+        let first = self.shadow.next_alive_after(regular)?;
+        let mut next = first;
+        for _ in 0..self.shadow.players().len() {
+            if !mtg_engine::prohibit::skips_turn(&self.shadow, next) {
+                return Some(next);
+            }
+            next = self.shadow.next_alive_after(next)?;
+        }
+        Some(first)
+    }
+
     fn account_attachment(&mut self, event: &Event) -> Result<(), Violation> {
         match event {
             Event::Attached { object, to } => {
@@ -1176,7 +1201,15 @@ impl InvariantChecker {
             DamageForm::Infect => amount.saturating_add(toxic),
             DamageForm::NoLifeLoss => toxic,
             _ => {
-                self.lose_life(player, amount, "damage")?;
+                // A life floor cuts the life lost, not the damage (CR 614.1).
+                let before = self.expected_life.get(player.index()).copied().unwrap_or(0);
+                let wanted = i32::try_from(amount).unwrap_or(i32::MAX);
+                let lost = match mtg_engine::rules::damage_life_floor(&self.shadow, player, before)
+                {
+                    Some(floor) => wanted.min(before.saturating_sub(floor)),
+                    _ => wanted,
+                };
+                self.lose_life(player, u32::try_from(lost).unwrap_or(0), "damage")?;
                 toxic
             }
         };
@@ -1297,7 +1330,8 @@ impl InvariantChecker {
             Target::Player(player) => self.expected_player_counters.entry(player).or_default(),
         };
         let slot = held.entry(changed.counter.clone()).or_default();
-        *slot += i64::from(changed.delta);
+        // The engine holds at most `u32::MAX` of a kind: counters put past it stop there (`counters::change`).
+        *slot = (*slot + i64::from(changed.delta)).min(i64::from(u32::MAX));
         if *slot < 0 {
             return Err(Violation::Counters(format!(
                 "{:?} would hold {slot} {:?} counters",

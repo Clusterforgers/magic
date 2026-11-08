@@ -1,0 +1,59 @@
+{
+  "oracle_id": "d73913ea-44d0-408f-9f8b-8e91843f2826",
+  "name": "Stillness in Motion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stillness in Motion",
+      "oracle_fingerprint": "a062d3de36c5efe09ab561f229414223",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Library" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Exile": { "what": "This" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Library" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                        "count": { "min": 5, "max": 5 },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

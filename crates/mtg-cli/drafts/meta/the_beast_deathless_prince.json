@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When you cast this spell, gain control of target creature until end of turn. Untap it. It gains menace and haste until end of turn.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature deals combat damage to its owner, untap NICKNAME and draw a card.",
+      "abilities": [],
+      "gap": "key:Trigger.DamageDone.TargetRelativeToSource"
+    },
+    {
+      "face": 0,
+      "tag": "R",
+      "text": "NICKNAME enters tapped with six stun counters on it. (If it would become untapped, remove a stun counter from it instead.)",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 131
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 132,
+          "end": 255
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 256,
+          "end": 342
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

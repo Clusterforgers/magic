@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d1005625-0a78-4f8e-bf51-80458fc0e9d6",
+  "name": "Chaotic Goo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaotic Goo",
+      "oracle_fingerprint": "2af22b747cb46a7f2455406568d9a641",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "win": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }],
+                        "lose": [{ "RemoveCounters": { "from": "This", "counter": "+1/+1" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

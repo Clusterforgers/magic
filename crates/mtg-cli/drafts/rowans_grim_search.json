@@ -1,0 +1,45 @@
+{
+  "oracle_id": "f60234e4-9b53-47a5-a21a-82c80b5af072",
+  "name": "Rowan's Grim Search",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rowan's Grim Search",
+      "oracle_fingerprint": "a291f4116ebdcf32b89ad75f916c965d",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    { "LookAtTop": { "count": 4, "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": { "Bound": "top" },
+                        "count": { "min": 0, "max": 2 },
+                        "as": "kept2",
+                        "rest_as": "rest3"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "kept2" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+                  ]
+                }
+              },
+              { "Draw": { "count": 2 } },
+              { "LoseLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

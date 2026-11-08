@@ -1,0 +1,44 @@
+{
+  "oracle_id": "4ea5409e-9b39-434c-bdb8-8c798128f199",
+  "name": "Cult of the Waxing Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cult of the Waxing Moon",
+      "oracle_fingerprint": "a71535e16784de6a7949e0551392e8a3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Transformed",
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Not": { "Subtype": "Human" } },
+                  { "In": "Battlefield" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "927fa223-69a3-4563-80b1-b578f3d031f1",
+  "name": "Central Elevator // Promising Stairs",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Central Elevator",
+      "oracle_fingerprint": "7ccd1808b8ed3bea1371be5a6adde279",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Subtype": "Room" },
+                    {
+                      "Not": {
+                        "SharesName": { "Each": [{ "Subtype": "Room" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Promising Stairs",
+      "oracle_fingerprint": "0e73449f2ceb63ab2c4e5a324164b508",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 146 }
+          }
+        }
+      ]
+    }
+  ]
+}

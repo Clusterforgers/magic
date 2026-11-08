@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you discard one or more cards for the first time each turn, draw that many cards.",
+      "abilities": [],
+      "gap": "key:Trigger.DiscardedAll.FirstTime"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "CARDNAME gets +1/+0 for each instant and sorcery card in your graveyard.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 70
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 71,
+          "end": 161
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

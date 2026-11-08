@@ -1,0 +1,61 @@
+{
+  "oracle_id": "2dd61a72-6478-471d-bb74-33adda530176",
+  "name": "Night Out in Vegas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Night Out in Vegas",
+      "oracle_fingerprint": "1b3285a411d78735539e06f76ec9d724",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "once_ever": true,
+                  "modes": [
+                    { "effects": [{ "CreateToken": { "token": { "Named": "food" }, "count": 3 } }] },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Performer",
+                                "colors": ["White"],
+                                "types": ["Creature"],
+                                "subtypes": ["Performer"],
+                                "power": 2,
+                                "toughness": 2
+                              }
+                            },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "Search": { "filter": [], "as": "found" } },
+                        { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                        { "Discard": { "random": true } },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "LoseLife": { "amount": 15 } },
+                        { "Sacrifice": { "filter": ["This"] } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

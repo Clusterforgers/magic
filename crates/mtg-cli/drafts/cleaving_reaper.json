@@ -1,0 +1,38 @@
+{
+  "oracle_id": "70c268af-3fb4-42b8-a87a-d06d33c1c641",
+  "name": "Cleaving Reaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cleaving Reaper",
+      "oracle_fingerprint": "5f35bea0d75abf837ed6938461f5187c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 3 }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Subtype": "Angel" }, { "Subtype": "Berserker" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b58a70e2-3609-441a-993a-dccb9a2cf242",
+  "name": "Dutiful Knowledge Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dutiful Knowledge Seeker",
+      "oracle_fingerprint": "4f58b13361c6d5aaf6f4aa992dcfeb10",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "ZoneChange": { "what": [{ "Not": "Token" }], "to": "Library" } } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

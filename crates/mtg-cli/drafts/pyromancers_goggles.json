@@ -9,8 +9,28 @@
       "abilities": [
         {
           "Activated": {
-            "cost": [{ "TapPermanents": { "filter": [{ "Is": "This" }] } }],
-            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "only": [
+                    {
+                      "When": {
+                        "spell": { "types": ["Instant"], "colors": ["Red"] },
+                        "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                      }
+                    },
+                    {
+                      "When": {
+                        "spell": { "types": ["Sorcery"], "colors": ["Red"] },
+                        "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

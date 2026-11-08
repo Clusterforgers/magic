@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c9708a12-96b5-43c1-ac2d-d6dc6b03beb7",
+  "name": "Dragon Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon Shadow",
+      "oracle_fingerprint": "5b3caed62808c3d7a863d0dff01955d7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Fear" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 6 } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": { "BattlefieldAttached": { "to": "Triggering" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

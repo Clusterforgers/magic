@@ -1,0 +1,19 @@
+{
+  "oracle_id": "f28b2ebe-49ef-4585-9bf2-7340abf3f0d3",
+  "name": "Hunter Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunter Sliver",
+      "oracle_fingerprint": "c0eccd3c26332583a5aa78543d2c2c9a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Sliver" }] },
+            "mods": [{ "AddKeyword": { "Macro": { "name": "provoke", "amount": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

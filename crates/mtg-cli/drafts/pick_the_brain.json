@@ -1,0 +1,121 @@
+{
+  "oracle_id": "bef3fca4-7290-416c-a100-1b7abbe7886e",
+  "name": "Pick the Brain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pick the Brain",
+      "oracle_fingerprint": "c7b0ac574a573383cabef140ab493bd9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "SharesName": { "Bound": "exiled2" } },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Target": 0 } }
+                          ]
+                        },
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }]
+                          }
+                        },
+                        "as": "picked3"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked3" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "SharesName": { "Bound": "exiled2" } },
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Target": 0 } }
+                          ]
+                        },
+                        "count": {
+                          "min": 0,
+                          "max": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                        },
+                        "as": "picked4"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked4" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "Search": {
+                        "of": { "Target": 0 },
+                        "filter": [{ "SharesName": { "Bound": "exiled2" } }],
+                        "count": {
+                          "min": 0,
+                          "max": { "Count": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] }
+                        },
+                        "as": "found5"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "found5" } } },
+                    { "Shuffle": { "who": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

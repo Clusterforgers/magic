@@ -1,0 +1,102 @@
+{
+  "oracle_id": "d5314006-afe0-4cdc-88f0-ff1f7d85fba9",
+  "name": "Cracked Earth Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cracked Earth Technique",
+      "oracle_fingerprint": "73943110232823c6925fabe170c94e82",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 0 } }],
+                          "from": "Battlefield",
+                          "to": "Graveyard"
+                        }
+                      },
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 0 } }],
+                          "from": "Battlefield",
+                          "to": "Exile"
+                        }
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "tapped": true } } }
+                    }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1", "count": 3 } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 1 } }],
+                          "from": "Battlefield",
+                          "to": "Graveyard"
+                        }
+                      },
+                      {
+                        "ZoneChange": {
+                          "what": [{ "Is": { "Target": 1 } }],
+                          "from": "Battlefield",
+                          "to": "Exile"
+                        }
+                      }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "Move": { "what": "Triggering", "to": { "Battlefield": { "tapped": true } } }
+                    }
+                  ]
+                }
+              },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

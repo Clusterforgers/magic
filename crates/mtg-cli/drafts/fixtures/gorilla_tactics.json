@@ -1,0 +1,126 @@
+{
+  "object": "card",
+  "id": "2b3fdb5f-57a6-45e6-877d-0f32072bf24d",
+  "oracle_id": "f0616b31-6f05-4056-b96c-559ca4ca085a",
+  "multiverse_ids": [],
+  "tcgplayer_id": 246954,
+  "cardmarket_id": 574500,
+  "name": "Gorilla Tactics",
+  "lang": "en",
+  "released_at": "2021-08-20",
+  "uri": "https://api.scryfall.com/cards/2b3fdb5f-57a6-45e6-877d-0f32072bf24d",
+  "scryfall_uri": "https://scryfall.com/card/cmb2/76/gorilla-tactics?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:58:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/b/2b3fdb5f-57a6-45e6-877d-0f32072bf24d.jpg?1783925929",
+    "normal": "https://cards.scryfall.io/normal/front/2/b/2b3fdb5f-57a6-45e6-877d-0f32072bf24d.jpg?1783925929",
+    "large": "https://cards.scryfall.io/large/front/2/b/2b3fdb5f-57a6-45e6-877d-0f32072bf24d.jpg?1783925929",
+    "png": "https://cards.scryfall.io/png/front/2/b/2b3fdb5f-57a6-45e6-877d-0f32072bf24d.png?1783925929",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/b/2b3fdb5f-57a6-45e6-877d-0f32072bf24d.jpg?1783925929",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/b/2b3fdb5f-57a6-45e6-877d-0f32072bf24d.jpg?1783925929",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/b/2b3fdb5f-57a6-45e6-877d-0f32072bf24d.webp?1783925929",
+    "grid": "https://cards.scryfall.io/grid/front/2/b/2b3fdb5f-57a6-45e6-877d-0f32072bf24d.webp?1783925929",
+    "display": "https://cards.scryfall.io/display/front/2/b/2b3fdb5f-57a6-45e6-877d-0f32072bf24d.webp?1783925929",
+    "art": "https://cards.scryfall.io/art/front/2/b/2b3fdb5f-57a6-45e6-877d-0f32072bf24d.webp?1783925929",
+    "crop": "https://cards.scryfall.io/crop/front/2/b/2b3fdb5f-57a6-45e6-877d-0f32072bf24d.webp?1783925929",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/b/2b3fdb5f-57a6-45e6-877d-0f32072bf24d.jpg?1783925929"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Create a 2/2 green Gorilla creature token.\nWhen a spell or ability an opponent controls causes you to discard Gorilla Tactics, create two 2/2 green Gorilla creature tokens.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "e18a60f0-bf18-487e-a7bb-a23ac6bd7a65",
+  "set": "cmb2",
+  "set_name": "Mystery Booster Playtest Cards 2021",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/e18a60f0-bf18-487e-a7bb-a23ac6bd7a65",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmb2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmb2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2b3fdb5f-57a6-45e6-877d-0f32072bf24d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af0616b31-6f05-4056-b96c-559ca4ca085a&unique=prints",
+  "collector_number": "76",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jiachen Tao",
+  "artist_ids": [
+    "faef0bf7-e650-4f3b-b5cb-18843dadbaf0"
+  ],
+  "illustration_id": "3c630bff-149b-4af0-a705-95685e40c9dd",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "playtest"
+  ],
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGorilla%2BTactics",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGorilla%2BTactics",
+    "edhrec": "https://edhrec.com/route/?cc=Gorilla+Tactics"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F246954%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=574500&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Gorilla+Tactics&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

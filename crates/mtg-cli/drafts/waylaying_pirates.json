@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5453e4fa-49ea-43fc-8de5-6873d29ef627",
+  "name": "Waylaying Pirates",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waylaying Pirates",
+      "oracle_fingerprint": "169e3621c3232ea5c4b851cd13fd3141",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

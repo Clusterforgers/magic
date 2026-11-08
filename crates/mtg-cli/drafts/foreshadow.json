@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4caa97df-1f6c-4806-bf14-e589cc1badb5",
+  "name": "Foreshadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foreshadow",
+      "oracle_fingerprint": "dccafa3004c1c1b16210274b504099ae",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              { "Mill": { "who": { "Target": 0 }, "as": "milled2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled2" },
+                      "selector": [{ "ChosenAs": "name" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

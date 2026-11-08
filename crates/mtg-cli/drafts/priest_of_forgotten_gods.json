@@ -1,0 +1,30 @@
+{
+  "oracle_id": "2ad8ff62-d090-4835-9274-3b755ba0f8e6",
+  "name": "Priest of Forgotten Gods",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Priest of Forgotten Gods",
+      "oracle_fingerprint": "873d3cc44133b07f1fd9fcaf6f6aa67c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"], "count": 2 } }
+            ],
+            "targets": [
+              { "what": "Player", "bounds": { "min": 0, "max": { "Players": "EachPlayer" } } }
+            ],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Creature" }] } },
+              { "AddMana": { "mana": { "Fixed": ["Black", "Black"] } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

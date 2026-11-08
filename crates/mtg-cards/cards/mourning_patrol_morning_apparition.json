@@ -1,0 +1,26 @@
+{
+  "oracle_id": "600db821-4210-4996-a3f7-e05a143e50c2",
+  "name": "Mourning Patrol // Morning Apparition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mourning Patrol",
+      "oracle_fingerprint": "494a929bbb7ab9e333afe291a4743e28",
+      "abilities": [{ "Keyword": "Vigilance" }, { "Keyword": { "Disturb": "{3}{W}" } }]
+    },
+    {
+      "name": "Morning Apparition",
+      "oracle_fingerprint": "a1ce454c8f097148aee1ec021fcacca6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

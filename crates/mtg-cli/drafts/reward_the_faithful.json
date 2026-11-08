@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7fb7c848-377c-4476-9b3f-d95d145137f1",
+  "name": "Reward the Faithful",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reward the Faithful",
+      "oracle_fingerprint": "afa7e095a11247109a432904a42613e9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player", "bounds": { "min": 0, "max": { "Players": "EachPlayer" } } }
+            ],
+            "effects": [
+              {
+                "GainLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "Greatest": { "of": [{ "ControlledBy": "You" }], "stat": "ManaValue" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

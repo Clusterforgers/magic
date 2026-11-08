@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8a4d505e-b884-4b8b-93d5-495992f3858e",
+  "name": "Sengir Connoisseur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sengir Connoisseur",
+      "oracle_fingerprint": "674cecb057856a049fee33a119d4e974",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, "Other"],
+                  "from": "Battlefield",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

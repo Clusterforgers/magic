@@ -1,0 +1,43 @@
+{
+  "oracle_id": "d65f701d-31a1-4275-a580-3e1799ebf8b9",
+  "name": "Soul Reap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Reap",
+      "oracle_fingerprint": "4fa2cd97e8e1191f1b6212a3852def95",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Green" } }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "EachPlayer",
+                          "filter": [{ "Color": "Black" }, "Other", { "ControlledBy": "You" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "LoseLife": { "who": { "ControllerOf": { "Target": 0 } }, "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

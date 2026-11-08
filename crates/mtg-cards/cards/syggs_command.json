@@ -1,0 +1,63 @@
+{
+  "oracle_id": "7fe5baab-b182-4cd9-bea5-912ce9b1464a",
+  "name": "Sygg's Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sygg's Command",
+      "oracle_fingerprint": "a614857da3de2372260996c8f2b85fe3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            "mods": [{ "AddKeyword": "Lifelink" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "Draw": { "who": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "Tap": { "what": { "Target": 0 } } },
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "f6889f57-2965-4a82-8556-fd91c6227058",
+  "name": "Beastmaster's Magemark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beastmaster's Magemark",
+      "oracle_fingerprint": "f061ce0b3cd5d8c4380077558cc7b0bb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "HasAttached": [{ "Subtype": "Aura" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "HasAttached": [{ "Subtype": "Aura" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, { "Blocks": "Triggering" }] },
+                        "toughness": {
+                          "Count": [{ "Type": "Creature" }, { "Blocks": "Triggering" }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b23dc81d-01bb-4bf0-9932-5d32a6b22cf7",
+  "name": "Explosive Derailment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Explosive Derailment",
+      "oracle_fingerprint": "cdccdd54cd9820bd251c15025c28a8ca",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "mode_costs": ["{2}", "{2}"],
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "77cf9d11-936f-4e02-8595-0cbcabaafb1e",
+  "oracle_id": "8c04663a-1023-49a5-a0b9-78f24a72fb1e",
+  "multiverse_ids": [
+    489395
+  ],
+  "arena_id": 72474,
+  "tcgplayer_id": 216026,
+  "cardmarket_id": 472724,
+  "name": "Nature's Way",
+  "lang": "en",
+  "released_at": "2020-07-17",
+  "uri": "https://api.scryfall.com/cards/77cf9d11-936f-4e02-8595-0cbcabaafb1e",
+  "scryfall_uri": "https://scryfall.com/card/jmp/412/natures-way?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:12:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/7/77cf9d11-936f-4e02-8595-0cbcabaafb1e.jpg?1783930359",
+    "normal": "https://cards.scryfall.io/normal/front/7/7/77cf9d11-936f-4e02-8595-0cbcabaafb1e.jpg?1783930359",
+    "large": "https://cards.scryfall.io/large/front/7/7/77cf9d11-936f-4e02-8595-0cbcabaafb1e.jpg?1783930359",
+    "png": "https://cards.scryfall.io/png/front/7/7/77cf9d11-936f-4e02-8595-0cbcabaafb1e.png?1783930359",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/7/77cf9d11-936f-4e02-8595-0cbcabaafb1e.jpg?1783930359",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/7/77cf9d11-936f-4e02-8595-0cbcabaafb1e.jpg?1783930359",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/7/77cf9d11-936f-4e02-8595-0cbcabaafb1e.webp?1783930359",
+    "grid": "https://cards.scryfall.io/grid/front/7/7/77cf9d11-936f-4e02-8595-0cbcabaafb1e.webp?1783930359",
+    "display": "https://cards.scryfall.io/display/front/7/7/77cf9d11-936f-4e02-8595-0cbcabaafb1e.webp?1783930359",
+    "art": "https://cards.scryfall.io/art/front/7/7/77cf9d11-936f-4e02-8595-0cbcabaafb1e.webp?1783930359",
+    "crop": "https://cards.scryfall.io/crop/front/7/7/77cf9d11-936f-4e02-8595-0cbcabaafb1e.webp?1783930359",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/7/77cf9d11-936f-4e02-8595-0cbcabaafb1e.jpg?1783930359"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target creature you control gains vigilance and trample until end of turn. It deals damage equal to its power to target creature you don't control.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "0f6ccf25-a627-4263-86df-5757137f1696",
+  "set": "jmp",
+  "set_name": "Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/0f6ccf25-a627-4263-86df-5757137f1696",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajmp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jmp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/77cf9d11-936f-4e02-8595-0cbcabaafb1e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8c04663a-1023-49a5-a0b9-78f24a72fb1e&unique=prints",
+  "collector_number": "412",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Many elves incorporate the beauty of nature into their inventions. Very few capture its savagery.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Zack Stella",
+  "artist_ids": [
+    "17bc7f55-958b-43f4-bb40-09746d05b3f9"
+  ],
+  "illustration_id": "1bf880ea-a1f8-4292-823e-ba4b0443e484",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10699,
+  "penny_rank": 4147,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.facebook.com/story.php?story_fbid=2959083817651501&id=1580235558869674",
+    "previewed_at": "2020-06-18"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=489395&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNature%2527s%2BWay",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNature%2527s%2BWay",
+    "edhrec": "https://edhrec.com/route/?cc=Nature%27s+Way"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F216026%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=472724&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Nature%27s+Way&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

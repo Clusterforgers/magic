@@ -1,0 +1,109 @@
+{
+  "oracle_id": "434807c5-5948-4181-a46c-2c834d0a2f0b",
+  "name": "Quest for Ula's Temple",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quest for Ula's Temple",
+      "oracle_fingerprint": "86be50bf9c0fe147311e4f1bbef3e681",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Creature" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "revealed2"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed2" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "revealed2" },
+                            "selector": [{ "Type": "Creature" }],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          { "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "quest" }, "op": "Ge", "to": 3 } }
+                  ]
+                },
+                "op": "Eq",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                { "Subtype": "Kraken" },
+                                { "Subtype": "Leviathan" },
+                                { "Subtype": "Octopus" },
+                                {
+                                  "Not": {
+                                    "AnyOf": [
+                                      { "Not": { "Type": "Creature" } },
+                                      { "Not": { "Subtype": "Serpent" } }
+                                    ]
+                                  }
+                                }
+                              ]
+                            },
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

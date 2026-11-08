@@ -11,14 +11,15 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::{Color, ColorSet};
 use mtg_core::mana::{ManaCost, ManaType, ParseManaCostError};
 
-use crate::ability::{Ability, Limit, Timing};
+use crate::ability::{Ability, Activators, Limit, Timing};
 use crate::card::{Card, TokenSpec};
 use crate::cost::CostItem;
 use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility, ManualClause};
 use crate::effect::{Effect, Produce};
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
-use crate::refs::{Ref, Selector, ZoneKind};
+use crate::modify::Modification;
+use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{
     Caps, Clause, PrintedCard, PrintedFace, Support, SupportRecord, support, whole_text,
@@ -80,19 +81,20 @@ pub struct Assembled {
 /// has no rules text (a vanilla creature, a basic land) and `Manual` otherwise. The mana abilities the
 /// basic land types give are part of the printed side (CR 305.6), so they are always there.
 pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Assembled {
-    assemble_record(printed, rules, support(rules, printed, caps), caps)
+    assemble_record(printed, rules, support(rules, printed, caps), caps, false)
 }
 
-/// [`assemble`] for a card whose support record is decided: a `Read` draft is attached like a `Verified` file.
+/// [`assemble`] for a card whose support record is decided: a `Read` draft is attached like a `Verified` file. `from_draft` marks a card a draft decides, so a failed automatic line fails soft whatever its state.
 pub(crate) fn assemble_record(
     printed: &PrintedCard,
     rules: Option<&Card>,
     record: SupportRecord,
     caps: &Caps,
+    from_draft: bool,
 ) -> Assembled {
     let attach = matches!(
         record.support,
-        Support::Verified | Support::Read | Support::Partial
+        Support::Verified | Support::Read | Support::Forge | Support::Partial
     );
     let face_of = |index: usize| -> CardDefinition {
         let mut definition = printed_side(&printed.faces[index]);
@@ -112,7 +114,7 @@ pub(crate) fn assemble_record(
             }
         }
         definition.manual = manual_clauses(&record, attach, index, printed);
-        definition.read = record.support == Support::Read;
+        definition.read = from_draft || matches!(record.support, Support::Read | Support::Forge);
         definition.partial = attach && !definition.manual.is_empty();
         definition
     };
@@ -273,7 +275,7 @@ fn fused_spell(halves: &[CardDefinition]) -> Option<Ability> {
         return None;
     }
     let mut effects = serde_json::to_value(right_effects).ok()?;
-    shift_targets(&mut effects, u8::try_from(left_targets.len()).ok()?);
+    shift_targets(&mut effects, i64::try_from(left_targets.len()).ok()?).then_some(())?;
     let mut fused = left_effects.clone();
     fused.extend(serde_json::from_value::<Vec<Effect>>(effects).ok()?);
     Some(Ability::Spell {
@@ -282,26 +284,37 @@ fn fused_spell(halves: &[CardDefinition]) -> Option<Ability> {
     })
 }
 
-/// Adds `by` to every target index a reference or an amount names in the JSON of some effects.
-fn shift_targets(value: &mut serde_json::Value, by: u8) {
+/// Adds `by` to every target index a reference or an amount names in the JSON of some effects; false when an index
+/// would go below 0.
+pub(crate) fn shift_targets(value: &mut serde_json::Value, by: i64) -> bool {
     match value {
         serde_json::Value::Object(map) => {
             for (key, inner) in map.iter_mut() {
                 match (key.as_str(), inner.as_u64()) {
                     ("Target" | "TargetCount", Some(index)) => {
-                        *inner = serde_json::Value::from(index + u64::from(by));
+                        let Some(moved) = index.checked_add_signed(by) else {
+                            return false;
+                        };
+                        *inner = serde_json::Value::from(moved);
                     }
-                    _ => shift_targets(inner, by),
+                    _ => {
+                        if !shift_targets(inner, by) {
+                            return false;
+                        }
+                    }
                 }
             }
         }
         serde_json::Value::Array(items) => {
             for item in items.iter_mut() {
-                shift_targets(item, by);
+                if !shift_targets(item, by) {
+                    return false;
+                }
             }
         }
         _ => {}
     }
+    true
 }
 
 /// What a bare `{T}: Add ...` adds: no targets, no limit, usable at instant speed from the battlefield, cost exactly
@@ -312,6 +325,7 @@ pub(crate) fn bare_tap_mana(ability: &Ability) -> Option<&Produce> {
         timing: Timing::Instant,
         condition: None,
         limit: None,
+        by: Activators::Controller,
         from: ZoneKind::Battlefield,
         targets,
         effects,
@@ -405,6 +419,10 @@ pub enum ManaProduced<'a> {
         /// Colorless counts as a type.
         colorless: bool,
     },
+    /// One mana of each colour among the objects `among` picks, counted when it is offered.
+    EachColorAmong(&'a Selector),
+    /// Mana of one colour picked when activated, as many as the controller's devotion to it, counted when it is offered.
+    Devotion,
 }
 
 impl<'a> ManaProduced<'a> {
@@ -449,6 +467,8 @@ impl<'a> ManaProduced<'a> {
             Produce::AnyCombination { count, among } => {
                 ManaProduced::AnyCombination { count, among }
             }
+            Produce::EachColorAmong(among) => ManaProduced::EachColorAmong(among),
+            Produce::Devotion => ManaProduced::Devotion,
             Produce::OfTapped => return None,
         })
     }
@@ -473,7 +493,11 @@ impl ManaProduced<'_> {
             ManaProduced::AnyColor(count) | ManaProduced::AnyCombination { count, .. } => {
                 count.fixed().unwrap_or(1)
             }
-            ManaProduced::OneOf(_) | ManaProduced::OrChosenColor(_) => 1,
+            // The colours and the devotion are counted from the game when the mana is offered.
+            ManaProduced::OneOf(_)
+            | ManaProduced::OrChosenColor(_)
+            | ManaProduced::EachColorAmong(_)
+            | ManaProduced::Devotion => 1,
             ManaProduced::OneOfLists(lists) => lists
                 .iter()
                 .map(|list| u32::try_from(list.len()).unwrap_or(u32::MAX))
@@ -498,6 +522,9 @@ pub struct ManaShape<'a> {
     pub produces: ManaProduced<'a>,
     /// How many times.
     pub times: &'a Amount,
+    /// How many times more than `times` counts: the one of "X plus one" ("Add {B}, then add an additional {B} for each
+    /// charge counter removed this way").
+    pub extra: u32,
     /// The source is tapped.
     pub tap: bool,
     /// The source is sacrificed.
@@ -508,8 +535,8 @@ pub struct ManaShape<'a> {
     pub pays: Vec<&'a CostItem>,
     /// What must hold to activate it.
     pub condition: Option<&'a Condition>,
-    /// It can be activated once each turn ("Activate only once each turn").
-    pub once: bool,
+    /// How often it can be activated: once each turn, a number of times each turn or once each game (exhaust).
+    pub limit: Option<Limit>,
     /// The parts of its cost that take other permanents the payer controls: tapping or sacrificing some number of them.
     pub picks: Vec<&'a CostItem>,
     /// What it does before adding mana: a counter put on the source, which the amount of mana may count.
@@ -529,28 +556,55 @@ impl ManaShape<'_> {
         (matches!(self.produces, ManaProduced::Fixed { count: 1, .. })
             || matches!(self.produces, ManaProduced::AnyColor(count) if count.is_one()))
             && self.times.is_one()
+            && self.extra == 0
             && self.then.is_empty()
             && self.before.is_empty()
             && self.pays.is_empty()
             && self.mana.symbols().is_empty()
             && self.condition.is_none()
-            && !self.once
+            && self.limit.is_none()
             && self.picks.is_empty()
     }
 }
 
 /// Whether `effect` is one a mana ability may run after its mana: it asks nothing of anyone and touches the
 /// controller or the source alone ("deals 1 damage to you", "draw a card", "you lose 1 life", "put a charge counter on
-/// this artifact").
+/// this artifact"), changes the life of a group of players no one chooses ("each opponent gains 1 life"), changes the
+/// source without a choice or sets up a delayed trigger.
 fn needs_no_answer(effect: &Effect) -> bool {
     match effect {
-        Effect::Draw { who, .. } | Effect::LoseLife { who, .. } | Effect::GainLife { who, .. } => {
-            *who == Ref::You
+        Effect::Draw { who, .. } => *who == Ref::You,
+        Effect::LoseLife { who, .. } | Effect::GainLife { who, .. } => {
+            matches!(who, Ref::You | Ref::Opponents | Ref::EachPlayer)
         }
         Effect::DealDamage { source, to, .. } => {
             *to == Ref::You && source.as_ref().is_none_or(|source| *source == Ref::This)
         }
         Effect::PutCounters { on, .. } => *on == Ref::This,
+        // "This land doesn't untap during your next untap step": a change of the source that asks for no choice.
+        Effect::Continuous { affected, mods, .. } => {
+            *affected == Ref::This
+                && !mods.iter().any(|modification| {
+                    matches!(
+                        modification,
+                        Modification::AddProtectionFromChosenColor
+                            | Modification::AddProtectionFromChosenCardType
+                    )
+                })
+        }
+        // "Draw a card at the beginning of the next turn's upkeep": what it does waits for its own trigger.
+        Effect::DelayedTrigger { .. } => true,
+        // "If there are no depletion counters on this land, sacrifice it": a test of the state after the cost is paid.
+        Effect::If {
+            then, otherwise, ..
+        } => then.iter().chain(otherwise).all(needs_no_answer),
+        // The source alone is one permanent, so its sacrifice asks no choice.
+        Effect::Sacrifice {
+            who: Ref::You,
+            filter,
+            count,
+            bind: None,
+        } => *filter == Selector(vec![Pred::This]) && count.is_one(),
         _ => false,
     }
 }
@@ -563,23 +617,64 @@ fn pays_with_activation(item: &CostItem) -> bool {
         CostItem::PayLife(amount)
         | CostItem::Mill(amount)
         | CostItem::PayEnergy(amount)
-        | CostItem::RemoveCounters { count: amount, .. } => {
+        | CostItem::RemoveCounters { count: amount, .. }
+        | CostItem::PutCounters { count: amount, .. } => {
             matches!(amount, Amount::Fixed(number) if *number > 0)
         }
         _ => false,
     };
-    fixed || is_x_counters(item)
+    // "Exert this creature": the source does not untap during its controller's next untap step.
+    fixed || is_x_counters(item) || matches!(item, CostItem::Exert)
 }
 
-/// Whether `item` removes X counters from the source.
+/// Whether `item` removes X counters from the source or takes X permanents or cards.
 fn is_x_counters(item: &CostItem) -> bool {
     matches!(
         item,
         CostItem::RemoveCounters {
             count: Amount::X,
             ..
+        } | CostItem::TapPermanents {
+            count: Amount::X,
+            ..
+        } | CostItem::Sacrifice {
+            count: Amount::X,
+            ..
+        } | CostItem::ExileFromHand {
+            count: Amount::X,
+            ..
         }
     )
+}
+
+/// Whether one mana of a fixed type is added X times ("Remove any number of storage counters from this land: Add {C} for
+/// each storage counter removed this way"): X mana, as the X of the cost.
+fn r5g_x_times(produces: &ManaProduced<'_>, times: &Amount) -> bool {
+    *times == Amount::X && matches!(produces, ManaProduced::Fixed { count: 1, .. })
+}
+
+/// Whether the X of the cost is the X of the mana and nothing else binds it.
+fn x_binds(
+    pays: &[&CostItem],
+    picks: &[&CostItem],
+    produces: &ManaProduced<'_>,
+    times: &Amount,
+) -> bool {
+    let x_paid = pays
+        .iter()
+        .chain(picks)
+        .filter(|item| is_x_counters(item))
+        .count();
+    let x_added = usize::from(
+        matches!(
+            produces,
+            ManaProduced::AnyCombination {
+                count: Amount::X,
+                ..
+            } | ManaProduced::AnyColor(Amount::X)
+        ) || r5g_x_times(produces, times),
+    );
+    x_paid == x_added
 }
 
 /// Whether `item` is a part of a mana ability's cost that takes other permanents or cards of the payer, which the payment
@@ -590,7 +685,7 @@ fn picked_by_the_planner(item: &CostItem) -> bool {
         CostItem::TapPermanents { count, .. }
         | CostItem::Sacrifice { count, .. }
         | CostItem::ExileFromHand { count, .. } => {
-            matches!(count, Amount::Fixed(number) if *number > 0)
+            matches!(count, Amount::Fixed(number) if *number > 0) || matches!(count, Amount::X)
         }
         _ => false,
     }
@@ -599,12 +694,14 @@ fn picked_by_the_planner(item: &CostItem) -> bool {
 /// The shape of a mana ability the engine activates at priority, if `ability` has it.
 ///
 /// The first effect adds mana to the controller's pool and the rest each ask nothing; one effect of a kind.
+#[allow(clippy::too_many_lines)]
 pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     let Ability::Activated {
         cost,
         timing: Timing::Instant,
         condition,
         limit,
+        by: Activators::Controller,
         from: ZoneKind::Battlefield,
         targets,
         effects,
@@ -659,6 +756,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     if !lasts.is_step() {
         return None;
     }
+    let (times, extra, then) = r6e_x_plus(mana, times, then);
     let produces = ManaProduced::of(mana)?;
     // A combination keeps one source for each way to pick it, so it is added once and there are not too many ways.
     if let ManaProduced::AnyCombination { count, among } = &produces {
@@ -670,39 +768,81 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             return None;
         }
     }
-    // The X of the cost is the X of the mana and nothing else binds it.
-    let x_paid = pays.iter().filter(|item| is_x_counters(item)).count();
-    let x_added = usize::from(matches!(
-        produces,
-        ManaProduced::AnyCombination {
-            count: Amount::X,
-            ..
-        } | ManaProduced::AnyColor(Amount::X)
-    ));
-    if x_paid != x_added {
+    if !x_binds(&pays, &picks, &produces, times) {
         return None;
     }
+    // A cost of mana alone ends the loop of using it again: each use spends mana from the pool.
+    let paid_mana = cost_mana
+        .as_ref()
+        .is_some_and(|cost| !cost.symbols().is_empty());
     let distinct = c8_time_distinct(then);
     (targets.is_empty()
-        && (tap || sacrifice || !pays.is_empty() || !picks.is_empty() || limit.is_some())
+        && matches!(
+            limit,
+            None | Some(Limit::OncePerTurn | Limit::OncePerGame | Limit::TimesPerTurn(_))
+        )
+        && (tap
+            || sacrifice
+            || !pays.is_empty()
+            || !picks.is_empty()
+            || limit.is_some()
+            || paid_mana)
         && then.iter().all(needs_no_answer)
         && distinct
         && produces.each() > 0)
         .then_some(ManaShape {
             produces,
             times,
+            extra,
             tap,
             sacrifice,
             mana: cost_mana.unwrap_or_default(),
             pays,
             condition: condition.as_ref(),
-            once: *limit == Some(Limit::OncePerTurn),
+            limit: *limit,
             picks,
             before,
             then,
             only,
             when_spent: when_spent.as_deref(),
         })
+}
+
+/// "X plus one" of one mana: `times` of X plus a fixed number ("Add an amount of {C} equal to X plus one"), or one mana
+/// then the same mana X times ("Add {B}, then add an additional {B} for each charge counter removed this way"), as X and
+/// the fixed number, with the effects after them. Any other mana is `times` as written, none more.
+fn r6e_x_plus<'a>(
+    mana: &Produce,
+    times: &'a Amount,
+    then: &'a [Effect],
+) -> (&'a Amount, u32, &'a [Effect]) {
+    if let Amount::Sum(parts) = times
+        && let [x @ Amount::X, Amount::Fixed(more)] | [Amount::Fixed(more), x @ Amount::X] =
+            parts.as_slice()
+        && let Ok(more) = u32::try_from(*more)
+        && more > 0
+    {
+        return (x, more, then);
+    }
+    if times.is_one()
+        && let [
+            Effect::AddMana {
+                who: Ref::You,
+                mana: again,
+                times: x @ Amount::X,
+                only,
+                lasts,
+                when_spent: None,
+            },
+            rest @ ..,
+        ] = then
+        && again == mana
+        && only.is_empty()
+        && lasts.is_step()
+    {
+        return (x, 1, rest);
+    }
+    (times, 0, then)
 }
 
 /// The effects of a mana ability split before its mana: "Put a charge counter on this artifact. Add X mana ..., where
@@ -1320,9 +1460,9 @@ mod tests {
         r#"{"Activated":{"cost":"{1}","limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"OneOf":["Red","White"]}}}]}}"#,
         Some((ManaProduced::OneOf(&[ManaType::Red, ManaType::White]), false, false, 0))
     )]
-    #[case::a_limit_alone_has_no_cost_to_pay_for_it(
+    #[case::a_mana_cost_alone_is_paid_from_the_pool_each_use(
         r#"{"Activated":{"cost":"{1}","effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#,
-        None
+        Some((ManaProduced::Fixed { mana: ManaType::Red, count: 1 }, false, false, 0))
     )]
     #[case::the_plain_ability_has_the_shape_too(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
@@ -1532,7 +1672,7 @@ mod tests {
     )]
     #[case::a_mana_cost_without_a_tap(
         r#"{"Activated":{"cost":[{"Mana":"{1}"}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        Some("Ability.ManaAbility.Other")
+        Some("Ability.ManaAbility.Complex")
     )]
     #[case::once_each_turn_with_a_mana_cost(
         r#"{"Activated":{"cost":"{1}","limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
@@ -1568,6 +1708,50 @@ mod tests {
     )]
     #[case::exiling_an_uncounted_number_of_cards_from_the_hand(
         r#"{"Activated":{"cost":[{"ExileFromHand":{"filter":[],"count":{"Count":[]}}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::r6e_battery(
+        r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"count":"X","counter":"charge"}}],"effects":[{"AddMana":{"mana":{"Fixed":["Black"]}}},{"AddMana":{"mana":{"Fixed":["Black"]},"times":"X"}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::r6e_battery_of_two_types(
+        r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"count":"X","counter":"charge"}}],"effects":[{"AddMana":{"mana":{"Fixed":["Black"]}}},{"AddMana":{"mana":{"Fixed":["Red"]},"times":"X"}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::r6e_x_plus_one(
+        r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"count":"X","counter":"charge"}}],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]},"times":{"Sum":["X",1]}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::r6e_x_plus_one_of_any_color(
+        r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"count":"X","counter":"charge"}}],"effects":[{"AddMana":{"mana":{"AnyColor":1},"times":{"Sum":["X",1]}}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::r6e_depletion(
+        r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"counter":{"Other":"depletion"}}}],"effects":[{"AddMana":{"mana":{"Fixed":["Black","Black"]}}},{"If":{"condition":{"Compare":{"left":{"Count":["This",{"Not":{"HasCounter":{"Other":"depletion"}}}]},"op":"Ge","right":1}},"then":[{"Sacrifice":{"filter":["This"]}}]}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::r6e_sacrificing_a_chosen_permanent(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Black"]}}},{"If":{"condition":"YourTurn","then":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}]}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::e14a_a_counter_on_the_source(
+        r#"{"Activated":{"cost":[{"PutCounters":{"counter":{"Other":"-0/-1"}}}],"limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::e14a_exerting_the_source(
+        r#"{"Activated":{"cost":["Tap","Exert"],"effects":[{"AddMana":{"mana":{"AnyColor":2}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::e14a_three_times_each_turn(
+        r#"{"Activated":{"cost":"{1}","limit":{"TimesPerTurn":3},"effects":[{"AddMana":{"mana":{"OneOf":["Black","Red"]}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::e14a_once_each_game(
+        r#"{"Activated":{"cost":[{"Mana":"{G}"},"Tap"],"limit":"OncePerGame","effects":[{"AddMana":{"mana":{"AnyColor":3}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::e14a_a_discard_waits_for_a_choice(
+        r#"{"Activated":{"cost":[{"Discard":{}}],"effects":[{"AddMana":{"mana":{"Fixed":["Black"]}}}]}}"#,
         Some("Ability.ManaAbility.Other")
     )]
     #[case::not_a_mana_ability(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, None)]
@@ -1782,7 +1966,7 @@ mod tests {
 
     #[rstest]
     #[case::x_in_the_cost("{X}{G}", "Creature \u{2014} Elf", X_COST, "{X}")]
-    #[case::snow_in_the_cost("{1}{S}", "Creature \u{2014} Elf", "", "{S}")]
+    #[case::unknown_symbol_in_the_cost("{1}{Z}", "Creature \u{2014} Elf", "", "{Z}")]
     #[case::garbage_cost("1G", "Creature \u{2014} Elf", "", "the game cannot read it")]
     #[case::a_type_of_no_game_here("{G}", "Plane \u{2014} Dominaria", "", "Plane")]
     fn what_the_definition_cannot_hold_or_play_makes_the_card_manual(
@@ -1890,7 +2074,7 @@ mod tests {
                     0..5,
                 ),
                 x in 0usize..3,
-                unknown_symbol in prop::option::of(prop::sample::select(vec!["{S}", "{Z}", "{HW}"])),
+                unknown_symbol in prop::option::of(prop::sample::select(vec!["{Z}", "{HW}"])),
                 power in prop::sample::select(vec![None, Some("0"), Some("7"), Some("-1"), Some("*"), Some("1+*")]),
                 toughness in prop::sample::select(vec![None, Some("1"), Some("12"), Some("X")]),
                 type_word in prop::sample::select(vec!["Creature", "Artifact", "Land", "Plane", "Scheme"]),

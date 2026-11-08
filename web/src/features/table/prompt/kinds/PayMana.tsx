@@ -300,6 +300,8 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     canAdd,
     auto: options.auto_available,
     cancel: options.can_cancel,
+    attack: options.attack === true,
+    block: options.block === true,
     note,
     life: hasLife ? { paid: paidLife, after: options.life - paidLife, may: lifeCanPay } : undefined,
   })
@@ -387,7 +389,18 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
         </Button>
       ) : null}
       {options.can_cancel ? (
-        <UndoButton zone={spellZone} onUndo={() => void answer({ PayMana: 'Cancel' })} />
+        options.attack === true || options.block === true ? (
+          <Button
+            className="h-10 px-4"
+            variant="outline"
+            data-slot="pay-cancel"
+            onClick={() => answer({ PayMana: 'Cancel' })}
+          >
+            {options.attack === true ? 'Back to attackers' : 'Back to blockers'}
+          </Button>
+        ) : (
+          <UndoButton zone={spellZone} onUndo={() => void answer({ PayMana: 'Cancel' })} />
+        )
       ) : null}
     </PromptLayout>
   )

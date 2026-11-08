@@ -1,0 +1,67 @@
+{
+  "oracle_id": "07c82cde-f00d-4454-9df4-9286e344c9bb",
+  "name": "Muxus, Goblin Grandee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Muxus, Goblin Grandee",
+      "oracle_fingerprint": "d5914f8a6ec5e70b6127f3d1a0fbb6dc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      { "Subtype": "Goblin" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 5 } }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [{ "Subtype": "Goblin" }, "Other", { "ControlledBy": "You" }]
+                        },
+                        "toughness": {
+                          "Count": [{ "Subtype": "Goblin" }, "Other", { "ControlledBy": "You" }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

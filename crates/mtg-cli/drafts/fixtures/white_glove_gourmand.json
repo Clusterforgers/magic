@@ -1,0 +1,167 @@
+{
+  "object": "card",
+  "id": "c5bf1f6c-4653-4734-9bd7-af689a1b679d",
+  "oracle_id": "3771c0d7-cea3-4c03-933d-f236f32ef2db",
+  "multiverse_ids": [
+    652211
+  ],
+  "mtgo_id": 132497,
+  "tcgplayer_id": 539995,
+  "cardmarket_id": 758551,
+  "name": "White Glove Gourmand",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/c5bf1f6c-4653-4734-9bd7-af689a1b679d",
+  "scryfall_uri": "https://scryfall.com/card/pip/124/white-glove-gourmand?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:02Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/5/c5bf1f6c-4653-4734-9bd7-af689a1b679d.jpg?1783912382",
+    "normal": "https://cards.scryfall.io/normal/front/c/5/c5bf1f6c-4653-4734-9bd7-af689a1b679d.jpg?1783912382",
+    "large": "https://cards.scryfall.io/large/front/c/5/c5bf1f6c-4653-4734-9bd7-af689a1b679d.jpg?1783912382",
+    "png": "https://cards.scryfall.io/png/front/c/5/c5bf1f6c-4653-4734-9bd7-af689a1b679d.png?1783912382",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/5/c5bf1f6c-4653-4734-9bd7-af689a1b679d.jpg?1783912382",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/5/c5bf1f6c-4653-4734-9bd7-af689a1b679d.jpg?1783912382",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/5/c5bf1f6c-4653-4734-9bd7-af689a1b679d.webp?1783912382",
+    "grid": "https://cards.scryfall.io/grid/front/c/5/c5bf1f6c-4653-4734-9bd7-af689a1b679d.webp?1783912382",
+    "display": "https://cards.scryfall.io/display/front/c/5/c5bf1f6c-4653-4734-9bd7-af689a1b679d.webp?1783912382",
+    "art": "https://cards.scryfall.io/art/front/c/5/c5bf1f6c-4653-4734-9bd7-af689a1b679d.webp?1783912382",
+    "crop": "https://cards.scryfall.io/crop/front/c/5/c5bf1f6c-4653-4734-9bd7-af689a1b679d.webp?1783912382",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/5/c5bf1f6c-4653-4734-9bd7-af689a1b679d.jpg?1783912382"
+  },
+  "mana_cost": "{2}{W}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Noble",
+  "oracle_text": "When this creature enters, create two 1/1 white Human Soldier creature tokens.\nAt the beginning of your end step, if another Human died under your control this turn, create a Food token.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Food"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "4a015ab6-4eb3-42e3-bb19-a0668e9f7ff0",
+      "component": "combo_piece",
+      "name": "White Glove Gourmand",
+      "type_line": "Creature — Human Noble",
+      "uri": "https://api.scryfall.com/cards/4a015ab6-4eb3-42e3-bb19-a0668e9f7ff0"
+    },
+    {
+      "object": "related_card",
+      "id": "737741e7-b2b2-4c41-ab7c-4eeaf9f37b71",
+      "component": "token",
+      "name": "Human Soldier",
+      "type_line": "Token Creature — Human Soldier",
+      "uri": "https://api.scryfall.com/cards/737741e7-b2b2-4c41-ab7c-4eeaf9f37b71"
+    },
+    {
+      "object": "related_card",
+      "id": "e5d0801a-9565-419f-bb0b-23547c9dd59d",
+      "component": "token",
+      "name": "Food",
+      "type_line": "Token Artifact — Food",
+      "uri": "https://api.scryfall.com/cards/e5d0801a-9565-419f-bb0b-23547c9dd59d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c5bf1f6c-4653-4734-9bd7-af689a1b679d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3771c0d7-cea3-4c03-933d-f236f32ef2db&unique=prints",
+  "collector_number": "124",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Here's to us! It's time we move beyond beef!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Wonchun Choi",
+  "artist_ids": [
+    "fe886f3b-0cbe-4fed-81e6-f720ceb91d17"
+  ],
+  "illustration_id": "a8d05816-a98d-4a09-8159-0e256485ae1e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14175,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.40",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.60",
+    "tix": "0.75"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652211&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWhite%2BGlove%2BGourmand",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWhite%2BGlove%2BGourmand",
+    "edhrec": "https://edhrec.com/route/?cc=White+Glove+Gourmand"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F539995%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=758551&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132497?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

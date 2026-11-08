@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4d0fa514-87fc-46ff-bf49-4cd332396978",
+  "name": "Scythe Tiger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scythe Tiger",
+      "oracle_fingerprint": "6254ec78c1752f0d7e8e9af872b9bf89",
+      "abilities": [
+        { "Keyword": "Shroud" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

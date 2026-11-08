@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b0f7c2a9-914a-48c1-871c-6f72946d61d8",
+  "name": "Reaper's Scythe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reaper's Scythe",
+      "oracle_fingerprint": "af08faa85fb461c3be81800ac3f0cb5c",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "soul" },
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "EachPlayer",
+                        "test": {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "soul" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "soul" } } }
+                }
+              },
+              { "AddSubtype": "Assassin" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "45f3b9f2-3fce-4f91-bcbd-de069e5f9e4c",
+  "name": "Daughter of Autumn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daughter of Autumn",
+      "oracle_fingerprint": "4e2a8978a3fa1ca77c418ca2dfd17e0b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Color": "White" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "RedirectUpTo": { "most": 1, "to": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

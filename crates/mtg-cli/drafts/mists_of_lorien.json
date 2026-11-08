@@ -1,0 +1,54 @@
+{
+  "oracle_id": "65259ba4-956d-46a3-abd9-791d02015b41",
+  "name": "Mists of Lórien",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mists of Lórien",
+      "oracle_fingerprint": "3604427630a5070494d8389116c64fbf",
+      "abilities": [
+        { "Keyword": { "Replicate": "{U}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Not": { "Type": "Land" } } },
+                                { "Not": { "Not": { "Is": { "Target": 0 } } } },
+                                {
+                                  "Not": {
+                                    "Compare": {
+                                      "stat": "ManaValue",
+                                      "op": "Eq",
+                                      "to": {
+                                        "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" }
+                                      }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

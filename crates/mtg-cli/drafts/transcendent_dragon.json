@@ -1,0 +1,50 @@
+{
+  "oracle_id": "e83a629e-2d74-48e2-ad4d-f390067cc51a",
+  "name": "Transcendent Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Transcendent Dragon",
+      "oracle_fingerprint": "f0f3e706b1bbcf184d0cf176a857b4e1",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "WasCast": { "by": "You" } }, "This"],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 }, "as": "countered" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Is": { "Bound": "countered" } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked2" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

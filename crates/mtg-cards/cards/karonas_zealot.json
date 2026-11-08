@@ -1,0 +1,29 @@
+{
+  "oracle_id": "dff66bcf-e126-49d2-b67e-ea3b0a38d390",
+  "name": "Karona's Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karona's Zealot",
+      "oracle_fingerprint": "569931e22a6bdb8100cf12cd608e5517",
+      "abilities": [
+        { "Keyword": { "Morph": "{3}{W}{W}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "Redirect": { "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

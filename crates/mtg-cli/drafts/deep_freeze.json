@@ -1,0 +1,26 @@
+{
+  "oracle_id": "648aead4-dc0b-47bc-911c-8dcd2cfd32d3",
+  "name": "Deep Freeze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deep Freeze",
+      "oracle_fingerprint": "588cfc27e604603ec4a2658700ad1ca8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 0, "toughness": 4 } },
+              { "AddKeyword": "Defender" },
+              "LoseAbilities",
+              { "AddColors": ["Blue"] },
+              { "AddSubtype": "Wall" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

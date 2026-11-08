@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7b389f2b-fddc-46fb-85d5-4470565323f3",
+  "name": "Form of the Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Form of the Dragon",
+      "oracle_fingerprint": "d87998ad6d2cf71bb0f53b1ab45bac26",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "SetLife": { "amount": 5 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+            "mods": [{ "CantAttackYou": "Player" }]
+          }
+        }
+      ]
+    }
+  ]
+}

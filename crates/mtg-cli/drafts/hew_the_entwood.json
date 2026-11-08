@@ -1,0 +1,94 @@
+{
+  "oracle_id": "8818bbf8-58ec-4070-a81a-c7ce248057ab",
+  "name": "Hew the Entwood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hew the Entwood",
+      "oracle_fingerprint": "85be6a03517736b183fb1ef533a7ad18",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [{ "Type": "Land" }],
+                  "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "sacrificed"
+                }
+              },
+              { "LookAtTop": { "count": { "Bound": "sacrificed~moved" }, "as": "top2" } },
+              { "Reveal": { "what": { "Bound": "top2" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Land" }, { "Type": "Artifact" }] },
+                      { "Is": { "Bound": "top2" } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Is": { "Bound": "top2" } },
+                        {
+                          "AnyOf": [
+                            { "In": "Battlefield" },
+                            { "In": "Hand" },
+                            { "In": "Library" },
+                            { "In": "Graveyard" },
+                            { "In": "Exile" },
+                            { "In": "Stack" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "as": "card3"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "Is": { "Bound": "card3" } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "Is": { "Bound": "card3" } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "top2" } },
+                      { "Not": { "Is": { "Bound": "card3" } } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "oracle_id": "ff35e480-8ea2-47bb-bb2a-24cefe9c2139",
+  "name": "Ronom Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ronom Serpent",
+      "oracle_fingerprint": "a82fc9c3f4136c2b216f651b2812bc12",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": {
+                          "Count": [
+                            { "Type": "Land" },
+                            { "Supertype": "Snow" },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Type": "Land" },
+                        { "Supertype": "Snow" },
+                        { "ControlledBy": "You" }
+                      ]
+                    },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "fb29737c-2dfa-4139-988b-29dc8b829c08",
+  "name": "Shessra, Death's Whisper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shessra, Death's Whisper",
+      "oracle_fingerprint": "8ad14053bb6bf08fd63eacbec4f90727",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Pay": { "cost": [{ "PayLife": 2 }], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

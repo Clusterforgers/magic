@@ -1,0 +1,47 @@
+{
+  "oracle_id": "c01b221f-3993-43ab-8cde-b42fb344e2a7",
+  "name": "Sunderflock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunderflock",
+      "oracle_fingerprint": "75dbfc1c3ef32cacd54b4af45401cf43",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Greatest": {
+                "of": [{ "Subtype": "Elemental" }, { "ControlledBy": "You" }],
+                "stat": "ManaValue"
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Elemental" } }]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

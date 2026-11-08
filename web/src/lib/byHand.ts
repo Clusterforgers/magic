@@ -13,9 +13,9 @@ export const PARTLY_BY_HAND = 'partly played by hand'
 /** What is said of a card whose draft a player read and found correct: the game runs it, counted apart from Verified. */
 export const ON_A_READ = "runs on a player's read"
 
-/** Whether the game runs every rule of a card, so nothing is played by hand: Verified, or Read by a player. */
-export const runsWhole = (support: Support): support is 'verified' | 'read' =>
-  support === 'verified' || support === 'read'
+/** Whether the game runs every rule of a card, so nothing is played by hand: Verified, Read by a player, or translated from Forge. */
+export const runsWhole = (support: Support): support is 'verified' | 'read' | 'forge' =>
+  support === 'verified' || support === 'read' || support === 'forge'
 
 /** Copies the game does not run whole (everything but Verified, Read and Unplayable): the partial, manual and stale ones. */
 export const byHandCopies = (counts: Counts): number => counts.partial + counts.manual + counts.stale
@@ -25,3 +25,16 @@ export function cardsByHand(count: number): string {
   if (count === 0) return `no cards ${BY_HAND}`
   return `${count} ${count === 1 ? 'card' : 'cards'} ${BY_HAND}`
 }
+
+/** Lines to do by hand over the copies of the partly automatic cards: one per distinct clause. */
+export function linesByHand(
+  cards: readonly { support: Support; count: number; reasons: readonly string[] }[],
+): number {
+  return cards.reduce(
+    (sum, card) => (card.support === 'partial' ? sum + card.count * new Set(card.reasons).size : sum),
+    0,
+  )
+}
+
+/** "1 line by hand", "3 lines by hand". */
+export const linesText = (count: number): string => `${count} ${count === 1 ? 'line' : 'lines'} by hand`

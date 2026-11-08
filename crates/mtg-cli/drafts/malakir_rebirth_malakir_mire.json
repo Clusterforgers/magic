@@ -1,0 +1,63 @@
+{
+  "oracle_id": "a731e87b-8d99-4b64-8ee3-8e540d652366",
+  "name": "Malakir Rebirth // Malakir Mire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malakir Rebirth",
+      "oracle_fingerprint": "325ee27ff80eb0083751b9c68aff46d4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "LoseLife": { "amount": 2 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            {
+                              "Move": {
+                                "what": "This",
+                                "to": { "Battlefield": { "tapped": true } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Malakir Mire",
+      "oracle_fingerprint": "21b302bea123539cae84880aa0174cb9",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

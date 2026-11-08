@@ -4,6 +4,7 @@ use mtg_cards::effect::Effect;
 use mtg_cards::modify::Duration;
 use mtg_cards::refs::Ref;
 
+use super::moved_as::count_entry;
 use super::wrong_effect;
 use crate::choose::Target;
 use crate::events::{Event, ZoneCause};
@@ -39,7 +40,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             if !crate::exile_return::holds(state, cx.scope.source) {
                 return Ok(Run::Done {
                     events: Vec::new(),
-                    bound: bind.iter().map(|name| (name.clone(), Vec::new())).collect(),
+                    bound: bind
+                        .iter()
+                        .flat_map(|name| [(name.clone(), Vec::new()), count_entry(name, 0)])
+                        .collect(),
                     snapshots: Vec::new(),
                     next: Next::Sibling,
                 });
@@ -56,7 +60,25 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = Vec::new();
     let mut snapshots = Vec::new();
     let mut exiled = Vec::new();
-    for object in cx.scope.live_objects(what)? {
+    let mut named = cx.scope.live_objects(what)?;
+    // "Exile that card" / "exile ~" after it died: the card it became in the graveyard, one zone change on (CR 400.7), as
+    // `Move` finds it.
+    if matches!(what, Ref::This) && cx.scope.cause.is_some() {
+        for reference in cx.scope.objects(what)? {
+            if let Some(card) = state.object(reference.id).filter(|card| {
+                card.counter() == reference.counter + 1 && matches!(card.zone(), Zone::Graveyard(_))
+            }) && !named.iter().any(|seen| seen.id() == card.id())
+            {
+                named.push(card);
+            }
+        }
+    }
+    for card in cx.scope.followed_cards(what) {
+        if !named.iter().any(|seen| seen.id() == card.id()) {
+            named.push(card);
+        }
+    }
+    for object in named {
         // A spell exiles itself only by name ("Exile ~."); a group that reaches it by its zone leaves it be.
         let resolving_spell = object.zone() == Zone::Stack
             && object.id() == cx.resolving.object()
@@ -85,7 +107,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         events,
         bound: bind
             .iter()
-            .map(|name| (name.clone(), exiled.clone()))
+            .flat_map(|name| {
+                [
+                    (name.clone(), exiled.clone()),
+                    count_entry(name, exiled.len()),
+                ]
+            })
             .collect(),
         snapshots,
         next: Next::Sibling,
@@ -135,6 +162,7 @@ mod tests {
                     timing: mtg_cards::ability::Timing::Instant,
                     condition: None,
                     limit: None,
+                    by: mtg_cards::ability::Activators::Controller,
                     from: mtg_cards::refs::ZoneKind::Battlefield,
                     targets: Vec::new(),
                     effects: Vec::new(),
@@ -531,8 +559,9 @@ mod tests {
                 })
             })
             .collect();
-        // The name is bound even when nothing was exiled, so a later step finds it.
-        assert_eq!(bound, [("gone".to_owned(), expected)]);
+        // The name is bound even when nothing was exiled, so a later step finds it, and the number exiled is kept with it.
+        let kept = super::count_entry("gone", names.len());
+        assert_eq!(bound, [("gone".to_owned(), expected), kept]);
     }
 
     #[test]

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "42e4d4d8-e4e0-4cf8-a6d0-887a17513280",
+  "name": "Reservoir Kraken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reservoir Kraken",
+      "oracle_fingerprint": "06bbf1b5eb87c3f36a773ce9a095acd8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Untapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Opponents",
+                  "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+                  "paid": [
+                    { "Tap": { "what": "This" } },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Fish",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Fish"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [
+                              { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

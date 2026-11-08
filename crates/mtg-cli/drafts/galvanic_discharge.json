@@ -1,0 +1,44 @@
+{
+  "oracle_id": "ef0f06f1-3991-4897-bf62-d4cab7ec79a0",
+  "name": "Galvanic Discharge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galvanic Discharge",
+      "oracle_fingerprint": "f05f431f47f8bdae881695dc2fbc80c6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 3 } },
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [0, { "Counters": { "on": "You", "counter": { "Other": "energy" } } }]
+                  },
+                  "as": "number"
+                }
+              },
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 1 }],
+                  "times": { "ChosenAs": "number" },
+                  "paid": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": { "ChosenAs": "number" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

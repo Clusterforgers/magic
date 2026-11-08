@@ -1,0 +1,42 @@
+{
+  "oracle_id": "eb9c9a34-88a8-4afe-a053-806f6b29834f",
+  "name": "Memory Jar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memory Jar",
+      "oracle_fingerprint": "0067cf31f0d81550039068d90a4e62b1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "ExileHidden": {
+                  "what": { "Each": [{ "In": "Hand" }] },
+                  "sealed": true,
+                  "as": "exiled"
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Discard": {
+                        "who": "EachPlayer",
+                        "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "EachPlayer" }] }
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "exiled" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "50a1c14a-003f-424b-bb8e-2e2d51465a90",
+  "name": "Horn of Deafening",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horn of Deafening",
+      "oracle_fingerprint": "52d83d7fa290e31ba3d88a89a87fde7c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

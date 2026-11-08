@@ -1,4 +1,4 @@
-// Goal: which cards the Priority offer lets the viewer activate an ability of, and how each play is worded: only the viewer's own permanents and cards of its own hand, graveyard, exile and command zone, never an opponent's card or a mana ability, none for a spectator, and the plays of a card in the order land or spell, ability, mana; and the notes that carry the abilities to the card's name and preview, laid over the hand's reasons.
+// Goal: which cards the Priority offer lets the viewer activate an ability of, and how each play is worded: only the viewer's own permanents and cards of its own hand, graveyard, exile and command zone, never an opponent's card or a mana ability, none for a spectator, and the plays of a card in the order land or spell, ability, mana; and the notes that carry the abilities to the card's name and preview, laid over the hand's reasons; an effect its controller may end by paying is a play on the permanent it changes.
 import { describe, expect, it } from 'vitest'
 import type {
   AbilityRef,
@@ -343,6 +343,7 @@ describe('special actions are offered as plays', () => {
   const cases: [string, Partial<PriorityOptions>, Zone, PriorityAction][] = [
     ['suspend', { suspendable: [10] }, { Hand: ME }, { Suspend: 10 }],
     ['foretell', { foretellable: [10] }, { Hand: ME }, { Foretell: 10 }],
+    ['plot', { plottable: [10] }, { Hand: ME }, { Plot: 10 }],
     ['turn face up', { turnable: [10] }, 'Battlefield', { TurnFaceUp: 10 }],
     [
       'cast prepared',
@@ -361,5 +362,25 @@ describe('special actions are offered as plays', () => {
     const over = { turnable: [10] }
     expect(abilityPlays(options([], over), table(placed(10, 'Battlefield', THEM)), ME).size).toBe(0)
     expect(abilityPlays(options([], over), table(placed(10, 'Battlefield', ME)), null).size).toBe(0)
+  })
+})
+
+describe('an effect the viewer may end by paying is a play on the permanent it changes', () => {
+  const ending: Partial<PriorityOptions> = {
+    endable: [{ effect: 7, object: 10, cost: [{ Colored: 'White' }] }],
+  }
+
+  it('is worded with its price and answers with the effect', () => {
+    const found = abilityPlays(options([], ending), table(placed(10, 'Battlefield', ME)), ME)
+    expect(found.get(10)?.map((play) => [play.label, play.action])).toEqual([
+      ['Pay {W}: end the effect', { EndEffect: 7 }],
+    ])
+  })
+
+  it.each([
+    ['a permanent that left the battlefield', placed(10, { Graveyard: ME }, ME), ME],
+    ['a spectator seat', placed(10, 'Battlefield', ME), null],
+  ])('is not offered for %s', (_name, object, seat) => {
+    expect(abilityPlays(options([], ending), table(object), seat).size).toBe(0)
   })
 })

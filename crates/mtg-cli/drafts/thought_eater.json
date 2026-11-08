@@ -1,0 +1,15 @@
+{
+  "oracle_id": "88e18dc9-8b11-4369-9860-a687925cdcb4",
+  "name": "Thought Eater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Eater",
+      "oracle_fingerprint": "26b9d50794684f832e616ee3b0f0e7e5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "HandSizeChange": { "who": "You", "by": -3 } } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ca187570-3634-4296-92b2-1fcd99d150e3",
+  "name": "The Beast, Deathless Prince",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Beast, Deathless Prince",
+      "oracle_fingerprint": "5b088429078ee003b2fdeb2f71213423",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }, { "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "stun" }, "count": 6, "tapped": true } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 256, "end": 342 }
+          }
+        }
+      ]
+    }
+  ]
+}

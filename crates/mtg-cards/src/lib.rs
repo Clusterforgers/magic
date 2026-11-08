@@ -5,6 +5,7 @@
 //! files in `cards/` hold only rules, keyed by oracle id.
 
 pub mod ability;
+pub mod alt_riders;
 pub mod assemble;
 pub mod builtin;
 pub mod card;
@@ -14,6 +15,7 @@ pub mod cost;
 pub mod coverage;
 pub mod deck;
 pub mod definition;
+pub mod did;
 pub mod dk1c5_rooms;
 pub mod draft;
 pub mod effect;
@@ -21,6 +23,7 @@ pub mod generated;
 pub(crate) mod identity;
 pub mod keyword;
 pub mod load;
+pub mod macros;
 pub mod mana;
 pub mod mana_trigger;
 pub mod modify;

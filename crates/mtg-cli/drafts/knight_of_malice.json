@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b89d912a-65a0-4bc9-9e1d-ff8317458a72",
+  "name": "Knight of Malice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of Malice",
+      "oracle_fingerprint": "fd5ed22b646ca3f539432ca87034e3db",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": { "HexproofFrom": [{ "Color": "White" }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+            "condition": {
+              "Compare": { "left": { "Count": [{ "Color": "White" }] }, "op": "Ge", "right": 1 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

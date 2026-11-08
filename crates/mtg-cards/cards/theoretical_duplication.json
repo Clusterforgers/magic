@@ -1,0 +1,36 @@
+{
+  "oracle_id": "efe7e212-5c91-42f0-9dff-591131b4f6d8",
+  "name": "Theoretical Duplication",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Theoretical Duplication",
+      "oracle_fingerprint": "72245ec5ac39ec88cc5a8e2cfa4afa73",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [
+                        { "Type": "Creature" },
+                        { "Not": "Token" },
+                        { "ControlledBy": "Opponents" }
+                      ],
+                      "to": "Battlefield"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

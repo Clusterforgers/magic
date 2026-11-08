@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "b56080b1-f174-4bb2-85af-7a01bd2c77e6",
+  "oracle_id": "0988d2cd-4e1d-47c6-b0db-0ff0335b12e6",
+  "multiverse_ids": [],
+  "name": "Xho Cai, Flickering Talon",
+  "lang": "en",
+  "released_at": "2025-04-29",
+  "uri": "https://api.scryfall.com/cards/b56080b1-f174-4bb2-85af-7a01bd2c77e6",
+  "scryfall_uri": "https://scryfall.com/card/ytdm/28/xho-cai-flickering-talon?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:38:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/5/b56080b1-f174-4bb2-85af-7a01bd2c77e6.jpg?1783906733",
+    "normal": "https://cards.scryfall.io/normal/front/b/5/b56080b1-f174-4bb2-85af-7a01bd2c77e6.jpg?1783906733",
+    "large": "https://cards.scryfall.io/large/front/b/5/b56080b1-f174-4bb2-85af-7a01bd2c77e6.jpg?1783906733",
+    "png": "https://cards.scryfall.io/png/front/b/5/b56080b1-f174-4bb2-85af-7a01bd2c77e6.png?1783906733",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/5/b56080b1-f174-4bb2-85af-7a01bd2c77e6.jpg?1783906733",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/5/b56080b1-f174-4bb2-85af-7a01bd2c77e6.jpg?1783906733",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/5/b56080b1-f174-4bb2-85af-7a01bd2c77e6.webp?1783906733",
+    "grid": "https://cards.scryfall.io/grid/front/b/5/b56080b1-f174-4bb2-85af-7a01bd2c77e6.webp?1783906733",
+    "display": "https://cards.scryfall.io/display/front/b/5/b56080b1-f174-4bb2-85af-7a01bd2c77e6.webp?1783906733",
+    "art": "https://cards.scryfall.io/art/front/b/5/b56080b1-f174-4bb2-85af-7a01bd2c77e6.webp?1783906733",
+    "crop": "https://cards.scryfall.io/crop/front/b/5/b56080b1-f174-4bb2-85af-7a01bd2c77e6.webp?1783906733",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/5/b56080b1-f174-4bb2-85af-7a01bd2c77e6.jpg?1783906733"
+  },
+  "mana_cost": "{U}{R}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Bird Monk",
+  "oracle_text": "Flying, Vigilance, Haste\nWhen Xho Cai enters, the next noncreature spell you cast costs {1} less to cast.\nFlurry — Whenever you cast your second spell each turn, exile up to one target creature you control, then return it to the battlefield under its owner's control.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Flurry",
+    "Vigilance",
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f7d41f5e-b377-4b58-b13e-9b07dc39668c",
+  "set": "ytdm",
+  "set_name": "Alchemy: Tarkir",
+  "set_type": "alchemy",
+  "set_uri": "https://api.scryfall.com/sets/f7d41f5e-b377-4b58-b13e-9b07dc39668c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aytdm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ytdm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b56080b1-f174-4bb2-85af-7a01bd2c77e6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0988d2cd-4e1d-47c6-b0db-0ff0335b12e6&unique=prints",
+  "collector_number": "28",
+  "digital": true,
+  "rarity": "mythic",
+  "watermark": "jeskai",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jake Murray",
+  "artist_ids": [
+    "be53e4e1-ab31-494a-b154-e00ee97eb463"
+  ],
+  "illustration_id": "c0eca7ab-215c-4b3a-ba50-b5bd4cd17e43",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "arena",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DXho%2BCai%252C%2BFlickering%2BTalon",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DXho%2BCai%252C%2BFlickering%2BTalon",
+    "edhrec": "https://edhrec.com/route/?cc=Xho+Cai%2C+Flickering+Talon"
+  }
+}

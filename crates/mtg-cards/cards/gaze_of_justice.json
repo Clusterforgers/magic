@@ -1,0 +1,33 @@
+{
+  "oracle_id": "07c7e4d4-6452-437b-9f17-b0ec1fd9f702",
+  "name": "Gaze of Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaze of Justice",
+      "oracle_fingerprint": "1a16f0b6f00b078421ba76923c2b7e02",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "Color": "White" }],
+                  "count": 3
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{W}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8a7dbf4e-f121-40c5-a688-3398e04c1311",
+  "name": "Enraged Huorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enraged Huorn",
+      "oracle_fingerprint": "2c5db47037a98c6567c590e3fd9c87a0",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "RingTempts": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

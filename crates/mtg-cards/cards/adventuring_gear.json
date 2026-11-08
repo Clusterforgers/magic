@@ -1,0 +1,33 @@
+{
+  "oracle_id": "17042684-7af4-43a6-88c7-885032cfb27c",
+  "name": "Adventuring Gear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adventuring Gear",
+      "oracle_fingerprint": "c8c01cbcadf2590bc8e6b05519232f4f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

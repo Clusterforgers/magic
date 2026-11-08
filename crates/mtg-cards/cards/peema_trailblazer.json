@@ -1,0 +1,47 @@
+{
+  "oracle_id": "88600bd4-4dcc-4788-bba4-78b6cf5ad8f8",
+  "name": "Peema Trailblazer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peema Trailblazer",
+      "oracle_fingerprint": "4dfd216d805666c9a30c9a7b42187c0b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": { "Other": "energy" },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 6 }],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+              {
+                "Draw": {
+                  "count": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "797aed94-c409-4441-88c1-baba7e212696",
+  "name": "Hollow Specter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hollow Specter",
+      "oracle_fingerprint": "4ee12ba0234d5a54465d528666debeb3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}",
+                  "paid": [
+                    {
+                      "Choose": {
+                        "who": "Triggering",
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                        "count": { "min": "X", "max": "X" },
+                        "as": "shown"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "shown" } } },
+                    {
+                      "Discard": {
+                        "who": "Triggering",
+                        "filter": [{ "Is": { "Bound": "shown" } }],
+                        "by": "You"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

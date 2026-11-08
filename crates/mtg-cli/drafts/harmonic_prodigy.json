@@ -12,14 +12,17 @@
           "Rule": {
             "rule": {
               "TriggerAgain": {
-                "cause": {
-                  "Tapped": {
-                    "what": [
-                      { "ControlledBy": "You" },
-                      { "AnyOf": [{ "Subtype": "Wizard" }, { "Subtype": "Shaman" }] }
+                "source": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Shaman" },
+                      {
+                        "Not": { "AnyOf": [{ "Not": { "Subtype": "Wizard" } }, { "Not": "Other" }] }
+                      }
                     ]
-                  }
-                }
+                  },
+                  { "ControlledBy": "You" }
+                ]
               }
             }
           }

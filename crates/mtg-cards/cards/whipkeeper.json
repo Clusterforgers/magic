@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8c5a6c0e-53a3-4fc4-bb6e-c52f4d0e9490",
+  "name": "Whipkeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whipkeeper",
+      "oracle_fingerprint": "5fd49c51a14e8c0fde13bb9297e98c94",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Tallied": { "who": { "Target": 0 }, "what": "DamageDealtTo" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

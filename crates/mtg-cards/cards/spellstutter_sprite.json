@@ -1,0 +1,37 @@
+{
+  "oracle_id": "32e60fb4-e841-4f82-9c83-5e63766e8e6f",
+  "name": "Spellstutter Sprite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spellstutter Sprite",
+      "oracle_fingerprint": "95cd69d09551a138b5931079e36aea2c",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Count": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

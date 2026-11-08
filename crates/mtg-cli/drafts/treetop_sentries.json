@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5bf5739a-6322-4e6e-b41e-e7bdbb11b1ce",
+  "name": "Treetop Sentries",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treetop Sentries",
+      "oracle_fingerprint": "e1c05f97537327a51ebee3738e5fe43f",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Pay": { "cost": ["Forage"], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4029e884-8154-42b3-ae29-3cb98374a294",
+  "name": "Messenger Hawk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Messenger Hawk",
+      "oracle_fingerprint": "ad576cd7c004cc01b3455ffd237509a1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

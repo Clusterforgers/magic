@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d0901053-6de0-46d0-9ee3-8d40510236c1",
+  "name": "Sword of Feast and Famine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of Feast and Famine",
+      "oracle_fingerprint": "13e392b9531ed5b304d1ef9383b869ab",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": { "Protection": [{ "Color": "Black" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "Green" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Discard": { "who": "Triggering" } },
+              { "Untap": { "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] } } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

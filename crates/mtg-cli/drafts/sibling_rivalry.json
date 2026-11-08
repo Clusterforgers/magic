@@ -1,0 +1,42 @@
+{
+  "oracle_id": "7fa1430f-cd2e-4071-a161-e32a61e33714",
+  "name": "Sibling Rivalry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sibling Rivalry",
+      "oracle_fingerprint": "f21ab9084979a92f8928a390853a0574",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "CreateToken": { "token": { "Named": "powerstone" }, "tapped": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

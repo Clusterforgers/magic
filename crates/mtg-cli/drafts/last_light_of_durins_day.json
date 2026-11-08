@@ -1,0 +1,78 @@
+{
+  "oracle_id": "539583f4-21c8-4b61-a2c5-f612fadc3ffa",
+  "name": "Last Light of Durin's Day",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Last Light of Durin's Day",
+      "oracle_fingerprint": "c1d7e958ffa2d6eedaf9740898935d6d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "quest" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          "This",
+                          { "CounterCount": { "kind": { "Other": "quest" }, "op": "Ge", "to": 6 } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"], "as": "sacrificed" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Search": {
+                              "also": ["Hand"],
+                              "filter": [{ "Subtype": "Dragon" }, { "OwnedBy": "You" }],
+                              "as": "found2"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+                          {
+                            "If": {
+                              "condition": { "Searched": { "zone": "Library" } },
+                              "then": [{ "Shuffle": {} }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Mountain" }], "cost": "{2}" } } }
+      ]
+    }
+  ]
+}

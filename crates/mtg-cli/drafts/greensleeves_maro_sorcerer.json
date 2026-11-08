@@ -1,0 +1,55 @@
+{
+  "oracle_id": "2ac2d483-2d2a-4912-8db4-04a5a2080831",
+  "name": "Greensleeves, Maro-Sorcerer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greensleeves, Maro-Sorcerer",
+      "oracle_fingerprint": "5c344d6d21311303033cd98dfad3d0cd",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Type": "Planeswalker" }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Badger",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Badger"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Protection": [{ "Subtype": "Wizard" }] } }
+      ]
+    }
+  ]
+}

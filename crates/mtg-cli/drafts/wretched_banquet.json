@@ -1,0 +1,36 @@
+{
+  "oracle_id": "dafd4385-e64f-4a4a-93c4-b0ac6bd30d41",
+  "name": "Wretched Banquet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wretched Banquet",
+      "oracle_fingerprint": "e2b377b709b1d405052a1dfb1799a74f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        { "Type": "Creature" },
+                        { "LeastAmong": { "stat": "Power", "group": [{ "Type": "Creature" }] } }
+                      ],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

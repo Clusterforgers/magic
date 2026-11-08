@@ -1,0 +1,47 @@
+{
+  "oracle_id": "07db0374-3297-49c3-886d-a6bb42f7bb18",
+  "name": "Avatar of Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avatar of Growth",
+      "oracle_fingerprint": "1802e98b0b5bd661cd79f444421443b1",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Players": "Opponents" }
+          }
+        },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "Bound": "player" },
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "count": { "min": 0, "max": 2 },
+                        "as": "found2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": { "who": { "Bound": "player" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

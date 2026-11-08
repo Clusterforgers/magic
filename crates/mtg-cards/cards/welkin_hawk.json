@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4547625a-0caf-4ecc-a65f-0fd2cad70294",
+  "name": "Welkin Hawk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Welkin Hawk",
+      "oracle_fingerprint": "9c7ff7dee6a3f0e37554a1c5de64ecf1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Welkin Hawk" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

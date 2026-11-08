@@ -1,0 +1,24 @@
+{
+  "oracle_id": "62674cfd-f400-44d9-bfff-15bdfbd243fe",
+  "name": "Marble Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marble Titan",
+      "oracle_fingerprint": "b559b52b4ffbf3f869f97e46ec9e7e4f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }
+              ]
+            },
+            "mods": ["DoesntUntap"]
+          }
+        }
+      ]
+    }
+  ]
+}

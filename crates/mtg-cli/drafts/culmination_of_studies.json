@@ -1,0 +1,82 @@
+{
+  "oracle_id": "d4e124af-d335-4c42-b60a-fe578f69f7ed",
+  "name": "Culmination of Studies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Culmination of Studies",
+      "oracle_fingerprint": "f378dcde647c93cf7fcd3a33ccf7e73f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": "X", "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "exiled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Type": "Land" }
+                    ]
+                  }
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "exiled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Color": "Blue" }
+                    ]
+                  }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": {
+                    "Count": [
+                      { "Is": { "Bound": "exiled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Color": "Red" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

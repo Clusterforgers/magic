@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0a72d6cd-b4a7-4c42-90ba-a14f1733d00e",
+  "name": "Jadelight Spelunker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jadelight Spelunker",
+      "oracle_fingerprint": "1de41cd9e7aed225395a20f62c9a8ae6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [{ "Explore": { "what": "This" } }],
+                  "most": 1000,
+                  "times": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

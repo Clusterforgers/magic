@@ -125,6 +125,8 @@ pub enum ManaSymbol {
     ColorlessHybrid(Color),
     /// The colorless Phyrexian symbol `{C/P}`: one colorless mana or 2 life.
     ColorlessPhyrexian,
+    /// The snow symbol `{S}`: one mana from a snow source (CR 107.4h).
+    Snow,
 }
 
 /// One way to pay a single cost symbol (CR 601.2b: the choice for a hybrid or Phyrexian symbol is made when casting).
@@ -153,9 +155,10 @@ impl ManaSymbol {
     /// The colours the symbol gives a card (CR 105.2): every colour it names, Phyrexian and hybrid ones included.
     pub fn colors(self) -> ColorSet {
         match self {
-            ManaSymbol::Generic(_) | ManaSymbol::Colorless | ManaSymbol::ColorlessPhyrexian => {
-                ColorSet::EMPTY
-            }
+            ManaSymbol::Generic(_)
+            | ManaSymbol::Colorless
+            | ManaSymbol::ColorlessPhyrexian
+            | ManaSymbol::Snow => ColorSet::EMPTY,
             ManaSymbol::Colored(c)
             | ManaSymbol::MonoHybrid(c)
             | ManaSymbol::Phyrexian(c)
@@ -189,6 +192,8 @@ impl ManaSymbol {
         use SymbolPayment::{Color as Mana, Colorless, Generic, Life};
         match self {
             ManaSymbol::Generic(n) => vec![Generic(n)],
+            // The source's snow status is checked by the payment, not here: as mana alone it is one generic.
+            ManaSymbol::Snow => vec![Generic(1)],
             ManaSymbol::Colored(c) => vec![Mana(c)],
             ManaSymbol::Colorless => vec![Colorless],
             ManaSymbol::Hybrid(a, b) => vec![Mana(a), Mana(b)],
@@ -232,6 +237,7 @@ impl ManaSymbol {
             ManaSymbol::MonoHybrid(c) => (5, c.index()),
             ManaSymbol::Phyrexian(c) => (6, c.index()),
             ManaSymbol::ColorlessPhyrexian => (7, 0),
+            ManaSymbol::Snow => (9, 0),
             ManaSymbol::HybridPhyrexian(a, b) => (8, pair(a, b)),
         }
     }
@@ -255,6 +261,7 @@ impl fmt::Display for ManaSymbol {
             }
             ManaSymbol::ColorlessHybrid(c) => write!(f, "{{C/{}}}", letter(c)),
             ManaSymbol::ColorlessPhyrexian => f.write_str("{C/P}"),
+            ManaSymbol::Snow => f.write_str("{S}"),
         }
     }
 }
@@ -354,6 +361,11 @@ impl ManaCost {
         self.0.iter().all(|s| s.is_plain())
     }
 
+    /// Whether the cost is exactly `n` generic mana and no other symbol (`{1}`; `{0}` holds no symbol), not merely a mana value of `n`. A card without a cost has none to ask.
+    pub fn is_generic_only(&self, n: u32) -> bool {
+        self.0.iter().all(|s| matches!(s, ManaSymbol::Generic(_))) && self.generic() == n
+    }
+
     /// Generic requirement of the plain symbols (payable with any mana); hybrid ones are in [`resolutions`](Self::resolutions).
     pub fn generic(&self) -> u32 {
         self.0
@@ -377,6 +389,54 @@ impl ManaCost {
             })
             .count();
         u32::try_from(count).unwrap_or(u32::MAX)
+    }
+
+    /// How many `{S}` symbols the cost has: mana from snow sources it needs.
+    pub fn snow(&self) -> u32 {
+        let count = self.0.iter().filter(|s| **s == ManaSymbol::Snow).count();
+        u32::try_from(count).unwrap_or(u32::MAX)
+    }
+
+    /// The cost with each `{S}` replaced by `{1}`: what the mana alone must cover.
+    #[must_use]
+    pub fn snow_as_generic(&self) -> ManaCost {
+        ManaCost::from_symbols(self.0.iter().map(|s| match s {
+            ManaSymbol::Snow => ManaSymbol::Generic(1),
+            other => *other,
+        }))
+    }
+
+    /// The cost with each colored, colorless and hybrid symbol replaced by `{1}`: what the mana must cover when mana of
+    /// any color or type may be spent on it (CR 609.4b).
+    #[must_use]
+    pub fn paid_by_any_mana(&self) -> ManaCost {
+        ManaCost::from_symbols(self.0.iter().map(|s| match s {
+            ManaSymbol::Colored(_)
+            | ManaSymbol::Colorless
+            | ManaSymbol::Hybrid(..)
+            | ManaSymbol::MonoHybrid(_)
+            | ManaSymbol::ColorlessHybrid(_) => ManaSymbol::Generic(1),
+            other => *other,
+        }))
+    }
+
+    /// The cost with each colored and hybrid symbol replaced by `{1}` and `{C}` kept: what the mana must cover when mana
+    /// may be spent as though it were mana of any color, which gives a colored symbol no more than a color (CR 609.4b).
+    #[must_use]
+    pub fn paid_by_any_color(&self) -> ManaCost {
+        ManaCost::from_symbols(self.0.iter().map(|s| match s {
+            ManaSymbol::Colored(_)
+            | ManaSymbol::Hybrid(..)
+            | ManaSymbol::MonoHybrid(_)
+            | ManaSymbol::ColorlessHybrid(_) => ManaSymbol::Generic(1),
+            other => *other,
+        }))
+    }
+
+    /// The cost without its `{S}` symbols.
+    #[must_use]
+    pub fn without_snow(&self) -> ManaCost {
+        ManaCost::from_symbols(self.0.iter().copied().filter(|s| *s != ManaSymbol::Snow))
     }
 
     /// The mana value of the cost (CR 202.3): `{2/W}` counts 2, every other symbol its own value.
@@ -478,6 +538,7 @@ fn parse_symbol(symbol: &str) -> Result<ManaSymbol, ParseManaCostError> {
             one.parse().ok().map(ManaSymbol::Generic)
         }
         ["C"] => Some(ManaSymbol::Colorless),
+        ["S"] => Some(ManaSymbol::Snow),
         [one] => color_of(one).map(ManaSymbol::Colored),
         ["2", c] => color_of(c).map(ManaSymbol::MonoHybrid),
         ["C", "P"] => Some(ManaSymbol::ColorlessPhyrexian),
@@ -507,12 +568,29 @@ impl fmt::Display for ManaCost {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: mana cost parsing, values, colours and display agree for every symbol form, and costs are canonical values, since payment, deck import and the card pips rely on them.
+    //! Goal: mana cost parsing, values, colours and display agree for every symbol form, a cost is generic-only only when no coloured, hybrid or Phyrexian symbol is in it, and costs are canonical values, since payment, deck import and the card pips rely on them.
     use super::*;
     use proptest::prelude::*;
     use rstest::rstest;
 
     use Color::{Black, Blue, Green, Red, White};
+
+    #[rstest]
+    #[case::one("{1}", 1, true)]
+    #[case::zero("{0}", 0, true)]
+    #[case::white("{W}", 1, false)]
+    #[case::hybrid("{U/B}", 1, false)]
+    #[case::phyrexian("{B/P}", 1, false)]
+    #[case::colourless("{C}", 1, false)]
+    #[case::two("{2}", 1, false)]
+    #[case::generic_and_colour("{1}{W}", 1, false)]
+    fn a_generic_only_cost_is_exactly_that_many_generic_mana(
+        #[case] cost: &str,
+        #[case] n: u32,
+        #[case] expected: bool,
+    ) {
+        assert_eq!(ManaCost::parse(cost).unwrap().is_generic_only(n), expected);
+    }
 
     fn colors_of(text: &str) -> ColorSet {
         text.chars().filter_map(Color::from_symbol).collect()
@@ -594,7 +672,6 @@ mod tests {
     #[rstest]
     #[case::x("{X}")]
     #[case::y("{Y}")]
-    #[case::snow("{S}")]
     #[case::empty("{}")]
     #[case::lowercase("{g}")]
     #[case::lowercase_hybrid("{w/u}")]

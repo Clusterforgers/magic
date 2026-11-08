@@ -1,0 +1,61 @@
+{
+  "oracle_id": "8ecbc87e-a63e-4afc-b5eb-2fc3dcd685f5",
+  "name": "Grozoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grozoth",
+      "oracle_fingerprint": "6cf5baedf0a6ac2d111c0a1aee0878e3",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Compare": { "stat": "ManaValue", "op": "Eq", "to": 9 } }],
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [
+                              { "OwnedBy": "You" },
+                              { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 9 } },
+                              { "In": "Library" }
+                            ]
+                          }
+                        },
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "RemoveKeyword": "Defender" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Transmute": "{1}{U}{U}" } }
+      ]
+    }
+  ]
+}

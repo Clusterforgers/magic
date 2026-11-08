@@ -1,0 +1,21 @@
+{
+  "oracle_id": "08a5445b-e9e6-44c3-9bc4-aff1b91c18a7",
+  "name": "Pipsqueak, Rebel Strongarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pipsqueak, Rebel Strongarm",
+      "oracle_fingerprint": "a7f8d3fb260689bc538b6f878e7088e4",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } },
+            "condition": {
+              "Matches": { "subject": "This", "selector": [{ "Not": { "HasCounter": "+1/+1" } }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

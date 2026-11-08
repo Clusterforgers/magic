@@ -1,0 +1,15 @@
+{
+  "oracle_id": "7330201a-41ff-44bf-a623-2ed062878c58",
+  "name": "Fallen Cleric",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fallen Cleric",
+      "oracle_fingerprint": "2ebd280053842c0973b75772bca81e55",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Subtype": "Cleric" }] } },
+        { "Keyword": { "Morph": "{4}{B}" } }
+      ]
+    }
+  ]
+}

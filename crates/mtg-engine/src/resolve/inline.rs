@@ -5,7 +5,7 @@ use mtg_cards::effect::Effect;
 use mtg_core::ids::PlayerId;
 
 use super::prim;
-use super::{Cx, ResolveError, Resolving, Run, Scope};
+use super::{Cx, Next, ResolveError, Resolving, Run, Scope};
 use crate::abilities::Cause;
 use crate::events::Event;
 use crate::object::{GameObject, ObjectRef};
@@ -45,11 +45,29 @@ fn run_in(scope: Scope<'_>, effects: &[Effect]) -> Result<Vec<Event>, ResolveErr
         scope,
         resolving: &resolving,
     };
+    run_list(&cx, effects)
+}
+
+/// Runs a list of effects in order; an `If` enters the list its condition picks.
+fn run_list(cx: &Cx<'_>, effects: &[Effect]) -> Result<Vec<Event>, ResolveError> {
     let mut events = Vec::new();
     for effect in effects {
-        match prim::run(&cx, effect)? {
-            Run::Done { events: made, .. } => events.extend(made),
-            Run::Ask(_) | Run::Cast(_) => {
+        match (effect, prim::run(cx, effect)?) {
+            (
+                Effect::If {
+                    then, otherwise, ..
+                },
+                Run::Done {
+                    events: made,
+                    next: Next::Enter(branch),
+                    ..
+                },
+            ) => {
+                events.extend(made);
+                events.extend(run_list(cx, if branch == 0 { then } else { otherwise })?);
+            }
+            (_, Run::Done { events: made, .. }) => events.extend(made),
+            (_, Run::Ask(_) | Run::Cast(_)) => {
                 return Err(ResolveError::Invalid(
                     "an effect run in the middle of something else asked a question".into(),
                 ));

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "bfe1a52a-f2f8-4c62-8502-037f2d1395b2",
+  "name": "Drownyard Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drownyard Behemoth",
+      "oracle_fingerprint": "608d79755e203d0b14813c77673f8659",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Emerge": "{7}{U}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["EnteredThisTurn"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "aeca0661-8b71-4085-81e9-bb0884fc9831",
+  "name": "Restore the Peace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Restore the Peace",
+      "oracle_fingerprint": "9e78c553ebf760e956922467443c0c91",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "DidThisTurn": { "event": "Damaged" } }]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

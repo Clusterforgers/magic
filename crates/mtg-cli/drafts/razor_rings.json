@@ -1,0 +1,28 @@
+{
+  "oracle_id": "eb5afbd7-4d21-4449-9204-eeb4ebf6a72a",
+  "name": "Razor Rings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razor Rings",
+      "oracle_fingerprint": "db24a8ff5f5d24f7b6a98c06ba59abaa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "AnyOf": ["Attacking", "Blocking"] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4, "excess": { "as": "excess" } } },
+              { "GainLife": { "amount": { "Bound": "excess" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

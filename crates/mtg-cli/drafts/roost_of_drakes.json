@@ -1,0 +1,58 @@
+{
+  "oracle_id": "05e73886-8311-4a0d-9c8d-4a03c7f20ea2",
+  "name": "Roost of Drakes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roost of Drakes",
+      "oracle_fingerprint": "c9bb4907d7137204f20da16834ec6aae",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Drake",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Drake"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "ControlledBy": "You" }, "Kicked"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Drake",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Drake"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

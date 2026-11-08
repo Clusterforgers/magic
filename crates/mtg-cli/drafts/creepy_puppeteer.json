@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7bb3c3b8-25b7-4c48-aa41-dcdcebbc3d5e",
+  "name": "Creepy Puppeteer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Creepy Puppeteer",
+      "oracle_fingerprint": "628ce3b7757812bead1fc4b05a4d1f03",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                "op": "Eq",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                        "mods": [{ "SetPT": { "power": 4, "toughness": 3 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

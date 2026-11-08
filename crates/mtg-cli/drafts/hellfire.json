@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e7b1975d-9574-4333-8530-33167948078a",
+  "name": "Hellfire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellfire",
+      "oracle_fingerprint": "3ab15d9388e0994e2d70ead0c2cc98e7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] },
+                  "as": "destroyed"
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "You",
+                  "amount": { "Sum": [{ "Bound": "destroyed~moved" }, 3] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

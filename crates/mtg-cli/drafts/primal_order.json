@@ -1,0 +1,32 @@
+{
+  "oracle_id": "63136274-df97-49ae-9efe-1385410e744b",
+  "name": "Primal Order",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primal Order",
+      "oracle_fingerprint": "cfa75dd1ebc7956cbe091243416b6178",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "ControlledBy": "ActivePlayer" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

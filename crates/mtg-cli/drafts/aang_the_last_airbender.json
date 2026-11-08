@@ -1,0 +1,48 @@
+{
+  "oracle_id": "70564c3a-858f-498e-8b92-acb3ca54ae7e",
+  "name": "Aang, the Last Airbender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aang, the Last Airbender",
+      "oracle_fingerprint": "099191bddd1c6e52285b03e5a94d8378",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "airbent" } },
+              {
+                "Rule": {
+                  "rule": { "MayCastRather": { "only": { "Bound": "airbent" }, "cost": "{2}" } },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Subtype": "Lesson" }], "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

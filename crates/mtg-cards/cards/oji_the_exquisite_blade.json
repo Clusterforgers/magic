@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7c4c556c-b5e3-493a-a7b0-38c55b7809ac",
+  "name": "Oji, the Exquisite Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oji, the Exquisite Blade",
+      "oracle_fingerprint": "6aca1b9794ee5b5dcb2ce3c71b383181",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 2 } }, { "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "SpellCast": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+                "nth": 2
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

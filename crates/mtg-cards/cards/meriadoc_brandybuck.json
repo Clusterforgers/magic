@@ -1,0 +1,24 @@
+{
+  "oracle_id": "fec6a4a7-4ded-4062-b99b-c1826dea7113",
+  "name": "Meriadoc Brandybuck",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meriadoc Brandybuck",
+      "oracle_fingerprint": "419a34de2ad579412142a0ca6ca06932",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Subtype": "Halfling" }, { "ControlledBy": "You" }],
+                "at": "Opponents"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

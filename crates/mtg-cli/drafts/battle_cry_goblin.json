@@ -1,0 +1,70 @@
+{
+  "oracle_id": "e74c4001-d958-4d2b-b57d-c3601f01580c",
+  "name": "Battle Cry Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle Cry Goblin",
+      "oracle_fingerprint": "2be7f56b52d6938b296cf399199cf34d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Goblin" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": { "of": [{ "Type": "Creature" }, "Attacking"], "stat": "Power" }
+                  },
+                  "op": "Ge",
+                  "right": 6
+                }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

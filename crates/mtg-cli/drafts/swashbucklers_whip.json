@@ -1,0 +1,69 @@
+{
+  "oracle_id": "5cdb69e5-9395-4ef6-be18-71e3dd70df66",
+  "name": "Swashbuckler's Whip",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swashbuckler's Whip",
+      "oracle_fingerprint": "732cfa8b127d9732c3c8b4d61262a9a7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": "Reach" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}" }, "Tap"],
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                        }
+                      }
+                    ],
+                    "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                  }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{8}" }, "Tap"],
+                    "effects": [
+                      {
+                        "ExileUntil": {
+                          "filter": [
+                            { "Not": { "Type": "Land" } },
+                            { "Compare": { "stat": "ManaValue", "op": "Le", "to": 10 } }
+                          ],
+                          "as": "found",
+                          "exiled_as": "exiled"
+                        }
+                      },
+                      {
+                        "CastFromZone": {
+                          "what": { "Bound": "found" },
+                          "free": true,
+                          "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                        }
+                      },
+                      {
+                        "Move": {
+                          "what": { "Bound": "exiled" },
+                          "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

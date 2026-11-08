@@ -1,0 +1,24 @@
+{
+  "oracle_id": "44e855a4-95f9-4515-a868-a8ad7a2db751",
+  "name": "Uncle Istvan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uncle Istvan",
+      "oracle_fingerprint": "0abc188ffe5e510bdb2fe11182506cfd",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "This",
+                "source": [{ "Type": "Creature" }, { "In": "Battlefield" }]
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

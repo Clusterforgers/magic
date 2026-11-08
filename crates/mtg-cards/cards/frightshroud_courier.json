@@ -1,0 +1,29 @@
+{
+  "oracle_id": "10e3e284-943a-45aa-accb-bb7d2a420098",
+  "name": "Frightshroud Courier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frightshroud Courier",
+      "oracle_fingerprint": "269e65148b8f4001b9fcc46d967ae6fa",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Zombie" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Fear" }],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

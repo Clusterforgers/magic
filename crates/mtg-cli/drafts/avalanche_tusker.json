@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ccad8b03-5ff1-4895-94e0-0c96883cb875",
+  "name": "Avalanche Tusker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avalanche Tusker",
+      "oracle_fingerprint": "647f8f235805b0e6161252b407b9fd6f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MustBlockAttacker": { "who": { "Target": 0 }, "attacker": "This" } },
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

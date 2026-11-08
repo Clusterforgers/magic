@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6e737c52-cbe0-493f-ae46-7bf068e04882",
+  "name": "Zuko, Seeking Honor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zuko, Seeking Honor",
+      "oracle_fingerprint": "9f3177b1cbfd9590ccb2b002eb33a4f1",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 1 } } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

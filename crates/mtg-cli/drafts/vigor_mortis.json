@@ -1,0 +1,45 @@
+{
+  "oracle_id": "6de27cba-5500-4448-abef-68e69fe519dc",
+  "name": "Vigor Mortis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vigor Mortis",
+      "oracle_fingerprint": "d963b3bcb2e1958d0f430132e221e69c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Not": { "ManaSpent": "Green" } },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Green" },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

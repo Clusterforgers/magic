@@ -1,0 +1,46 @@
+{
+  "oracle_id": "5538d4cf-98eb-4e20-a9c1-42c7cdcad194",
+  "name": "Rattleback Apothecary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rattleback Apothecary",
+      "oracle_fingerprint": "93d19c35ec3c0db01baf6ceafb1e9686",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "W11cCrime": { "who": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Menace" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

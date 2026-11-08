@@ -1,0 +1,29 @@
+{
+  "oracle_id": "78e65286-204d-43ab-8929-b8e2191b1fce",
+  "name": "Windrider Wizard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Windrider Wizard",
+      "oracle_fingerprint": "ecdea827ad4f8d557025404838acc373",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }, { "Subtype": "Wizard" }]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Pay": { "cost": [{ "Draw": 1 }], "paid": [{ "Discard": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

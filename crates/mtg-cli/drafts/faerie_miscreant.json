@@ -1,0 +1,34 @@
+{
+  "oracle_id": "dd2510cd-356c-4d5a-8e5d-e44872eba60b",
+  "name": "Faerie Miscreant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Miscreant",
+      "oracle_fingerprint": "69c43077a718bc6512784c6c30cf1098",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    "Other",
+                    { "Named": "Faerie Miscreant" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

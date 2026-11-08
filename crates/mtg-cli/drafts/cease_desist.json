@@ -1,0 +1,53 @@
+{
+  "oracle_id": "ba4d644f-1931-4fc4-aed5-681a476a5a58",
+  "name": "Cease // Desist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cease",
+      "oracle_fingerprint": "58c5579c405820ea0aa52f920c8cbf67",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 0, "max": 2 }
+              },
+              { "what": "Player" }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "GainLife": { "who": { "Target": 1 }, "amount": 2 } },
+              { "Draw": { "who": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Desist",
+      "oracle_fingerprint": "7cc7ed892141f86007c37fce281348e2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

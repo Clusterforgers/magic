@@ -1,0 +1,64 @@
+{
+  "oracle_id": "f749a6d6-2c55-439f-bb02-e95fa54c2ef3",
+  "name": "Reno and Rude",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reno and Rude",
+      "oracle_fingerprint": "de0497560febd9a6678c577900c206a6",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ExileTop": { "who": "Triggering", "as": "exiled" } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [
+                          { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                          "Other"
+                        ],
+                        "as": "sacrificed2"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed2" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" },
+                            "play": true,
+                            "spend_as": "AnyType"
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

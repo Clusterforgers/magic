@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6284ef01-d17d-4584-aecb-1b841ae638e5",
+  "name": "Deafening Silence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deafening Silence",
+      "oracle_fingerprint": "33ff32d27d63a9ce82e50beb8c3fa4ee",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Cast": { "filter": [{ "Not": { "Type": "Creature" } }], "more_than": 1 }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5b194438-6946-45dd-8d77-c9de8c115d09",
+  "name": "Outrageous Robbery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Outrageous Robbery",
+      "oracle_fingerprint": "688b2baab3d9425fdbf87b9ca502add1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": "X", "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

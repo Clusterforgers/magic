@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8ecdaf4b-4442-42da-9714-4257a83faf50",
+  "name": "Sakashima of a Thousand Faces",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sakashima of a Thousand Faces",
+      "oracle_fingerprint": "fe0169b3912c50e350507d323cae56f9",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"],
+                "except": [
+                  { "AddKeyword": "Partner" },
+                  { "GrantAbility": { "Rule": { "rule": { "NoLegendRule": "You" } } } }
+                ]
+              }
+            }
+          }
+        },
+        { "Rule": { "rule": { "NoLegendRule": "You" } } },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

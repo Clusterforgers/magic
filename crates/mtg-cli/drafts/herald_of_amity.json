@@ -1,0 +1,63 @@
+{
+  "oracle_id": "6c25c6b5-d98c-4eb4-aacd-b6960a8779a9",
+  "name": "Herald of Amity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Herald of Amity",
+      "oracle_fingerprint": "874f7db73392455b81df62d8b12beb66",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "ExileTop": { "count": 8, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Aura" },
+                      { "Is": { "Bound": "exiled" } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked2" }, "free": true } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }] },
+                        "toughness": { "Count": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

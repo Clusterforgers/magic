@@ -1,0 +1,73 @@
+{
+  "oracle_id": "6aa96a6e-9a88-4662-aa26-b4c16c0ef650",
+  "name": "Daredevil Dragster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daredevil Dragster",
+      "oracle_fingerprint": "587e58f396fea3dbd27832c5479bd414",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat" } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      "This",
+                      {
+                        "AnyOf": [
+                          { "DidThisTurn": { "event": "Attacked", "combat": true } },
+                          { "DidThisTurn": { "event": "Blocked", "combat": true } }
+                        ]
+                      }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "velocity" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          "This",
+                          {
+                            "CounterCount": { "kind": { "Other": "velocity" }, "op": "Ge", "to": 2 }
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"], "as": "sacrificed" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

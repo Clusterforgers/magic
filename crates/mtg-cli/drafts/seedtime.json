@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3ba50802-57d0-450e-9e2f-a46a09d2f6bb",
+  "name": "Seedtime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seedtime",
+      "oracle_fingerprint": "e52bce795c9d4be96a92f75d44010675",
+      "abilities": [
+        { "CastOnly": { "condition": "YourTurn" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "EachPlayer",
+                          "filter": [{ "Color": "Blue" }, { "ControlledBy": "Opponents" }]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "ExtraTurn": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

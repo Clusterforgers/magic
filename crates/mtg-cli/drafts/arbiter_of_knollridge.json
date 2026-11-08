@@ -1,0 +1,22 @@
+{
+  "oracle_id": "62705a41-7c4d-4e6c-85b0-36a9d27ab5ae",
+  "name": "Arbiter of Knollridge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arbiter of Knollridge",
+      "oracle_fingerprint": "34f8a25c4b19625aa6ccd7095e19a4a1",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "SetLife": { "who": "EachPlayer", "amount": { "HighestLife": "EachPlayer" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

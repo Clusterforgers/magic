@@ -9,6 +9,9 @@ use mtg_core::house::HouseRules;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
+use mtg_cards::ability::Limit;
+use mtg_cards::value::TallyEvent;
+
 use crate::abilities::AbilitySource;
 use crate::combat::CombatState;
 use crate::effects::ContinuousEffect;
@@ -56,23 +59,31 @@ pub enum Stage {
 pub(crate) struct Possible {
     /// Some card has an ability that works from a zone other than the battlefield.
     pub(crate) elsewhere: bool,
+    /// Some card has an activated ability that players other than its controller may activate.
+    pub(crate) others_activate: bool,
     /// Some card has a state trigger or gives one.
     pub(crate) states: bool,
     /// A +1/+1, -1/-1 or keyword counter has been on a permanent, so the layers work out its power, toughness and keywords
     /// (CR 613.4c, 122.1b).
     pub(crate) counters: bool,
+    /// A permanent has been suspected, so the layers give it menace (CR 701.60c).
+    pub(crate) suspected: bool,
     /// Some card is an Aura, an Equipment or a Fortification, or a permanent starts attached.
     pub(crate) attachments: bool,
     /// Some card has a replacement effect, printed, given or added by a keyword, or a token made has one.
     pub(crate) replacements: bool,
     /// Some card is legendary.
     pub(crate) legends: bool,
+    /// Some card has a static ability that gives a supertype ("enchanted permanent is legendary").
+    pub(crate) supertypes: bool,
     /// Some card or token made has a cost modifier, so the cost of a spell is worked out against the permanents.
     pub(crate) costs: bool,
     /// Some card has daybound or nightbound, so the day and night are watched.
     pub(crate) day_night: bool,
     /// Some card has ascend, so the city's blessing is watched.
     pub(crate) ascend: bool,
+    /// Some card has start your engines!, so the speed it starts is watched.
+    pub(crate) engines: bool,
     /// Some card, token or player has protection or an effect that gives it, so damage is checked against it.
     pub(crate) protection: bool,
     /// A card has been exiled until a permanent leaves the battlefield, so the cards waiting in exile are watched.
@@ -130,16 +141,32 @@ pub(crate) enum Tally {
     W14bPhyrexianDiedUnder,
     /// A card that left a graveyard for any zone (counted for its owner).
     W21aLeftGraveyard,
+    /// A permanent that left the battlefield for any zone (counted for the player who controlled it as it left).
+    PermanentsLeftUnder,
+    /// A nonland permanent that left the battlefield for any zone (counted for the player who controlled it as it left).
+    NonlandLeft,
+    /// A creature that left the battlefield for any zone (counted for the player who controlled it as it left).
+    CreaturesLeftUnder,
+    /// A spell cast with warp (counted for its caster).
+    Warped,
     /// A card put into a graveyard from the battlefield (counted for the card as it lies there).
     W21aGraved,
+    /// An object that moved into the zone it lies in from a zone of the kind (counted for the object as it lies there).
+    ArrivedFrom(mtg_cards::refs::ZoneKind),
     /// A creature declared as an attacker (counted for its controller, once for each creature).
     Attackers,
     /// A Vehicle that became crewed (counted for the object).
     Crewed,
     /// A Mount that became saddled (counted for the object).
     Saddled,
+    /// A permanent that became tapped (counted for the object).
+    E16aTapped,
     /// Damage dealt to a player after prevention (counted for the player, by the amount).
     Hurt,
+    /// Combat damage dealt to a player after prevention (counted for the player, by the amount).
+    E16aCombatHurt,
+    /// Noncombat damage dealt to a player after prevention (counted for the player, by the amount).
+    E16aNoncombatHurt,
     /// A permanent put onto the battlefield, from any zone or made as a token (counted for the permanent).
     Entered,
     /// Life lost, by damage that causes it, by a loss and by a payment (counted for the player, by the amount).
@@ -150,6 +177,18 @@ pub(crate) enum Tally {
     Cycled,
     /// A surveil (counted for the player).
     Surveilled,
+    /// A scry (counted for the player).
+    Scried,
+    /// A permanent sacrificed (counted for the player who controlled it).
+    Sacrificed,
+    /// A permanent card put into a graveyard from anywhere (counted for its owner).
+    Descended,
+    /// A card put into a graveyard from anywhere, a token excepted (counted for its owner).
+    G10cCardsGraved,
+    /// A creature card put into a graveyard from anywhere, a token excepted (counted for its owner).
+    G10cCreatureCardsGraved,
+    /// A crime committed (CR 700.13), once for each spell or ability (counted for the player who committed it).
+    G10cCrimes,
     /// A token created (counted for the player who controls it).
     Tokens,
     /// A kind of counter put on a permanent or a card in exile, once for each event (counted for the object).
@@ -180,6 +219,16 @@ pub(crate) struct Tallies {
     pub(crate) damaged_by: BTreeSet<(ObjectRef, ObjectRef)>,
     /// The modes the abilities chose, as (source, where the ability comes from, its index, the mode).
     pub(crate) modes: BTreeSet<(ObjectRef, AbilitySource, usize, usize)>,
+    /// How many times each ability resolved, as (source, where the ability comes from, its index).
+    pub(crate) resolved: BTreeMap<(ObjectRef, AbilitySource, usize), u32>,
+    /// How many times each ability with a several-times limit was used, keyed as `resolved`.
+    pub(crate) limit_uses: BTreeMap<(ObjectRef, AbilitySource, usize), u32>,
+    /// The events of the logged kinds in the order they happened, each with the player it counts for and the object as it was.
+    pub(crate) logged: Vec<(TallyEvent, PlayerId, crate::snapshot::Snapshot)>,
+    /// What was done this turn, as records of references (`turn_log`).
+    pub(crate) records: Vec<crate::turn_log::Record>,
+    /// Where in `records` the combat phase now going on, or the latest, began.
+    pub(crate) combat_from: usize,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).
@@ -191,6 +240,8 @@ pub(crate) struct CombatHit {
     pub(crate) types: Vec<Subtype>,
     /// It had every creature type (changeling).
     pub(crate) every_type: bool,
+    /// It was a commander (freerunning, CR 702.173a).
+    pub(crate) commander: bool,
 }
 
 /// The state of one game; a pure fold of events over the initial setup.
@@ -200,12 +251,15 @@ pub struct GameState {
     /// What the table's creator set in place of the format's values.
     pub(crate) house_rules: HouseRules,
     pub(crate) seed: u64,
+    /// The cards an effect may conjure, by name.
+    pub(crate) conjurable: Arc<BTreeMap<String, Arc<mtg_cards::CardDefinition>>>,
     pub(crate) rng_index: u64,
     pub(crate) stage: Stage,
     pub(crate) first_player: PlayerId,
     pub(crate) players: Vec<Player>,
     pub(crate) objects: BTreeMap<ObjectId, GameObject>,
-    /// Tokens that left the battlefield and so cease to exist, kept for the abilities of theirs still to come.
+    /// Tokens that left the battlefield and so cease to exist, and objects that left the game with their owner, kept
+    /// for the abilities of theirs still to come.
     pub(crate) ceased: BTreeMap<ObjectId, GameObject>,
     pub(crate) zones: Zones,
     pub(crate) turn: TurnState,
@@ -225,6 +279,8 @@ pub struct GameState {
     pub(crate) delayed: Vec<Delayed>,
     pub(crate) next_delayed: u64,
     pub(crate) limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
+    /// The once-each-game abilities used, as `limits_spent`; a new turn keeps them.
+    pub(crate) game_limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     /// The planeswalkers that had a loyalty ability activated this turn: no more than one for each (CR 606.3).
     pub(crate) loyalty_used: BTreeSet<ObjectRef>,
     /// The modes the abilities that choose a mode not yet chosen chose, in any turn, as (source, where the ability comes
@@ -247,10 +303,18 @@ pub struct GameState {
     pub(crate) result: Option<GameResult>,
     /// Day or night (CR 726); neither until a permanent with daybound or nightbound appears.
     pub(crate) day_night: Option<crate::day_night::DayNight>,
+    /// Each seat's latest finished turn, kept as it ends.
+    pub(crate) seat_turns: BTreeMap<PlayerId, crate::turn_summary::TurnSummary>,
+    /// The seat whose turn ended last.
+    pub(crate) last_turn_of: Option<PlayerId>,
     /// The monarch (CR 724): at most one player, from the first card that makes one.
     pub(crate) monarch: Option<PlayerId>,
     /// The players who have the city's blessing (CR 702.131), for the rest of the game.
     pub(crate) citys_blessing: std::collections::BTreeSet<PlayerId>,
+    /// Each player's speed (CR 702.179) and the rise the turn owes.
+    pub(crate) speeds: crate::speed::Speeds,
+    /// Each tempted player's Ring (CR 701.54).
+    pub(crate) ring: crate::ring::Rings,
     /// The dungeons (CR 309): each player's venture marker and the dungeons they completed.
     pub(crate) w11d: crate::w11d_dungeon::W11dDungeons,
     /// Who has the initiative (CR 725) and the object that stands for it.
@@ -267,6 +331,8 @@ pub struct GameState {
     pub(crate) revealed_by_hand: Vec<crate::object::ObjectRef>,
     /// The notes seats put on cards by hand (`ManualAction::Note`), kept while the card is still the object it was put on.
     pub(crate) notes: Vec<(crate::object::ObjectRef, String)>,
+    /// What each source remembers by slot (`Effect::Remember`); ends with the source.
+    pub(crate) memory: crate::memory::Memory,
 }
 
 impl GameState {
@@ -325,7 +391,8 @@ impl GameState {
         self.objects.values()
     }
 
-    /// Whether `id` was a token that has left the battlefield and so ceased to exist (CR 111.7).
+    /// Whether `id` was a token that has left the battlefield and so ceased to exist (CR 111.7), or an object that left
+    /// the game with its owner (CR 800.4a).
     pub fn has_ceased(&self, id: ObjectId) -> bool {
         self.ceased.contains_key(&id)
     }
@@ -452,17 +519,73 @@ impl GameState {
     /// Whether detecting triggers can find anything in this game: a card with a triggered ability or an effect that
     /// sets one up exists, so a game of vanilla cards pays nothing for them.
     pub(crate) fn watches(&self) -> bool {
-        self.triggers_possible || !self.delayed.is_empty()
+        self.triggers_possible || !self.delayed.is_empty() || !self.ring.is_empty()
     }
 
-    /// Whether the once-each-turn ability `ability` of `source` has been used this turn.
+    /// Whether the once-each-turn ability `ability` of `source` has been used this turn, or the once-each-game one this game.
     pub(crate) fn limit_spent(
         &self,
+        limit: Limit,
         source: ObjectRef,
         origin: AbilitySource,
         ability: usize,
     ) -> bool {
-        self.limits_spent.contains(&(source, origin, ability))
+        let key = (source, origin, ability);
+        if let Limit::TimesPerTurn(most) = limit {
+            return self.tallies.limit_uses.get(&key).copied().unwrap_or(0) >= most;
+        }
+        self.limits_spent.contains(&key) || self.game_limits_spent.contains(&key)
+    }
+
+    /// Counts one more resolution of the ability this turn.
+    pub(crate) fn count_resolution(
+        &mut self,
+        source: ObjectRef,
+        origin: AbilitySource,
+        index: usize,
+    ) {
+        let count = self
+            .tallies
+            .resolved
+            .entry((source, origin, index))
+            .or_insert(0);
+        *count = count.saturating_add(1);
+    }
+
+    /// How many times the ability has resolved this turn.
+    pub(crate) fn ability_resolutions(
+        &self,
+        source: ObjectRef,
+        origin: AbilitySource,
+        index: usize,
+    ) -> u32 {
+        self.tallies
+            .resolved
+            .get(&(source, origin, index))
+            .copied()
+            .unwrap_or(0)
+    }
+
+    /// Records a use of a limited ability; `false` when its limit was already spent.
+    pub(crate) fn spend_limit(
+        &mut self,
+        limit: Limit,
+        source: ObjectRef,
+        origin: AbilitySource,
+        ability: usize,
+    ) -> bool {
+        let key = (source, origin, ability);
+        match limit {
+            Limit::OncePerTurn | Limit::OncePerTurnDone => self.limits_spent.insert(key),
+            Limit::OncePerGame => self.game_limits_spent.insert(key),
+            Limit::TimesPerTurn(most) => {
+                let used = self.tallies.limit_uses.entry(key).or_insert(0);
+                *used < most && {
+                    *used += 1;
+                    true
+                }
+            }
+        }
     }
 
     /// A new turn begins: the abilities used once each turn and the planeswalkers that activated a loyalty ability are free again.
@@ -489,6 +612,7 @@ impl GameState {
     pub(crate) fn tally_loss(&mut self, player: PlayerId, amount: u32) {
         self.tally_by(player, Tally::Lost, amount);
         self.tally(player, Tally::Losses);
+        crate::speed::on_life_lost(self, player, amount);
     }
 
     /// How many permanents were put into a graveyard from the battlefield this turn, whoever owned them.
@@ -497,6 +621,13 @@ impl GameState {
             .iter()
             .map(|player| self.tallied(player.id(), Tally::Graved))
             .sum()
+    }
+
+    /// Logs an event of the kind for the player with the object `id` as it is now (`Amount::Tally`).
+    pub(crate) fn log_event(&mut self, event: TallyEvent, player: PlayerId, id: ObjectId) {
+        if let Some(shot) = crate::snapshot::snapshot(self, id) {
+            self.tallies.logged.push((event, player, shot));
+        }
     }
 
     /// How many events of the kind the player has had this turn.
@@ -531,6 +662,17 @@ impl GameState {
         if let (Some(victim), Some(source)) = (reference(victim), reference(source)) {
             self.tallies.damaged_by.insert((victim, source));
         }
+    }
+
+    /// Whether `source`, named before its one move to a zone off the battlefield and the stack, dealt damage to `victim`
+    /// this turn as the card it became: a source sacrificed to pay for its own ability deals that ability's damage from
+    /// there ("Sacrifice this: it deals 3 damage to target creature. If a Werewolf is dealt damage this way, ...").
+    pub(crate) fn damaged_by_departed(&self, victim: ObjectRef, source: ObjectRef) -> bool {
+        self.object(source.id).is_some_and(|now| {
+            now.counter() == source.counter + 1
+                && !matches!(now.zone(), Zone::Battlefield | Zone::Stack)
+                && self.damaged_by(victim, now.reference())
+        })
     }
 
     /// Whether `source` dealt damage to `victim` this turn.
@@ -577,6 +719,15 @@ impl GameState {
                 && ((every_type && (hit.every_type || !hit.types.is_empty()))
                     || (hit.every_type && !types.is_empty())
                     || hit.types.iter().any(|t| types.contains(t)))
+        })
+    }
+
+    /// Whether a creature `player` controlled dealt combat damage to a player this turn and was an Assassin or a commander:
+    /// the condition of freerunning (CR 702.173a).
+    pub(crate) fn freerunning_open(&self, player: PlayerId) -> bool {
+        self.tallies.hits.iter().any(|hit| {
+            hit.controller == player
+                && (hit.commander || hit.every_type || hit.types.iter().any(|t| t.0 == "Assassin"))
         })
     }
 
@@ -664,6 +815,7 @@ impl GameState {
 }
 
 impl Hash for GameState {
+    #[allow(clippy::too_many_lines)]
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.format.name().hash(state);
         self.house_rules.hash(state);
@@ -696,6 +848,10 @@ impl Hash for GameState {
         self.delayed.hash(state);
         self.next_delayed.hash(state);
         self.limits_spent.hash(state);
+        // A game with no once-a-game ability hashes as it did before they existed.
+        if !self.game_limits_spent.is_empty() {
+            self.game_limits_spent.hash(state);
+        }
         // A game with no planeswalker hashes as it did before they existed.
         if !self.loyalty_used.is_empty() {
             self.loyalty_used.hash(state);
@@ -713,6 +869,10 @@ impl Hash for GameState {
         }
         if !self.notes.is_empty() {
             self.notes.hash(state);
+        }
+        // Likewise a game in which nothing was remembered.
+        if !self.memory.is_empty() {
+            self.memory.hash(state);
         }
         // Likewise a game that counted nothing this turn.
         if !self.tallies.players.is_empty() {
@@ -736,18 +896,37 @@ impl Hash for GameState {
         if !self.tallies.modes.is_empty() {
             self.tallies.modes.hash(state);
         }
+        if !self.tallies.resolved.is_empty() {
+            self.tallies.resolved.hash(state);
+        }
+        if !self.tallies.records.is_empty() {
+            self.tallies.records.hash(state);
+            self.tallies.combat_from.hash(state);
+        }
+        if !self.tallies.logged.is_empty() {
+            self.tallies.logged.hash(state);
+        }
         self.result.hash(state);
         // A game that has seen neither day nor night hashes as it did before they existed.
         if let Some(day_night) = self.day_night {
             day_night.hash(state);
         }
+        self.hash_turn_summaries(state);
         // Likewise a game without a monarch.
         if let Some(monarch) = self.monarch {
             monarch.hash(state);
         }
+        // Likewise a game the Ring has not tempted anyone in.
+        if !self.ring.is_empty() {
+            self.ring.hash(state);
+        }
         // Likewise a game where nobody has the city's blessing.
         if !self.citys_blessing.is_empty() {
             self.citys_blessing.hash(state);
+        }
+        // Likewise a game where nobody has speed.
+        if !self.speeds.is_empty() {
+            self.speeds.hash(state);
         }
         // Likewise a game where nobody ventured.
         if !self.w11d.is_empty() {
@@ -885,6 +1064,7 @@ mod tests {
             controller: PlayerId::from_index(hit_by),
             types: subtypes(creature_types),
             every_type: creature_has_every_type,
+            commander: false,
         });
         let found = game.dealt_combat_damage_with(
             PlayerId::from_index(caster),

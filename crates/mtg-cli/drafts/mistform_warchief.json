@@ -1,0 +1,40 @@
+{
+  "oracle_id": "97f1ac0d-a3a6-46d8-ae99-b17b636fe47c",
+  "name": "Mistform Warchief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistform Warchief",
+      "oracle_fingerprint": "bc44cee59ff5837f2a60834834dd263e",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "Type": "Creature" },
+              { "SharesSubtype": "This" },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

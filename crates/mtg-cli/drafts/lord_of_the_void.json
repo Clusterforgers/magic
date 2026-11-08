@@ -1,0 +1,40 @@
+{
+  "oracle_id": "626b85f8-8889-46e6-9659-460bac79ae9b",
+  "name": "Lord of the Void",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord of the Void",
+      "oracle_fingerprint": "2660530a8891fc2cb21897c104302aff",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ExileTop": { "who": "Triggering", "count": 7, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Is": { "Bound": "exiled" } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "card2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "card2" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

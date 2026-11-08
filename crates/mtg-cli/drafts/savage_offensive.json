@@ -1,0 +1,37 @@
+{
+  "oracle_id": "b5944ca8-d54e-4830-9f66-be8fe97d101d",
+  "name": "Savage Offensive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savage Offensive",
+      "oracle_fingerprint": "4dc0faae57108a684b11da6388b83915",
+      "abilities": [
+        { "Keyword": { "Kicker": "{G}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } },
+                        "toughness": {
+                          "When": { "condition": "Kicked", "then": 1, "otherwise": 0 }
+                        }
+                      }
+                    },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

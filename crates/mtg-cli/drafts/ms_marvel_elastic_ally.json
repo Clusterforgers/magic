@@ -1,0 +1,52 @@
+{
+  "oracle_id": "26a1b36c-3c27-4eb4-b85f-63459653b773",
+  "name": "Ms. Marvel, Elastic Ally",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ms. Marvel, Elastic Ally",
+      "oracle_fingerprint": "a89eb941ad0d56fae8b9bc7ea6bf17e9",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  {
+                    "Test": {
+                      "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                      "op": "Gt",
+                      "right": { "Stat": { "of": "Candidate", "stat": "BasePower" } }
+                    }
+                  }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "144d42b8-5c44-4a36-9028-75229047e56c",
+  "name": "Sonic Burst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sonic Burst",
+      "oracle_fingerprint": "aeb3be8719147fbcca13a7bc64c6ba20",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "DiscardRandom": 1 }], "required": true } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

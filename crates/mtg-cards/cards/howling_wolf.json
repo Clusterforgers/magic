@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d95d0b24-2e6f-4f61-8668-26effeaaf2fb",
+  "name": "Howling Wolf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Howling Wolf",
+      "oracle_fingerprint": "321cdec54b0f5a51ada387fb0c8a0882",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Howling Wolf" }],
+                        "count": { "min": 0, "max": 3 },
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b0a96e47-91da-43ee-93dd-f866721029c6",
+  "name": "Khalni Gem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Khalni Gem",
+      "oracle_fingerprint": "c6946230b727903a4be035551a156c9f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 2 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

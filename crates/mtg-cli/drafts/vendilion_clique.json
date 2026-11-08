@@ -1,0 +1,56 @@
+{
+  "oracle_id": "244d4807-0802-41bc-9460-55ac38a28a72",
+  "name": "Vendilion Clique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vendilion Clique",
+      "oracle_fingerprint": "2561d2d88d423b1c1c2c5363e5037a1a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Library": { "place": "Bottom" } },
+                  "as": "moved2"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "who": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

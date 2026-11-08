@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e4f1acd6-b883-470b-88c2-3989011869d7",
+  "name": "Soul Bleed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Bleed",
+      "oracle_fingerprint": "4d12b8c3dfe86ac23ebf01b41216f351",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

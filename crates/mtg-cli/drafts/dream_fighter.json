@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ea8d1c55-e045-4a3f-92f0-4ecd86362b97",
+  "name": "Dream Fighter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Fighter",
+      "oracle_fingerprint": "2884273227c4da1bbc06169ea3f3f437",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              { "PhaseOut": { "what": "Triggering" } },
+              { "PhaseOut": { "what": "This" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [{ "PhaseOut": { "what": "Dealer" } }, { "PhaseOut": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

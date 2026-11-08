@@ -17,6 +17,7 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
         return Vec::new();
     };
     let CastPermission {
+        rather: None,
         who: Ref::You,
         what: Selector(preds),
         from: None,
@@ -26,6 +27,8 @@ pub(super) fn wordings(ability: &Ability) -> Vec<String> {
         play: false,
         once: false,
         additional: None,
+        spend_as: crate::modify::SpendAs::Normal,
+        when: None,
     } = permission
     else {
         return Vec::new();

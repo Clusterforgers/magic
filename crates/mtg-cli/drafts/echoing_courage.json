@@ -1,0 +1,40 @@
+{
+  "oracle_id": "359db1e6-bed9-412f-9e7c-f827ff6f2229",
+  "name": "Echoing Courage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echoing Courage",
+      "oracle_fingerprint": "bea15dd965ac1ede3bc69584ed6c2407",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "SharesName": { "Target": 0 } },
+                      { "Not": { "Is": { "Target": 0 } } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

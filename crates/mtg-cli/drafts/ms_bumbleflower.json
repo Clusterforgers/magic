@@ -1,0 +1,37 @@
+{
+  "oracle_id": "25636214-c6ea-4655-a5e8-98e735da5b05",
+  "name": "Ms. Bumbleflower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ms. Bumbleflower",
+      "oracle_fingerprint": "5b9c43d65b4afa1c60bfb3f9e67314a6",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "targets": [{ "what": "Opponent" }, { "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Is": { "Target": 1 } }, { "Type": "Creature" }] },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [{ "Draw": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4d74c735-8035-4c42-bfb1-1bc97e5bdd9a",
+  "name": "Aurora Griffin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aurora Griffin",
+      "oracle_fingerprint": "83f46219489ce1a554cbf1926dc8e91c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColors": ["White"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -5,7 +5,9 @@ import type { CounterKind } from "./CounterKind";
 import type { FaceDown } from "./FaceDown";
 import type { ManaType } from "./ManaType";
 import type { ObjectId } from "./ObjectId";
+import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
+import type { SpentFrom } from "./SpentFrom";
 import type { Zone } from "./Zone";
 
 /**
@@ -71,7 +73,20 @@ way?: CastWay,
  */
 spent?: Array<ManaType>, 
 /**
+ * The sources of that mana.
+ */
+spent_from?: Array<SpentFrom>, 
+/**
+ * The creatures that convoked its spell (CR 702.51).
+ */
+convoked?: Array<ObjectRef>, 
+/**
  * The face of a card with several faces it was in use as (the back face of a transformed permanent); left out for
  * the card as a whole.
  */
-face?: number, };
+face?: number, 
+/**
+ * The permanent it was attached to, as the object it was then: what "enchanted creature" names once the Aura has
+ * left (CR 112.7a, 608.2h).
+ */
+host?: ObjectRef, };

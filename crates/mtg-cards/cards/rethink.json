@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ede61683-fa78-4103-8248-e0e64162ed49",
+  "name": "Rethink",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rethink",
+      "oracle_fingerprint": "3a7f371f10facc4e1dd193d44035e031",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

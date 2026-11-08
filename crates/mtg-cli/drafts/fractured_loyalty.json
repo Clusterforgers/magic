@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ccc168ef-b93b-4bff-89a3-80984d3625de",
+  "name": "Fractured Loyalty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fractured Loyalty",
+      "oracle_fingerprint": "0e2ce5476f8cedeb3db2754cae8894e9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "TriggeringFirst",
+                  "mods": [{ "SetController": { "ControllerOf": "Dealer" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

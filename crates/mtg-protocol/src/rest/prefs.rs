@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::message::Stop;
+use crate::message::{AutoChoices, Stop};
 
 /// The most default stops an account keeps.
 pub const MAX_DEFAULT_STOPS: usize = 40;
@@ -15,4 +15,7 @@ pub struct UserPrefs {
     pub default_stops: Vec<Stop>,
     /// Whether the account's seats end their own turns by hand.
     pub end_turn_by_hand: bool,
+    /// The decisions the server answers for the account's seats; off when absent.
+    #[serde(default)]
+    pub auto_choices: AutoChoices,
 }

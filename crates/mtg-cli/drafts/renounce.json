@@ -1,0 +1,31 @@
+{
+  "oracle_id": "72f9a6f7-ea26-438d-aafa-758239fd3681",
+  "name": "Renounce",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renounce",
+      "oracle_fingerprint": "4e7e4b61a2dfc4c18a0eed0c7bba8ae0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [],
+                  "count": { "Count": [{ "ControlledBy": "You" }] },
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Times": { "by": 2, "of": { "Bound": "sacrificed~moved" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

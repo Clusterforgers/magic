@@ -1,0 +1,48 @@
+{
+  "oracle_id": "da38bfdf-b4c8-4ffe-ad53-b42c317cae5f",
+  "name": "Magmasaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magmasaur",
+      "oracle_fingerprint": "72448aa4adca92a5a60899d06c3589b3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 5 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "RemoveCounters": { "counter": "+1/+1" } }],
+                  "unpaid": [
+                    { "Sacrifice": { "filter": ["This"] } },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                        },
+                        "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "to": "EachPlayer",
+                        "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

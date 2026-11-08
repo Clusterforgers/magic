@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9e0d7408-3827-4a65-9905-9fef3ae23c7e",
+  "name": "Divest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divest",
+      "oracle_fingerprint": "c49991313daee0a857cc65eaa78d5775",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

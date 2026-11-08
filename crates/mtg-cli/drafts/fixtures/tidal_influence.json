@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "b2192c7b-ef6f-4ff6-9017-b1a125340517",
+  "oracle_id": "b1393388-b8b3-4c54-a086-f5e6d9908972",
+  "multiverse_ids": [
+    1894
+  ],
+  "tcgplayer_id": 3770,
+  "cardmarket_id": 7457,
+  "name": "Tidal Influence",
+  "lang": "en",
+  "released_at": "1994-11-01",
+  "uri": "https://api.scryfall.com/cards/b2192c7b-ef6f-4ff6-9017-b1a125340517",
+  "scryfall_uri": "https://scryfall.com/card/fem/28/tidal-influence?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T13:05:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/2/b2192c7b-ef6f-4ff6-9017-b1a125340517.jpg?1783947908",
+    "normal": "https://cards.scryfall.io/normal/front/b/2/b2192c7b-ef6f-4ff6-9017-b1a125340517.jpg?1783947908",
+    "large": "https://cards.scryfall.io/large/front/b/2/b2192c7b-ef6f-4ff6-9017-b1a125340517.jpg?1783947908",
+    "png": "https://cards.scryfall.io/png/front/b/2/b2192c7b-ef6f-4ff6-9017-b1a125340517.png?1783947908",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/2/b2192c7b-ef6f-4ff6-9017-b1a125340517.jpg?1783947908",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/2/b2192c7b-ef6f-4ff6-9017-b1a125340517.jpg?1783947908",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/2/b2192c7b-ef6f-4ff6-9017-b1a125340517.webp?1783947908",
+    "grid": "https://cards.scryfall.io/grid/front/b/2/b2192c7b-ef6f-4ff6-9017-b1a125340517.webp?1783947908",
+    "display": "https://cards.scryfall.io/display/front/b/2/b2192c7b-ef6f-4ff6-9017-b1a125340517.webp?1783947908",
+    "art": "https://cards.scryfall.io/art/front/b/2/b2192c7b-ef6f-4ff6-9017-b1a125340517.webp?1783947908",
+    "crop": "https://cards.scryfall.io/crop/front/b/2/b2192c7b-ef6f-4ff6-9017-b1a125340517.webp?1783947908",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/2/b2192c7b-ef6f-4ff6-9017-b1a125340517.jpg?1783947908"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Cast this spell only if no permanents named Tidal Influence are on the battlefield.\nThis enchantment enters with a tide counter on it.\nAt the beginning of your upkeep, put a tide counter on this enchantment.\nAs long as there is exactly one tide counter on this enchantment, all blue creatures get -2/-0.\nAs long as there are exactly three tide counters on this enchantment, all blue creatures get +2/+0.\nWhenever there are four or more tide counters on this enchantment, remove all tide counters from it.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cf7390b1-341a-4ae8-a325-da0f5f322f13",
+  "set": "fem",
+  "set_name": "Fallen Empires",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/cf7390b1-341a-4ae8-a325-da0f5f322f13",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afem&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fem?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b2192c7b-ef6f-4ff6-9017-b1a125340517/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab1393388-b8b3-4c54-a086-f5e6d9908972&unique=prints",
+  "collector_number": "28",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tom Wänerstrand",
+  "artist_ids": [
+    "c4e0aa7c-a008-4d71-80ce-d5a1ca0b251b"
+  ],
+  "illustration_id": "1586c315-fb17-496c-bc06-236414c6be8d",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30465,
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=1894&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTidal%2BInfluence",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTidal%2BInfluence",
+    "edhrec": "https://edhrec.com/route/?cc=Tidal+Influence"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F3770%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=7457&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Tidal+Influence&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -29,13 +29,14 @@ pub(super) fn swapped(stand: &Ability, swaps: &[(&str, &str)]) -> Vec<String> {
 /// The `texts` with each `from` replaced once by its `to`; a text without every `from` is left out.
 pub(super) fn swapped_in(texts: &[String], swaps: &[(&str, &str)]) -> Vec<String> {
     let mut found: Vec<String> = Vec::new();
+    let mut seen = std::collections::HashSet::new();
     for text in texts {
         let mut text = text.clone();
         if swaps.iter().all(|(from, to)| {
             let hit = text.contains(from);
             text = text.replacen(from, to, 1);
             hit
-        }) && !found.contains(&text)
+        }) && seen.insert(text.clone())
         {
             found.push(text);
         }

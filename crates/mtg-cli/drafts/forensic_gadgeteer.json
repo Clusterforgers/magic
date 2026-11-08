@@ -13,7 +13,15 @@
             "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
           }
         },
-        { "CostModifier": { "applies_to": ["Spell", "Spell"], "change": "Reduce", "mana": "{1}" } }
+        {
+          "CostModifier": {
+            "applies_to": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Any",
+            "least": 1
+          }
+        }
       ]
     }
   ]

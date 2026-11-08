@@ -1,0 +1,26 @@
+{
+  "oracle_id": "dcacb717-4ca4-47c0-9b23-26e4eb4ffdc8",
+  "name": "Ebony Owl Netsuke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ebony Owl Netsuke",
+      "oracle_fingerprint": "d71ea41cc84aec7eb8e9f83fca93cbc4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "oracle_id": "683c81ae-38cd-4db1-b7e7-a09d34b6431e",
+  "name": "Sustaining Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sustaining Spirit",
+      "oracle_fingerprint": "98c6560c5fd3290d94cfcbb558ded459",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}{W}" } },
+        { "Rule": { "rule": { "LifeFloor": { "who": "You", "floor": 1 } } } }
+      ]
+    }
+  ]
+}

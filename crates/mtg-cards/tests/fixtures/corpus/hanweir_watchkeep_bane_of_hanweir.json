@@ -1,0 +1,196 @@
+{
+  "object": "card",
+  "id": "d067706b-e2cc-4ad5-b992-28222a8af4ad",
+  "oracle_id": "8bdf986e-a47e-47b6-8cdb-576c86c4041b",
+  "multiverse_ids": [
+    685995
+  ],
+  "mtgo_id": 135720,
+  "tcgplayer_id": 609849,
+  "cardmarket_id": 805789,
+  "name": "Hanweir Watchkeep // Bane of Hanweir",
+  "lang": "en",
+  "released_at": "2025-01-24",
+  "uri": "https://api.scryfall.com/cards/d067706b-e2cc-4ad5-b992-28222a8af4ad",
+  "scryfall_uri": "https://scryfall.com/card/inr/158/hanweir-watchkeep-bane-of-hanweir?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:02:05Z",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior Werewolf // Creature — Werewolf",
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Transform",
+    "Defender"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Hanweir Watchkeep",
+      "mana_cost": "{2}{R}",
+      "type_line": "Creature — Human Warrior Werewolf",
+      "oracle_text": "Defender\nAt the beginning of each upkeep, if no spells were cast last turn, transform this creature.",
+      "colors": [
+        "R"
+      ],
+      "power": "1",
+      "toughness": "5",
+      "flavor_text": "He scans for wolves, knowing there's one he can never anticipate.",
+      "artist": "Wayne Reynolds",
+      "artist_id": "afc47cec-3ccc-404e-a8c6-4d83dd504271",
+      "illustration_id": "6c988db7-f0a5-4b00-a66f-b8637a4bead0",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.jpg?1783908125",
+        "normal": "https://cards.scryfall.io/normal/front/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.jpg?1783908125",
+        "large": "https://cards.scryfall.io/large/front/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.jpg?1783908125",
+        "png": "https://cards.scryfall.io/png/front/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.png?1783908125",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.jpg?1783908125",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.jpg?1783908125",
+        "thumb": "https://cards.scryfall.io/thumb/front/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.webp?1783908125",
+        "grid": "https://cards.scryfall.io/grid/front/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.webp?1783908125",
+        "display": "https://cards.scryfall.io/display/front/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.webp?1783908125",
+        "art": "https://cards.scryfall.io/art/front/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.webp?1783908125",
+        "crop": "https://cards.scryfall.io/crop/front/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.webp?1783908125",
+        "jpeg": "https://cards.scryfall.io/normal/front/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.jpg?1783908125"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Bane of Hanweir",
+      "mana_cost": "",
+      "type_line": "Creature — Werewolf",
+      "oracle_text": "This creature attacks each combat if able.\nAt the beginning of each upkeep, if a player cast two or more spells last turn, transform this creature.",
+      "colors": [
+        "R"
+      ],
+      "color_indicator": [
+        "R"
+      ],
+      "power": "5",
+      "toughness": "5",
+      "flavor_text": "Technically he never left his post. He looks after the wolf wherever it goes.",
+      "artist": "Wayne Reynolds",
+      "artist_id": "afc47cec-3ccc-404e-a8c6-4d83dd504271",
+      "illustration_id": "0c9ed2a6-1f83-4afd-b0f4-235e1a7c2183",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.jpg?1783908125",
+        "normal": "https://cards.scryfall.io/normal/back/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.jpg?1783908125",
+        "large": "https://cards.scryfall.io/large/back/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.jpg?1783908125",
+        "png": "https://cards.scryfall.io/png/back/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.png?1783908125",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.jpg?1783908125",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.jpg?1783908125",
+        "thumb": "https://cards.scryfall.io/thumb/back/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.webp?1783908125",
+        "grid": "https://cards.scryfall.io/grid/back/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.webp?1783908125",
+        "display": "https://cards.scryfall.io/display/back/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.webp?1783908125",
+        "art": "https://cards.scryfall.io/art/back/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.webp?1783908125",
+        "crop": "https://cards.scryfall.io/crop/back/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.webp?1783908125",
+        "jpeg": "https://cards.scryfall.io/normal/back/d/0/d067706b-e2cc-4ad5-b992-28222a8af4ad.jpg?1783908125"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d067706b-e2cc-4ad5-b992-28222a8af4ad",
+      "component": "combo_piece",
+      "name": "Hanweir Watchkeep // Bane of Hanweir",
+      "type_line": "Creature — Human Warrior Werewolf // Creature — Werewolf",
+      "uri": "https://api.scryfall.com/cards/d067706b-e2cc-4ad5-b992-28222a8af4ad"
+    },
+    {
+      "object": "related_card",
+      "id": "99ce1bee-8f95-4284-8e06-9de9bfcb53b5",
+      "component": "combo_piece",
+      "name": "Innistrad Checklist",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/99ce1bee-8f95-4284-8e06-9de9bfcb53b5"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set": "inr",
+  "set_name": "Innistrad Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d067706b-e2cc-4ad5-b992-28222a8af4ad/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8bdf986e-a47e-47b6-8cdb-576c86c4041b&unique=prints",
+  "collector_number": "158",
+  "digital": false,
+  "rarity": "common",
+  "artist": "Wayne Reynolds",
+  "artist_ids": [
+    "afc47cec-3ccc-404e-a8c6-4d83dd504271"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23104,
+  "penny_rank": 12837,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.31",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.09",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=685995&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHanweir%2BWatchkeep%2B%252F%252F%2BBane%2Bof%2BHanweir",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHanweir%2BWatchkeep%2B%252F%252F%2BBane%2Bof%2BHanweir",
+    "edhrec": "https://edhrec.com/route/?cc=Hanweir+Watchkeep"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F609849%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=805789&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/135720?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

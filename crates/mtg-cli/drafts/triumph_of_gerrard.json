@@ -1,0 +1,88 @@
+{
+  "oracle_id": "426a5f3f-f161-49b3-97d0-02cda554752b",
+  "name": "Triumph of Gerrard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triumph of Gerrard",
+      "oracle_fingerprint": "733d897d49d01c33ca79adf2a4f36f6a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "GreatestAmong": {
+                        "stat": "Power",
+                        "group": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "GreatestAmong": {
+                        "stat": "Power",
+                        "group": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "GreatestAmong": {
+                        "stat": "Power",
+                        "group": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Flying" },
+                    { "AddKeyword": "FirstStrike" },
+                    { "AddKeyword": "Lifelink" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

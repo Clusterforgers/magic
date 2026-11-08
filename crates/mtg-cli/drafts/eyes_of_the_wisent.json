@@ -1,0 +1,41 @@
+{
+  "oracle_id": "3c59ab03-8744-4148-be06-eb1b0147f2cc",
+  "name": "Eyes of the Wisent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eyes of the Wisent",
+      "oracle_fingerprint": "4362e35ac293323012202b1327c1dba1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Blue" }], "by": "Opponents" } },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elemental",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elemental"],
+                            "power": 4,
+                            "toughness": 4
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5e2c1e0e-0a10-416a-9b50-96ee0cbbc24e",
+  "name": "Hagra Diabolist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hagra Diabolist",
+      "oracle_fingerprint": "7895819d58e12c43be6ab5e208b4e4c8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Ally" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Target": 0 },
+                        "amount": { "Count": [{ "Subtype": "Ally" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

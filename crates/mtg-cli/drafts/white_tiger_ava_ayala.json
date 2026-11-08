@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e2084d73-5a4c-4b17-942a-93c1a1f7ac2a",
+  "name": "White Tiger, Ava Ayala",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "White Tiger, Ava Ayala",
+      "oracle_fingerprint": "490074aa965113b229984fbc3ad7bf78",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}{G}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}{G}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "The Tiger God",
+                      "colors": ["Green"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat", "God"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [
+                        { "Static": { "affected": "This", "mods": [{ "MaxBlockers": 1 }] } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

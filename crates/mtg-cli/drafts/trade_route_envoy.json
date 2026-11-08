@@ -1,0 +1,51 @@
+{
+  "oracle_id": "95d51048-be32-4c5f-8b75-fca3a891c9d6",
+  "name": "Trade Route Envoy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trade Route Envoy",
+      "oracle_fingerprint": "cd959c1aad5f53cc1aa9b0381ffa5f02",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          "HasAnyCounter"
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "as": "drawn" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "drawn" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

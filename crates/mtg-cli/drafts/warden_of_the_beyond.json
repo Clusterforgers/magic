@@ -1,0 +1,27 @@
+{
+  "oracle_id": "6e9d5e5e-d571-4a1a-be8c-6672fd6b582f",
+  "name": "Warden of the Beyond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warden of the Beyond",
+      "oracle_fingerprint": "98001472641c758ec3b4e7f2ab04430b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "Opponents" }, { "In": "Exile" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -7,8 +7,9 @@
 
 use mtg_cards::ability::Ability;
 use mtg_cards::compile::render_mode;
+use mtg_cards::cost::Cost;
 use mtg_cards::effect::{Effect, Mode};
-use mtg_cards::refs::{Bounds, TargetSpec};
+use mtg_cards::refs::{Bounds, Ref, TargetSpec};
 use mtg_cards::value::{Amount, Condition};
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -29,6 +30,9 @@ pub struct ModeOption {
     pub index: usize,
     /// A short name, when the card gives one.
     pub label: Option<String>,
+    /// What choosing the mode adds to the cost, when it has a cost of its own (Spree, Tiered).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cost: Option<String>,
 }
 
 /// The modes a player may choose and how many.
@@ -48,6 +52,10 @@ pub struct ModeOptions {
     /// Whether the cast or activation may still be backed out of: nothing is logged until it is paid for. A triggered
     /// ability that chooses its modes as it goes on the stack cannot (CR 603.3c).
     pub can_cancel: bool,
+    /// The modes in the order the cheapest are paid first, as many as can be paid for together; empty when no mode has a
+    /// cost. The first `min` are a set the player can afford, which an automatic answer takes.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub cheapest: Vec<usize>,
 }
 
 /// The answer to a mode decision.
@@ -101,6 +109,8 @@ pub(crate) fn answer(
 
 /// The modes of a modal ability and how many are chosen.
 pub(crate) struct Modal<'a> {
+    /// Who chooses the modes.
+    pub(crate) who: &'a Ref,
     /// How many modes are chosen.
     pub(crate) choose: &'a Bounds,
     /// The same mode may be chosen more than once.
@@ -109,10 +119,16 @@ pub(crate) struct Modal<'a> {
     pub(crate) modes: &'a [Mode],
     /// The game picks the modes at random.
     pub(crate) at_random: bool,
+    /// A player a mode chosen earlier targets is not offered to the later ones.
+    pub(crate) different_players: bool,
     /// Which modes this ability chose before are not offered.
     pub(crate) once: C11dOnce,
     /// Every mode may be chosen when this holds as the ability is announced.
     pub(crate) all_if: Option<&'a Condition>,
+    /// The cost each mode adds when chosen, parallel to `modes`; empty for none.
+    pub(crate) mode_costs: &'a [Cost],
+    /// The cost added for each mode chosen beyond the first.
+    pub(crate) extra_mode_cost: Option<&'a Cost>,
     /// The modes this ability chose earlier in the turn, or in any turn (read from the tally by the announcement).
     pub(crate) used: Vec<usize>,
 }
@@ -147,20 +163,28 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
         [
             Effect::Modal {
                 choose,
+                who,
                 repeat,
                 modes,
                 at_random,
+                different_players,
                 once_each_turn,
                 once_ever,
                 all_if,
+                mode_costs,
+                extra_mode_cost,
             },
         ] => Some(Modal {
+            who,
             choose,
             repeat: *repeat,
             modes,
             at_random: *at_random,
+            different_players: *different_players,
             once: C11dOnce::c11d_of(*once_each_turn, *once_ever),
             all_if: all_if.as_ref(),
+            mode_costs,
+            extra_mode_cost: extra_mode_cost.as_ref(),
             used: Vec::new(),
         }),
         _ => None,
@@ -264,13 +288,25 @@ pub(crate) fn mode_options(
         .map(|(index, mode)| ModeOption {
             index,
             label: label_of(mode, card),
+            cost: None,
         })
         .collect();
     let available = u32::try_from(modes.len()).unwrap_or(u32::MAX);
-    let min = modal.choose.fixed_min().unwrap_or(0);
     if !enough_modes(modal, available) {
         return None;
     }
+    let min = match &modal.choose.min {
+        Amount::Fixed(n) => u32::try_from(*n).unwrap_or(0),
+        // A fewest that depends on the game ("choose both instead") is read as the ability is announced.
+        other => announcing(state, source, controller)
+            .amount(other)
+            .map_or(0, |n| u32::try_from(n).unwrap_or(0)),
+    };
+    let min = if modal.repeat {
+        min
+    } else {
+        min.min(available)
+    };
     let wanted = match &modal.choose.max {
         None => available,
         Some(_) if all_may_be_chosen(state, source, controller, modal.all_if) => available,
@@ -292,6 +328,7 @@ pub(crate) fn mode_options(
         max: max.max(min),
         repeat: modal.repeat,
         can_cancel,
+        cheapest: Vec::new(),
     })
 }
 
@@ -306,6 +343,20 @@ pub(crate) fn announced_specs<'a>(rules: &'a Ability, chosen: &[usize]) -> Vec<&
             .flat_map(|mode| mode.targets.iter())
             .collect(),
     }
+}
+
+/// For each announced target specification, how many come before the first of its mode: a filter of the specification
+/// reads `Target(0)` as that first one (0 for every specification outside a modal ability).
+pub(crate) fn spec_bases(rules: &Ability, chosen: &[usize]) -> Vec<usize> {
+    let Some(modal) = modal_of(rules) else {
+        return vec![0; rules.targets().len()];
+    };
+    let mut bases = Vec::new();
+    for mode in chosen.iter().filter_map(|index| modal.modes.get(*index)) {
+        let base = bases.len();
+        bases.extend(std::iter::repeat_n(base, mode.targets.len()));
+    }
+    bases
 }
 
 /// How many announced target specifications come before those of the `ordinal`-th mode chosen.
@@ -391,12 +442,14 @@ mod tests {
                 .map(|index| ModeOption {
                     index: *index,
                     label: None,
+                    cost: None,
                 })
                 .collect(),
             min,
             max,
             repeat,
             can_cancel,
+            cheapest: Vec::new(),
         }
     }
 

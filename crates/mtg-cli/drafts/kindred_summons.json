@@ -1,0 +1,65 @@
+{
+  "oracle_id": "b488e75f-af9c-43e2-8aca-f269fa2c720e",
+  "name": "Kindred Summons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kindred Summons",
+      "oracle_fingerprint": "eeb67efe4373cf789c47f1cab72f92b5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ChosenAs": "chosen" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "RevealUntil": {
+                        "filter": [
+                          { "Type": "Creature" },
+                          { "ChosenAs": "chosen" },
+                          { "OwnedBy": "You" }
+                        ],
+                        "count": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ChosenAs": "chosen" },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "as": "found2",
+                        "revealed_as": "revealed3"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed3" },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

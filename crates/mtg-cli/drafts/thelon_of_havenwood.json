@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c673b7b0-c1e7-4bcd-8fe0-66d83f22ecb9",
+  "name": "Thelon of Havenwood",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thelon of Havenwood",
+      "oracle_fingerprint": "b95df9982d7294c8abf87f533503821d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Fungus" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "spore" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "spore" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 62, "end": 162 }
+          }
+        }
+      ]
+    }
+  ]
+}

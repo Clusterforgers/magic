@@ -1,0 +1,46 @@
+{
+  "oracle_id": "fa1cc78f-26bc-4d5d-973b-7cb7d7490973",
+  "name": "Twinned Vision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twinned Vision",
+      "oracle_fingerprint": "5a1790a62224f1920e842d4f2729afe6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "WasCast": { "from": "Hand" } }, { "OwnedBy": "You" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "WasCast": { "from": "Hand" } }, { "OwnedBy": "You" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": [{ "Mana": "{1}{U/R}{U/R}" }, { "Discard": {} }] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3afe4852-d506-45d7-8a19-ddcbc3dd90d4",
+  "name": "Oakhame Adversary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oakhame Adversary",
+      "oracle_fingerprint": "dcfba01970831e9847aef6bb8fd06acb",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Color": "Green" }, { "ControlledBy": "Opponents" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

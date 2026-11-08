@@ -1,0 +1,75 @@
+{
+  "oracle_id": "387b12b1-d8f5-487b-972f-5303b23eed5a",
+  "name": "Dusyut Earthcarver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dusyut Earthcarver",
+      "oracle_fingerprint": "7553cfb4572fda984a7ccbeaa6f81b29",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Is": "This" }, { "In": "Battlefield" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [
+                          { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } }
+                        ],
+                        "second": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Sized": {
+                                  "size": 3,
+                                  "token": {
+                                    "name": "Spirit",
+                                    "colors": ["White"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Spirit"]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Sized": {
+                            "size": 3,
+                            "token": {
+                              "name": "Spirit",
+                              "colors": ["White"],
+                              "types": ["Creature"],
+                              "subtypes": ["Spirit"]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

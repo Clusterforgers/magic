@@ -1,0 +1,26 @@
+{
+  "oracle_id": "5a81755f-bc44-47ac-8039-8847a5e37922",
+  "name": "Brainwash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brainwash",
+      "oracle_fingerprint": "0e023536ba1193744516cccadc76a738",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "who": "EachPlayer",
+                "attacked": "Both",
+                "attackers": [{ "Is": "Attached" }],
+                "mana": "{3}"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

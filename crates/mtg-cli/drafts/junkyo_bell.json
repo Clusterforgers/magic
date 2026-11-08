@@ -1,0 +1,69 @@
+{
+  "oracle_id": "2935b603-d459-4f50-b244-0746febaaacd",
+  "name": "Junkyo Bell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Junkyo Bell",
+      "oracle_fingerprint": "619f1d8f2293a8388246764dec3e0ac2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              },
+                              "toughness": {
+                                "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "RepeatEach": {
+                        "over": { "Target": 0 },
+                        "as": "pumped",
+                        "effects": [
+                          {
+                            "DelayedTrigger": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "effects": [
+                                {
+                                  "Sacrifice": {
+                                    "who": { "ControllerOf": { "Bound": "pumped" } },
+                                    "filter": [{ "Is": { "Bound": "pumped" } }],
+                                    "count": { "Count": [{ "Is": { "Bound": "pumped" } }] }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

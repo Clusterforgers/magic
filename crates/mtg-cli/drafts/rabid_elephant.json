@@ -1,0 +1,44 @@
+{
+  "oracle_id": "9daed342-e773-43ec-a8e2-98126b505e8a",
+  "name": "Rabid Elephant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rabid Elephant",
+      "oracle_fingerprint": "3219de70fcbe7062bcf358fe568f70b3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": 2,
+                            "of": { "Count": [{ "Type": "Creature" }, { "Blocks": "This" }] }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": 2,
+                            "of": { "Count": [{ "Type": "Creature" }, { "Blocks": "This" }] }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

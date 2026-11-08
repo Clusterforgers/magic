@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ea93acc8-0c1f-42a2-bed3-f385d210d58f",
+  "name": "Aegis of Honor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aegis of Honor",
+      "oracle_fingerprint": "58ded529d2f3b265f03fe64eb2ba69ec",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": "You",
+                      "source": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                    }
+                  },
+                  "by": {
+                    "InsteadNext": [
+                      {
+                        "DealDamage": {
+                          "source": "Dealer",
+                          "to": { "ControllerOf": "Dealer" },
+                          "amount": "Triggering"
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

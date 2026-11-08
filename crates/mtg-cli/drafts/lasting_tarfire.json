@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ff5502d2-37f5-4ad5-bee2-3a03ec973268",
+  "name": "Lasting Tarfire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lasting Tarfire",
+      "oracle_fingerprint": "8b9b46a243b3f4dd35d459a5e3b0be9a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "CountersPut",
+                    "who": "You",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

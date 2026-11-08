@@ -1,0 +1,152 @@
+{
+  "object": "card",
+  "id": "7fee3f76-20a8-4621-84fb-ddf79c955532",
+  "oracle_id": "5ea675aa-88d6-4387-a14d-e606fa9c3aec",
+  "multiverse_ids": [
+    567225
+  ],
+  "mtgo_id": 101416,
+  "tcgplayer_id": 273659,
+  "cardmarket_id": 661374,
+  "name": "Seasoned Dungeoneer",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/7fee3f76-20a8-4621-84fb-ddf79c955532",
+  "scryfall_uri": "https://scryfall.com/card/clb/660/seasoned-dungeoneer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:01:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/f/7fee3f76-20a8-4621-84fb-ddf79c955532.jpg?1783922514",
+    "normal": "https://cards.scryfall.io/normal/front/7/f/7fee3f76-20a8-4621-84fb-ddf79c955532.jpg?1783922514",
+    "large": "https://cards.scryfall.io/large/front/7/f/7fee3f76-20a8-4621-84fb-ddf79c955532.jpg?1783922514",
+    "png": "https://cards.scryfall.io/png/front/7/f/7fee3f76-20a8-4621-84fb-ddf79c955532.png?1783922514",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/f/7fee3f76-20a8-4621-84fb-ddf79c955532.jpg?1783922514",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/f/7fee3f76-20a8-4621-84fb-ddf79c955532.jpg?1783922514",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/f/7fee3f76-20a8-4621-84fb-ddf79c955532.webp?1783922514",
+    "grid": "https://cards.scryfall.io/grid/front/7/f/7fee3f76-20a8-4621-84fb-ddf79c955532.webp?1783922514",
+    "display": "https://cards.scryfall.io/display/front/7/f/7fee3f76-20a8-4621-84fb-ddf79c955532.webp?1783922514",
+    "art": "https://cards.scryfall.io/art/front/7/f/7fee3f76-20a8-4621-84fb-ddf79c955532.webp?1783922514",
+    "crop": "https://cards.scryfall.io/crop/front/7/f/7fee3f76-20a8-4621-84fb-ddf79c955532.webp?1783922514",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/f/7fee3f76-20a8-4621-84fb-ddf79c955532.jpg?1783922514"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "When this creature enters, you take the initiative.\nWhenever you attack, target attacking Cleric, Rogue, Warrior, or Wizard gains protection from creatures until end of turn. It explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on the creature, then put the card back or put it into your graveyard.)",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Explore"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2c65185b-6cf0-451d-985e-56aa45d9a57d",
+      "component": "combo_piece",
+      "name": "Undercity // The Initiative",
+      "type_line": "Dungeon — Undercity // Card",
+      "uri": "https://api.scryfall.com/cards/2c65185b-6cf0-451d-985e-56aa45d9a57d"
+    },
+    {
+      "object": "related_card",
+      "id": "7fee3f76-20a8-4621-84fb-ddf79c955532",
+      "component": "combo_piece",
+      "name": "Seasoned Dungeoneer",
+      "type_line": "Creature — Human Warrior",
+      "uri": "https://api.scryfall.com/cards/7fee3f76-20a8-4621-84fb-ddf79c955532"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7fee3f76-20a8-4621-84fb-ddf79c955532/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5ea675aa-88d6-4387-a14d-e606fa9c3aec&unique=prints",
+  "collector_number": "660",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "John Stanko",
+  "artist_ids": [
+    "b0f038a0-73b5-4806-918e-9cd11b5f92e1"
+  ],
+  "illustration_id": "77a64b7a-cf95-4221-89e8-84eec55e087b",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 4621,
+  "prices": {
+    "usd": "5.10",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "7.23",
+    "eur_foil": null,
+    "tix": "11.88"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=567225&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSeasoned%2BDungeoneer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSeasoned%2BDungeoneer",
+    "edhrec": "https://edhrec.com/route/?cc=Seasoned+Dungeoneer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F273659%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=661374&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/101416?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

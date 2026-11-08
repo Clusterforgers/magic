@@ -1,0 +1,64 @@
+{
+  "oracle_id": "822ef47e-3f1b-40a6-8c5c-fea3d7deba5b",
+  "name": "Single Combat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Single Combat",
+      "oracle_fingerprint": "a791061f6135f58fe158c43355e789fb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "ControlledBy": "Chooser" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "card" } } },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "Not": { "Is": { "Bound": "card" } } }
+                  ],
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "Not": { "Is": { "Bound": "card" } } }
+                    ]
+                  }
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": "EachPlayer",
+                      "action": {
+                        "Cast": {
+                          "filter": [
+                            { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

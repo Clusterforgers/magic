@@ -1,0 +1,50 @@
+{
+  "oracle_id": "395a7bd6-7c2d-448e-842c-ca53256d7008",
+  "name": "Kaho, Minamo Historian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaho, Minamo Historian",
+      "oracle_fingerprint": "181dcc12e9a62c92e93f04093732fff1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Instant" }],
+                  "count": { "min": 0, "max": 3 },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "ExiledWith": "This" },
+                      { "In": "Exile" },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

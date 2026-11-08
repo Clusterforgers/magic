@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b0632f1b-14e5-4534-b2c5-af9d557fdcc0",
+  "name": "Snaremaster Sprite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snaremaster Sprite",
+      "oracle_fingerprint": "168a997e75b4df1e92729f532ffb17dd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "Tap": { "what": { "Target": 0 } } },
+                          {
+                            "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

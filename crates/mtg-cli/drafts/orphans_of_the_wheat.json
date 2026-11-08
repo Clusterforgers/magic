@@ -1,0 +1,77 @@
+{
+  "oracle_id": "f758bad0-8f36-4985-ad1d-66b695f3bbb6",
+  "name": "Orphans of the Wheat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orphans of the Wheat",
+      "oracle_fingerprint": "24bb4f07d362821d6a8a5a216d80a861",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Untapped"]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Untapped"]
+                    }
+                  },
+                  "as": "tap"
+                }
+              },
+              { "Tap": { "what": { "Bound": "tap" }, "as": "tapped2" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Is": { "Bound": "tapped2" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        },
+                        "toughness": {
+                          "Count": [
+                            { "Is": { "Bound": "tapped2" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Battlefield" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Stack" }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

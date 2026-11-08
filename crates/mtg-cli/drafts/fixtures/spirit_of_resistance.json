@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "5fb66439-df73-4a01-a8d4-6f2334297fdf",
+  "oracle_id": "b075b645-2e5a-4d91-9440-02db4e6f5d08",
+  "multiverse_ids": [
+    22968
+  ],
+  "mtgo_id": 14601,
+  "mtgo_foil_id": 14602,
+  "tcgplayer_id": 7668,
+  "cardmarket_id": 3662,
+  "name": "Spirit of Resistance",
+  "lang": "en",
+  "released_at": "2000-10-02",
+  "uri": "https://api.scryfall.com/cards/5fb66439-df73-4a01-a8d4-6f2334297fdf",
+  "scryfall_uri": "https://scryfall.com/card/inv/38/spirit-of-resistance?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:28:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/f/5fb66439-df73-4a01-a8d4-6f2334297fdf.jpg?1783945711",
+    "normal": "https://cards.scryfall.io/normal/front/5/f/5fb66439-df73-4a01-a8d4-6f2334297fdf.jpg?1783945711",
+    "large": "https://cards.scryfall.io/large/front/5/f/5fb66439-df73-4a01-a8d4-6f2334297fdf.jpg?1783945711",
+    "png": "https://cards.scryfall.io/png/front/5/f/5fb66439-df73-4a01-a8d4-6f2334297fdf.png?1783945711",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/f/5fb66439-df73-4a01-a8d4-6f2334297fdf.jpg?1783945711",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/f/5fb66439-df73-4a01-a8d4-6f2334297fdf.jpg?1783945711",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/f/5fb66439-df73-4a01-a8d4-6f2334297fdf.webp?1783945711",
+    "grid": "https://cards.scryfall.io/grid/front/5/f/5fb66439-df73-4a01-a8d4-6f2334297fdf.webp?1783945711",
+    "display": "https://cards.scryfall.io/display/front/5/f/5fb66439-df73-4a01-a8d4-6f2334297fdf.webp?1783945711",
+    "art": "https://cards.scryfall.io/art/front/5/f/5fb66439-df73-4a01-a8d4-6f2334297fdf.webp?1783945711",
+    "crop": "https://cards.scryfall.io/crop/front/5/f/5fb66439-df73-4a01-a8d4-6f2334297fdf.webp?1783945711",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/f/5fb66439-df73-4a01-a8d4-6f2334297fdf.jpg?1783945711"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "As long as you control a permanent of each color, prevent all damage that would be dealt to you.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set": "inv",
+  "set_name": "Invasion",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainv&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inv?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5fb66439-df73-4a01-a8d4-6f2334297fdf/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab075b645-2e5a-4d91-9440-02db4e6f5d08&unique=prints",
+  "collector_number": "38",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Our victory must come from all of Dominaria, or it will not come.\"\n—Urza",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "John Avon",
+  "artist_ids": [
+    "798f3932-30e0-4420-aa3f-db4d613f89ca"
+  ],
+  "illustration_id": "58d3190e-d87f-41a5-bba0-5e08588ceff2",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16033,
+  "prices": {
+    "usd": "20.55",
+    "usd_foil": "149.99",
+    "usd_etched": null,
+    "eur": "4.55",
+    "eur_foil": "37.55",
+    "tix": "0.58"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=22968&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSpirit%2Bof%2BResistance",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSpirit%2Bof%2BResistance",
+    "edhrec": "https://edhrec.com/route/?cc=Spirit+of+Resistance"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7668%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3662&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14601?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

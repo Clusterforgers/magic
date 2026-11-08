@@ -9,20 +9,20 @@
       "abilities": [
         {
           "Spell": {
-            "targets": [{ "what": "Player" }],
+            "targets": [{ "what": "Opponent" }],
             "effects": [
               { "ExileTop": { "who": { "Target": 0 }, "count": "X", "as": "exiled" } },
               {
-                "Rule": {
-                  "rule": {
-                    "MayCast": {
-                      "what": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }],
-                      "from": "Exile",
-                      "free": true,
-                      "only": { "Bound": "exiled" }
-                    }
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "In": "Exile" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
                   },
-                  "duration": "UntilEndOfTurn"
+                  "as": "card2",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card2" }, "free": true } }]
                 }
               }
             ]

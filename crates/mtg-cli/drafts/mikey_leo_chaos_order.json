@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a86117c1-b83d-4350-9a10-a23b7e67e1bd",
+  "name": "Mikey & Leo, Chaos & Order",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mikey & Leo, Chaos & Order",
+      "oracle_fingerprint": "eb86376b9067d03e16904cd8644f63b6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "CountersPut": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                },
+                "by": "You"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

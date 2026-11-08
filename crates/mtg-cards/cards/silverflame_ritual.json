@@ -1,0 +1,57 @@
+{
+  "oracle_id": "d511573b-35c7-4934-aa46-906e14101664",
+  "name": "Silverflame Ritual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silverflame Ritual",
+      "oracle_fingerprint": "7d9c843d17a659e3b5ca1b7c83b8f53f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "ManaSpent": { "of": "White" } },
+                              "op": "Ge",
+                              "right": 3
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Vigilance" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

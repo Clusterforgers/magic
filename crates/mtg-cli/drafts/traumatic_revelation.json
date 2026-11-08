@@ -1,0 +1,45 @@
+{
+  "oracle_id": "e47253d1-9b12-4989-80c0-604906c88b5e",
+  "name": "Traumatic Revelation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Traumatic Revelation",
+      "oracle_fingerprint": "8919583c2a60378b9703cc19a08ad8c8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Battle" }] }],
+                  "by": "You",
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Incubate": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

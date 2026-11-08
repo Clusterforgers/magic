@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4a6625bd-3dd2-45f1-8dc9-034c833fa90c",
+  "name": "Dwarven Hold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Hold",
+      "oracle_fingerprint": "4ece22049770abb6de86e4da98cf7469",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] }, "times": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

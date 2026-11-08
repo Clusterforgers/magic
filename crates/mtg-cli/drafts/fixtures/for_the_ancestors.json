@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "0da1b0a5-b6ca-41f8-be1c-05a56383c9a9",
+  "oracle_id": "4caa3c55-41b3-48a3-b6a8-4d23aff7d00d",
+  "multiverse_ids": [
+    625105
+  ],
+  "mtgo_id": 114511,
+  "tcgplayer_id": 505022,
+  "cardmarket_id": 722901,
+  "name": "For the Ancestors",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9",
+  "scryfall_uri": "https://scryfall.com/card/cmm/740/for-the-ancestors?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:04:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/d/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9.jpg?1783915479",
+    "normal": "https://cards.scryfall.io/normal/front/0/d/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9.jpg?1783915479",
+    "large": "https://cards.scryfall.io/large/front/0/d/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9.jpg?1783915479",
+    "png": "https://cards.scryfall.io/png/front/0/d/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9.png?1783915479",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/d/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9.jpg?1783915479",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/d/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9.jpg?1783915479",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/d/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9.webp?1783915479",
+    "grid": "https://cards.scryfall.io/grid/front/0/d/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9.webp?1783915479",
+    "display": "https://cards.scryfall.io/display/front/0/d/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9.webp?1783915479",
+    "art": "https://cards.scryfall.io/art/front/0/d/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9.webp?1783915479",
+    "crop": "https://cards.scryfall.io/crop/front/0/d/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9.webp?1783915479",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/d/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9.jpg?1783915479"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose a creature type. Look at the top six cards of your library. You may reveal any number of cards of the chosen type from among them and put the revealed cards into your hand. Put the rest on the bottom of your library in a random order.\nFlashback {3}{G} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Flashback"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0da1b0a5-b6ca-41f8-be1c-05a56383c9a9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4caa3c55-41b3-48a3-b6a8-4d23aff7d00d&unique=prints",
+  "collector_number": "740",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Hristo D. Chukov",
+  "artist_ids": [
+    "e4631396-f0ce-41df-9d35-a7bd1da9d5a6"
+  ],
+  "illustration_id": "9eac16bf-2df8-4ff3-a1df-d1b62cb11476",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8183,
+  "preview": {
+    "source": "Commander At Home",
+    "source_uri": "https://www.youtube.com/watch?v=LyQ-JPT3XEk",
+    "previewed_at": "2023-07-17"
+  },
+  "prices": {
+    "usd": "2.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "2.65",
+    "eur_foil": null,
+    "tix": "10.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=625105&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFor%2Bthe%2BAncestors",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFor%2Bthe%2BAncestors",
+    "edhrec": "https://edhrec.com/route/?cc=For+the+Ancestors"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F505022%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=722901&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/114511?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

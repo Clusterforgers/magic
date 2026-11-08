@@ -1,0 +1,23 @@
+{
+  "oracle_id": "bba30360-c54a-4906-8b2e-84bb1209c43d",
+  "name": "Mind Harness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Harness",
+      "oracle_fingerprint": "326b41c2c98ca070c76506a1d480c04d",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [
+              { "Type": "Creature" },
+              { "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] }
+            ]
+          }
+        },
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

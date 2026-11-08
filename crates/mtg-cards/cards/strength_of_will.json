@@ -1,0 +1,47 @@
+{
+  "oracle_id": "0389b48a-e64c-44fb-8a41-fd571cba237c",
+  "name": "Strength of Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strength of Will",
+      "oracle_fingerprint": "e313cdbb200657ba8c1f99d0f99e1f32",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Indestructible" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+                          "effects": [
+                            {
+                              "PutCounters": {
+                                "on": "This",
+                                "counter": "+1/+1",
+                                "count": "Triggering"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

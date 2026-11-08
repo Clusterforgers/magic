@@ -50,12 +50,18 @@ pub enum Command {
     Compile(CompileArgs),
     /// Check proposed rules files (written by hand or by a model) against stored cards: valid, read back as the printed text, and their support state.
     CheckRules(CheckRulesArgs),
+    /// List the cards of every saved deck that the game does not play whole, the most used first, with the deck check's support state, the decks and the owners; read-only.
+    CoverageDecks(CoverageDecksArgs),
     /// List the cards players marked as important to fix, the most marked first, with each card's support state and newest note.
     FixMarks(FixMarksArgs),
     /// List the verdicts players gave the drafts of the read tier, newest first; `--wrong` keeps the wrong ones and `--quick` the accounts that judged different cards less than 4 seconds apart.
     Reads(ReadsArgs),
+    /// Find the drafts likely to be wrong, read-only and without a model: the engine's English of each draft against the Oracle text on a fixed list of meaning-bearing tokens, as a TSV of findings per draft.
+    DraftSuspects(DraftSuspectsArgs),
     /// Cross-check the rules of the stored precon cards against Forge's card scripts, read from a local checkout: the verbs Forge names that the rules lack, and the unread tail grouped by Forge API and key.
     ForgeCheck(ForgeCheckArgs),
+    /// Translate the Forge card scripts of a read-only checkout into proposals in the format `propose` writes, with mappers and no model; `check-rules` then judges them.
+    TranslateForge(TranslateForgeArgs),
     /// Ask a model for the rules of cards and keep the proposals the checker accepts (needs `ANTHROPIC_API_KEY` and costs money; --dry-run sends nothing).
     Propose(ProposeArgs),
     /// Copy the proposals the checker accepts as `Verified` into the corpus: the rules file in `cards/` and the card's Scryfall record from the cache as its fixture.
@@ -157,6 +163,32 @@ pub struct ForgeCheckArgs {
     pub out: Option<PathBuf>,
 }
 
+/// Options of `translate-forge`.
+#[derive(Debug, Args)]
+pub struct TranslateForgeArgs {
+    /// A local checkout of Forge, or its `forge-gui/res/cardsfolder` directory: the scripts are read from it at run time
+    /// and nothing of them is stored in the repository.
+    #[arg(value_name = "DIR")]
+    pub dir: PathBuf,
+
+    /// Only the cards with these names (any case; the name of a face also selects its card).
+    #[arg(long, value_name = "NAME", num_args = 1.., value_parser = clap::builder::NonEmptyStringValueParser::new())]
+    pub cards: Vec<String>,
+
+    /// Only the cards the database stores (needs a database): a script of a card Scryfall does not list, such as a playtest card, is left out.
+    #[arg(long)]
+    pub stored: bool,
+
+    /// Only the cards of the stored precons (needs a database; implies `--stored`): the funnel, the ranking and the `today` column
+    /// are those of the precon cards, and `precon-today.tsv` lists the state of every precon card.
+    #[arg(long)]
+    pub precons: bool,
+
+    /// Where the proposals go (default: `proposals/forge` in the cache directory): `<slug>.json`, `meta/<slug>.json` and `translate-gaps.tsv`.
+    #[arg(long, value_name = "DIR")]
+    pub out: Option<PathBuf>,
+}
+
 /// Options of `compile`.
 #[derive(Debug, Args)]
 pub struct CompileArgs {
@@ -205,12 +237,36 @@ pub struct CheckRulesArgs {
     pub files: Vec<PathBuf>,
 }
 
+/// Options of `coverage-decks`.
+#[derive(Debug, Args)]
+pub struct CoverageDecksArgs {
+    /// Print JSON instead of the table.
+    #[arg(long)]
+    pub json: bool,
+}
+
 /// Options of `fix-marks`.
 #[derive(Debug, Args)]
 pub struct FixMarksArgs {
     /// How many cards the table lists, the most marked first.
     #[arg(long, value_name = "N", default_value_t = 50)]
     pub limit: u32,
+}
+
+/// Options of `draft-suspects`.
+#[derive(Debug, Args)]
+pub struct DraftSuspectsArgs {
+    /// Only this draft, by slug (the file name without `.json`).
+    #[arg(long, value_name = "SLUG")]
+    pub file: Option<String>,
+
+    /// The drafts directory, with `fixtures/` below it (default `crates/mtg-cli/drafts`).
+    #[arg(long, value_name = "DIR")]
+    pub dir: Option<PathBuf>,
+
+    /// Write the TSV to this file and print only the summary.
+    #[arg(long, value_name = "FILE")]
+    pub out: Option<PathBuf>,
 }
 
 /// Options of `reads`.
@@ -380,6 +436,22 @@ pub struct ProposeArgs {
     /// provider and with or without `--solved-examples`; a card without a script gets no hint.
     #[arg(long, value_name = "DIR")]
     pub forge_hint: Option<PathBuf>,
+
+    /// Line mode, for a local model only (`--provider openai --base-url`): for each name in `--names-file` whose Forge
+    /// translation has exactly one gapped line, the model writes only that ability from a small prompt and the schema of
+    /// its kind; the part is merged into the translation and the checker judges the card. Needs `--forge-hint` and
+    /// `--translations`. The results are proposals marked as model-written and unread; only the checker's `Verified`
+    /// can play without a read.
+    #[arg(long, requires_all = ["names_file", "translations"], conflicts_with_all = ["cards", "sample", "promote"])]
+    pub lines: bool,
+
+    /// With `--lines`: the cards to work on, one name a line, taken in order.
+    #[arg(long, value_name = "FILE", requires = "lines")]
+    pub names_file: Option<PathBuf>,
+
+    /// With `--lines`: the folder of the translator's proposals (`<slug>.json` and `meta/<slug>.json`).
+    #[arg(long, value_name = "DIR", requires = "lines")]
+    pub translations: Option<PathBuf>,
 }
 
 /// Options of `export-pairs`.
@@ -431,6 +503,12 @@ pub struct PromoteArgs {
     /// With `--draft`: the drafts directory (default: `crates/mtg-cli/drafts`).
     #[arg(long, value_name = "DIR", requires = "draft")]
     pub drafts: Option<PathBuf>,
+
+    /// With `--draft`: who wrote the proposals, `sweep` or `forge`, unless a proposal's `meta/<slug>.json` names its
+    /// source. A Forge proposal whose meta says `oracle_matches: true` is also drafted when the checker judges it
+    /// `Mismatch`.
+    #[arg(long, value_name = "SOURCE", requires = "draft", value_parser = ["sweep", "forge"])]
+    pub source: Option<String>,
 
     /// The proposal files, each named `<slug>.json` after its card.
     #[arg(value_name = "FILE", required = true)]

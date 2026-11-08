@@ -1,0 +1,27 @@
+{
+  "oracle_id": "fd6ba826-e7b1-4375-8aaf-c3cd3dc7ba07",
+  "name": "Vex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vex",
+      "oracle_fingerprint": "42995ee2b68ec3c92db95ddffd868d27",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [{ "Draw": { "who": { "ControllerOf": { "Target": 0 } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

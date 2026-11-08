@@ -1,0 +1,26 @@
+{
+  "oracle_id": "fe9e9e2e-f304-4da3-a257-6886b0b1896b",
+  "name": "Mardu Warshrieker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mardu Warshrieker",
+      "oracle_fingerprint": "93450d64c61f589b02184cd8ae5cb9b7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "White", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

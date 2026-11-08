@@ -1,0 +1,22 @@
+{
+  "oracle_id": "14c3692d-16a9-4ef0-98cd-60d15e4aa31f",
+  "name": "Benalish Sleeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benalish Sleeper",
+      "oracle_fingerprint": "3b767e24b968e333bd86f3a017350552",
+      "abilities": [
+        { "Keyword": { "Kicker": "{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

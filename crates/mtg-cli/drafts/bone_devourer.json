@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0ee41ef9-0b39-4d00-a68e-7914839a7175",
+  "name": "Bone Devourer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bone Devourer",
+      "oracle_fingerprint": "b7e81000a26034701600e0dc1302ebfa",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Draw": { "count": { "Counters": { "on": "This", "counter": "+1/+1" } } } },
+              { "LoseLife": { "amount": { "Counters": { "on": "This", "counter": "+1/+1" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

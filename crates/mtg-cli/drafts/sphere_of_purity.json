@@ -1,0 +1,21 @@
+{
+  "oracle_id": "790d3ee2-8b93-464c-9b16-afe62db0048c",
+  "name": "Sphere of Purity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphere of Purity",
+      "oracle_fingerprint": "07dc1c782128f7a5aa319014341736bd",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "to": "You", "source": [{ "Type": "Artifact" }, { "In": "Battlefield" }] }
+            },
+            "by": { "PreventUpTo": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

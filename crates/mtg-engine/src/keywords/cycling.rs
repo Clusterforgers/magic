@@ -25,9 +25,11 @@ impl KeywordRules for Cycling {
             timing: Timing::Instant,
             condition: None,
             limit: None,
+            by: mtg_cards::ability::Activators::Controller,
             from: ZoneKind::Hand,
             targets: Vec::new(),
             effects: vec![Effect::Draw {
+                bind: None,
                 who: mtg_cards::refs::Ref::You,
                 count: mtg_cards::value::Amount::one(),
             }],

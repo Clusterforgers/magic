@@ -1,0 +1,62 @@
+{
+  "oracle_id": "33f2c6cb-f864-4bee-b365-aedf33fbedf5",
+  "name": "Ultron the Annihilator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultron the Annihilator",
+      "oracle_fingerprint": "a08a34011e87865a118cf1d09f9cfe0a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Robot Villain",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Robot", "Villain"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Artifact" }, "Other", { "OwnedBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                {
+                  "ZoneChangeExcept": {
+                    "what": [{ "Type": "Artifact" }, { "Not": "Token" }, { "OwnedBy": "You" }],
+                    "except": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "oracle_id": "b1393388-b8b3-4c54-a086-f5e6d9908972",
+  "name": "Tidal Influence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tidal Influence",
+      "oracle_fingerprint": "d91574f5d3edf1c7c267170712719dd4",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Named": "Tidal Influence" }] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "tide" }, "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "tide" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Color": "Blue" }] },
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "tide" }, "op": "Eq", "to": 1 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Color": "Blue" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "tide" }, "op": "Eq", "to": 3 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        "This",
+                        { "CounterCount": { "kind": { "Other": "tide" }, "op": "Ge", "to": 4 } }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": "This",
+                  "counter": { "Other": "tide" },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "tide" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

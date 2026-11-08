@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6a1e0dfd-2dd1-4372-966e-e28b48ae0115",
+  "name": "Mystery Key",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystery Key",
+      "oracle_fingerprint": "c8efe1a05b09a22b00b648315f42c366",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              { "If": { "condition": "Performed", "then": [{ "Draw": { "count": 3 } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

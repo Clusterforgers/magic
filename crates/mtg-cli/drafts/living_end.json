@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3939fbe0-3be4-41ef-828d-c93f2cb33b4f",
+  "name": "Living End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Living End",
+      "oracle_fingerprint": "417a8c13fcfc8f2171258a239c20c263",
+      "abilities": [
+        { "Keyword": { "Suspend": { "time": 3, "cost": "{2}{B}{B}" } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "Count": [{ "Type": "Creature" }] }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

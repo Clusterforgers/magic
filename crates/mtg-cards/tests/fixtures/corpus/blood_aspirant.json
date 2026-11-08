@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "075947cd-2e06-486a-83a7-97321445a679",
+  "oracle_id": "6db51087-6995-4ed4-978a-3d17d60019af",
+  "multiverse_ids": [
+    627672
+  ],
+  "mtgo_id": 114643,
+  "tcgplayer_id": 503640,
+  "cardmarket_id": 721869,
+  "name": "Blood Aspirant",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/075947cd-2e06-486a-83a7-97321445a679",
+  "scryfall_uri": "https://scryfall.com/card/cmm/208/blood-aspirant?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:07:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/7/075947cd-2e06-486a-83a7-97321445a679.jpg?1783915659",
+    "normal": "https://cards.scryfall.io/normal/front/0/7/075947cd-2e06-486a-83a7-97321445a679.jpg?1783915659",
+    "large": "https://cards.scryfall.io/large/front/0/7/075947cd-2e06-486a-83a7-97321445a679.jpg?1783915659",
+    "png": "https://cards.scryfall.io/png/front/0/7/075947cd-2e06-486a-83a7-97321445a679.png?1783915659",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/7/075947cd-2e06-486a-83a7-97321445a679.jpg?1783915659",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/7/075947cd-2e06-486a-83a7-97321445a679.jpg?1783915659",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/7/075947cd-2e06-486a-83a7-97321445a679.webp?1783915659",
+    "grid": "https://cards.scryfall.io/grid/front/0/7/075947cd-2e06-486a-83a7-97321445a679.webp?1783915659",
+    "display": "https://cards.scryfall.io/display/front/0/7/075947cd-2e06-486a-83a7-97321445a679.webp?1783915659",
+    "art": "https://cards.scryfall.io/art/front/0/7/075947cd-2e06-486a-83a7-97321445a679.webp?1783915659",
+    "crop": "https://cards.scryfall.io/crop/front/0/7/075947cd-2e06-486a-83a7-97321445a679.webp?1783915659",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/7/075947cd-2e06-486a-83a7-97321445a679.jpg?1783915659"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Satyr Berserker",
+  "oracle_text": "Whenever you sacrifice a permanent, put a +1/+1 counter on this creature.\n{1}{R}, {T}, Sacrifice a creature or enchantment: This creature deals 1 damage to target creature. That creature can't block this turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/075947cd-2e06-486a-83a7-97321445a679/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6db51087-6995-4ed4-978a-3d17d60019af&unique=prints",
+  "collector_number": "208",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "It's a small step from revel to bloodbath.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tyler Walpole",
+  "artist_ids": [
+    "70c4c8c7-61a8-44e7-8fb1-161b7f943e7e"
+  ],
+  "illustration_id": "0b2f2b6b-814b-4faf-9b58-e393cb6c9e55",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15372,
+  "penny_rank": 10302,
+  "preview": {
+    "source": "TheMaverickGirl",
+    "source_uri": "https://twitter.com/TheMaverickGal/status/1679174340753997841",
+    "previewed_at": "2023-07-12"
+  },
+  "prices": {
+    "usd": "0.18",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.18",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=627672&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBlood%2BAspirant",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBlood%2BAspirant",
+    "edhrec": "https://edhrec.com/route/?cc=Blood+Aspirant"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F503640%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=721869&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/114643?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

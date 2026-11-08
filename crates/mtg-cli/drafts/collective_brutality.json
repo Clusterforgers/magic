@@ -1,0 +1,63 @@
+{
+  "oracle_id": "22a78443-db21-4656-b38a-e3e3186fd94b",
+  "name": "Collective Brutality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Collective Brutality",
+      "oracle_fingerprint": "202420426db1d422410920305305dfff",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 3 },
+                  "extra_mode_cost": [{ "Discard": {} }],
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Reveal": {
+                            "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                          }
+                        },
+                        {
+                          "Discard": {
+                            "who": { "Target": 0 },
+                            "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                            "by": "You"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+                        { "GainLife": { "amount": 2 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "oracle_id": "c19ec6aa-aadd-4767-b695-384fd07b4ded",
+  "name": "Coffin Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coffin Queen",
+      "oracle_fingerprint": "b7264bb05deb6c55a47772885b54ccbf",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              { "Remember": { "what": { "Bound": "moved" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Untapped": { "what": ["This"] } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                { "Did": { "action": "ChangedController", "what": ["This"] } }
+              ]
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                    {
+                      "AnyOf": [
+                        { "In": "Battlefield" },
+                        { "In": "Hand" },
+                        { "In": "Library" },
+                        { "In": "Graveyard" },
+                        { "In": "Exile" },
+                        { "In": "Stack" }
+                      ]
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Is": { "Remembered": { "on": "This", "slot": "remembered" } } }
+                    ]
+                  }
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

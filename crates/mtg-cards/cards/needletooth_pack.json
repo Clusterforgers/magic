@@ -1,0 +1,43 @@
+{
+  "oracle_id": "ac68fe30-a4a5-45f6-8782-fed57718c42e",
+  "name": "Needletooth Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Needletooth Pack",
+      "oracle_fingerprint": "83c7adfa912fe263190cad607eda7318",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

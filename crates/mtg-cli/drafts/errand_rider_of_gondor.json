@@ -1,0 +1,52 @@
+{
+  "oracle_id": "00749bad-dded-4fec-bf34-ff14cf561c26",
+  "name": "Errand-Rider of Gondor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Errand-Rider of Gondor",
+      "oracle_fingerprint": "dd966116be78469a4af7e66dac168656",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "Supertype": "Legendary" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -17,31 +17,35 @@
                       "effects": [
                         {
                           "Search": {
-                            "filter": [{ "Type": "Creature" }, { "Type": "Land" }],
+                            "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }],
                             "reveal": true,
-                            "as": "card"
+                            "as": "found"
                           }
                         },
                         {
                           "If": {
                             "condition": {
-                              "Matches": {
-                                "subject": { "Bound": "card" },
-                                "selector": [{ "Type": "Land" }]
+                              "CountOf": {
+                                "subject": { "Bound": "found" },
+                                "selector": [{ "Type": "Land" }],
+                                "op": "Ge",
+                                "right": 1
                               }
                             },
                             "then": [
                               {
                                 "Move": {
-                                  "what": { "Bound": "card" },
+                                  "what": { "Bound": "found" },
                                   "to": { "Battlefield": { "tapped": true } }
                                 }
-                              },
-                              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+                              }
+                            ],
+                            "otherwise": [
+                              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } }
                             ]
                           }
                         },
-                        { "Transform": { "what": { "Bound": "card" } } }
+                        { "Shuffle": {} }
                       ]
                     },
                     {
@@ -69,7 +73,11 @@
                     {
                       "targets": [
                         {
-                          "what": { "Object": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                            ]
+                          }
                         }
                       ],
                       "effects": [{ "Exile": { "what": { "Target": 0 } } }]

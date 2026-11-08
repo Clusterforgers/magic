@@ -939,3 +939,16 @@ describe('the creatures change while the prompt is open', () => {
     expect(amounts()).toEqual([2, 2])
   })
 })
+
+describe('an attacker that may assign as though it were not blocked', () => {
+  it('offers the choice beside Confirm and answers with no damage to any blocker', async () => {
+    const { answer, user } = renderAssign({ ...options(3, [b1]), unblocked: true })
+    await user.click(screen.getByRole('button', { name: 'Assign as though unblocked' }))
+    expect(answer.mock.calls).toEqual([[{ AssignDamage: [] }]])
+  })
+
+  it('does not offer it to an attacker that has no such choice', () => {
+    renderAssign(options(3, [b1]))
+    expect(screen.queryByRole('button', { name: 'Assign as though unblocked' })).toBeNull()
+  })
+})

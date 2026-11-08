@@ -1,0 +1,63 @@
+{
+  "oracle_id": "2bdb2495-cc67-4750-a300-7881b0346514",
+  "name": "Dusk's Landing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dusk's Landing",
+      "oracle_fingerprint": "444d578fa434c8c94cc7fc0198b66cbc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Sum": [
+                          {
+                            "When": {
+                              "condition": {
+                                "Compare": {
+                                  "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                                  "op": "Gt",
+                                  "right": 1
+                                }
+                              },
+                              "then": 1,
+                              "otherwise": {
+                                "Tallied": { "who": "You", "what": "LifeGainedTotal" }
+                              }
+                            }
+                          },
+                          {
+                            "When": {
+                              "condition": {
+                                "Compare": {
+                                  "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                                  "op": "Gt",
+                                  "right": 1
+                                }
+                              },
+                              "then": 1,
+                              "otherwise": { "Tallied": { "who": "Opponents", "what": "LifeLost" } }
+                            }
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [{ "Seek": { "filter": [{ "Subtype": "Vampire" }], "count": 2 } }],
+                  "otherwise": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

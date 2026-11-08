@@ -1,0 +1,44 @@
+{
+  "oracle_id": "759e7e44-a082-419f-abd3-aabc45c47334",
+  "name": "Gargantos, the Endbringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gargantos, the Endbringer",
+      "oracle_fingerprint": "9fdf992d150da0253370ef301acb8c77",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "MultiplyCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents", "combat": true } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "Not": { "Among": "Triggering" } }
+                    }
+                  },
+                  "amount": "Triggering"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

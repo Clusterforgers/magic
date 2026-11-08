@@ -1,0 +1,12 @@
+{
+  "oracle_id": "7c9c3060-ca9d-4868-84c6-2a95b0fa8885",
+  "name": "Mirror Gallery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Gallery",
+      "oracle_fingerprint": "5616e0005dae56303ed48ec210595c28",
+      "abilities": [{ "Rule": { "rule": { "NoLegendRule": "EachPlayer" } } }]
+    }
+  ]
+}

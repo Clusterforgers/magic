@@ -1,0 +1,71 @@
+{
+  "oracle_id": "1e939df0-d421-42b7-b642-88b3555fd8df",
+  "name": "Drizzt Do'Urden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drizzt Do'Urden",
+      "oracle_fingerprint": "a426e237aabff75ee55ef3373fb5c7c7",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Guenhwyvar",
+                      "colors": ["Green"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat"],
+                      "power": 4,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  {
+                    "Compare": {
+                      "stat": "Power",
+                      "op": "Gt",
+                      "to": { "Stat": { "of": "This", "stat": "Power" } }
+                    }
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Sum": [
+                      { "Stat": { "of": "Triggering", "stat": "Power" } },
+                      { "Times": { "by": -1, "of": { "Stat": { "of": "This", "stat": "Power" } } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

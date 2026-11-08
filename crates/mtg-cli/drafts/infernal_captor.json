@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2f0dec6c-797f-4dc3-9994-066c00cbf1a4",
+  "name": "Infernal Captor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Captor",
+      "oracle_fingerprint": "6b18a44e975c84b147b754898d95a05b",
+      "abilities": [
+        { "Keyword": "Exploit" },
+        {
+          "Triggered": {
+            "when": { "Exploits": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

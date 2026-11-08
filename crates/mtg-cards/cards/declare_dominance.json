@@ -1,0 +1,35 @@
+{
+  "oracle_id": "db640c5b-4548-44b1-a9cd-cc6838707dbb",
+  "name": "Declare Dominance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Declare Dominance",
+      "oracle_fingerprint": "1cb2bb17061630fdad989d418b58694a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "Every" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

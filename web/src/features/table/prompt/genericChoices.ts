@@ -184,6 +184,9 @@ export function genericChoices(kind: DecisionKind, words: GenericWords): Generic
       unlisted: 0,
     }
   }
+  if ('ChooseName' in kind) {
+    return some(pick('none', 'Name no card', { ChooseName: '' }))
+  }
   if ('DivideAmount' in kind) {
     const { total, among, can_cancel: cancel } = kind.DivideAmount
     const even = total >= among.length && among.length > 0

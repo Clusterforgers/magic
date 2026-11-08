@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e3b40e34-edad-4838-a4d5-c167037d9ff7",
+  "name": "Liberating Combustion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liberating Combustion",
+      "oracle_fingerprint": "6bd4b685e4e4478185924d05cc65d7b5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 6 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard"],
+                        "filter": [{ "OwnedBy": "You" }, { "Named": "Chandra, Pyrogenius" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

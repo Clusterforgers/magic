@@ -1,0 +1,84 @@
+{
+  "oracle_id": "31d4d8ce-36ba-4297-8c7a-34a83ba25255",
+  "name": "Nissa, Vital Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa, Vital Force",
+      "oracle_fingerprint": "3dce2870f1098c4dfdbced64ca3dc198",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                            "to": "Battlefield"
+                          }
+                        },
+                        "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

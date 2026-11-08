@@ -1,0 +1,33 @@
+{
+  "oracle_id": "bdacd7a4-3d14-45eb-85a6-33ee711b34af",
+  "name": "Emissary of Soulfire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emissary of Soulfire",
+      "oracle_fingerprint": "fc513c3961023d64662bf26d6af3c3ee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 2 }],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "exalted" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

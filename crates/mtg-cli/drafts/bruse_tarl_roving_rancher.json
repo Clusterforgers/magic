@@ -1,0 +1,86 @@
+{
+  "oracle_id": "c22589e1-1721-43a3-897e-990af6ebcffa",
+  "name": "Bruse Tarl, Roving Rancher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bruse Tarl, Roving Rancher",
+      "oracle_fingerprint": "67973dcc0681fa483abfa9f58003a107",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Ox" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "DoubleStrike" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Ox",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Ox"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "what": [{ "Not": { "Type": "Land" } }],
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" }
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

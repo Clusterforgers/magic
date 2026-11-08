@@ -1,0 +1,41 @@
+{
+  "oracle_id": "07634620-a83a-4ca0-8a60-2a21368a2661",
+  "name": "Dewdrop Cure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dewdrop Cure",
+      "oracle_fingerprint": "07797ffe0bc7cba3749c8cb09ecac7c2",
+      "abilities": [
+        { "Keyword": { "Gift": "Card" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "When": {
+                      "condition": { "Compare": { "left": "Promised", "op": "Ge", "right": 1 } },
+                      "then": 3,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

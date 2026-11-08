@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b02ab3c7-fe4a-443c-b860-ba971d3301b0",
+  "name": "Mercadian Bazaar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mercadian Bazaar",
+      "oracle_fingerprint": "e04a5ff741c0ba0d1d737b59090c7fa7",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "storage" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "storage" }, "count": "X" } }
+            ],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] }, "times": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

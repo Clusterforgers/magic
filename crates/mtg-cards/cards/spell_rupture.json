@@ -1,0 +1,33 @@
+{
+  "oracle_id": "934c50aa-7d2e-4c9e-b91b-1e8c4055e1c6",
+  "name": "Spell Rupture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spell Rupture",
+      "oracle_fingerprint": "8241037e2986d17832639a4ccfe5babe",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

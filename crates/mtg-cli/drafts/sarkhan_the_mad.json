@@ -1,0 +1,96 @@
+{
+  "oracle_id": "e70a93e4-2fe7-46d3-8958-153ab2fcfd99",
+  "name": "Sarkhan the Mad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarkhan the Mad",
+      "oracle_fingerprint": "0473d2d9a6fff03f2d37fdcae320c03c",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": "Hand",
+                  "as": "moved4"
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "This",
+                  "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Is": { "Target": 0 } }]
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Subtype": "Dragon" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

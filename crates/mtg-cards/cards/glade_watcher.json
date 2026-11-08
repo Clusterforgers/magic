@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f696b727-083e-4825-80d9-4bac35289958",
+  "name": "Glade Watcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glade Watcher",
+      "oracle_fingerprint": "ed6813487bfd0d107323adea60ab2a9a",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Total": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

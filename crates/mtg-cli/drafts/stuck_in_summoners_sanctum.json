@@ -1,0 +1,34 @@
+{
+  "oracle_id": "84d308ce-c3c5-4612-accc-6e6cc68a33be",
+  "name": "Stuck in Summoner's Sanctum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stuck in Summoner's Sanctum",
+      "oracle_fingerprint": "c4a411dd6f773f9d34af96ac0e970430",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }] }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "ActivateKind": { "kind": "Every", "sources": [{ "Is": "Attached" }] } }
+              }
+            }
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } }
+      ]
+    }
+  ]
+}

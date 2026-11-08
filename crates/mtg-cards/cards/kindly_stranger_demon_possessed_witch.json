@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7579e1a2-2747-4e37-9a7a-c13b62190195",
+  "name": "Kindly Stranger // Demon-Possessed Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kindly Stranger",
+      "oracle_fingerprint": "8553c8ac1941d4c57091b2ba148471c8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "condition": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Demon-Possessed Witch",
+      "oracle_fingerprint": "cdbf3e8600477d4fbd5584db44e32515",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "May": { "effects": [{ "Destroy": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

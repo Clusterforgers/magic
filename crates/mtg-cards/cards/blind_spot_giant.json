@@ -1,0 +1,26 @@
+{
+  "oracle_id": "37165859-87bc-4d44-95a2-39051ab20a14",
+  "name": "Blind-Spot Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blind-Spot Giant",
+      "oracle_fingerprint": "188c0aba2323e038c549918e99281f69",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack", "CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Giant" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

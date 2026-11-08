@@ -1,0 +1,20 @@
+{
+  "oracle_id": "58374ee4-0497-4d12-847c-0f67555f8399",
+  "name": "Fencer Clique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fencer Clique",
+      "oracle_fingerprint": "10100eb15f5b36378a688fc32cf48df9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "effects": [{ "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "689cd2ed-be81-4769-a8ec-287946301396",
+  "oracle_id": "d39a492e-a599-4283-bfc1-8e99065a9303",
+  "multiverse_ids": [
+    1913
+  ],
+  "tcgplayer_id": 3641,
+  "cardmarket_id": 7475,
+  "name": "Elvish Scout",
+  "lang": "en",
+  "released_at": "1994-11-01",
+  "uri": "https://api.scryfall.com/cards/689cd2ed-be81-4769-a8ec-287946301396",
+  "scryfall_uri": "https://scryfall.com/card/fem/68a/elvish-scout?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T13:04:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/8/689cd2ed-be81-4769-a8ec-287946301396.jpg?1783947888",
+    "normal": "https://cards.scryfall.io/normal/front/6/8/689cd2ed-be81-4769-a8ec-287946301396.jpg?1783947888",
+    "large": "https://cards.scryfall.io/large/front/6/8/689cd2ed-be81-4769-a8ec-287946301396.jpg?1783947888",
+    "png": "https://cards.scryfall.io/png/front/6/8/689cd2ed-be81-4769-a8ec-287946301396.png?1783947888",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/8/689cd2ed-be81-4769-a8ec-287946301396.jpg?1783947888",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/8/689cd2ed-be81-4769-a8ec-287946301396.jpg?1783947888",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/8/689cd2ed-be81-4769-a8ec-287946301396.webp?1783947888",
+    "grid": "https://cards.scryfall.io/grid/front/6/8/689cd2ed-be81-4769-a8ec-287946301396.webp?1783947888",
+    "display": "https://cards.scryfall.io/display/front/6/8/689cd2ed-be81-4769-a8ec-287946301396.webp?1783947888",
+    "art": "https://cards.scryfall.io/art/front/6/8/689cd2ed-be81-4769-a8ec-287946301396.webp?1783947888",
+    "crop": "https://cards.scryfall.io/crop/front/6/8/689cd2ed-be81-4769-a8ec-287946301396.webp?1783947888",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/8/689cd2ed-be81-4769-a8ec-287946301396.jpg?1783947888"
+  },
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Elf Scout",
+  "oracle_text": "{G}, {T}: Untap target attacking creature you control. Prevent all combat damage that would be dealt to and dealt by it this turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cf7390b1-341a-4ae8-a325-da0f5f322f13",
+  "set": "fem",
+  "set_name": "Fallen Empires",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/cf7390b1-341a-4ae8-a325-da0f5f322f13",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afem&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fem?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/689cd2ed-be81-4769-a8ec-287946301396/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad39a492e-a599-4283-bfc1-8e99065a9303&unique=prints",
+  "collector_number": "68a",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Even one whose ears were closely tuned to the sounds of Havenwood could miss hearing a Scout move past.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Poole",
+  "artist_ids": [
+    "bfdeaf09-f915-4058-8e8b-bcac3bc43c33"
+  ],
+  "illustration_id": "5477e674-ea0e-400f-bfe3-38465f6a52cc",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 24597,
+  "prices": {
+    "usd": "0.17",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=1913&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DElvish%2BScout",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DElvish%2BScout",
+    "edhrec": "https://edhrec.com/route/?cc=Elvish+Scout"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F3641%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=7475&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Elvish+Scout&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

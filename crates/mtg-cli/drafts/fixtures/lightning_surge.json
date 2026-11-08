@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "0452d78d-eafc-4ccb-a478-d1f46bcefffe",
+  "oracle_id": "dc55e69e-e1b8-4129-902c-c71bcb952418",
+  "multiverse_ids": [
+    34208
+  ],
+  "mtgo_id": 17552,
+  "mtgo_foil_id": 17553,
+  "tcgplayer_id": 10256,
+  "cardmarket_id": 2222,
+  "name": "Lightning Surge",
+  "lang": "en",
+  "released_at": "2002-05-27",
+  "uri": "https://api.scryfall.com/cards/0452d78d-eafc-4ccb-a478-d1f46bcefffe",
+  "scryfall_uri": "https://scryfall.com/card/jud/96/lightning-surge?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:18:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/4/0452d78d-eafc-4ccb-a478-d1f46bcefffe.jpg?1783945116",
+    "normal": "https://cards.scryfall.io/normal/front/0/4/0452d78d-eafc-4ccb-a478-d1f46bcefffe.jpg?1783945116",
+    "large": "https://cards.scryfall.io/large/front/0/4/0452d78d-eafc-4ccb-a478-d1f46bcefffe.jpg?1783945116",
+    "png": "https://cards.scryfall.io/png/front/0/4/0452d78d-eafc-4ccb-a478-d1f46bcefffe.png?1783945116",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/4/0452d78d-eafc-4ccb-a478-d1f46bcefffe.jpg?1783945116",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/4/0452d78d-eafc-4ccb-a478-d1f46bcefffe.jpg?1783945116",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/4/0452d78d-eafc-4ccb-a478-d1f46bcefffe.webp?1783945116",
+    "grid": "https://cards.scryfall.io/grid/front/0/4/0452d78d-eafc-4ccb-a478-d1f46bcefffe.webp?1783945116",
+    "display": "https://cards.scryfall.io/display/front/0/4/0452d78d-eafc-4ccb-a478-d1f46bcefffe.webp?1783945116",
+    "art": "https://cards.scryfall.io/art/front/0/4/0452d78d-eafc-4ccb-a478-d1f46bcefffe.webp?1783945116",
+    "crop": "https://cards.scryfall.io/crop/front/0/4/0452d78d-eafc-4ccb-a478-d1f46bcefffe.webp?1783945116",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/4/0452d78d-eafc-4ccb-a478-d1f46bcefffe.jpg?1783945116"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Lightning Surge deals 4 damage to any target.\nThreshold — If there are seven or more cards in your graveyard, instead Lightning Surge deals 6 damage to that permanent or player and the damage can't be prevented.\nFlashback {5}{R}{R} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Threshold",
+    "Flashback"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cd82de1a-36fd-4618-bfe8-b45532a582d9",
+  "set": "jud",
+  "set_name": "Judgment",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/cd82de1a-36fd-4618-bfe8-b45532a582d9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajud&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jud?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0452d78d-eafc-4ccb-a478-d1f46bcefffe/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adc55e69e-e1b8-4129-902c-c71bcb952418&unique=prints",
+  "collector_number": "96",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ron Spears",
+  "artist_ids": [
+    "fce9030b-86bd-4439-b06a-920a1eeb184c"
+  ],
+  "illustration_id": "8c0f160b-123a-4b0b-a550-1d95eeffce4f",
+  "border_color": "black",
+  "frame": "1997",
+  "frame_effects": [
+    "tombstone"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28152,
+  "penny_rank": 13281,
+  "prices": {
+    "usd": "0.53",
+    "usd_foil": "4.96",
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": "3.78",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=34208&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLightning%2BSurge",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLightning%2BSurge",
+    "edhrec": "https://edhrec.com/route/?cc=Lightning+Surge"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F10256%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2222&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/17552?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

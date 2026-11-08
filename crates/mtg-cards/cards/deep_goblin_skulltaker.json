@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b7f56bbb-961a-4641-9446-7292ef188b1d",
+  "name": "Deep Goblin Skulltaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deep Goblin Skulltaker",
+      "oracle_fingerprint": "9d5a1cd65b4a001bd563e798cc185ddc",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Descended" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

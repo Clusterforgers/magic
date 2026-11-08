@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d1c222fe-0ca7-415b-a28a-3b704df53d66",
+  "name": "Okina Nightwatch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Okina Nightwatch",
+      "oracle_fingerprint": "8d5459f51f91bcff8680d8e32f4926e4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                "op": "Gt",
+                "right": {
+                  "Largest": { "who": "Opponents", "of": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "57d411c6-68d8-441d-885f-17412f6503c2",
+  "name": "Tephraderm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tephraderm",
+      "oracle_fingerprint": "dba9d1c862b675effc8991308165efa2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "In": "Battlefield" }],
+                "to": "This"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Dealer", "amount": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "to": "This"
+              }
+            },
+            "effects": [
+              { "DealDamage": { "to": { "ControllerOf": "Dealer" }, "amount": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

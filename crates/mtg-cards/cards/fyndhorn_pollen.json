@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2f18967d-c2cd-449d-a288-df6343672743",
+  "name": "Fyndhorn Pollen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fyndhorn Pollen",
+      "oracle_fingerprint": "3308167cfdfe278438ee8bda9607d73b",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

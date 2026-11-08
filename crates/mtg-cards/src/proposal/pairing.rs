@@ -6,8 +6,8 @@ use super::{ClauseReport, ClauseState, Stray};
 use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
-    Clause, ClauseKind, block_plan, creature_at, die_row, die_row_texts, own_names, read_keyword,
-    read_keywords, same_text, static_pair_texts, written_variants,
+    Clause, ClauseKind, block_plan, creature_at, die_row, die_row_texts, either_way_pair_texts,
+    own_names, read_keyword, read_keywords, same_written_text, static_pair_texts, written_variants,
 };
 use crate::keyword::Keyword;
 use crate::support::PrintedCard;
@@ -51,12 +51,43 @@ pub(crate) fn pair_card(card: &Card, clauses: &[Clause], printed: &PrintedCard) 
         let of_face: Vec<&Clause> = clauses.iter().filter(|c| c.face == face).collect();
         let creature_at = printed.faces.get(face).and_then(creature_at);
         let names = printed.faces.get(face).map(own_names).unwrap_or_default();
-        let found = Pairer::new(face, abilities, &of_face, (creature_at, names)).run();
+        let attachment = printed
+            .faces
+            .get(face)
+            .map_or(("", String::new()), |printed| {
+                (
+                    attachment_word(&printed.type_line),
+                    enchanted_noun(&printed.oracle_text),
+                )
+            });
+        let found = Pairer::new(face, abilities, &of_face, (creature_at, names, attachment)).run();
         paired.clauses.extend(found.clauses);
         paired.strays.extend(found.strays);
         paired.places.extend(found.places);
     }
     paired
+}
+
+/// "equipped" for an Equipment, "enchanted" for an Aura: the word its attached object is named by.
+fn attachment_word(type_line: &str) -> &'static str {
+    if type_line.contains("Equipment") {
+        "equipped"
+    } else if type_line.contains("Aura") {
+        "enchanted"
+    } else {
+        ""
+    }
+}
+
+/// What an Aura enchants by its first line ("Enchant land" is "land"); "creature" for any other line.
+fn enchanted_noun(oracle: &str) -> String {
+    oracle
+        .lines()
+        .next()
+        .and_then(|line| line.strip_prefix("Enchant "))
+        .filter(|noun| !noun.contains(' '))
+        .unwrap_or("creature")
+        .to_owned()
 }
 
 /// The clause kinds an ability can stand for.
@@ -69,12 +100,18 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::Static { .. }
         | Ability::AdditionalCost { .. }
         | Ability::FreeCast { .. }
+        | Ability::AltCast { .. }
         | Ability::CastOnly { .. }
+        | Ability::OpeningHand
+        | Ability::OpeningReveal { .. }
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
         Ability::Activated { .. } => &[ClauseKind::Activated],
         // Exert is a sentence of the card ("You may exert this creature as it attacks."), read by the static templates.
-        Ability::Keyword(Keyword::Exert { .. }) => &[ClauseKind::Keyword, ClauseKind::Static],
+        // So is the flash permission whose permanent is sacrificed at the next cleanup step.
+        Ability::Keyword(Keyword::Exert { .. } | Keyword::FlashSacrifice) => {
+            &[ClauseKind::Keyword, ClauseKind::Static]
+        }
         Ability::Keyword(_) => &[ClauseKind::Keyword],
         Ability::Manual { .. } => &[],
     }
@@ -86,11 +123,46 @@ fn stripped(text: &str) -> &str {
     let Some((word, rest)) = text.split_once(" \u{2014} ") else {
         return text;
     };
+    // "Max speed" is no flavor: it is the condition of the ability (CR 702.179).
+    if word == "Max speed" {
+        return text;
+    }
     let ability_word = !word.contains(['~', ',', '.', ':', '\n']) && word.split(' ').count() <= 5;
     let numerals = word
         .chars()
         .all(|c| matches!(c, 'I' | 'V' | 'X' | ',' | ' '));
     if ability_word || numerals { rest } else { text }
+}
+
+/// The clause without the ability words that open a later sentence ("Draw three cards. Adamant — If ..."), which are
+/// flavor too (CR 207.2c); `None` when it has none (r7c).
+fn r7c_unworded(text: &str) -> Option<String> {
+    let mut out = String::with_capacity(text.len());
+    let mut rest = text;
+    let mut found = false;
+    // A sentence ends at ". ", or at ".\n" between the clauses of one ability.
+    while let Some(at) = [rest.find(". "), rest.find(".\n")]
+        .into_iter()
+        .flatten()
+        .min()
+    {
+        let (head, after) = rest.split_at(at + 2);
+        out.push_str(head);
+        rest = after;
+        let Some((word, tail)) = rest.split_once(" \u{2014} ") else {
+            continue;
+        };
+        let capital = word.chars().next().is_some_and(char::is_uppercase);
+        if capital
+            && !word.contains(['~', ',', '.', ':', '\n', '"'])
+            && word.split(' ').count() <= 3
+        {
+            rest = tail;
+            found = true;
+        }
+    }
+    out.push_str(rest);
+    found.then_some(out)
 }
 
 /// Whether a clause is a block that reads into several abilities, none of which the renderers write: a level of a
@@ -100,7 +172,10 @@ fn is_block(text: &str) -> bool {
     let station = head.split_once("+ | ").is_some_and(|(threshold, _)| {
         !threshold.is_empty() && threshold.chars().all(|c| c.is_ascii_digit())
     });
-    head.starts_with("LEVEL ") || head.contains(": Level ") || station
+    head.starts_with("LEVEL ")
+        || head.contains(": Level ")
+        || station
+        || crate::compile::word_block(text).is_some()
 }
 
 /// Whether a clause is a row of the table of a die roll: a range of totals, then `|` ("1—9 | ...", "15+ | ...", "20 | ...").
@@ -120,7 +195,7 @@ fn bare(keyword: &Keyword) -> Keyword {
             count: *count,
             abilities: Vec::new(),
         },
-        other => other.clone(),
+        other => super::r6c_bare::canonical(other),
     }
 }
 
@@ -155,6 +230,11 @@ struct Pairer<'a> {
     creature_at: Option<i32>,
     /// The names the face calls itself by, which the clauses show as `~` (also inside the name of a token).
     names: Vec<String>,
+    /// "a Dragon was beheld" or "evidence was collected": the words for the paid additional cost of the face.
+    beheld: Option<String>,
+    /// What the face attaches by: "equipped" for an Equipment, "enchanted" for an Aura, nothing for another card; and
+    /// the noun of what an Aura enchants ("land" for "Enchant land").
+    attachment: (&'static str, String),
     slots: Vec<Slot<'a>>,
     taken: Vec<bool>,
     slot_of: Vec<Option<usize>>,
@@ -167,13 +247,15 @@ impl<'a> Pairer<'a> {
         face: usize,
         abilities: &'a [Ability],
         clauses: &[&'a Clause],
-        (creature_at, names): (Option<i32>, Vec<String>),
+        (creature_at, names, attachment): (Option<i32>, Vec<String>, (&'static str, String)),
     ) -> Self {
         Pairer {
             face,
             abilities,
             creature_at,
             names,
+            beheld: super::e15c_beheld::paid_words(abilities),
+            attachment,
             slots: clauses
                 .iter()
                 .map(|&clause| Slot {
@@ -192,11 +274,18 @@ impl<'a> Pairer<'a> {
     fn run(mut self) -> Paired {
         self.manual();
         self.keywords();
+        self.alt_keywords();
+        self.equip_options();
+        self.champions();
+        self.r5g_hand_keywords();
         self.static_pairs();
+        self.either_way_pairs();
+        self.haunt_pairs();
         self.exact();
         self.blocks();
         self.leftovers();
         self.tables();
+        self.r5g_escalate();
         let face = self.face;
         Paired {
             clauses: self
@@ -235,16 +324,60 @@ impl<'a> Pairer<'a> {
         })
     }
 
+    /// The wording with the attached object named by the face's own attachment: the data keeps "what the source is
+    /// attached to" and the face says whether that is equipped or enchanted, and what an Aura enchants.
+    fn attached(&self, variant: &str) -> String {
+        let (word, noun) = &self.attachment;
+        let enchanted = format!("nchanted {noun}");
+        let (from, to) = match *word {
+            "equipped" => ("nchanted creature", "quipped creature"),
+            "enchanted" => ("quipped creature", enchanted.as_str()),
+            _ => return variant.to_owned(),
+        };
+        // A quoted ability belongs to the object that gains it, which names its own attachment ("enchanted permanent
+        // ... has "Equipped creature has lifelink."").
+        let outside_quotes = |text: &str, from: &str, to: &str| {
+            text.split('"')
+                .enumerate()
+                .map(|(at, part)| {
+                    if at % 2 == 0 {
+                        part.replace(from, to)
+                    } else {
+                        part.to_owned()
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join("\"")
+        };
+        let variant = outside_quotes(variant, from, to);
+        if *word == "enchanted" && noun != "creature" {
+            return outside_quotes(&variant, "nchanted creature", &enchanted);
+        }
+        variant
+    }
+
     /// Whether a written wording is the clause text; the face's own names count as `~` in it, as in the clause.
     fn same(&self, variant: &str, text: &str) -> bool {
-        if same_text(variant, text) {
+        let worded = self.attached(variant);
+        let variant = worded.as_str();
+        if same_written_text(variant, text) {
             return true;
+        }
+        if let Some(unworded) = r7c_unworded(text) {
+            return self.same(variant, &unworded);
+        }
+        if let Some(plain) = self
+            .beheld
+            .as_deref()
+            .and_then(|words| super::e15c_beheld::unpaid_words(text, words))
+        {
+            return self.same(variant, &plain);
         }
         let mut shown = variant.to_owned();
         for name in &self.names {
             shown = shown.replace(name.as_str(), "~");
         }
-        shown != variant && same_text(&shown, text)
+        shown != variant && same_written_text(&shown, text)
     }
 
     /// The clauses a `Manual` ability of the proposal leaves to the table.
@@ -294,6 +427,117 @@ impl<'a> Pairer<'a> {
         }
     }
 
+    /// The alternative-cost keywords (warp, surge, web-slinging, impending): an `AltCast` and its riders stand for the line.
+    fn alt_keywords(&mut self) {
+        let abilities = self.abilities;
+        for at in 0..abilities.len() {
+            if self.taken[at] {
+                continue;
+            }
+            let Some((line, count)) = crate::alt_riders::keyword_line(&abilities[at..]) else {
+                continue;
+            };
+            if (at..at + count).any(|each| self.taken[each]) {
+                continue;
+            }
+            let Some(slot) = self.find_text(&[ClauseKind::Keyword], &[line], false) else {
+                continue;
+            };
+            self.settle(at, slot, ClauseState::Reads { ability: at });
+            for later in at + 1..at + count {
+                self.taken[later] = true;
+                self.slot_of[later] = Some(slot);
+                self.places[later] = Some(self.slots[slot].clause.span.start);
+            }
+        }
+    }
+
+    /// Champion: the trigger that exiles a creature or sacrifices the champion stands for the keyword line.
+    fn champions(&mut self) {
+        let abilities = self.abilities;
+        for (at, ability) in abilities.iter().enumerate() {
+            if self.taken[at] {
+                continue;
+            }
+            let Some(line) = crate::compile::champion_line(ability) else {
+                continue;
+            };
+            if let Some(slot) =
+                self.find_text(&[ClauseKind::Keyword, ClauseKind::Static], &[line], false)
+            {
+                self.settle(at, slot, ClauseState::Reads { ability: at });
+            }
+        }
+    }
+
+    /// Reinforce and Forecast: the activated ability from the hand that the keyword means stands for its line.
+    fn r5g_hand_keywords(&mut self) {
+        let abilities = self.abilities;
+        for (at, ability) in abilities.iter().enumerate() {
+            if self.taken[at] {
+                continue;
+            }
+            let mut lines = crate::compile::forecast_lines(ability, written_variants);
+            lines.extend(crate::compile::reinforce_line(ability));
+            if lines.is_empty() {
+                continue;
+            }
+            let kinds = [ClauseKind::Keyword, ClauseKind::Activated];
+            if let Some(slot) = self.find_text(&kinds, &lines, false) {
+                self.settle(at, slot, ClauseState::Reads { ability: at });
+            }
+        }
+    }
+
+    /// Escalate: the keyword line of a modal spell reads as the cost it adds for each mode beyond the first, beside the
+    /// clause the spell stands for.
+    fn r5g_escalate(&mut self) {
+        for (at, ability) in self.abilities.iter().enumerate() {
+            let (Some(cost), Some(_)) = (crate::compile::escalate_cost(ability), self.slot_of[at])
+            else {
+                continue;
+            };
+            let found = self.slots.iter().position(|slot| {
+                slot.state.is_none()
+                    && slot.clause.kind == ClauseKind::Keyword
+                    && crate::compile::escalate_reads(slot.text, cost)
+            });
+            if let Some(slot) = found {
+                self.slots[slot].state = Some(ClauseState::Reads { ability: at });
+            }
+        }
+    }
+
+    /// Equip with an option: the activated abilities that attach the Equipment stand for the one line of the text.
+    fn equip_options(&mut self) {
+        let abilities = self.abilities;
+        for at in 0..abilities.len() {
+            if self.taken[at] {
+                continue;
+            }
+            let Some((line, count)) = crate::compile::equip_line(&abilities[at..]) else {
+                continue;
+            };
+            if (at..at + count).any(|each| self.taken[each]) {
+                continue;
+            }
+            let kinds = [
+                ClauseKind::Keyword,
+                ClauseKind::Static,
+                ClauseKind::Activated,
+            ];
+            let Some(slot) = self.find_text(&kinds, &[line], false) else {
+                continue;
+            };
+            self.settle(at, slot, ClauseState::Reads { ability: at });
+            for later in at + 1..at + count {
+                self.taken[later] = true;
+                self.slot_of[later] = Some(slot);
+                self.places[later] = Some(self.slots[slot].clause.span.start);
+            }
+        }
+    }
+
     /// Whether the abilities from `at` on are the keywords, one after the other.
     fn run_reads(&self, at: usize, keywords: &[Keyword]) -> bool {
         !keywords.is_empty()
@@ -303,6 +547,48 @@ impl<'a> Pairer<'a> {
                     Some(Ability::Keyword(found)) if bare(found) == bare(keyword)
                 ) && (offset == 0 || !self.taken[at + offset])
             })
+    }
+
+    /// A haunt creature's "When ~ enters or the creature it haunts dies, ..." is one sentence of two abilities: the
+    /// enters trigger and the same trigger from exile when the haunted creature dies (CR 702.55).
+    fn haunt_pairs(&mut self) {
+        let abilities = self.abilities;
+        for at in 1..abilities.len() {
+            if self.taken[at - 1] || self.taken[at] {
+                continue;
+            }
+            let written = haunt_pair_texts(&abilities[at - 1], &abilities[at]);
+            if written.is_empty() {
+                continue;
+            }
+            if let Some(slot) = self.find_text(&[ClauseKind::Triggered], &written, false) {
+                self.settle(at - 1, slot, ClauseState::Reads { ability: at - 1 });
+                self.taken[at] = true;
+                self.slot_of[at] = Some(slot);
+                self.places[at] = self.places[at - 1];
+            }
+        }
+    }
+
+    /// Two triggers or two shields for either side of a fight are one sentence of the card ("blocks or becomes blocked
+    /// by a creature", "dealt to and dealt by enchanted creature").
+    fn either_way_pairs(&mut self) {
+        let abilities = self.abilities;
+        for at in 1..abilities.len() {
+            if self.taken[at - 1] || self.taken[at] {
+                continue;
+            }
+            let written = either_way_pair_texts(&abilities[at - 1], &abilities[at]);
+            if written.is_empty() {
+                continue;
+            }
+            if let Some(slot) = self.find_text(kinds_of(&abilities[at - 1]), &written, false) {
+                self.settle(at - 1, slot, ClauseState::Reads { ability: at - 1 });
+                self.taken[at] = true;
+                self.slot_of[at] = Some(slot);
+                self.places[at] = self.places[at - 1];
+            }
+        }
     }
 
     /// Two statics under one condition are one sentence of the card.
@@ -425,7 +711,10 @@ impl<'a> Pairer<'a> {
             ) {
                 let text = &self.slots[at].clause.text;
                 let wanted = rows.get(at - head - 1).map_or(&[][..], Vec::as_slice);
-                if !wanted.iter().any(|written| same_text(written, text)) {
+                if !wanted
+                    .iter()
+                    .any(|written| same_written_text(written, text))
+                {
                     let written = wanted
                         .iter()
                         .max_by_key(|variant| common_prefix(variant, text))
@@ -584,9 +873,49 @@ pub(super) fn unmatched(ability: &Ability, at: usize, wanted: &str, clause: &str
     }
 }
 
+/// The sentence of a haunt creature's two abilities: `enters` is "When ~ enters, X" and `haunted` the same trigger from
+/// exile on "the creature it haunts dies"; none for any other pair.
+pub(crate) fn haunt_pair_texts(enters: &Ability, haunted: &Ability) -> Vec<String> {
+    let (
+        Ability::Triggered {
+            when: first,
+            intervening_if: None,
+            limit: None,
+            from: crate::refs::ZoneKind::Battlefield,
+            targets,
+            effects,
+        },
+        Ability::Triggered {
+            when: second,
+            intervening_if: None,
+            limit: None,
+            from: crate::refs::ZoneKind::Exile,
+            targets: other_targets,
+            effects: other_effects,
+        },
+    ) = (enters, haunted)
+    else {
+        return Vec::new();
+    };
+    let this = crate::refs::Selector::this();
+    let haunts = crate::refs::Selector(vec![crate::refs::Pred::HauntedBy(crate::refs::Ref::This)]);
+    let entering = matches!(first, TriggerPattern::ZoneChange { what, from: None, to: Some(crate::refs::ZoneKind::Battlefield) } if *what == this);
+    let dying = matches!(second, TriggerPattern::ZoneChange { what, from: Some(crate::refs::ZoneKind::Battlefield), to: Some(crate::refs::ZoneKind::Graveyard) } if *what == haunts);
+    if !entering || !dying || targets != other_targets || effects != other_effects {
+        return Vec::new();
+    }
+    written_variants(enters)
+        .into_iter()
+        .filter_map(|text| {
+            text.strip_prefix("When ~ enters, ")
+                .map(|rest| format!("When ~ enters or the creature it haunts dies, {rest}"))
+        })
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
-    //! Goal: a row of the table of a die roll is told from other clauses by its range of totals and its bar, whatever the range looks like, and only an ability that rolls a die owns the rows after its clause; a spell ability reads a line the compiler takes for a static only when its wording names every line.
+    //! Goal: a row of the table of a die roll is told from other clauses by its range of totals and its bar, whatever the range looks like, and only an ability that rolls a die owns the rows after its clause; a spell ability reads a line the compiler takes for a static only when its wording names every line; what a source is attached to is named by the face (equipped for an Equipment, enchanted for an Aura), and the other word reads as another rule.
     use rstest::rstest;
 
     use super::*;
@@ -635,6 +964,72 @@ mod tests {
         assert_eq!(all_read, reads, "{states:?}");
     }
 
+    /// An activated ability that pumps what the source is attached to (Demonspine Whip).
+    const W16_PUMP: &str = r#"{"faces":[{"abilities":[{"Activated":{"cost":"{X}","effects":[{"Continuous":{"affected":"Attached","duration":"UntilEndOfTurn","mods":[{"ModifyPT":{"power":"X","toughness":0}}]}}]}}]}]}"#;
+
+    #[rstest]
+    #[case::equipment_equipped("Artifact \u{2014} Equipment", "Equipped", true)]
+    #[case::equipment_enchanted("Artifact \u{2014} Equipment", "Enchanted", false)]
+    #[case::aura_enchanted("Enchantment \u{2014} Aura", "Enchanted", true)]
+    #[case::aura_equipped("Enchantment \u{2014} Aura", "Equipped", false)]
+    #[case::other_card_equipped("Artifact", "Equipped", false)]
+    #[case::other_card_enchanted("Artifact", "Enchanted", true)]
+    fn w16_the_attached_object_is_named_by_the_face(
+        #[case] type_line: &str,
+        #[case] word: &str,
+        #[case] reads: bool,
+    ) {
+        let text = format!("{{X}}: {word} creature gets +X/+0 until end of turn.");
+        let states = c11f_states(type_line, &text, W16_PUMP);
+        let read = states
+            .iter()
+            .all(|state| matches!(state, ClauseState::Reads { ability: 0 }));
+        assert_eq!(read, reads, "{states:?}");
+    }
+
+    const FIX27_GRANT: &str = r#"{"faces":[{"abilities":[{"Static":{"affected":"Attached","mods":[{"GrantAbility":{"Static":{"affected":"Attached","mods":[{"AddKeyword":"Lifelink"}]}}}],"condition":{"Matches":{"subject":"Attached","selector":[{"Subtype":"Equipment"}]}}}}]}]}"#;
+
+    #[rstest]
+    #[case::aura_grants_to_an_equipment("enchanted permanent", "it", "Equipped", "lifelink", true)]
+    #[case::aura_grants_another_keyword(
+        "enchanted permanent",
+        "it",
+        "Equipped",
+        "deathtouch",
+        false
+    )]
+    #[case::aura_names_its_own_object_equipped(
+        "equipped creature",
+        "it",
+        "Equipped",
+        "lifelink",
+        false
+    )]
+    #[case::aura_gives_to_equipped_creature(
+        "enchanted permanent",
+        "equipped creature",
+        "Equipped",
+        "lifelink",
+        false
+    )]
+    fn fix27_a_quoted_ability_keeps_its_own_attachment(
+        #[case] subject: &str,
+        #[case] holder: &str,
+        #[case] word: &str,
+        #[case] keyword: &str,
+        #[case] reads: bool,
+    ) {
+        let type_line = "Enchantment \u{2014} Aura";
+        let text = format!(
+            "As long as {subject} is an Equipment, {holder} has \"{word} creature has {keyword}.\""
+        );
+        let states = c11f_states(type_line, &text, FIX27_GRANT);
+        let read = states
+            .iter()
+            .all(|state| matches!(state, ClauseState::Reads { ability: 0 }));
+        assert_eq!(read, reads, "{states:?}");
+    }
+
     #[rstest]
     #[case::a_range("1—9 | Each player sacrifices a permanent of their choice.", true)]
     #[case::a_single_total("20 | Each opponent sacrifices two permanents.", true)]
@@ -679,5 +1074,84 @@ mod c11g_stripped_tests {
     #[case::no_dash("Draw a card.", "Draw a card.")]
     fn c11g_only_a_leading_word_is_stripped(#[case] text: &str, #[case] kept: &str) {
         assert_eq!(stripped(text), kept);
+    }
+
+    #[rstest]
+    #[case::adamant(
+        "Draw three cards. Adamant \u{2014} If at least three blue mana was spent to cast this spell, scry 3.",
+        Some(
+            "Draw three cards. If at least three blue mana was spent to cast this spell, scry 3."
+        )
+    )]
+    #[case::two_words(
+        "Draw a card. Spell mastery \u{2014} If X, scry 1.",
+        Some("Draw a card. If X, scry 1.")
+    )]
+    #[case::next_clause(
+        "Draw a card.\nDelirium \u{2014} If X, scry 1.",
+        Some("Draw a card.\nIf X, scry 1.")
+    )]
+    #[case::leading_only("Raid \u{2014} When ~ enters, draw a card.", None)]
+    // A mode's name on a later line, or a dash inside a sentence, stays.
+    #[case::mode("Choose one \u{2014}\n\u{2022} Disarm \u{2014} Draw a card.", None)]
+    #[case::lowercase("Draw a card. then \u{2014} scry 1.", None)]
+    #[case::quoted("Draw a card. \"Hi \u{2014} there\"", None)]
+    fn r7c_ability_words_of_later_sentences_are_flavor(
+        #[case] text: &str,
+        #[case] unworded: Option<&str>,
+    ) {
+        assert_eq!(
+            crate::proposal::pairing::r7c_unworded(text).as_deref(),
+            unworded
+        );
+    }
+}
+
+#[cfg(test)]
+mod e14f_tests {
+    //! Goal: a haunt creature's enters trigger and its trigger from exile on the haunted creature's death read as the one sentence "When ~ enters or the creature it haunts dies, ..." only when both do the same, and the trigger from exile alone reads as "When the creature ~ haunts dies".
+    use rstest::rstest;
+
+    use super::haunt_pair_texts;
+    use crate::ability::Ability;
+    use crate::compile::{same_text, written_variants};
+
+    const DESTROY: &str = r#""targets":[{"what":{"Object":[{"Type":"Enchantment"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]"#;
+    const ENTERS: &str = r#"{"ZoneChange":{"what":["This"],"to":"Battlefield"}}"#;
+    const HAUNTED: &str =
+        r#"{"ZoneChange":{"what":[{"HauntedBy":"This"}],"from":"Battlefield","to":"Graveyard"}}"#;
+
+    fn triggered(when: &str, from: &str, body: &str) -> Ability {
+        serde_json::from_str(&format!(
+            r#"{{"Triggered":{{"when":{when},{from}{body}}}}}"#
+        ))
+        .unwrap_or_else(|error| panic!("{error}"))
+    }
+
+    #[rstest]
+    #[case::the_same(DESTROY, r#""from":"Exile","#, true)]
+    #[case::another_effect(r#""effects":[{"Draw":{}}]"#, r#""from":"Exile","#, false)]
+    #[case::not_from_exile(DESTROY, "", false)]
+    fn the_pair_is_one_sentence(#[case] second: &str, #[case] from: &str, #[case] same: bool) {
+        let enters = triggered(ENTERS, "", DESTROY);
+        let haunted = triggered(HAUNTED, from, second);
+        let found = haunt_pair_texts(&enters, &haunted);
+        let clause = "When ~ enters or the creature it haunts dies, destroy target enchantment.";
+        assert_eq!(
+            found.iter().any(|text| same_text(text, clause)),
+            same,
+            "{found:?}"
+        );
+    }
+
+    #[test]
+    fn the_trigger_from_exile_alone_names_the_haunted_creature() {
+        let haunted = triggered(HAUNTED, r#""from":"Exile","#, DESTROY);
+        let found = written_variants(&haunted);
+        let clause = "When the creature ~ haunts dies, destroy target enchantment.";
+        assert!(
+            found.iter().any(|text| same_text(text, clause)),
+            "{found:?}"
+        );
     }
 }

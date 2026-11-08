@@ -1,0 +1,55 @@
+{
+  "oracle_id": "8364cf93-c323-46f4-854f-ae872e484438",
+  "name": "Márton Stromgald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Márton Stromgald",
+      "oracle_fingerprint": "af75882f7424c6c18ef4e9fc2f0b852a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                        "toughness": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Blocking", "Other"] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, "Blocking", "Other"] },
+                        "toughness": { "Count": [{ "Type": "Creature" }, "Blocking", "Other"] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

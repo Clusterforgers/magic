@@ -300,6 +300,7 @@ mod tests {
             deathtouch: false,
             form: crate::combat::DamageForm::Normal,
             toxic: 0,
+            unpreventable: false,
         };
         apply_event(game, &event).unwrap();
     }

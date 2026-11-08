@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ee811356-ef6a-4972-b827-32c2d329b3c3",
+  "name": "Drowsing Tyrannodon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drowsing Tyrannodon",
+      "oracle_fingerprint": "91757cb25eb1ea0c3770284c022dde43",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1355424e-9909-41dc-8d43-b8d21b0919bf",
+  "name": "Deadeye Rig-Hauler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadeye Rig-Hauler",
+      "oracle_fingerprint": "279663e5b58e4a6b77da586b79bdbb96",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

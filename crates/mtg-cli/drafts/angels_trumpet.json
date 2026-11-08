@@ -1,0 +1,59 @@
+{
+  "oracle_id": "f187f766-3696-419e-9865-58023a46446b",
+  "name": "Angel's Trumpet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel's Trumpet",
+      "oracle_fingerprint": "20e16f3f036b14da471abebf0afdfb44",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "Tap": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Untapped",
+                      { "Not": "AttackedThisTurn" },
+                      { "ControlledBy": "ActivePlayer" }
+                    ]
+                  },
+                  "as": "tapped"
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Count": [
+                      { "Is": { "Bound": "tapped" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

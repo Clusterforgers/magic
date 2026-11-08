@@ -1,0 +1,24 @@
+{
+  "oracle_id": "2241ef7d-3e9d-44ee-88ac-e8ad6fb2444e",
+  "name": "Vernal Equinox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vernal Equinox",
+      "oracle_fingerprint": "2943abd60a9e7d907753053912abca0b",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "who": "EachPlayer",
+                "what": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }],
+                "flash": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2825ff5a-5340-4494-bfde-80f6f5bce5a2",
+  "name": "Lavaborn Muse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lavaborn Muse",
+      "oracle_fingerprint": "ef7fc0e77ff1766d33f20a82d7c15d19",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "OwnedBy": "ActivePlayer" }, { "In": "Hand" }] },
+                "op": "Le",
+                "right": 2
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

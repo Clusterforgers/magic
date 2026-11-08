@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b058ee2e-ddb9-4f49-bbe0-16b72d54d4da",
+  "name": "Extremis Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extremis Elite",
+      "oracle_fingerprint": "7a74e3829c272f3dd6d84489abd1a2ef",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}{R}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}{R}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

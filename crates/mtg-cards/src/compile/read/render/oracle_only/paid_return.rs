@@ -22,7 +22,8 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         paid.as_slice(),
         [Effect::Move {
             what: Ref::This,
-            to: Destination::Hand
+            to: Destination::Hand,
+            ..
         }]
     );
     if !returns || !unpaid.is_empty() {

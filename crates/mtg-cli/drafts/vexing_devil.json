@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b582e485-c024-47f0-ad6f-b918d32288ba",
+  "name": "Vexing Devil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vexing Devil",
+      "oracle_fingerprint": "1bb9229f2146855a90bac080c38ea813",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Opponents",
+                  "cost": [{ "DamageToYou": 4 }],
+                  "paid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

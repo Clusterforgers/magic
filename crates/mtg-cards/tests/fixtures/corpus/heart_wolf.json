@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "e0427dcd-26da-462b-b936-a382d3d8afce",
+  "oracle_id": "2f50c45f-058d-41fb-9965-08c2e0edc8ac",
+  "multiverse_ids": [
+    3004
+  ],
+  "tcgplayer_id": 4507,
+  "cardmarket_id": 7807,
+  "name": "Heart Wolf",
+  "lang": "en",
+  "released_at": "1995-10-01",
+  "uri": "https://api.scryfall.com/cards/e0427dcd-26da-462b-b936-a382d3d8afce",
+  "scryfall_uri": "https://scryfall.com/card/hml/75/heart-wolf?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:54:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/0/e0427dcd-26da-462b-b936-a382d3d8afce.jpg?1783947283",
+    "normal": "https://cards.scryfall.io/normal/front/e/0/e0427dcd-26da-462b-b936-a382d3d8afce.jpg?1783947283",
+    "large": "https://cards.scryfall.io/large/front/e/0/e0427dcd-26da-462b-b936-a382d3d8afce.jpg?1783947283",
+    "png": "https://cards.scryfall.io/png/front/e/0/e0427dcd-26da-462b-b936-a382d3d8afce.png?1783947283",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/0/e0427dcd-26da-462b-b936-a382d3d8afce.jpg?1783947283",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/0/e0427dcd-26da-462b-b936-a382d3d8afce.jpg?1783947283",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/0/e0427dcd-26da-462b-b936-a382d3d8afce.webp?1783947283",
+    "grid": "https://cards.scryfall.io/grid/front/e/0/e0427dcd-26da-462b-b936-a382d3d8afce.webp?1783947283",
+    "display": "https://cards.scryfall.io/display/front/e/0/e0427dcd-26da-462b-b936-a382d3d8afce.webp?1783947283",
+    "art": "https://cards.scryfall.io/art/front/e/0/e0427dcd-26da-462b-b936-a382d3d8afce.webp?1783947283",
+    "crop": "https://cards.scryfall.io/crop/front/e/0/e0427dcd-26da-462b-b936-a382d3d8afce.webp?1783947283",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/0/e0427dcd-26da-462b-b936-a382d3d8afce.jpg?1783947283"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Wolf",
+  "oracle_text": "First strike\n{T}: Target Dwarf creature gets +2/+0 and gains first strike until end of turn. When that creature leaves the battlefield this turn, sacrifice this creature. Activate only during combat.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "First strike"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5ac1f606-e682-46e9-ad0f-122a3783581b",
+  "set": "hml",
+  "set_name": "Homelands",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5ac1f606-e682-46e9-ad0f-122a3783581b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ahml&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/hml?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e0427dcd-26da-462b-b936-a382d3d8afce/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2f50c45f-058d-41fb-9965-08c2e0edc8ac&unique=prints",
+  "collector_number": "75",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Margaret Organ-Kean",
+  "artist_ids": [
+    "95951caa-bec8-4720-b836-471f7e7740cb"
+  ],
+  "illustration_id": "2b7906c4-6b3c-4c6f-9a14-2687da37b3fd",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 32074,
+  "prices": {
+    "usd": "0.62",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.74",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=3004&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHeart%2BWolf",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHeart%2BWolf",
+    "edhrec": "https://edhrec.com/route/?cc=Heart+Wolf"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4507%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=7807&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Heart+Wolf&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

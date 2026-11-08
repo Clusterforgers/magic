@@ -1,0 +1,43 @@
+{
+  "oracle_id": "b191ae0c-7d54-459f-abe3-aab5d792e514",
+  "name": "Aim for the Head",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aim for the Head",
+      "oracle_fingerprint": "df370452d8503d3eb95e21f68eeb151a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Subtype": "Zombie" }] } }],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "who": { "Target": 0 },
+                            "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                            "count": { "min": 2, "max": 2 },
+                            "as": "picked"
+                          }
+                        },
+                        { "Exile": { "what": { "Bound": "picked" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

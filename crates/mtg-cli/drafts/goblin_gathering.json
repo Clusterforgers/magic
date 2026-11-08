@@ -1,0 +1,45 @@
+{
+  "oracle_id": "01f06642-015f-40b4-a940-af576ad9e82c",
+  "name": "Goblin Gathering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Gathering",
+      "oracle_fingerprint": "9eb374288f84eaa729a5c106cbb8c8ef",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "OwnedBy": "You" },
+                          { "Named": "Goblin Gathering" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      2
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

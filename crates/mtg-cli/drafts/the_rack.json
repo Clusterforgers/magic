@@ -1,0 +1,42 @@
+{
+  "oracle_id": "3d873e1d-4fac-42c4-bb31-77e76099e1ef",
+  "name": "The Rack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Rack",
+      "oracle_fingerprint": "f486931204e0440dcd44604cc0f14469",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Opponent" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Chosen" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Chosen",
+                  "amount": {
+                    "Sum": [
+                      3,
+                      {
+                        "Times": {
+                          "by": -1,
+                          "of": { "Count": [{ "OwnedBy": "Chosen" }, { "In": "Hand" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

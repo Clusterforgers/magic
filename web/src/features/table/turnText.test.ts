@@ -153,6 +153,7 @@ describe('describeMulligan', () => {
     ['NeedsHand', 0, 'Waiting for a new hand'],
     ['Deciding', 0, 'Deciding whether to keep'],
     ['Mulliganing', 1, 'Mulligan taken, waiting for the table · 1 mulligan'],
+    ['Opening', 0, 'Choosing cards to begin on the battlefield'],
     ['Scrying', 1, 'Looking at the top card of their library · 1 mulligan'],
     ['Kept', 2, 'Kept their hand · 2 mulligans'],
     [{ Bottoming: 1 }, 1, 'Putting 1 card on the bottom · 1 mulligan'],

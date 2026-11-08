@@ -1,0 +1,38 @@
+{
+  "oracle_id": "9a293c87-ad40-4c6c-9fa4-9a8b5f081ac9",
+  "name": "Darkblade Agent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darkblade Agent",
+      "oracle_fingerprint": "2b987eb2450d619b018641ba97803bcd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddKeyword": "Deathtouch" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [{ "Draw": {} }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Surveilled" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

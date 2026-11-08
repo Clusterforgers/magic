@@ -1,0 +1,47 @@
+{
+  "oracle_id": "0d80caeb-d2c2-4d0a-b903-dea170fee2cf",
+  "name": "Lyzolda, the Blood Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lyzolda, the Blood Witch",
+      "oracle_fingerprint": "4515bc7b0911883c334478c18dfdfdf5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Paid",
+                      "selector": [{ "Color": "Red" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Paid",
+                      "selector": [{ "Color": "Black" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

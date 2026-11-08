@@ -1,0 +1,78 @@
+{
+  "oracle_id": "e9784eb4-96f2-409e-a7b5-eb6478644943",
+  "name": "Cauldron Dance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cauldron Dance",
+      "oracle_fingerprint": "0960ba2697ba09e775b2a91bb7bccd63",
+      "abilities": [
+        { "CastOnly": { "condition": "InCombat" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "moved" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked2" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved3"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved3" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "moved3" } },
+                        "filter": [{ "Is": { "Bound": "moved3" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "moved3" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

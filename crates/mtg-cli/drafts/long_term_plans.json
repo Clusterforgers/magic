@@ -8,7 +8,18 @@
       "oracle_fingerprint": "5a9b66011f44d850227276c09eccade9",
       "abilities": [
         {
-          "Spell": { "effects": [{ "Search": { "filter": [], "as": "card" } }, { "Shuffle": {} }] }
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "as": "found" } },
+              { "Shuffle": {} },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Library": { "place": { "Below": 2 } } }
+                }
+              }
+            ]
+          }
         }
       ]
     }

@@ -12,8 +12,11 @@
             "targets": [
               {
                 "what": "AnyTarget",
-                "bounds": { "min": 1, "max": null },
-                "divide": { "Sum": ["X", { "Count": [] }] }
+                "bounds": {
+                  "min": 0,
+                  "max": { "Sum": [{ "Players": "EachPlayer" }, { "Count": [] }] }
+                },
+                "divide": { "Sum": ["X", 1] }
               }
             ],
             "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]

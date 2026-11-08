@@ -1,0 +1,44 @@
+{
+  "oracle_id": "9d546a53-5beb-40f5-b358-377810c8a75d",
+  "name": "Ironclaw Buzzardiers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ironclaw Buzzardiers",
+      "oracle_fingerprint": "ef20634e8d2f214804ba034a50fd00d0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CanBlockOnly": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Compare": { "stat": "Power", "op": "Ge", "to": 2 } } }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

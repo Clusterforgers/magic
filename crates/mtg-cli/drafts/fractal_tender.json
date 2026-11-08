@@ -1,0 +1,45 @@
+{
+  "oracle_id": "cb45860a-1937-4803-b6d8-331a35be39fd",
+  "name": "Fractal Tender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fractal Tender",
+      "oracle_fingerprint": "750a2b4210f0ad9d2cc1bd04b2c01a6f",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        { "Keyword": { "Macro": { "name": "increment", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tally": { "event": "CountersPut", "who": "You", "filter": ["This"] } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "token" }, "counter": "+1/+1", "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

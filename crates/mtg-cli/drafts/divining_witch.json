@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ebd77c52-97ea-421f-99eb-c6e2263cdecf",
+  "name": "Divining Witch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divining Witch",
+      "oracle_fingerprint": "42c18cbca7c60156b9b390ba8b36d8f5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "Tap", { "Discard": {} }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              { "ExileTop": { "count": 6, "as": "exiled2" } },
+              {
+                "RevealUntil": {
+                  "filter": [{ "ChosenAs": "name" }],
+                  "as": "found3",
+                  "revealed_as": "revealed4"
+                }
+              },
+              { "Move": { "what": { "Bound": "found3" }, "to": "Hand" } },
+              { "Exile": { "what": { "Bound": "revealed4" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

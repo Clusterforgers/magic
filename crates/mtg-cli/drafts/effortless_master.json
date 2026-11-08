@@ -1,0 +1,46 @@
+{
+  "oracle_id": "185e0892-194f-43ac-853f-1e142bf8476e",
+  "name": "Effortless Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Effortless Master",
+      "oracle_fingerprint": "236d70a0c806d300e8893ec36d1dba8b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Compare": {
+                        "left": {
+                          "Tally": {
+                            "event": "SpellCast",
+                            "who": "EachPlayer",
+                            "filter": [{ "ControlledBy": "You" }]
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 2
+                      }
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

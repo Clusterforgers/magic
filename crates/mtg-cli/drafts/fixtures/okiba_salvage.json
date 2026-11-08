@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "d9e4485d-c208-46b4-9b5d-48e55e2ee182",
+  "oracle_id": "142409ce-1187-4554-bc07-6432c4d22dbc",
+  "multiverse_ids": [
+    548419
+  ],
+  "mtgo_id": 97162,
+  "arena_id": 79546,
+  "tcgplayer_id": 262664,
+  "cardmarket_id": 608221,
+  "name": "Okiba Salvage",
+  "lang": "en",
+  "released_at": "2022-02-18",
+  "uri": "https://api.scryfall.com/cards/d9e4485d-c208-46b4-9b5d-48e55e2ee182",
+  "scryfall_uri": "https://scryfall.com/card/neo/118/okiba-salvage?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:24:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/9/d9e4485d-c208-46b4-9b5d-48e55e2ee182.jpg?1783923877",
+    "normal": "https://cards.scryfall.io/normal/front/d/9/d9e4485d-c208-46b4-9b5d-48e55e2ee182.jpg?1783923877",
+    "large": "https://cards.scryfall.io/large/front/d/9/d9e4485d-c208-46b4-9b5d-48e55e2ee182.jpg?1783923877",
+    "png": "https://cards.scryfall.io/png/front/d/9/d9e4485d-c208-46b4-9b5d-48e55e2ee182.png?1783923877",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/9/d9e4485d-c208-46b4-9b5d-48e55e2ee182.jpg?1783923877",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/9/d9e4485d-c208-46b4-9b5d-48e55e2ee182.jpg?1783923877",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/9/d9e4485d-c208-46b4-9b5d-48e55e2ee182.webp?1783923877",
+    "grid": "https://cards.scryfall.io/grid/front/d/9/d9e4485d-c208-46b4-9b5d-48e55e2ee182.webp?1783923877",
+    "display": "https://cards.scryfall.io/display/front/d/9/d9e4485d-c208-46b4-9b5d-48e55e2ee182.webp?1783923877",
+    "art": "https://cards.scryfall.io/art/front/d/9/d9e4485d-c208-46b4-9b5d-48e55e2ee182.webp?1783923877",
+    "crop": "https://cards.scryfall.io/crop/front/d/9/d9e4485d-c208-46b4-9b5d-48e55e2ee182.webp?1783923877",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/9/d9e4485d-c208-46b4-9b5d-48e55e2ee182.jpg?1783923877"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return target creature or Vehicle card from your graveyard to the battlefield. Then put two +1/+1 counters on that permanent if you control an artifact and an enchantment.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "59a2059f-5482-433f-8761-eb2e17859b71",
+  "set": "neo",
+  "set_name": "Kamigawa: Neon Dynasty",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/59a2059f-5482-433f-8761-eb2e17859b71",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aneo&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/neo?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d9e4485d-c208-46b4-9b5d-48e55e2ee182/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A142409ce-1187-4554-bc07-6432c4d22dbc&unique=prints",
+  "collector_number": "118",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Some fool would rather throw a whole mech away than repair one hydraulic actuator? It must be my lucky day.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lie Setiawan",
+  "artist_ids": [
+    "6f771d3f-310e-4aa4-841f-5ba4ba9f025a"
+  ],
+  "illustration_id": "973f0a5d-251e-43f2-b4f6-10c5477669ce",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20513,
+  "preview": {
+    "source": "Carol Anet",
+    "source_uri": "https://twitter.com/carolanet/status/1488886798508040193",
+    "previewed_at": "2022-02-02"
+  },
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "0.18",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.13",
+    "tix": "0.01"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=548419&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOkiba%2BSalvage",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOkiba%2BSalvage",
+    "edhrec": "https://edhrec.com/route/?cc=Okiba+Salvage"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F262664%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=608221&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/97162?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

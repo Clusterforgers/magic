@@ -1,0 +1,42 @@
+{
+  "oracle_id": "af045109-ed00-469f-814b-c759c0c5357c",
+  "name": "Monstrous Step",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monstrous Step",
+      "oracle_fingerprint": "3675ed7bce9fd24b323e623629992d77",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 7, "toughness": 7 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MustBlockAttacker": { "who": { "Target": 1 }, "attacker": { "Target": 0 } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

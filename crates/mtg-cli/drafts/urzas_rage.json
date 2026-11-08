@@ -1,0 +1,36 @@
+{
+  "oracle_id": "363f8c66-fe0c-44b9-987d-1d160e3f9c54",
+  "name": "Urza's Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza's Rage",
+      "oracle_fingerprint": "caaddb19385cb05f0c87ebb49c089111",
+      "abilities": [
+        { "Keyword": { "Kicker": "{8}{R}" } },
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "When": { "condition": "Kicked", "then": 0, "otherwise": 3 } }
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 10, "unpreventable": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

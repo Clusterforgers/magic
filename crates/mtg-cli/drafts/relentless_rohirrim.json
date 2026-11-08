@@ -10,7 +10,7 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
-            "effects": [{ "Manifest": { "as": "x" } }]
+            "effects": [{ "RingTempts": {} }]
           }
         }
       ]

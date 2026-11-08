@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7536eb66-959d-4dca-9b75-895572ef733c",
+  "name": "Emergence Zone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emergence Zone",
+      "oracle_fingerprint": "05d97d32860363bc04c5250f6f67145d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "Rule": { "rule": { "MayCast": { "flash": true } }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

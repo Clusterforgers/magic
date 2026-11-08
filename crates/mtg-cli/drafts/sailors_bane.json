@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5d22ab00-b454-4407-93d7-65b47f56cbaa",
+  "name": "Sailors' Bane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sailors' Bane",
+      "oracle_fingerprint": "bfce5de4f95e99ebd2315ef569db0612",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }, "HasAdventure"] },
+                { "OwnedBy": "You" },
+                { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+              ]
+            }
+          }
+        },
+        { "Keyword": { "Ward": "{4}" } }
+      ]
+    }
+  ]
+}

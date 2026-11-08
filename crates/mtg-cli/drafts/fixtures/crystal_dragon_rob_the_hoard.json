@@ -1,0 +1,182 @@
+{
+  "object": "card",
+  "id": "384ec8b7-472e-4026-9632-349ab9df2b27",
+  "oracle_id": "56b0cb64-b886-413e-bb20-392bf12d3926",
+  "multiverse_ids": [
+    562896
+  ],
+  "mtgo_id": 100016,
+  "tcgplayer_id": 272969,
+  "cardmarket_id": 659822,
+  "name": "Crystal Dragon // Rob the Hoard",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/384ec8b7-472e-4026-9632-349ab9df2b27",
+  "scryfall_uri": "https://scryfall.com/card/clb/13/crystal-dragon-rob-the-hoard?utm_source=api",
+  "layout": "adventure",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:06:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/8/384ec8b7-472e-4026-9632-349ab9df2b27.jpg?1783922817",
+    "normal": "https://cards.scryfall.io/normal/front/3/8/384ec8b7-472e-4026-9632-349ab9df2b27.jpg?1783922817",
+    "large": "https://cards.scryfall.io/large/front/3/8/384ec8b7-472e-4026-9632-349ab9df2b27.jpg?1783922817",
+    "png": "https://cards.scryfall.io/png/front/3/8/384ec8b7-472e-4026-9632-349ab9df2b27.png?1783922817",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/8/384ec8b7-472e-4026-9632-349ab9df2b27.jpg?1783922817",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/8/384ec8b7-472e-4026-9632-349ab9df2b27.jpg?1783922817",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/8/384ec8b7-472e-4026-9632-349ab9df2b27.webp?1783922817",
+    "grid": "https://cards.scryfall.io/grid/front/3/8/384ec8b7-472e-4026-9632-349ab9df2b27.webp?1783922817",
+    "display": "https://cards.scryfall.io/display/front/3/8/384ec8b7-472e-4026-9632-349ab9df2b27.webp?1783922817",
+    "art": "https://cards.scryfall.io/art/front/3/8/384ec8b7-472e-4026-9632-349ab9df2b27.webp?1783922817",
+    "crop": "https://cards.scryfall.io/crop/front/3/8/384ec8b7-472e-4026-9632-349ab9df2b27.webp?1783922817",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/8/384ec8b7-472e-4026-9632-349ab9df2b27.jpg?1783922817"
+  },
+  "mana_cost": "{4}{W}{W} // {1}{W}",
+  "cmc": 6.0,
+  "type_line": "Creature — Dragon // Sorcery — Adventure",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Vigilance"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Crystal Dragon",
+      "mana_cost": "{4}{W}{W}",
+      "type_line": "Creature — Dragon",
+      "oracle_text": "Flying, vigilance",
+      "power": "4",
+      "toughness": "4",
+      "flavor_text": "\"Wait, it was just guarding a bunch of eggs! Where is the treasure?\"\n—Xalcorin the bard",
+      "artist": "John Severin Brassell",
+      "artist_id": "a4f50310-4b01-4cd3-8ab8-85b31e6876db",
+      "illustration_id": "541f27a2-eef1-4e8d-bd2c-244a2131bd97"
+    },
+    {
+      "object": "card_face",
+      "name": "Rob the Hoard",
+      "mana_cost": "{1}{W}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_text": "Return target artifact, enchantment, or legendary card from your graveyard to your hand. (Then exile this card. You may cast the creature later from exile.)",
+      "artist": "John Severin Brassell",
+      "artist_id": "a4f50310-4b01-4cd3-8ab8-85b31e6876db"
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "384ec8b7-472e-4026-9632-349ab9df2b27",
+      "component": "combo_piece",
+      "name": "Crystal Dragon // Rob the Hoard",
+      "type_line": "Creature — Dragon // Sorcery — Adventure",
+      "uri": "https://api.scryfall.com/cards/384ec8b7-472e-4026-9632-349ab9df2b27"
+    },
+    {
+      "object": "related_card",
+      "id": "5e289bb3-f6de-450d-9f7e-77e2e70cb7cc",
+      "component": "combo_piece",
+      "name": "On an Adventure",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/5e289bb3-f6de-450d-9f7e-77e2e70cb7cc"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/384ec8b7-472e-4026-9632-349ab9df2b27/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A56b0cb64-b886-413e-bb20-392bf12d3926&unique=prints",
+  "collector_number": "13",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Wait, it was just guarding a bunch of eggs! Where is the treasure?\"\n—Xalcorin the bard",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "John Severin Brassell",
+  "artist_ids": [
+    "a4f50310-4b01-4cd3-8ab8-85b31e6876db"
+  ],
+  "illustration_id": "541f27a2-eef1-4e8d-bd2c-244a2131bd97",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12370,
+  "preview": {
+    "source": "Michael Sinclair II",
+    "source_uri": "https://twitter.com/MichaelCrits/status/1528782840392888321",
+    "previewed_at": "2022-05-23"
+  },
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.24",
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": "0.27",
+    "tix": "0.53"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=562896&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCrystal%2BDragon%2B%252F%252F%2BRob%2Bthe%2BHoard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCrystal%2BDragon%2B%252F%252F%2BRob%2Bthe%2BHoard",
+    "edhrec": "https://edhrec.com/route/?cc=Crystal+Dragon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272969%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=659822&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100016?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

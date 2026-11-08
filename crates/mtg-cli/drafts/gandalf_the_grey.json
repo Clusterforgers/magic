@@ -1,0 +1,56 @@
+{
+  "oracle_id": "dfd12e3c-2b2a-4461-a08d-09d4e6c4626e",
+  "name": "Gandalf the Grey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gandalf the Grey",
+      "oracle_fingerprint": "08c9e23d0b01bb347ba444331751a907",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "once_ever": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [] } }],
+                      "effects": [{ "TapOrUntap": { "what": { "Target": 0 } } }]
+                    },
+                    { "effects": [{ "DealDamage": { "to": "Opponents", "amount": 3 } }] },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "Spell",
+                              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                              { "ControlledBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+                    },
+                    {
+                      "effects": [
+                        { "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

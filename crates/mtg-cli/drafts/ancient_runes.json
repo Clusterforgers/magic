@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1a128c02-febf-4ce6-b4d1-28274b5c4ff0",
+  "name": "Ancient Runes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Runes",
+      "oracle_fingerprint": "2ec9d427819bd60cee03b339dbcfbcfd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Count": [{ "Type": "Artifact" }, { "ControlledBy": "ActivePlayer" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

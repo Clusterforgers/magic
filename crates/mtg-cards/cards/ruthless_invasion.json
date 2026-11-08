@@ -1,0 +1,28 @@
+{
+  "oracle_id": "88bbbc00-0704-4dc0-897f-93184b2e1eed",
+  "name": "Ruthless Invasion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruthless Invasion",
+      "oracle_fingerprint": "a14959e6917f1373aaf6a566afec27aa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

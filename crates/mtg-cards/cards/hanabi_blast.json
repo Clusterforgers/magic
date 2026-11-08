@@ -1,0 +1,23 @@
+{
+  "oracle_id": "8e47b355-98fe-452a-a81e-b901c1f2cb6f",
+  "name": "Hanabi Blast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hanabi Blast",
+      "oracle_fingerprint": "6b9f68559d3a6e4c86ff42203bc08ee3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "Move": { "what": "This", "to": "Hand" } },
+              { "Discard": { "random": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

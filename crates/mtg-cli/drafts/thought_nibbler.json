@@ -1,0 +1,15 @@
+{
+  "oracle_id": "9a640695-fc17-4ccc-ac88-ce48b6c6ad53",
+  "name": "Thought Nibbler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Nibbler",
+      "oracle_fingerprint": "6a6e91c27f0357b36fcf641889bd5711",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "HandSizeChange": { "who": "You", "by": -2 } } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "8cccc8d0-bdd8-4853-8330-6f6a57695d11",
+  "name": "Amareth, the Lustrous",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amareth, the Lustrous",
+      "oracle_fingerprint": "5c231b104cd5acffeb26160fe474d44c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "ControlledBy": "You" }, "Other"], "to": "Battlefield" }
+            },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "SharesType": "Triggering" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c1198033-47bc-4bee-a3a5-3917dae5cba3",
+  "name": "Nephilim Epochal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nephilim Epochal",
+      "oracle_fingerprint": "ae103ddbcf75089cbb7fcce02a22b1a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Nephilim" }], "reveal": true, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Nephilim" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Sum": [{ "Count": [{ "Subtype": "Nephilim" }, { "ControlledBy": "You" }] }, -1]
+                  },
+                  "toughness": {
+                    "Sum": [{ "Count": [{ "Subtype": "Nephilim" }, { "ControlledBy": "You" }] }, -1]
+                  }
+                }
+              },
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Colors", "op": "Eq", "to": 1 } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

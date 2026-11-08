@@ -17,10 +17,12 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
         Effect::Draw {
             who: Ref::You,
             count: one,
+            ..
         },
         Effect::Draw {
             who: Ref::You,
             count: other,
+            ..
         },
     ] = effects
     else {

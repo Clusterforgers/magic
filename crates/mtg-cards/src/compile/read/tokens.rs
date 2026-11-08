@@ -23,7 +23,7 @@ pub enum Token {
 }
 
 /// The nouns a card calls itself by after "this".
-const SOURCE_NOUNS: [&str; 18] = [
+const SOURCE_NOUNS: [&str; 20] = [
     "token",
     "creature",
     "saga",
@@ -42,10 +42,13 @@ const SOURCE_NOUNS: [&str; 18] = [
     "class",
     "emblem",
     "siege",
+    "room",
+    "case",
 ];
 
 /// The text with its whitespace collapsed and the card's names ("this creature") written as `~`.
 pub fn canonical(text: &str) -> String {
+    let text = &super::d14_wordings::normal(text);
     let words: Vec<&str> = text.split_whitespace().collect();
     let mut out: Vec<String> = Vec::with_capacity(words.len());
     let mut at = 0;
@@ -208,6 +211,21 @@ pub fn same_text(left: &str, right: &str) -> bool {
     sorted(left) == sorted(right)
 }
 
+/// Whether the oracle text and a wording the renderers wrote back are the same text: [`same_text`] once the wordings of
+/// one meaning that the writers say another way are normalized (w15). The proposal checker, the drafts test and the
+/// corpus tests compare this way; the readers keep the stricter [`same_text`], so no clause is read into data that lacks
+/// what the text says.
+pub fn same_written_text(left: &str, right: &str) -> bool {
+    // The card's names are `~` and "enters" has its one wording before the wordings are normalized: "this Equipment"
+    // in a printed text is the "~" of a written one, and no step reads it as another object.
+    let normal = |text: &str| {
+        symbols_sorted(without_period(&canonical(&super::w16_wordings::normal(
+            &super::e16c_attacks::normal(&super::w15_wordings::normal(&canonical(text))),
+        ))))
+    };
+    normal(left) == normal(right)
+}
+
 /// The text with the symbols of each run of adjacent mana symbols in one fixed order: a cost has no order, and the
 /// renderer writes the one the data keeps.
 pub fn symbols_sorted(text: &str) -> String {
@@ -252,7 +270,7 @@ fn word_or_number(run: &str, opens: bool) -> Token {
     // The verbs of a cost follow a comma: "{T}, Pay 1 life, Sacrifice ~".
     let cost_verb = matches!(
         run,
-        "Pay" | "Sacrifice" | "Discard" | "Tap" | "Exile" | "Return" | "Remove" | "Mill"
+        "Pay" | "Sacrifice" | "Discard" | "Tap" | "Exile" | "Return" | "Remove" | "Mill" | "Put"
     );
     // A run of capitals ("AV Bead") is a name even where it opens a sentence.
     // So is a word with a capital inside it ("RadAway").

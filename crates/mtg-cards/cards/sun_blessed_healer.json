@@ -1,0 +1,43 @@
+{
+  "oracle_id": "1729c6f2-2452-4fbc-a1bc-3e625f2ad8e1",
+  "name": "Sun-Blessed Healer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sun-Blessed Healer",
+      "oracle_fingerprint": "b9ab746cdd87ab960ace0f8eab252df9",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{W}" } },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

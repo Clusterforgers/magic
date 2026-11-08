@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f87dfde4-8c57-4543-826c-6b3cf9c11b90",
+  "name": "Quiet Contemplation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quiet Contemplation",
+      "oracle_fingerprint": "0b9df4ef58f1ea3c9b827cb96a79ff70",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    { "Tap": { "what": { "Target": 0 } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["DoesntUntap"],
+                        "duration": "NextUntapStep"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

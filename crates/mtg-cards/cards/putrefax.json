@@ -1,0 +1,22 @@
+{
+  "oracle_id": "3a336b30-335a-49d0-b192-c20f3670452b",
+  "name": "Putrefax",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Putrefax",
+      "oracle_fingerprint": "156b0c4e3d3da0ec56627b18f245a556",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        { "Keyword": "Infect" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

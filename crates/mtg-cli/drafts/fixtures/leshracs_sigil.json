@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a",
+  "oracle_id": "98388eba-31ab-4302-be9e-ea67ea2b8c1a",
+  "multiverse_ids": [
+    2468
+  ],
+  "tcgplayer_id": 4781,
+  "cardmarket_id": 6244,
+  "name": "Leshrac's Sigil",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a",
+  "scryfall_uri": "https://scryfall.com/card/ice/144/leshracs-sigil?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:58:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/d/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a.jpg?1783947498",
+    "normal": "https://cards.scryfall.io/normal/front/a/d/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a.jpg?1783947498",
+    "large": "https://cards.scryfall.io/large/front/a/d/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a.jpg?1783947498",
+    "png": "https://cards.scryfall.io/png/front/a/d/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a.png?1783947498",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/d/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a.jpg?1783947498",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/d/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a.jpg?1783947498",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/d/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a.webp?1783947498",
+    "grid": "https://cards.scryfall.io/grid/front/a/d/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a.webp?1783947498",
+    "display": "https://cards.scryfall.io/display/front/a/d/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a.webp?1783947498",
+    "art": "https://cards.scryfall.io/art/front/a/d/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a.webp?1783947498",
+    "crop": "https://cards.scryfall.io/crop/front/a/d/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a.webp?1783947498",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/d/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a.jpg?1783947498"
+  },
+  "mana_cost": "{B}{B}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever an opponent casts a green spell, you may pay {B}{B}. If you do, look at that player's hand and choose a card from it. The player discards that card.\n{B}{B}: Return this enchantment to its owner's hand.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ad5ba7ee-d6df-4b62-a8a1-c81e6fca392a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A98388eba-31ab-4302-be9e-ea67ea2b8c1a&unique=prints",
+  "collector_number": "144",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Drew Tucker",
+  "artist_ids": [
+    "22eef389-7b21-4dda-95dc-4c9a0f1bf4dd"
+  ],
+  "illustration_id": "d0c3bd1d-cb52-4006-aef6-2e02981d572d",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18825,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.46",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2468&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLeshrac%2527s%2BSigil",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLeshrac%2527s%2BSigil",
+    "edhrec": "https://edhrec.com/route/?cc=Leshrac%27s+Sigil"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4781%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6244&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Leshrac%27s+Sigil&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

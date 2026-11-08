@@ -1,0 +1,33 @@
+{
+  "oracle_id": "be118a2d-a27e-4174-86db-d9a2d304da2f",
+  "name": "Venerated Teacher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venerated Teacher",
+      "oracle_fingerprint": "87026cef623086ff5e9d15d42405815f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasKeywordNamed": "Level up" }
+                    ]
+                  },
+                  "counter": { "Other": "level" },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

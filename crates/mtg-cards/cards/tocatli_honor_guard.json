@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ac946047-4933-4b55-a4eb-85abde1839bb",
+  "name": "Tocatli Honor Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tocatli Honor Guard",
+      "oracle_fingerprint": "2fdc036d01c447f59200422b338ea773",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Trigger": {
+                    "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

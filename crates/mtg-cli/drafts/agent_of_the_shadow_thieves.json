@@ -1,0 +1,47 @@
+{
+  "oracle_id": "b2142d8b-ea53-443e-bd60-9e70d9da9bd7",
+  "name": "Agent of the Shadow Thieves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agent of the Shadow Thieves",
+      "oracle_fingerprint": "46ee968c95b928ddaa7cbcc40e81595d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "AttacksPlayer": { "what": ["This"], "at": "EachPlayer" } },
+                    "if": {
+                      "Compare": {
+                        "left": { "Life": "Against" },
+                        "op": "Ge",
+                        "right": { "HighestLife": "Opponents" }
+                      }
+                    },
+                    "effects": [
+                      { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": [
+                            { "AddKeyword": "Deathtouch" },
+                            { "AddKeyword": "Indestructible" }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "1f874f7f-b959-4de5-a5db-e65a90ac2f9d",
+  "name": "Leonin Lightbringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leonin Lightbringer",
+      "oracle_fingerprint": "6900ac8649f6e2406dbeedf277db4f2b",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

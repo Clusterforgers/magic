@@ -15,9 +15,19 @@
                 "If": {
                   "condition": {
                     "Compare": {
-                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
-                      "op": "Gt",
-                      "right": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                      "left": {
+                        "Sum": [
+                          { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                          {
+                            "Times": {
+                              "by": -1,
+                              "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                            }
+                          }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
                     }
                   },
                   "then": [
@@ -29,7 +39,7 @@
                             {
                               "Times": {
                                 "by": -1,
-                                "of": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                                "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
                               }
                             }
                           ]

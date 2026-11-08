@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4adcd967-9ff7-4940-b8b9-0c4215bbcb75",
+  "name": "Anzrag, the Quake-Mole",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anzrag, the Quake-Mole",
+      "oracle_fingerprint": "b0ab071311b75efd1d02ff6c411dcc3d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{R}{R}{G}{G}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

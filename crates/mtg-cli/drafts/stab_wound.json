@@ -1,0 +1,26 @@
+{
+  "oracle_id": "aad212b2-57ba-4e70-869b-636842eb7a88",
+  "name": "Stab Wound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stab Wound",
+      "oracle_fingerprint": "2f79d7be694f2af67cf64b8504142f48",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

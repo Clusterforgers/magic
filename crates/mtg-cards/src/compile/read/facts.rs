@@ -274,8 +274,14 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     if *left == c10_any_noncreature_cast() && *op == Cmp::Ge && number == 1 {
         return vec![C10_ANY_NONCREATURE_CAST.to_owned()];
     }
-    if let Some(text) = super::w21a_atoms::w21a_condition_text(left, *op, number) {
+    if let Some(text) = super::w21a_atoms::w21a_condition_text(left, *op, number)
+        .or_else(|| super::r9w_players::r9w_some_text(left, *op, right))
+    {
         return vec![text];
+    }
+    let r6d = super::r6d_facts::texts(left, *op, number);
+    if !r6d.is_empty() {
+        return r6d;
     }
     let counted = |pattern: &dyn Fn(&str) -> String| -> Vec<String> {
         quantity_texts(number)
@@ -299,7 +305,7 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
         (
             Amount::Tallied {
                 who: Ref::You,
-                what: TurnTally::LifeGained,
+                what: TurnTally::LifeGained | TurnTally::LifeGainedTotal,
             },
             Cmp::Ge,
         ) if number == 1 => vec!["you gained life this turn".to_owned()],
@@ -398,6 +404,22 @@ fn state_texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
             .iter()
             .map(|n| format!("an opponent lost {n} or more life this turn"))
             .collect(),
+        (
+            Amount::Tallied {
+                who: Ref::Opponents,
+                what: TurnTally::LifeLost,
+            },
+            Cmp::Ge,
+        ) if number == 1 => vec!["an opponent lost life this turn".to_owned()],
+        (
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::CreaturesLeftUnder,
+            },
+            Cmp::Ge,
+        ) if number == 1 => {
+            vec!["a creature left the battlefield under your control this turn".to_owned()]
+        }
         (Amount::Count(of), Cmp::Eq) if number == 0 && *of == every_hand() => {
             vec!["each player has no cards in hand".to_owned()]
         }

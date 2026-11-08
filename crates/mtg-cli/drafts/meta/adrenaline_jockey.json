@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a player casts a spell, if it's not their turn, this creature deals 4 damage to them.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever you activate an exhaust ability, put a +1/+1 counter on this creature.",
+      "abilities": [],
+      "gap": "key:Trigger.AbilityCast.ValidSA=Activated.Exhaust"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 94
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 95,
+          "end": 174
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

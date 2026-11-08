@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4534e260-06fd-4054-8077-505c2f6c5767",
+  "name": "Protector of the Wastes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Protector of the Wastes",
+      "oracle_fingerprint": "eb63fa5c53975549dc8fbd34f0615e99",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "BecomesMonstrous": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                    },
+                    "rule": "DifferentControllers"
+                  }
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Activated": { "cost": "{4}{W}", "effects": [{ "Monstrosity": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

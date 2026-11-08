@@ -1,0 +1,46 @@
+{
+  "oracle_id": "5d520dd4-7986-41fa-ab94-9226da751668",
+  "name": "Djeru, With Eyes Open",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Djeru, With Eyes Open",
+      "oracle_fingerprint": "99aa5a2e3d4ac98b82738175d6e4b14a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Planeswalker" }],
+                        "reveal": true,
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "by": { "PreventUpTo": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

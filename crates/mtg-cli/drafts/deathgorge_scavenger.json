@@ -1,0 +1,67 @@
+{
+  "oracle_id": "17da3654-7517-473b-89e7-0303f6f030cb",
+  "name": "Deathgorge Scavenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathgorge Scavenger",
+      "oracle_fingerprint": "b53fedd7bee8180f98a78206b4e38923",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "exiled" },
+                            "selector": [{ "Type": "Creature" }],
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "GainLife": { "amount": 2 } }]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "exiled" },
+                            "selector": [{ "Type": "Creature" }],
+                            "op": "Eq",
+                            "right": 0
+                          }
+                        },
+                        "then": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

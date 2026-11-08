@@ -1,0 +1,29 @@
+{
+  "oracle_id": "bfbe28a2-b656-4575-8b7e-9dbc22f8d4bc",
+  "name": "Skarrgan Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skarrgan Hellkite",
+      "oracle_fingerprint": "99bff40491d4b12991750411fe4a5380",
+      "abilities": [
+        { "Keyword": "Riot" },
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": "+1/+1" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 2 }, "divide": 2 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

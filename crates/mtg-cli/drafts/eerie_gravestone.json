@@ -1,0 +1,42 @@
+{
+  "oracle_id": "cbf5bd0a-20ef-4dce-9f70-13339d438ff7",
+  "name": "Eerie Gravestone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eerie Gravestone",
+      "oracle_fingerprint": "05193e8c9d327d7d4867b5d2560353d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "SacrificeSelf"],
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

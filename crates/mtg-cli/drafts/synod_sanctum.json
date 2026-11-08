@@ -1,0 +1,33 @@
+{
+  "oracle_id": "643ddf81-bbd3-4398-b5a7-1169c6e2b081",
+  "name": "Synod Sanctum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Synod Sanctum",
+      "oracle_fingerprint": "7218c5d04d5730e6e57f46e4282bc550",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

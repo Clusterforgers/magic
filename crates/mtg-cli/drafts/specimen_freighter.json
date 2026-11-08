@@ -1,0 +1,51 @@
+{
+  "oracle_id": "fb84b94c-dc8c-4182-9b96-abd092b20981",
+  "name": "Specimen Freighter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Specimen Freighter",
+      "oracle_fingerprint": "40fdfd6218c0349cf6a967a601a01bbf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Not": { "Subtype": "Spacecraft" } }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddKeyword": "Flying" },
+              { "AddType": "Creature" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [{ "Mill": { "who": "Defending", "count": 4 } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "charge", "op": "Ge", "to": 9 } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

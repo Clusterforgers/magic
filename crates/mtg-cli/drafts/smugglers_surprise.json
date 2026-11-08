@@ -1,0 +1,85 @@
+{
+  "oracle_id": "605f719d-01f8-406c-9d4c-3f4992c6a69f",
+  "name": "Smuggler's Surprise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smuggler's Surprise",
+      "oracle_fingerprint": "e5cd3ee5a49ac83008148c79d1220ae4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 3 },
+                  "mode_costs": ["{2}", "{4}{G}", "{1}"],
+                  "modes": [
+                    {
+                      "effects": [
+                        { "Mill": { "count": 4, "as": "milled" } },
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] },
+                                { "Is": { "Bound": "milled" } },
+                                { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] },
+                                { "OwnedBy": "You" }
+                              ]
+                            },
+                            "count": { "min": 0, "max": 2 },
+                            "as": "picked2"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "In": "Hand" },
+                                { "OwnedBy": "You" }
+                              ]
+                            },
+                            "count": { "min": 0, "max": 2 },
+                            "as": "picked3"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "picked3" }, "to": { "Battlefield": {} } } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": "You" },
+                                { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                              ]
+                            },
+                            "mods": [
+                              { "AddKeyword": "Hexproof" },
+                              { "AddKeyword": "Indestructible" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

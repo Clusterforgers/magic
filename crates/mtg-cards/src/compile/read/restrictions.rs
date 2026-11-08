@@ -52,7 +52,7 @@ pub(super) fn moments() -> Vec<(&'static str, Vec<Condition>)> {
 /// The words before the moment of a turn that "before attackers are declared" follows after a comma.
 const BEFORE_ATTACKERS: &str = "before attackers are declared";
 
-/// A part after "only": "as a sorcery", "once each turn", "during ...", "before attackers are declared" or "if ...".
+/// A part after "only": "as a sorcery", "once each turn", "once", "during ...", "before attackers are declared" or "if ...".
 fn part(
     r: &mut Reader<'_>,
     timing: &mut Timing,
@@ -63,6 +63,8 @@ fn part(
         *timing = Timing::Sorcery;
     } else if limit.is_none() && r.words("once each turn") {
         *limit = Some(Limit::OncePerTurn);
+    } else if limit.is_none() && r.word("once") {
+        *limit = Some(Limit::OncePerGame);
     } else if r.words(BEFORE_ATTACKERS) {
         held.push(Condition::BeforeAttackers);
     } else if r.word("during") {

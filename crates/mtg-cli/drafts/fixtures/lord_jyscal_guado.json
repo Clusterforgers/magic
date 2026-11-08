@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "134ef3cd-01ac-4d60-a277-df7ab7b8f88c",
+  "oracle_id": "52791629-0f22-4023-bb04-c829d1600568",
+  "multiverse_ids": [],
+  "resource_id": "117339CB9E23EBEAB269698A2A7E61EBAD0E21382ACFE5AE24F7EAC7BBBC59A4",
+  "mtgo_id": 140037,
+  "tcgplayer_id": 631151,
+  "cardmarket_id": 824511,
+  "name": "Lord Jyscal Guado",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/134ef3cd-01ac-4d60-a277-df7ab7b8f88c",
+  "scryfall_uri": "https://scryfall.com/card/fic/23/lord-jyscal-guado?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:32:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/3/134ef3cd-01ac-4d60-a277-df7ab7b8f88c.jpg?1783906367",
+    "normal": "https://cards.scryfall.io/normal/front/1/3/134ef3cd-01ac-4d60-a277-df7ab7b8f88c.jpg?1783906367",
+    "large": "https://cards.scryfall.io/large/front/1/3/134ef3cd-01ac-4d60-a277-df7ab7b8f88c.jpg?1783906367",
+    "png": "https://cards.scryfall.io/png/front/1/3/134ef3cd-01ac-4d60-a277-df7ab7b8f88c.png?1783906367",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/3/134ef3cd-01ac-4d60-a277-df7ab7b8f88c.jpg?1783906367",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/3/134ef3cd-01ac-4d60-a277-df7ab7b8f88c.jpg?1783906367",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/3/134ef3cd-01ac-4d60-a277-df7ab7b8f88c.webp?1783906367",
+    "grid": "https://cards.scryfall.io/grid/front/1/3/134ef3cd-01ac-4d60-a277-df7ab7b8f88c.webp?1783906367",
+    "display": "https://cards.scryfall.io/display/front/1/3/134ef3cd-01ac-4d60-a277-df7ab7b8f88c.webp?1783906367",
+    "art": "https://cards.scryfall.io/art/front/1/3/134ef3cd-01ac-4d60-a277-df7ab7b8f88c.webp?1783906367",
+    "crop": "https://cards.scryfall.io/crop/front/1/3/134ef3cd-01ac-4d60-a277-df7ab7b8f88c.webp?1783906367",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/3/134ef3cd-01ac-4d60-a277-df7ab7b8f88c.jpg?1783906367"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Spirit Cleric",
+  "oracle_text": "Flying\nAt the beginning of each end step, if you put a counter on a creature this turn, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Investigate"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "6e886e0b-2ce7-4231-a47c-a39bda50e8fd",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/6e886e0b-2ce7-4231-a47c-a39bda50e8fd"
+    },
+    {
+      "object": "related_card",
+      "id": "bd61145b-5177-4b7e-8ac2-f07e6cf4863a",
+      "component": "combo_piece",
+      "name": "Lord Jyscal Guado",
+      "type_line": "Legendary Creature — Spirit Cleric",
+      "uri": "https://api.scryfall.com/cards/bd61145b-5177-4b7e-8ac2-f07e6cf4863a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "30659956-4558-4cbf-a65f-34cd00c89579",
+  "set": "fic",
+  "set_name": "Final Fantasy Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/30659956-4558-4cbf-a65f-34cd00c89579",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/134ef3cd-01ac-4d60-a277-df7ab7b8f88c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A52791629-0f22-4023-bb04-c829d1600568&unique=prints",
+  "collector_number": "23",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Listen to me very carefully, for I shall tell you the truth about my son, Seymour.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Takeuchi Moto",
+  "artist_ids": [
+    "27bd8cb0-58cd-4a82-b6f3-d0253954c846"
+  ],
+  "illustration_id": "fe5719d3-5042-4384-8a85-a5a25398d390",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "ffx",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 10369,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": null,
+    "tix": "0.81"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLord%2BJyscal%2BGuado",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLord%2BJyscal%2BGuado",
+    "edhrec": "https://edhrec.com/route/?cc=Lord+Jyscal+Guado"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631151%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824511&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/140037?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

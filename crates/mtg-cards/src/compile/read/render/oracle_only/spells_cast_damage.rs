@@ -19,10 +19,18 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         .effects()
         .iter()
         .map(|effect| match effect {
-            Effect::DealDamage { source, to, amount } if *amount == tally => Effect::DealDamage {
+            Effect::DealDamage {
+                source,
+                to,
+                amount,
+                unpreventable: false,
+                ..
+            } if *amount == tally => Effect::DealDamage {
                 source: source.clone(),
                 to: to.clone(),
                 amount: Amount::X,
+                excess: None,
+                unpreventable: false,
             },
             other => other.clone(),
         })

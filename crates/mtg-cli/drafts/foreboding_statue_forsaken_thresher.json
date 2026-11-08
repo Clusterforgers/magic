@@ -1,0 +1,52 @@
+{
+  "oracle_id": "d8c0f103-4658-4f4f-8429-c06bdd017846",
+  "name": "Foreboding Statue // Forsaken Thresher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foreboding Statue",
+      "oracle_fingerprint": "207d51e5ce7d309ff8c51dcf79628355",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "omen" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    { "CounterCount": { "kind": { "Other": "omen" }, "op": "Ge", "to": 3 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Untap": { "what": "This" } }, { "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forsaken Thresher",
+      "oracle_fingerprint": "d5eae58d4373b9c4acc5da66080d6c29",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "32d8f7c8-8680-4901-b31b-e0cb66e37548",
+  "name": "Rootwater Mystic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootwater Mystic",
+      "oracle_fingerprint": "b5237d12bc128bc41702c38138aeb220",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

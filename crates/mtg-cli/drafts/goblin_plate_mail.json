@@ -1,0 +1,29 @@
+{
+  "oracle_id": "eda99a16-6a7c-4f39-8a6b-a284e6afd3fc",
+  "name": "Goblin Plate Mail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Plate Mail",
+      "oracle_fingerprint": "3ee3ab438e23d7a425bcfc7b58bf5d5d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Amass": { "subtype": "Goblin", "count": 1, "as": "amassed" } },
+              { "Attach": { "what": "This", "to": { "Bound": "amassed" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Menace" }]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

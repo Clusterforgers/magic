@@ -1,0 +1,82 @@
+{
+  "oracle_id": "9aaf1149-eccb-434a-a1a7-14b93fa50141",
+  "name": "Tombstone Stairwell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tombstone Stairwell",
+      "oracle_fingerprint": "069a0d352ae6a6c95fceb509ca4a0aa0",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}{B}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": { "Compare": { "left": { "Count": ["This"] }, "op": "Ge", "right": 1 } },
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "each",
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "Bound": "each" },
+                              "token": {
+                                "Custom": {
+                                  "name": "Tombspawn",
+                                  "colors": ["Black"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Zombie"],
+                                  "power": 2,
+                                  "toughness": 2,
+                                  "abilities": [{ "Keyword": "Haste" }]
+                                }
+                              },
+                              "count": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "OwnedBy": { "Bound": "each" } },
+                                  { "In": "Graveyard" }
+                                ]
+                              },
+                              "as": "token2"
+                            }
+                          },
+                          { "Remember": { "what": { "Bound": "token2" }, "slot": "remembered" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "StepBegins": { "step": "End" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield" } }
+              ]
+            },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Is": { "Remembered": { "on": "This", "slot": "remembered" } } }]
+                  },
+                  "regenerate": false
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

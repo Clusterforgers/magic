@@ -12,6 +12,7 @@ fn returns_itself(effects: &[Effect]) -> bool {
         Effect::Move {
             what: Ref::This,
             to: Destination::Hand,
+            ..
         } => true,
         Effect::Pay { paid, .. } => returns_itself(paid),
         _ => false,

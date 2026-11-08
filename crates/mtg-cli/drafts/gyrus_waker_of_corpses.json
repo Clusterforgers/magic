@@ -1,0 +1,67 @@
+{
+  "oracle_id": "2deae472-3cfe-4d7b-b9cf-a045f07a002e",
+  "name": "Gyrus, Waker of Corpses",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gyrus, Waker of Corpses",
+      "oracle_fingerprint": "1df60e92332f92391105fcb62d85c33c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": "+1/+1", "count": { "ManaSpent": { "of": null } } }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    {
+                      "CreateToken": {
+                        "token": { "CopyOf": { "of": { "Bound": "exiled" } } },
+                        "tapped": true,
+                        "attacking": true,
+                        "as": "copy2"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "EndCombat" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "copy2" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c1b8cfe9-e8fc-4321-94ce-86ab1f1ae2d0",
+  "name": "Vertigo Spawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vertigo Spawn",
+      "oracle_fingerprint": "9559df5a756fe54a91d0779e9c2cd013",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

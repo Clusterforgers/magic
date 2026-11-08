@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e191976c-6ab1-4a23-aeb8-8a88bd4bd203",
+  "name": "Rowan Kenrith",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rowan Kenrith",
+      "oracle_fingerprint": "486cdbed23affb7a36d857580b66a060",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 89 } }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [{ "Type": "Creature" }, "Tapped", { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "amount": 3
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 171, "end": 320 }
+          }
+        },
+        { "Keyword": { "PartnerWith": "Will Kenrith" } },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

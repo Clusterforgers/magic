@@ -1,0 +1,43 @@
+{
+  "oracle_id": "97759579-b676-46e8-b566-fcad10751920",
+  "name": "Toil // Trouble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toil",
+      "oracle_fingerprint": "03a45b5041ee05ee8b7c8da12802c630",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    },
+    {
+      "name": "Trouble",
+      "oracle_fingerprint": "fe173714970e67ae2147d9170c4ab7f6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    }
+  ]
+}

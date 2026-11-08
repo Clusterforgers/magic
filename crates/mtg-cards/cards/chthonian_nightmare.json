@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c7a360f5-725e-4864-93cc-87f96f95975e",
+  "name": "Chthonian Nightmare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chthonian Nightmare",
+      "oracle_fingerprint": "2ee7b8ac73bd5964bc56da479f3ed2fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "PayEnergy": "X" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } },
+              { "ReturnToHand": { "filter": ["This"] } }
+            ],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

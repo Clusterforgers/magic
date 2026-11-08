@@ -9,11 +9,20 @@ import type { CardKind } from './model'
 /** The label of a curve bucket: its mana value, "7+" for the last. */
 export const curveLabel = (bucket: number): string => (bucket === CURVE_LAST ? `${CURVE_LAST}+` : `${bucket}`)
 
-const SUPPORT_SHOWN: readonly Support[] = ['verified', 'read', 'partial', 'manual', 'stale', 'unplayable']
+const SUPPORT_SHOWN: readonly Support[] = [
+  'verified',
+  'read',
+  'forge',
+  'partial',
+  'manual',
+  'stale',
+  'unplayable',
+]
 // Whole class names, so Tailwind can see them.
 const SEGMENT: Readonly<Record<Support, string>> = {
   verified: 'bg-support-verified',
   read: 'bg-support-read',
+  forge: 'bg-support-forge',
   partial: 'bg-support-partial',
   manual: 'bg-support-manual',
   stale: 'bg-support-stale',

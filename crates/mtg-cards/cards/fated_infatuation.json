@@ -1,0 +1,24 @@
+{
+  "oracle_id": "ae771e78-1d29-4b8c-8511-9da196a78dcf",
+  "name": "Fated Infatuation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fated Infatuation",
+      "oracle_fingerprint": "2e0f806df099bf0f84b1b339f6aebd16",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } },
+              { "If": { "condition": "YourTurn", "then": [{ "Scry": { "count": 2 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "722ee05f-6815-41b7-9813-5ec3902c1e9f",
+  "name": "Aberrant Researcher // Perfected Form",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aberrant Researcher",
+      "oracle_fingerprint": "169b8fee8986250db774ea5190c84d51",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Mill": { "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Perfected Form",
+      "oracle_fingerprint": "75a4c2fe3b9e4d3cd2bd3d7787c7c138",
+      "abilities": [{ "Keyword": "Flying" }]
+    }
+  ]
+}

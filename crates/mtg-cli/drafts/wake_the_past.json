@@ -1,0 +1,35 @@
+{
+  "oracle_id": "34143cfa-aa48-481c-af42-1240af174b80",
+  "name": "Wake the Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wake the Past",
+      "oracle_fingerprint": "f5be7990eabfd0fb980ca78d58ef8f65",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "to": { "Battlefield": {} },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Is": { "Bound": "moved" } }] },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

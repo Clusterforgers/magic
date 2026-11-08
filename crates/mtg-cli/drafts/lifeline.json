@@ -1,0 +1,43 @@
+{
+  "oracle_id": "f475b636-eb7f-4dd7-bc87-a1af07064ffe",
+  "name": "Lifeline",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lifeline",
+      "oracle_fingerprint": "74757bb3c4347049b3170c8337e1c759",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": {
+              "Compare": { "left": { "Count": [{ "Type": "Creature" }] }, "op": "Ge", "right": 1 }
+            },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                  "as": "event"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "event" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

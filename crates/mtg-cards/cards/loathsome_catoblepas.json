@@ -1,0 +1,45 @@
+{
+  "oracle_id": "c6f68e4b-af2b-43d5-8052-104defe7f3ec",
+  "name": "Loathsome Catoblepas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loathsome Catoblepas",
+      "oracle_fingerprint": "7da2f6f8ba65ba753fc878b3c64b5ef1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

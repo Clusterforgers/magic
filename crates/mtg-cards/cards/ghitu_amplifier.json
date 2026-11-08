@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a965898b-9c68-46cb-82a5-a1e11397f68f",
+  "name": "Ghitu Amplifier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghitu Amplifier",
+      "oracle_fingerprint": "07c3cb85304bc1d798a90e0c5af1f09a",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -57,6 +57,7 @@ pub fn leak(name: &str, tax: u32) -> Arc<CardDefinition> {
                 Vec::new(),
                 vec![Effect::Counter {
                     what: Ref::Target(0),
+                    bind: None,
                 }],
             )],
         },
@@ -116,6 +117,7 @@ pub fn fountain(name: &str, activation: Cost) -> Arc<CardDefinition> {
                 timing: Timing::Instant,
                 condition: None,
                 limit: None,
+                by: mtg_cards::ability::Activators::Controller,
                 from: ZoneKind::Battlefield,
                 targets: Vec::new(),
                 effects: vec![gain_life(2)],
@@ -138,6 +140,7 @@ pub fn mana_pinger(name: &str) -> Arc<CardDefinition> {
                 timing: Timing::Instant,
                 condition: None,
                 limit: None,
+                by: mtg_cards::ability::Activators::Controller,
                 from: ZoneKind::Battlefield,
                 targets: vec![one_target(Targetable::AnyTarget)],
                 effects: vec![damage(Ref::Target(0), 1)],

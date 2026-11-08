@@ -1,0 +1,38 @@
+{
+  "oracle_id": "894a344e-a8a7-4ddc-833d-eea41f1918d7",
+  "name": "Chandra's Outburst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra's Outburst",
+      "oracle_fingerprint": "c5fed05e1fa7830e9247afdf15adca24",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "OwnedBy": "You" }, { "Named": "Chandra, Bold Pyromancer" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "37dc566e-a91a-448c-9967-b178a93ffb62",
+  "name": "The Master of Keys",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Master of Keys",
+      "oracle_fingerprint": "d17788ca407aaa3e624dbc56c6752858",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "X" } },
+              { "Mill": { "count": { "Times": { "by": 2, "of": "X" } } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Enchantment" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+            },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Escape": [
+                    "OwnManaCost",
+                    { "ExileFromGraveyard": { "filter": ["Other"], "count": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b9df2cdf-397c-458d-89cf-911568737ffa",
+  "name": "Mockingbird",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mockingbird",
+      "oracle_fingerprint": "cf5e22c74bf2ab36668dc1d2f0dd7e25",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [
+                  { "Type": "Creature" },
+                  "Other",
+                  {
+                    "Compare": {
+                      "stat": "ManaValue",
+                      "op": "Le",
+                      "to": { "ManaSpent": { "of": null } }
+                    }
+                  }
+                ],
+                "except": [{ "AddSubtype": "Bird" }, { "AddKeyword": "Flying" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

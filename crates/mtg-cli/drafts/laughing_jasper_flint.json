@@ -1,0 +1,66 @@
+{
+  "oracle_id": "bd7c5a8b-cf62-41e1-a664-b16e3e5d142b",
+  "name": "Laughing Jasper Flint",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laughing Jasper Flint",
+      "oracle_fingerprint": "b8f439a0b95136bc19a93a9a7b662bff",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "Not": { "OwnedBy": "You" } }
+              ]
+            },
+            "mods": [{ "AddSubtype": "Mercenary" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ExileTop": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Assassin" },
+                          { "Subtype": "Mercenary" },
+                          { "Subtype": "Pirate" },
+                          { "Subtype": "Rogue" },
+                          { "Subtype": "Warlock" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

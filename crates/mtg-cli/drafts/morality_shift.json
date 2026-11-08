@@ -1,0 +1,38 @@
+{
+  "oracle_id": "82e36ba9-9652-4594-8660-86c766b47709",
+  "name": "Morality Shift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Morality Shift",
+      "oracle_fingerprint": "a0a836cb9683591abeecf092becba745",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Library" }] },
+                  "to": "Graveyard",
+                  "as": "moved"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "Not": { "Is": { "Bound": "moved" } } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

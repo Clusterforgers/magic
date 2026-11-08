@@ -1,0 +1,41 @@
+{
+  "oracle_id": "689cd6a8-8be0-49a6-9758-a81cc9f55cc8",
+  "name": "Haunted One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunted One",
+      "oracle_fingerprint": "c8675d9d2aa1c89a79e7190fd16c42c2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Tapped": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": {
+                            "Each": [{ "SharesSubtype": "This" }, { "ControlledBy": "You" }]
+                          },
+                          "mods": [
+                            { "ModifyPT": { "power": 2, "toughness": 0 } },
+                            { "AddKeyword": "Undying" }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

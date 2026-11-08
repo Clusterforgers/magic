@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2837be10-23ad-49d2-943e-b1e00edbbbd9",
+  "name": "Sam, Loyal Attendant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sam, Loyal Attendant",
+      "oracle_fingerprint": "bba7a701a08a60d71ffe44159c6a8e57",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Frodo, Adventurous Hobbit" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "Subtype": "Food" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Any"
+          }
+        }
+      ]
+    }
+  ]
+}

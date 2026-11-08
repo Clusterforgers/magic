@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7de2a364-4383-437a-b6d6-55e4721a0141",
+  "name": "Dúnedain Rangers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dúnedain Rangers",
+      "oracle_fingerprint": "2612d990137c8403c76b3525ab7691ff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "ControlledBy": "You" }, "RingBearer"] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "RingTempts": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

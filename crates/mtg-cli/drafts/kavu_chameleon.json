@@ -1,0 +1,29 @@
+{
+  "oracle_id": "82c583ab-8158-4074-a3ff-b7a05ecc8ab1",
+  "name": "Kavu Chameleon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kavu Chameleon",
+      "oracle_fingerprint": "33a5a0d3ef4bd22fd6595fde4ccf3def",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

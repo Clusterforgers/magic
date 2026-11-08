@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "33b97433-e16c-422e-a0ca-f6b1e98d8681",
+  "oracle_id": "70ea1a9d-ec52-4c11-8c4d-0d957e5491ad",
+  "multiverse_ids": [],
+  "resource_id": "6722EEC1384B3C335511A7FAEC80F5476EA70D2528B49A53B5E70CB58CE4AC07",
+  "mtgo_id": 144552,
+  "arena_id": 97311,
+  "tcgplayer_id": 661922,
+  "cardmarket_id": 857416,
+  "name": "Suki, Courageous Rescuer",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/33b97433-e16c-422e-a0ca-f6b1e98d8681",
+  "scryfall_uri": "https://scryfall.com/card/tla/37/suki-courageous-rescuer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:09:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/3/33b97433-e16c-422e-a0ca-f6b1e98d8681.jpg?1783904995",
+    "normal": "https://cards.scryfall.io/normal/front/3/3/33b97433-e16c-422e-a0ca-f6b1e98d8681.jpg?1783904995",
+    "large": "https://cards.scryfall.io/large/front/3/3/33b97433-e16c-422e-a0ca-f6b1e98d8681.jpg?1783904995",
+    "png": "https://cards.scryfall.io/png/front/3/3/33b97433-e16c-422e-a0ca-f6b1e98d8681.png?1783904995",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/3/33b97433-e16c-422e-a0ca-f6b1e98d8681.jpg?1783904995",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/3/33b97433-e16c-422e-a0ca-f6b1e98d8681.jpg?1783904995",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/3/33b97433-e16c-422e-a0ca-f6b1e98d8681.webp?1783904995",
+    "grid": "https://cards.scryfall.io/grid/front/3/3/33b97433-e16c-422e-a0ca-f6b1e98d8681.webp?1783904995",
+    "display": "https://cards.scryfall.io/display/front/3/3/33b97433-e16c-422e-a0ca-f6b1e98d8681.webp?1783904995",
+    "art": "https://cards.scryfall.io/art/front/3/3/33b97433-e16c-422e-a0ca-f6b1e98d8681.webp?1783904995",
+    "crop": "https://cards.scryfall.io/crop/front/3/3/33b97433-e16c-422e-a0ca-f6b1e98d8681.webp?1783904995",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/3/33b97433-e16c-422e-a0ca-f6b1e98d8681.jpg?1783904995"
+  },
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Warrior Ally",
+  "oracle_text": "Other creatures you control get +1/+0.\nWhenever another permanent you control leaves the battlefield during your turn, create a 1/1 white Ally creature token. This ability triggers only once each turn.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "01439983-8394-4a0c-9e9e-92a3f1927fe3",
+      "component": "token",
+      "name": "Ally",
+      "type_line": "Token Creature — Ally",
+      "uri": "https://api.scryfall.com/cards/01439983-8394-4a0c-9e9e-92a3f1927fe3"
+    },
+    {
+      "object": "related_card",
+      "id": "f4e73660-ca67-4587-9aac-02154e984861",
+      "component": "combo_piece",
+      "name": "Suki, Courageous Rescuer",
+      "type_line": "Legendary Creature — Human Warrior Ally",
+      "uri": "https://api.scryfall.com/cards/f4e73660-ca67-4587-9aac-02154e984861"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set": "tla",
+  "set_name": "Avatar: The Last Airbender",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/118f7e64-5caa-4cb7-99a8-184f4d3a7422",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atla&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tla?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/33b97433-e16c-422e-a0ca-f6b1e98d8681/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A70ea1a9d-ec52-4c11-8c4d-0d957e5491ad&unique=prints",
+  "collector_number": "37",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I'm okay. Just finish the mission!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tky",
+  "artist_ids": [
+    "b68222eb-99f6-47b8-87db-3a8a29b3fca5"
+  ],
+  "illustration_id": "f30f6dad-cc15-467c-8159-9a64b2e4f1c0",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6499,
+  "penny_rank": 6010,
+  "preview": {
+    "source": "CovertGoBlue",
+    "source_uri": "https://x.com/covertgoblue/status/1984342451205624271",
+    "previewed_at": "2025-10-31"
+  },
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.38",
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": "0.39",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSuki%252C%2BCourageous%2BRescuer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSuki%252C%2BCourageous%2BRescuer",
+    "edhrec": "https://edhrec.com/route/?cc=Suki%2C+Courageous+Rescuer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F661922%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857416&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/144552?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

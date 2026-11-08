@@ -1,0 +1,43 @@
+{
+  "oracle_id": "4b0e5626-0282-42e5-abef-a079b26a8e5f",
+  "name": "Poisoner's Apprentice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Poisoner's Apprentice",
+      "oracle_fingerprint": "fd17a2eee714e7cd7be50df1fb94894c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": -4, "toughness": -4 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

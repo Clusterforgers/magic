@@ -1,0 +1,26 @@
+{
+  "oracle_id": "128e201a-f520-4917-a1a4-2f3836f1f92d",
+  "name": "Simoon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Simoon",
+      "oracle_fingerprint": "938366392643bdb6f01719821600ade9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

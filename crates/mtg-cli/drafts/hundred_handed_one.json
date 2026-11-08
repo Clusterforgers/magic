@@ -1,0 +1,22 @@
+{
+  "oracle_id": "954aaaa7-c3c1-4696-9ace-bcb5359b1709",
+  "name": "Hundred-Handed One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hundred-Handed One",
+      "oracle_fingerprint": "31297aff0ea0b00494a4144f0a0779f1",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Activated": { "cost": "{3}{W}{W}{W}", "effects": [{ "Monstrosity": { "count": 3 } }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Reach" }, { "BlocksAdditional": 99 }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Monstrous"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

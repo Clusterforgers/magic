@@ -329,10 +329,12 @@ fn split_put(r: &mut Reader<'_>, found: &Ref) -> Option<Vec<Effect>> {
         Effect::Move {
             what: Ref::Bound(KEPT.to_owned()),
             to: first,
+            bind: None,
         },
         Effect::Move {
             what: Ref::Bound(REST.to_owned()),
             to: rest,
+            bind: None,
         },
     ])
 }
@@ -386,6 +388,7 @@ fn searched_by(r: &mut Reader<'_>, who: Ref, optional: bool) -> Option<Vec<Effec
             Effect::Move {
                 what: found[0].clone(),
                 to,
+                bind: None,
             },
         ]);
         searches
@@ -398,6 +401,7 @@ fn searched_by(r: &mut Reader<'_>, who: Ref, optional: bool) -> Option<Vec<Effec
         searches.extend(found.into_iter().map(|what| Effect::Move {
             what,
             to: to.clone(),
+            bind: None,
         }));
         searches.push(shuffle);
         searches
@@ -486,10 +490,12 @@ pub fn look(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Effect::Move {
             what: Ref::Bound(KEPT.to_owned()),
             to: Destination::Hand,
+            bind: None,
         },
         Effect::Move {
             what: Ref::Bound(REST.to_owned()),
             to: rest,
+            bind: None,
         },
     ])
 }
@@ -508,11 +514,13 @@ pub fn put_on_library(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         .0
         .iter()
         .any(|pred| matches!(pred, Pred::In(_) | Pred::Spell));
-    let place = if r.words("on top of") {
+    let mut place = if r.words("on top of") {
         Place::Top
-    } else {
-        r.need("on the bottom of")?;
+    } else if r.words("on the bottom of") {
         Place::Bottom
+    } else {
+        r.need("into")?;
+        Place::Shuffled
     };
     if yours {
         r.need("your library")?;
@@ -522,9 +530,13 @@ pub fn put_on_library(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     } else {
         return None;
     }
+    if place == Place::Shuffled {
+        place = below_place(r)?;
+    }
     Some(vec![Effect::Move {
         what,
         to: Destination::Library { place, order: None },
+        bind: None,
     }])
 }
 
@@ -543,8 +555,9 @@ fn names_text(pred: &Pred) -> Option<(u8, String)> {
         Pred::Subtype(Subtype(name)) => Some((1, name.clone())),
         Pred::Type(kind) => Some((2, type_name(*kind).to_owned())),
         Pred::AnyOf(list) => {
-            let permanents: Vec<Pred> = PERMANENTS.iter().map(|kind| Pred::Type(*kind)).collect();
-            if *list == permanents {
+            // The permanent types in any order are one alternative.
+            let permanent = |kind: &CardType| list.contains(&Pred::Type(*kind));
+            if list.len() == PERMANENTS.len() && PERMANENTS.iter().all(permanent) {
                 return Some((2, "permanent".to_owned()));
             }
             let names: Option<Vec<(u8, String)>> = list.iter().map(names_text).collect();
@@ -568,7 +581,10 @@ pub(super) fn filter_text(filter: &Selector, plural: bool) -> Option<String> {
     }
     let (mut head, mut tail) = (Vec::new(), Vec::new());
     let mut stage = 0;
-    for pred in &filter.0 {
+    // The conditions are a set: adjectives come first in the words whatever order the rules list them in.
+    let mut preds: Vec<&Pred> = filter.0.iter().collect();
+    preds.sort_by_key(|pred| !is_card_adjective(pred));
+    for pred in preds {
         if is_card_adjective(pred) {
             if stage > 0 {
                 return None;
@@ -584,6 +600,9 @@ pub(super) fn filter_text(filter: &Selector, plural: bool) -> Option<String> {
             head.push(text);
         } else if matches!(pred, Pred::Compare { .. } | Pred::HasKeyword(_)) {
             tail.push(suffix_text(pred, Form::Subject)?);
+        } else if let Pred::Named(name) = pred {
+            // "a card named Avarax" (r7c); the name of the face itself reads as `~` in the clause.
+            tail.push(format!("named {name}"));
         } else {
             return None;
         }
@@ -656,9 +675,20 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
             },
             ..,
         ] => {
-            let (text, used) = sequence(inner)?;
+            let (text, used) = super::outside::sequence(inner).or_else(|| sequence(inner))?;
             (used == inner.len() && matches!(inner.first(), Some(Effect::Search { .. })))
                 .then(|| (format!("you may {text}"), 1))
+        }
+        // A search outside the game may always find nothing, so the card words it as "you may".
+        [
+            Effect::Search {
+                zone: ZoneKind::Outside,
+                ..
+            },
+            ..,
+        ] => {
+            let (text, used) = super::outside::sequence(effects)?;
+            Some((format!("you may {text}"), used))
         }
         [Effect::Search { .. }, ..] => search_sequence(effects, &Ref::You),
         [Effect::RevealUntil { .. }, ..] => super::reveal_until::sequence(effects),
@@ -733,15 +763,18 @@ pub fn may_search_text(owner: &str, who: &Ref, inner: &[Effect]) -> Option<Strin
 }
 
 /// A search by `who`, the move of what it finds and the shuffle, or the shuffle and then the move to the top.
+#[allow(clippy::too_many_lines)]
 fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     let [
         Effect::Search {
             who: searcher,
+            of: None,
             zone: ZoneKind::Library,
             also,
             filter,
             count,
             reveal,
+            distinct: false,
             bind,
         },
         rest @ ..,
@@ -749,10 +782,9 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     else {
         return None;
     };
-    // The name a single search binds is bookkeeping: a proposal may call the card by its type. A pair needs the
-    // conventional name, from which the second is derived.
-    let pair = matches!(rest, [Effect::Search { .. }, ..]);
-    if (pair && *bind != bound_as(who, filter)) || searcher != who || !also.is_empty() {
+    // The name a search binds is bookkeeping: a proposal may call the card by its type. The second of a pair is
+    // named after the first.
+    if searcher != who || !also.is_empty() {
         return None;
     }
     // A pair: a second search that leaves out the first card, and a move for each.
@@ -760,11 +792,13 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
         [
             Effect::Search {
                 who: second,
+                of: None,
                 zone: ZoneKind::Library,
                 also: other_also,
                 filter: other,
                 count: other_count,
                 reveal: other_reveal,
+                distinct: false,
                 bind: other_bind,
             },
             ..,
@@ -778,11 +812,8 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     let library = if *who == Ref::You { "your" } else { "their" };
     let mut text = format!("search {library} library for {looks_for}");
     if *reveal {
-        text.push_str(if plural {
-            ", reveal them"
-        } else {
-            ", reveal it"
-        });
+        text += ", reveal ";
+        text += if plural { "them" } else { "it" };
     }
     let found = Ref::Bound(bind.clone());
     let rest = &effects[count_of..];
@@ -795,7 +826,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
     }
     match rest {
         [
-            Effect::Move { what, to },
+            Effect::Move { what, to, .. },
             Effect::Shuffle { who: shuffler },
             ..,
         ] if count_of == 1 && *what == found && shuffler == who => {
@@ -803,10 +834,11 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
             let _ = write!(text, ", put {pron} {}, then shuffle", destination_text(to)?);
         }
         [
-            Effect::Move { what, to },
+            Effect::Move { what, to, .. },
             Effect::Move {
                 what: other,
                 to: other_to,
+                ..
             },
             Effect::Shuffle { who: shuffler },
             ..,
@@ -827,6 +859,7 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
                         place: Place::Top,
                         order: None,
                     },
+                ..
             },
             ..,
         ] if count_of == 1 && *what == found && !plural && shuffler == who => {
@@ -851,10 +884,12 @@ fn split_put_text(rest: &[Effect], bind: &str, who: &Ref) -> Option<String> {
         Effect::Move {
             what: Ref::Bound(first),
             to,
+            ..
         },
         Effect::Move {
             what: Ref::Bound(others),
             to: rest_to,
+            ..
         },
         Effect::Shuffle { who: shuffler },
         ..,
@@ -891,10 +926,12 @@ fn look_sequence(effects: &[Effect]) -> Option<(String, usize)> {
             Effect::Move {
                 what: Ref::Bound(moved),
                 to: Destination::Hand,
+                ..
             },
             Effect::Move {
                 what: Ref::Bound(left),
                 to: left_to,
+                ..
             },
             ..,
         ] if bind == TOP
@@ -930,6 +967,25 @@ pub fn place_text(place: Place) -> Option<&'static str> {
     match place {
         Place::Top => Some("on top of"),
         Place::Bottom => Some("on the bottom of"),
-        Place::Shuffled => None,
+        Place::Below(_) | Place::Shuffled => None,
     }
+}
+
+/// The ordinals a card gives its place in a library, from the second.
+const NTH: [&str; 9] = [
+    "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth",
+];
+
+/// "second from the top", "third from the top": where a card put beneath `below` cards lies.
+pub fn below_text(below: u32) -> Option<String> {
+    let word = NTH.get(usize::try_from(below.checked_sub(1)?).ok()?)?;
+    Some(format!("{word} from the top"))
+}
+
+/// "second from the top" to "tenth from the top", as the cards beneath it.
+fn below_place(r: &mut Reader<'_>) -> Option<Place> {
+    (1..=9u32).find_map(|below| {
+        let text = below_text(below)?;
+        r.words(&text).then_some(Place::Below(below))
+    })
 }

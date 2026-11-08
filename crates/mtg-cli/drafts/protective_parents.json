@@ -1,0 +1,77 @@
+{
+  "oracle_id": "d9717522-358b-41ac-9183-8a6b3981f921",
+  "name": "Protective Parents",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Protective Parents",
+      "oracle_fingerprint": "cd1e2fde6611305b18ea607e46b104dc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Young Hero",
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Role"],
+                      "abilities": [
+                        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [
+                              {
+                                "GrantAbility": {
+                                  "Triggered": {
+                                    "when": { "Attacks": { "what": ["This"] } },
+                                    "if": {
+                                      "Compare": {
+                                        "left": {
+                                          "Count": [
+                                            "This",
+                                            {
+                                              "Compare": {
+                                                "stat": "Toughness",
+                                                "op": "Le",
+                                                "to": 3
+                                              }
+                                            }
+                                          ]
+                                        },
+                                        "op": "Ge",
+                                        "right": 1
+                                      }
+                                    },
+                                    "effects": [
+                                      { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Attach": { "what": { "Bound": "token" }, "to": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

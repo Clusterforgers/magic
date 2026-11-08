@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c2f7f39b-0569-4c32-bdbf-7fb0a0efd5cf",
+  "name": "Colossal Collision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colossal Collision",
+      "oracle_fingerprint": "67e1e5eebc071ac8532afff33abd811f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Typecycling": { "find": [{ "Type": "Land" }, { "Supertype": "Basic" }], "cost": "{2}" }
+          }
+        }
+      ]
+    }
+  ]
+}

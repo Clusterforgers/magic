@@ -1,0 +1,26 @@
+{
+  "oracle_id": "121a8717-4c5b-45a8-875a-2b802c1fe6f8",
+  "name": "Greenwheel Liberator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greenwheel Liberator",
+      "oracle_fingerprint": "c356bfe4a2b5ca0b205513341e83f889",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

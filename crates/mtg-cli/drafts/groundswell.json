@@ -1,0 +1,70 @@
+{
+  "oracle_id": "ddbacb74-1f98-4607-a92e-d14973b9d0ef",
+  "name": "Groundswell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Groundswell",
+      "oracle_fingerprint": "08686ec334df976cfd9ffae58e0164fa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Tally": {
+                                    "event": "Entered",
+                                    "who": "You",
+                                    "filter": [{ "Type": "Land" }]
+                                  }
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": 4,
+                            "otherwise": 2
+                          }
+                        },
+                        "toughness": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Tally": {
+                                    "event": "Entered",
+                                    "who": "You",
+                                    "filter": [{ "Type": "Land" }]
+                                  }
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": 4,
+                            "otherwise": 2
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

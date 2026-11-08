@@ -1,0 +1,58 @@
+{
+  "oracle_id": "612c7807-be70-4e2f-afd2-3d3c03eddbbe",
+  "name": "Icy Reception",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Icy Reception",
+      "oracle_fingerprint": "c05cedd25f0899a6a364809d9b57a4f7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "Spell",
+                              { "AnyOf": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Pay": {
+                            "who": { "ControllerOf": { "Target": 0 } },
+                            "cost": "{3}",
+                            "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": -5, "toughness": 0 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

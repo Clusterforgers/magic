@@ -1,0 +1,27 @@
+{
+  "oracle_id": "78d5ce34-f160-4925-a4ce-25a3546d97c7",
+  "name": "Skirk Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skirk Shaman",
+      "oracle_fingerprint": "56af9d85e91d4401ae925ecfa6a398e9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Not": { "Type": "Artifact" } },
+                  { "Not": { "Color": "Red" } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

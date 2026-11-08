@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2962cfc6-6557-4aee-a95a-8ca3bb06eb29",
+  "name": "Crimson Cowl, Master of Evil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crimson Cowl, Master of Evil",
+      "oracle_fingerprint": "be56c51e8f4d538ff8659c09172f731c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Subtype": "Villain" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "at": "EachPlayer"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Villain",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Villain"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

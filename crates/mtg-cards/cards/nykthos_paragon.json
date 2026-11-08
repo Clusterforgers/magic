@@ -10,7 +10,7 @@
         {
           "Triggered": {
             "when": { "LifeGained": { "who": "You" } },
-            "limit": "OncePerTurn",
+            "limit": "OncePerTurnDone",
             "effects": [
               {
                 "May": {

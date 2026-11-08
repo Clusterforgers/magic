@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b71239fb-d7dc-4bac-b8aa-26b454409344",
+  "name": "Mobile Homestead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mobile Homestead",
+      "oracle_fingerprint": "5d8ea1bfaf9bf3d947f3be56e1077c04",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Mount" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

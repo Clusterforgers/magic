@@ -1,0 +1,64 @@
+{
+  "oracle_id": "2d72454f-3d87-4acc-9f46-b8c579f44af8",
+  "name": "Hallowed Respite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hallowed Respite",
+      "oracle_fingerprint": "b97a25b9b11cc939b5292c2ead015734",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Not": { "Supertype": "Legendary" } }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": {} },
+                  "as": "exiled_moved"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Is": { "Bound": "exiled_moved" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          },
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Bound": "exiled" }, "counter": "+1/+1" } }],
+                  "otherwise": [{ "Tap": { "what": { "Bound": "exiled" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{1}{W}{U}" } }
+      ]
+    }
+  ]
+}

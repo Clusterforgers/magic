@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c0162a6c-12d9-4b84-811a-ee6e39401863",
+  "name": "Mists of Littjara",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mists of Littjara",
+      "oracle_fingerprint": "2f9cf303f644dc00f6626d28484bd9e3",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Keyword": {
+            "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

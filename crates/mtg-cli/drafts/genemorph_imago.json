@@ -1,0 +1,65 @@
+{
+  "oracle_id": "bf3a0585-3976-4078-8beb-6afa79f97027",
+  "name": "Genemorph Imago",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genemorph Imago",
+      "oracle_fingerprint": "0ad68a3680b8b02204aa0cfb854518a1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                                "op": "Ge",
+                                "right": 6
+                              }
+                            },
+                            "then": 6,
+                            "otherwise": 3
+                          }
+                        },
+                        "toughness": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                                "op": "Ge",
+                                "right": 6
+                              }
+                            },
+                            "then": 6,
+                            "otherwise": 3
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

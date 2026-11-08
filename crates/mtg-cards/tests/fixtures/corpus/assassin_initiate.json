@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "3ce4e330-d878-48f3-b9fe-3158d69f2da2",
+  "oracle_id": "23be5c68-6530-474d-b677-551da4745b3c",
+  "multiverse_ids": [
+    667612
+  ],
+  "mtgo_id": 128010,
+  "tcgplayer_id": 555970,
+  "cardmarket_id": 775431,
+  "name": "Assassin Initiate",
+  "lang": "en",
+  "released_at": "2024-07-05",
+  "uri": "https://api.scryfall.com/cards/3ce4e330-d878-48f3-b9fe-3158d69f2da2",
+  "scryfall_uri": "https://scryfall.com/card/acr/22/assassin-initiate?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:49:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/c/3ce4e330-d878-48f3-b9fe-3158d69f2da2.jpg?1783910982",
+    "normal": "https://cards.scryfall.io/normal/front/3/c/3ce4e330-d878-48f3-b9fe-3158d69f2da2.jpg?1783910982",
+    "large": "https://cards.scryfall.io/large/front/3/c/3ce4e330-d878-48f3-b9fe-3158d69f2da2.jpg?1783910982",
+    "png": "https://cards.scryfall.io/png/front/3/c/3ce4e330-d878-48f3-b9fe-3158d69f2da2.png?1783910982",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/c/3ce4e330-d878-48f3-b9fe-3158d69f2da2.jpg?1783910982",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/c/3ce4e330-d878-48f3-b9fe-3158d69f2da2.jpg?1783910982",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/c/3ce4e330-d878-48f3-b9fe-3158d69f2da2.webp?1783910982",
+    "grid": "https://cards.scryfall.io/grid/front/3/c/3ce4e330-d878-48f3-b9fe-3158d69f2da2.webp?1783910982",
+    "display": "https://cards.scryfall.io/display/front/3/c/3ce4e330-d878-48f3-b9fe-3158d69f2da2.webp?1783910982",
+    "art": "https://cards.scryfall.io/art/front/3/c/3ce4e330-d878-48f3-b9fe-3158d69f2da2.webp?1783910982",
+    "crop": "https://cards.scryfall.io/crop/front/3/c/3ce4e330-d878-48f3-b9fe-3158d69f2da2.webp?1783910982",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/c/3ce4e330-d878-48f3-b9fe-3158d69f2da2.jpg?1783910982"
+  },
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Assassin",
+  "oracle_text": "{1}: This creature gains your choice of flying, deathtouch, or lifelink until end of turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set": "acr",
+  "set_name": "Assassin's Creed",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aacr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/acr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3ce4e330-d878-48f3-b9fe-3158d69f2da2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A23be5c68-6530-474d-b677-551da4745b3c&unique=prints",
+  "collector_number": "22",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"For a secret brotherhood, you certainly do get a lot of new recruits.\"\n—Leonardo, to Ezio",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mandy Jurgens",
+  "artist_ids": [
+    "6035e25c-1738-4ca1-a27a-03684b9132e8"
+  ],
+  "illustration_id": "9f3883dd-86b3-4989-b1e2-c0ade0df0d93",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6524,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.21",
+    "tix": "0.13"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=667612&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAssassin%2BInitiate",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAssassin%2BInitiate",
+    "edhrec": "https://edhrec.com/route/?cc=Assassin+Initiate"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F555970%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=775431&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128010?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "2b4dd121-b477-42ff-9dd1-5d0f957a509d",
+  "name": "X-23, Deadly Weapon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "X-23, Deadly Weapon",
+      "oracle_fingerprint": "602c7aa7ebb14cc7f73a6fd6920a255d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Mutant" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

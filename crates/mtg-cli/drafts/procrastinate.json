@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6f8fa68e-e961-4ae1-b27d-22d87e90f26b",
+  "name": "Procrastinate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Procrastinate",
+      "oracle_fingerprint": "ca1677f5d169f776191828f95b6461d7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": { "Other": "stun" },
+                  "count": { "Times": { "by": 2, "of": "X" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

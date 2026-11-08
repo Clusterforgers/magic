@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cd61a01c-dfe1-4c1e-8063-7f90fcd0c452",
+  "name": "Donatello's Science Lesson",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Donatello's Science Lesson",
+      "oracle_fingerprint": "2616438a1c8793dac269a779782ed682",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } },
+              { "what": "Player", "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "Draw": { "who": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

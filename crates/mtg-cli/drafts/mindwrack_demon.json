@@ -1,0 +1,45 @@
+{
+  "oracle_id": "3dda8d3d-89e2-4600-be8d-9b76b4f36e33",
+  "name": "Mindwrack Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindwrack Demon",
+      "oracle_fingerprint": "d9d420ce46553a1a1f07b8c4f6be181f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 4 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                          "op": "Ge",
+                          "right": 4
+                        }
+                      },
+                      "then": 0,
+                      "otherwise": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

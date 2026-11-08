@@ -22,7 +22,7 @@ const MILLED_BATCH: &str = r#"{"Batch":{"Milled":{"what":[{"Not":{"Type":"Land"}
 #[case::do_this_once(
     "Whenever one or more nonland cards are milled, you may draw a card. Do this only once each turn.",
     ClauseKind::Triggered,
-    format!(r#"{{"Triggered":{{"when":{MILLED_BATCH},"limit":"OncePerTurn","effects":[{{"May":{{"effects":[{{"Draw":{{}}}}]}}}}]}}}}"#)
+    format!(r#"{{"Triggered":{{"when":{MILLED_BATCH},"limit":"OncePerTurnDone","effects":[{{"May":{{"effects":[{{"Draw":{{}}}}]}}}}]}}}}"#)
 )]
 #[case::may_get(
     "Whenever a land you control enters, you may get two rad counters.",

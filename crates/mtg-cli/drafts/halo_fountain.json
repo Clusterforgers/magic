@@ -1,0 +1,70 @@
+{
+  "oracle_id": "36a9de4c-8073-475d-8679-e50844eef09e",
+  "name": "Halo Fountain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Halo Fountain",
+      "oracle_fingerprint": "1c4d3367ea6c3bd4bf626e8ed61f90fc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{W}" },
+              "Tap",
+              {
+                "UntapPermanents": { "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Citizen",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Citizen"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{W}{W}" },
+              "Tap",
+              {
+                "UntapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "count": 2
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{W}{W}{W}{W}{W}" },
+              "Tap",
+              {
+                "UntapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "count": 15
+                }
+              }
+            ],
+            "effects": [{ "WinGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

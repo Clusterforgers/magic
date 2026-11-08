@@ -1,0 +1,33 @@
+{
+  "oracle_id": "60092fb4-98db-4f2d-a5d7-24b5f11c8acc",
+  "name": "Bombadil's Song",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bombadil's Song",
+      "oracle_fingerprint": "994dd4083347712214ecd827f81de726",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Hexproof" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "RingTempts": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c6a5adc8-ee57-421e-8235-0b3160f44568",
+  "name": "Magmablood Archaic",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Magmablood Archaic",
+      "oracle_fingerprint": "c52803a0eb357e523570c96143bc07ab",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "ColorsSpent" } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 115, "end": 260 }
+          }
+        }
+      ]
+    }
+  ]
+}

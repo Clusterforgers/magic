@@ -12,7 +12,7 @@ use super::*;
 )]
 #[case::a_spell_from_your_graveyard(
     "Pay 1 life: Add {C}. Spend this mana only to cast a spell from your graveyard.",
-    r#"{"Activated":{"cost":[{"PayLife":1}],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]},"only":[{"Spell":{"facts":["FromGraveyard"]}}]}}]}}"#
+    r#"{"Activated":{"cost":[{"PayLife":1}],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]},"only":[{"Spell":{"facts":["FromYourGraveyard"]}}]}}]}}"#
 )]
 #[case::chosen_type_or_legendary(
     "{T}: Add {G}. Spend this mana only to cast a creature spell of the chosen type or a legendary creature spell.",

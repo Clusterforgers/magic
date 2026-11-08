@@ -1,0 +1,29 @@
+{
+  "oracle_id": "6f377da9-7d7b-4407-8846-75a12b4dd72d",
+  "name": "Hope Tender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hope Tender",
+      "oracle_fingerprint": "52486aff442646dcc1e9e27617c3cd50",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "Exert"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

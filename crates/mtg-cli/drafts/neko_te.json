@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a1d2944e-6668-4157-aac5-54572759c05c",
+  "name": "Neko-Te",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neko-Te",
+      "oracle_fingerprint": "145bf6d78141cfd2ca22c673f5c52355",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": { "Each": [{ "Type": "Creature" }] }
+              }
+            },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "Is": "Attached" }], "to": "EachPlayer" } },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 1 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

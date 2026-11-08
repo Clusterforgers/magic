@@ -1,0 +1,50 @@
+{
+  "oracle_id": "0d977dc5-807b-4fab-b44b-ccad5e3d63e3",
+  "name": "Hemlock Vial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hemlock Vial",
+      "oracle_fingerprint": "1d8323e7455c2711b8fdb2c84a5e2f63",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Creature" } },
+                                { "Not": { "HasAttached": [{ "Subtype": "Equipment" }] } }
+                              ]
+                            }
+                          },
+                          { "Subtype": "Equipment" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

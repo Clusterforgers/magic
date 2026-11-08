@@ -1,0 +1,147 @@
+{
+  "object": "card",
+  "id": "211fdfd5-af23-4a16-a80f-1d9ba5ccd255",
+  "oracle_id": "9466cfc1-a8fe-44a0-abd2-5d2dfe7110e0",
+  "multiverse_ids": [
+    580957
+  ],
+  "mtgo_id": 108742,
+  "tcgplayer_id": 286508,
+  "cardmarket_id": 675730,
+  "name": "Neyam Shai Murad",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/211fdfd5-af23-4a16-a80f-1d9ba5ccd255",
+  "scryfall_uri": "https://scryfall.com/card/40k/135/neyam-shai-murad?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:33:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/1/211fdfd5-af23-4a16-a80f-1d9ba5ccd255.jpg?1783920839",
+    "normal": "https://cards.scryfall.io/normal/front/2/1/211fdfd5-af23-4a16-a80f-1d9ba5ccd255.jpg?1783920839",
+    "large": "https://cards.scryfall.io/large/front/2/1/211fdfd5-af23-4a16-a80f-1d9ba5ccd255.jpg?1783920839",
+    "png": "https://cards.scryfall.io/png/front/2/1/211fdfd5-af23-4a16-a80f-1d9ba5ccd255.png?1783920839",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/1/211fdfd5-af23-4a16-a80f-1d9ba5ccd255.jpg?1783920839",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/1/211fdfd5-af23-4a16-a80f-1d9ba5ccd255.jpg?1783920839",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/1/211fdfd5-af23-4a16-a80f-1d9ba5ccd255.webp?1783920839",
+    "grid": "https://cards.scryfall.io/grid/front/2/1/211fdfd5-af23-4a16-a80f-1d9ba5ccd255.webp?1783920839",
+    "display": "https://cards.scryfall.io/display/front/2/1/211fdfd5-af23-4a16-a80f-1d9ba5ccd255.webp?1783920839",
+    "art": "https://cards.scryfall.io/art/front/2/1/211fdfd5-af23-4a16-a80f-1d9ba5ccd255.webp?1783920839",
+    "crop": "https://cards.scryfall.io/crop/front/2/1/211fdfd5-af23-4a16-a80f-1d9ba5ccd255.webp?1783920839",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/1/211fdfd5-af23-4a16-a80f-1d9ba5ccd255.jpg?1783920839"
+  },
+  "mana_cost": "{2}{W}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Rogue",
+  "oracle_text": "Rogue Trader — Whenever Neyam Shai Murad deals combat damage to a player, you may have that player return target permanent card from their graveyard to their hand. If you do, that player chooses a permanent card in your graveyard, then you put it onto the battlefield under your control.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Rogue Trader"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/211fdfd5-af23-4a16-a80f-1d9ba5ccd255/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9466cfc1-a8fe-44a0-abd2-5d2dfe7110e0&unique=prints",
+  "collector_number": "135",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Fajareka Setiawan",
+  "artist_ids": [
+    "0cc534e0-be18-4cb1-8521-50fabd0dac6f"
+  ],
+  "illustration_id": "c129aae0-9db9-4980-b028-81b79ec8a1ec",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 16959,
+  "preview": {
+    "source": "PleasantKenobi",
+    "source_uri": "https://www.youtube.com/watch?v=cZUMys8LVis",
+    "previewed_at": "2022-09-16"
+  },
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.33",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580957&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNeyam%2BShai%2BMurad",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNeyam%2BShai%2BMurad",
+    "edhrec": "https://edhrec.com/route/?cc=Neyam+Shai+Murad"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286508%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=675730&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108742?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

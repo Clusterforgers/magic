@@ -1,0 +1,26 @@
+{
+  "oracle_id": "6f45ac24-e153-4ec1-a41f-989f9547d409",
+  "name": "Scrapdiver Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrapdiver Serpent",
+      "oracle_fingerprint": "4f75a36f43ad95d4a2d703f25251486d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "Defending" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

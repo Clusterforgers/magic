@@ -1,0 +1,31 @@
+{
+  "oracle_id": "077b5ed2-05c2-4a16-b5eb-794884ee1c21",
+  "name": "Demon Wall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demon Wall",
+      "oracle_fingerprint": "0bd9253d0cfb76d951777e6070f0a8ad",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Menace" },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": ["This", "HasAnyCounter"] },
+                "quirk": "AttackDespiteDefender"
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{B}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

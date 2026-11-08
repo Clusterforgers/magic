@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "1b882e68-5c03-4ec6-9982-8c3b09847969",
+  "oracle_id": "929c231a-12d9-4f1a-9849-64a8b5a65f20",
+  "multiverse_ids": [
+    22317
+  ],
+  "mtgo_id": 14987,
+  "mtgo_foil_id": 14988,
+  "tcgplayer_id": 7645,
+  "cardmarket_id": 3639,
+  "name": "Scouting Trek",
+  "lang": "en",
+  "released_at": "2000-10-02",
+  "uri": "https://api.scryfall.com/cards/1b882e68-5c03-4ec6-9982-8c3b09847969",
+  "scryfall_uri": "https://scryfall.com/card/inv/210/scouting-trek?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:27:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/b/1b882e68-5c03-4ec6-9982-8c3b09847969.jpg?1783945671",
+    "normal": "https://cards.scryfall.io/normal/front/1/b/1b882e68-5c03-4ec6-9982-8c3b09847969.jpg?1783945671",
+    "large": "https://cards.scryfall.io/large/front/1/b/1b882e68-5c03-4ec6-9982-8c3b09847969.jpg?1783945671",
+    "png": "https://cards.scryfall.io/png/front/1/b/1b882e68-5c03-4ec6-9982-8c3b09847969.png?1783945671",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/b/1b882e68-5c03-4ec6-9982-8c3b09847969.jpg?1783945671",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/b/1b882e68-5c03-4ec6-9982-8c3b09847969.jpg?1783945671",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/b/1b882e68-5c03-4ec6-9982-8c3b09847969.webp?1783945671",
+    "grid": "https://cards.scryfall.io/grid/front/1/b/1b882e68-5c03-4ec6-9982-8c3b09847969.webp?1783945671",
+    "display": "https://cards.scryfall.io/display/front/1/b/1b882e68-5c03-4ec6-9982-8c3b09847969.webp?1783945671",
+    "art": "https://cards.scryfall.io/art/front/1/b/1b882e68-5c03-4ec6-9982-8c3b09847969.webp?1783945671",
+    "crop": "https://cards.scryfall.io/crop/front/1/b/1b882e68-5c03-4ec6-9982-8c3b09847969.webp?1783945671",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/b/1b882e68-5c03-4ec6-9982-8c3b09847969.jpg?1783945671"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Search your library for any number of basic land cards, reveal those cards, then shuffle and put them on top.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set": "inv",
+  "set_name": "Invasion",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainv&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inv?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1b882e68-5c03-4ec6-9982-8c3b09847969/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A929c231a-12d9-4f1a-9849-64a8b5a65f20&unique=prints",
+  "collector_number": "210",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"I have chosen my path. Who will walk it with me?\"\n—Eladamri",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Stephanie Law",
+  "artist_ids": [
+    "1520b30a-d72d-4e11-a2a7-5c98d201105a"
+  ],
+  "illustration_id": "21a592e4-6be0-4eef-8acf-5c2ec3695161",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19280,
+  "prices": {
+    "usd": "0.94",
+    "usd_foil": "13.73",
+    "usd_etched": null,
+    "eur": "0.52",
+    "eur_foil": "5.98",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=22317&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DScouting%2BTrek",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DScouting%2BTrek",
+    "edhrec": "https://edhrec.com/route/?cc=Scouting+Trek"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7645%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3639&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14987?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

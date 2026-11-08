@@ -1,0 +1,44 @@
+{
+  "oracle_id": "3da5fbe2-e47b-4a1d-9e73-393f37314fa3",
+  "name": "Beastie Beatdown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beastie Beatdown",
+      "oracle_fingerprint": "58f42f251b9acd4e90a9b8bc9a173563",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+                  ]
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

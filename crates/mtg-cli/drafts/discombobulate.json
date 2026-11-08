@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b58d7a20-4bcd-4c33-8cda-955362525f48",
+  "name": "Discombobulate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Discombobulate",
+      "oracle_fingerprint": "985555e52822e9f274bd9dc752dc8d80",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

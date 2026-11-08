@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0b9a477b-f2dd-47b2-8493-eb63f44a2688",
+  "name": "Soulquake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulquake",
+      "oracle_fingerprint": "def3def64319af14d00e273812719659",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Move": { "what": { "Each": [{ "Type": "Creature" }] }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

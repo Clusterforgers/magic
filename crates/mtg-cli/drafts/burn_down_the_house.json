@@ -1,0 +1,83 @@
+{
+  "oracle_id": "0ec54683-a65c-461d-862e-585b6499d6a5",
+  "name": "Burn Down the House",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burn Down the House",
+      "oracle_fingerprint": "e631bf1a5b6abc74fbcd19c72901a8e5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": {
+                              "Each": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                              ]
+                            },
+                            "amount": 5
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Devil",
+                                "colors": ["Red"],
+                                "types": ["Creature"],
+                                "subtypes": ["Devil"],
+                                "power": 1,
+                                "toughness": 1,
+                                "abilities": [
+                                  {
+                                    "Triggered": {
+                                      "when": {
+                                        "ZoneChange": {
+                                          "what": ["This"],
+                                          "from": "Battlefield",
+                                          "to": "Graveyard"
+                                        }
+                                      },
+                                      "targets": [{ "what": "AnyTarget" }],
+                                      "effects": [
+                                        { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "count": 3,
+                            "as": "token"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Bound": "token" },
+                            "mods": [{ "AddKeyword": "Haste" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

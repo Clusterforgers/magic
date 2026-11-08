@@ -15,7 +15,8 @@ use crate::zones::Zone;
 
 impl GameState {
     /// Whether `viewer` may look at what the object is: anyone may unless it lies face down (CR 708), and then only
-    /// the player its kind of face-down names (CR 702.143a: the owner of a foretold card; CR 708.3: the controller of a face-down spell or permanent). This is the one rule the
+    /// the player its kind of face-down names (CR 702.143a: the owner of a foretold card; CR 708.3: the controller of a face-down spell or permanent), or a rule that grants a look at a face-down card in exile
+    /// (CR 406.3). This is the one rule the
     /// views, the log and the snapshots read for a face-down object.
     pub fn may_look_at(&self, viewer: PlayerId, id: ObjectId) -> bool {
         let Some(object) = self.object(id) else {
@@ -27,7 +28,7 @@ impl GameState {
                 object.owner(),
                 crate::characteristics::controller_of_object(self, object),
                 viewer,
-            )
+            ) || crate::rules::grants_look(self, viewer, object)
         })
     }
 
@@ -362,6 +363,32 @@ mod tests {
         }
         let unseen = top(&game, 0, 1)[0];
         assert_eq!(who_sees(&game, unseen), Vec::<usize>::new());
+    }
+
+    #[test]
+    fn a_hand_looked_at_is_known_to_the_looker_alone() {
+        let mut game = state(
+            vec![
+                vec![],
+                vec![creature("A", 1, 1), creature("B", 2, 2)],
+                vec![],
+            ],
+            vec![vec![creature("Source", 1, 1)], vec![], vec![]],
+        );
+        let source = game.zone(Zone::Battlefield)[0];
+        game.resolving = Some(Resolving::begin(source));
+        let cards = game.zone(Zone::Hand(PlayerId(1))).to_vec();
+        let looked = Event::HandLooked(crate::library::HandLooked {
+            player: PlayerId(2),
+            of: PlayerId(1),
+            cards: cards.clone(),
+        });
+        apply_event(&mut game, &looked).unwrap();
+        for card in &cards {
+            assert_eq!(who_sees(&game, *card), [2]);
+        }
+        game.resolving = None;
+        assert_eq!(who_sees(&game, cards[0]), Vec::<usize>::new());
     }
 
     #[test]

@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "1cbc55e5-b84c-4449-a288-ec26cdd3997c",
+  "oracle_id": "8042ade2-f589-4c3e-a461-a4c284a67ee4",
+  "multiverse_ids": [
+    22991
+  ],
+  "mtgo_id": 14329,
+  "mtgo_foil_id": 14330,
+  "tcgplayer_id": 7707,
+  "cardmarket_id": 3699,
+  "name": "Tolarian Emissary",
+  "lang": "en",
+  "released_at": "2000-10-02",
+  "uri": "https://api.scryfall.com/cards/1cbc55e5-b84c-4449-a288-ec26cdd3997c",
+  "scryfall_uri": "https://scryfall.com/card/inv/81/tolarian-emissary?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:28:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/c/1cbc55e5-b84c-4449-a288-ec26cdd3997c.jpg?1783945702",
+    "normal": "https://cards.scryfall.io/normal/front/1/c/1cbc55e5-b84c-4449-a288-ec26cdd3997c.jpg?1783945702",
+    "large": "https://cards.scryfall.io/large/front/1/c/1cbc55e5-b84c-4449-a288-ec26cdd3997c.jpg?1783945702",
+    "png": "https://cards.scryfall.io/png/front/1/c/1cbc55e5-b84c-4449-a288-ec26cdd3997c.png?1783945702",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/c/1cbc55e5-b84c-4449-a288-ec26cdd3997c.jpg?1783945702",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/c/1cbc55e5-b84c-4449-a288-ec26cdd3997c.jpg?1783945702",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/c/1cbc55e5-b84c-4449-a288-ec26cdd3997c.webp?1783945702",
+    "grid": "https://cards.scryfall.io/grid/front/1/c/1cbc55e5-b84c-4449-a288-ec26cdd3997c.webp?1783945702",
+    "display": "https://cards.scryfall.io/display/front/1/c/1cbc55e5-b84c-4449-a288-ec26cdd3997c.webp?1783945702",
+    "art": "https://cards.scryfall.io/art/front/1/c/1cbc55e5-b84c-4449-a288-ec26cdd3997c.webp?1783945702",
+    "crop": "https://cards.scryfall.io/crop/front/1/c/1cbc55e5-b84c-4449-a288-ec26cdd3997c.webp?1783945702",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/c/1cbc55e5-b84c-4449-a288-ec26cdd3997c.jpg?1783945702"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Kicker {1}{W} (You may pay an additional {1}{W} as you cast this spell.)\nFlying\nWhen this creature enters, if it was kicked, destroy target enchantment.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Kicker",
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set": "inv",
+  "set_name": "Invasion",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainv&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inv?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1cbc55e5-b84c-4449-a288-ec26cdd3997c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8042ade2-f589-4c3e-a461-a4c284a67ee4&unique=prints",
+  "collector_number": "81",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ron Spencer",
+  "artist_ids": [
+    "dab52c11-0564-4207-a4a1-c1735c946a65"
+  ],
+  "illustration_id": "af4f988f-5a1c-4c49-bf89-1973e6520d7a",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 32062,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.43",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.49",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=22991&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTolarian%2BEmissary",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTolarian%2BEmissary",
+    "edhrec": "https://edhrec.com/route/?cc=Tolarian+Emissary"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7707%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3699&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14329?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

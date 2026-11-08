@@ -1,0 +1,58 @@
+{
+  "oracle_id": "6e07e7ae-1bb7-4831-adb9-a5e71b7d79e3",
+  "name": "Connive // Concoct",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Connive",
+      "oracle_fingerprint": "84d9dbdade7f0ac6f3828b43e3482def",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Concoct",
+      "oracle_fingerprint": "6cb28e8011aea0482b42466a6a0a7aaa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Surveil": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

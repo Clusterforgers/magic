@@ -1,0 +1,35 @@
+{
+  "oracle_id": "eff736bc-d311-4bef-9c7e-de4ebe32e46f",
+  "name": "Twilight Shepherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twilight Shepherd",
+      "oracle_fingerprint": "d686dd9810b0981823fa5ca1fd595a39",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      { "ArrivedFrom": "Battlefield" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Persist" }
+      ]
+    }
+  ]
+}

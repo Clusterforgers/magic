@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e82f46f3-143b-46ae-ab5d-4aa177437a64",
+  "name": "Ichor Synthesizer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ichor Synthesizer",
+      "oracle_fingerprint": "9c8b90b363e904202fd2cca9d38eec54",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "oil" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  { "CounterCount": { "kind": { "Other": "oil" }, "op": "Ge", "to": 4 } }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                "This",
+                { "CounterCount": { "kind": { "Other": "oil" }, "op": "Ge", "to": 4 } }
+              ]
+            },
+            "mods": ["CantBeBlocked"]
+          }
+        }
+      ]
+    }
+  ]
+}

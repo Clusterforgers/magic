@@ -87,6 +87,7 @@ pub fn c6_au_return_under_you(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
                 transformed: false,
                 counters: Vec::new(),
             },
+            bind: None,
         }])
     })
 }

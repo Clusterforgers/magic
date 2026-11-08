@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2786f210-ec64-46ea-9a7f-b03759fb1dae",
+  "name": "Ancestral Knowledge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancestral Knowledge",
+      "oracle_fingerprint": "9adf6e6ff1e15987a51f76d7a1b8e170",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 10, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Exile": { "what": { "Bound": "kept2" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "Shuffle": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

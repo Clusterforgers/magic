@@ -53,6 +53,7 @@ impl KeywordRules for Cipher {
                     bind: COPY.to_owned(),
                 },
                 Effect::CastFromZone {
+                    rather: None,
                     who: Ref::You,
                     what: Ref::Bound(COPY.to_owned()),
                     free: true,
@@ -121,6 +122,7 @@ mod tests {
         card = card.with_rules(Ability::Spell {
             targets: Vec::new(),
             effects: vec![Effect::Draw {
+                bind: None,
                 who: Ref::You,
                 count: Amount::one(),
             }],

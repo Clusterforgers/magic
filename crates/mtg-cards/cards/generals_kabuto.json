@@ -1,0 +1,21 @@
+{
+  "oracle_id": "cf17889e-9201-4af7-bc2a-9539b04fea15",
+  "name": "General's Kabuto",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "General's Kabuto",
+      "oracle_fingerprint": "b34b77283570ed0787a01590cf025f36",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Shroud" }] } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "Attached", "combat": true } },
+            "by": "Prevent"
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

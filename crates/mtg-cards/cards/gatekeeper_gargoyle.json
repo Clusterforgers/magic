@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a175de44-3a7e-4165-8f9a-8173c0df13d6",
+  "name": "Gatekeeper Gargoyle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gatekeeper Gargoyle",
+      "oracle_fingerprint": "0bd2133da44cdb2eb1ba409dfda98e25",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Count": [{ "Subtype": "Gate" }, { "ControlledBy": "You" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

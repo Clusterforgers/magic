@@ -1,0 +1,60 @@
+{
+  "oracle_id": "60fc89a1-cc6f-4a32-84c3-09abf7a4a1df",
+  "name": "Brigid, Clachan's Heart // Brigid, Doun's Mind",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Brigid, Clachan's Heart",
+      "oracle_fingerprint": "fdff35174e1c4d110003ff7b96cc19ac",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Did": { "action": "Transformed", "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kithkin",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kithkin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{G}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Brigid, Doun's Mind",
+      "oracle_fingerprint": "a7aca6f6ec5a937a2498095ba3eb90a1",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 78 } }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{W}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

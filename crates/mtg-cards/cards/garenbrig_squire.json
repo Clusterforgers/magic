@@ -1,0 +1,29 @@
+{
+  "oracle_id": "2a95ebaa-543e-4407-8050-adf6d8319fc1",
+  "name": "Garenbrig Squire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garenbrig Squire",
+      "oracle_fingerprint": "6d3de515f8beda36700fada552c33f92",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Type": "Creature" }, "HasAdventure"], "by": "You" }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

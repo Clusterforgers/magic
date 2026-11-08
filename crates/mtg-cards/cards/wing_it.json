@@ -1,0 +1,29 @@
+{
+  "oracle_id": "7b0b05a0-0be4-498f-be54-8d68b818f90a",
+  "name": "Wing It",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wing It",
+      "oracle_fingerprint": "a781acbb2be6ebc5b3ee83e5089231ef",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "flying" } } },
+              { "Scry": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

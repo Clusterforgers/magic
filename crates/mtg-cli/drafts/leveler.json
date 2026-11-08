@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ba1d34ab-7529-4f47-a5e7-7d8f66d7b901",
+  "name": "Leveler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leveler",
+      "oracle_fingerprint": "f111ece908c6ecb62aa855860c0fa70d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Library" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

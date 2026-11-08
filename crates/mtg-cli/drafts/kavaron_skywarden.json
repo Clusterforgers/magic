@@ -1,0 +1,52 @@
+{
+  "oracle_id": "c1f1ba17-b5e8-4bb3-a767-befd52e2db72",
+  "name": "Kavaron Skywarden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kavaron Skywarden",
+      "oracle_fingerprint": "6d2d9485865bf1cf43cc912f546a24d5",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": {
+                    "condition": {
+                      "Any": [
+                        {
+                          "Compare": {
+                            "left": {
+                              "Tallied": { "who": "EachPlayer", "what": "NonlandPermanentsLeft" }
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "EachPlayer", "what": "SpellsWarped" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      ]
+                    },
+                    "then": 1,
+                    "otherwise": 0
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

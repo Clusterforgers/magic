@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Choose target opponent. Return CARDNAME to the battlefield under that player's control at the beginning of their next upkeep.",
+      "abilities": [],
+      "gap": "key:DelayedTrigger.RememberObjects=Targeted & SacrificedCards"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your end step, sacrifice each other creature you control.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 77
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 78,
+          "end": 252
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

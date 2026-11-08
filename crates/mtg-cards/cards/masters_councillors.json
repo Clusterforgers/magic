@@ -1,0 +1,52 @@
+{
+  "oracle_id": "b9079564-5c86-4765-988a-f2334e016fa6",
+  "name": "Master's Councillors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master's Councillors",
+      "oracle_fingerprint": "4a0dcc6a69c7b825caf059691e979c23",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Players": {
+                          "PlayersWhere": {
+                            "who": "EachPlayer",
+                            "test": {
+                              "Compare": {
+                                "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                                "op": "Ge",
+                                "right": 7
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

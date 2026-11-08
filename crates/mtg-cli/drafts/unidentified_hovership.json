@@ -1,0 +1,64 @@
+{
+  "oracle_id": "bde67dfb-706b-4942-a365-984ea6e97a2b",
+  "name": "Unidentified Hovership",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unidentified Hovership",
+      "oracle_fingerprint": "49d174edd38cdd84def596e98a37d1d4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Toughness", "op": "Le", "to": 5 } }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "who": { "OwnerOf": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                  "count": 2,
+                  "as": "looked"
+                }
+              },
+              {
+                "Choose": {
+                  "who": { "OwnerOf": { "Remembered": { "on": "This", "slot": "remembered" } } },
+                  "from": { "Bound": "looked" },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              {
+                "Manifest": {
+                  "who": { "OwnerOf": { "Remembered": { "on": "This", "slot": "remembered" } } }
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

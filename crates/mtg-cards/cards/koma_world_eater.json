@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1ebf2142-f171-40cd-8143-15f50084b707",
+  "name": "Koma, World-Eater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Koma, World-Eater",
+      "oracle_fingerprint": "ccfd45161538a9604c23c424ea640b86",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": "{4}" } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Koma's Coil",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Serpent"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "count": 4
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

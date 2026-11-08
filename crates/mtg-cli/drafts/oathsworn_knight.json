@@ -1,0 +1,26 @@
+{
+  "oracle_id": "16c293c8-bd1d-4db9-b197-da14f2f37cb1",
+  "name": "Oathsworn Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oathsworn Knight",
+      "oracle_fingerprint": "45a29706abe1d146ae03595cdb7c5148",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 4 } }
+          }
+        },
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": { "Each": ["This", { "HasCounter": "+1/+1" }] } } },
+            "by": { "PreventRemovingCounter": "+1/+1" }
+          }
+        }
+      ]
+    }
+  ]
+}

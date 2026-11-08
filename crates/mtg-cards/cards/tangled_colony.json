@@ -1,0 +1,37 @@
+{
+  "oracle_id": "3f01c327-ba50-4fc3-a930-fa1fb02e34b9",
+  "name": "Tangled Colony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tangled Colony",
+      "oracle_fingerprint": "288a2540f70beed8b46ee2a89bbc4e8c",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rat",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+                    }
+                  },
+                  "count": { "Tallied": { "who": "This", "what": "DamageDealtTo" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

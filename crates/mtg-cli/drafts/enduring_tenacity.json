@@ -16,9 +16,23 @@
         },
         {
           "Triggered": {
-            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
-            "if": { "Matches": { "subject": "This", "selector": [{ "Type": "Creature" }] } },
-            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "SetTypes": ["Enchantment"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

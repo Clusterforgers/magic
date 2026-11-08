@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b110b8e6-859b-4370-aceb-b21c6cf61532",
+  "name": "Ghyrson Starn, Kelermorph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghyrson Starn, Kelermorph",
+      "oracle_fingerprint": "fe056e0952aa8e45ace39edee82516fb",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "DealsDamage": {
+                    "source": ["Other", { "ControlledBy": "You" }],
+                    "to": "EachPlayer"
+                  }
+                },
+                {
+                  "DealsDamage": {
+                    "source": ["Other", { "ControlledBy": "You" }],
+                    "to": { "Each": [] }
+                  }
+                }
+              ]
+            },
+            "if": { "AtTrigger": { "Compare": { "left": "Triggering", "op": "Eq", "right": 1 } } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

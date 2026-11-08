@@ -25,10 +25,16 @@ impl Writer<'_> {
             return Some((sentences, 1 + used));
         }
         Writer::c6_blk_aura_manifest(effects)
+            .or_else(|| Writer::r9w_manifest_then(effects))
+            .or_else(|| Writer::r9w_dread(effects))
+            .or_else(|| self.r9w_shields(effects))
+            .or_else(|| self.g11b_redirect(effects))
             .or_else(|| self.exile_and_return_later(effects))
             .or_else(|| self.exile_and_maybe_return(effects))
             .or_else(|| Writer::return_itself_later(effects))
             .or_else(|| self.exile_chosen_from_graveyard(effects))
+            .or_else(|| self.r11w_removed_makes(effects))
+            .or_else(|| self.r11w_returned_as(effects))
     }
 
     /// The creation and the sentence that acts on its tokens, and the number of effects they cover.
@@ -67,6 +73,7 @@ impl Writer<'_> {
             Effect::Attach {
                 what: Ref::This,
                 to,
+                bind: None,
             } if *to == tokens() && one => Some(("attach ~ to it".to_owned(), 1)),
             Effect::Continuous {
                 affected,

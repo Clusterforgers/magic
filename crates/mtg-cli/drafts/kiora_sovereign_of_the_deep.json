@@ -1,0 +1,70 @@
+{
+  "oracle_id": "95df54e2-0196-4e54-8144-de5982ce07f5",
+  "name": "Kiora, Sovereign of the Deep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kiora, Sovereign of the Deep",
+      "oracle_fingerprint": "d1e30ff8d5aac222c87f55587d0cab94",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Ward": "{3}" } },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Kraken" },
+                      { "Subtype": "Leviathan" },
+                      { "Subtype": "Octopus" },
+                      { "Subtype": "Serpent" }
+                    ]
+                  },
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                  "as": "top"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "In": "Library" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Lt",
+                          "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked2" }, "free": true } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

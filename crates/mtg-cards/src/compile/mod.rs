@@ -25,14 +25,18 @@ use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprin
 
 pub use classify::ClauseKind;
 pub use classify::classify as classify_clause;
+pub(crate) use clauses::word_block;
 pub use keywords::quality_word as protection_quality_word;
 pub use keywords::read as read_keyword;
 pub use keywords::read_all as read_keywords;
 pub(crate) use keywords::split_items;
+pub use read::subtypes::creature_types;
 pub use read::{
-    BlockPlan, all_groups, block_plan, die_row, die_row_texts, keyword_grant, render_ability,
-    render_cost, render_mode, render_variants, same_text, static_pair_texts, subject_group,
-    target_phrases, without_header, written_variants,
+    BlockPlan, all_groups, block_plan, champion_line, die_row, die_row_texts,
+    either_way_pair_texts, equip_line, escalate_cost, escalate_reads, forecast_lines,
+    keyword_grant, reinforce_line, render_ability, render_cost, render_mode, render_variants,
+    same_text, same_written_text, static_pair_texts, subject_group, target_phrases, without_header,
+    written_variants,
 };
 
 /// Reads a dungeon room's text as a clause of this kind, with no face of its own.
@@ -264,10 +268,13 @@ fn read_clause(
         ClauseKind::Static
             if text.starts_with("LEVEL ")
                 || clauses::is_station_block(text)
-                || clauses::is_class_block(text) =>
+                || clauses::is_class_block(text)
+                || clauses::word_block(text).is_some() =>
         {
             let block = if text.starts_with("LEVEL ") {
                 read::level_block(text, x_free, own)
+            } else if clauses::word_block(text).is_some() {
+                read::word_block(text, x_free, own)
             } else if clauses::is_class_block(text) {
                 read::class_block(text, x_free, own)
             } else {
@@ -459,7 +466,33 @@ pub fn own_names(face: &PrintedFace) -> Vec<String> {
     } else if legendary && let Some(first) = first_name(face) {
         names.push(first);
     }
+    if legendary && !face.name.contains(',') {
+        names.extend(shorter_name(face));
+    }
     names
+}
+
+/// A legendary name the text shortens: "Rosie Cotton" for "Rosie Cotton of South Lane", "King Darien" for "King Darien
+/// XLVIII", when the text uses the short name alone.
+fn shorter_name(face: &PrintedFace) -> Option<String> {
+    let name = face.name.as_str();
+    let roman = |word: &str| !word.is_empty() && word.chars().all(|c| "IVXL".contains(c));
+    let short = [" of ", " and the "]
+        .iter()
+        .find_map(|cut| name.split_once(cut).map(|(short, _)| short))
+        .or_else(|| {
+            name.rsplit_once(' ')
+                .filter(|(_, last)| roman(last))
+                .map(|(short, _)| short)
+        })?;
+    let text = face.oracle_text.replace(name, "");
+    text.match_indices(short)
+        .any(|(at, _)| {
+            let before = text[..at].chars().next_back();
+            !before.is_some_and(char::is_alphanumeric)
+                && !text[at + short.len()..].starts_with(char::is_alphanumeric)
+        })
+        .then(|| short.to_owned())
 }
 
 /// The first word of a legendary name without a comma when the text uses it alone ("Legolas" for "Legolas Greenleaf").
@@ -882,7 +915,7 @@ mod tests {
     #[rstest]
     #[case::with_a_cost("Cleave {1}{B}")]
     #[case::with_a_number("Squad 2")]
-    #[case::with_a_word("Epic")]
+    #[case::with_a_word("Banding")]
     #[case::with_a_dash("Impending 4\u{2014}{2}{U}")]
     #[case::alone("Surge")]
     fn an_unknown_keyword_line_does_not_block_the_effect_lines_of_its_spell(#[case] line: &str) {
@@ -1051,6 +1084,36 @@ mod tests {
         "Legendary Creature \u{2014} Elf Archer",
         "Legolas can't be blocked. Whenever Legolas Greenleaf attacks, draw a card.",
         "~ can't be blocked. Whenever ~ attacks, draw a card."
+    )]
+    #[case::name_before_of(
+        "Rosie Cotton of South Lane",
+        "Legendary Creature \u{2014} Halfling",
+        "When Rosie Cotton enters, create a Food token.",
+        "When ~ enters, create a Food token."
+    )]
+    #[case::name_without_numeral(
+        "King Darien XLVIII",
+        "Legendary Creature \u{2014} Human",
+        "{3}: Put a +1/+1 counter on King Darien.",
+        "{3}: Put a +1/+1 counter on ~."
+    )]
+    #[case::name_before_and_the(
+        "Shang-Chi and the Ten Rings",
+        "Legendary Creature \u{2014} Human",
+        "Whenever you draw a card, put a +1/+1 counter on Shang-Chi.",
+        "Whenever you draw a card, put a +1/+1 counter on ~."
+    )]
+    #[case::short_name_not_in_the_text(
+        "Rosie Cotton of South Lane",
+        "Legendary Creature \u{2014} Halfling",
+        "Rosie Cottontail can't be blocked.",
+        "Rosie Cottontail can't be blocked."
+    )]
+    #[case::short_name_of_a_card_that_is_not_legendary(
+        "Gate of Dawn",
+        "Instant",
+        "Gate deals 2 damage.",
+        "Gate deals 2 damage."
     )]
     #[case::first_name_of_a_card_that_is_not_legendary(
         "Fire Imp",

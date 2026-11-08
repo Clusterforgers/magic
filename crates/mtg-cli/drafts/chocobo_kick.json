@@ -1,0 +1,42 @@
+{
+  "oracle_id": "aa00c18b-8719-4095-940a-8e35a57b46c2",
+  "name": "Chocobo Kick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chocobo Kick",
+      "oracle_fingerprint": "abef3b8ae784600c398fef45a5c95320",
+      "abilities": [
+        { "Keyword": { "Kicker": [{ "ReturnToHand": { "filter": [{ "Type": "Land" }] } }] } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": {
+                    "When": {
+                      "condition": "Kicked",
+                      "then": {
+                        "Times": {
+                          "by": 2,
+                          "of": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                        }
+                      },
+                      "otherwise": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "cb3dd50b-ce78-4727-b174-06f99fc5ec74",
+  "name": "Doctor Doom, Unrivaled",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doctor Doom, Unrivaled",
+      "oracle_fingerprint": "57603e090acf121a76ad31ef6f097830",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Draw": {} },
+              { "LoseLife": { "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Library" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "WinGame": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

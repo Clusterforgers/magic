@@ -1,0 +1,34 @@
+{
+  "oracle_id": "74316be1-041f-4a2e-a296-0b496f90ca25",
+  "name": "Read the Runes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Read the Runes",
+      "oracle_fingerprint": "c1e1f9446e275ab2983d748fe954547d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": "X", "as": "drawn" } },
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Is": { "Bound": "drawn" } }, { "In": "Hand" }] },
+                  "as": "each2",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "cost": [{ "Sacrifice": { "filter": [] } }],
+                        "unpaid": [{ "Discard": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

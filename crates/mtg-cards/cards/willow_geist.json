@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7a7096a7-ef1b-4015-b1eb-5c2174d7ec9a",
+  "name": "Willow Geist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Willow Geist",
+      "oracle_fingerprint": "fe5152e7e73d7bf8da7a55c30d06e39e",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "GainLife": { "amount": { "Stat": { "of": "This", "stat": "Power" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

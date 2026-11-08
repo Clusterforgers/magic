@@ -1,0 +1,35 @@
+{
+  "oracle_id": "909201e5-5599-442a-9e4f-ff61f187e957",
+  "name": "Walking Wall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Walking Wall",
+      "oracle_fingerprint": "cc8e8fe4ed1a836372a8de72b19dc677",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

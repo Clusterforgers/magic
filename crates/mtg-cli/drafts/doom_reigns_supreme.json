@@ -1,0 +1,85 @@
+{
+  "oracle_id": "f398a742-22c1-4da9-9d49-fdce2eb93d01",
+  "name": "Doom Reigns Supreme",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doom Reigns Supreme",
+      "oracle_fingerprint": "2bafd79606cac68c6d0df850bc41fbe1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Villain" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "plan" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersPut": { "what": ["This"], "counter": { "Other": "plan" } } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Counters": { "on": "This", "counter": { "Other": "plan" } } },
+                  "op": "Eq",
+                  "right": 5
+                }
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"], "as": "sacrificed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "Opponent" }],
+                        "effects": [
+                          { "ExileTop": { "who": { "Target": 0 }, "count": 5, "as": "exiled2" } },
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "Is": { "Bound": "exiled2" } }, { "In": "Exile" }]
+                              },
+                              "count": { "min": 0, "max": 2 },
+                              "as": "picked3"
+                            }
+                          },
+                          {
+                            "RepeatEach": {
+                              "over": { "Bound": "picked3" },
+                              "as": "card4",
+                              "effects": [
+                                { "CastFromZone": { "what": { "Bound": "card4" }, "free": true } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

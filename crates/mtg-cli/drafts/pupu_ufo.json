@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b1412eda-e3a4-41b2-932e-795a0ba0f7f8",
+  "name": "PuPu UFO",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "PuPu UFO",
+      "oracle_fingerprint": "8d57ded8bc08f2f9769a5be88a038f3d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPower": { "Count": [{ "Subtype": "Town" }, { "ControlledBy": "You" }] } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

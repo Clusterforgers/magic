@@ -1,0 +1,120 @@
+{
+  "oracle_id": "12367806-5924-485c-814a-5b67dd79235e",
+  "name": "Evolved Sleeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evolved Sleeper",
+      "oracle_fingerprint": "08f03be1db3370d9b53a747c3749377c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 2 } },
+                    { "AddSubtype": "Human" },
+                    { "AddSubtype": "Cleric" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Cleric" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "PutCounters": { "on": "This", "counter": { "Other": "deathtouch" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Cleric" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 3, "toughness": 3 } },
+                          { "AddSubtype": "Phyrexian" },
+                          { "AddSubtype": "Human" },
+                          { "AddSubtype": "Cleric" }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}{B}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Phyrexian" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Phyrexian" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", { "Subtype": "Phyrexian" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

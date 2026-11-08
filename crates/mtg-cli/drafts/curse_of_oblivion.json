@@ -1,0 +1,30 @@
+{
+  "oracle_id": "10b16b2b-7d7c-4f6f-932a-1f3bd30d33f1",
+  "name": "Curse of Oblivion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Oblivion",
+      "oracle_fingerprint": "f32ec38b903129ed537760a4063083ad",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "AttachedPlayer" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "AttachedPlayer",
+                  "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "AttachedPlayer" }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

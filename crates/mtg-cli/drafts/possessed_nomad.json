@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9bf9870e-32a3-494c-bd42-f9f013463619",
+  "name": "Possessed Nomad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Possessed Nomad",
+      "oracle_fingerprint": "fa1dbb12485fd030ebc89c89ec5fb1bc",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "SetColors": ["Black"] },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{2}{B}" }, "Tap"],
+                    "targets": [
+                      { "what": { "Object": [{ "Type": "Creature" }, { "Color": "White" }] } }
+                    ],
+                    "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

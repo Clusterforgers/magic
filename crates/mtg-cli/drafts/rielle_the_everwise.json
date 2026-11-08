@@ -1,0 +1,38 @@
+{
+  "oracle_id": "6f981e70-5828-49ac-8a72-cf1cc09be991",
+  "name": "Rielle, the Everwise",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rielle, the Everwise",
+      "oracle_fingerprint": "666946239ee139138c1088e7a3fc5423",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 71, "end": 161 }
+          }
+        }
+      ]
+    }
+  ]
+}

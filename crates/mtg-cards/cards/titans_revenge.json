@@ -1,0 +1,22 @@
+{
+  "oracle_id": "0a0be326-643f-449f-a7ff-13b5ae569f20",
+  "name": "Titan's Revenge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Titan's Revenge",
+      "oracle_fingerprint": "eadcf7ccd3514ca0a59438a7c149330d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              { "Clash": { "win": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

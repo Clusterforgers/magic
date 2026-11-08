@@ -1,0 +1,24 @@
+{
+  "oracle_id": "eeabf42a-b1ac-4579-b82a-aabf9052ec20",
+  "name": "Decimator Web",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decimator Web",
+      "oracle_fingerprint": "6d15bed2b33e5cc4ceec3a435495b3c5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "poison" } },
+              { "Mill": { "who": { "Target": 0 }, "count": 6 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

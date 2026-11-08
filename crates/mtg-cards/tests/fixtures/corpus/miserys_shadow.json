@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "514c5e77-9ecc-41c9-b104-76343601fafb",
+  "oracle_id": "928c62fe-9c4d-4e89-bd7a-0d3b6a81f393",
+  "multiverse_ids": [
+    583692
+  ],
+  "mtgo_id": 104832,
+  "arena_id": 82591,
+  "tcgplayer_id": 452794,
+  "cardmarket_id": 683320,
+  "name": "Misery's Shadow",
+  "lang": "en",
+  "released_at": "2022-11-18",
+  "uri": "https://api.scryfall.com/cards/514c5e77-9ecc-41c9-b104-76343601fafb",
+  "scryfall_uri": "https://scryfall.com/card/bro/107/miserys-shadow?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:21:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/1/514c5e77-9ecc-41c9-b104-76343601fafb.jpg?1783920084",
+    "normal": "https://cards.scryfall.io/normal/front/5/1/514c5e77-9ecc-41c9-b104-76343601fafb.jpg?1783920084",
+    "large": "https://cards.scryfall.io/large/front/5/1/514c5e77-9ecc-41c9-b104-76343601fafb.jpg?1783920084",
+    "png": "https://cards.scryfall.io/png/front/5/1/514c5e77-9ecc-41c9-b104-76343601fafb.png?1783920084",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/1/514c5e77-9ecc-41c9-b104-76343601fafb.jpg?1783920084",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/1/514c5e77-9ecc-41c9-b104-76343601fafb.jpg?1783920084",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/1/514c5e77-9ecc-41c9-b104-76343601fafb.webp?1783920084",
+    "grid": "https://cards.scryfall.io/grid/front/5/1/514c5e77-9ecc-41c9-b104-76343601fafb.webp?1783920084",
+    "display": "https://cards.scryfall.io/display/front/5/1/514c5e77-9ecc-41c9-b104-76343601fafb.webp?1783920084",
+    "art": "https://cards.scryfall.io/art/front/5/1/514c5e77-9ecc-41c9-b104-76343601fafb.webp?1783920084",
+    "crop": "https://cards.scryfall.io/crop/front/5/1/514c5e77-9ecc-41c9-b104-76343601fafb.webp?1783920084",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/1/514c5e77-9ecc-41c9-b104-76343601fafb.jpg?1783920084"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Shade",
+  "oracle_text": "If a creature an opponent controls would die, exile it instead.\n{1}: This creature gets +1/+1 until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4219a14e-6701-4ddd-a185-21dc054ab19b",
+  "set": "bro",
+  "set_name": "The Brothers' War",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/4219a14e-6701-4ddd-a185-21dc054ab19b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abro&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bro?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/514c5e77-9ecc-41c9-b104-76343601fafb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A928c62fe-9c4d-4e89-bd7a-0d3b6a81f393&unique=prints",
+  "collector_number": "107",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "In the ruins of Kroog, only anguish thrived.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Igor Kieryluk",
+  "artist_ids": [
+    "9c3e9d17-509f-485c-9360-46d897ce716b"
+  ],
+  "illustration_id": "628b6284-b8be-45e0-b28f-ff82d60e0712",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16892,
+  "penny_rank": 4290,
+  "preview": {
+    "source": "TheAsianAvenger",
+    "source_uri": "https://twitter.com/Theasianavenger/status/1587889960253677568",
+    "previewed_at": "2022-11-02"
+  },
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": "0.28",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.36",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=583692&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMisery%2527s%2BShadow",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMisery%2527s%2BShadow",
+    "edhrec": "https://edhrec.com/route/?cc=Misery%27s+Shadow"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F452794%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=683320&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/104832?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

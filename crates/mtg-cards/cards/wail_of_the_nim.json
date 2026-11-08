@@ -1,0 +1,43 @@
+{
+  "oracle_id": "dcf503b5-c7ef-49e5-87ed-3b8758197446",
+  "name": "Wail of the Nim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wail of the Nim",
+      "oracle_fingerprint": "8defcbd9dee89013302fe469477be3dd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Regenerate": {
+                            "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 1 }
+                        },
+                        { "DealDamage": { "to": "EachPlayer", "amount": 1 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{B}" } }
+      ]
+    }
+  ]
+}

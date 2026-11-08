@@ -1,0 +1,58 @@
+{
+  "oracle_id": "16d2a56a-7181-4ef3-866b-10dd8615d9e9",
+  "name": "Jacob Hauken, Inspector // Hauken's Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jacob Hauken, Inspector",
+      "oracle_fingerprint": "60666bd76fd22d6368bc254b0f95f1d3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "picked"
+                }
+              },
+              { "ExileHidden": { "what": { "Bound": "picked" }, "held": true } },
+              { "Pay": { "cost": "{4}{U}{U}", "paid": [{ "Transform": { "what": "This" } }] } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hauken's Insight",
+      "oracle_fingerprint": "9a27ce6db519d3b54cf82d10a1b58938",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "ExiledWith": "This" }],
+                "from": "Exile",
+                "free": true,
+                "play": true,
+                "once": true
+              }
+            },
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

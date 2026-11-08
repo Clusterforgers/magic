@@ -1,0 +1,55 @@
+{
+  "oracle_id": "07995092-af6c-43b8-b30b-17e020ead37c",
+  "name": "Thunderous Debut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunderous Debut",
+      "oracle_fingerprint": "1e7b1d01c153db804ed9051c1e5e26fc",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 20, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Is": { "Bound": "top" } },
+                      { "In": "Library" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "card2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "card2" } } },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "Is": { "Bound": "card2" } }, { "In": "Library" }] },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "card2" } }, { "In": "Library" }] },
+                  "to": "Hand"
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

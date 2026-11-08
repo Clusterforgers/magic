@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "A",
+      "text": "Draw a card. Activate only if you've paid or lost four or more {E} this turn.",
+      "abilities": [],
+      "gap": "amount:Count$CountersRemovedThisTurn"
+    },
+    {
+      "face": 0,
+      "tag": "R",
+      "text": "If you would get one or more {E} (energy counters), you get that many plus one {E} instead.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 91
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 92,
+          "end": 174
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "85dec6cf-6f27-4eb0-834b-5f6fbbe25fc8",
+  "name": "Spider-Man, To the Rescue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider-Man, To the Rescue",
+      "oracle_fingerprint": "5fb98b3b7cd14013a3bda7b5a24acb5e",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "TapPermanents": { "filter": ["This"] } }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                "Other",
+                                { "Not": "Attacking" },
+                                { "ControlledBy": "You" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "AddKeyword": "Indestructible" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "2313eef6-5414-462c-bf2f-f3283786735f",
+  "name": "Void Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Void Stalker",
+      "oracle_fingerprint": "8ae9898ad677e281cb76142aa249b7ea",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } },
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "832f96a4-0f4d-47bb-bc1c-3884e73feabc",
+  "name": "Sunweb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunweb",
+      "oracle_fingerprint": "6b34920d40dfb94fee718f12fa74b5a0",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CanBlockOnly": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Compare": { "stat": "Power", "op": "Le", "to": 2 } } }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "0468e488-94ce-4ae3-abe4-7782673a7e62",
+  "oracle_id": "a94bb381-74e2-488f-896d-a017a2b568ab",
+  "multiverse_ids": [
+    432880
+  ],
+  "mtgo_id": 64468,
+  "mtgo_foil_id": 64469,
+  "tcgplayer_id": 135019,
+  "cardmarket_id": 298668,
+  "name": "Avid Reclaimer",
+  "lang": "en",
+  "released_at": "2017-07-14",
+  "uri": "https://api.scryfall.com/cards/0468e488-94ce-4ae3-abe4-7782673a7e62",
+  "scryfall_uri": "https://scryfall.com/card/hou/201/avid-reclaimer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:46:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/4/0468e488-94ce-4ae3-abe4-7782673a7e62.jpg?1783935987",
+    "normal": "https://cards.scryfall.io/normal/front/0/4/0468e488-94ce-4ae3-abe4-7782673a7e62.jpg?1783935987",
+    "large": "https://cards.scryfall.io/large/front/0/4/0468e488-94ce-4ae3-abe4-7782673a7e62.jpg?1783935987",
+    "png": "https://cards.scryfall.io/png/front/0/4/0468e488-94ce-4ae3-abe4-7782673a7e62.png?1783935987",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/4/0468e488-94ce-4ae3-abe4-7782673a7e62.jpg?1783935987",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/4/0468e488-94ce-4ae3-abe4-7782673a7e62.jpg?1783935987",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/4/0468e488-94ce-4ae3-abe4-7782673a7e62.webp?1783935987",
+    "grid": "https://cards.scryfall.io/grid/front/0/4/0468e488-94ce-4ae3-abe4-7782673a7e62.webp?1783935987",
+    "display": "https://cards.scryfall.io/display/front/0/4/0468e488-94ce-4ae3-abe4-7782673a7e62.webp?1783935987",
+    "art": "https://cards.scryfall.io/art/front/0/4/0468e488-94ce-4ae3-abe4-7782673a7e62.webp?1783935987",
+    "crop": "https://cards.scryfall.io/crop/front/0/4/0468e488-94ce-4ae3-abe4-7782673a7e62.webp?1783935987",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/4/0468e488-94ce-4ae3-abe4-7782673a7e62.jpg?1783935987"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Druid",
+  "oracle_text": "{T}: Add {G} or {U}. If you control a Nissa planeswalker, you gain 2 life.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "G",
+    "U"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "65ff168b-bb94-47a5-a8f9-4ec6c213e768",
+  "set": "hou",
+  "set_name": "Hour of Devastation",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/65ff168b-bb94-47a5-a8f9-4ec6c213e768",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ahou&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/hou?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0468e488-94ce-4ae3-abe4-7782673a7e62/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa94bb381-74e2-488f-896d-a017a2b568ab&unique=prints",
+  "collector_number": "201",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"All can't be lost. Nissa has shown me that.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Josu Hernaiz",
+  "artist_ids": [
+    "74246024-92b4-43d0-a5af-a3f9f2a35d5f"
+  ],
+  "illustration_id": "2f01f7bd-8c59-4352-954e-ed61b40819a5",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "planeswalkerdeck"
+  ],
+  "edhrec_rank": 28468,
+  "prices": {
+    "usd": "0.10",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": null,
+    "tix": "0.40"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=432880&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAvid%2BReclaimer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAvid%2BReclaimer",
+    "edhrec": "https://edhrec.com/route/?cc=Avid+Reclaimer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F135019%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=298668&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/64468?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

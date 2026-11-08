@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c3416e6c-ec46-410c-ab80-6e8fdb89f42d",
+  "name": "Skyscribing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyscribing",
+      "oracle_fingerprint": "41c4f9ef7773f97785ad923a244fac0b",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": { "who": "EachPlayer", "count": "X" } }] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, { "RevealFromHand": { "filter": ["This"] } }],
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "limit": "OncePerTurn",
+            "from": "Hand",
+            "effects": [{ "Draw": { "who": "EachPlayer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c30491b5-08fe-4694-9ac8-53be7b4b92ce",
+  "name": "Portal of Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Portal of Sanctuary",
+      "oracle_fingerprint": "44abd68eb623a6399cf52bea5948a8ec",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "condition": "YourTurn",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Subtype": "Aura" } },
+                                { "Not": { "AttachedTo": { "Target": 0 } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1d6f3934-d8f1-4758-b87a-8df8d7dc492c",
+  "name": "Marsh Crocodile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marsh Crocodile",
+      "oracle_fingerprint": "8754c125af57772d3ca0729d63491af8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Black" }, { "Color": "Blue" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Discard": { "who": "EachPlayer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

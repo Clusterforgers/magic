@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ac27ccb8-81e2-42e2-a340-0b0ce9609688",
+  "name": "Explosive Welcome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Explosive Welcome",
+      "oracle_fingerprint": "921c0eb1c04e17c11b9abf3db031a8b4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "AnyTarget" },
+              { "what": { "Another": { "what": "AnyTarget", "earlier": [0] } } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+                    { "DealDamage": { "to": { "Target": 1 }, "amount": 3 } }
+                  ]
+                }
+              },
+              { "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

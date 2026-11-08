@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7c6e0198-edd8-42b8-ba1b-549e1713d188",
+  "name": "No Escape",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "No Escape",
+      "oracle_fingerprint": "0cea17eacda4d3c11c3194e6ba2e6e60",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Scry": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "ac4d5a97-6177-4eac-b0f2-cf10531ad879",
+  "name": "Dinosaur Egg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dinosaur Egg",
+      "oracle_fingerprint": "79eacd3380d76362294107b6b839186e",
+      "abilities": [
+        { "Keyword": "Evolve" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ExileUntil": {
+                        "filter": [
+                          { "Not": { "Type": "Land" } },
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Le",
+                              "to": { "Stat": { "of": "This", "stat": "Toughness" } }
+                            }
+                          }
+                        ],
+                        "as": "found",
+                        "exiled_as": "exiled"
+                      }
+                    },
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "found" },
+                        "free": true,
+                        "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

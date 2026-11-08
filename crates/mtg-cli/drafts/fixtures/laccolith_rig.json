@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "4fb92039-03fd-4aee-be74-96997be629d6",
+  "oracle_id": "0b583980-1508-4247-8a28-7127241d8ec0",
+  "multiverse_ids": [
+    21339
+  ],
+  "mtgo_id": 13865,
+  "mtgo_foil_id": 13866,
+  "tcgplayer_id": 7170,
+  "cardmarket_id": 11811,
+  "name": "Laccolith Rig",
+  "lang": "en",
+  "released_at": "2000-02-14",
+  "uri": "https://api.scryfall.com/cards/4fb92039-03fd-4aee-be74-96997be629d6",
+  "scryfall_uri": "https://scryfall.com/card/nem/88/laccolith-rig?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:30:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/f/4fb92039-03fd-4aee-be74-96997be629d6.jpg?1783945822",
+    "normal": "https://cards.scryfall.io/normal/front/4/f/4fb92039-03fd-4aee-be74-96997be629d6.jpg?1783945822",
+    "large": "https://cards.scryfall.io/large/front/4/f/4fb92039-03fd-4aee-be74-96997be629d6.jpg?1783945822",
+    "png": "https://cards.scryfall.io/png/front/4/f/4fb92039-03fd-4aee-be74-96997be629d6.png?1783945822",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/f/4fb92039-03fd-4aee-be74-96997be629d6.jpg?1783945822",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/f/4fb92039-03fd-4aee-be74-96997be629d6.jpg?1783945822",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/f/4fb92039-03fd-4aee-be74-96997be629d6.webp?1783945822",
+    "grid": "https://cards.scryfall.io/grid/front/4/f/4fb92039-03fd-4aee-be74-96997be629d6.webp?1783945822",
+    "display": "https://cards.scryfall.io/display/front/4/f/4fb92039-03fd-4aee-be74-96997be629d6.webp?1783945822",
+    "art": "https://cards.scryfall.io/art/front/4/f/4fb92039-03fd-4aee-be74-96997be629d6.webp?1783945822",
+    "crop": "https://cards.scryfall.io/crop/front/4/f/4fb92039-03fd-4aee-be74-96997be629d6.webp?1783945822",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/f/4fb92039-03fd-4aee-be74-96997be629d6.jpg?1783945822"
+  },
+  "mana_cost": "{R}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhenever enchanted creature becomes blocked, you may have it deal damage equal to its power to target creature. If you do, the first creature assigns no combat damage this turn.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "fa5d1fdb-f781-473d-b14d-50396d40d43f",
+  "set": "nem",
+  "set_name": "Nemesis",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/fa5d1fdb-f781-473d-b14d-50396d40d43f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Anem&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/nem?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4fb92039-03fd-4aee-be74-96997be629d6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0b583980-1508-4247-8a28-7127241d8ec0&unique=prints",
+  "collector_number": "88",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Massimiliano Frezzato",
+  "artist_ids": [
+    "930f9f76-0ee1-4974-b6b5-754c9a5f8f4d"
+  ],
+  "illustration_id": "c72e382b-96b6-487d-a9a4-28ee89b2d165",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22093,
+  "penny_rank": 15073,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "2.10",
+    "usd_etched": null,
+    "eur": "0.03",
+    "eur_foil": "1.78",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=21339&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLaccolith%2BRig",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLaccolith%2BRig",
+    "edhrec": "https://edhrec.com/route/?cc=Laccolith+Rig"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7170%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=11811&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/13865?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

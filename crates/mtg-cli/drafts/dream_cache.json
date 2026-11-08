@@ -1,0 +1,49 @@
+{
+  "oracle_id": "81338d64-8fc3-41ac-afc8-e2a79df1159b",
+  "name": "Dream Cache",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Cache",
+      "oracle_fingerprint": "5ebd93fb0acf733574b1db1e22023008",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "picked"
+                }
+              },
+              { "ChooseValue": { "kind": { "Options": ["Top", "Bottom"] }, "as": "way2" } },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "way2", "word": "Bottom" } },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "012c665c-24b1-49d6-b575-2b4ee1c3a833",
+  "name": "Puresight Merrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Puresight Merrow",
+      "oracle_fingerprint": "eda2528f592355ec514ea17f0bfcc8ba",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W/U}" }, "Untap"],
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Exile": { "what": { "Bound": "kept2" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

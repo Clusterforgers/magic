@@ -1,0 +1,30 @@
+{
+  "oracle_id": "bbf183bc-d502-4432-8202-f29f60c08396",
+  "name": "Argothian Pixies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Argothian Pixies",
+      "oracle_fingerprint": "89d4aeea6b2e7fa8c8e250fe3a82317c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "This",
+                "source": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "In": "Battlefield" }]
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

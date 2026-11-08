@@ -1,6 +1,8 @@
 //! Combat damage: dividing an attacker's damage among its blockers and the player it attacks, and dealing it
 //! simultaneously in the first-strike step and the regular one.
 
+use mtg_cards::value::CounterKind;
+use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::answers::Outcome;
@@ -55,7 +57,7 @@ pub(crate) fn strike_power(state: &GameState, id: ObjectId, pass: DamagePass) ->
     let on_battlefield = state
         .object(id)
         .is_some_and(|o| o.zone() == Zone::Battlefield);
-    if !on_battlefield {
+    if !on_battlefield || crate::combat_quirks::assigns_no_combat_damage(state, id) {
         return None;
     }
     let rules = keywords::damage_rules(state, id);
@@ -89,6 +91,26 @@ pub(crate) fn lethal_damage(state: &GameState, id: ObjectId, deathtouch: bool) -
         .map_or(0, crate::object::PermanentState::damage);
     let left = u32::try_from((i64::from(toughness) - i64::from(marked)).max(0)).unwrap_or(u32::MAX);
     if deathtouch { left.min(1) } else { left }
+}
+
+/// Damage that is lethal to `id` for excess damage (CR 120.10): its toughness less the damage marked for a creature, its
+/// loyalty for a planeswalker, its defense for a battle (the greatest when it is several); `None` for any other object.
+pub(crate) fn lethal_for_excess(state: &GameState, id: ObjectId, deathtouch: bool) -> Option<u32> {
+    let counters = state.object(id).and_then(GameObject::permanent)?;
+    let chars = characteristics(state, id)?;
+    let mut lethal: Option<u32> = None;
+    if chars.is_creature() {
+        lethal = Some(lethal_damage(state, id, deathtouch));
+    }
+    if chars.types.contains(CardType::Planeswalker) {
+        let loyalty = counters.counters_of(&CounterKind::Loyalty);
+        lethal = Some(lethal.map_or(loyalty, |other| other.max(loyalty)));
+    }
+    if crate::battle::is_battle(state, id) {
+        let defense = counters.counters_of(&CounterKind::defense());
+        lethal = Some(lethal.map_or(defense, |other| other.max(defense)));
+    }
+    lethal
 }
 
 /// What an attacker's damage amounts to in one step: dealt as it stands or waiting for its controller's division.
@@ -129,13 +151,21 @@ pub(crate) fn division(
         return Division::Fixed(defender.map_or_else(Vec::new, |defender| vec![(defender, power)]));
     }
     let blockers = attacker.blockers();
+    let unblocked = crate::combat_quirks::assigns_as_unblocked(state, attacker.object());
     if blockers.is_empty() {
         return Division::Fixed(match defender {
-            Some(defender) if rules.trample => vec![(defender, power)],
+            Some(defender) if rules.trample || unblocked => vec![(defender, power)],
             _ => Vec::new(),
         });
     }
     if let Some(recorded) = &attacker.assignment {
+        // An answer that gave nothing to any blocker is the choice to assign as though it were not blocked (CR 510.1c).
+        if let Some(defender) = defender
+            && unblocked
+            && recorded.iter().all(|(_, share)| *share == 0)
+        {
+            return Division::Fixed(vec![(defender, power)]);
+        }
         let mut shares: Vec<(DamageTarget, u32)> = blockers
             .iter()
             .map(|blocker| {
@@ -166,6 +196,7 @@ pub(crate) fn division(
             .iter()
             .map(|blocker| lethal_damage(state, *blocker, rules.deathtouch))
             .collect(),
+        unblocked: unblocked && defender.is_some(),
     };
     if has_choice(&options) {
         Division::Choose(options)
@@ -178,6 +209,9 @@ pub(crate) fn division(
 fn has_choice(options: &DamageOptions) -> bool {
     if options.power == 0 {
         return false;
+    }
+    if options.unblocked {
+        return true;
     }
     match (options.excess.is_some(), options.blockers.as_slice()) {
         (_, []) | (false, [_]) => false,
@@ -248,6 +282,13 @@ pub(crate) fn assignment_answer(
     let assigned = assignment
         .iter()
         .fold(0u32, |sum, (_, n)| sum.saturating_add(*n));
+    // Nothing for any blocker is the choice to assign as though the attacker were not blocked (CR 510.1c).
+    if options.unblocked && assigned == 0 {
+        return Ok(Outcome::Events(vec![Event::DamageAssigned {
+            attacker: options.attacker,
+            assignment: Vec::new(),
+        }]));
+    }
     let split_error = IllegalAnswer::DamageSplit {
         power: options.power,
         assigned,
@@ -299,6 +340,11 @@ impl Dealer {
             controller: controller_of(state, id),
             keywords: keywords::damage_rules(state, id),
         }
+    }
+
+    /// Whether the source has deathtouch, which makes any damage to a creature lethal.
+    pub(crate) fn has_deathtouch(&self) -> bool {
+        self.keywords.deathtouch
     }
 
     /// Whether the source has lifelink and `player` is the one who gains the life (CR 702.15).
@@ -366,6 +412,7 @@ fn deal(
         } else {
             0
         },
+        unpreventable: false,
     }];
     let controller = dealer
         .controller
@@ -438,6 +485,7 @@ mod tests {
                 .collect(),
             excess: trample.then_some(PLAYER),
             lethal: lethal.to_vec(),
+            unblocked: false,
         }
     }
 
@@ -814,6 +862,7 @@ mod tests {
                     deathtouch: event_says,
                     form: crate::combat::DamageForm::Normal,
                     toxic: 0,
+                    unpreventable: false,
                 },
             )
             .unwrap();
@@ -967,9 +1016,160 @@ mod tests {
                 deathtouch: false,
                 form,
                 toxic: 0,
+                unpreventable: false,
             };
             apply_event(&mut game, &event).unwrap();
             assert_eq!(game.player(FOE).unwrap().life(), life);
+        }
+    }
+
+    mod life_floor {
+        //! Goal: under the rule "damage that would reduce your life total to less than N reduces it to N instead" (CR 614.1, 120.3a) the damage is dealt in full and only the life lost is cut down so the life total stays at N, while it was N or more; below N the damage takes life as usual, several damages dealt together stop at the floor in total, the source's lifelink still gains the whole amount, and another player's life is untouched.
+        use std::sync::Arc;
+
+        use mtg_cards::CardDefinition;
+        use mtg_cards::ability::Ability;
+        use mtg_cards::keyword::Keyword;
+        use mtg_core::card::CardType;
+
+        use super::*;
+        use crate::fixtures::state;
+        use crate::fold::apply_event;
+
+        const ME: PlayerId = PlayerId(0);
+        const FOE: PlayerId = PlayerId(1);
+
+        fn game(floor: i32) -> (GameState, ObjectId) {
+            let guard =
+                format!(r#"{{"Rule":{{"rule":{{"LifeFloor":{{"who":"You","floor":{floor}}}}}}}}}"#);
+            let source = CardDefinition::new("Source")
+                .with_type(CardType::Creature)
+                .with_power_toughness(3, 3)
+                .with_rules(Ability::Keyword(Keyword::Lifelink));
+            let guard = CardDefinition::new("Guard")
+                .with_type(CardType::Creature)
+                .with_power_toughness(1, 1)
+                .with_rules(serde_json::from_str::<Ability>(&guard).unwrap());
+            let game = state(
+                vec![vec![], vec![]],
+                vec![vec![Arc::new(source)], vec![Arc::new(guard)]],
+            );
+            let id = game.zone(Zone::Battlefield)[0];
+            (game, id)
+        }
+
+        fn lose(game: &mut GameState, amount: u32) {
+            if amount == 0 {
+                return;
+            }
+            let lost = Event::LifeLost {
+                player: FOE,
+                amount,
+            };
+            apply_event(game, &lost).unwrap();
+        }
+
+        fn hit(game: &mut GameState, id: ObjectId, who: PlayerId, amount: u32) -> Vec<Event> {
+            let events = dealt_by(
+                game,
+                &Dealer::live(game, id),
+                DamageTarget::Player(who),
+                amount,
+            );
+            for event in &events {
+                apply_event(game, event).unwrap();
+            }
+            events
+        }
+
+        #[rstest]
+        #[case::above_the_floor_it_is_plain(1, 0, 5, 15)]
+        #[case::down_to_the_floor(1, 0, 19, 1)]
+        #[case::more_than_the_floor_allows(1, 0, 25, 1)]
+        #[case::a_higher_floor(7, 0, 25, 7)]
+        #[case::life_already_at_the_floor(1, 19, 4, 1)]
+        #[case::below_the_floor_it_takes_life_as_usual(7, 15, 4, 1)]
+        fn the_life_total_stops_at_the_floor(
+            #[case] floor: i32,
+            #[case] lost_before: u32,
+            #[case] damage: u32,
+            #[case] life: i32,
+        ) {
+            let (mut game, id) = game(floor);
+            lose(&mut game, lost_before);
+            hit(&mut game, id, FOE, damage);
+            assert_eq!(game.player(FOE).unwrap().life(), life);
+        }
+
+        #[test]
+        fn a_life_total_below_the_floor_is_not_raised() {
+            let (mut game, id) = game(7);
+            lose(&mut game, 15);
+            assert_eq!(game.player(FOE).unwrap().life(), 5);
+            hit(&mut game, id, FOE, 3);
+            assert_eq!(game.player(FOE).unwrap().life(), 2);
+        }
+
+        #[test]
+        fn the_damage_is_dealt_in_full_and_lifelink_gains_all_of_it() {
+            let (mut game, id) = game(1);
+            let events = hit(&mut game, id, FOE, 25);
+            assert!(events.iter().any(|event| matches!(
+                event,
+                Event::DamageDealt {
+                    amount: 25,
+                    form: DamageForm::Normal,
+                    ..
+                }
+            )));
+            assert!(events.iter().any(|event| matches!(
+                event,
+                Event::LifeGained {
+                    player: ME,
+                    amount: 25
+                }
+            )));
+            assert_eq!(game.player(ME).unwrap().life(), 45);
+        }
+
+        #[test]
+        fn damage_dealt_together_stops_at_the_floor_in_total() {
+            let (mut game, id) = game(1);
+            lose(&mut game, 16);
+            let mut events = dealt_by(
+                &game,
+                &Dealer::live(&game, id),
+                DamageTarget::Player(FOE),
+                3,
+            );
+            events.extend(dealt_by(
+                &game,
+                &Dealer::live(&game, id),
+                DamageTarget::Player(FOE),
+                3,
+            ));
+            for event in &events {
+                apply_event(&mut game, event).unwrap();
+            }
+            assert_eq!(game.player(FOE).unwrap().life(), 1);
+        }
+
+        #[test]
+        fn another_player_is_not_protected() {
+            let (mut game, id) = game(1);
+            let events = dealt_by(
+                &game,
+                &Dealer::live(&game, id),
+                DamageTarget::Player(ME),
+                25,
+            );
+            for event in events
+                .iter()
+                .filter(|event| matches!(event, Event::DamageDealt { .. }))
+            {
+                apply_event(&mut game, event).unwrap();
+            }
+            assert_eq!(game.player(ME).unwrap().life(), -5);
         }
     }
 }

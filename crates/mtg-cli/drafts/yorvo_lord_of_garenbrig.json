@@ -1,0 +1,49 @@
+{
+  "oracle_id": "00a15abc-bdac-4977-90a0-f08d41941d01",
+  "name": "Yorvo, Lord of Garenbrig",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yorvo, Lord of Garenbrig",
+      "oracle_fingerprint": "a5cf1d089c0f2bdbdc324f5254c992ad",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 4 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "ControlledBy": "You" },
+                  { "Color": "Green" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                      "op": "Gt",
+                      "right": { "Stat": { "of": "This", "stat": "Power" } }
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

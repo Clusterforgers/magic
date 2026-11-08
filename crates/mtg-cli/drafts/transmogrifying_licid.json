@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4f484927-0e8e-493d-93bc-ed190965dad9",
+  "name": "Transmogrifying Licid",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Transmogrifying Licid",
+      "oracle_fingerprint": "90c6db04da63cbedd623fac39bff543d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 163 }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddType": "Artifact" }]
+          }
+        }
+      ]
+    }
+  ]
+}

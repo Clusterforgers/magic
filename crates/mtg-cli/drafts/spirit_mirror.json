@@ -1,0 +1,48 @@
+{
+  "oracle_id": "42e041c0-ffbc-4bf8-a5aa-f0d14aad7112",
+  "name": "Spirit Mirror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit Mirror",
+      "oracle_fingerprint": "84763afb7b3c0218b6b4c1b2a0d0f1e9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Reflection" }, "Token"] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Reflection",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Reflection"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Reflection" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

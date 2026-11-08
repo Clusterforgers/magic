@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "e22318a5-80c8-4fa3-ad05-8d3035caf336",
+  "oracle_id": "e71f4fe8-2ecd-450b-8c41-5e38d749f59d",
+  "multiverse_ids": [
+    31826
+  ],
+  "mtgo_id": 16545,
+  "mtgo_foil_id": 16546,
+  "tcgplayer_id": 9514,
+  "cardmarket_id": 2651,
+  "name": "Druid's Call",
+  "lang": "en",
+  "released_at": "2001-10-01",
+  "uri": "https://api.scryfall.com/cards/e22318a5-80c8-4fa3-ad05-8d3035caf336",
+  "scryfall_uri": "https://scryfall.com/card/ody/239/druids-call?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:20:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/2/e22318a5-80c8-4fa3-ad05-8d3035caf336.jpg?1783945218",
+    "normal": "https://cards.scryfall.io/normal/front/e/2/e22318a5-80c8-4fa3-ad05-8d3035caf336.jpg?1783945218",
+    "large": "https://cards.scryfall.io/large/front/e/2/e22318a5-80c8-4fa3-ad05-8d3035caf336.jpg?1783945218",
+    "png": "https://cards.scryfall.io/png/front/e/2/e22318a5-80c8-4fa3-ad05-8d3035caf336.png?1783945218",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/2/e22318a5-80c8-4fa3-ad05-8d3035caf336.jpg?1783945218",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/2/e22318a5-80c8-4fa3-ad05-8d3035caf336.jpg?1783945218",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/2/e22318a5-80c8-4fa3-ad05-8d3035caf336.webp?1783945218",
+    "grid": "https://cards.scryfall.io/grid/front/e/2/e22318a5-80c8-4fa3-ad05-8d3035caf336.webp?1783945218",
+    "display": "https://cards.scryfall.io/display/front/e/2/e22318a5-80c8-4fa3-ad05-8d3035caf336.webp?1783945218",
+    "art": "https://cards.scryfall.io/art/front/e/2/e22318a5-80c8-4fa3-ad05-8d3035caf336.webp?1783945218",
+    "crop": "https://cards.scryfall.io/crop/front/e/2/e22318a5-80c8-4fa3-ad05-8d3035caf336.webp?1783945218",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/2/e22318a5-80c8-4fa3-ad05-8d3035caf336.jpg?1783945218"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nWhenever enchanted creature is dealt damage, its controller creates that many 1/1 green Squirrel creature tokens.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "fd0474f3-682d-4c6d-b902-84f3250aa269",
+      "component": "token",
+      "name": "Squirrel",
+      "type_line": "Token Creature — Squirrel",
+      "uri": "https://api.scryfall.com/cards/fd0474f3-682d-4c6d-b902-84f3250aa269"
+    },
+    {
+      "object": "related_card",
+      "id": "e22318a5-80c8-4fa3-ad05-8d3035caf336",
+      "component": "combo_piece",
+      "name": "Druid's Call",
+      "type_line": "Enchantment — Aura",
+      "uri": "https://api.scryfall.com/cards/e22318a5-80c8-4fa3-ad05-8d3035caf336"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0d90d2d-494a-4224-bfa0-36ce5ee281b1",
+  "set": "ody",
+  "set_name": "Odyssey",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0d90d2d-494a-4224-bfa0-36ce5ee281b1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aody&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ody?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e22318a5-80c8-4fa3-ad05-8d3035caf336/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae71f4fe8-2ecd-450b-8c41-5e38d749f59d&unique=prints",
+  "collector_number": "239",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Suffer the little creatures, for they may yet rise up and beat you senseless.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Greg Hildebrandt & Tim Hildebrandt",
+  "artist_ids": [
+    "020f967b-0d2f-4166-aabe-901dba8bc7ec",
+    "caa7228c-f74c-4145-91fb-1af8d623c353"
+  ],
+  "illustration_id": "e2c07d94-e382-425a-be99-749e22d3b62c",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 11298,
+  "penny_rank": 11094,
+  "prices": {
+    "usd": "3.92",
+    "usd_foil": "21.96",
+    "usd_etched": null,
+    "eur": "1.30",
+    "eur_foil": "8.52",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=31826&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDruid%2527s%2BCall",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDruid%2527s%2BCall",
+    "edhrec": "https://edhrec.com/route/?cc=Druid%27s+Call"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F9514%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2651&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/16545?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

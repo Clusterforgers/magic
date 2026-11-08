@@ -1,0 +1,29 @@
+{
+  "oracle_id": "78ee8cd8-de12-440f-8890-a78ab40b6be4",
+  "name": "Deathless Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathless Behemoth",
+      "oracle_fingerprint": "79decf1bbd9ec0337b2ed61b8cd49d5a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Subtype": "Eldrazi" }, { "Subtype": "Scion" }],
+                  "count": 2
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

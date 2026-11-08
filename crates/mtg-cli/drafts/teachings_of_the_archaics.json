@@ -1,0 +1,61 @@
+{
+  "oracle_id": "6ac3abba-cf55-4d97-a253-bce45972b050",
+  "name": "Teachings of the Archaics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teachings of the Archaics",
+      "oracle_fingerprint": "32547d7f06227b2ac89b42c7e57882e3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Largest": {
+                          "who": "Opponents",
+                          "of": [{ "In": "Hand" }, { "OwnedBy": "You" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Draw": {
+                        "count": {
+                          "When": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Largest": {
+                                    "who": "Opponents",
+                                    "of": [{ "In": "Hand" }, { "OwnedBy": "You" }]
+                                  }
+                                },
+                                "op": "Ge",
+                                "right": {
+                                  "Sum": [{ "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }, 4]
+                                }
+                              }
+                            },
+                            "then": 3,
+                            "otherwise": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

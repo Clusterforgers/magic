@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f28a373b-4a8d-40a5-ace1-3bbd8489ad36",
+  "name": "Don't Make a Sound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Don't Make a Sound",
+      "oracle_fingerprint": "3c768677262281bc8775719448e03149",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{2}",
+                  "paid": [{ "Surveil": { "count": 2 } }],
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "oracle_id": "c8689a83-cefa-4ef3-8ec1-58b4c64e332b",
+  "name": "In the Darkness Bind Them",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "In the Darkness Bind Them",
+      "oracle_fingerprint": "b84e4faf2f7b6158caebae2e32ab8fff",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wraith",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wraith"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  }
+                }
+              },
+              { "RingTempts": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wraith",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wraith"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  }
+                }
+              },
+              { "RingTempts": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wraith",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wraith"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Menace" }]
+                    }
+                  }
+                }
+              },
+              { "RingTempts": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "RingTempts": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

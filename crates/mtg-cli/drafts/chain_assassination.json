@@ -1,0 +1,43 @@
+{
+  "oracle_id": "37addb87-234a-402f-b7fb-f88ef3f2a589",
+  "name": "Chain Assassination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chain Assassination",
+      "oracle_fingerprint": "298c6d1531abfb5026c1f629f4fec6f7",
+      "abilities": [
+        { "Keyword": { "Freerunning": "{1}{B}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "Died",
+                          "who": "EachPlayer",
+                          "filter": [
+                            { "Type": "Creature" },
+                            { "Not": { "Is": { "Bound": "destroyed" } } }
+                          ]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

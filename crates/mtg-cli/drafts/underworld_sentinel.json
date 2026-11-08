@@ -1,0 +1,39 @@
+{
+  "oracle_id": "eef75645-1aa5-4085-8cbd-8b6fec2cbdc2",
+  "name": "Underworld Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Underworld Sentinel",
+      "oracle_fingerprint": "5851da7c73afcede0ae9405e0897be59",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

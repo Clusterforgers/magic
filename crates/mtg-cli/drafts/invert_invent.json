@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9a378964-2c04-4d60-a905-c819d37ed4c3",
+  "name": "Invert // Invent",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Invert",
+      "oracle_fingerprint": "9ab8f8a731dbaebd86f0ee74ff9fd250",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["SwitchPT"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invent",
+      "oracle_fingerprint": "f87ad2ef4be4b6c11303ce81e876c003",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 114 }
+          }
+        }
+      ]
+    }
+  ]
+}

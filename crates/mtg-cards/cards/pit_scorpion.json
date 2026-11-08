@@ -1,0 +1,19 @@
+{
+  "oracle_id": "4804fc42-588c-487a-8ff7-bcc16749fc1f",
+  "name": "Pit Scorpion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pit Scorpion",
+      "oracle_fingerprint": "eb690a450bae0164a488f011ba6f81e9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "poison" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

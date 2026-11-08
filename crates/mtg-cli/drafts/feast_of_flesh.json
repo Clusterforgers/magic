@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6f214306-1664-41ec-b999-1b7471bbcbd6",
+  "name": "Feast of Flesh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feast of Flesh",
+      "oracle_fingerprint": "a0113847331428cff527b9dd1ee13b42",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Sum": [{ "Count": [{ "Named": "Feast of Flesh" }, { "In": "Graveyard" }] }, 1]
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Sum": [{ "Count": [{ "Named": "Feast of Flesh" }, { "In": "Graveyard" }] }, 1]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

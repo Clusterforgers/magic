@@ -1,0 +1,26 @@
+{
+  "oracle_id": "05678253-a40f-4c11-8ac4-335b3a02532e",
+  "name": "Finest Hour",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Finest Hour",
+      "oracle_fingerprint": "b179833e3b6c4e86da4e6e43a53fd7cf",
+      "abilities": [
+        { "Keyword": "Exalted" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": "FirstCombat",
+            "effects": [
+              { "Untap": { "what": "Triggering" } },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

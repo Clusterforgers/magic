@@ -1,0 +1,30 @@
+{
+  "oracle_id": "180ba940-2b11-4953-b7ce-74847e1aebfd",
+  "name": "Assemble the Players",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assemble the Players",
+      "oracle_fingerprint": "ed705799fc3c7e4555af119eeda03cc5",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": { "Type": "Land" } },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                  "TopOfLibrary"
+                ],
+                "from": "Library",
+                "once": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

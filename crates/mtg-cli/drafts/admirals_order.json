@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ae4fe5e0-408d-4398-84d7-a901b836df2a",
+  "name": "Admiral's Order",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Admiral's Order",
+      "oracle_fingerprint": "9bc88084566facce2ca623c591c66c3e",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": "{U}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "f5511802-56fe-4922-83d2-ae723e1beab7",
+  "name": "Queen of Ice // Rage of Winter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Queen of Ice",
+      "oracle_fingerprint": "5e2f52709326edf9a958187900f5cb49",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rage of Winter",
+      "oracle_fingerprint": "b40fdbc8685ce0f63620bea02ee94060",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

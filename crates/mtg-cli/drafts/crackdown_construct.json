@@ -1,0 +1,36 @@
+{
+  "oracle_id": "bccbd5ae-4e3f-43ee-a51b-d0ec2c645238",
+  "name": "Crackdown Construct",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crackdown Construct",
+      "oracle_fingerprint": "d417e75479de9d7427ddd1061ffc337e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "who": "You",
+                "what": [
+                  { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                  { "In": "Battlefield" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

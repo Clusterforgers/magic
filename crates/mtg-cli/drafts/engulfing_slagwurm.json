@@ -1,0 +1,31 @@
+{
+  "oracle_id": "0340cfcb-fc96-40d2-8175-31a0093615bb",
+  "name": "Engulfing Slagwurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Engulfing Slagwurm",
+      "oracle_fingerprint": "a73798b9660b4d8d519b546401529f86",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              { "Destroy": { "what": "Triggering" } },
+              { "GainLife": { "amount": { "Stat": { "of": "Triggering", "stat": "Toughness" } } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              { "Destroy": { "what": "Dealer" } },
+              { "GainLife": { "amount": { "Stat": { "of": "Dealer", "stat": "Toughness" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

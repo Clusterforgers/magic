@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e3480c8f-15ad-451b-bb34-b129805569e1",
+  "name": "Stunted Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stunted Growth",
+      "oracle_fingerprint": "bfc31cc6483711d6099ebf31dfd3e4a4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": 3, "max": 3 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "oracle_id": "885d68de-db97-4c9e-bb44-8e561a482dde",
+  "name": "Fae Offering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fae Offering",
+      "oracle_fingerprint": "d5c0bba1dc15551fe0cef363ebff52a2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Tally": {
+                                "event": "SpellCast",
+                                "who": "EachPlayer",
+                                "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              }
+                            },
+                            "op": "Gt",
+                            "right": 1
+                          }
+                        },
+                        "then": 1,
+                        "otherwise": {
+                          "Tally": {
+                            "event": "SpellCast",
+                            "who": "EachPlayer",
+                            "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Tally": {
+                                "event": "SpellCast",
+                                "who": "EachPlayer",
+                                "filter": [
+                                  { "Not": { "Type": "Creature" } },
+                                  { "ControlledBy": "You" }
+                                ]
+                              }
+                            },
+                            "op": "Gt",
+                            "right": 1
+                          }
+                        },
+                        "then": 1,
+                        "otherwise": {
+                          "Tally": {
+                            "event": "SpellCast",
+                            "who": "EachPlayer",
+                            "filter": [{ "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "CreateToken": { "token": { "Named": "food" } } },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

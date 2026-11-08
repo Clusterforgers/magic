@@ -1,0 +1,53 @@
+{
+  "oracle_id": "b5fd82b9-77de-4358-9ce7-915cc809a889",
+  "name": "Zuko, Conflicted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zuko, Conflicted",
+      "oracle_fingerprint": "2693ba48808caf8175ce882308aa2159",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "once_ever": true,
+                  "modes": [
+                    { "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 2 } }] },
+                    {
+                      "effects": [
+                        { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+                        { "LoseLife": { "amount": 2 } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "AddMana": { "mana": { "Fixed": ["Red"] } } },
+                        { "LoseLife": { "amount": 2 } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "Exile": { "what": "This", "as": "exiled" } },
+                        { "Choose": { "from": "Opponents", "as": "player2" } },
+                        {
+                          "Move": {
+                            "what": { "Bound": "exiled" },
+                            "to": { "Battlefield": { "under": { "Bound": "player2" } } }
+                          }
+                        },
+                        { "LoseLife": { "amount": 2 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -21,6 +21,7 @@ pub(super) fn w20c_counter_unless(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         paid: Vec::new(),
         unpaid: vec![Effect::Counter {
             what: Ref::Triggering,
+            bind: None,
         }],
     }])
 }

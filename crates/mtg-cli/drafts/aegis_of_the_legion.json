@@ -1,0 +1,26 @@
+{
+  "oracle_id": "99eb05eb-11ef-456f-9132-166a0691dd04",
+  "name": "Aegis of the Legion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aegis of the Legion",
+      "oracle_fingerprint": "43f61a71601fd52a22077cc7c9b21003",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Mentor" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 136, "end": 317 }
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

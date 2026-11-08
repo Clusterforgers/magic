@@ -1,0 +1,57 @@
+{
+  "oracle_id": "5bf1c26b-12eb-4be7-b9d6-f8ad75a778aa",
+  "name": "In Thrall to the Pit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "In Thrall to the Pit",
+      "oracle_fingerprint": "824086619b9a8ee8fa1b1c048a765033",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{B}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    { "Bind": { "what": { "Target": 0 }, "as": "target" } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "filter": [{ "Is": { "Bound": "target" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "target" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

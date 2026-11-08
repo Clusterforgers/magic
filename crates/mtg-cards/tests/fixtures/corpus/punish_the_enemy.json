@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "4179a72b-8482-46ec-9815-f5d6d94b5aa5",
+  "oracle_id": "09f73f77-a9bc-4718-be7d-ba6e08576e3a",
+  "multiverse_ids": [
+    369090
+  ],
+  "mtgo_id": 48206,
+  "mtgo_foil_id": 48207,
+  "tcgplayer_id": 67978,
+  "cardmarket_id": 261520,
+  "name": "Punish the Enemy",
+  "lang": "en",
+  "released_at": "2013-05-03",
+  "uri": "https://api.scryfall.com/cards/4179a72b-8482-46ec-9815-f5d6d94b5aa5",
+  "scryfall_uri": "https://scryfall.com/card/dgm/35/punish-the-enemy?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:53:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/1/4179a72b-8482-46ec-9815-f5d6d94b5aa5.jpg?1783940037",
+    "normal": "https://cards.scryfall.io/normal/front/4/1/4179a72b-8482-46ec-9815-f5d6d94b5aa5.jpg?1783940037",
+    "large": "https://cards.scryfall.io/large/front/4/1/4179a72b-8482-46ec-9815-f5d6d94b5aa5.jpg?1783940037",
+    "png": "https://cards.scryfall.io/png/front/4/1/4179a72b-8482-46ec-9815-f5d6d94b5aa5.png?1783940037",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/1/4179a72b-8482-46ec-9815-f5d6d94b5aa5.jpg?1783940037",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/1/4179a72b-8482-46ec-9815-f5d6d94b5aa5.jpg?1783940037",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/1/4179a72b-8482-46ec-9815-f5d6d94b5aa5.webp?1783940037",
+    "grid": "https://cards.scryfall.io/grid/front/4/1/4179a72b-8482-46ec-9815-f5d6d94b5aa5.webp?1783940037",
+    "display": "https://cards.scryfall.io/display/front/4/1/4179a72b-8482-46ec-9815-f5d6d94b5aa5.webp?1783940037",
+    "art": "https://cards.scryfall.io/art/front/4/1/4179a72b-8482-46ec-9815-f5d6d94b5aa5.webp?1783940037",
+    "crop": "https://cards.scryfall.io/crop/front/4/1/4179a72b-8482-46ec-9815-f5d6d94b5aa5.webp?1783940037",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/1/4179a72b-8482-46ec-9815-f5d6d94b5aa5.jpg?1783940037"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Punish the Enemy deals 3 damage to target player or planeswalker and 3 damage to target creature.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c8bd8520-cd98-45cd-b533-8d40c2087426",
+  "set": "dgm",
+  "set_name": "Dragon's Maze",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c8bd8520-cd98-45cd-b533-8d40c2087426",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adgm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dgm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4179a72b-8482-46ec-9815-f5d6d94b5aa5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A09f73f77-a9bc-4718-be7d-ba6e08576e3a&unique=prints",
+  "collector_number": "35",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"When justice descends, the servant will burn with the master.\"\n—Aurelia",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Slawomir Maniak",
+  "artist_ids": [
+    "d887bc66-2779-416c-a1ff-d8720242063e"
+  ],
+  "illustration_id": "a8234df9-276b-40a9-9146-5cd055df4cfa",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27610,
+  "prices": {
+    "usd": "0.03",
+    "usd_foil": "0.50",
+    "usd_etched": null,
+    "eur": "0.05",
+    "eur_foil": "0.29",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=369090&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPunish%2Bthe%2BEnemy",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPunish%2Bthe%2BEnemy",
+    "edhrec": "https://edhrec.com/route/?cc=Punish+the+Enemy"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F67978%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=261520&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/48206?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

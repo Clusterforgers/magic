@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4e9a63d2-b48b-4740-95ba-7966ada95baf",
+  "name": "Merrow Grimeblotter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merrow Grimeblotter",
+      "oracle_fingerprint": "f0a2f81a4e6b11924a887f6376f9e481",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U/B}" }, "Untap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

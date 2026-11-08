@@ -1,0 +1,41 @@
+{
+  "oracle_id": "037eccdb-21c3-4048-af4f-b25dcbe99134",
+  "name": "Combo Attack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Combo Attack",
+      "oracle_fingerprint": "8e2bd8656f40e8b1b1107c8f2608d39a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 2, "max": 2 }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "damager",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "damager" },
+                        "to": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Bound": "damager" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

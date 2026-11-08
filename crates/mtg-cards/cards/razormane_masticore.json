@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ee45b588-b424-49d3-9e37-270f2ae9490d",
+  "name": "Razormane Masticore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razormane Masticore",
+      "oracle_fingerprint": "1d535e57591992688530743b894baa29",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "May": { "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

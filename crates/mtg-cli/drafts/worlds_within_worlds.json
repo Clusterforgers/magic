@@ -1,0 +1,54 @@
+{
+  "oracle_id": "e25062ba-7176-4d59-ac3e-26d19b26f02a",
+  "name": "Worlds Within Worlds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worlds Within Worlds",
+      "oracle_fingerprint": "c2b665d81854e9869185ec8f657c5521",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "Type": "Creature" }] }, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each2",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "each2" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "each2" } }
+                          ]
+                        },
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "OwnedBy": { "Bound": "each2" } },
+                              { "In": "Hand" }
+                            ]
+                          }
+                        },
+                        "as": "picked3"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked3" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "exiled" }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

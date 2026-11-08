@@ -1,0 +1,46 @@
+{
+  "oracle_id": "fd6e1967-237a-41f6-bbf4-2c869f9447c8",
+  "name": "Twitching Doll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twitching Doll",
+      "oracle_fingerprint": "cf2f461d5bd002d3a818d4a2618d68d7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "nest" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spider",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spider"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  },
+                  "count": { "AnyCounters": "This" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

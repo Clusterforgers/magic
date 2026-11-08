@@ -1,0 +1,61 @@
+{
+  "oracle_id": "04e3d36f-5dec-422c-a371-15e135fdface",
+  "name": "Blessed Defiance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blessed Defiance",
+      "oracle_fingerprint": "53a80c7579bef577a3ca3aa90a748714",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Lifelink" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

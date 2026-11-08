@@ -1,0 +1,57 @@
+{
+  "oracle_id": "5fd78088-53db-453b-90a3-b8426b0a8269",
+  "name": "Fell Shepherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fell Shepherd",
+      "oracle_fingerprint": "89a083989967be79e835078e2303ab0a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": "You" },
+                            { "ArrivedFrom": "Battlefield" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

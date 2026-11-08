@@ -21,6 +21,7 @@ pub(super) fn text(effects: &[Effect]) -> Option<String> {
                     transformed: false,
                     counters,
                 },
+            ..
         },
     ] = effects
     else {

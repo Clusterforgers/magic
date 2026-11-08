@@ -1,0 +1,167 @@
+{
+  "object": "card",
+  "id": "a22e8038-0706-47ec-bfda-f421a4912774",
+  "oracle_id": "a341eb75-e6a0-468b-8c83-61102249c648",
+  "multiverse_ids": [
+    673586
+  ],
+  "mtgo_id": 130493,
+  "arena_id": 92269,
+  "tcgplayer_id": 577688,
+  "cardmarket_id": 788282,
+  "name": "Greenhouse // Rickety Gazebo",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/a22e8038-0706-47ec-bfda-f421a4912774",
+  "scryfall_uri": "https://scryfall.com/card/dsk/181/greenhouse-rickety-gazebo?utm_source=api",
+  "layout": "split",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:24:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/2/a22e8038-0706-47ec-bfda-f421a4912774.jpg?1783909454",
+    "normal": "https://cards.scryfall.io/normal/front/a/2/a22e8038-0706-47ec-bfda-f421a4912774.jpg?1783909454",
+    "large": "https://cards.scryfall.io/large/front/a/2/a22e8038-0706-47ec-bfda-f421a4912774.jpg?1783909454",
+    "png": "https://cards.scryfall.io/png/front/a/2/a22e8038-0706-47ec-bfda-f421a4912774.png?1783909454",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/2/a22e8038-0706-47ec-bfda-f421a4912774.jpg?1783909454",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/2/a22e8038-0706-47ec-bfda-f421a4912774.jpg?1783909454",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/2/a22e8038-0706-47ec-bfda-f421a4912774.webp?1783909454",
+    "grid": "https://cards.scryfall.io/grid/front/a/2/a22e8038-0706-47ec-bfda-f421a4912774.webp?1783909454",
+    "display": "https://cards.scryfall.io/display/front/a/2/a22e8038-0706-47ec-bfda-f421a4912774.webp?1783909454",
+    "art": "https://cards.scryfall.io/art/front/a/2/a22e8038-0706-47ec-bfda-f421a4912774.webp?1783909454",
+    "crop": "https://cards.scryfall.io/crop/front/a/2/a22e8038-0706-47ec-bfda-f421a4912774.webp?1783909454",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/2/a22e8038-0706-47ec-bfda-f421a4912774.jpg?1783909454"
+  },
+  "mana_cost": "{2}{G} // {3}{G}",
+  "cmc": 7.0,
+  "type_line": "Enchantment — Room // Enchantment — Room",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Mill"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Greenhouse",
+      "mana_cost": "{2}{G}",
+      "type_line": "Enchantment — Room",
+      "oracle_text": "Lands you control have \"{T}: Add one mana of any color.\"\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+      "artist": "John Di Giovanni",
+      "artist_id": "dc7630d7-41e3-4fef-8630-058d1ba39d37",
+      "illustration_id": "8861dfe4-7b2a-4c8c-8936-56424cfa2dd0"
+    },
+    {
+      "object": "card_face",
+      "name": "Rickety Gazebo",
+      "mana_cost": "{3}{G}",
+      "type_line": "Enchantment — Room",
+      "oracle_text": "When you unlock this door, mill four cards, then return up to two permanent cards from among them to your hand.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+      "artist": "John Di Giovanni",
+      "artist_id": "dc7630d7-41e3-4fef-8630-058d1ba39d37"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a111d8a9-b647-48ec-afab-2b78f92173f5",
+  "set": "dsk",
+  "set_name": "Duskmourn: House of Horror",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a111d8a9-b647-48ec-afab-2b78f92173f5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a22e8038-0706-47ec-bfda-f421a4912774/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa341eb75-e6a0-468b-8c83-61102249c648&unique=prints",
+  "collector_number": "181",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "John Di Giovanni",
+  "artist_ids": [
+    "dc7630d7-41e3-4fef-8630-058d1ba39d37"
+  ],
+  "illustration_id": "8861dfe4-7b2a-4c8c-8936-56424cfa2dd0",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 7047,
+  "penny_rank": 4231,
+  "preview": {
+    "source": "Limited Resources",
+    "source_uri": "https://www.patreon.com/posts/exclusive-cards-111528932",
+    "previewed_at": "2024-09-06"
+  },
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.27",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.20",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=673586&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGreenhouse%2B%252F%252F%2BRickety%2BGazebo",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGreenhouse%2B%252F%252F%2BRickety%2BGazebo",
+    "edhrec": "https://edhrec.com/route/?cc=Greenhouse+%2F%2F+Rickety+Gazebo"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F577688%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=788282&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/130493?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

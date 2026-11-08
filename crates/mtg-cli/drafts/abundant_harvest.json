@@ -1,0 +1,55 @@
+{
+  "oracle_id": "34841228-31ac-48ac-b6d6-486b5e1e07dd",
+  "name": "Abundant Harvest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abundant Harvest",
+      "oracle_fingerprint": "50a24bdbb440e5872fad74acffcaadb2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "Type": "Land" }],
+                        "as": "found",
+                        "revealed_as": "revealed2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed2" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "Not": { "Type": "Land" } }],
+                        "as": "found3",
+                        "revealed_as": "revealed4"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found3" }, "to": "Hand" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed4" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

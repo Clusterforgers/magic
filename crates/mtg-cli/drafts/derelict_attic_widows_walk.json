@@ -1,0 +1,44 @@
+{
+  "oracle_id": "993b7b94-ed06-422d-9c7e-52a74ce9d045",
+  "name": "Derelict Attic // Widow's Walk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Derelict Attic",
+      "oracle_fingerprint": "4554aa1a394bf07573237e5495ba3993",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [{ "Draw": { "count": 2 } }, { "LoseLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Widow's Walk",
+      "oracle_fingerprint": "7dba218cf948606f663a4f01c2792deb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Deathtouch" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

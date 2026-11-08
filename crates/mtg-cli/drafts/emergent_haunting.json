@@ -1,0 +1,61 @@
+{
+  "oracle_id": "9f4d0133-0ecc-4498-8a47-4906321faae2",
+  "name": "Emergent Haunting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emergent Haunting",
+      "oracle_fingerprint": "7dc7fef3fce37892a4c212ffbda4f88d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Creature" }, "This"] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "SpellCast",
+                        "who": "EachPlayer",
+                        "filter": [
+                          { "ControlledBy": "You" },
+                          { "WasCast": { "from": "Hand" } },
+                          { "OwnedBy": "You" }
+                        ]
+                      }
+                    },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "AddSubtype": "Spirit" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{2}{U}", "effects": [{ "Surveil": {} }] } }
+      ]
+    }
+  ]
+}

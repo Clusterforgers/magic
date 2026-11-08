@@ -1,0 +1,31 @@
+{
+  "oracle_id": "ce55c9a8-25ba-404c-95b4-c14ba4763081",
+  "name": "Icehide Troll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Icehide Troll",
+      "oracle_fingerprint": "85996893683a99cf11dce38936f5bf42",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{S}{S}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

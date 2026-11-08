@@ -1,0 +1,43 @@
+{
+  "oracle_id": "af4d3489-6bba-4538-928c-50c9a7073813",
+  "name": "Hazoret's Undying Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hazoret's Undying Fury",
+      "oracle_fingerprint": "795f3b281e9c99303b4349e1d37050f0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Shuffle": {} },
+              { "ExileTop": { "count": 4, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Is": { "Bound": "exiled" } },
+                      { "OwnedBy": "You" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 5 } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "card2",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card2" }, "free": true } }]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

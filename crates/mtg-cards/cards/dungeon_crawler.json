@@ -1,0 +1,21 @@
+{
+  "oracle_id": "26b53524-9ec5-4ec9-a1e2-73e78959481b",
+  "name": "Dungeon Crawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dungeon Crawler",
+      "oracle_fingerprint": "46ff31098bb3ba78ae3b487950d1280d",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "CompletedDungeon": { "who": "You" } },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

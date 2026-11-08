@@ -1,0 +1,33 @@
+{
+  "oracle_id": "47c12d2f-b458-4848-9a01-0fc37ef3d942",
+  "name": "Blue Scarab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blue Scarab",
+      "oracle_fingerprint": "a6e3552ee81a9cd4ca0dc8da3b23474d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Creature" }, { "Color": "Blue" }] }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Color": "Blue" }, { "ControlledBy": "Opponents" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

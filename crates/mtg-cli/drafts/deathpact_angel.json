@@ -1,0 +1,62 @@
+{
+  "oracle_id": "ad0f50d5-7b40-4fd8-8d13-4a0493398f53",
+  "name": "Deathpact Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deathpact Angel",
+      "oracle_fingerprint": "c3bcf0151d404aebe471b747cf44d1ce",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cleric",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cleric"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{3}{W}{B}{B}" }, "Tap", "SacrificeSelf"],
+                            "effects": [
+                              {
+                                "Choose": {
+                                  "from": {
+                                    "Each": [
+                                      { "Named": "Deathpact Angel" },
+                                      { "OwnedBy": "You" },
+                                      { "In": "Graveyard" }
+                                    ]
+                                  },
+                                  "as": "picked"
+                                }
+                              },
+                              {
+                                "Move": {
+                                  "what": { "Bound": "picked" },
+                                  "to": { "Battlefield": {} }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

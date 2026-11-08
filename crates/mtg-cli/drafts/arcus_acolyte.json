@@ -1,0 +1,29 @@
+{
+  "oracle_id": "628f2deb-519e-4810-a7e5-e31316e9a4e0",
+  "name": "Arcus Acolyte",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcus Acolyte",
+      "oracle_fingerprint": "39355f146392a3b68aeb7bec75d18f12",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Outlast": "{G/W}" } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                "Other",
+                { "Not": { "HasCounter": "+1/+1" } }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Outlast": "{G/W}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

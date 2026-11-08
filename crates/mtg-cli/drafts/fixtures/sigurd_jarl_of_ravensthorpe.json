@@ -1,0 +1,149 @@
+{
+  "object": "card",
+  "id": "25ceade9-f12a-4724-b198-312fb4b1210b",
+  "oracle_id": "eedd74c4-42d1-41ba-9051-dc518e45ebbb",
+  "multiverse_ids": [
+    667656
+  ],
+  "mtgo_id": 128098,
+  "tcgplayer_id": 555892,
+  "cardmarket_id": 774644,
+  "name": "Sigurd, Jarl of Ravensthorpe",
+  "lang": "en",
+  "released_at": "2024-07-05",
+  "uri": "https://api.scryfall.com/cards/25ceade9-f12a-4724-b198-312fb4b1210b",
+  "scryfall_uri": "https://scryfall.com/card/acr/66/sigurd-jarl-of-ravensthorpe?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:49:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/5/25ceade9-f12a-4724-b198-312fb4b1210b.jpg?1783910967",
+    "normal": "https://cards.scryfall.io/normal/front/2/5/25ceade9-f12a-4724-b198-312fb4b1210b.jpg?1783910967",
+    "large": "https://cards.scryfall.io/large/front/2/5/25ceade9-f12a-4724-b198-312fb4b1210b.jpg?1783910967",
+    "png": "https://cards.scryfall.io/png/front/2/5/25ceade9-f12a-4724-b198-312fb4b1210b.png?1783910967",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/5/25ceade9-f12a-4724-b198-312fb4b1210b.jpg?1783910967",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/5/25ceade9-f12a-4724-b198-312fb4b1210b.jpg?1783910967",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/5/25ceade9-f12a-4724-b198-312fb4b1210b.webp?1783910967",
+    "grid": "https://cards.scryfall.io/grid/front/2/5/25ceade9-f12a-4724-b198-312fb4b1210b.webp?1783910967",
+    "display": "https://cards.scryfall.io/display/front/2/5/25ceade9-f12a-4724-b198-312fb4b1210b.webp?1783910967",
+    "art": "https://cards.scryfall.io/art/front/2/5/25ceade9-f12a-4724-b198-312fb4b1210b.webp?1783910967",
+    "crop": "https://cards.scryfall.io/crop/front/2/5/25ceade9-f12a-4724-b198-312fb4b1210b.webp?1783910967",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/5/25ceade9-f12a-4724-b198-312fb4b1210b.jpg?1783910967"
+  },
+  "mana_cost": "{R}{G}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Warrior",
+  "oracle_text": "Vigilance, trample, lifelink\nBoast — {1}: Put a lore counter on target Saga you control or remove one from it. (Activate only if this creature attacked this turn and only once each turn.)\nWhenever you put a lore counter on a Saga you control, put a +1/+1 counter on up to one other target creature.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Vigilance",
+    "Boast",
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set": "acr",
+  "set_name": "Assassin's Creed",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aacr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/acr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/25ceade9-f12a-4724-b198-312fb4b1210b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aeedd74c4-42d1-41ba-9051-dc518e45ebbb&unique=prints",
+  "collector_number": "66",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alexander Gering",
+  "artist_ids": [
+    "c6e77ba4-e891-4688-bca8-41b3f5f89dc6"
+  ],
+  "illustration_id": "a5a48912-6130-4bfd-bdb0-df5430943e96",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 7222,
+  "penny_rank": 11967,
+  "prices": {
+    "usd": "0.42",
+    "usd_foil": "0.40",
+    "usd_etched": null,
+    "eur": "0.43",
+    "eur_foil": "0.78",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=667656&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSigurd%252C%2BJarl%2Bof%2BRavensthorpe",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSigurd%252C%2BJarl%2Bof%2BRavensthorpe",
+    "edhrec": "https://edhrec.com/route/?cc=Sigurd%2C+Jarl+of+Ravensthorpe"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F555892%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=774644&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128098?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

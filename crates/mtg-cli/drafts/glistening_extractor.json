@@ -1,0 +1,47 @@
+{
+  "oracle_id": "2e97e20a-502b-4e36-a3ae-bc0b77139651",
+  "name": "Glistening Extractor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glistening Extractor",
+      "oracle_fingerprint": "7cf66a296f0a889cbfd3083a798937bc",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "oil" }, "count": 4 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": { "Other": "oil" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Seek": {
+                  "filter": [
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Counters": { "on": "This", "counter": { "Other": "oil" } } }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "oil" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -9,7 +9,9 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "BecomesTarget": { "what": ["This"], "by": ["Spell", "Attacking"] } },
+            "when": {
+              "BecomesTarget": { "what": ["This"], "by": ["Spell", { "Subtype": "Aura" }] }
+            },
             "effects": [{ "Draw": {} }]
           }
         }

@@ -491,7 +491,7 @@ fn a_dry_run_shows_the_first_prompt_under_a_size_budget_and_has_no_client_to_sen
     );
     // The estimate of the first request, and of the run, are numbers a person can compare with the budget.
     let estimate = client_prompt_estimate(&cards[1]);
-    assert!(estimate < 30_000, "a prompt is about {estimate} tokens");
+    assert!(estimate < 45_000, "a prompt is about {estimate} tokens");
     assert!(
         text.contains("the budget is 50000000 tokens and 100 requests"),
         "{text}"

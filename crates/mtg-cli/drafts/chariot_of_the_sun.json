@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b0af249d-9255-42f5-bafc-ac61ee281930",
+  "name": "Chariot of the Sun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chariot of the Sun",
+      "oracle_fingerprint": "8d9f6076672d98fff3068ea8a8396fba",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetToughness": 1 }, { "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

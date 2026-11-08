@@ -1,0 +1,73 @@
+{
+  "oracle_id": "fdaa0faf-e7ee-48b3-9330-de0fc3792ad3",
+  "name": "Breath of Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breath of Fury",
+      "oracle_fingerprint": "a8b3eeca8928c2615fc46335a49050d8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Is": "Attached" }],
+                  "count": { "Count": [{ "Is": "Attached" }] }
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "attach"
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Bound": "attach" }, "as": "attached2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "attached2" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Untap": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "attached2" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "AddPhase": { "phases": ["Combat"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

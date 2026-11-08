@@ -1,0 +1,44 @@
+{
+  "oracle_id": "686cce6e-18ec-45b0-8d2e-74fa353a905e",
+  "name": "Tolarian Winds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tolarian Winds",
+      "oracle_fingerprint": "e09775ffe5f57177069ae50308b29f7f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

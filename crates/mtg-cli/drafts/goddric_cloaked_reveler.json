@@ -1,0 +1,55 @@
+{
+  "oracle_id": "35b2b172-5fbc-4e4d-a011-390ee1b6c848",
+  "name": "Goddric, Cloaked Reveler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goddric, Cloaked Reveler",
+      "oracle_fingerprint": "ef4a274ff0953e5eb6925b2590d22df5",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPT": { "power": 4, "toughness": 4 } },
+              { "AddKeyword": "Flying" },
+              { "SetCreatureTypes": ["Dragon"] },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": "{R}",
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": {
+                            "Each": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }]
+                          },
+                          "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

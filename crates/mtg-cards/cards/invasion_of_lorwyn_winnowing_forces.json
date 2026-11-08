@@ -1,0 +1,57 @@
+{
+  "oracle_id": "c877a430-75bc-45ac-b11d-2365d11ed341",
+  "name": "Invasion of Lorwyn // Winnowing Forces",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Lorwyn",
+      "oracle_fingerprint": "de199653951cb55f2ae91ed14b4acd24",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Subtype": "Elf" } },
+                    { "ControlledBy": "Opponents" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Le",
+                        "to": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Winnowing Forces",
+      "oracle_fingerprint": "633e1cac6a6ba05733b1db30e73e21a2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

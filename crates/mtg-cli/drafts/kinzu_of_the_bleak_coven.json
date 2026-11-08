@@ -1,0 +1,62 @@
+{
+  "oracle_id": "e4f4c41b-2533-497f-96bb-7083ef597268",
+  "name": "Kinzu of the Bleak Coven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kinzu of the Bleak Coven",
+      "oracle_fingerprint": "4d7afec1c3509fbbec90da015017b51c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "PayLife": 2 },
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [
+                          { "Is": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } } }
+                        ],
+                        "any_player": true
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": "Triggering",
+                            "except": [
+                              { "SetPT": { "power": 1, "toughness": 1 } },
+                              { "AddKeyword": { "Toxic": 1 } }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

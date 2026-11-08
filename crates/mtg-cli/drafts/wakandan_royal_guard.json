@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4ae15bd1-e0ea-4c1a-a311-dae421381ebc",
+  "name": "Wakandan Royal Guard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wakandan Royal Guard",
+      "oracle_fingerprint": "f44df628bc5e78a56954c636be860ca5",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Sum": [
+                      {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": ["Other", { "Subtype": "Hero" }]
+                        }
+                      },
+                      1
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

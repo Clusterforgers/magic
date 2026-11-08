@@ -1,0 +1,98 @@
+{
+  "oracle_id": "21bdba6e-3f9d-4ead-8212-0cbb0ce7f8cc",
+  "name": "Inalla, Archmage Ritualist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inalla, Archmage Ritualist",
+      "oracle_fingerprint": "22d92a0bb6f6f1788c701f9d2b11b58f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Subtype": "Wizard" },
+                  { "ControlledBy": "You" },
+                  { "Not": "Token" },
+                  "Other"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Command",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": { "of": "Triggering", "except": [{ "AddKeyword": "Haste" }] }
+                        },
+                        "as": "copy"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Wizard" }], "count": 5 } }],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 7 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Subtype": "Wizard" },
+                  { "ControlledBy": "You" },
+                  { "Not": "Token" },
+                  "Other"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "if": { "Compare": { "left": { "Count": ["This"] }, "op": "Ge", "right": 1 } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": { "of": "Triggering", "except": [{ "AddKeyword": "Haste" }] }
+                        },
+                        "as": "copy"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

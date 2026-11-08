@@ -1,0 +1,68 @@
+{
+  "oracle_id": "0c061a1b-206a-4fcc-92e5-30c8ed9d65c1",
+  "name": "Artistic Process",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Artistic Process",
+      "oracle_fingerprint": "f7a12732328576b51c368bde585dd49d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 6 } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": {
+                              "Each": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                            },
+                            "amount": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Elemental",
+                                "colors": ["Blue", "Red"],
+                                "types": ["Creature"],
+                                "subtypes": ["Elemental"],
+                                "power": 3,
+                                "toughness": 3,
+                                "abilities": [{ "Keyword": "Flying" }]
+                              }
+                            },
+                            "as": "token"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Bound": "token" },
+                            "mods": [{ "AddKeyword": "Haste" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

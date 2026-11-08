@@ -32,6 +32,7 @@ function offered(options: PriorityOptions): Set<number> {
     ...(options.faces ?? []).map((face) => face.card),
     ...(options.suspendable ?? []),
     ...(options.foretellable ?? []),
+    ...(options.plottable ?? []),
   ])
 }
 

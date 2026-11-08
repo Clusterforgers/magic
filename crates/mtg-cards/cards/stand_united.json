@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5a05ee6e-1812-4792-ad00-6df8fa4fd85f",
+  "name": "Stand United",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stand United",
+      "oracle_fingerprint": "2efe9192d121d9ad269ad04322107294",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Ally" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Scry": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

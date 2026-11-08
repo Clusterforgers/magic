@@ -1,0 +1,33 @@
+{
+  "oracle_id": "8141fb64-7b55-40fb-8fe4-5efd805d8fef",
+  "name": "Now for Wrath, Now for Ruin!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Now for Wrath, Now for Ruin!",
+      "oracle_fingerprint": "7e2c257ac9d65cff697808e95a4cffda",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Vigilance" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "RingTempts": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

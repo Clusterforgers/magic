@@ -1,0 +1,31 @@
+{
+  "oracle_id": "cbf2b19e-32a3-489f-9979-ba2748c52845",
+  "name": "Leyline of Vitality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Vitality",
+      "oracle_fingerprint": "0cb1dfdedb6d37aca82028498e813d39",
+      "abilities": [
+        "OpeningHand",
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 1 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1b1dc78b-0102-49d6-8e54-89bc18a1628f",
+  "name": "Keldon Overseer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keldon Overseer",
+      "oracle_fingerprint": "1f734b9c090d1e050e5479b85ddfe351",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{R}" } },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

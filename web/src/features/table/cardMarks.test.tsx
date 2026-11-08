@@ -192,4 +192,14 @@ describe('real power and toughness', () => {
     const { container } = renderCard(permanent({}, { identity: IDENTITY }))
     expect(must(container.querySelector('[data-slot="card-face"]')).className).not.toContain('bg-card-back')
   })
+
+  it('marks what a seat gave the card by hand at the head, one mark each', async () => {
+    const { container } = await loaded(
+      permanent({}, { identity: IDENTITY, granted: ['Deathtouch', 'has haste'] }),
+    )
+    const marks = [...container.querySelectorAll('[data-slot="card-granted"]')].map(
+      (mark) => mark.textContent,
+    )
+    expect(marks).toEqual(['+ Deathtouch', '+ has haste'])
+  })
 })

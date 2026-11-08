@@ -1,0 +1,50 @@
+{
+  "oracle_id": "1e8ff8b3-5b7f-47f2-9321-7a3b6f6e88aa",
+  "name": "Induce Despair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Induce Despair",
+      "oracle_fingerprint": "5d8ba55ebd446c84bb5a4a9b38bc52ba",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "RevealFromHand": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

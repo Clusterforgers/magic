@@ -1,0 +1,39 @@
+{
+  "oracle_id": "fc6278e5-7eb1-4590-880e-fe9efa0ec4d9",
+  "name": "Veil of Birds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veil of Birds",
+      "oracle_fingerprint": "e78f55c4793f710400a181505aeea5d4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 1, "toughness": 1 } },
+                    { "SetCreatureTypes": ["Bird"] },
+                    { "SetTypes": ["Creature"] },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

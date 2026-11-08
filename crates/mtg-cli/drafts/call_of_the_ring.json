@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9fcb920c-b8d7-4a79-a335-f63050182cca",
+  "name": "Call of the Ring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call of the Ring",
+      "oracle_fingerprint": "c5bb4531ca17750d385cd686ed56544a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "RingTempts": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "RingTempts": {
+                "who": "You",
+                "bearer": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [{ "Pay": { "cost": [{ "PayLife": 2 }], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

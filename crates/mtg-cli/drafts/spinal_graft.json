@@ -1,0 +1,26 @@
+{
+  "oracle_id": "70b5eca0-c61b-4066-ae5f-90948912c04e",
+  "name": "Spinal Graft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spinal Graft",
+      "oracle_fingerprint": "44909e8b1ff5a100f1276a10e1d2c724",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "Destroy": { "what": "TriggeringFirst", "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

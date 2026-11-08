@@ -1,0 +1,37 @@
+{
+  "oracle_id": "db1ea6e0-4076-49dd-92f7-7e6d7eb65a27",
+  "name": "Endbringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endbringer",
+      "oracle_fingerprint": "6bc11ec7fbe6fbad5bfa8faef416ade4",
+      "abilities": [
+        { "Rule": { "rule": { "UntapDuring": { "what": ["This"], "whose": "Opponents" } } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{C}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": [{ "Mana": "{C}{C}" }, "Tap"], "effects": [{ "Draw": {} }] } }
+      ]
+    }
+  ]
+}

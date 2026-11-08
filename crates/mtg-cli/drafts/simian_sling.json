@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e49c4d9a-6413-440f-ba5b-396fea6c03d9",
+  "name": "Simian Sling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Simian Sling",
+      "oracle_fingerprint": "7e2cb59fbf1157a44b48b88e9485b598",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "Is": "Attached" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Defending", "amount": 1 } }]
+          }
+        },
+        { "Keyword": { "Reconfigure": "{2}" } }
+      ]
+    }
+  ]
+}

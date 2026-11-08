@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fac4da47-f0b2-4b57-9703-e0ed100d3499",
+  "name": "Karma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karma",
+      "oracle_fingerprint": "60515158d6dcdfb6788bb8ff64e66db1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "ActivePlayer" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

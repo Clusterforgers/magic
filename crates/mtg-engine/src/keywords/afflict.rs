@@ -22,6 +22,8 @@ impl KeywordRules for Afflict {
         vec![Ability::Triggered {
             when: TriggerPattern::BecomesBlocked {
                 what: Selector::this(),
+                by: Selector::default(),
+                once: false,
             },
             intervening_if: None,
             limit: None,

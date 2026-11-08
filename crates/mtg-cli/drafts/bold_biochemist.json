@@ -1,0 +1,38 @@
+{
+  "oracle_id": "45ddfa35-7b3c-4916-b231-dc721b7b56d9",
+  "name": "Bold Biochemist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bold Biochemist",
+      "oracle_fingerprint": "54c20fe59644dc98d433077e7d9fd28d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}{U}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}{U}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": ["This", "EnteredThisTurn"] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerGame",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "Draw": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

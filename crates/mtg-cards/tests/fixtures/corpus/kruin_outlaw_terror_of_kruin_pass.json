@@ -1,0 +1,197 @@
+{
+  "object": "card",
+  "id": "3c6ee666-9b5b-428a-9ddb-37c36a6272cb",
+  "oracle_id": "cf518f59-f083-42a0-9953-fac2757bf804",
+  "multiverse_ids": [
+    685999
+  ],
+  "mtgo_id": 135728,
+  "tcgplayer_id": 609869,
+  "cardmarket_id": 805792,
+  "name": "Kruin Outlaw // Terror of Kruin Pass",
+  "lang": "en",
+  "released_at": "2025-01-24",
+  "uri": "https://api.scryfall.com/cards/3c6ee666-9b5b-428a-9ddb-37c36a6272cb",
+  "scryfall_uri": "https://scryfall.com/card/inr/161/kruin-outlaw-terror-of-kruin-pass?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:02:01Z",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Rogue Werewolf // Creature — Werewolf",
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Transform",
+    "First strike",
+    "Double strike"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Kruin Outlaw",
+      "mana_cost": "{1}{R}{R}",
+      "type_line": "Creature — Human Rogue Werewolf",
+      "oracle_text": "First strike\nAt the beginning of each upkeep, if no spells were cast last turn, transform this creature.",
+      "colors": [
+        "R"
+      ],
+      "power": "2",
+      "toughness": "2",
+      "flavor_text": "\"Hold tight. I've got a surprise for them.\"",
+      "artist": "David Rapoza",
+      "artist_id": "c5a2318d-5d04-499f-b121-57dee5a9dfe6",
+      "illustration_id": "aec6c943-86e0-427e-8a8a-a5283a539109",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.jpg?1783908121",
+        "normal": "https://cards.scryfall.io/normal/front/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.jpg?1783908121",
+        "large": "https://cards.scryfall.io/large/front/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.jpg?1783908121",
+        "png": "https://cards.scryfall.io/png/front/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.png?1783908121",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.jpg?1783908121",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.jpg?1783908121",
+        "thumb": "https://cards.scryfall.io/thumb/front/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.webp?1783908121",
+        "grid": "https://cards.scryfall.io/grid/front/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.webp?1783908121",
+        "display": "https://cards.scryfall.io/display/front/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.webp?1783908121",
+        "art": "https://cards.scryfall.io/art/front/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.webp?1783908121",
+        "crop": "https://cards.scryfall.io/crop/front/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.webp?1783908121",
+        "jpeg": "https://cards.scryfall.io/normal/front/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.jpg?1783908121"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Terror of Kruin Pass",
+      "mana_cost": "",
+      "type_line": "Creature — Werewolf",
+      "oracle_text": "Double strike\nWerewolves you control have menace. (A creature with menace can't be blocked except by two or more creatures.)\nAt the beginning of each upkeep, if a player cast two or more spells last turn, transform this creature.",
+      "colors": [
+        "R"
+      ],
+      "color_indicator": [
+        "R"
+      ],
+      "power": "3",
+      "toughness": "3",
+      "artist": "David Rapoza",
+      "artist_id": "c5a2318d-5d04-499f-b121-57dee5a9dfe6",
+      "illustration_id": "70da0db1-2553-4d79-8294-613b1218a80b",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.jpg?1783908121",
+        "normal": "https://cards.scryfall.io/normal/back/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.jpg?1783908121",
+        "large": "https://cards.scryfall.io/large/back/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.jpg?1783908121",
+        "png": "https://cards.scryfall.io/png/back/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.png?1783908121",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.jpg?1783908121",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.jpg?1783908121",
+        "thumb": "https://cards.scryfall.io/thumb/back/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.webp?1783908121",
+        "grid": "https://cards.scryfall.io/grid/back/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.webp?1783908121",
+        "display": "https://cards.scryfall.io/display/back/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.webp?1783908121",
+        "art": "https://cards.scryfall.io/art/back/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.webp?1783908121",
+        "crop": "https://cards.scryfall.io/crop/back/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.webp?1783908121",
+        "jpeg": "https://cards.scryfall.io/normal/back/3/c/3c6ee666-9b5b-428a-9ddb-37c36a6272cb.jpg?1783908121"
+      }
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "99ce1bee-8f95-4284-8e06-9de9bfcb53b5",
+      "component": "combo_piece",
+      "name": "Innistrad Checklist",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/99ce1bee-8f95-4284-8e06-9de9bfcb53b5"
+    },
+    {
+      "object": "related_card",
+      "id": "3c6ee666-9b5b-428a-9ddb-37c36a6272cb",
+      "component": "combo_piece",
+      "name": "Kruin Outlaw // Terror of Kruin Pass",
+      "type_line": "Creature — Human Rogue Werewolf // Creature — Werewolf",
+      "uri": "https://api.scryfall.com/cards/3c6ee666-9b5b-428a-9ddb-37c36a6272cb"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set": "inr",
+  "set_name": "Innistrad Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3c6ee666-9b5b-428a-9ddb-37c36a6272cb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acf518f59-f083-42a0-9953-fac2757bf804&unique=prints",
+  "collector_number": "161",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "David Rapoza",
+  "artist_ids": [
+    "c5a2318d-5d04-499f-b121-57dee5a9dfe6"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10346,
+  "penny_rank": 8811,
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": "0.47",
+    "usd_etched": null,
+    "eur": "0.29",
+    "eur_foil": "0.75",
+    "tix": "0.10"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=685999&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKruin%2BOutlaw%2B%252F%252F%2BTerror%2Bof%2BKruin%2BPass",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKruin%2BOutlaw%2B%252F%252F%2BTerror%2Bof%2BKruin%2BPass",
+    "edhrec": "https://edhrec.com/route/?cc=Kruin+Outlaw"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F609869%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=805792&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/135728?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

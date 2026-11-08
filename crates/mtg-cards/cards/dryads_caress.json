@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7df07d16-e5cf-4c58-980a-632909aa1357",
+  "name": "Dryad's Caress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dryad's Caress",
+      "oracle_fingerprint": "f662beea36253308de957ef5bb3fa1cc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "GainLife": { "amount": { "Count": [{ "Type": "Creature" }] } } },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "White" },
+                  "then": [
+                    {
+                      "Untap": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "fb966147-1d60-4150-b4e7-acf301b2d067",
+  "name": "Gosta Dirk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gosta Dirk",
+      "oracle_fingerprint": "807695b963cb04dbae57802362171bf1",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "HasKeyword": { "Landwalk": [{ "Subtype": "Island" }] } }] },
+                "quirk": { "IgnoreLandwalk": [{ "Subtype": "Island" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

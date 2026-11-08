@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e257d8e0-06e9-433d-a750-1962db399388",
+  "name": "Hissing Miasma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hissing Miasma",
+      "oracle_fingerprint": "77ed040d27bb32bc5ff2c3603cef23a3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": [{ "Type": "Creature" }], "at": "You" } },
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

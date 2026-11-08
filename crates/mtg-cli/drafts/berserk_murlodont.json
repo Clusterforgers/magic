@@ -1,0 +1,36 @@
+{
+  "oracle_id": "a762e8cb-9d33-41fc-b2e8-0c5ad4d7268e",
+  "name": "Berserk Murlodont",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Berserk Murlodont",
+      "oracle_fingerprint": "ebe7c33978ed790562d7248e353c6793",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Subtype": "Beast" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, { "Blocks": "Triggering" }] },
+                        "toughness": {
+                          "Count": [{ "Type": "Creature" }, { "Blocks": "Triggering" }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

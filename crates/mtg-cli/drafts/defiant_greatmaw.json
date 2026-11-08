@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ee152ffa-9c39-48ed-9aca-e53c8ebb0231",
+  "name": "Defiant Greatmaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defiant Greatmaw",
+      "oracle_fingerprint": "36eabae0aa016bd7ade19a71819cf998",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1", "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Batch": {
+                    "CountersPut": { "what": [{ "Type": "Creature" }, "This"], "counter": "-1/-1" }
+                  }
+                },
+                "by": "You"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [{ "RemoveCounters": { "from": { "Target": 0 }, "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

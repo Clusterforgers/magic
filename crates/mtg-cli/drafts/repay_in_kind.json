@@ -1,0 +1,20 @@
+{
+  "oracle_id": "24b8177f-5697-4465-9305-cb84307972ae",
+  "name": "Repay in Kind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repay in Kind",
+      "oracle_fingerprint": "85ecd25676024df0f7d1322bd34a7c87",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "SetLife": { "who": "EachPlayer", "amount": { "LowestLife": "EachPlayer" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

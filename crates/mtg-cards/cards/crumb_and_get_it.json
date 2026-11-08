@@ -1,0 +1,44 @@
+{
+  "oracle_id": "93596258-bb44-4aa3-833d-9a0ab16b5ec1",
+  "name": "Crumb and Get It",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crumb and Get It",
+      "oracle_fingerprint": "28bd0da79bfe081d74238f722dbd2e05",
+      "abilities": [
+        { "Keyword": { "Gift": "Food" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 1 } },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Indestructible" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

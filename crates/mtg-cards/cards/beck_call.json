@@ -1,0 +1,59 @@
+{
+  "oracle_id": "5b8472c8-a7e7-46f2-aecf-e954082a5ef5",
+  "name": "Beck // Call",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beck",
+      "oracle_fingerprint": "8f96476e1173abbc2eb876fcd9dcade7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    },
+    {
+      "name": "Call",
+      "oracle_fingerprint": "509ded2edaaeb8a7ad6f16f1b143da70",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 4
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    }
+  ]
+}

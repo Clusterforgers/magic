@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e5ef45e4-8c19-40bf-8756-c1b408dcb2fb",
+  "name": "Urborg Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urborg Stalker",
+      "oracle_fingerprint": "e7f170ea7033a9313d591a9279e9b822",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Not": { "Color": "Black" } },
+                    { "Not": { "Type": "Land" } },
+                    { "ControlledBy": "ActivePlayer" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

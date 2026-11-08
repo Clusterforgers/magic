@@ -1,0 +1,23 @@
+{
+  "oracle_id": "232d7613-4156-4bf5-9746-97fc79e4193d",
+  "name": "Great Wall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Great Wall",
+      "oracle_fingerprint": "24197469e93dc1617a1f0d243a50d303",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "HasKeyword": { "Landwalk": [{ "Subtype": "Plains" }] } }] },
+                "quirk": { "IgnoreLandwalk": [{ "Subtype": "Plains" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

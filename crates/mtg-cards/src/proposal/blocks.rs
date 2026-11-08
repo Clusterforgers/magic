@@ -4,10 +4,12 @@
 use super::ClauseState;
 use super::pairing::unmatched;
 use crate::ability::Ability;
-use crate::compile::{BlockPlan, keyword_grant, same_text, without_header, written_variants};
+use crate::compile::{
+    BlockPlan, keyword_grant, same_written_text, without_header, written_variants,
+};
 use crate::modify::Modification;
 use crate::refs::Ref;
-use crate::value::Amount;
+use crate::value::{Amount, Condition};
 
 /// The abilities of a proposal that stand for one block of the text.
 #[derive(Debug)]
@@ -21,18 +23,23 @@ pub(super) struct Found {
 }
 
 /// An ability of the proposal that works under the block, without the condition the block adds.
-struct Owned {
+struct Owned<'a> {
     at: usize,
     bare: Ability,
     written: Vec<String>,
+    /// The condition of the block the ability works under.
+    under: &'a Condition,
 }
 
-impl Owned {
+impl Owned<'_> {
     /// Whether the ability, without the level, is the line: a line of keywords is the keywords granted, any other line
     /// is a wording of the ability.
     fn says(&self, line: &str) -> bool {
         keyword_grant(line).is_some_and(|grant| grant == self.bare)
-            || self.written.iter().any(|text| same_text(text, line))
+            || self
+                .written
+                .iter()
+                .any(|text| same_written_text(text, line))
     }
 }
 
@@ -54,16 +61,27 @@ pub(super) fn read(plan: &BlockPlan, abilities: &[Ability], free: &[usize]) -> O
         .iter()
         .filter(|at| !claimed.contains(at))
         .filter_map(|&at| {
-            let bare = without_header(&abilities[at], &plan.condition)?;
+            let (under, bare) = std::iter::once(&plan.condition)
+                .chain(&plan.conditions)
+                .find_map(|under| Some((under, without_header(&abilities[at], under)?)))?;
             let written = written_variants(&bare);
-            Some(Owned { at, bare, written })
+            Some(Owned {
+                at,
+                bare,
+                written,
+                under,
+            })
         })
         .collect();
     if claimed.is_empty() && owned.is_empty() {
         return None;
     }
-    for line in &plan.lines {
-        match owned.iter().position(|ability| ability.says(line)) {
+    for (index, line) in plan.lines.iter().enumerate() {
+        let under = plan.condition_at(index);
+        match owned
+            .iter()
+            .position(|ability| ability.under == under && ability.says(line))
+        {
             Some(hit) => claimed.push(owned.remove(hit).at),
             None => wanted.push(line),
         }

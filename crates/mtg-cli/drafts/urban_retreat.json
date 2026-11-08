@@ -1,0 +1,31 @@
+{
+  "oracle_id": "18290c4b-cff6-4ee5-a487-fe0d5706d3de",
+  "name": "Urban Retreat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urban Retreat",
+      "oracle_fingerprint": "d375430fdd27f5eb422aca79e5695d48",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "White", "Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              { "ReturnToHand": { "filter": [{ "Type": "Creature" }, "Tapped"] } }
+            ],
+            "timing": "Sorcery",
+            "from": "Hand",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

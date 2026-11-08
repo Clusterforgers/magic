@@ -1,0 +1,49 @@
+{
+  "oracle_id": "71c714a2-baa9-4082-bc8e-ceadbea231e0",
+  "name": "Riverchurn Monument",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riverchurn Monument",
+      "oracle_fingerprint": "789ed303ffef7ab91b52e134f53a5faf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [
+              { "what": "Player", "bounds": { "min": 0, "max": { "Players": "EachPlayer" } } }
+            ],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}{U}" }, "Tap"],
+            "limit": "OncePerGame",
+            "targets": [
+              { "what": "Player", "bounds": { "min": 0, "max": { "Players": "EachPlayer" } } }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Mill": {
+                        "who": { "Bound": "each" },
+                        "count": {
+                          "Count": [{ "OwnedBy": { "Bound": "each" } }, { "In": "Graveyard" }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

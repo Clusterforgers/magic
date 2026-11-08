@@ -1,0 +1,45 @@
+{
+  "oracle_id": "5f6fbb1d-63c9-4913-8e99-9e8c3b4e8d8c",
+  "name": "Gruesome Slaughter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gruesome Slaughter",
+      "oracle_fingerprint": "44719ef3b755e72ee16404024f792da2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Colorless", { "ControlledBy": "You" }]
+                  },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                          "effects": [
+                            {
+                              "DealDamage": {
+                                "to": { "Target": 0 },
+                                "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

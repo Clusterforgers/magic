@@ -1,0 +1,27 @@
+{
+  "oracle_id": "6cc99047-91dc-4ef2-99f3-65932b82ca31",
+  "name": "Soul Swallower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Swallower",
+      "oracle_fingerprint": "82eabec9abe810b9c413e60a8f0896ce",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

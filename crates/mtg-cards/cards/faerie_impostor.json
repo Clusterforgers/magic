@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0d78ba2c-4de0-47d9-b1b9-13dc9de8844b",
+  "name": "Faerie Impostor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Impostor",
+      "oracle_fingerprint": "2dc945c1fc000062102800e42e52a12c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ReturnToHand": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7594d892-1589-4643-a72a-2cfb2730a83d",
+  "name": "Scattered Thoughts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scattered Thoughts",
+      "oracle_fingerprint": "92e8197be7d9c80a78539f00c306125f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

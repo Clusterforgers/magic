@@ -1,0 +1,36 @@
+{
+  "oracle_id": "93b6083b-f49a-4641-b76f-8ccbec22f91d",
+  "name": "Lightning Volley",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning Volley",
+      "oracle_fingerprint": "2be36a3b850dea2cf46ced47102e2542",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "targets": [{ "what": "AnyTarget" }],
+                          "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

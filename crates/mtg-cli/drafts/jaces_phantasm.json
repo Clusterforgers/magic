@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ab56df8f-0ba3-4d66-bde2-4c9b4acf07e5",
+  "name": "Jace's Phantasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace's Phantasm",
+      "oracle_fingerprint": "a3b8e5054f2383e346037c1ed40c8033",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 10
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

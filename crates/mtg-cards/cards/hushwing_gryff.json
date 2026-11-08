@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a0d615b3-7ee3-43d7-ad37-5f7f1544a8db",
+  "name": "Hushwing Gryff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hushwing Gryff",
+      "oracle_fingerprint": "a33d889b8c0418b1d4425677dda6592c",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Trigger": {
+                    "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "1f612df3-53b6-4317-9d63-1f903ee3f0c4",
+  "name": "Soldevi Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soldevi Sage",
+      "oracle_fingerprint": "a2161b9b52e7140d2d11159fefab1f34",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Land" }], "count": 2 } }],
+            "effects": [
+              { "Draw": { "count": 3, "as": "drawn" } },
+              { "Discard": { "filter": [{ "Is": { "Bound": "drawn" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

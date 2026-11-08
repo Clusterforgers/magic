@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b7f72e54-7e3a-4720-be69-fc8c5eb4c190",
+  "name": "Crumbling Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crumbling Colossus",
+      "oracle_fingerprint": "3f168afa88e3c506e3b5a8f12e4c8ead",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": "This" }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

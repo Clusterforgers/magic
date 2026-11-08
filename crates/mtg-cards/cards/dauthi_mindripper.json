@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ecae5eba-8407-4c71-aeae-ab10fb1e5226",
+  "name": "Dauthi Mindripper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dauthi Mindripper",
+      "oracle_fingerprint": "f184620e6501dceee4ce840c946723b4",
+      "abilities": [
+        { "Keyword": "Shadow" },
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf"],
+                  "paid": [{ "Discard": { "who": "Defending", "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

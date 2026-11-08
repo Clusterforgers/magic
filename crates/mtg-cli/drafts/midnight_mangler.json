@@ -1,0 +1,21 @@
+{
+  "oracle_id": "c9f8651a-4118-4d80-902e-60473e81d3a9",
+  "name": "Midnight Mangler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Midnight Mangler",
+      "oracle_fingerprint": "58a8b09e345f55d1920a951bcd822c4a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+            "condition": { "Not": "YourTurn" }
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

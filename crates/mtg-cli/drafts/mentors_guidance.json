@@ -1,0 +1,47 @@
+{
+  "oracle_id": "ba961e01-315a-4195-a6d5-694a97a70b5a",
+  "name": "Mentor's Guidance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mentor's Guidance",
+      "oracle_fingerprint": "fd6e645b08244aafff1a7474fe77801a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          {
+                            "AnyOf": [
+                              { "Type": "Planeswalker" },
+                              { "Subtype": "Cleric" },
+                              { "Subtype": "Druid" },
+                              { "Subtype": "Shaman" },
+                              { "Subtype": "Warlock" },
+                              { "Subtype": "Wizard" }
+                            ]
+                          },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CopySpell": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Spell": { "effects": [{ "Scry": {} }, { "Draw": {} }] } }
+      ]
+    }
+  ]
+}

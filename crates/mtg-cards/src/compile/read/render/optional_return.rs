@@ -39,6 +39,7 @@ impl Writer<'_> {
         returned(now, exiled, false)?;
         let [
             Effect::DelayedTrigger {
+                until: None,
                 when:
                     TriggerPattern::StepBegins {
                         step: Step::End,
@@ -79,6 +80,7 @@ fn returned(effects: &[Effect], exiled: &str, counted: bool) -> Option<String> {
                     transformed: false,
                     counters: entering,
                 },
+            ..
         },
     ] = effects
     else {

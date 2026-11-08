@@ -8,34 +8,56 @@
       "oracle_fingerprint": "18fc3d1848c8b979c9385e59d6353e72",
       "abilities": [
         { "Keyword": "Station" },
-        { "Rule": { "rule": { "AdditionalLandPlays": {} } } },
         {
-          "Rule": { "rule": { "MayCast": { "what": [{ "Targeting": [{ "Type": "Creature" }] }] } } }
+          "Static": {
+            "affected": "This",
+            "mods": [{ "GrantAbility": { "Rule": { "rule": { "AdditionalLandPlays": {} } } } }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "charge", "op": "Ge", "to": 3 } }]
+              }
+            }
+          }
         },
         {
           "Static": {
             "affected": "This",
-            "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
-            "condition": {
-              "Compare": {
-                "left": { "Stat": { "of": "This", "stat": "Power" } },
-                "op": "Ge",
-                "right": {
-                  "Count": [
-                    { "Type": "Artifact" },
-                    { "Type": "Creature" },
-                    { "Type": "Land" },
-                    { "Type": "Planeswalker" },
-                    { "Type": "Battle" },
-                    { "Type": "Enchantment" },
-                    { "Type": "Instant" },
-                    { "Type": "Sorcery" },
-                    { "Type": "Artifact" },
-                    { "Type": "Land" },
-                    { "Type": "Planeswalker" },
-                    { "Type": "Battle" }
-                  ]
+            "mods": [
+              { "AddKeyword": "Flying" },
+              { "AddType": "Creature" },
+              {
+                "GrantAbility": {
+                  "Rule": {
+                    "rule": {
+                      "MayCast": {
+                        "what": [
+                          { "Not": { "Type": "Land" } },
+                          {
+                            "AnyOf": [
+                              { "Type": "Artifact" },
+                              { "Type": "Battle" },
+                              { "Type": "Creature" },
+                              { "Type": "Enchantment" },
+                              { "Type": "Land" },
+                              { "Type": "Planeswalker" }
+                            ]
+                          }
+                        ],
+                        "from": "Graveyard",
+                        "once": true,
+                        "additional": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+                      }
+                    },
+                    "condition": "YourTurn"
+                  }
                 }
+              }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "CounterCount": { "kind": "charge", "op": "Ge", "to": 8 } }]
               }
             }
           }

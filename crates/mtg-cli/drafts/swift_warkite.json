@@ -1,0 +1,61 @@
+{
+  "oracle_id": "0df3444c-ae29-4fcc-bf46-4edf52b90e30",
+  "name": "Swift Warkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swift Warkite",
+      "oracle_fingerprint": "124be94291e4c3625fa61f845a7b93f3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                            { "OwnedBy": "You" },
+                            { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Battlefield": {} },
+                        "as": "moved2"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "moved2" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Move": { "what": { "Bound": "moved2" }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ce184565-71fb-4e23-b45b-8786727d21f7",
+  "name": "Copycrook",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Copycrook",
+      "oracle_fingerprint": "758cc431f7208c8defcd98a77b5a005d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, "Other"],
+                "except": [
+                  {
+                    "GrantAbility": {
+                      "Triggered": {
+                        "when": { "Attacks": { "what": ["This"] } },
+                        "effects": [{ "Connive": { "what": "This" } }]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

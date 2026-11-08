@@ -1,0 +1,60 @@
+{
+  "oracle_id": "b4b397a9-85cb-4bdf-8c2e-a151a02a4208",
+  "name": "Security Blockade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Security Blockade",
+      "oracle_fingerprint": "95b875f4fd6dd8c89f71f2c2c12582b5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [
+                      {
+                        "Shield": {
+                          "when": { "Damage": { "to": "You" } },
+                          "by": { "PreventUpTo": 1 },
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "Attached", "selector": [{ "Type": "Land" }] } }
+          }
+        }
+      ]
+    }
+  ]
+}

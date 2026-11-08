@@ -64,6 +64,17 @@ impl Picks {
             DecisionKind::YesNo(options) => {
                 Choice::YesNo(self.pick(if options.only_no { 1 } else { 2 }) == 1)
             }
+            DecisionKind::ChooseName(_) => {
+                self.pick(1);
+                Choice::Name(String::new())
+            }
+            DecisionKind::ChooseNumber(options) => {
+                let span = options
+                    .max
+                    .map_or(1, |max| max.saturating_sub(options.min).saturating_add(1));
+                let at = self.pick(usize::try_from(span).unwrap_or(usize::MAX));
+                Choice::Number(options.min.saturating_add(u32::try_from(at).unwrap_or(0)))
+            }
             other => {
                 return Err(EngineError::Resolution(format!(
                     "the replacement step asked a {}, which has no default answer",

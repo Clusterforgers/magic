@@ -1,0 +1,42 @@
+{
+  "oracle_id": "bc5631ae-494e-4987-8d17-57674bfbdb9f",
+  "name": "Archon's Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archon's Glory",
+      "oracle_fingerprint": "76f335ddafad86268ff5004209f7d921",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

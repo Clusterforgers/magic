@@ -1,0 +1,27 @@
+{
+  "oracle_id": "6c3b9136-5e4b-4bb5-bef5-17887d7211dd",
+  "name": "Storm Entity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm Entity",
+      "oracle_fingerprint": "f6aa350206f834c181d0b52f9dc43f9f",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Tally": { "event": "SpellCast", "who": "EachPlayer", "filter": ["Other"] }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "cc5370e0-a0e6-4958-a6f2-093a3868b575",
+  "name": "Curious Cadaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curious Cadaver",
+      "oracle_fingerprint": "fb46fa4a1ce17584c23692955ace6c92",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }, { "ControlledBy": "You" }] } },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

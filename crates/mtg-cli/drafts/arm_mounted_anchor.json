@@ -1,0 +1,70 @@
+{
+  "oracle_id": "70f3bc78-201f-4c56-b87b-9e8f2db9f7f7",
+  "name": "Arm-Mounted Anchor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arm-Mounted Anchor",
+      "oracle_fingerprint": "2a19d9b435bb64e819c35b15fa21d580",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Pay": {
+                  "cost": [{ "Discard": { "filter": [{ "Subtype": "Pirate" }] } }],
+                  "unpaid": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                          "op": "Le",
+                          "right": 1
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 0
+                    }
+                  }
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

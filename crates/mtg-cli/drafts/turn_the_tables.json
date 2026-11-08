@@ -1,0 +1,29 @@
+{
+  "oracle_id": "bd5ad7c3-4477-4278-9875-d2ffbb0e8089",
+  "name": "Turn the Tables",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turn the Tables",
+      "oracle_fingerprint": "b66ce8686e579e4585db7ae3a2361ee5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": "You", "source": [{ "Type": "Creature" }], "combat": true }
+                  },
+                  "by": { "Redirect": { "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

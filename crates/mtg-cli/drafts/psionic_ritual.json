@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1c3e6980-97fe-4e15-93a0-368280da8608",
+  "name": "Psionic Ritual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psionic Ritual",
+      "oracle_fingerprint": "5f97b61668ff4d48301cbf37dca933a4",
+      "abilities": [
+        {
+          "Keyword": { "Replicate": [{ "TapPermanents": { "filter": [{ "Subtype": "Horror" }] } }] }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "exiled" },
+                  "as": "card2",
+                  "effects": [
+                    { "CopyCard": { "what": { "Bound": "card2" }, "as": "copy3" } },
+                    { "CastFromZone": { "what": { "Bound": "copy3" }, "free": true, "play": true } }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

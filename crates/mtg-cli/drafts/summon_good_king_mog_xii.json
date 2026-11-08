@@ -1,0 +1,114 @@
+{
+  "oracle_id": "2148820c-85b6-4598-adf2-10873001a779",
+  "name": "Summon: Good King Mog XII",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summon: Good King Mog XII",
+      "oracle_fingerprint": "6e2ffe07aafefd5142d9c161e23ad563",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Moogle",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Moogle"],
+                      "power": 1,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            "Token",
+                            { "Not": { "Subtype": "Saga" } },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "as": "copied"
+                      }
+                    },
+                    { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "copied" } } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Moogle" }, "Other", { "ControlledBy": "You" }] },
+                  "counter": "+1/+1",
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            "Token",
+                            { "Not": { "Subtype": "Saga" } },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "as": "copied"
+                      }
+                    },
+                    { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "copied" } } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e1708ad9-35d4-4243-92ca-ddf9d129aa32",
+  "name": "Personify",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Personify",
+      "oracle_fingerprint": "26b0b039153a131fa474561b91d20b63",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Shapeshifter",
+                      "types": ["Creature"],
+                      "subtypes": ["Shapeshifter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Changeling" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2894efc6-ee78-4353-b98a-8005a2451139",
+  "name": "Hardened Berserker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hardened Berserker",
+      "oracle_fingerprint": "a2020c0ad18d704abc5068d69f998f1b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": { "benefit": { "Cost": { "change": "Reduce", "mana": "{1}" } } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8ed8e27b-2137-4e19-99bb-5e0d6d32e3af",
+  "name": "Jace's Defeat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace's Defeat",
+      "oracle_fingerprint": "37d032698881dbf35a4fa38ffd00206d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Color": "Blue" }] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": ["Spell", { "Subtype": "Jace" }, { "Type": "Planeswalker" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Scry": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

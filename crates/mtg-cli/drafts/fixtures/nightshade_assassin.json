@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8",
+  "oracle_id": "370c5e5f-709b-415b-9b65-3f224d6ef1c7",
+  "multiverse_ids": [
+    509493
+  ],
+  "mtgo_id": 86619,
+  "tcgplayer_id": 233871,
+  "cardmarket_id": 543666,
+  "name": "Nightshade Assassin",
+  "lang": "en",
+  "released_at": "2021-03-19",
+  "uri": "https://api.scryfall.com/cards/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8",
+  "scryfall_uri": "https://scryfall.com/card/tsr/128/nightshade-assassin?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:30:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/d/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8.jpg?1783927814",
+    "normal": "https://cards.scryfall.io/normal/front/c/d/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8.jpg?1783927814",
+    "large": "https://cards.scryfall.io/large/front/c/d/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8.jpg?1783927814",
+    "png": "https://cards.scryfall.io/png/front/c/d/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8.png?1783927814",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/d/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8.jpg?1783927814",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/d/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8.jpg?1783927814",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/d/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8.webp?1783927814",
+    "grid": "https://cards.scryfall.io/grid/front/c/d/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8.webp?1783927814",
+    "display": "https://cards.scryfall.io/display/front/c/d/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8.webp?1783927814",
+    "art": "https://cards.scryfall.io/art/front/c/d/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8.webp?1783927814",
+    "crop": "https://cards.scryfall.io/crop/front/c/d/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8.webp?1783927814",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/d/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8.jpg?1783927814"
+  },
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Assassin",
+  "oracle_text": "First strike\nWhen this creature enters, you may reveal X black cards in your hand. If you do, target creature gets -X/-X until end of turn.\nMadness {1}{B} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Madness",
+    "First strike"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "11e90d1b-0502-43e6-b056-e24836523c13",
+  "set": "tsr",
+  "set_name": "Time Spiral Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/11e90d1b-0502-43e6-b056-e24836523c13",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atsr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tsr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cd610675-f8ab-47a7-a4db-c1bfb0e9d5c8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A370c5e5f-709b-415b-9b65-3f224d6ef1c7&unique=prints",
+  "collector_number": "128",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alan Pollack",
+  "artist_ids": [
+    "70c20ea3-5ad6-4082-a337-6e994ae5828e"
+  ],
+  "illustration_id": "9de9495f-82de-49d3-b22b-2efdec5c3c04",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13826,
+  "penny_rank": 8541,
+  "preview": {
+    "source": "Magicshibby",
+    "source_uri": "https://twitter.com/magicshibby/status/1366409122678255616",
+    "previewed_at": "2021-03-01"
+  },
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": "0.48",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.25",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=509493&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNightshade%2BAssassin",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNightshade%2BAssassin",
+    "edhrec": "https://edhrec.com/route/?cc=Nightshade+Assassin"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F233871%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=543666&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/86619?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

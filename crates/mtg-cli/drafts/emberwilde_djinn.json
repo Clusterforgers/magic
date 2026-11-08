@@ -1,0 +1,62 @@
+{
+  "oracle_id": "3e1a7146-75d5-499f-8718-303bc6ea139b",
+  "name": "Emberwilde Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emberwilde Djinn",
+      "oracle_fingerprint": "40999cf289b807c21153c137a06f6d5a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "OneOf": {
+                  "who": "Triggering",
+                  "options": [
+                    [
+                      {
+                        "Pay": {
+                          "who": "Triggering",
+                          "cost": "{R}{R}",
+                          "paid": [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [{ "SetController": "Triggering" }],
+                                "duration": "Forever"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Pay": {
+                          "who": "Triggering",
+                          "cost": [{ "PayLife": 2 }],
+                          "paid": [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [{ "SetController": "Triggering" }],
+                                "duration": "Forever"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

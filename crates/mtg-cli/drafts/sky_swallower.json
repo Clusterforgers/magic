@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b345c413-df5a-4dae-8b92-5fab54a097fc",
+  "name": "Sky Swallower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sky Swallower",
+      "oracle_fingerprint": "8d50c1454efea1e5676f472c25ed6349",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": ["Other", { "ControlledBy": "You" }] },
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

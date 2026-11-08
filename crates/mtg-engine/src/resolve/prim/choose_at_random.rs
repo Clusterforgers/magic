@@ -1,7 +1,7 @@
 //! `Effect::ChooseAtRandom`: cards of a public zone are picked at random and the pick is bound.
 
 use mtg_cards::effect::Effect;
-use mtg_core::ids::ObjectId;
+use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
 use crate::choose::Target;
@@ -21,6 +21,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("ChooseAtRandom"));
     };
     let candidates = cx.scope.refs(from)?;
+    if !candidates.is_empty() && candidates.iter().all(|target| target.player().is_some()) {
+        return e14c_players(cx, &candidates, count, bind);
+    }
     let mut cards: Vec<ObjectId> = Vec::with_capacity(candidates.len());
     for target in &candidates {
         let Some(object) = target.object() else {
@@ -69,9 +72,44 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     })
 }
 
+/// Picks players at random ("choose an opponent at random"), the same way as cards: players are public, so the pick is
+/// logged as [`Event::PlayersChosenAtRandom`]. A player who has left the game is not named by the reference.
+fn e14c_players(
+    cx: &Cx<'_>,
+    candidates: &[Target],
+    count: &mtg_cards::value::Amount,
+    bind: &str,
+) -> Result<Run, ResolveError> {
+    let mut players: Vec<PlayerId> = candidates.iter().filter_map(|t| t.player()).collect();
+    let wanted = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);
+    let picked = wanted.min(players.len());
+    if picked == 0 {
+        return Ok(Run::Done {
+            events: Vec::new(),
+            bound: vec![(bind.to_owned(), Vec::new())],
+            snapshots: Vec::new(),
+            next: Next::Sibling,
+        });
+    }
+    let state = cx.state();
+    GameRng::substream(state.seed, state.rng_index).shuffle(&mut players);
+    players.truncate(picked);
+    Ok(Run::Done {
+        events: vec![Event::PlayersChosenAtRandom {
+            players: players.clone(),
+        }],
+        bound: vec![(
+            bind.to_owned(),
+            players.into_iter().map(Target::Player).collect(),
+        )],
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    })
+}
+
 #[cfg(test)]
 mod tests {
-    //! Goal: a pick at random takes the count asked of the cards named from the game's seeded random source, the same cards for the same seed and every card for some seed, fewer when there are not so many and nothing for an empty set (which is no event and spends no substream), binds the pick in the order it was drawn, and refuses cards that a seat cannot see.
+    //! Goal: a pick at random takes the count asked of the cards named from the game's seeded random source, the same cards for the same seed and every card for some seed, fewer when there are not so many and nothing for an empty set (which is no event and spends no substream), binds the pick in the order it was drawn, refuses cards that a seat cannot see, and picks a player among players as a public event of players.
     use std::collections::BTreeSet;
 
     use mtg_core::ids::PlayerId;
@@ -240,11 +278,20 @@ mod tests {
         }
     }
 
-    #[test]
-    fn players_are_not_picked_at_random() {
-        assert!(matches!(
-            picks(&game(1, 2), &pick_json(r#""Opponents""#, "1")),
-            Err(ResolveError::Invalid(_))
-        ));
+    #[rstest]
+    #[case::two_seats(2)]
+    #[case::four_seats(4)]
+    fn an_opponent_is_picked_at_random_as_a_public_event(#[case] seats: usize) {
+        let Ok(Run::Done { events, bound, .. }) =
+            picks(&game(1, seats), &pick_json(r#""Opponents""#, "1"))
+        else {
+            panic!("the pick is done");
+        };
+        let [Event::PlayersChosenAtRandom { players }] = events.as_slice() else {
+            panic!("one pick of players: {events:?}");
+        };
+        assert_eq!(players.len(), 1);
+        assert_ne!(players[0], ME);
+        assert_eq!(bound[0].1, vec![Target::Player(players[0])]);
     }
 }

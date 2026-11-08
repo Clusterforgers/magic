@@ -1,0 +1,81 @@
+{
+  "oracle_id": "5e2b30d2-81e9-40cd-86dd-3ec5dd06ced0",
+  "name": "Vivien's Invocation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivien's Invocation",
+      "oracle_fingerprint": "07cf4ab80e7a10dc668dcf5dccf2f84e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 7, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Battlefield": {} },
+                  "as": "kept2_moved"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "kept2_moved" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "kept2" }, "as": "when4" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "source": { "Bound": "when4" },
+                              "to": { "Target": 0 },
+                              "amount": { "Stat": { "of": { "Bound": "when4" }, "stat": "Power" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

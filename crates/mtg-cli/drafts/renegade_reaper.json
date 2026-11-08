@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d72489b5-a213-4bd8-a519-8caeb1acea5f",
+  "name": "Renegade Reaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renegade Reaper",
+      "oracle_fingerprint": "c315400aff2dae7842659f55467ad75b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [{ "Subtype": "Angel" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 4 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

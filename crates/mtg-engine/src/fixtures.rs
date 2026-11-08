@@ -54,6 +54,7 @@ pub(crate) fn setup(
             step: Step::Main1,
         },
         validate_decks: false,
+        conjurable: Arc::default(),
     }
 }
 

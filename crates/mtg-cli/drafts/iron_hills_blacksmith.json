@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9febdfa8-8af2-4aba-b2e6-cb2baad7e02b",
+  "name": "Iron Hills Blacksmith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron Hills Blacksmith",
+      "oracle_fingerprint": "d0d2c95ea5e2fb16175285b6e92be5a9",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Axe",
+                      "types": ["Artifact"],
+                      "subtypes": ["Equipment"],
+                      "abilities": [
+                        { "Keyword": { "Equip": "{2}" } },
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

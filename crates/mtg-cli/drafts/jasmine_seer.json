@@ -1,0 +1,52 @@
+{
+  "oracle_id": "d934a7f0-eb46-4a2c-b0fd-e3071e23da4a",
+  "name": "Jasmine Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jasmine Seer",
+      "oracle_fingerprint": "823cfad123465b1f9609c9a226012246",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Color": "White" }, { "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "Is": { "Bound": "revealed" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "9a9664d7-2299-43dc-89b6-d74fe69e0e4a",
+  "name": "Custody Battle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Custody Battle",
+      "oracle_fingerprint": "98c04e9a3fb83edc0c9e9f98bcce8900",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                    "targets": [{ "what": "Opponent" }],
+                    "effects": [
+                      {
+                        "Pay": {
+                          "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+                          "unpaid": [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [{ "SetController": { "Target": 0 } }],
+                                "duration": "Forever"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

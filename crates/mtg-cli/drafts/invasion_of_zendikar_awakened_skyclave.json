@@ -1,0 +1,49 @@
+{
+  "oracle_id": "4b1874af-4ea5-4e22-a4d4-e718d75fe95e",
+  "name": "Invasion of Zendikar // Awakened Skyclave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Zendikar",
+      "oracle_fingerprint": "f1a4474fa13a72224037a102ef1b326e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Awakened Skyclave",
+      "oracle_fingerprint": "d8738af8bcdb9492dd348133ac8f09be",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        { "Static": { "affected": "This", "mods": [{ "AddType": "Land" }] } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

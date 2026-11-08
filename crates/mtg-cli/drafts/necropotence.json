@@ -1,0 +1,40 @@
+{
+  "oracle_id": "94a844d2-0574-45a7-b347-e0e329767c42",
+  "name": "Necropotence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necropotence",
+      "oracle_fingerprint": "a862c34144c341a88c52790b6db4d7a0",
+      "abilities": [
+        { "Rule": { "rule": { "Cant": { "who": "You", "action": { "SkipStep": "Draw" } } } } },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "You" } },
+            "effects": [{ "Exile": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 1 }],
+            "effects": [
+              {
+                "ExileHidden": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"] },
+                  "sealed": true,
+                  "as": "exiled"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [{ "Move": { "what": { "Bound": "exiled" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

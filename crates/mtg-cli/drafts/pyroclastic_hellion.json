@@ -1,0 +1,48 @@
+{
+  "oracle_id": "b2151d51-39f6-49cc-a5cc-8202dd028336",
+  "name": "Pyroclastic Hellion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyroclastic Hellion",
+      "oracle_fingerprint": "b573cd908309da4b50b6ee4f95e45bcc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand", "as": "moved2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "moved2" }, "as": "when3" } },
+                    {
+                      "Reflexive": {
+                        "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

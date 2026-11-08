@@ -1,0 +1,44 @@
+{
+  "oracle_id": "58e0cc31-7f7c-4cea-9453-d377a039da36",
+  "name": "Psychic Allergy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Allergy",
+      "oracle_fingerprint": "c9814e31c1b807c7e0d97eea376a341c",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": {
+                    "Count": [{ "ControlledBy": "ActivePlayer" }, "ChosenColor", { "Not": "Token" }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Island" }], "count": 2 } }],
+                  "unpaid": [{ "Destroy": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "691ba449-40e1-4976-8dab-9b1741ea37b8",
+  "name": "Pyre of Heroes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyre of Heroes",
+      "oracle_fingerprint": "e2de4dc48ea8bd37474fc4578033d663",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": { "Sum": [{ "Stat": { "of": "Paid", "stat": "ManaValue" } }, 1] }
+                      }
+                    },
+                    { "SharesSubtype": "Paid" }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

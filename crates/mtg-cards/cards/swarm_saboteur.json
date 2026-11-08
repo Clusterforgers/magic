@@ -1,0 +1,21 @@
+{
+  "oracle_id": "4426edf7-5fbb-41a2-83b9-80bf9f04651b",
+  "name": "Swarm Saboteur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swarm Saboteur",
+      "oracle_fingerprint": "acf95429bef1c0acb6f50412ddf311f4",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{B}" } },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Conjure": { "name": "Virus Beetle", "zone": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

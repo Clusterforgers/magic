@@ -1,0 +1,48 @@
+{
+  "oracle_id": "e6479195-cbdf-4d2b-9f45-5fd0a6ab4a77",
+  "name": "Arm with Aether",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arm with Aether",
+      "oracle_fingerprint": "ef4d30853a058befb6985588c32db69b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+                          "targets": [
+                            {
+                              "what": {
+                                "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }]
+                              }
+                            }
+                          ],
+                          "effects": [
+                            {
+                              "May": {
+                                "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

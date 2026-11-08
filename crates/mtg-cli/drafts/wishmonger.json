@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f68b90af-9502-4d99-aadf-2bfcea8a655a",
+  "name": "Wishmonger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wishmonger",
+      "oracle_fingerprint": "88ef1d32ae1a159155f0ba657586fd53",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "by": "Anyone",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["AddProtectionFromChosenColor"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

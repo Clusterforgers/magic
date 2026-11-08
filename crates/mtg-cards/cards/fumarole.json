@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a9e33138-e1c0-4b69-b868-1ce8493c073d",
+  "name": "Fumarole",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fumarole",
+      "oracle_fingerprint": "72bd01230e46fa2a4f954f02581640dd",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "PayLife": 3 }], "required": true } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Object": [{ "Type": "Land" }] } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Destroy": { "what": { "Target": 0 } } },
+                    { "Destroy": { "what": { "Target": 1 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8f976399-29a9-4eb7-844d-3d3f2fdf6ea7",
+  "name": "Glacial Dragonhunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glacial Dragonhunt",
+      "oracle_fingerprint": "8dca0ff59407cbd2973d6cc9af11deb3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": {} },
+              { "May": { "effects": [{ "Discard": { "as": "discarded" } }] } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                        "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Harmonize": "{4}{U}{R}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8a265910-2e10-4e97-88ab-c0cb1a712eb8",
+  "name": "Cursed Windbreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cursed Windbreaker",
+      "oracle_fingerprint": "ae4080708034b972ed404fafda6e5579",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": { "as": "manifested4" } },
+              { "Attach": { "what": "This", "to": { "Bound": "manifested4" } } }
+            ]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Flying" }] } },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

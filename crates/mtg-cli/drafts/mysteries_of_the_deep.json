@@ -1,0 +1,42 @@
+{
+  "oracle_id": "3708eaae-9306-46b2-ae41-7ce6c50be3c7",
+  "name": "Mysteries of the Deep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mysteries of the Deep",
+      "oracle_fingerprint": "ac8546a4055849f0fafdaec998a65753",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "Entered",
+                              "who": "You",
+                              "filter": [{ "Type": "Land" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

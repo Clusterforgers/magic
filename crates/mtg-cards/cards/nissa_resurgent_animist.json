@@ -1,0 +1,47 @@
+{
+  "oracle_id": "c1fc5923-c3cd-448a-98d1-c154661c2812",
+  "name": "Nissa, Resurgent Animist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa, Resurgent Animist",
+      "oracle_fingerprint": "98678911f0be3e5a62607e7d01dd492a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "AnyOf": [{ "Subtype": "Elf" }, { "Subtype": "Elemental" }] }],
+                        "as": "found",
+                        "revealed_as": "revealed2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed2" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

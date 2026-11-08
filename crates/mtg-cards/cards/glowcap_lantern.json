@@ -1,0 +1,30 @@
+{
+  "oracle_id": "2034d41b-5e77-49a6-884e-d3a6017f84d0",
+  "name": "Glowcap Lantern",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glowcap Lantern",
+      "oracle_fingerprint": "2d4fbd21804052d4a8ca5bc973341981",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [{ "Explore": { "what": "This" } }]
+                  }
+                }
+              },
+              { "GrantAbility": { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

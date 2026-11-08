@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b47d37ee-2bb2-4ca8-b245-94d2cc4b6684",
+  "name": "Aviary Mechanic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aviary Mechanic",
+      "oracle_fingerprint": "f66ea0267cb9456a225cf129f61bf175",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": ["Other", { "ControlledBy": "You" }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

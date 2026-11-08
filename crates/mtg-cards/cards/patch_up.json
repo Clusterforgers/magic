@@ -1,0 +1,35 @@
+{
+  "oracle_id": "34a7026f-c6ca-4d89-8364-fd60fb613634",
+  "name": "Patch Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patch Up",
+      "oracle_fingerprint": "7550aa3e7811f4e7bb1a6fc39bfdc744",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "OwnedBy": "You" },
+                        { "In": "Graveyard" }
+                      ]
+                    },
+                    "rule": { "TotalManaValueAtMost": 3 }
+                  }
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

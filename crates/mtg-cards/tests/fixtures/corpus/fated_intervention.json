@@ -1,0 +1,152 @@
+{
+  "object": "card",
+  "id": "622e1afc-0d06-4c01-abef-3b3e93bd21c3",
+  "oracle_id": "6f85342b-b55b-461b-a3dc-17815e02d04d",
+  "multiverse_ids": [
+    378493
+  ],
+  "mtgo_id": 51855,
+  "mtgo_foil_id": 51856,
+  "tcgplayer_id": 78755,
+  "cardmarket_id": 265603,
+  "name": "Fated Intervention",
+  "lang": "en",
+  "released_at": "2014-02-07",
+  "uri": "https://api.scryfall.com/cards/622e1afc-0d06-4c01-abef-3b3e93bd21c3",
+  "scryfall_uri": "https://scryfall.com/card/bng/121/fated-intervention?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:45:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/2/622e1afc-0d06-4c01-abef-3b3e93bd21c3.jpg?1783939536",
+    "normal": "https://cards.scryfall.io/normal/front/6/2/622e1afc-0d06-4c01-abef-3b3e93bd21c3.jpg?1783939536",
+    "large": "https://cards.scryfall.io/large/front/6/2/622e1afc-0d06-4c01-abef-3b3e93bd21c3.jpg?1783939536",
+    "png": "https://cards.scryfall.io/png/front/6/2/622e1afc-0d06-4c01-abef-3b3e93bd21c3.png?1783939536",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/2/622e1afc-0d06-4c01-abef-3b3e93bd21c3.jpg?1783939536",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/2/622e1afc-0d06-4c01-abef-3b3e93bd21c3.jpg?1783939536",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/2/622e1afc-0d06-4c01-abef-3b3e93bd21c3.webp?1783939536",
+    "grid": "https://cards.scryfall.io/grid/front/6/2/622e1afc-0d06-4c01-abef-3b3e93bd21c3.webp?1783939536",
+    "display": "https://cards.scryfall.io/display/front/6/2/622e1afc-0d06-4c01-abef-3b3e93bd21c3.webp?1783939536",
+    "art": "https://cards.scryfall.io/art/front/6/2/622e1afc-0d06-4c01-abef-3b3e93bd21c3.webp?1783939536",
+    "crop": "https://cards.scryfall.io/crop/front/6/2/622e1afc-0d06-4c01-abef-3b3e93bd21c3.webp?1783939536",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/2/622e1afc-0d06-4c01-abef-3b3e93bd21c3.jpg?1783939536"
+  },
+  "mana_cost": "{2}{G}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Create two 3/3 green Centaur enchantment creature tokens. If it's your turn, scry 2.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Scry"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "622e1afc-0d06-4c01-abef-3b3e93bd21c3",
+      "component": "combo_piece",
+      "name": "Fated Intervention",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/622e1afc-0d06-4c01-abef-3b3e93bd21c3"
+    },
+    {
+      "object": "related_card",
+      "id": "985be507-6125-4db2-b99f-8b61149ffeeb",
+      "component": "token",
+      "name": "Centaur",
+      "type_line": "Token Enchantment Creature — Centaur",
+      "uri": "https://api.scryfall.com/cards/985be507-6125-4db2-b99f-8b61149ffeeb"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "50a80fe4-a757-408f-ad23-52c5cc5f45cc",
+  "set": "bng",
+  "set_name": "Born of the Gods",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/50a80fe4-a757-408f-ad23-52c5cc5f45cc",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abng&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bng?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/622e1afc-0d06-4c01-abef-3b3e93bd21c3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6f85342b-b55b-461b-a3dc-17815e02d04d&unique=prints",
+  "collector_number": "121",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Svetlin Velinov",
+  "artist_ids": [
+    "ffd063ae-c097-4f26-b2e6-b1e2137708bc"
+  ],
+  "illustration_id": "a84cc8bc-7dc1-4783-a732-df84f128be7e",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26999,
+  "penny_rank": 14911,
+  "prices": {
+    "usd": "0.14",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.13",
+    "eur_foil": "0.27",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=378493&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFated%2BIntervention",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFated%2BIntervention",
+    "edhrec": "https://edhrec.com/route/?cc=Fated+Intervention"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F78755%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=265603&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/51855?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

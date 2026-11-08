@@ -1,0 +1,58 @@
+{
+  "oracle_id": "377d9245-9a70-4e35-9ed1-308565fc1acc",
+  "name": "Scepter of Empires",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scepter of Empires",
+      "oracle_fingerprint": "5bf1c6cfe3d9192f518d2ff1747dce67",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Product": [
+                              {
+                                "Count": [
+                                  { "Type": "Artifact" },
+                                  { "Named": "Crown of Empires" },
+                                  { "ControlledBy": "You" }
+                                ]
+                              },
+                              {
+                                "Count": [
+                                  { "Type": "Artifact" },
+                                  { "Named": "Throne of Empires" },
+                                  { "ControlledBy": "You" }
+                                ]
+                              }
+                            ]
+                          },
+                          "op": "Gt",
+                          "right": 0
+                        }
+                      },
+                      "then": 3,
+                      "otherwise": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

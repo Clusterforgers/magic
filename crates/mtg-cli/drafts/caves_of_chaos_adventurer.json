@@ -1,0 +1,68 @@
+{
+  "oracle_id": "e4d2dcbb-9910-482e-9e46-dfed2097509b",
+  "name": "Caves of Chaos Adventurer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caves of Chaos Adventurer",
+      "oracle_fingerprint": "3ce765f4405f60367224713dcf02e716",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "TakeInitiative": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "DungeonsCompleted" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "free": true,
+                            "only": { "Bound": "exiled" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

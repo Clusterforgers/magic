@@ -1,0 +1,31 @@
+{
+  "oracle_id": "cb50ec2e-cb27-4ee5-a7de-64ab93619cea",
+  "name": "Awe for the Guilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Awe for the Guilds",
+      "oracle_fingerprint": "7cae5412772f1bacc138415f5a3c3dd8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Colors", "op": "Eq", "to": 1 } }
+                    ]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1f4d3a96-bc30-4362-9c1f-40bf79f78e78",
+  "name": "Rot Farm Mortipede",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rot Farm Mortipede",
+      "oracle_fingerprint": "d41d6521403b23a11ea720f129c6ed41",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                  "from": "Graveyard"
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Menace" },
+                    { "AddKeyword": "Lifelink" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

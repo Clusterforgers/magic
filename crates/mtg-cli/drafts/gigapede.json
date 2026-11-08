@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9be31785-2975-424f-aada-25ee2a0bf6d8",
+  "name": "Gigapede",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gigapede",
+      "oracle_fingerprint": "9057fbe08b7610f99f352d803cc3ffa9",
+      "abilities": [
+        { "Keyword": "Shroud" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "paid": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

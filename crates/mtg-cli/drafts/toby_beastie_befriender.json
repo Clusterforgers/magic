@@ -1,0 +1,59 @@
+{
+  "oracle_id": "b4c27c89-fa50-4cf0-bf37-039732d16fef",
+  "name": "Toby, Beastie Befriender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toby, Beastie Befriender",
+      "oracle_fingerprint": "b24ae2a0022112e33b49b4bdec08d5eb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [
+                        {
+                          "Rule": {
+                            "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } }
+                          }
+                        },
+                        {
+                          "Rule": {
+                            "rule": { "Combat": { "who": "This", "quirk": "CantBlockAlone" } }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

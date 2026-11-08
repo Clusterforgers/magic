@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3e0756d8-c2bd-40f1-a281-0828c5a2da03",
+  "name": "Mire's Toll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mire's Toll",
+      "oracle_fingerprint": "1fdbf06443eeb0bf20a444aaabc16db5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": {
+                    "min": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                    "max": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                  },
+                  "as": "shown"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "shown" } } },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Is": { "Bound": "shown" } }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

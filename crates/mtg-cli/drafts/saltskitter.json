@@ -1,0 +1,31 @@
+{
+  "oracle_id": "831e9f71-9664-4dbb-94f5-935d7cf95d77",
+  "name": "Saltskitter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saltskitter",
+      "oracle_fingerprint": "59b12b67542ff8672f1572e7d6595810",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "Type": "Creature" }, "Other"], "to": "Battlefield" }
+            },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "055b344a-4eb1-4579-ac50-973b18e12fad",
+  "oracle_id": "df197279-ddb2-4237-8bb1-8df41d3bed9e",
+  "multiverse_ids": [
+    22881
+  ],
+  "mtgo_id": 14019,
+  "mtgo_foil_id": 14020,
+  "tcgplayer_id": 7150,
+  "cardmarket_id": 11755,
+  "name": "Ensnare",
+  "lang": "en",
+  "released_at": "2000-02-14",
+  "uri": "https://api.scryfall.com/cards/055b344a-4eb1-4579-ac50-973b18e12fad",
+  "scryfall_uri": "https://scryfall.com/card/nem/32/ensnare?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:30:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/5/055b344a-4eb1-4579-ac50-973b18e12fad.jpg?1783945837",
+    "normal": "https://cards.scryfall.io/normal/front/0/5/055b344a-4eb1-4579-ac50-973b18e12fad.jpg?1783945837",
+    "large": "https://cards.scryfall.io/large/front/0/5/055b344a-4eb1-4579-ac50-973b18e12fad.jpg?1783945837",
+    "png": "https://cards.scryfall.io/png/front/0/5/055b344a-4eb1-4579-ac50-973b18e12fad.png?1783945837",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/5/055b344a-4eb1-4579-ac50-973b18e12fad.jpg?1783945837",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/5/055b344a-4eb1-4579-ac50-973b18e12fad.jpg?1783945837",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/5/055b344a-4eb1-4579-ac50-973b18e12fad.webp?1783945837",
+    "grid": "https://cards.scryfall.io/grid/front/0/5/055b344a-4eb1-4579-ac50-973b18e12fad.webp?1783945837",
+    "display": "https://cards.scryfall.io/display/front/0/5/055b344a-4eb1-4579-ac50-973b18e12fad.webp?1783945837",
+    "art": "https://cards.scryfall.io/art/front/0/5/055b344a-4eb1-4579-ac50-973b18e12fad.webp?1783945837",
+    "crop": "https://cards.scryfall.io/crop/front/0/5/055b344a-4eb1-4579-ac50-973b18e12fad.webp?1783945837",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/5/055b344a-4eb1-4579-ac50-973b18e12fad.jpg?1783945837"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "You may return two Islands you control to their owner's hand rather than pay this spell's mana cost.\nTap all creatures.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "fa5d1fdb-f781-473d-b14d-50396d40d43f",
+  "set": "nem",
+  "set_name": "Nemesis",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/fa5d1fdb-f781-473d-b14d-50396d40d43f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Anem&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/nem?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/055b344a-4eb1-4579-ac50-973b18e12fad/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adf197279-ddb2-4237-8bb1-8df41d3bed9e&unique=prints",
+  "collector_number": "32",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Rootwater has become as dangerous to its denizens as to its enemies.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gao Yan",
+  "artist_ids": [
+    "0d253eb0-2579-4201-bde4-f0a9f0963827"
+  ],
+  "illustration_id": "40b64407-4501-4665-bee9-a2b4fcd659bf",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13944,
+  "prices": {
+    "usd": "0.66",
+    "usd_foil": "35.94",
+    "usd_etched": null,
+    "eur": "0.65",
+    "eur_foil": "7.94",
+    "tix": "0.18"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=22881&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEnsnare",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEnsnare",
+    "edhrec": "https://edhrec.com/route/?cc=Ensnare"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7150%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=11755&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14019?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

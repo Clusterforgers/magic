@@ -1,0 +1,65 @@
+{
+  "oracle_id": "43e5050f-e94c-4df5-a4a7-19935724c63f",
+  "name": "Artillery Enthusiast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Artillery Enthusiast",
+      "oracle_fingerprint": "206ec1ccc3191226557a2682edae538e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Modified", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Discard": { "as": "discarded" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "discarded" },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Seek": {
+                              "filter": [
+                                {
+                                  "Compare": {
+                                    "stat": "ManaValue",
+                                    "op": "Eq",
+                                    "to": {
+                                      "Stat": {
+                                        "of": { "Bound": "discarded" },
+                                        "stat": "ManaValue"
+                                      }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

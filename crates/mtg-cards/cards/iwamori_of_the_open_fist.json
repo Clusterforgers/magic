@@ -1,0 +1,45 @@
+{
+  "oracle_id": "35734003-0c94-4a0c-9441-ab989e73bb11",
+  "name": "Iwamori of the Open Fist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iwamori of the Open Fist",
+      "oracle_fingerprint": "40812c6a8e963bb2b79912780bb7b0d0",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Supertype": "Legendary" },
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ab4e9284-7904-413e-97b0-69793be79cc5",
+  "name": "Fraying Sanity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fraying Sanity",
+      "oracle_fingerprint": "be1dddabc46089e29ce50529355cbee8",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "Mill": {
+                  "who": "AttachedPlayer",
+                  "count": { "Tallied": { "who": "AttachedPlayer", "what": "CardsGraved" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

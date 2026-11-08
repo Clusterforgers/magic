@@ -1,0 +1,33 @@
+{
+  "oracle_id": "28a972a6-cf67-4ee3-aa91-f7b2549f6c48",
+  "name": "Castigate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Castigate",
+      "oracle_fingerprint": "b35b5bfde3e4835b32d3401fbdfe1e6b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

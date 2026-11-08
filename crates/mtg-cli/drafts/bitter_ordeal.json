@@ -1,0 +1,24 @@
+{
+  "oracle_id": "c02fdb2e-10bb-49fc-bce0-b31b6fad8e38",
+  "name": "Bitter Ordeal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bitter Ordeal",
+      "oracle_fingerprint": "1f4d5f0ee92647412b562dfdd0e6ced6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Search": { "of": { "Target": 0 }, "filter": [], "as": "found" } },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        },
+        { "Keyword": "Gravestorm" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "oracle_id": "e6521404-8474-4727-b2d0-537d15d8a63f",
+  "name": "Andúril, Flame of the West",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Andúril, Flame of the West",
+      "oracle_fingerprint": "44a2ffe50489c3eacc402b4c09ebed94",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": { "of": "Triggering", "filter": [{ "Supertype": "Legendary" }] }
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        },
+                        "count": 2,
+                        "tapped": true,
+                        "attacking": true
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        },
+                        "count": 2,
+                        "tapped": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

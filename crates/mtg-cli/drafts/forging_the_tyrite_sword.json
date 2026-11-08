@@ -1,0 +1,43 @@
+{
+  "oracle_id": "47a8f3a8-253b-4df9-9cfc-ff7df65d850c",
+  "name": "Forging the Tyrite Sword",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forging the Tyrite Sword",
+      "oracle_fingerprint": "0b0a2e2da250d66783aee8c474d58a03",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "AnyOf": [{ "Named": "Halvar, God of Battle" }, { "Subtype": "Equipment" }] }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

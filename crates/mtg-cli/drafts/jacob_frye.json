@@ -1,0 +1,51 @@
+{
+  "oracle_id": "31af65c3-602b-4ac9-a25f-dccb88f8f751",
+  "name": "Jacob Frye",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jacob Frye",
+      "oracle_fingerprint": "c02ced4a7c1fa82d690384795b1057bd",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Evie Frye" } },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Assassin" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Subtype": "Assassin" }, { "HasKeywordNamed": "Freerunning" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "CopyCard": { "what": { "Bound": "picked2" }, "as": "copy3" } },
+              { "CastFromZone": { "what": { "Bound": "copy3" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "2f83ca86-e23d-40f7-8085-6928d8cfef9b",
+  "name": "Null Rod",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Null Rod",
+      "oracle_fingerprint": "66d992dd5f45e130be329593a636a892",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": { "kind": "Every", "sources": [{ "Type": "Artifact" }] }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "oracle_id": "9651d197-a408-4665-a292-58d5471f4ffc",
+  "name": "Ashling's Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashling's Command",
+      "oracle_fingerprint": "d6eeffe4dcf229877ef0d6a4d273973b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Subtype": "Elemental" }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "Draw": { "who": { "Target": 0 }, "count": 2 } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            "amount": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "who": { "Target": 0 },
+                            "token": { "Named": "treasure" },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "cb0eb84d-b41b-4147-aa7c-089b7fabd835",
+  "name": "Undergrowth Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undergrowth Champion",
+      "oracle_fingerprint": "8c0a3b580a0365849a410f6e805e1636",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": { "Each": ["This", { "HasCounter": "+1/+1" }] } } },
+            "by": { "PreventRemovingCounter": "+1/+1" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

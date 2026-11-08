@@ -1,0 +1,38 @@
+{
+  "oracle_id": "6cf8a502-6620-460f-8fab-b4ede28beb11",
+  "name": "Curator Beastie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curator Beastie",
+      "oracle_fingerprint": "1c7b0615a61d0479ce1a014c5c08c706",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, "Colorless", { "ControlledBy": "You" }] }
+            },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+              { "Manifest": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

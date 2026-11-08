@@ -1,0 +1,53 @@
+{
+  "oracle_id": "f1190fb9-72a2-48f8-bc2d-61240f1e9119",
+  "name": "Zodiark, Umbral God",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zodiark, Umbral God",
+      "oracle_fingerprint": "707222408caac1a29b3c8b321499d390",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "each" },
+                        "filter": [{ "Type": "Creature" }, { "Not": { "Subtype": "God" } }],
+                        "count": {
+                          "Half": {
+                            "of": {
+                              "Count": [
+                                { "Type": "Creature" },
+                                { "Not": { "Subtype": "God" } },
+                                { "ControlledBy": { "Bound": "each" } }
+                              ]
+                            },
+                            "up": false
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Creature" }, "Other"] } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3e715032-0d21-441b-b2d4-c91084728718",
+  "name": "Iron Lad, Diverging Destiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron Lad, Diverging Destiny",
+      "oracle_fingerprint": "616876ef375adefc02da4c55256d1294",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Artifact" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

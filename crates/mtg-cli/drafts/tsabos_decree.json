@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4e0de4d9-7a30-4a2b-94ba-8239baad2a0a",
+  "name": "Tsabo's Decree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tsabo's Decree",
+      "oracle_fingerprint": "4522b952d8a9e03954924f7a92001d85",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Type": "Creature" },
+                      { "ChosenAs": "chosen" }
+                    ]
+                  },
+                  "filter": [{ "Type": "Creature" }, { "ChosenAs": "chosen" }]
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ChosenAs": "chosen" },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  },
+                  "regenerate": false
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "92247856-35a4-4c1d-90bc-fa0d28524ecd",
+  "name": "Sidewinder Naga",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sidewinder Naga",
+      "oracle_fingerprint": "c106dc6b8c36cc22dfc1bc4c1b496ed7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Trample" }],
+            "condition": {
+              "Any": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Desert" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Subtype": "Desert" },
+                        { "OwnedBy": "You" },
+                        { "In": "Graveyard" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

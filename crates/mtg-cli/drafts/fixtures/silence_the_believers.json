@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4",
+  "oracle_id": "3c2de008-5747-49c0-89c1-83331cb55896",
+  "multiverse_ids": [
+    380499
+  ],
+  "mtgo_id": 52268,
+  "mtgo_foil_id": 52269,
+  "tcgplayer_id": 82221,
+  "cardmarket_id": 266615,
+  "name": "Silence the Believers",
+  "lang": "en",
+  "released_at": "2014-05-02",
+  "uri": "https://api.scryfall.com/cards/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4",
+  "scryfall_uri": "https://scryfall.com/card/jou/82/silence-the-believers?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:43:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/6/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4.jpg?1783939430",
+    "normal": "https://cards.scryfall.io/normal/front/d/6/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4.jpg?1783939430",
+    "large": "https://cards.scryfall.io/large/front/d/6/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4.jpg?1783939430",
+    "png": "https://cards.scryfall.io/png/front/d/6/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4.png?1783939430",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/6/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4.jpg?1783939430",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/6/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4.jpg?1783939430",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/6/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4.webp?1783939430",
+    "grid": "https://cards.scryfall.io/grid/front/d/6/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4.webp?1783939430",
+    "display": "https://cards.scryfall.io/display/front/d/6/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4.webp?1783939430",
+    "art": "https://cards.scryfall.io/art/front/d/6/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4.webp?1783939430",
+    "crop": "https://cards.scryfall.io/crop/front/d/6/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4.webp?1783939430",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/6/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4.jpg?1783939430"
+  },
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Strive — This spell costs {2}{B} more to cast for each target beyond the first.\nExile any number of target creatures and all Auras attached to them.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Strive"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "204d2dca-1887-4721-9558-164aa7bbeb4f",
+  "set": "jou",
+  "set_name": "Journey into Nyx",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/204d2dca-1887-4721-9558-164aa7bbeb4f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajou&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jou?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d6dc2bd1-a980-4eab-8bb3-1ce28c3f9ef4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3c2de008-5747-49c0-89c1-83331cb55896&unique=prints",
+  "collector_number": "82",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Slawomir Maniak",
+  "artist_ids": [
+    "d887bc66-2779-416c-a1ff-d8720242063e"
+  ],
+  "illustration_id": "241a65c5-a2f1-4993-a1f0-62cd46f95dd6",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22957,
+  "penny_rank": 6822,
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": "0.37",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.42",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=380499&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSilence%2Bthe%2BBelievers",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSilence%2Bthe%2BBelievers",
+    "edhrec": "https://edhrec.com/route/?cc=Silence+the+Believers"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F82221%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=266615&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/52268?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

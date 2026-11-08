@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ce65c6ed-e5d4-48d8-b569-4e2774b2912c",
+  "name": "Withering Wisps",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Withering Wisps",
+      "oracle_fingerprint": "af1f22dbd0b40324de6e7d02369b23ad",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": { "left": { "Count": [{ "Type": "Creature" }] }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 102, "end": 249 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -61,8 +61,6 @@ interface DeckPaneProps {
   deckId?: string
   /** The check state of the deck as last saved. */
   state: DeckState
-  /** A check is stored but the deck, the rules of its cards or the engine changed since it. */
-  changed: boolean
   /** The check the pane shows: the saved deck's report, or the live check of the draft (its legality issues and the support of each card). */
   check: LiveCheck
   /** The draft differs from what is saved. */
@@ -151,7 +149,6 @@ export function DeckPane({
   draft,
   deckId,
   state,
-  changed,
   check,
   dirty,
   saving,
@@ -264,7 +261,7 @@ export function DeckPane({
               </NativeSelectOption>
             ))}
           </NativeSelect>
-          <DeckMarker state={state} changed={changed} dirty={dirty} />
+          <DeckMarker state={state} dirty={dirty} />
           {dirty ? (
             <Pill tone="warning">
               <PencilIcon aria-hidden="true" />

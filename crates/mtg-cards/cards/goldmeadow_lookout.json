@@ -1,0 +1,43 @@
+{
+  "oracle_id": "28b2d31f-1ff7-4374-8ea3-0dd4a96c4a32",
+  "name": "Goldmeadow Lookout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goldmeadow Lookout",
+      "oracle_fingerprint": "988e443f68f65075a9e1c148342c98a1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap", { "Discard": {} }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goldmeadow Harrier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kithkin", "Soldier"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": [{ "Mana": "{W}" }, "Tap"],
+                            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

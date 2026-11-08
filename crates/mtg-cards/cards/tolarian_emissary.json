@@ -1,0 +1,22 @@
+{
+  "oracle_id": "8042ade2-f589-4c3e-a461-a4c284a67ee4",
+  "name": "Tolarian Emissary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tolarian Emissary",
+      "oracle_fingerprint": "bb9b9a2224ba446b183aa3cc7603415c",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{W}" } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

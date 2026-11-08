@@ -26,6 +26,8 @@ use crate::triggers;
 
 /// Internal progress steps allowed between decisions before the engine reports a stall.
 const MAX_INTERNAL_STEPS: usize = 10_000;
+/// How many times in a row abilities that trigger on the triggering of abilities are looked for.
+const MAX_TRIGGER_CHAIN: usize = 16;
 
 /// Where an engine stood before a step; [`Engine::restore`] returns it to that point.
 #[derive(Debug, Clone)]
@@ -70,6 +72,8 @@ pub struct Engine {
     decision: Option<Decision>,
     pending: Option<Pending>,
     held: Option<Held>,
+    /// The open `Together` batch: where its events begin in the log and the state before them.
+    batch: Option<(usize, GameState)>,
 }
 
 impl Engine {
@@ -88,6 +92,7 @@ impl Engine {
             decision: None,
             pending: None,
             held: None,
+            batch: None,
         };
         engine.advance()?;
         Ok(engine)
@@ -308,6 +313,7 @@ impl Engine {
         self.decision = checkpoint.decision;
         self.pending = checkpoint.pending;
         self.held = checkpoint.held;
+        self.batch = None;
         Ok(())
     }
 
@@ -455,6 +461,10 @@ impl Engine {
                 self.pending = Some(Pending::new(player, What::Attack(attackers, exert)));
                 Ok(())
             }
+            Outcome::BeginBlock(blocks) => {
+                self.pending = Some(Pending::new(player, What::Block(blocks)));
+                Ok(())
+            }
             Outcome::BeginActivation(ability) => {
                 self.pending = Some(Pending::new(player, What::Ability(ability)));
                 Ok(())
@@ -467,6 +477,10 @@ impl Engine {
                 self.pending = Some(Pending::special(player, card, Special::Foretell));
                 Ok(())
             }
+            Outcome::BeginPlot(card) => {
+                self.pending = Some(Pending::special(player, card, Special::Plot));
+                Ok(())
+            }
             Outcome::BeginCompanion(card) => {
                 self.pending = Some(Pending::special(player, card, Special::Companion));
                 Ok(())
@@ -477,6 +491,10 @@ impl Engine {
             }
             Outcome::BeginUnlock(card, door) => {
                 self.pending = Some(Pending::special(player, card, Special::Unlock(door)));
+                Ok(())
+            }
+            Outcome::BeginEndEffect(object, effect) => {
+                self.pending = Some(Pending::special(player, object, Special::EndEffect(effect)));
                 Ok(())
             }
             Outcome::BeginPrepared(permanent) => {
@@ -494,6 +512,7 @@ impl Engine {
             Outcome::Costs(costs) => self.announced(Answered::Costs(costs)),
             Outcome::Cards(cards) => self.announced(Answered::Cards(cards)),
             Outcome::Division(shares) => self.announced(Answered::Division(shares)),
+            Outcome::Assisted(events) => self.announced(Answered::Assisted(events)),
             Outcome::CancelCast => {
                 self.pending = None;
                 Ok(())
@@ -574,28 +593,89 @@ impl Engine {
     /// Folds and logs the events, then the triggered abilities they set off (CR 603.2): those are found by comparing
     /// the state before the events with the state after, and their own events follow in the log.
     fn fold_and_log(&mut self, events: Vec<Event>) -> Result<(), EngineError> {
+        // The steps of a `Together` batch are folded one by one and judged once, after the last (CR 603.2c, 603.10a).
+        let was_open = crate::resolve::together_open(&self.state);
+        if was_open && self.batch.is_none() {
+            self.batch = Some(self.recover_batch()?);
+        }
+        let open = self.ends_open(&events, was_open);
+        if open && !was_open {
+            self.batch = Some((self.events.len(), self.state.clone()));
+        }
         // A batch that brings in the first thing that can trigger (a token, a granted ability) is watched too.
         let watching = self.state.watches() || triggers::introduces(&events);
-        let before = (watching && triggers::needs_before(&events)).then(|| self.state.clone());
+        let before = (watching && !open && !was_open && triggers::needs_before(&events))
+            .then(|| self.state.clone());
         let start = self.events.len();
         for event in events {
             apply_event(&mut self.state, &event)?;
             self.events.push(event);
         }
+        if open {
+            return Ok(());
+        }
+        let (mut scanned, mut before, watching) = match self.batch.take() {
+            Some((from, state)) => (
+                from,
+                Some(state),
+                self.state.watches() || triggers::introduces(&self.events[from..]),
+            ),
+            None => (start, before, watching),
+        };
         if !watching {
             return Ok(());
         }
-        let triggered = triggers::detect(
-            before.as_ref().unwrap_or(&self.state),
-            &self.events[start..],
-            &self.state,
-        );
-        for trigger in triggered {
-            let event = Event::AbilityTriggered(Box::new(trigger));
-            apply_event(&mut self.state, &event)?;
-            self.events.push(event);
+        // The abilities found are events too, and an ability may trigger on one ("whenever an ability triggers"): the
+        // events they add are read again, down a chain that ends when nothing more triggers or at `MAX_TRIGGER_CHAIN`.
+        for _ in 0..MAX_TRIGGER_CHAIN {
+            let triggered = triggers::detect(
+                before.as_ref().unwrap_or(&self.state),
+                &self.events[scanned..],
+                &self.state,
+            );
+            if triggered.is_empty() {
+                break;
+            }
+            scanned = self.events.len();
+            before = None;
+            for trigger in triggered {
+                let event = Event::AbilityTriggered(Box::new(trigger));
+                apply_event(&mut self.state, &event)?;
+                self.events.push(event);
+            }
         }
         Ok(())
+    }
+
+    /// Whether the resolution stands inside a `Together` batch after `events`, given whether it did before them.
+    fn ends_open(&self, events: &[Event], mut open: bool) -> bool {
+        for event in events {
+            match event {
+                Event::StepDone { position, .. } => {
+                    open = crate::resolve::together_at(&self.state, position);
+                }
+                Event::ResolutionEnded { .. } => open = false,
+                _ => {}
+            }
+        }
+        open
+    }
+
+    /// The open batch of an engine rebuilt from the log: it begins after the last step outside it, and the state before
+    /// it is the replay of the log up to there.
+    fn recover_batch(&self) -> Result<(usize, GameState), EngineError> {
+        let start = self
+            .events
+            .iter()
+            .rposition(|event| match event {
+                Event::ResolutionBegan { .. } => true,
+                Event::StepDone { position, .. } => {
+                    !crate::resolve::together_at(&self.state, position)
+                }
+                _ => false,
+            })
+            .map_or(0, |at| at + 1);
+        Ok((start, replay(&self.setup, &self.events[..start])?))
     }
 
     /// Runs the game until a decision is needed or the game ends.
@@ -661,7 +741,7 @@ impl Engine {
             }
             (What::Spell(card), None) => *card,
             (What::Ability(ability), None) => ability.object,
-            (What::Trigger(_) | What::Attack(..), None) => return Ok(()),
+            (What::Trigger(_) | What::Attack(..) | What::Block(_), None) => return Ok(()),
         };
         let reason = pending.done.rewound.unwrap_or(Unplayable::Restricted);
         self.commit(vec![Event::AnnouncementRewound {

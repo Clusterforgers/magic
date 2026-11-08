@@ -1,0 +1,39 @@
+{
+  "oracle_id": "73dad679-1edb-41c9-9d43-56dc93c3e9fe",
+  "name": "Stone of Erech",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stone of Erech",
+      "oracle_fingerprint": "997f12dd6703d5ec288cf75d2d0ab27a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

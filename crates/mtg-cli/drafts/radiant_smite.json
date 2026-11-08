@@ -1,0 +1,64 @@
+{
+  "oracle_id": "7c3bf598-070a-4f34-bcfb-7530aa58405a",
+  "name": "Radiant Smite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiant Smite",
+      "oracle_fingerprint": "a161af822ae570b1f7a20f01d0abe0d3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "When": {
+                          "condition": { "StartingPlayer": "You" },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 4 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{W}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "When": { "condition": { "StartingPlayer": "You" }, "then": 1, "otherwise": 0 }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

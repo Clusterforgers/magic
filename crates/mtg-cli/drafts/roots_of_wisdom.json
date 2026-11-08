@@ -1,0 +1,46 @@
+{
+  "oracle_id": "8f6af612-a4a1-4165-ae4d-ff6353cbaf8d",
+  "name": "Roots of Wisdom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roots of Wisdom",
+      "oracle_fingerprint": "e35732c312e029403282f6408c1aa9b4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Elf" }, { "Type": "Land" }] },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand", "as": "moved2" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

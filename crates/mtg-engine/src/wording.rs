@@ -4,8 +4,10 @@
 //!
 //! They are hints for a person choosing, not rules: a predicate with no short phrase is left out.
 
-use mtg_cards::effect::Effect;
-use mtg_cards::refs::{AbilityKind, Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::effect::{Effect, Place};
+use mtg_cards::refs::{
+    AbilityKind, Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind,
+};
 use mtg_cards::trigger::{Step, TriggerPattern};
 use mtg_cards::value::{Amount, CastWay, Cmp, Condition, DayNight, StatKind};
 use mtg_core::ids::PlayerId;
@@ -31,6 +33,11 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::Loyalty => "loyalty",
         StatKind::Colors => "colors",
         StatKind::BasicLandTypes => "basic land types",
+        StatKind::Name => "name",
+        StatKind::CreatureType => "creature type",
+        StatKind::BasePower => "base power",
+        StatKind::BaseToughness => "base toughness",
+        StatKind::ManaSpent => "mana spent",
     }
 }
 
@@ -46,6 +53,18 @@ fn comparison(stat: StatKind, op: Cmp, to: i32) -> String {
     }
 }
 
+fn counter_count(kind: &str, op: Cmp, to: u32) -> String {
+    let number = match op {
+        Cmp::Eq => format!("exactly {to}"),
+        Cmp::Ne => format!("other than {to}"),
+        Cmp::Lt => format!("fewer than {to}"),
+        Cmp::Le => format!("{to} or fewer"),
+        Cmp::Gt => format!("more than {to}"),
+        Cmp::Ge => format!("{to} or more"),
+    };
+    format!("with {number} {kind} counters on it")
+}
+
 fn zone_phrase(kind: ZoneKind, yours: bool) -> String {
     let (place, owner) = match kind {
         ZoneKind::Battlefield => return "on the battlefield".to_owned(),
@@ -55,13 +74,31 @@ fn zone_phrase(kind: ZoneKind, yours: bool) -> String {
         ZoneKind::Library => ("library", "a"),
         ZoneKind::Graveyard => ("graveyard", "a"),
         ZoneKind::Command => ("command zone", "a"),
+        ZoneKind::Outside => return "outside the game".to_owned(),
     };
     format!("in {} {place}", if yours { "your" } else { owner })
 }
 
+/// The adjective of a state or designation a permanent is in ("tapped", "suspected").
+fn state_word(pred: &Pred) -> Option<&'static str> {
+    Some(match pred {
+        Pred::Tapped => "tapped",
+        Pred::Untapped => "untapped",
+        Pred::Monstrous => "monstrous",
+        Pred::Renowned => "renowned",
+        Pred::Prepared => "prepared",
+        Pred::Suspected => "suspected",
+        Pred::Solved => "solved",
+        Pred::DoubleFaced => "double-faced",
+        Pred::Transformed => "transformed",
+        Pred::Paired => "paired",
+        _ => return None,
+    })
+}
+
 /// A noun phrase for what a selector matches, split into the part that is pluralised and the part after it:
 /// ("tapped creature", "you control").
-fn phrase(selector: &Selector) -> (String, String) {
+pub(crate) fn phrase(selector: &Selector) -> (String, String) {
     let (mut adjectives, mut nouns, mut tail) = (Vec::new(), Vec::new(), Vec::new());
     let (mut zone, mut yours, mut this) = (None, false, false);
     for pred in &selector.0 {
@@ -78,21 +115,31 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Spell => nouns.push("spell".to_owned()),
             Pred::Ability(AbilityKind::Activated) => nouns.push("activated ability".to_owned()),
             Pred::Ability(AbilityKind::Triggered) => nouns.push("triggered ability".to_owned()),
-            Pred::Tapped => adjectives.push("tapped".to_owned()),
-            Pred::Untapped => adjectives.push("untapped".to_owned()),
-            Pred::Monstrous => adjectives.push("monstrous".to_owned()),
-            Pred::Renowned => adjectives.push("renowned".to_owned()),
-            Pred::Paired => adjectives.push("paired".to_owned()),
+            state if state_word(state).is_some() => {
+                adjectives.extend(state_word(state).map(str::to_owned));
+            }
             Pred::Not(inner) if matches!(**inner, Pred::Paired) => {
                 adjectives.push("unpaired".to_owned());
             }
             Pred::EnteredThisTurn => tail.push("that entered this turn".to_owned()),
+            Pred::SummoningSick => tail.push("with summoning sickness".to_owned()),
             Pred::MilledThisTurn => tail.push("that was milled this turn".to_owned()),
+            Pred::HasAdventure => tail.push("that has an Adventure".to_owned()),
+            Pred::ArrivedFrom(origin) => tail.push(format!(
+                "that was put there from {} this turn",
+                zone_phrase(*origin, false)
+                    .trim_start_matches("in ")
+                    .trim_start_matches("on ")
+            )),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
             Pred::AttackingPlayer(Ref::AttachedPlayer) => {
                 tail.push("attacking enchanted player".to_owned());
             }
             Pred::AttackingPlayer(Ref::You) => tail.push("attacking you".to_owned()),
+            Pred::AttackingAlone => tail.push("attacking alone".to_owned()),
+            Pred::AttackingPlayerOrPlaneswalker(Ref::You) => {
+                tail.push("attacking you or a planeswalker you control".to_owned());
+            }
             Pred::Blocking => adjectives.push("blocking".to_owned()),
             Pred::Unblocked => adjectives.push("unblocked".to_owned()),
             Pred::ControlledBy(Ref::You) => tail.push("you control".to_owned()),
@@ -102,10 +149,14 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::In(kind) => zone = Some(*kind),
             Pred::Named(name) => nouns.push(format!("card named {name}")),
             Pred::HasKeyword(keyword) => {
-                tail.push(format!("with {}", keyword.name().to_lowercase()));
+                tail.push(format!("with {}", keyword.shown_name().to_lowercase()));
             }
+            Pred::HasKeywordNamed(name) => tail.push(format!("with {}", name.to_lowercase())),
             Pred::HasCounter(kind) => tail.push(format!("with a {} counter on it", kind.name())),
             Pred::HasAnyCounter => tail.push("with a counter on it".to_owned()),
+            Pred::CounterCount { kind, op, to } => {
+                tail.push(counter_count(kind.name(), *op, *to));
+            }
             Pred::Compare {
                 stat,
                 op,
@@ -160,7 +211,7 @@ fn noun(selector: &Selector) -> String {
 }
 
 /// A selector as the subject of a clause: "it" for the source itself, else "a creature you control".
-fn subject(selector: &Selector) -> String {
+pub(crate) fn subject(selector: &Selector) -> String {
     if selector.0 == [Pred::This] {
         return "it".to_owned();
     }
@@ -186,6 +237,25 @@ fn kind_of(what: &Targetable) -> (String, String) {
         Targetable::PerPlayer { players, what } => {
             phrase(&Targetable::c10_dice_per_player_objects(players, what))
         }
+        Targetable::Together { what, rule } => {
+            let (head, tail) = kind_of(what);
+            let rule = match rule {
+                TargetSet::SameController => "controlled by the same player".to_owned(),
+                TargetSet::DifferentControllers => "controlled by different players".to_owned(),
+                TargetSet::DifferentNames => "with different names".to_owned(),
+                TargetSet::DifferentManaValues => "with different mana values".to_owned(),
+                TargetSet::TotalManaValueAtMost(Amount::Fixed(most)) => {
+                    format!("with total mana value {most} or less")
+                }
+                TargetSet::TotalManaValueAtMost(_) => "with total mana value X or less".to_owned(),
+            };
+            (head, join(&tail, &rule))
+        }
+        Targetable::Another { what, .. } => {
+            let (head, tail) = kind_of(what);
+            (format!("other {head}"), tail)
+        }
+        Targetable::ChosenBy { what, .. } => kind_of(what),
         Targetable::Either(kinds) => (
             kinds
                 .iter()
@@ -200,6 +270,16 @@ fn kind_of(what: &Targetable) -> (String, String) {
 /// A target specification in the words of a card: "target creature you control", "up to two target players",
 /// "any target".
 pub(crate) fn spec(spec: &TargetSpec) -> String {
+    if let Targetable::Another { what, .. } = &spec.what {
+        let inner = self::spec(&TargetSpec {
+            what: (**what).clone(),
+            ..spec.clone()
+        });
+        return match inner.strip_prefix("any ") {
+            Some(rest) => format!("another {rest}"),
+            None => inner.replacen("target", "other target", 1),
+        };
+    }
     let (head, tail) = kind_of(&spec.what);
     let any = matches!(spec.what, Targetable::AnyTarget);
     let one = |head: &str| {
@@ -441,6 +521,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} lose{s} life"), false)
         }
+        TriggerPattern::PlayerCountersPut { who: by, .. } => {
+            let (name, s) = who(by);
+            (format!("{name} get{s} counters"), false)
+        }
         TriggerPattern::Ventured {
             who: by,
             room: None,
@@ -478,6 +562,31 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             },
             false,
         ),
+        TriggerPattern::Did {
+            action, who: by, ..
+        } => {
+            let (name, s) = who(by);
+            let (plural, singular) = action.verbs();
+            (
+                format!("{name} {}", if s.is_empty() { plural } else { singular }),
+                false,
+            )
+        }
+        TriggerPattern::RingTempts { who: by, bearer } => {
+            let (name, s) = who(by);
+            if bearer.is_empty() {
+                (format!("the Ring tempts {name}"), false)
+            } else {
+                (
+                    format!(
+                        "{name} choose{s} {} as {} Ring-bearer",
+                        subject(bearer),
+                        if s.is_empty() { "your" } else { "their" }
+                    ),
+                    false,
+                )
+            }
+        }
         TriggerPattern::Proliferated { who: by } => {
             let (name, s) = who(by);
             (format!("{name} proliferate{s}"), false)
@@ -546,14 +655,27 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (format!("{} {moves}", subject(what)), false)
         }
-        TriggerPattern::Drew { who: by, what } => {
+        TriggerPattern::ResolvedToGraveyard { what } => (
+            format!("{} resolves and is put into a graveyard", subject(what)),
+            false,
+        ),
+        TriggerPattern::Drew {
+            who: by,
+            what,
+            first_in_draw_step,
+        } => {
             let (name, s) = who(by);
             let card = if what.is_empty() {
                 "a card".to_owned()
             } else {
                 subject(what)
             };
-            (format!("{name} draw{s} {card}"), false)
+            let step = match first_in_draw_step {
+                Some(true) => " first in a draw step",
+                Some(false) => " other than the first in a draw step",
+                None => "",
+            };
+            (format!("{name} draw{s} {card}{step}"), false)
         }
         TriggerPattern::Discarded { what, by } => {
             let (name, s) = who(by);
@@ -566,6 +688,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         }
         TriggerPattern::Tapped { what } => (
             format!("{} becomes tapped", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::TappedNotAttacking { what } => (
+            format!(
+                "{} becomes tapped, if it isn't being declared as an attacker",
+                subject(what)
+            ),
             what.0 == [Pred::This],
         ),
         TriggerPattern::PhasedOut { what } => (
@@ -666,13 +795,28 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} tap{s} {} for mana", subject(what)), false)
         }
-        TriggerPattern::Blocks { what } => {
-            (format!("{} blocks", subject(what)), what.0 == [Pred::This])
+        TriggerPattern::Blocks { what, blocking } => {
+            let blocked = if blocking.is_empty() {
+                String::new()
+            } else {
+                format!(" one or more {}", subject(blocking))
+            };
+            (
+                format!("{} blocks{blocked}", subject(what)),
+                what.0 == [Pred::This],
+            )
         }
-        TriggerPattern::BecomesBlocked { what } => (
-            format!("{} becomes blocked", subject(what)),
-            what.0 == [Pred::This],
-        ),
+        TriggerPattern::BecomesBlocked { what, by, once } => {
+            let blocker = match (by.is_empty(), once) {
+                (true, _) => String::new(),
+                (false, true) => format!(" by one or more {}", subject(by)),
+                (false, false) => format!(" by {}", subject(by)),
+            };
+            (
+                format!("{} becomes blocked{blocker}", subject(what)),
+                what.0 == [Pred::This],
+            )
+        }
         TriggerPattern::Unblocked { what } => (
             format!("{} attacks and isn't blocked", subject(what)),
             what.0 == [Pred::This],
@@ -682,6 +826,17 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             (
                 format!(
                     "{} attack",
+                    join(&format!("{at_least} or more {}", plural(&head)), &tail)
+                ),
+                false,
+            )
+        }
+        TriggerPattern::GroupAttacksAt { what, at, at_least } => {
+            let (head, tail) = phrase(what);
+            let (whom, _) = who(at);
+            (
+                format!(
+                    "{} attack {whom}",
                     join(&format!("{at_least} or more {}", plural(&head)), &tail)
                 ),
                 false,
@@ -702,6 +857,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Nth { event, nth } => {
             (format!("{} (time {nth} this turn)", clause(event).0), false)
         }
+        TriggerPattern::Caused { inner, .. } => (
+            format!("{}, caused by a spell or ability", clause(inner).0),
+            false,
+        ),
         TriggerPattern::AnyOf(patterns) => {
             let clauses: Vec<(String, bool)> = patterns.iter().map(clause).collect();
             (
@@ -754,6 +913,17 @@ pub(crate) fn discard(count: usize) -> String {
     }
 }
 
+/// What a discard of cards that match a filter asks: "Discard a creature card.", "Discard 2 land cards."
+pub(crate) fn discard_matching(filter: &Selector, count: usize) -> String {
+    let noun = noun(filter);
+    let noun = noun.strip_suffix(" card").unwrap_or(&noun);
+    if count == 1 {
+        format!("Discard {} {noun} card.", article(noun))
+    } else {
+        format!("Discard {count} {noun} cards.")
+    }
+}
+
 /// What a sacrifice asks of the player who chooses: "Sacrifice a creature or planeswalker.", "Sacrifice 2 creatures."
 pub(crate) fn sacrifice(filter: &Selector, count: usize) -> String {
     if count == 1 {
@@ -761,6 +931,12 @@ pub(crate) fn sacrifice(filter: &Selector, count: usize) -> String {
     }
     let (head, tail) = phrase(filter);
     format!("Sacrifice {count} {}.", join(&plural(&head), &tail))
+}
+
+/// "Sacrifice up to 3 lands.": the question of a sacrifice that may stop short.
+pub(crate) fn sacrifice_up_to(filter: &Selector, count: usize) -> String {
+    let (head, tail) = phrase(filter);
+    format!("Sacrifice up to {count} {}.", join(&plural(&head), &tail))
 }
 
 /// `count` of what `filter` describes, with `place` after them: "a creature you control", "2 creatures you control".
@@ -852,6 +1028,7 @@ fn search_place(zone: ZoneKind) -> &'static str {
         ZoneKind::Battlefield => "the battlefield",
         ZoneKind::Stack => "the stack",
         ZoneKind::Command => "your command zone",
+        ZoneKind::Outside => "outside the game",
     }
 }
 
@@ -929,6 +1106,13 @@ pub(crate) const ENCHANT: &str = "Choose what the Aura enchants.";
 /// What a scry asks about the cards looked at.
 pub(crate) const SCRY: &str = "Put any number of the cards on the bottom of your library.";
 
+/// The question about cards that may begin the game on the battlefield.
+pub(crate) const OPENING_HAND: &str = "Choose the cards to begin the game on the battlefield.";
+
+/// What the opening asks when a card of the hand may be revealed from it (CR 103.6).
+pub(crate) const OPENING_REVEAL: &str =
+    "Choose the cards to reveal from your opening hand or to begin the game on the battlefield.";
+
 /// What a surveil asks about the cards looked at.
 pub(crate) const SURVEIL: &str = "Put any number of the cards into your graveyard.";
 
@@ -959,9 +1143,13 @@ pub(crate) fn proliferate_player(proliferating: PlayerId, holder: PlayerId) -> S
 pub(crate) const EXPLORE: &str = "You may put the revealed card into your graveyard.";
 
 /// What the order of cards put into a library asks: "Put the cards on top of your library in any order."
-pub(crate) fn library_order(bottom: bool) -> String {
-    let place = if bottom { "the bottom" } else { "top" };
-    format!("Put the cards on {place} of your library in any order.")
+pub(crate) fn library_order(place: Place) -> String {
+    let place = match place {
+        Place::Bottom => "on the bottom of".to_owned(),
+        Place::Below(below) => format!("beneath the top {below} cards of"),
+        Place::Top | Place::Shuffled => "on top of".to_owned(),
+    };
+    format!("Put the cards {place} your library in any order.")
 }
 
 /// "a card" or "3 cards".
@@ -980,16 +1168,21 @@ fn verb_phrase(effect: &Effect) -> Option<String> {
         Effect::Draw {
             who: Ref::You,
             count: Amount::Fixed(n),
+            ..
         } => format!("draw {}", cards(*n)),
         Effect::Discard {
             who: Ref::You,
             count: Amount::Fixed(n),
             random: false,
+            filter: None,
+            by: None,
+            optional: false,
             bind: None,
         } => format!("discard {}", cards(*n)),
         Effect::Mill {
             who: Ref::You,
             count: Amount::Fixed(n),
+            ..
         } => format!("mill {}", cards(*n)),
         Effect::Scry {
             who: Ref::You,
@@ -1037,6 +1230,19 @@ pub(crate) fn may(effects: &[Effect]) -> String {
     if let Some(question) = pairing(effects) {
         return question.to_owned();
     }
+    // Ripple: the cards looked at are revealed at once.
+    if let [
+        Effect::LookAtTop {
+            who: Ref::You,
+            count: Amount::Fixed(count),
+            ..
+        },
+        Effect::Reveal { .. },
+        ..,
+    ] = effects
+    {
+        return format!("Reveal the top {count} cards of your library?");
+    }
     let phrases: Option<Vec<String>> = effects.iter().map(verb_phrase).collect();
     let Some(mut phrases) = phrases.filter(|phrases| !phrases.is_empty()) else {
         return String::new();
@@ -1079,6 +1285,9 @@ pub(crate) fn cast(name: &str, free: bool, alternative: Option<(CastWay, &str)>)
     if let Some((way, cost)) = alternative {
         let way = match way {
             CastWay::Miracle => "miracle",
+            CastWay::Alternative => {
+                return format!("Cast {name} by paying {cost} rather than its mana cost?");
+            }
             _ => "madness",
         };
         format!("Cast {name} for its {way} cost {cost}?")
@@ -1129,13 +1338,20 @@ mod tests {
     use super::*;
 
     #[rstest]
-    #[case::on_top(false, "Put the cards on top of your library in any order.")]
-    #[case::on_the_bottom(true, "Put the cards on the bottom of your library in any order.")]
+    #[case::on_top(Place::Top, "Put the cards on top of your library in any order.")]
+    #[case::on_the_bottom(
+        Place::Bottom,
+        "Put the cards on the bottom of your library in any order."
+    )]
+    #[case::beneath_the_top(
+        Place::Below(2),
+        "Put the cards beneath the top 2 cards of your library in any order."
+    )]
     fn the_order_of_cards_put_into_a_library_says_where(
-        #[case] bottom: bool,
+        #[case] place: Place,
         #[case] expected: &str,
     ) {
-        assert_eq!(library_order(bottom), expected);
+        assert_eq!(library_order(place), expected);
     }
 
     #[rstest]

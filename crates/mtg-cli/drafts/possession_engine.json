@@ -1,0 +1,38 @@
+{
+  "oracle_id": "ab7c0256-eea9-4e0d-932d-c25460eed836",
+  "name": "Possession Engine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Possession Engine",
+      "oracle_fingerprint": "ad493771e3f7b8c572f7a2c9fb3f62a2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSource"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

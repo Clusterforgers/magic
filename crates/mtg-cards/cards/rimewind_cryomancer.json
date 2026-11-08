@@ -1,0 +1,27 @@
+{
+  "oracle_id": "23c881f8-37c7-4899-890e-9f6e26f9f560",
+  "name": "Rimewind Cryomancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rimewind Cryomancer",
+      "oracle_fingerprint": "94c5c21a458ddfe4281b5075ba948de6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Supertype": "Snow" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Ability": "Activated" }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

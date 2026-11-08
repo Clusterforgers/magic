@@ -1,0 +1,42 @@
+{
+  "oracle_id": "e7f53928-a4cc-41ed-877d-b72d786e77d9",
+  "name": "Famished Worldsire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Famished Worldsire",
+      "oracle_fingerprint": "f39077a817637416b9cf788f786dc1fe",
+      "abilities": [
+        { "Keyword": { "Ward": "{3}" } },
+        { "Keyword": { "Devour": { "counters": 3, "of": [{ "Type": "Land" }] } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "LookAtTop": { "count": { "Stat": { "of": "This", "stat": "Power" } }, "as": "top" }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Move": { "what": { "Bound": "top" }, "to": { "Library": { "place": "Bottom" } } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

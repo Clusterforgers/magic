@@ -1,0 +1,39 @@
+{
+  "oracle_id": "19639595-c59b-4233-a167-f5cffcb0e38b",
+  "name": "Ornitharch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ornitharch",
+      "oracle_fingerprint": "4ae9ee5625a98b65988e86d23730a2d1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Macro": { "name": "tribute", "amount": 2 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": "Chosen", "op": "Eq", "right": 0 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

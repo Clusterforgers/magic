@@ -1,0 +1,34 @@
+{
+  "oracle_id": "39363190-7f79-4fae-bcfc-b17ec4e07bfe",
+  "name": "Eager Construct",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eager Construct",
+      "oracle_fingerprint": "6eec5f7c6f37065875a393ef885781d3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "scrier",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "scrier" },
+                        "effects": [{ "Scry": { "who": { "Bound": "scrier" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

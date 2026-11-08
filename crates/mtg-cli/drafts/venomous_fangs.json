@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a1ee715e-bab5-4edc-89ba-610cf71bb048",
+  "name": "Venomous Fangs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venomous Fangs",
+      "oracle_fingerprint": "9af06b8d8c0c4031a8686f4fd19e989e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": { "Each": [{ "Type": "Creature" }] }
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

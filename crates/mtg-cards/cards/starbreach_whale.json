@@ -1,0 +1,46 @@
+{
+  "oracle_id": "076865e9-ee10-4a87-9180-4274202d37c1",
+  "name": "Starbreach Whale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starbreach Whale",
+      "oracle_fingerprint": "4735b6a281ebee84e90bef423cbb3c6f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": { "count": 2 } }]
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{1}{U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

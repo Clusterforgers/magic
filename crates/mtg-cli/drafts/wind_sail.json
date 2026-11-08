@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c7fb6ff0-4555-4bd1-b00d-ba2ed1cb4afc",
+  "name": "Wind Sail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wind Sail",
+      "oracle_fingerprint": "9cbb4cda745c84378725aa09e35414a6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 1, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

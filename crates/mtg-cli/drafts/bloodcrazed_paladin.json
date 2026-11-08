@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7e7ec48c-e31d-4ddf-a128-1969951dacf9",
+  "name": "Bloodcrazed Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodcrazed Paladin",
+      "oracle_fingerprint": "71ec20559cb85a11862c416f6cabff48",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Tally": {
+                    "event": "Died",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

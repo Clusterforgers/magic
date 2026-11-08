@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1d704c2f-cd24-4a04-a51a-da7984dcd358",
+  "name": "Vogar, Necropolis Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vogar, Necropolis Tyrant",
+      "oracle_fingerprint": "78429ad6694aa2ab55abdc8aeb065452",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Draw": { "count": { "Counters": { "on": "This", "counter": "+1/+1" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

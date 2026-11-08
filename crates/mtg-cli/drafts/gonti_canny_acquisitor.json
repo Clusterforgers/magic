@@ -1,0 +1,50 @@
+{
+  "oracle_id": "7923ef4a-b1be-4f6a-b17b-4eab101390de",
+  "name": "Gonti, Canny Acquisitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gonti, Canny Acquisitor",
+      "oracle_fingerprint": "448d3fb43a436d36d9e89370d11211ce",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Not": { "OwnedBy": "You" } }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "who": "Triggering", "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "object": "card",
+  "id": "4fe31ab9-d217-464e-96b1-d8a1ca6ad005",
+  "oracle_id": "96aab05a-49bc-418a-9980-f3322955de1e",
+  "multiverse_ids": [
+    563106
+  ],
+  "tcgplayer_id": 273320,
+  "cardmarket_id": 660908,
+  "name": "Colossal Badger // Dig Deep",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/4fe31ab9-d217-464e-96b1-d8a1ca6ad005",
+  "scryfall_uri": "https://scryfall.com/card/clb/223/colossal-badger-dig-deep?utm_source=api",
+  "layout": "adventure",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:05:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/f/4fe31ab9-d217-464e-96b1-d8a1ca6ad005.jpg?1783922717",
+    "normal": "https://cards.scryfall.io/normal/front/4/f/4fe31ab9-d217-464e-96b1-d8a1ca6ad005.jpg?1783922717",
+    "large": "https://cards.scryfall.io/large/front/4/f/4fe31ab9-d217-464e-96b1-d8a1ca6ad005.jpg?1783922717",
+    "png": "https://cards.scryfall.io/png/front/4/f/4fe31ab9-d217-464e-96b1-d8a1ca6ad005.png?1783922717",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/f/4fe31ab9-d217-464e-96b1-d8a1ca6ad005.jpg?1783922717",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/f/4fe31ab9-d217-464e-96b1-d8a1ca6ad005.jpg?1783922717",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/f/4fe31ab9-d217-464e-96b1-d8a1ca6ad005.webp?1783922717",
+    "grid": "https://cards.scryfall.io/grid/front/4/f/4fe31ab9-d217-464e-96b1-d8a1ca6ad005.webp?1783922717",
+    "display": "https://cards.scryfall.io/display/front/4/f/4fe31ab9-d217-464e-96b1-d8a1ca6ad005.webp?1783922717",
+    "art": "https://cards.scryfall.io/art/front/4/f/4fe31ab9-d217-464e-96b1-d8a1ca6ad005.webp?1783922717",
+    "crop": "https://cards.scryfall.io/crop/front/4/f/4fe31ab9-d217-464e-96b1-d8a1ca6ad005.webp?1783922717",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/f/4fe31ab9-d217-464e-96b1-d8a1ca6ad005.jpg?1783922717"
+  },
+  "mana_cost": "{5}{G} // {1}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Badger // Sorcery — Adventure",
+  "power": "6",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Mill"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Colossal Badger",
+      "mana_cost": "{5}{G}",
+      "type_line": "Creature — Badger",
+      "oracle_text": "When this creature enters, you gain 3 life.",
+      "power": "6",
+      "toughness": "5",
+      "flavor_text": "Rip through enough dirt and you'll eventually find something edible.",
+      "artist": "Leonardo Santanna",
+      "artist_id": "f1f8e6d8-8fb3-472a-a32f-a4b1225bd054",
+      "illustration_id": "e81f1b82-6d75-4857-a493-68a186c0cdef"
+    },
+    {
+      "object": "card_face",
+      "name": "Dig Deep",
+      "mana_cost": "{1}{G}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_text": "Choose target creature. Mill four cards, then put a +1/+1 counter on that creature for each creature card milled this way.",
+      "artist": "Leonardo Santanna",
+      "artist_id": "f1f8e6d8-8fb3-472a-a32f-a4b1225bd054"
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "5e289bb3-f6de-450d-9f7e-77e2e70cb7cc",
+      "component": "combo_piece",
+      "name": "On an Adventure",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/5e289bb3-f6de-450d-9f7e-77e2e70cb7cc"
+    },
+    {
+      "object": "related_card",
+      "id": "4fe31ab9-d217-464e-96b1-d8a1ca6ad005",
+      "component": "combo_piece",
+      "name": "Colossal Badger // Dig Deep",
+      "type_line": "Creature — Badger // Sorcery — Adventure",
+      "uri": "https://api.scryfall.com/cards/4fe31ab9-d217-464e-96b1-d8a1ca6ad005"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4fe31ab9-d217-464e-96b1-d8a1ca6ad005/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A96aab05a-49bc-418a-9980-f3322955de1e&unique=prints",
+  "collector_number": "223",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "Rip through enough dirt and you'll eventually find something edible.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Leonardo Santanna",
+  "artist_ids": [
+    "f1f8e6d8-8fb3-472a-a32f-a4b1225bd054"
+  ],
+  "illustration_id": "e81f1b82-6d75-4857-a493-68a186c0cdef",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19172,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.22",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.17",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563106&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DColossal%2BBadger%2B%252F%252F%2BDig%2BDeep",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DColossal%2BBadger%2B%252F%252F%2BDig%2BDeep",
+    "edhrec": "https://edhrec.com/route/?cc=Colossal+Badger"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F273320%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=660908&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Colossal+Badger&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

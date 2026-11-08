@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a7865331-4c53-46db-b2d7-7e5cb21b6b9d",
+  "name": "Frantic Inventory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frantic Inventory",
+      "oracle_fingerprint": "2ad3672884748987dc2e7d5eaa6e5d76",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": {} },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "OwnedBy": "You" },
+                      { "Named": "Frantic Inventory" },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

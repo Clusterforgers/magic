@@ -1,0 +1,31 @@
+{
+  "oracle_id": "8f2c8498-5b10-4ec7-8678-598c90987556",
+  "name": "Disciple of Bolas",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disciple of Bolas",
+      "oracle_fingerprint": "2b9a65345d9e8a26dfba4af285257723",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"], "as": "sacrificed" } },
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" } }
+                }
+              },
+              {
+                "Draw": {
+                  "count": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

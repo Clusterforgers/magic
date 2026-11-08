@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e4fb97b5-0d4a-4c9a-bd51-42ff723b5854",
+  "name": "Grafted Identity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grafted Identity",
+      "oracle_fingerprint": "a50ac5cd965d4b7a6225f645968d7360",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

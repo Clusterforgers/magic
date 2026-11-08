@@ -11,14 +11,14 @@
         { "Keyword": { "Ward": [{ "PayLife": 2 }] } },
         {
           "Triggered": {
-            "when": { "LifeLost": { "who": "Opponents" } },
-            "if": {
-              "Not": {
-                "Any": [
-                  {
-                    "Matches": { "subject": "Triggering", "selector": [{ "ControlledBy": "You" }] }
+            "when": {
+              "Nth": {
+                "event": {
+                  "LifeLost": {
+                    "who": { "PlayersWhere": { "who": "Opponents", "test": "YourTurn" } }
                   }
-                ]
+                },
+                "nth": 1
               }
             },
             "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }, { "Draw": {} }]

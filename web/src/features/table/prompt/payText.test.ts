@@ -64,6 +64,21 @@ describe('payText', () => {
       'You cannot pay 2 generic, 1 white and 1 green for Selesnya Evangel with the mana you have. Undo to go back.',
     ],
     [
+      'the tax on a block',
+      input({ block: true }),
+      'Pay 2 generic, 1 white and 1 green for the block. Choose a land or other mana source to use its mana, or pay automatically.',
+    ],
+    [
+      'the tax on a block that cannot be paid',
+      input({ block: true, auto: false }),
+      'You cannot pay 2 generic, 1 white and 1 green for the block with the mana you have. Add the mana by hand in the Commands panel, or go back to choose other blockers.',
+    ],
+    [
+      'the tax on an attack',
+      input({ attack: true }),
+      'Pay 2 generic, 1 white and 1 green for the attack. Choose a land or other mana source to use its mana, or pay automatically.',
+    ],
+    [
       'before anything is chosen, with nothing that can be added',
       input({ canAdd: false }),
       'You cannot pay 2 generic, 1 white and 1 green for Selesnya Evangel with the mana you have. Undo to go back.',

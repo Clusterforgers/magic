@@ -1,0 +1,147 @@
+{
+  "object": "card",
+  "id": "bba250e8-1ceb-40f5-95f1-fb00a2a723eb",
+  "oracle_id": "fd92b588-f273-4206-9887-34e6877fc14f",
+  "multiverse_ids": [
+    555412
+  ],
+  "mtgo_id": 98641,
+  "arena_id": 80362,
+  "tcgplayer_id": 268803,
+  "cardmarket_id": 651860,
+  "name": "Park Heights Pegasus",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/bba250e8-1ceb-40f5-95f1-fb00a2a723eb",
+  "scryfall_uri": "https://scryfall.com/card/snc/211/park-heights-pegasus?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:11:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/b/bba250e8-1ceb-40f5-95f1-fb00a2a723eb.jpg?1783923073",
+    "normal": "https://cards.scryfall.io/normal/front/b/b/bba250e8-1ceb-40f5-95f1-fb00a2a723eb.jpg?1783923073",
+    "large": "https://cards.scryfall.io/large/front/b/b/bba250e8-1ceb-40f5-95f1-fb00a2a723eb.jpg?1783923073",
+    "png": "https://cards.scryfall.io/png/front/b/b/bba250e8-1ceb-40f5-95f1-fb00a2a723eb.png?1783923073",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/b/bba250e8-1ceb-40f5-95f1-fb00a2a723eb.jpg?1783923073",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/b/bba250e8-1ceb-40f5-95f1-fb00a2a723eb.jpg?1783923073",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/b/bba250e8-1ceb-40f5-95f1-fb00a2a723eb.webp?1783923073",
+    "grid": "https://cards.scryfall.io/grid/front/b/b/bba250e8-1ceb-40f5-95f1-fb00a2a723eb.webp?1783923073",
+    "display": "https://cards.scryfall.io/display/front/b/b/bba250e8-1ceb-40f5-95f1-fb00a2a723eb.webp?1783923073",
+    "art": "https://cards.scryfall.io/art/front/b/b/bba250e8-1ceb-40f5-95f1-fb00a2a723eb.webp?1783923073",
+    "crop": "https://cards.scryfall.io/crop/front/b/b/bba250e8-1ceb-40f5-95f1-fb00a2a723eb.webp?1783923073",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/b/bba250e8-1ceb-40f5-95f1-fb00a2a723eb.jpg?1783923073"
+  },
+  "mana_cost": "{G}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Pegasus",
+  "oracle_text": "Flying, trample\nWhenever this creature deals combat damage to a player, draw a card if you had two or more creatures enter the battlefield under your control this turn.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "G",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "df837242-8c15-42e4-b049-c933a02dc501",
+  "set": "snc",
+  "set_name": "Streets of New Capenna",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/df837242-8c15-42e4-b049-c933a02dc501",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asnc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/snc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bba250e8-1ceb-40f5-95f1-fb00a2a723eb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afd92b588-f273-4206-9887-34e6877fc14f&unique=prints",
+  "collector_number": "211",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The burglar turned, bowed, and dropped from the ledge onto her waiting mount.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Gallegos",
+  "artist_ids": [
+    "a5048cc7-438a-4378-98e4-da99b78e1db0"
+  ],
+  "illustration_id": "9b3f93cd-10e8-4b79-b21c-127a27d5f4b0",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21589,
+  "penny_rank": 10050,
+  "preview": {
+    "source": "hero.officiel",
+    "source_uri": "https://www.instagram.com/p/CcQY6aOI74d/",
+    "previewed_at": "2022-04-12"
+  },
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": "0.31",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.17",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=555412&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPark%2BHeights%2BPegasus",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPark%2BHeights%2BPegasus",
+    "edhrec": "https://edhrec.com/route/?cc=Park+Heights+Pegasus"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F268803%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=651860&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/98641?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

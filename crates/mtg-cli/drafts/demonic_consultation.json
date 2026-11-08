@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9a1412db-45ad-46ea-8f12-a85d203113d8",
+  "name": "Demonic Consultation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonic Consultation",
+      "oracle_fingerprint": "57e43f7c739ecf136d16c321399982aa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              { "ExileTop": { "count": 6, "as": "exiled2" } },
+              {
+                "RevealUntil": {
+                  "filter": [{ "ChosenAs": "name" }],
+                  "as": "found3",
+                  "revealed_as": "revealed4"
+                }
+              },
+              { "Move": { "what": { "Bound": "found3" }, "to": "Hand" } },
+              { "Exile": { "what": { "Bound": "revealed4" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

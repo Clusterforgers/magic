@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f1a16f6d-ea11-485e-8c5b-7f919a731fe0",
+  "name": "Mask of the Mimic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mask of the Mimic",
+      "oracle_fingerprint": "bbbdf8d44ce99a68c80526fab94412d9",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Not": "Token" }] } }],
+            "effects": [
+              { "Search": { "filter": [{ "SharesName": { "Target": 0 } }], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

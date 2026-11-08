@@ -10,7 +10,7 @@
         { "Keyword": { "Ward": "{2}" } },
         {
           "Triggered": {
-            "when": { "DealsDamage": { "source": [], "to": "This" } },
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
             "effects": [
               { "PutCounters": { "on": "You", "counter": { "Other": "rad" }, "count": 3 } },
               { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 3 } }

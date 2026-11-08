@@ -1,0 +1,27 @@
+{
+  "oracle_id": "08f361c5-bcb5-4a9b-9610-70609cdc047f",
+  "name": "Dwell on the Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwell on the Past",
+      "oracle_fingerprint": "3c0196004156bf11d770aeca642cb1c3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                "bounds": { "min": 0, "max": 4 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 1 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

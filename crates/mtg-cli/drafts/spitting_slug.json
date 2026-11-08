@@ -1,0 +1,53 @@
+{
+  "oracle_id": "77af5e31-ac4d-4112-9138-e12abb5ce144",
+  "name": "Spitting Slug",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spitting Slug",
+      "oracle_fingerprint": "549b49618052c1aedb2f63866ec1a539",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "BecomesBlocked": { "what": ["This"] } },
+                { "Blocks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{G}",
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "FirstStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "unpaid": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "AnyOf": [{ "Blocks": "This" }, { "BlockedBy": "This" }] }
+                          ]
+                        },
+                        "mods": [{ "AddKeyword": "FirstStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

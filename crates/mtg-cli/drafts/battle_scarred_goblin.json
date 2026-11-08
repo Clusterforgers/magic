@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3e765710-e567-4af0-b5f5-7c182649b757",
+  "name": "Battle-Scarred Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle-Scarred Goblin",
+      "oracle_fingerprint": "60bb3c62f485b0db01692a58a7acc62f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Blocks": "This" }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

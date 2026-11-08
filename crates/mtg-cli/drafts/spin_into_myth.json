@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4a4cf6e2-8673-45b8-bc21-cd030f312cd1",
+  "name": "Spin into Myth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spin into Myth",
+      "oracle_fingerprint": "7d2ef771c5ef97d048646daa2dfe7e82",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } },
+              { "Choose": { "from": "Opponents", "as": "player" } },
+              { "LookAtTop": { "who": { "Bound": "player" }, "count": 2, "as": "top2" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top2" },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept3",
+                  "rest_as": "rest4"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "kept3" }, "to": { "Library": { "place": "Bottom" } } }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "rest4" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

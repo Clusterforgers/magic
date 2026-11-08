@@ -1,0 +1,84 @@
+{
+  "oracle_id": "b4dbbf56-d7df-4183-bb48-cfc6b4d0468f",
+  "name": "Armored Skyhunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armored Skyhunter",
+      "oracle_fingerprint": "b142a5398e238111f9bb6ed75f04474f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Battlefield": {} },
+                  "as": "kept2_moved"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "kept2_moved" },
+                      "selector": [{ "Subtype": "Equipment" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "card4"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "kept2_moved" },
+                      "selector": [{ "Subtype": "Equipment" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Attach": { "what": { "Bound": "kept2" }, "to": { "Bound": "card4" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

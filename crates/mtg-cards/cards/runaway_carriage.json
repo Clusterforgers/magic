@@ -1,0 +1,29 @@
+{
+  "oracle_id": "67c16435-54ef-4786-85cd-cacca4f06670",
+  "name": "Runaway Carriage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runaway Carriage",
+      "oracle_fingerprint": "29cd5896b9115ce6c7a7eaed7fe7e389",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": "This" }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

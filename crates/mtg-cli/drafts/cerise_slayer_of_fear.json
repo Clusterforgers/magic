@@ -1,0 +1,57 @@
+{
+  "oracle_id": "8ae76292-daf2-4200-924f-58a92fa1ba29",
+  "name": "Cerise, Slayer of Fear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cerise, Slayer of Fear",
+      "oracle_fingerprint": "04c0c2eda051a794f10872a098472048",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Seek": {
+                  "filter": [
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": {
+                          "Greatest": {
+                            "of": [
+                              { "OwnedBy": "You" },
+                              {
+                                "Compare": {
+                                  "stat": "ManaValue",
+                                  "op": "Le",
+                                  "to": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                                }
+                              },
+                              { "In": "Library" }
+                            ],
+                            "stat": "ManaValue"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "5297f646-8235-47da-a290-a6883b374977",
+  "name": "Warcry Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warcry Phoenix",
+      "oracle_fingerprint": "b5cfabadcc27172c91c46f02b3623ea0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 3
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{R}",
+                  "paid": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": { "Battlefield": { "tapped": true } },
+                        "as": "moved"
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Bound": "moved" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

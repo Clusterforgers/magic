@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f1f45310-d665-400d-934f-e48e7858ce8c",
+  "name": "Heavy Mattock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heavy Mattock",
+      "oracle_fingerprint": "256b8fcb0ea9c268bffbf130388f787b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Subtype": "Human" }] }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

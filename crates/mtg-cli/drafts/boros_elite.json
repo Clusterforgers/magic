@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7c83fb45-03af-4f1a-b7e3-2c4f47511658",
+  "name": "Boros Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boros Elite",
+      "oracle_fingerprint": "b81be6a1e61b12113dfe08e7d5bb957d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

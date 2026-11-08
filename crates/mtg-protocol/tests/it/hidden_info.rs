@@ -1074,6 +1074,80 @@ pub(crate) fn assert_clean(batch: &EventBatch, hidden: &BTreeMap<ObjectId, Strin
 }
 
 #[rstest]
+fn the_seat_that_looks_at_hands_sees_the_cards_and_a_third_seat_learns_only_counts(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let mut scenario = library_table(seats, mtg_testkit::cards::hand_peeker("Peeper"), &[]);
+    let names = [
+        "Serra Angel",
+        "Counterspell",
+        "Wrath of God",
+        "Lightning Bolt",
+    ];
+    for seat in 1..seats {
+        let card = mtg_testkit::corpus::card(names[seat - 1]).unwrap();
+        scenario = scenario.hand(seat, [card]);
+    }
+    let (after, events, batches) = play_spell(scenario, seats, "Peeper", |decision| {
+        panic!("unexpected {}", decision.kind.name())
+    });
+    let looked: Vec<_> = events
+        .iter()
+        .filter_map(|event| match event {
+            mtg_engine::Event::HandLooked(looked) => Some(looked.clone()),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(looked.len(), seats - 1);
+    for each in &looked {
+        assert_eq!((each.player, each.cards.len()), (PlayerId(0), 1));
+    }
+    for (seat, batch) in batches.iter().enumerate() {
+        let public = batch
+            .events
+            .iter()
+            .filter(|event| {
+                matches!(
+                    event,
+                    mtg_protocol::EventView::Public(mtg_engine::Event::HandLooked(_))
+                )
+            })
+            .count();
+        let counted = batch
+            .events
+            .iter()
+            .filter(|event| {
+                matches!(
+                    event,
+                    mtg_protocol::EventView::Hidden(mtg_protocol::HiddenEvent::HandLooked {
+                        player: PlayerId(0),
+                        count: 1,
+                        ..
+                    })
+                )
+            })
+            .count();
+        if seat == 0 {
+            assert_eq!(
+                (public, counted),
+                (seats - 1, 0),
+                "the looker sees every hand"
+            );
+            continue;
+        }
+        // The owner of a hand sees the look at it; every other hand is a count.
+        assert_eq!((public, counted), (1, seats - 2), "seat {seat}");
+        let mut hidden = BTreeMap::new();
+        for each in looked.iter().filter(|each| each.of.index() != seat) {
+            for card in &each.cards {
+                hidden.insert(*card, after.object(*card).unwrap().card().name.clone());
+            }
+        }
+        assert_clean(batch, &hidden);
+    }
+}
+
+#[rstest]
 fn the_seat_that_scries_sees_the_cards_and_no_other_seat_does(#[values(2, 3, 4)] seats: usize) {
     let scenario = library_table(seats, mtg_testkit::corpus::card("Opt").unwrap(), &[]);
     let keep = |decision: &Decision| match &decision.kind {

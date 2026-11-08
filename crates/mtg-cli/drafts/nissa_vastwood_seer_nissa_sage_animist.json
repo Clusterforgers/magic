@@ -1,0 +1,129 @@
+{
+  "oracle_id": "35754a21-9fba-4370-a254-292918a777ba",
+  "name": "Nissa, Vastwood Seer // Nissa, Sage Animist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nissa, Vastwood Seer",
+      "oracle_fingerprint": "6632f6e085df5dfc99a0ef9f9c746017",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Subtype": "Forest" }, { "Supertype": "Basic" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Nissa, Sage Animist",
+      "oracle_fingerprint": "7d1e6442667bc633739c90f641d052ca",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ashaya, the Awoken World",
+                      "colors": ["Green"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }] }, "bounds": { "min": 0, "max": 6 } }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 6, "toughness": 6 } },
+                    { "AddSubtype": "Elemental" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

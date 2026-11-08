@@ -1,0 +1,26 @@
+{
+  "oracle_id": "47e79913-322e-4ba6-9bf8-3b4c1c82a6c4",
+  "name": "Mind Slash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Slash",
+      "oracle_fingerprint": "93636f37ee1fc452aa831a5db73ffeaa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              { "Discard": { "who": { "Target": 0 }, "by": "You" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

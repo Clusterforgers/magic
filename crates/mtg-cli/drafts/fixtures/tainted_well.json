@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "2eec00a1-7e12-42d2-8f46-de8ab7323c2c",
+  "oracle_id": "b35b3ea6-ae9c-4128-a47f-069d88ee49c2",
+  "multiverse_ids": [
+    25748
+  ],
+  "mtgo_id": 14731,
+  "mtgo_foil_id": 14732,
+  "tcgplayer_id": 7691,
+  "cardmarket_id": 3683,
+  "name": "Tainted Well",
+  "lang": "en",
+  "released_at": "2000-10-02",
+  "uri": "https://api.scryfall.com/cards/2eec00a1-7e12-42d2-8f46-de8ab7323c2c",
+  "scryfall_uri": "https://scryfall.com/card/inv/126/tainted-well?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:28:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/e/2eec00a1-7e12-42d2-8f46-de8ab7323c2c.jpg?1783945689",
+    "normal": "https://cards.scryfall.io/normal/front/2/e/2eec00a1-7e12-42d2-8f46-de8ab7323c2c.jpg?1783945689",
+    "large": "https://cards.scryfall.io/large/front/2/e/2eec00a1-7e12-42d2-8f46-de8ab7323c2c.jpg?1783945689",
+    "png": "https://cards.scryfall.io/png/front/2/e/2eec00a1-7e12-42d2-8f46-de8ab7323c2c.png?1783945689",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/e/2eec00a1-7e12-42d2-8f46-de8ab7323c2c.jpg?1783945689",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/e/2eec00a1-7e12-42d2-8f46-de8ab7323c2c.jpg?1783945689",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/e/2eec00a1-7e12-42d2-8f46-de8ab7323c2c.webp?1783945689",
+    "grid": "https://cards.scryfall.io/grid/front/2/e/2eec00a1-7e12-42d2-8f46-de8ab7323c2c.webp?1783945689",
+    "display": "https://cards.scryfall.io/display/front/2/e/2eec00a1-7e12-42d2-8f46-de8ab7323c2c.webp?1783945689",
+    "art": "https://cards.scryfall.io/art/front/2/e/2eec00a1-7e12-42d2-8f46-de8ab7323c2c.webp?1783945689",
+    "crop": "https://cards.scryfall.io/crop/front/2/e/2eec00a1-7e12-42d2-8f46-de8ab7323c2c.webp?1783945689",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/e/2eec00a1-7e12-42d2-8f46-de8ab7323c2c.jpg?1783945689"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land\nWhen this Aura enters, draw a card.\nEnchanted land is a Swamp.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set": "inv",
+  "set_name": "Invasion",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainv&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inv?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2eec00a1-7e12-42d2-8f46-de8ab7323c2c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab35b3ea6-ae9c-4128-a47f-069d88ee49c2&unique=prints",
+  "collector_number": "126",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"No, *you* get the water. I ain't thirsty.\"\n—Squee",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Val Mayerik",
+  "artist_ids": [
+    "289e552e-3b58-484f-a939-64a01426e84d"
+  ],
+  "illustration_id": "856f58de-87e3-4866-b723-07f46b589e41",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26159,
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": "0.59",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.91",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=25748&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTainted%2BWell",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTainted%2BWell",
+    "edhrec": "https://edhrec.com/route/?cc=Tainted+Well"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7691%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3683&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14731?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

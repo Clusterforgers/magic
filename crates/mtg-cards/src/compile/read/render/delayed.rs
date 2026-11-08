@@ -20,6 +20,7 @@ impl Writer<'_> {
                 duration: None,
             },
             Effect::DelayedTrigger {
+                until: None,
                 when:
                     TriggerPattern::StepBegins {
                         step: Step::End,
@@ -45,6 +46,7 @@ impl Writer<'_> {
                         transformed: false,
                         counters,
                     },
+                ..
             },
         ] = later.as_slice()
         else {
@@ -88,6 +90,7 @@ impl Writer<'_> {
                 rest_as: None,
             },
             Effect::DelayedTrigger {
+                until: None,
                 when:
                     TriggerPattern::StepBegins {
                         step: Step::End,
@@ -106,6 +109,7 @@ impl Writer<'_> {
             Effect::Move {
                 what: Ref::Bound(moved),
                 to: Destination::Hand,
+                ..
             },
         ] = later.as_slice()
         else {

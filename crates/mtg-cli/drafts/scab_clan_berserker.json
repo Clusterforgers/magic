@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d4f659ba-c277-47a2-8b95-ce81ddac34fb",
+  "name": "Scab-Clan Berserker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scab-Clan Berserker",
+      "oracle_fingerprint": "3380b2f6307b3b7bfa02ae0e20bf76e7",
+      "abilities": [
+        { "Keyword": "Haste" },
+        { "Keyword": { "Renown": 1 } },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "Opponents" }
+            },
+            "if": {
+              "Compare": { "left": { "Count": ["This", "Renowned"] }, "op": "Ge", "right": 1 }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

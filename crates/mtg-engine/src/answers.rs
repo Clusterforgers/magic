@@ -24,18 +24,24 @@ pub(crate) enum Outcome {
     BeginCast(ObjectId),
     /// This attack is declared once its cost is paid (CR 508.1h): the payment is decided next.
     BeginAttack(Vec<(ObjectId, AttackTarget)>, Vec<ObjectId>),
+    /// This block is declared once its cost is paid (CR 509.1d): the payment is decided next.
+    BeginBlock(Vec<(ObjectId, ObjectId)>),
     /// Start activating this ability; its announcement is decided next.
     BeginActivation(AbilityRef),
     /// Start suspending this card from the hand: the payment of its suspend cost is decided next.
     BeginSuspend(ObjectId),
     /// Start foretelling this card from the hand: the payment of {2} is decided next.
     BeginForetell(ObjectId),
+    /// Start plotting this card from the hand: the payment of its plot cost is decided next.
+    BeginPlot(ObjectId),
     /// Start bringing the companion, which will be this object, into the hand: the payment of {3} is decided next.
     BeginCompanion(ObjectId),
     /// Start turning this face-down permanent face up: the payment of its cost is decided next.
     BeginTurnUp(ObjectId),
     /// Start unlocking this door of this Room: the payment of its mana cost is decided next.
     BeginUnlock(ObjectId, u8),
+    /// Start ending this effect by paying for it: the payment of its price is decided next; the object is the one it changes.
+    BeginEndEffect(ObjectId, mtg_core::ids::EffectId),
     /// Start casting a copy of the spell face of this prepared permanent: the copy is made and its announcement and payment are decided next.
     BeginPrepared(ObjectId),
     /// These are the modes, in the order they are printed, of the cast or activation in progress.
@@ -52,6 +58,8 @@ pub(crate) enum Outcome {
     Cards(Vec<ObjectId>),
     /// This is how the next amount to divide of the cast or activation in progress is shared among its targets.
     Division(Vec<(Target, u32)>),
+    /// These are the events of the helper's payment for the assist of the spell in progress.
+    Assisted(Vec<Event>),
     /// Abandon the cast or activation in progress.
     CancelCast,
     /// Remove the triggered ability being put on the stack, whose controller chose no target (CR 603.3d).
@@ -98,6 +106,53 @@ fn undo(announcing: bool, kind: &DecisionKind) -> Result<Outcome, EngineError> {
     }
 }
 
+/// The answer to a choice of cards the game itself asks outside any resolution: which permanents stay tapped in the untap
+/// step, and else the legend rule.
+fn table_cards(
+    state: &GameState,
+    options: &choose::CardsOptions,
+    choice: &choose::CardsChoice,
+) -> Result<Outcome, EngineError> {
+    if crate::steps::asks_untap(state) {
+        crate::steps::untap_answer(state, options, choice)
+    } else {
+        crate::legend::answer(state, options, choice)
+    }
+}
+
+/// The answer to a mode decision, refused when the cost of the modes it names cannot be paid.
+fn mode_checked(
+    state: &GameState,
+    player: mtg_core::ids::PlayerId,
+    options: &choose::ModeOptions,
+    choice: choose::ModeChoice,
+    pending: Option<&Pending>,
+) -> Result<Outcome, EngineError> {
+    let outcome = choose::mode_answer(player, options, choice)?;
+    if let (Outcome::Modes(modes), Some(pending)) = (&outcome, pending) {
+        pending.check_modes(state, modes)?;
+    }
+    Ok(outcome)
+}
+
+/// The answer to a choice of cards: among the cards offered, in the bounds, and with no two of a name when the options say so.
+fn cards_checked(
+    state: &GameState,
+    pending: Option<&Pending>,
+    player: mtg_core::ids::PlayerId,
+    options: &choose::CardsOptions,
+    choice: choose::CardsChoice,
+) -> Result<Outcome, EngineError> {
+    if options.one_per_name {
+        choose::check_card_names(state, &choice.0)?;
+    }
+    let outcome = choose::cards_answer(player, options, choice, pending.is_some())?;
+    if let (Outcome::Cards(cards), Some(pending)) = (&outcome, pending) {
+        pending.check_picked(state, cards)?;
+    }
+    Ok(outcome)
+}
+
 /// Checks `answer` against `decision`; the result is only built from legal options.
 ///
 /// `pending` is the cast or activation in progress, whose announcements its payment puts on the spell or ability;
@@ -130,11 +185,8 @@ pub(crate) fn handle(
             w11a_declare(state, player, options, attackers, exert)
         }
         (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
-            check_blockers(state, options, &blocks)?;
-            Ok(Outcome::Events(vec![Event::BlockersDeclared {
-                player,
-                blocks,
-            }]))
+            check_blockers(options, &blocks)?;
+            crate::block_tax::declare(state, player, blocks)
         }
         (DecisionKind::AssignDamage(options), Answer::AssignDamage(assignment)) => {
             Ok(assignment_answer(options, assignment)?)
@@ -152,11 +204,12 @@ pub(crate) fn handle(
             choose::targets_answer(player, options, choice, pending.is_some())
         }
         (DecisionKind::ChooseMode(options), Answer::ChooseMode(choice)) => {
-            choose::mode_answer(player, options, choice)
+            mode_checked(state, player, options, choice, pending)
         }
         (DecisionKind::ChooseNumber(options), Answer::ChooseNumber(choice)) => {
             choose::number_answer(player, options, choice, pending.is_some())
         }
+        (DecisionKind::ChooseName(_), Answer::ChooseName(it)) => choose::name_answer(player, &it),
         (DecisionKind::DivideAmount(options), Answer::DivideAmount(choice)) => {
             choose::divide_answer(player, options, choice)
         }
@@ -164,20 +217,17 @@ pub(crate) fn handle(
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice))
             if state.stage() == Stage::Mulligan =>
         {
-            crate::mulligan::scry_answer(player, options, &choice)
+            crate::mulligan::opening_choice(state, player, options, &choice)
         }
-        // Nothing resolving and nothing announced: the question is the legend rule of the state-based actions.
+        // Nothing resolving and nothing announced: the question is which permanents stay tapped in the untap step, and else
+        // the legend rule of the state-based actions.
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice))
             if state.resolving().is_none() && pending.is_none() && !replacing =>
         {
-            crate::legend::answer(state, options, &choice)
+            table_cards(state, options, &choice)
         }
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice)) => {
-            let outcome = choose::cards_answer(player, options, choice, pending.is_some())?;
-            if let (Outcome::Cards(cards), Some(pending)) = (&outcome, pending) {
-                pending.check_picked(state, cards)?;
-            }
-            Ok(outcome)
+            cards_checked(state, pending, player, options, choice)
         }
         (DecisionKind::OrderCards(o), Answer::OrderCards(c)) => choose::order_answer(player, o, c),
         (DecisionKind::Scry(o), Answer::Scry(c)) => choose::scry_answer(player, o, c),

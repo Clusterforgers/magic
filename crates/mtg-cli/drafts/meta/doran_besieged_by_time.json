@@ -1,0 +1,49 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature you control attacks or blocks, it gets +X/+X until end of turn, where X is the difference between its power and toughness.",
+      "abilities": [],
+      "gap": "amount:Count/Abs"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever a creature you control attacks or blocks, it gets +X/+X until end of turn, where X is the difference between its power and toughness.",
+      "abilities": [],
+      "gap": "amount:Count/Abs"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Each creature spell you cast with toughness greater than its power costs {1} less to cast.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 90
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 91,
+          "end": 233
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

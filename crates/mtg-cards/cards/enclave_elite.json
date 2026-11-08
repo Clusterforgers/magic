@@ -1,0 +1,21 @@
+{
+  "oracle_id": "27c84b2e-fc66-45a6-a5ad-d3ef204d5077",
+  "name": "Enclave Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enclave Elite",
+      "oracle_fingerprint": "e3a4110de58b3660a0d55f44299c9a63",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{1}{U}" } },
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "Kicks" } }
+          }
+        }
+      ]
+    }
+  ]
+}

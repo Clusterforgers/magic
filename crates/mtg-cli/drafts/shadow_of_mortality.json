@@ -1,0 +1,30 @@
+{
+  "oracle_id": "45378874-aa51-4bb6-a161-be336c164778",
+  "name": "Shadow of Mortality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow of Mortality",
+      "oracle_fingerprint": "850ad499e621294fc12431f2f4a1b136",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Sum": [{ "StartingLife": "You" }, { "Times": { "by": -1, "of": { "Life": "You" } } }]
+            },
+            "condition": {
+              "Compare": {
+                "left": { "Life": "You" },
+                "op": "Lt",
+                "right": { "StartingLife": "You" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

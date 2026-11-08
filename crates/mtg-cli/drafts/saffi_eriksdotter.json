@@ -1,0 +1,39 @@
+{
+  "oracle_id": "84ba3e2c-ea96-470b-92c6-b937dc87549b",
+  "name": "Saffi Eriksdotter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saffi Eriksdotter",
+      "oracle_fingerprint": "f348f53dfd6e5e14f6f4b60e3a595aa6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [
+                        { "Type": "Creature" },
+                        { "Is": { "Target": 0 } },
+                        { "OwnedBy": "You" }
+                      ],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

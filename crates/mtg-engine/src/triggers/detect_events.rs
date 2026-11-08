@@ -132,6 +132,7 @@ pub(super) fn damage(state: &GameState, source: &str, to: DamageTarget) -> Event
         deathtouch: false,
         form: crate::combat::DamageForm::Normal,
         toxic: 0,
+        unpreventable: false,
     }
 }
 
@@ -841,7 +842,11 @@ fn tapping_a_permanent_for_mana_triggers_once_for_the_tap(
     let mana_taps = found.len();
     assert_eq!(mana_taps, expected);
     if expected == 1 {
-        assert_eq!(found[0].cause.subjects, [Target::Player(player)]);
+        let tapped = pre.object(id(&pre, land)).unwrap().reference();
+        assert_eq!(
+            found[0].cause.subjects,
+            [Target::Object(tapped), Target::Player(player)]
+        );
     }
 }
 
@@ -1000,6 +1005,60 @@ fn an_attacker_blocked_by_two_becomes_blocked_once_and_each_blocker_blocks() {
 }
 
 #[rstest]
+#[case::once_by_one_or_more(
+    r#"{"BecomesBlocked":{"what":["Other"],"by":[{"Named":"Ogre"}],"once":true}}"#,
+    1
+)]
+#[case::once_for_each_of_two(
+    r#"{"BecomesBlocked":{"what":["Other"],"by":[{"ControlledBy":"Opponents"}],"once":true}}"#,
+    1
+)]
+#[case::each_of_two(
+    r#"{"BecomesBlocked":{"what":["Other"],"by":[{"ControlledBy":"Opponents"}]}}"#,
+    2
+)]
+#[case::none_of_the_kind(
+    r#"{"BecomesBlocked":{"what":["Other"],"by":[{"Named":"Bear"}],"once":true}}"#,
+    0
+)]
+#[case::blocks_one_or_more(
+    r#"{"Blocks":{"what":[{"Named":"Ogre"}],"blocking":[{"Named":"Bear"}]}}"#,
+    1
+)]
+#[case::blocks_none_of_the_kind(
+    r#"{"Blocks":{"what":[{"Named":"Ogre"}],"blocking":[{"Named":"Watcher"}]}}"#,
+    0
+)]
+#[case::each_blocker_of_the_kind(r#"{"Blocks":{"what":[],"blocking":[{"Named":"Bear"}]}}"#, 2)]
+fn a_block_of_a_kind_triggers_once_however_many_match(#[case] when: &str, #[case] expected: usize) {
+    let pre = board(when);
+    let declared = Event::BlockersDeclared {
+        player: FOE,
+        blocks: vec![
+            (id(&pre, "Ogre"), id(&pre, "Bear")),
+            (id(&pre, "Wolf"), id(&pre, "Bear")),
+        ],
+    };
+    assert_eq!(fired_unfolded(&pre, &[declared]), expected);
+}
+
+#[test]
+fn a_blocker_of_two_attackers_of_the_kind_triggers_once_against_the_first() {
+    let pre =
+        board(r#"{"Blocks":{"what":[{"Named":"Ogre"}],"blocking":[{"ControlledBy":"You"}]}}"#);
+    let declared = Event::BlockersDeclared {
+        player: FOE,
+        blocks: vec![
+            (id(&pre, "Ogre"), id(&pre, "Bear")),
+            (id(&pre, "Ogre"), id(&pre, "Watcher")),
+        ],
+    };
+    let found = detect(&pre, &[declared], &pre);
+    assert_eq!(found.len(), 1);
+    assert_eq!(found[0].cause.against, Some(target(&pre, "Bear")));
+}
+
+#[rstest]
 #[case::two_of_mine(
     r#"{"GroupAttacks":{"what":[{"ControlledBy":"You"}],"at_least":2}}"#,
     2,
@@ -1112,4 +1171,47 @@ fn a_permanent_becoming_tapped_triggers_what_names_it(
         object: id(&pre, permanent),
     };
     assert_eq!(fired(&pre, &[tapped]), expected);
+}
+
+#[rstest]
+#[case::at_an_opponent(
+    r#"{"GroupAttacksAt":{"what":[{"ControlledBy":"You"}],"at":"Opponents"}}"#,
+    2,
+    1
+)]
+#[case::not_at_myself(
+    r#"{"GroupAttacksAt":{"what":[{"ControlledBy":"You"}],"at":"You"}}"#,
+    2,
+    0
+)]
+#[case::two_needed(
+    r#"{"GroupAttacksAt":{"what":[{"ControlledBy":"You"}],"at":"Opponents","at_least":2}}"#,
+    1,
+    0
+)]
+#[case::two_got(
+    r#"{"GroupAttacksAt":{"what":[{"ControlledBy":"You"}],"at":"Opponents","at_least":2}}"#,
+    2,
+    1
+)]
+#[case::only_the_matching(
+    r#"{"GroupAttacksAt":{"what":[{"Named":"Bear"}],"at":"Opponents","at_least":2}}"#,
+    2,
+    0
+)]
+fn attackers_at_a_player_trigger_for_the_attackers_of_that_player(
+    #[case] when: &str,
+    #[case] attacking: usize,
+    #[case] expected: usize,
+) {
+    let pre = board(when);
+    let attackers = ["Bear", "Watcher"][..attacking]
+        .iter()
+        .map(|name| (id(&pre, name), AttackTarget::Player(FOE)))
+        .collect();
+    let declared = Event::AttackersDeclared {
+        player: ME,
+        attackers,
+    };
+    assert_eq!(detect(&pre, &[declared], &pre).len(), expected);
 }

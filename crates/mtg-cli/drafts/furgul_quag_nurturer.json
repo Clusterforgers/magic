@@ -1,0 +1,32 @@
+{
+  "oracle_id": "bf9355a8-6700-4e9a-bb32-593ca7036dd4",
+  "name": "Furgul, Quag Nurturer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Furgul, Quag Nurturer",
+      "oracle_fingerprint": "249f8882bf3743d8133032b289cc157f",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 177 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": { "Stat": { "of": "Paid", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

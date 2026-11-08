@@ -1,0 +1,34 @@
+{
+  "oracle_id": "7668f7bc-9a43-4024-87c3-995aa0a65aaa",
+  "name": "Encumbered Reejerey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Encumbered Reejerey",
+      "oracle_fingerprint": "d9ee8464d49fc3c7229616fa8112cfab",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 3 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": ["This", { "HasCounter": "-1/-1" }] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

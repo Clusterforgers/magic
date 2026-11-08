@@ -1,0 +1,59 @@
+{
+  "oracle_id": "e123fd7d-ace9-48a4-9510-eedcc837d8e8",
+  "name": "Iron Spider, Stark Upgrade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron Spider, Stark Upgrade",
+      "oracle_fingerprint": "a8293fd9fe7029278b7ffd24024fc281",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "Type": "Artifact" } },
+                                { "Not": { "Type": "Creature" } }
+                              ]
+                            }
+                          },
+                          { "Subtype": "Vehicle" }
+                        ]
+                      },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              {
+                "RemoveCountersAmong": {
+                  "counter": "+1/+1",
+                  "count": 2,
+                  "from": [{ "Type": "Artifact" }]
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "606092eb-8fe3-4ef7-aaf1-2d3b2687d27a",
+  "name": "Super Suit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Super Suit",
+      "oracle_fingerprint": "a86b1b87f86bbfbbea408ef5c2e5939a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Attach": { "what": "This", "to": { "Target": 0 } } },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

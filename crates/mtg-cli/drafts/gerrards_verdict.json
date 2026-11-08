@@ -1,0 +1,46 @@
+{
+  "oracle_id": "670b5dfb-ffdf-43ed-acc3-855006e352fc",
+  "name": "Gerrard's Verdict",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gerrard's Verdict",
+      "oracle_fingerprint": "ce349755708b40388a3136ee42411879",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "count": 2, "as": "discarded" } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 3,
+                      "of": {
+                        "Count": [
+                          { "Is": { "Bound": "discarded" } },
+                          {
+                            "AnyOf": [
+                              { "In": "Battlefield" },
+                              { "In": "Hand" },
+                              { "In": "Library" },
+                              { "In": "Graveyard" },
+                              { "In": "Exile" },
+                              { "In": "Stack" }
+                            ]
+                          },
+                          { "Type": "Land" }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

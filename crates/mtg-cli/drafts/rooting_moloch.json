@@ -1,0 +1,44 @@
+{
+  "oracle_id": "4056c1dd-9db4-4ff6-9dc5-a69e8da1d2a6",
+  "name": "Rooting Moloch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rooting Moloch",
+      "oracle_fingerprint": "4f440b196eebfc3931c7d56b09d6a0bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "HasKeywordNamed": "Cycling" },
+                        { "HasKeywordNamed": "Typecycling" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Exile", "only": { "Target": 0 }, "play": true } },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

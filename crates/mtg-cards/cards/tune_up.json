@@ -1,0 +1,48 @@
+{
+  "oracle_id": "aaa14260-2537-4668-8517-c825118777cc",
+  "name": "Tune Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tune Up",
+      "oracle_fingerprint": "087ec35e3dd8ea6cc199deb9aee2047e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Vehicle" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

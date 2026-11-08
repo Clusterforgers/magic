@@ -1,0 +1,66 @@
+{
+  "oracle_id": "6fd37ff3-e75d-459a-8717-8f6a9865fb32",
+  "name": "Clockwork Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clockwork Hydra",
+      "oracle_fingerprint": "d54777eaa91a787ffb8fae31474e2f2f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 4 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "RememberValue": {
+                  "value": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Counters": { "on": "This", "counter": "+1/+1" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 1,
+                      "otherwise": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                    }
+                  },
+                  "slot": "remembered_number"
+                }
+              },
+              { "RemoveCounters": { "from": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "remembered_number" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

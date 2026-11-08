@@ -12,8 +12,8 @@ use mtg_engine::choose::{
 };
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{
-    Answer, AttackOptions, DamageOptions, DecisionKind, MulliganChoice, PayChoice, PayOptions,
-    PriorityAction, PriorityOptions,
+    Answer, AttackOptions, BlockOptions, DamageOptions, DecisionKind, MulliganChoice, PayChoice,
+    PayOptions, PriorityAction, PriorityOptions,
 };
 use mtg_engine::error::IllegalAnswer;
 use mtg_engine::hash::StableHasher;
@@ -26,6 +26,11 @@ use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, Engine, EngineError, Event, GameState};
 
 use crate::windows::{Mode, SeatWindows, Side, Stop};
+
+/// The answer to a question for a card name: none.
+fn no_name() -> Answer {
+    Answer::ChooseName(mtg_engine::choose::NameChoice(String::new()))
+}
 
 /// Picks random legal answers from a seeded generator, so a bot game is reproducible from its seed.
 #[derive(Debug, Clone)]
@@ -106,12 +111,44 @@ fn within_budget(picks: &[Pick<'_>], mana: u32) -> (Attack, bool) {
     (attack, taxed)
 }
 
+/// `blocks` without every block of its last creature that is not required to block, cut back to a declaration the
+/// rules accept (an attacker left with too few blockers loses them, else what the rules require). `None` once the
+/// declaration is what the rules require, which costs nothing (a requirement never makes a player pay, CR 509.1d).
+fn smaller_block(options: &BlockOptions, blocks: &[(ObjectId, ObjectId)]) -> Option<Block> {
+    let legal = options.legal_blocks();
+    if blocks == legal.as_slice() {
+        return None;
+    }
+    let (blocker, _) = blocks
+        .iter()
+        .rev()
+        .find(|(blocker, _)| !options.required.contains(blocker))?;
+    let mut smaller: Block = blocks
+        .iter()
+        .copied()
+        .filter(|(other, _)| other != blocker)
+        .collect();
+    for (attacker, needed) in &options.min_blockers {
+        if smaller.iter().filter(|(_, a)| a == attacker).count() < *needed {
+            smaller.retain(|(_, a)| a != attacker);
+        }
+    }
+    Some(if options.accepts(&smaller) {
+        smaller
+    } else {
+        legal
+    })
+}
+
+/// A block as the declaration lists it: each blocker and the attacker it blocks.
+type Block = Vec<(ObjectId, ObjectId)>;
+
 /// Applies a bot's `answer` to the `decision` it answers.
 ///
-/// An attack the engine refuses because its player cannot pay for it (CR 508.1h) is taken back one creature at a
-/// time, the creatures that are not required first, until the engine accepts it; so a game of bots never fails on the
-/// cost of attacking, whatever mana its budget (`AttackOptions::mana`) left out of account. The engine is untouched by
-/// a refusal.
+/// An attack or a block the engine refuses because its player cannot pay for it (CR 508.1h, 509.1d) is taken back
+/// one creature at a time, the creatures that are not required first, until the engine accepts it; so a game of bots
+/// never fails on the cost of attacking or blocking, whatever mana its attack budget (`AttackOptions::mana`) left out
+/// of account or its random block never counted. The engine is untouched by a refusal.
 pub fn apply_answer(
     engine: &mut Engine,
     decision: &Decision,
@@ -120,10 +157,17 @@ pub fn apply_answer(
     let mut answer = answer;
     loop {
         let refused = match engine.apply(answer.clone()) {
-            Err(error @ EngineError::Illegal(IllegalAnswer::AttackUnaffordable(_))) => error,
+            Err(
+                error @ EngineError::Illegal(
+                    IllegalAnswer::AttackUnaffordable(_) | IllegalAnswer::BlockUnaffordable(_),
+                ),
+            ) => error,
             result => return result,
         };
         let smaller = match (&decision.kind, &answer) {
+            (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
+                smaller_block(options, blocks).map(Answer::DeclareBlockers)
+            }
             (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
                 smaller_attack(options, attackers).map(Answer::DeclareAttackers)
             }
@@ -229,6 +273,7 @@ pub(crate) fn priority_actions(options: &PriorityOptions) -> Vec<PriorityAction>
             .iter()
             .map(|o| PriorityAction::Foretell(*o)),
     );
+    actions.extend(options.plottable.iter().map(|o| PriorityAction::Plot(*o)));
     actions.extend(
         options
             .turnable
@@ -258,6 +303,7 @@ fn played_object(action: &PriorityAction) -> Option<ObjectId> {
         | PriorityAction::CastSpell(object)
         | PriorityAction::Suspend(object)
         | PriorityAction::Foretell(object)
+        | PriorityAction::Plot(object)
         | PriorityAction::TurnFaceUp(object)
         | PriorityAction::CastPrepared(object) => Some(*object),
         PriorityAction::ActivateMana(source) => Some(source.object),
@@ -504,14 +550,10 @@ impl RandomBot {
                         blocks.retain(|(_, a)| a != attacker);
                     }
                 }
-                // A creature a rule requires to block that the random choice left out: the bot blocks as the rules
-                // require and no more.
-                if options
-                    .required
-                    .iter()
-                    .any(|required| !blocks.iter().any(|(blocker, _)| blocker == required))
-                {
-                    blocks = options.required_blocks();
+                // A random choice the rules refuse (a requirement left out, a creature alone that cannot block alone):
+                // the bot blocks as the rules require and no more.
+                if !options.accepts(&blocks) {
+                    blocks = options.legal_blocks();
                 }
                 Answer::DeclareBlockers(blocks)
             }
@@ -525,25 +567,9 @@ impl RandomBot {
                     self.pick(options.c10_dice_choosable(), wanted),
                 ))
             }
-            DecisionKind::ChooseMode(options) => {
-                // Any number of the modes offered between the bounds, in no particular order, a mode more than
-                // once only where it may repeat; a bot never backs out of a cast it began.
-                let offered: Vec<usize> = options.modes.iter().map(|mode| mode.index).collect();
-                let spread =
-                    usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
-                let wanted = options.min as usize + self.rng.index(spread);
-                let chosen = if offered.is_empty() {
-                    Vec::new()
-                } else if options.repeat {
-                    (0..wanted)
-                        .map(|_| offered[self.rng.index(offered.len())])
-                        .collect()
-                } else {
-                    self.pick(&offered, wanted)
-                };
-                Answer::ChooseMode(ModeChoice::Modes(chosen))
-            }
+            DecisionKind::ChooseMode(options) => self.modes(options),
             DecisionKind::ChooseNumber(options) => self.number(options),
+            DecisionKind::ChooseName(_) => no_name(),
             DecisionKind::DivideAmount(options) => {
                 Answer::DivideAmount(DivideChoice::Division(self.share_out(options)))
             }
@@ -675,7 +701,11 @@ impl RandomBot {
     /// backing out ends the step.
     /// A declaration of attackers chosen at random, with the attackers it exerts.
     fn w11a_attack_answer(&mut self, options: &AttackOptions) -> Answer {
-        let attackers = self.attack(options);
+        let mut attackers = self.attack(options);
+        if !options.accepts(&attackers) {
+            self.taxed = Taxed::Idle;
+            attackers = options.legal_attack();
+        }
         let exert = self.w11a_exert(options, &attackers);
         w11a_declaration(attackers, exert)
     }
@@ -699,7 +729,7 @@ impl RandomBot {
     fn attack(&mut self, options: &AttackOptions) -> Attack {
         if self.taxed == Taxed::BackedOut {
             self.taxed = Taxed::Idle;
-            return options.required_attack();
+            return options.legal_attack();
         }
         let mut picks = Vec::new();
         for option in &options.attackers {
@@ -1018,6 +1048,27 @@ impl RandomBot {
         Answer::ChooseCards(CardsChoice(self.subset(&options.from, wanted)))
     }
 
+    /// Any number of the modes offered between the bounds, in no particular order, a mode more than once only where it
+    /// may repeat; modes with costs take the cheapest set, the one that can be paid for. A bot never backs out of a cast.
+    fn modes(&mut self, options: &mtg_engine::choose::ModeOptions) -> Answer {
+        let offered: Vec<usize> = options.modes.iter().map(|mode| mode.index).collect();
+        let spread = usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
+        let wanted = options.min as usize + self.rng.index(spread);
+        let chosen = if offered.is_empty() {
+            Vec::new()
+        } else if !options.cheapest.is_empty() {
+            let fewest = options.min.max(1) as usize;
+            options.cheapest.iter().copied().take(fewest).collect()
+        } else if options.repeat {
+            (0..wanted)
+                .map(|_| offered[self.rng.index(offered.len())])
+                .collect()
+        } else {
+            self.pick(&offered, wanted)
+        };
+        Answer::ChooseMode(ModeChoice::Modes(chosen))
+    }
+
     /// Any number in range that is allowed; with no upper bound, a few above the lowest. A bot never backs out of a
     /// cast.
     fn number(&mut self, options: &NumberOptions) -> Answer {
@@ -1222,6 +1273,7 @@ mod tests {
             (PriorityAction::Activate(ability), Some(object)),
             (PriorityAction::Suspend(object), Some(object)),
             (PriorityAction::Foretell(object), Some(object)),
+            (PriorityAction::Plot(object), Some(object)),
             (PriorityAction::TurnFaceUp(object), Some(object)),
             (PriorityAction::CastPrepared(object), Some(object)),
             (PriorityAction::BringCompanion, None),

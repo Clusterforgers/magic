@@ -27,8 +27,9 @@ pub(super) fn run(
     if done.face {
         return None;
     }
+    let can_cancel = granted.is_none();
     let usable = if let Some(granted) = granted {
-        faces::grantable_faces(state, player, card, granted)
+        faces::grantable_faces(state, player, card, &granted)
     } else {
         let seat = state.player(player)?;
         let pool: ManaPool = seat.mana().clone();
@@ -63,7 +64,7 @@ pub(super) fn run(
                         source: card,
                         options,
                         text: "Choose which face to cast.".to_owned(),
-                        can_cancel: granted.is_none(),
+                        can_cancel,
                     }),
                 }));
             }

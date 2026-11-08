@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5bf88cac-5997-4254-8349-2473de854c50",
+  "name": "Firbolg Flutist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Firbolg Flutist",
+      "oracle_fingerprint": "7765bfa1428be850675310ad15df194a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }, { "AddKeyword": "Myriad" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

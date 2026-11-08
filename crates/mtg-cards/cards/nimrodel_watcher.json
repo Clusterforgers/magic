@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1b8de1c5-1e23-4c84-bc5a-a14853ad8c7a",
+  "name": "Nimrodel Watcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nimrodel Watcher",
+      "oracle_fingerprint": "49bd5f81e5304f640482c9642c4df8f1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

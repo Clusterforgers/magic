@@ -1,0 +1,44 @@
+{
+  "oracle_id": "a3b8a08b-5409-4d5f-9bab-8a7a6376a5b9",
+  "name": "Olivia's Midnight Ambush",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Olivia's Midnight Ambush",
+      "oracle_fingerprint": "13f0dbc810d2f3302873cfb744a16dec",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "When": { "condition": "IsNight", "then": 13, "otherwise": 2 } }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "When": { "condition": "IsNight", "then": 13, "otherwise": 2 } }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "oracle_id": "e6fd0c7c-b164-4cf1-8910-0f8e680b2213",
+  "name": "Nezumi Freewheeler // Hideous Fleshwheeler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nezumi Freewheeler",
+      "oracle_fingerprint": "da7887a97ed34ee2d0448967e99964d4",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "who": "EachPlayer", "count": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{W/P}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hideous Fleshwheeler",
+      "oracle_fingerprint": "26c2141ff7520303e917fbc2f3e5576c",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

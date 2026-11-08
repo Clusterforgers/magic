@@ -1,0 +1,48 @@
+{
+  "oracle_id": "77212081-0b49-4d92-9c5a-1f21e6907fce",
+  "name": "Krydle of Baldur's Gate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krydle of Baldur's Gate",
+      "oracle_fingerprint": "e13b73317a5588cd8521e71bc92c0b20",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "LoseLife": { "who": "Triggering", "amount": 1 } },
+              { "Mill": { "who": "Triggering" } },
+              { "GainLife": { "amount": 1 } },
+              { "Scry": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["CantBeBlocked"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

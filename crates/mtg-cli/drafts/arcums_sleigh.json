@@ -1,0 +1,46 @@
+{
+  "oracle_id": "40960ec8-e3be-45f2-8d27-316d82c69123",
+  "name": "Arcum's Sleigh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcum's Sleigh",
+      "oracle_fingerprint": "fbb9d89c7ca4641623ad592338c90c08",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "Type": "Land" },
+                        { "Supertype": "Snow" },
+                        { "ControlledBy": "Defending" }
+                      ]
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                "InCombat"
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Vigilance" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

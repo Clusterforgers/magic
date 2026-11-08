@@ -1,0 +1,35 @@
+{
+  "oracle_id": "13d301d1-c1e1-4656-8700-3f1c1c7c4485",
+  "name": "Sabertooth Alley Cat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sabertooth Alley Cat",
+      "oracle_fingerprint": "15b1f05f5a01df1468cb15cd0177fab0",
+      "abilities": [
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        { "Not": { "HasKeyword": "Defender" } }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

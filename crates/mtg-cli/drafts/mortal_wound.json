@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f7b70077-5518-45f9-9833-01a4f8afac71",
+  "name": "Mortal Wound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mortal Wound",
+      "oracle_fingerprint": "555a0cac078d8aace2cabbcfda58a7c5",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "Attached" } } },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "oracle_id": "a9c1fa95-34a8-42ef-af2f-1394df23cad8",
+  "name": "The Night of the Doctor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Night of the Doctor",
+      "oracle_fingerprint": "4c4be7a19ec1a68dc5b11854b1cacc14",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Supertype": "Legendary" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "moved" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "Is": { "Bound": "moved" } }] },
+                  "as": "card2"
+                }
+              },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "card2" },
+                        "counter": { "Other": "first strike" }
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "PutCounters": {
+                              "on": { "Bound": "card2" },
+                              "counter": { "Other": "vigilance" }
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "PutCounters": {
+                              "on": { "Bound": "card2" },
+                              "counter": { "Other": "lifelink" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

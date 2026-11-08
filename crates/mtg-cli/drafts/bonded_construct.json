@@ -1,0 +1,14 @@
+{
+  "oracle_id": "c7556be3-649a-4994-8aaa-a0f258856682",
+  "name": "Bonded Construct",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bonded Construct",
+      "oracle_fingerprint": "b9522c1e5f22c555f81306b8cf241dda",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } } } }
+      ]
+    }
+  ]
+}

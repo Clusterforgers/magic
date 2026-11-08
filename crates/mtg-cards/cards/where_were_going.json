@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bbb4643a-4bc6-4860-95e5-6f69cd1aebbe",
+  "name": "Where We're Going...",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Where We're Going...",
+      "oracle_fingerprint": "16b9be0c1e7df5743770886ebd2448a9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "flying" } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

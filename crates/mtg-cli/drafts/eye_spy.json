@@ -1,0 +1,36 @@
+{
+  "oracle_id": "0fef3f4f-18b6-452c-a634-c870709abcf5",
+  "name": "Eye Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eye Spy",
+      "oracle_fingerprint": "60f104eb55df3846da2118e290f0a200",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Graveyard" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "555778df-8ed9-4eb3-859b-4246d9e05ee5",
+  "oracle_id": "bf5765e0-def0-4ddf-9cd7-083feae71660",
+  "multiverse_ids": [
+    426593
+  ],
+  "tcgplayer_id": 129472,
+  "cardmarket_id": 296239,
+  "name": "Firemind's Foresight",
+  "lang": "en",
+  "released_at": "2017-03-31",
+  "uri": "https://api.scryfall.com/cards/555778df-8ed9-4eb3-859b-4246d9e05ee5",
+  "scryfall_uri": "https://scryfall.com/card/dds/21/fireminds-foresight?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:56:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/5/555778df-8ed9-4eb3-859b-4246d9e05ee5.jpg?1783936573",
+    "normal": "https://cards.scryfall.io/normal/front/5/5/555778df-8ed9-4eb3-859b-4246d9e05ee5.jpg?1783936573",
+    "large": "https://cards.scryfall.io/large/front/5/5/555778df-8ed9-4eb3-859b-4246d9e05ee5.jpg?1783936573",
+    "png": "https://cards.scryfall.io/png/front/5/5/555778df-8ed9-4eb3-859b-4246d9e05ee5.png?1783936573",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/5/555778df-8ed9-4eb3-859b-4246d9e05ee5.jpg?1783936573",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/5/555778df-8ed9-4eb3-859b-4246d9e05ee5.jpg?1783936573",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/5/555778df-8ed9-4eb3-859b-4246d9e05ee5.webp?1783936573",
+    "grid": "https://cards.scryfall.io/grid/front/5/5/555778df-8ed9-4eb3-859b-4246d9e05ee5.webp?1783936573",
+    "display": "https://cards.scryfall.io/display/front/5/5/555778df-8ed9-4eb3-859b-4246d9e05ee5.webp?1783936573",
+    "art": "https://cards.scryfall.io/art/front/5/5/555778df-8ed9-4eb3-859b-4246d9e05ee5.webp?1783936573",
+    "crop": "https://cards.scryfall.io/crop/front/5/5/555778df-8ed9-4eb3-859b-4246d9e05ee5.webp?1783936573",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/5/555778df-8ed9-4eb3-859b-4246d9e05ee5.jpg?1783936573"
+  },
+  "mana_cost": "{5}{U}{R}",
+  "cmc": 7.0,
+  "type_line": "Instant",
+  "oracle_text": "Search your library for an instant card with mana value 3, reveal it, and put it into your hand. Then repeat this process for instant cards with mana values 2 and 1. Then shuffle.",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "758fe4d1-ce2b-4106-8cec-820841d730af",
+  "set": "dds",
+  "set_name": "Duel Decks: Mind vs. Might",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/758fe4d1-ce2b-4106-8cec-820841d730af",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adds&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dds?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/555778df-8ed9-4eb3-859b-4246d9e05ee5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abf5765e0-def0-4ddf-9cd7-083feae71660&unique=prints",
+  "collector_number": "21",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dan Murayama Scott",
+  "artist_ids": [
+    "f852fa13-137e-40f2-bbc1-0f01df09c0e0"
+  ],
+  "illustration_id": "e05d561e-5bc6-491a-b5c9-2353b3719180",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 12709,
+  "penny_rank": 9420,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=426593&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFiremind%2527s%2BForesight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFiremind%2527s%2BForesight",
+    "edhrec": "https://edhrec.com/route/?cc=Firemind%27s+Foresight"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F129472%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=296239&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Firemind%27s+Foresight&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

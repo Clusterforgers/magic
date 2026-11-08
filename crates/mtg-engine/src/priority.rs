@@ -3,7 +3,7 @@
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
-use mtg_cards::ability::{Ability, Limit, LoyaltyCost, Timing};
+use mtg_cards::ability::{Ability, Activators, LoyaltyCost, Timing};
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -21,7 +21,7 @@ use crate::events::Event;
 use crate::faces;
 use crate::keywords;
 use crate::loyalty;
-use crate::mana::{ManaOption, ManaPool, can_afford};
+use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
 use crate::mana_ability;
 use crate::manual;
 use crate::object::GameObject;
@@ -71,14 +71,52 @@ pub(crate) fn sorcery_timing(state: &GameState, player: PlayerId) -> bool {
     state.turn().active() == player && state.turn().step().is_main() && state.stack().is_empty()
 }
 
+/// The answer that plots `object`, when it is offered.
+/// Unlocking a door and ending an effect by paying are legal when the offer lists them.
+fn e15g_special_answer(
+    options: &PriorityOptions,
+    action: &PriorityAction,
+) -> Result<Outcome, EngineError> {
+    match *action {
+        PriorityAction::UnlockDoor(object, door) => {
+            if !options
+                .unlockable
+                .iter()
+                .any(|option| option.card == object && option.face == door)
+            {
+                return Err(IllegalAnswer::NotOffered("unlock").into());
+            }
+            Ok(Outcome::BeginUnlock(object, door))
+        }
+        PriorityAction::EndEffect(effect) => {
+            let offered = options
+                .endable
+                .iter()
+                .find(|option| option.effect == effect)
+                .ok_or(IllegalAnswer::NotOffered("end effect"))?;
+            Ok(Outcome::BeginEndEffect(offered.object, effect))
+        }
+        _ => Err(IllegalAnswer::NotOffered("special action").into()),
+    }
+}
+
+fn plot_answer(options: &PriorityOptions, object: ObjectId) -> Result<Outcome, EngineError> {
+    if options.plottable.contains(&object) {
+        Ok(Outcome::BeginPlot(object))
+    } else {
+        Err(IllegalAnswer::NotOffered("plot").into())
+    }
+}
+
 /// Whether `player` has a land play left this turn (CR 305.2): the turn's plays so far are fewer than the ruleset and
 /// the rules in play allow.
 pub(crate) fn land_play_left(state: &GameState, player: PlayerId) -> bool {
-    state.turn().lands_played()
-        < state
-            .ruleset()
-            .land_plays_per_turn()
-            .saturating_add(crate::rules::extra_land_plays(state, player))
+    !crate::prohibit::forbidden(state, crate::prohibit::Doing::PlayLand { player })
+        && state.turn().lands_played()
+            < state
+                .ruleset()
+                .land_plays_per_turn()
+                .saturating_add(crate::rules::extra_land_plays(state, player))
 }
 
 /// Whether `player` could play a land card now while the ability `resolving` resolves (CR 305.1, 702.75a): it is their
@@ -100,6 +138,27 @@ fn hand_land(state: &GameState, id: ObjectId) -> bool {
         .is_some_and(|o| o.base_types().contains(CardType::Land))
 }
 
+/// Whether the cost can take the source from where it is, as it leaves, and no rule forbids it.
+fn leaves_from_here(
+    state: &GameState,
+    player: PlayerId,
+    object: &GameObject,
+    leaves: Leaves,
+) -> bool {
+    match leaves {
+        Leaves::Stays => true,
+        Leaves::Exiled => crate::prohibit::may_exile(state, object.id()),
+        Leaves::Sacrificed => {
+            object.zone() == Zone::Battlefield
+                && crate::prohibit::may_sacrifice(state, player, object.id())
+        }
+        Leaves::Discarded => {
+            matches!(object.zone(), Zone::Hand(_))
+                && crate::prohibit::may_discard(state, player, object.id())
+        }
+    }
+}
+
 /// Whether the ability `rules`, which `address` names among the abilities of the permanent `object`, could be
 /// activated by `player` now.
 ///
@@ -113,6 +172,16 @@ fn can_activate(
     address: AbilityRef,
     rules: &Ability,
 ) -> bool {
+    if crate::prohibit::forbidden(
+        state,
+        crate::prohibit::Doing::Activate {
+            player,
+            source: object.id(),
+            kind: crate::activation_kind::specific(state, address, rules),
+        },
+    ) {
+        return false;
+    }
     // A loyalty ability costs counters, not a cost the price below knows (CR 606).
     if let Ability::Loyalty { cost, .. } = rules {
         // A `-X` removes X counters, at most those the planeswalker holds (CR 606.6).
@@ -120,6 +189,7 @@ fn can_activate(
             .permanent()
             .map_or(0, |permanent| permanent.counters_of(&CounterKind::Loyalty));
         return loyalty::can_activate(state, player, object, *cost)
+            && loyalty_mana_affordable(state, player, object, address, rules)
             && announceable(state, player, object.id(), rules)
             && some_x_has_targets(state, player, object.id(), rules, |x| {
                 x == 0 || (*cost == LoyaltyCost::MinusX && x <= counters)
@@ -140,23 +210,23 @@ fn can_activate(
     if *from != zone_kind(object.zone()) {
         return false;
     }
-    if *limit == Some(Limit::OncePerTurn)
-        && state.limit_spent(object.reference(), address.source, address.ability)
+    if let Some(limit) = limit
+        && state.limit_spent(*limit, object.reference(), address.source, address.ability)
     {
         return false;
     }
-    let Ok(price) = Price::announced(cost) else {
+    let Ok(price) = Price::announced_in(cost, state, player, object.id(), address.source.granter())
+    else {
         return false;
     };
-    if rules.is_mana_ability() {
+    // A player who does not control the permanent can neither tap it nor give it up as a cost (CR 602.2).
+    let foreign = controller_of_object(state, object) != player;
+    if rules.is_mana_ability()
+        || (foreign && (price.tap || price.untap || price.leaves != Leaves::Stays))
+    {
         return false;
     }
-    let leaves_from_here = match price.leaves {
-        Leaves::Stays | Leaves::Exiled => true,
-        Leaves::Sacrificed => object.zone() == Zone::Battlefield,
-        Leaves::Discarded => matches!(object.zone(), Zone::Hand(_)),
-    };
-    if !leaves_from_here {
+    if !leaves_from_here(state, player, object, price.leaves) {
         return false;
     }
     // Life, counters and the objects the other parts take must be there to pay (CR 118.3).
@@ -174,18 +244,12 @@ fn can_activate(
     {
         return false;
     }
-    if price.tap {
-        let Some(permanent) = object.permanent() else {
-            return false;
-        };
-        // Only creatures are subject to summoning sickness for {T} abilities (CR 302.6).
-        let sick = keywords::summoning_sick(state, object.id())
-            && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
-        if permanent.tapped() || sick {
-            return false;
-        }
+    if !source_turns(state, object, &price) {
+        return false;
     }
-    if let Some(mana) = crate::c11a_less::c11a_mana(state, player, object.id(), &price) {
+    if let Some(mana) =
+        crate::c11a_less::c11a_mana(state, player, (object.id(), address, rules), &price, None)
+    {
         let mana = &mana;
         let Some(seat) = state.player(player) else {
             return false;
@@ -197,14 +261,81 @@ fn can_activate(
             .life()
             .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
         let spend = Spend::for_ability(state, object.id(), price.x > 0);
-        if !can_afford(mana, seat.mana(), &sources, life, &spend) {
+        let helpers = waterbend_help(state, player, object.id(), &price, &claimed);
+        if !can_afford_with(mana, seat.mana(), &sources, helpers.help(), life, &spend) {
             return false;
         }
     }
-    announceable(state, player, object.id(), rules)
-        && some_x_has_targets(state, player, object.id(), rules, |x| {
-            x == 0 || (price.x > 0 && can_pay_x(state, player, object, &price, &claimed, x))
-        })
+    let affords = |x: u32| {
+        x == 0
+            || ((price.x > 0 || price.counted())
+                && price.at(x).claimed(state, player, object.id()).is_some()
+                && can_pay_x(state, player, object, &price, &claimed, x))
+    };
+    // "X can't be 0": the least X must be paid for.
+    let least = crate::announce::least_of(cost);
+    (least == 0 || affords(least))
+        && announceable(state, player, object.id(), rules)
+        && some_x_has_targets(state, player, object.id(), rules, affords)
+}
+
+/// Whether the source can be tapped (`{T}`) or untapped (`{Q}`) as the price asks: a permanent in the other state, and a
+/// creature free of summoning sickness (CR 302.6); a price with neither asks nothing of it.
+fn source_turns(state: &GameState, object: &GameObject, price: &Price) -> bool {
+    if !price.tap && !price.untap {
+        return true;
+    }
+    let Some(permanent) = object.permanent() else {
+        return false;
+    };
+    let sick = keywords::summoning_sick(state, object.id())
+        && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
+    let ready = if price.untap {
+        permanent.tapped() && !price.tap
+    } else {
+        !permanent.tapped()
+    };
+    ready && !sick
+}
+
+/// What may help pay the waterbend part of the price of an ability of `source`: the artifacts and creatures the cost does not
+/// take, nothing for a price without one.
+fn waterbend_help(
+    state: &GameState,
+    player: PlayerId,
+    source: ObjectId,
+    price: &Price,
+    claimed: &[ObjectId],
+) -> crate::help::Offered {
+    if price.waterbend == 0 {
+        return crate::help::Offered::default();
+    }
+    let mut barred = claimed.to_vec();
+    if price.tap || price.moves_source() {
+        barred.push(source);
+    }
+    crate::help::waterbend(state, player, &barred)
+}
+
+/// Whether `player` can pay the mana that cost modifiers add to a loyalty ability (CR 606.4, 601.2f), if any do.
+fn loyalty_mana_affordable(
+    state: &GameState,
+    player: PlayerId,
+    object: &GameObject,
+    address: AbilityRef,
+    rules: &Ability,
+) -> bool {
+    let Some((mana, price)) =
+        crate::c11a_less::loyalty_mana(state, player, (object.id(), address, rules), None)
+    else {
+        return true;
+    };
+    let Some(seat) = state.player(player) else {
+        return false;
+    };
+    let sources = price.sources(state, player, object.id());
+    let spend = Spend::for_ability(state, object.id(), false);
+    can_afford(&mana, seat.mana(), &sources, seat.life(), &spend)
 }
 
 /// Whether `player` can pay the mana of `price` with `x` more generic mana for each `{X}`, as `can_activate` judges the
@@ -257,11 +388,21 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
         let Some(object) = state.object(id) else {
             continue;
         };
-        if controller_of_object(state, object) != player {
+        let controller = controller_of_object(state, object);
+        if controller != player && !state.possible.others_activate {
             continue;
         }
         for (address, rules) in abilities_of(state, id) {
-            if can_activate(state, player, object, address, &rules) {
+            let by = match &*rules {
+                Ability::Activated { by, .. } => *by,
+                _ => Activators::Controller,
+            };
+            let allowed = match by {
+                Activators::Controller => controller == player,
+                Activators::Anyone => true,
+                Activators::Opponents => controller != player,
+            };
+            if allowed && can_activate(state, player, object, address, &rules) {
                 found.push(address);
             }
         }
@@ -377,6 +518,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .copied()
         .filter(|id| ways::can_foretell(state, player, *id, &pool, &all_mana, life))
         .collect();
+    let plottable = ways::plottable(state, player, hand, &pool, &all_mana, life);
     let companion = crate::companions::can_bring(state, player, &pool, &all_mana, life);
     let turnable: Vec<ObjectId> = state
         .zone(Zone::Battlefield)
@@ -385,6 +527,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .filter(|id| ways::can_turn_up(state, player, *id, &pool, &all_mana, life))
         .collect();
     let unlockable = crate::dk1c5_rooms::dk1c5_unlockable(state, player, &pool, &all_mana, life);
+    let endable = crate::e15g_paid::endable(state, player, &pool, &all_mana, life);
     let abilities = if silenced {
         Vec::new()
     } else {
@@ -411,7 +554,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         lands: &playable_lands,
         castable: &castable,
         faces: &faces,
-        special: [&suspendable, &foretellable],
+        special: [&suspendable, &foretellable, &plottable],
     };
     let unplayable = unplayable::unplayable(state, player, &judged, &offered);
     PriorityOptions {
@@ -422,11 +565,13 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             &[
                 suspendable.as_slice(),
                 foretellable.as_slice(),
+                plottable.as_slice(),
                 turnable.as_slice(),
             ]
             .concat(),
         ) || !faces.is_empty()
             || !unlockable.is_empty()
+            || !endable.is_empty()
             || companion,
         playable_lands,
         castable,
@@ -434,8 +579,10 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         abilities,
         suspendable,
         foretellable,
+        plottable,
         turnable,
         unlockable,
+        endable,
         companion,
         faces,
         unplayable,
@@ -456,11 +603,9 @@ pub(crate) fn answer(
             if !options.playable_lands.contains(&object) {
                 return Err(IllegalAnswer::NotOffered("land").into());
             }
-            Ok(Outcome::Events(vec![Event::LandPlayed {
-                player,
-                object,
-                face: None,
-            }]))
+            Ok(Outcome::Events(crate::stack::land_played(
+                state, player, object, None,
+            )))
         }
         PriorityAction::PlayLandFace(object, face) => {
             let offered = options
@@ -471,11 +616,12 @@ pub(crate) fn answer(
                 return Err(IllegalAnswer::NotOffered("land").into());
             }
             // The front face of an adventure or modal double-faced card is the card itself.
-            Ok(Outcome::Events(vec![Event::LandPlayed {
+            Ok(Outcome::Events(crate::stack::land_played(
+                state,
                 player,
                 object,
-                face: (face != 0).then_some(face),
-            }]))
+                (face != 0).then_some(face),
+            )))
         }
         PriorityAction::CastSpell(object) => {
             if !options.castable.contains(&object) {
@@ -501,6 +647,7 @@ pub(crate) fn answer(
             }
             Ok(Outcome::BeginForetell(object))
         }
+        PriorityAction::Plot(object) => plot_answer(options, object),
         PriorityAction::BringCompanion => {
             let outside = crate::companions::outside(state, player)
                 .filter(|_| options.companion)
@@ -513,15 +660,8 @@ pub(crate) fn answer(
             }
             Ok(Outcome::BeginTurnUp(object))
         }
-        PriorityAction::UnlockDoor(object, door) => {
-            if !options
-                .unlockable
-                .iter()
-                .any(|option| option.card == object && option.face == door)
-            {
-                return Err(IllegalAnswer::NotOffered("unlock").into());
-            }
-            Ok(Outcome::BeginUnlock(object, door))
+        special @ (PriorityAction::UnlockDoor(..) | PriorityAction::EndEffect(_)) => {
+            e15g_special_answer(options, &special)
         }
         PriorityAction::CastPrepared(object) => {
             let offered = options.faces.iter().any(|option| {

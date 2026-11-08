@@ -1,0 +1,50 @@
+{
+  "oracle_id": "43daed96-2216-4f17-82ce-3eccd5d69936",
+  "name": "Elven Bow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elven Bow",
+      "oracle_fingerprint": "e82c27966e7ec761c01bf5def523e2fd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elf Warrior",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elf", "Warrior"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "as": "token"
+                      }
+                    },
+                    { "Attach": { "what": "This", "to": { "Bound": "token" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }, { "AddKeyword": "Reach" }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

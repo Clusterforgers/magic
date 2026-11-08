@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "102840eb-2fc2-4e93-ac60-035160b4a182",
+  "oracle_id": "b058ee2e-ddb9-4f49-bbe0-16b72d54d4da",
+  "multiverse_ids": [],
+  "resource_id": "73EF9796A1BD6B62236CF5A670299959E3242A86D734D71E42037BC51C18EA67",
+  "mtgo_id": 152095,
+  "arena_id": 105773,
+  "tcgplayer_id": 697337,
+  "cardmarket_id": 892154,
+  "name": "Extremis Elite",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/102840eb-2fc2-4e93-ac60-035160b4a182",
+  "scryfall_uri": "https://scryfall.com/card/msc/763/extremis-elite?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:37:05Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/0/102840eb-2fc2-4e93-ac60-035160b4a182.jpg?1783903025",
+    "normal": "https://cards.scryfall.io/normal/front/1/0/102840eb-2fc2-4e93-ac60-035160b4a182.jpg?1783903025",
+    "large": "https://cards.scryfall.io/large/front/1/0/102840eb-2fc2-4e93-ac60-035160b4a182.jpg?1783903025",
+    "png": "https://cards.scryfall.io/png/front/1/0/102840eb-2fc2-4e93-ac60-035160b4a182.png?1783903025",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/0/102840eb-2fc2-4e93-ac60-035160b4a182.jpg?1783903025",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/0/102840eb-2fc2-4e93-ac60-035160b4a182.jpg?1783903025",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/0/102840eb-2fc2-4e93-ac60-035160b4a182.webp?1783903025",
+    "grid": "https://cards.scryfall.io/grid/front/1/0/102840eb-2fc2-4e93-ac60-035160b4a182.webp?1783903025",
+    "display": "https://cards.scryfall.io/display/front/1/0/102840eb-2fc2-4e93-ac60-035160b4a182.webp?1783903025",
+    "art": "https://cards.scryfall.io/art/front/1/0/102840eb-2fc2-4e93-ac60-035160b4a182.webp?1783903025",
+    "crop": "https://cards.scryfall.io/crop/front/1/0/102840eb-2fc2-4e93-ac60-035160b4a182.webp?1783903025",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/0/102840eb-2fc2-4e93-ac60-035160b4a182.jpg?1783903025"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Mercenary Villain",
+  "oracle_text": "Power-up — {4}{R}: Put two +1/+1 counters on this creature. It deals 1 damage to any target. (Activate each power-up ability only once. Reduce the cost by its mana cost if it entered this turn.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Power-up"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/102840eb-2fc2-4e93-ac60-035160b4a182/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab058ee2e-ddb9-4f49-bbe0-16b72d54d4da&unique=prints",
+  "collector_number": "763",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "In the arms race to recreate the Super-Soldier Serum, something far more dangerous was let loose on the world.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Junggeun Yoon",
+  "artist_ids": [
+    "5b083210-508b-424a-ac90-7fabd2135abf"
+  ],
+  "illustration_id": "5213acfe-6880-4dd4-b695-fd9fa323fe7c",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 29565,
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.14",
+    "tix": "0.01"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DExtremis%2BElite",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DExtremis%2BElite",
+    "edhrec": "https://edhrec.com/route/?cc=Extremis+Elite"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697337%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892154&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/152095?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d90a5213-3363-4cd1-97d6-4fc057f78b2a",
+  "name": "Thunderbolts Conspiracy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunderbolts Conspiracy",
+      "oracle_fingerprint": "519174ceb7be701c646b6315fad2d232",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Villain" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Hero" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

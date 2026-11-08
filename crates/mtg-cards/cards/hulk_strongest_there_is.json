@@ -1,0 +1,39 @@
+{
+  "oracle_id": "35daea08-655d-4588-8430-b078769d22b6",
+  "name": "Hulk, Strongest There Is",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hulk, Strongest There Is",
+      "oracle_fingerprint": "d5c9787a01ece023aee752c7399644a5",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "MultiplyCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Subtype": "Gamma" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

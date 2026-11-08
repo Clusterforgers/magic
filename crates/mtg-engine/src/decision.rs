@@ -2,16 +2,16 @@
 //!
 //! A [`Decision`] lists every legal option; an [`Answer`] must be built from exactly those.
 
-use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 use serde::{Deserialize, Serialize};
 
 use crate::abilities::AbilityRef;
 use crate::choose::{
     CardsChoice, CardsOptions, CostsChoice, CostsOptions, DivideChoice, DivideOptions, ModeChoice,
-    ModeOptions, NumberChoice, NumberOptions, OptionChoice, OptionOptions, OrderChoice,
-    OrderOptions, ReplacementChoice, ReplacementOptions, ScryChoice, ScryOptions, TargetChoice,
-    TargetOptions, TriggersChoice, TriggersOptions, YesNoChoice, YesNoOptions,
+    ModeOptions, NameChoice, NameOptions, NumberChoice, NumberOptions, OptionChoice, OptionOptions,
+    OrderChoice, OrderOptions, ReplacementChoice, ReplacementOptions, ScryChoice, ScryOptions,
+    TargetChoice, TargetOptions, TriggersChoice, TriggersOptions, YesNoChoice, YesNoOptions,
 };
 use crate::combat::{AttackTarget, DamageTarget};
 use crate::help::{Help, Offered};
@@ -55,6 +55,8 @@ pub enum DecisionKind {
     ChooseMode(ModeOptions),
     /// Choose a number (X, or "any number").
     ChooseNumber(NumberOptions),
+    /// Name a card (CR 201.3); the answer is text.
+    ChooseName(NameOptions),
     /// Divide damage or counters among the targets.
     DivideAmount(DivideOptions),
     /// Choose cards from a list; any seat may be asked.
@@ -105,6 +107,7 @@ impl DecisionKind {
             DecisionKind::ChooseTargets(_) => "choose-targets",
             DecisionKind::ChooseMode(_) => "choose-mode",
             DecisionKind::ChooseNumber(_) => "choose-number",
+            DecisionKind::ChooseName(_) => "choose-name",
             DecisionKind::DivideAmount(_) => "divide-amount",
             DecisionKind::ChooseCards(_) => "choose-cards",
             DecisionKind::OrderCards(_) => "order-cards",
@@ -180,6 +183,10 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub foretellable: Vec<ObjectId>,
+    /// Cards in the hand that can be plotted now (a special action at sorcery timing that does not use the stack, CR 702.170).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub plottable: Vec<ObjectId>,
     /// Face-down permanents their controller can turn face up now (a special action that does not use the stack, CR 702.37e).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
@@ -189,6 +196,11 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<FaceOption>>", optional))]
     pub unlockable: Vec<FaceOption>,
+    /// The effects the holder can end now by paying (a special action that does not use the stack, CR 116.2c): "you may
+    /// pay {W} to end this effect".
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<PaidEnd>>", optional))]
+    pub endable: Vec<PaidEnd>,
     /// Whether the holder can put their companion into their hand now: a special action (CR 702.139) for {3} at sorcery
     /// timing, once a game.
     #[serde(default, skip_serializing_if = "is_false")]
@@ -241,6 +253,18 @@ pub enum Unplayable {
     Restricted,
 }
 
+/// An effect its controller may end by paying (CR 116.2c).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct PaidEnd {
+    /// The effect, named by its first part.
+    pub effect: EffectId,
+    /// The permanent it changes.
+    pub object: ObjectId,
+    /// What ending it costs.
+    pub cost: ManaCost,
+}
+
 /// A face of a card with several faces that a player can cast or play now.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -262,6 +286,8 @@ pub struct FaceOption {
 /// Options while paying for a spell.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+// Each flag is a separate fact of the wire form the client reads by name.
+#[allow(clippy::struct_excessive_bools)]
 pub struct PayOptions {
     /// The spell being cast.
     pub spell: ObjectId,
@@ -283,6 +309,14 @@ pub struct PayOptions {
     pub auto_available: bool,
     /// Whether the cast may be backed out of; nothing has been paid yet, so it rolls back (CR 601.2).
     pub can_cancel: bool,
+    /// Whether the payment is the tax on an attack being declared (CR 508.1h); cancelling returns to the declaration.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub attack: bool,
+    /// Whether the payment is the tax on a block being declared (CR 509.1d); cancelling returns to the declaration.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub block: bool,
     /// The payer's life total.
     pub life: i32,
     /// The most life this payment may take: 2 for each Phyrexian symbol in the cost, within the life total (CR 119.4).
@@ -387,6 +421,11 @@ pub struct AttackOptions {
         ts(as = "Option<Vec<(AttackTarget, usize)>>", optional)
     )]
     pub most_at: Vec<(AttackTarget, usize)>,
+    /// The creatures among `attackers` that can't attack unless another creature attacks too (CR 508.1d); a declaration
+    /// of one of them alone is refused. Left out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub cant_alone: Vec<ObjectId>,
 }
 
 impl AttackOptions {
@@ -465,11 +504,21 @@ pub struct BlockOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub required: Vec<ObjectId>,
+    /// The attackers a rule requires some creature to block (CR 509.1c: "must be blocked if able"); the declaration blocks
+    /// each of them unless every creature that could is busy with a requirement of its own. Left out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub must_be_blocked: Vec<ObjectId>,
     /// The most creatures that may block together (CR 509.1b: "no more than one creature can block each combat"). Left
     /// out while no rule limits the declaration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub most: Option<usize>,
+    /// The creatures among `blockers` that can't block unless another creature blocks too; a declaration with one of them
+    /// as the only blocker is refused. Left out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub cant_alone: Vec<ObjectId>,
 }
 
 impl BlockOptions {
@@ -513,6 +562,7 @@ impl BlockOptions {
                 blocks.push((option.object, attacker));
             }
         }
+        self.serve_must_be_blocked(&mut blocks);
         let mut attackers: Vec<ObjectId> = Vec::new();
         for (_, attacker) in &blocks {
             if !attackers.contains(attacker) {
@@ -549,8 +599,10 @@ impl BlockOptions {
                 return false;
             }
             let needed = self.needed_for(*attacker);
+            let blocking = crate::w14c_block_capacity::w14c_distinct_blockers(blocks).len();
+            let room = |more: usize| self.most.is_none_or(|most| blocking + more <= most);
             if held > 0 || needed <= 1 {
-                return true;
+                return room(1);
             }
             let free = self
                 .blockers
@@ -561,7 +613,7 @@ impl BlockOptions {
                         && !blocks.iter().any(|(held, _)| *held == other.object)
                 })
                 .count();
-            free + 1 >= needed
+            free + 1 >= needed && room(needed)
         })
     }
 }
@@ -589,6 +641,11 @@ pub struct DamageOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<u32>>", optional))]
     pub lethal: Vec<u32>,
+    /// Whether the attacker's controller may instead assign all of the damage to the player or planeswalker attacked as
+    /// though the attacker were not blocked (CR 510.1c): answered by giving no damage to any blocker.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub unblocked: bool,
 }
 
 /// Options for the cleanup discard.
@@ -631,6 +688,8 @@ pub enum PriorityAction {
     Suspend(ObjectId),
     /// Foretell this card from the hand (CR 702.143, a special action): pay {2} and exile it face down.
     Foretell(ObjectId),
+    /// Plot this card from the hand (CR 702.170, a special action at sorcery timing): pay its plot cost and exile it face up.
+    Plot(ObjectId),
     /// Turn this face-down permanent face up (CR 702.37e, a special action): pay its morph, megamorph or disguise cost.
     TurnFaceUp(ObjectId),
     /// Cast a copy of the spell face of this prepared permanent (it must be offered in `PriorityOptions.faces`): the copy is made and the
@@ -640,6 +699,8 @@ pub enum PriorityAction {
     BringCompanion,
     /// Unlock this locked door of this Room (CR 709.5e, a special action): pay the door's mana cost.
     UnlockDoor(ObjectId, u8),
+    /// End this effect (CR 116.2c, a special action): pay what it names (it must be offered in `PriorityOptions.endable`).
+    EndEffect(EffectId),
     /// Do something by hand for a card the engine does not run: a zone move, counters, life, a token and the like. Legal at
     /// any priority, checked against the state (`manual.rs`).
     Manual(ManualAction),
@@ -692,6 +753,8 @@ pub enum Answer {
     ChooseMode(ModeChoice),
     /// The number chosen.
     ChooseNumber(NumberChoice),
+    /// The card name.
+    ChooseName(NameChoice),
     /// How the amount is divided.
     DivideAmount(DivideChoice),
     /// The cards chosen.
@@ -730,6 +793,7 @@ impl Answer {
             Answer::ChooseTargets(_) => "choose-targets",
             Answer::ChooseMode(_) => "choose-mode",
             Answer::ChooseNumber(_) => "choose-number",
+            Answer::ChooseName(_) => "choose-name",
             Answer::DivideAmount(_) => "divide-amount",
             Answer::ChooseCards(_) => "choose-cards",
             Answer::OrderCards(_) => "order-cards",
@@ -773,6 +837,8 @@ mod tests {
                     extra: 0,
                 })
                 .collect(),
+            must_be_blocked: Vec::new(),
+            cant_alone: Vec::new(),
             min_blockers: menace.iter().map(|(a, n)| (id(*a), *n)).collect(),
             max_blockers: Vec::new(),
             required: required.iter().map(|object| id(*object)).collect(),
@@ -885,6 +951,7 @@ mod tests {
         let options = AttackOptions {
             most: None,
             most_at: Vec::new(),
+            cant_alone: Vec::new(),
             attackers: vec![attack(1, &[2, 3]), attack(2, &[3]), attack(3, &[])],
             required: vec![id(1), id(3)],
             mana: 0,
@@ -901,6 +968,7 @@ mod tests {
         let plain = AttackOptions {
             most: None,
             most_at: Vec::new(),
+            cant_alone: Vec::new(),
             attackers: Vec::new(),
             required: Vec::new(),
             mana: 0,

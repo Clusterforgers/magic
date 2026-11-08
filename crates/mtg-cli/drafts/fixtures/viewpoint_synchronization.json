@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "b0f10999-c7c2-462e-bd75-e3710f7a3364",
+  "oracle_id": "2e338e09-5758-4cc2-9143-21f050a28677",
+  "multiverse_ids": [
+    667633
+  ],
+  "mtgo_id": 128052,
+  "tcgplayer_id": 556363,
+  "cardmarket_id": 775507,
+  "name": "Viewpoint Synchronization",
+  "lang": "en",
+  "released_at": "2024-07-05",
+  "uri": "https://api.scryfall.com/cards/b0f10999-c7c2-462e-bd75-e3710f7a3364",
+  "scryfall_uri": "https://scryfall.com/card/acr/43/viewpoint-synchronization?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:49:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/0/b0f10999-c7c2-462e-bd75-e3710f7a3364.jpg?1783910975",
+    "normal": "https://cards.scryfall.io/normal/front/b/0/b0f10999-c7c2-462e-bd75-e3710f7a3364.jpg?1783910975",
+    "large": "https://cards.scryfall.io/large/front/b/0/b0f10999-c7c2-462e-bd75-e3710f7a3364.jpg?1783910975",
+    "png": "https://cards.scryfall.io/png/front/b/0/b0f10999-c7c2-462e-bd75-e3710f7a3364.png?1783910975",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/0/b0f10999-c7c2-462e-bd75-e3710f7a3364.jpg?1783910975",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/0/b0f10999-c7c2-462e-bd75-e3710f7a3364.jpg?1783910975",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/0/b0f10999-c7c2-462e-bd75-e3710f7a3364.webp?1783910975",
+    "grid": "https://cards.scryfall.io/grid/front/b/0/b0f10999-c7c2-462e-bd75-e3710f7a3364.webp?1783910975",
+    "display": "https://cards.scryfall.io/display/front/b/0/b0f10999-c7c2-462e-bd75-e3710f7a3364.webp?1783910975",
+    "art": "https://cards.scryfall.io/art/front/b/0/b0f10999-c7c2-462e-bd75-e3710f7a3364.webp?1783910975",
+    "crop": "https://cards.scryfall.io/crop/front/b/0/b0f10999-c7c2-462e-bd75-e3710f7a3364.webp?1783910975",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/0/b0f10999-c7c2-462e-bd75-e3710f7a3364.jpg?1783910975"
+  },
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Freerunning {2}{G} (You may cast this spell for its freerunning cost if you dealt combat damage to a player this turn with an Assassin or commander.)\nSearch your library for up to three basic land cards and reveal them. Put two of them onto the battlefield tapped and the other into your hand, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Freerunning"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set": "acr",
+  "set_name": "Assassin's Creed",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aacr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/acr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b0f10999-c7c2-462e-bd75-e3710f7a3364/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2e338e09-5758-4cc2-9143-21f050a28677&unique=prints",
+  "collector_number": "43",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Correia",
+  "artist_ids": [
+    "d383f00d-0078-4c43-92f6-cbf62ab5df05"
+  ],
+  "illustration_id": "79b5cf5f-0f8b-4e46-b766-4b5adbb15c48",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5645,
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.26",
+    "tix": "1.20"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=667633&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DViewpoint%2BSynchronization",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DViewpoint%2BSynchronization",
+    "edhrec": "https://edhrec.com/route/?cc=Viewpoint+Synchronization"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F556363%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=775507&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128052?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

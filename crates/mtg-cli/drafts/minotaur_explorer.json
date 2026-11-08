@@ -1,0 +1,26 @@
+{
+  "oracle_id": "22374ec2-61b3-46eb-82ed-93bbb42403c4",
+  "name": "Minotaur Explorer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minotaur Explorer",
+      "oracle_fingerprint": "81c706eeca147b423fec060d780bcef6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "DiscardRandom": 1 }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

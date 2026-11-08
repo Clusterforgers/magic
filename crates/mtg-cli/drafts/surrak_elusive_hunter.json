@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7a0fe73f-6e08-4c9a-80e1-c2ead6cebe06",
+  "name": "Surrak, Elusive Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surrak, Elusive Hunter",
+      "oracle_fingerprint": "386d772e6e4b44ce922e135e92c9db4e",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "AnyOf": [{ "In": "Battlefield" }, "Spell"] }
+                ],
+                "by": [
+                  { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                  { "ControlledBy": "Opponents" }
+                ]
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

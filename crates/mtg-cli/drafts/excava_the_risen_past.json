@@ -1,0 +1,67 @@
+{
+  "oracle_id": "77216636-f76d-4c5e-b1ac-ab1844753f05",
+  "name": "Excava, the Risen Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Excava, the Risen Past",
+      "oracle_fingerprint": "0b90ffa9bb8ad53c16d1b9150064707b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Type": "Enchantment" } },
+                              { "Not": { "Not": { "Subtype": "Aura" } } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [
+                    { "SetPT": { "power": 1, "toughness": 1 } },
+                    { "AddType": "Creature" },
+                    { "AddSubtype": "Spirit" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

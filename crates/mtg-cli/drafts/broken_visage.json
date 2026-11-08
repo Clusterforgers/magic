@@ -1,0 +1,58 @@
+{
+  "oracle_id": "8e1d750e-44a7-47b1-8e0a-5f8b15d48b41",
+  "name": "Broken Visage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Broken Visage",
+      "oracle_fingerprint": "e34cf83ec4d9ba6e87fb57a5d40dec03",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Attacking", { "Not": { "Type": "Artifact" } }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                      "toughness": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } },
+                      "token": {
+                        "name": "Spirit",
+                        "colors": ["Black"],
+                        "types": ["Creature"],
+                        "subtypes": ["Spirit"]
+                      }
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "token" } },
+                        "filter": [{ "Is": { "Bound": "token" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "token" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

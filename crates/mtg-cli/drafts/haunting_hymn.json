@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b9a0977a-6364-4358-bab1-112898a1b942",
+  "name": "Haunting Hymn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunting Hymn",
+      "oracle_fingerprint": "da32da8c4cf3d0b5a02827acca2412cc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "All": ["YourTurn", { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }]
+                      },
+                      "then": 4,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

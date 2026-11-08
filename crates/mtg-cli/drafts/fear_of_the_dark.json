@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9285cdf1-ad25-4aee-a865-1bf0cc905183",
+  "name": "Fear of the Dark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fear of the Dark",
+      "oracle_fingerprint": "4f5f8d1558ece9e34330b3b6dd74be61",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Subtype": "Glimmer" },
+                    { "ControlledBy": "Defending" }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Menace" }, { "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

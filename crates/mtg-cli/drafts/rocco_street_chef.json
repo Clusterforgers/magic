@@ -1,0 +1,40 @@
+{
+  "oracle_id": "071f5b4b-6a1e-4dc3-9c08-b79713191811",
+  "name": "Rocco, Street Chef",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rocco, Street Chef",
+      "oracle_fingerprint": "a36dbab54299c7a0e815914ac39c6247",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "who": "EachPlayer", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "who": { "OwnerOf": { "Bound": "exiled" } },
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilYourNextEndStep"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 163, "end": 376 }
+          }
+        }
+      ]
+    }
+  ]
+}

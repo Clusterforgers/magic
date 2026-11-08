@@ -1,0 +1,56 @@
+{
+  "oracle_id": "edbf1b87-2d1e-47e6-a04e-a2b1646af7d9",
+  "name": "Abnormal Endurance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abnormal Endurance",
+      "oracle_fingerprint": "3a9f5d1d51ee31986ca60d6f66969e5b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            {
+                              "Move": {
+                                "what": "This",
+                                "to": { "Battlefield": { "tapped": true } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

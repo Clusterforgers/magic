@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c645a616-0d7d-416c-b5f3-057b3a1666a0",
+  "name": "Ironclaw Orcs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ironclaw Orcs",
+      "oracle_fingerprint": "31cb273ec195b121fe8053ac227bfc98",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CanBlockOnly": [
+                  {
+                    "AnyOf": [
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Compare": { "stat": "Power", "op": "Ge", "to": 2 } } }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

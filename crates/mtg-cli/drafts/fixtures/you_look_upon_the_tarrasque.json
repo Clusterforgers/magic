@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "5f00a908-1898-48e9-8b04-88c2450b2dd3",
+  "oracle_id": "231a6f8a-624a-4bff-8648-0b4ef910a6aa",
+  "multiverse_ids": [
+    563145
+  ],
+  "tcgplayer_id": 272603,
+  "cardmarket_id": 658484,
+  "name": "You Look Upon the Tarrasque",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/5f00a908-1898-48e9-8b04-88c2450b2dd3",
+  "scryfall_uri": "https://scryfall.com/card/clb/262/you-look-upon-the-tarrasque?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:04:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/f/5f00a908-1898-48e9-8b04-88c2450b2dd3.jpg?1783922699",
+    "normal": "https://cards.scryfall.io/normal/front/5/f/5f00a908-1898-48e9-8b04-88c2450b2dd3.jpg?1783922699",
+    "large": "https://cards.scryfall.io/large/front/5/f/5f00a908-1898-48e9-8b04-88c2450b2dd3.jpg?1783922699",
+    "png": "https://cards.scryfall.io/png/front/5/f/5f00a908-1898-48e9-8b04-88c2450b2dd3.png?1783922699",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/f/5f00a908-1898-48e9-8b04-88c2450b2dd3.jpg?1783922699",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/f/5f00a908-1898-48e9-8b04-88c2450b2dd3.jpg?1783922699",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/f/5f00a908-1898-48e9-8b04-88c2450b2dd3.webp?1783922699",
+    "grid": "https://cards.scryfall.io/grid/front/5/f/5f00a908-1898-48e9-8b04-88c2450b2dd3.webp?1783922699",
+    "display": "https://cards.scryfall.io/display/front/5/f/5f00a908-1898-48e9-8b04-88c2450b2dd3.webp?1783922699",
+    "art": "https://cards.scryfall.io/art/front/5/f/5f00a908-1898-48e9-8b04-88c2450b2dd3.webp?1783922699",
+    "crop": "https://cards.scryfall.io/crop/front/5/f/5f00a908-1898-48e9-8b04-88c2450b2dd3.webp?1783922699",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/f/5f00a908-1898-48e9-8b04-88c2450b2dd3.jpg?1783922699"
+  },
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose one —\n• Run and Hide — Prevent all combat damage that would be dealt to you and creatures you control this turn.\n• Gather Your Courage — Target creature gets +5/+5 and gains indestructible until end of turn. All creatures your opponents control able to block that creature this turn do so.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Gather Your Courage",
+    "Run and Hide"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5f00a908-1898-48e9-8b04-88c2450b2dd3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A231a6f8a-624a-4bff-8648-0b4ef910a6aa&unique=prints",
+  "collector_number": "262",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kekai Kotaki",
+  "artist_ids": [
+    "4b771085-c049-4308-930d-ec9665f803a4"
+  ],
+  "illustration_id": "e19e58e2-6674-457e-8a7a-bb2b01b68ece",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8176,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1486418408",
+    "previewed_at": "2022-05-17"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.36",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.25",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563145&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DYou%2BLook%2BUpon%2Bthe%2BTarrasque",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DYou%2BLook%2BUpon%2Bthe%2BTarrasque",
+    "edhrec": "https://edhrec.com/route/?cc=You+Look+Upon+the+Tarrasque"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272603%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=658484&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=You+Look+Upon+the+Tarrasque&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

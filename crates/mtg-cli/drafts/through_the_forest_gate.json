@@ -1,0 +1,38 @@
+{
+  "oracle_id": "acfe54b3-10e3-4fdb-b874-d39fde96c40a",
+  "name": "Through the Forest Gate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Through the Forest Gate",
+      "oracle_fingerprint": "46ae35cbb03cea128256da322ff7c231",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 20, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Move": { "what": { "Bound": "top" }, "to": { "Library": { "place": "Bottom" } } } },
+              { "Shuffle": {} },
+              { "GainLife": { "amount": 8 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

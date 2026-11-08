@@ -1,0 +1,42 @@
+{
+  "oracle_id": "cd112962-b297-403c-bede-c8b587f379b3",
+  "name": "Wall of Nets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Nets",
+      "oracle_fingerprint": "683014bc47c35dbdc22ead5b33cd452d",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "BlockedBy": "This" }] },
+                  "as": "exiled"
+                }
+              },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Remembered": { "on": "This", "slot": "remembered" } },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

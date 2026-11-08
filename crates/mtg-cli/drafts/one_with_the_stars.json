@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0ab43fc3-53ec-4686-873d-8dbeee2634f4",
+  "name": "One with the Stars",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "One with the Stars",
+      "oracle_fingerprint": "865bdd5d9ebe0715eed95bf2e49a5c3a",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetTypes": ["Enchantment"] }] } }
+      ]
+    }
+  ]
+}

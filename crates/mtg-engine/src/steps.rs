@@ -5,17 +5,20 @@ use std::collections::BTreeSet;
 
 use mtg_core::ids::{ObjectId, PlayerId};
 
+use crate::answers::Outcome;
 use crate::characteristics::controller_of;
+use crate::choose::{CardsChoice, CardsOptions, check_cards};
 use crate::combat::{attack_options, block_options, defending_players};
 use crate::damage::{DamagePass, damage_events, first_strike_step_needed, pending_assignment};
 use crate::decision::{Decision, DecisionKind, DiscardOptions};
 use crate::effects::ends_with_turn;
+use crate::error::EngineError;
 use crate::events::{Event, NothingToDo};
 use crate::flow::Progress;
 use crate::object::{GameObject, PermanentState};
 use crate::player::Player;
 use crate::priority::{all_passed, priority_options};
-use crate::rules::{cant_draw, no_max_hand_size, skips_draw_step};
+use crate::rules::{cant_draw, max_hand_size, no_max_hand_size, skips_draw_step, untap_during};
 use crate::stack::resolve_top;
 use crate::state::{GameResult, GameState};
 use crate::turn::{ExtraTurn, Step};
@@ -43,51 +46,7 @@ fn grant(state: &GameState) -> Event {
 fn begin_step(state: &GameState, step: Step) -> Progress {
     let active = state.active_player();
     match step {
-        Step::Untap => {
-            // Phasing comes first (CR 502.1): what phases in untaps with the rest.
-            let leaving = active.map_or_else(Vec::new, |active| {
-                crate::phasing::w7e_keyword_out_events(state, active)
-            });
-            let going: BTreeSet<ObjectId> = leaving
-                .iter()
-                .filter_map(|event| match event {
-                    Event::PermanentPhasedOut { object, .. } => Some(*object),
-                    _ => None,
-                })
-                .collect();
-            let mut events =
-                active.map_or_else(Vec::new, |active| crate::phasing::in_events(state, active));
-            events.splice(0..0, leaving);
-            let coming: Vec<_> = events
-                .iter()
-                .filter_map(|event| match event {
-                    Event::PermanentPhasedIn { object } => Some(*object),
-                    _ => None,
-                })
-                .collect();
-            events.extend(
-                state
-                    .zone(Zone::Battlefield)
-                    .iter()
-                    .chain(&coming)
-                    .filter(|id| {
-                        active.is_some()
-                            && !going.contains(*id)
-                            && controller_of(state, **id) == active
-                            && !crate::characteristics::doesnt_untap(state, **id)
-                            && state
-                                .object(**id)
-                                .and_then(GameObject::permanent)
-                                .is_some_and(PermanentState::tapped)
-                    })
-                    .filter_map(|id| state.object(*id).map(crate::stun::untap_event)),
-            );
-            if let Some(active) = active {
-                events.extend(crate::c7_untap::c7_untap_spent(state, active));
-            }
-            events.extend(leave_step(state));
-            Progress::Events(events)
-        }
+        Step::Untap => untap_step(state),
         Step::Draw => {
             let skipped = state.turn().number() == 1
                 && state.ruleset().skips_first_draw(state.players().len());
@@ -120,6 +79,105 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
             Progress::Events(vec![grant(state)])
         }
     }
+}
+
+/// The untap step: phasing, then the active player determines which permanents untap and they untap together (CR 502).
+/// A permanent that may stay tapped is asked about whatever the hand: one question lists every such tapped permanent that
+/// would untap, and the answer is the ones that stay tapped (CR 502.3); no such permanent, no question.
+fn untap_step(state: &GameState) -> Progress {
+    let (events, optional) = untap_events(state, &[]);
+    match (state.active_player(), optional.first()) {
+        (Some(player), Some(&source)) => Progress::Decide(Decision {
+            player,
+            kind: DecisionKind::ChooseCards(CardsOptions {
+                one_per_name: false,
+                source,
+                max: u32::try_from(optional.len()).unwrap_or(u32::MAX),
+                from: optional,
+                min: 0,
+                text: "Choose the permanents to keep tapped.".to_owned(),
+                can_cancel: false,
+            }),
+        }),
+        _ => Progress::Events(events),
+    }
+}
+
+/// The events of the untap step with the permanents `kept` staying tapped, and the permanents that may stay tapped and
+/// would untap otherwise.
+pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>, Vec<ObjectId>) {
+    let active = state.active_player();
+    // Phasing comes first (CR 502.1): what phases in untaps with the rest.
+    let leaving = active.map_or_else(Vec::new, |active| {
+        crate::phasing::w7e_keyword_out_events(state, active)
+    });
+    let going: BTreeSet<ObjectId> = leaving
+        .iter()
+        .filter_map(|event| match event {
+            Event::PermanentPhasedOut { object, .. } => Some(*object),
+            _ => None,
+        })
+        .collect();
+    let mut events =
+        active.map_or_else(Vec::new, |active| crate::phasing::in_events(state, active));
+    events.splice(0..0, leaving);
+    let coming: Vec<_> = events
+        .iter()
+        .filter_map(|event| match event {
+            Event::PermanentPhasedIn { object } => Some(*object),
+            _ => None,
+        })
+        .collect();
+    let during = active.map_or_else(Vec::new, |active| untap_during(state, active));
+    let untapping: Vec<ObjectId> = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .chain(&coming)
+        .filter(|id| {
+            active.is_some()
+                && !going.contains(*id)
+                && (controller_of(state, **id) == active || during.contains(*id))
+                && !crate::characteristics::doesnt_untap(state, **id)
+                && state
+                    .object(**id)
+                    .and_then(GameObject::permanent)
+                    .is_some_and(PermanentState::tapped)
+        })
+        .copied()
+        .collect();
+    let optional: Vec<ObjectId> = untapping
+        .iter()
+        .copied()
+        .filter(|id| {
+            controller_of(state, *id) == active && crate::combat_quirks::may_stay_tapped(state, *id)
+        })
+        .collect();
+    events.extend(
+        untapping
+            .iter()
+            .filter(|id| !kept.contains(id))
+            .filter_map(|id| state.object(*id).map(crate::stun::untap_event)),
+    );
+    if let Some(active) = active {
+        events.extend(crate::c7_untap::c7_untap_spent(state, active));
+    }
+    events.extend(leave_step(state));
+    (events, optional)
+}
+
+/// The answer to the question of the untap step: the permanents chosen stay tapped and the others untap.
+pub(crate) fn untap_answer(
+    state: &GameState,
+    options: &CardsOptions,
+    choice: &CardsChoice,
+) -> Result<Outcome, EngineError> {
+    check_cards(options, &choice.0)?;
+    Ok(Outcome::Events(untap_events(state, &choice.0).0))
+}
+
+/// Whether a choice of cards outside any resolution is the question of the untap step.
+pub(crate) fn asks_untap(state: &GameState) -> bool {
+    state.turn().step() == Step::Untap
 }
 
 /// Events for `player` drawing `count` cards, or failing to on an empty library. A player who can't draw cards neither
@@ -233,14 +291,25 @@ fn priority_round(state: &GameState) -> Progress {
 
 /// The step after `step`: a skipped step does not begin at all (CR 614.10), so nothing triggers at its start.
 fn next_step(state: &GameState, step: Step) -> Step {
+    let mut next = following_step(state, step);
+    while state
+        .active_player()
+        .is_some_and(|p| skipped_by(state, p, next))
+    {
+        next = following_step(state, next);
+    }
+    next
+}
+
+/// Whether the turn of `player` skips `step` (CR 614.10): the draw step by `SkipDrawStep`, any step by a prohibition.
+fn skipped_by(state: &GameState, player: PlayerId, step: Step) -> bool {
+    (step == Step::Draw && skips_draw_step(state, player))
+        || crate::prohibit::skips_step(state, player, step)
+}
+
+/// The step after `step` before any step is skipped.
+fn following_step(state: &GameState, step: Step) -> Step {
     match step {
-        Step::Upkeep
-            if state
-                .active_player()
-                .is_some_and(|p| skips_draw_step(state, p)) =>
-        {
-            Step::Main1
-        }
         Step::DeclareAttackers if state.combat().attackers().is_empty() => Step::EndCombat,
         Step::DeclareBlockers if !first_strike_step_needed(state) => Step::CombatDamage,
         other => other.next().unwrap_or(Step::Cleanup),
@@ -293,7 +362,8 @@ fn cleanup(state: &GameState) -> Progress {
         let most = state
             .ruleset()
             .max_hand_size()
-            .filter(|_| !no_max_hand_size(state, active));
+            .filter(|_| !no_max_hand_size(state, active))
+            .map(|base| max_hand_size(state, active, base));
         if let Some(most) = most.filter(|most| hand.len() > *most) {
             return Progress::Decide(Decision {
                 player: active,
@@ -360,47 +430,76 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
             events
         };
     }
-    let (passed, active, extra) = next_turn(state);
+    let (passed, spent, active, extra) = next_turn(state);
     events.extend(passed);
     events.push(Event::TurnBegan {
         number: state.turn().number() + 1,
         active,
         extra: extra.is_some(),
     });
+    events.extend(spent);
     events.extend(crate::c10_xp_copy_ends::c10_xp_copies_ending(state, active));
     // The spells the ending turn's active player cast are counted before the new turn clears the count (CR 726.3a).
     if let Some(to) = crate::day_night::at_turn_start(state) {
         events.push(Event::DayNightChanged { to });
     }
     // A skipped untap step does not begin at all (CR 614.10).
-    let first = if extra.is_some_and(|turn| turn.skip_untap) {
+    let mut first = if extra.is_some_and(|turn| turn.skip_untap) {
         Step::Upkeep
     } else {
         Step::Untap
     };
+    while skipped_by(state, active, first) {
+        first = first.next().unwrap_or(Step::Cleanup);
+    }
     events.push(Event::StepBegan { step: first });
     events
 }
 
+/// The turn that follows: the events that pass over extra turns, the events that end the rules used up by skipped turns, the
+/// player and the extra turn taken.
+type NextTurn = (Vec<Event>, Vec<Event>, PlayerId, Option<ExtraTurn>);
+
 /// Who takes the next turn: the latest extra turn added whose player is still in the game and does not skip it (an
 /// earlier one waits), else the next player in turn order after the seat of the regular turn (CR 500.7). The events
 /// pass over the extra turns of players who have left or skip them.
-fn next_turn(state: &GameState) -> (Vec<Event>, PlayerId, Option<ExtraTurn>) {
+fn next_turn(state: &GameState) -> NextTurn {
     let mut passed = Vec::new();
+    let mut spent = Vec::new();
     for turn in state.extra_turns().iter().rev() {
-        if state.is_alive(turn.player) && !crate::rules::skips_extra_turns(state, turn.player) {
-            return (passed, turn.player, Some(*turn));
+        if state.is_alive(turn.player)
+            && !crate::rules::skips_extra_turns(state, turn.player)
+            && !crate::prohibit::skips_turn(state, turn.player)
+        {
+            return (passed, spent, turn.player, Some(*turn));
         }
         passed.push(Event::ExtraTurnSkipped {
             player: turn.player,
         });
+        if crate::prohibit::skips_turn(state, turn.player) {
+            spent.extend(used_skips(state, turn.player));
+        }
     }
     let regular = state.turn().regular();
-    (
-        passed,
-        state.next_alive_after(regular).unwrap_or(regular),
-        None,
-    )
+    let first = state.next_alive_after(regular).unwrap_or(regular);
+    // A skipped turn is not taken; when every player skips, the first takes theirs.
+    let mut next = first;
+    for _ in 0..state.players().len() {
+        if !crate::prohibit::skips_turn(state, next) {
+            return (passed, spent, next, None);
+        }
+        spent.extend(used_skips(state, next));
+        next = state.next_alive_after(next).unwrap_or(next);
+    }
+    (passed, spent, first, None)
+}
+
+/// The events that end the rule a skipped turn of `player` uses up ("skip your next turn"), after the turn that follows has
+/// begun.
+fn used_skips(state: &GameState, player: PlayerId) -> impl Iterator<Item = Event> {
+    crate::prohibit::skipped_turn_rules(state, player)
+        .into_iter()
+        .map(|id| Event::RuleExpired { id })
 }
 
 /// Whether the turn that is ending is the last of the last round the house rule allows.

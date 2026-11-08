@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "c3ee8468-3780-4887-8586-eaf418a95a21",
+  "oracle_id": "bb7638ce-3802-4198-89d2-6f5b647bd8fb",
+  "multiverse_ids": [],
+  "resource_id": "F5FC54C753E41FBE8CB17D2B6576674D6CD090699E37F50360DA58D79816C4FC",
+  "mtgo_id": 151151,
+  "arena_id": 105580,
+  "tcgplayer_id": 697372,
+  "cardmarket_id": 892171,
+  "name": "Moon-Boy, Dino Rider",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/c3ee8468-3780-4887-8586-eaf418a95a21",
+  "scryfall_uri": "https://scryfall.com/card/msc/563/moon-boy-dino-rider?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:38:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/3/c3ee8468-3780-4887-8586-eaf418a95a21.jpg?1783903095",
+    "normal": "https://cards.scryfall.io/normal/front/c/3/c3ee8468-3780-4887-8586-eaf418a95a21.jpg?1783903095",
+    "large": "https://cards.scryfall.io/large/front/c/3/c3ee8468-3780-4887-8586-eaf418a95a21.jpg?1783903095",
+    "png": "https://cards.scryfall.io/png/front/c/3/c3ee8468-3780-4887-8586-eaf418a95a21.png?1783903095",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/3/c3ee8468-3780-4887-8586-eaf418a95a21.jpg?1783903095",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/3/c3ee8468-3780-4887-8586-eaf418a95a21.jpg?1783903095",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/3/c3ee8468-3780-4887-8586-eaf418a95a21.webp?1783903095",
+    "grid": "https://cards.scryfall.io/grid/front/c/3/c3ee8468-3780-4887-8586-eaf418a95a21.webp?1783903095",
+    "display": "https://cards.scryfall.io/display/front/c/3/c3ee8468-3780-4887-8586-eaf418a95a21.webp?1783903095",
+    "art": "https://cards.scryfall.io/art/front/c/3/c3ee8468-3780-4887-8586-eaf418a95a21.webp?1783903095",
+    "crop": "https://cards.scryfall.io/crop/front/c/3/c3ee8468-3780-4887-8586-eaf418a95a21.webp?1783903095",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/3/c3ee8468-3780-4887-8586-eaf418a95a21.jpg?1783903095"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Ape Human",
+  "oracle_text": "Dinosaur spells you cast cost {1} less to cast.\nWhenever Moon-Boy attacks while you control a Dinosaur, Moon-Boy gets +1/+1 until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c3ee8468-3780-4887-8586-eaf418a95a21/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abb7638ce-3802-4198-89d2-6f5b647bd8fb&unique=prints",
+  "collector_number": "563",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"To have such a brother is to be filled with pride!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Wero Gallo",
+  "artist_ids": [
+    "33e6c6ee-0d21-4834-a575-4dfefa5d77ce"
+  ],
+  "illustration_id": "f967abb3-76f0-41f8-9a97-f19d45ce6fab",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 23446,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.26",
+    "eur_foil": null,
+    "tix": "0.16"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMoon-Boy%252C%2BDino%2BRider",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMoon-Boy%252C%2BDino%2BRider",
+    "edhrec": "https://edhrec.com/route/?cc=Moon-Boy%2C+Dino+Rider"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697372%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892171&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151151?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8f4f0cd2-9777-4ea1-944d-306347dc48a2",
+  "name": "Marauding Maulhorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marauding Maulhorn",
+      "oracle_fingerprint": "3ba6045ee28e3c8bef2c8bb310379d39",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "MustAttack": "This" },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Named": "Advocate of the Beast" }, { "ControlledBy": "You" }]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

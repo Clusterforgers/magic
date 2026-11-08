@@ -1,0 +1,48 @@
+{
+  "oracle_id": "eb70d548-9769-4569-ae79-cddc0e623aef",
+  "name": "Dreamwinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreamwinder",
+      "oracle_fingerprint": "858a26c0dcbaec78f9cd9783ad73e8b0",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, { "Sacrifice": { "filter": [{ "Subtype": "Island" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypes": ["Island"] }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

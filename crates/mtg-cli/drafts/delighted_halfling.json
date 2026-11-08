@@ -20,7 +20,10 @@
               {
                 "AddMana": {
                   "mana": { "AnyColor": 1 },
-                  "only": [{ "Spell": { "types": ["Creature"], "without": ["Enchantment"] } }]
+                  "only": [
+                    { "Spell": { "supertypes": ["Legendary"] } },
+                    { "Uncounterable": { "supertypes": ["Legendary"] } }
+                  ]
                 }
               }
             ]
