@@ -85,23 +85,46 @@ fn a_return_that_names_no_creature_types_alone_is_a_gap(#[case] animate: &str) {
 }
 
 /// "Whenever one or more -1/-1 counters are put on `valid`, its controller loses 1 life", the player named by `word`.
-fn countered(valid: &str, word: &str) -> String {
+fn countered(valid: &str, on: &str, word: &str) -> String {
     format!(
-        "Name:T\nTypes:Creature\nPT:1/1\nT:Mode$ CounterAddedOnce | {valid} | TriggerZones$ Battlefield | CounterType$ M1M1 | Execute$ Lose | TriggerDescription$ x\nSVar:Lose:DB$ LoseLife | LifeAmount$ 1 | Defined$ {word}\n"
+        "Name:T\nTypes:Creature\nPT:1/1\nT:Mode$ CounterAddedOnce | {valid} | TriggerZones$ Battlefield | CounterType$ M1M1 | Execute$ Lose | TriggerDescription$ Whenever one or more -1/-1 counters are put on {on}, x.\nSVar:Lose:DB$ LoseLife | LifeAmount$ 1 | Defined$ {word}\n"
     )
 }
 
 #[rstest]
-#[case::its_controller("TriggeredCardController", json!({"ControllerOf": "Triggering"}))]
-fn that_creature_of_a_counter_batch_is_the_creature(#[case] word: &str, #[case] who: Value) {
-    let text = countered("ValidCard$ Creature", word);
+#[case::a_creature("a creature")]
+#[case::another_creature("another creature")]
+fn that_creature_of_a_counter_batch_is_the_creature(#[case] on: &str) {
+    let text = countered("ValidCard$ Creature", on, "TriggeredCardController");
     assert_eq!(gaps(&text), Vec::<String>::new());
     let ability = &abilities(&text)[0]["Triggered"];
-    assert_eq!(ability["effects"][0]["LoseLife"]["who"], who);
+    assert_eq!(
+        ability["effects"][0]["LoseLife"]["who"],
+        json!({"ControllerOf": "Triggering"})
+    );
+    assert_eq!(ability["when"]["Batch"]["CountersPut"]["each"], json!(true));
+}
+
+#[rstest]
+#[case::one_or_more_creatures("one or more creatures you control")]
+#[case::creatures("creatures you control")]
+fn a_plural_counter_batch_is_one_event(#[case] on: &str) {
+    let text = countered("ValidCard$ Creature", on, "You");
+    let ability = &abilities(&text)[0]["Triggered"];
+    assert_eq!(ability["when"]["Batch"]["CountersPut"].get("each"), None);
+    let named = countered("ValidCard$ Creature", on, "TriggeredCardController");
+    assert_ne!(
+        gaps(&named),
+        Vec::<String>::new(),
+        "a plural batch has no one creature"
+    );
 }
 
 #[rstest]
 #[case::player_counters("ValidPlayer$ Player", "TriggeredCardController")]
 fn the_card_of_a_player_counter_batch_is_a_gap(#[case] valid: &str, #[case] word: &str) {
-    assert_ne!(gaps(&countered(valid, word)), Vec::<String>::new());
+    assert_ne!(
+        gaps(&countered(valid, "a player", word)),
+        Vec::<String>::new()
+    );
 }

@@ -10,7 +10,13 @@
         {
           "Triggered": {
             "when": {
-              "Batch": { "CountersPut": { "what": [{ "Type": "Creature" }], "counter": "-1/-1" } }
+              "Batch": {
+                "CountersPut": {
+                  "what": [{ "Type": "Creature" }],
+                  "counter": "-1/-1",
+                  "each": true
+                }
+              }
             },
             "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
           }

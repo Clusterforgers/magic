@@ -26,7 +26,8 @@
                         { "In": "Battlefield" },
                         "Colorless"
                       ],
-                      "counter": "+1/+1"
+                      "counter": "+1/+1",
+                      "each": true
                     }
                   }
                 },

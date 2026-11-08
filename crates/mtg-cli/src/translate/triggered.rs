@@ -44,11 +44,11 @@ pub fn targeting(when: &Value) -> Option<Vec<Value>> {
     found.as_array().cloned()
 }
 
-/// The name `key_of` gives a batch of counters put on objects, plain or by a cause ("one or more -1/-1 counters are put on
+/// The name `key_of` gives a batch of counters put on each object alone, plain or by a cause ("one or more -1/-1 counters are put on
 /// a creature"): the card of the event is the object they were put on.
 pub const COUNTERS_ON_OBJECTS: &str = "CountersPutBatch";
 
-/// Whether the pattern is a batch of counters put on objects.
+/// Whether the pattern is a batch of counters put on each object alone.
 fn counters_on_objects(when: &Value) -> bool {
     let inner = when
         .get("Caused")
@@ -56,7 +56,8 @@ fn counters_on_objects(when: &Value) -> bool {
         .unwrap_or(when);
     inner
         .get("Batch")
-        .is_some_and(|batch| batch.get("CountersPut").is_some())
+        .and_then(|batch| batch.get("CountersPut"))
+        .is_some_and(|put| put.get("each") == Some(&json!(true)))
 }
 
 /// The name of the pattern a trigger's `when` is.

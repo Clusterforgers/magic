@@ -365,10 +365,21 @@ fn counters_batch(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         r.words("counters are put on").then_some(())?;
         Some(counter)
     };
-    let what = subject(r)?;
+    // "On a creature you control" is an event of each creature; "on one or more creatures you control" one of them all.
+    let (what, each) = match subject(r) {
+        Some(what) => {
+            let each = !what.0.contains(&Pred::This);
+            (what, each)
+        }
+        None => r.attempt(|r| {
+            let _ = r.words("one or more");
+            Some((phrase(r, Form::All)?, false))
+        })?,
+    };
     let put = TriggerPattern::CountersPut {
         what,
         counter: counter.clone(),
+        each,
     };
     // The counters of any kind put on the object in a turn are counted.
     if counter.is_none() {
@@ -398,7 +409,11 @@ fn counter_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     };
     let what = subject(r)?;
     Some(if putting {
-        TriggerPattern::CountersPut { what, counter }
+        TriggerPattern::CountersPut {
+            what,
+            counter,
+            each: false,
+        }
     } else {
         TriggerPattern::CountersRemoved { what, counter }
     })
@@ -1613,7 +1628,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             player_attack_text(pattern)
         }
         TriggerPattern::TappedForMana { what, by } => tapped_for_mana_text(what, by),
-        TriggerPattern::CountersPut { what, counter } => {
+        TriggerPattern::CountersPut { what, counter, .. } => {
             counter_text(what, counter.as_ref(), "put on")
         }
         TriggerPattern::CountersRemoved { what, counter } => {
@@ -1809,14 +1824,23 @@ fn batch_text(inner: &TriggerPattern) -> Option<String> {
             by,
             per_player,
         } => super::w8b_milled::w8b_batch_text(what, by, *per_player),
-        TriggerPattern::CountersPut { what, counter } => {
+        TriggerPattern::CountersPut {
+            what,
+            counter,
+            each,
+        } => {
             let kind = match counter {
                 Some(counter) => format!("{} ", counters::kind_text(counter)?),
                 None => String::new(),
             };
-            Some(format!(
-                "Whenever one or more {kind}counters are put on {}",
+            // A permanent alone is one event either way; any other subject is singular only for an event of each.
+            let on = if *each || what.0.contains(&Pred::This) {
                 subject_text(what)?
+            } else {
+                format!("one or more {}", phrase_text(what, Form::All)?)
+            };
+            Some(format!(
+                "Whenever one or more {kind}counters are put on {on}"
             ))
         }
         _ => None,

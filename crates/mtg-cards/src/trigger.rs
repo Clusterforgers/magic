@@ -338,6 +338,10 @@ pub enum TriggerPattern {
         /// Only counters of this kind; any kind when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,
+        /// In a `Batch`, the counters put on each permanent are an event of their own ("one or more +1/+1 counters are
+        /// put on a creature you control", CR 603.2c); without it the batch is one event ("on one or more creatures").
+        #[serde(default, skip_serializing_if = "is_false")]
+        each: bool,
     },
     /// Counters are put on a player ("whenever you get one or more {E}"); `Triggering` is that player.
     PlayerCountersPut {

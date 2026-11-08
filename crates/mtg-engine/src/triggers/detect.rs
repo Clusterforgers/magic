@@ -1824,7 +1824,7 @@ fn matching_permanents(
                 .then(|| cause(state, vec![Target::Object(tapped), Target::Player(*player)]))
         }
         (
-            TriggerPattern::CountersPut { what, counter }
+            TriggerPattern::CountersPut { what, counter, .. }
             | TriggerPattern::CountersRemoved { what, counter },
             Happened::Counters {
                 on,
@@ -2156,12 +2156,10 @@ fn batch_causes<'a>(
         let Some(found) = matching(inner, member, scope) else {
             continue;
         };
-        let on_objects = matches!(
-            inner,
-            TriggerPattern::CountersPut { .. } | TriggerPattern::CountersRemoved { .. }
-        );
+        let on_objects = matches!(inner, TriggerPattern::CountersPut { each: true, .. });
         let players: Vec<Target> = if on_objects {
-            // "One or more counters are put on a creature" is an event of each creature (CR 603.2c).
+            // "One or more counters are put on a creature" is an event of each creature (CR 603.2c); "on one or more
+            // creatures" is one event.
             found
                 .subjects
                 .iter()
