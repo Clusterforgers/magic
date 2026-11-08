@@ -286,7 +286,13 @@ pub fn moving(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("from")?;
     let from = place(r)?;
     r.need("onto")?;
-    let to = place(r)?;
+    // "onto a second target creature": a target of its own beside the first.
+    let to = if from == Ref::Target(0) && r.words("a second") {
+        let to = super::selectors::second_target(r)?;
+        r.targets.get(1).is_some_and(|spec| spec.bounds.is_one() && matches!(spec.what, Targetable::Object(_))).then_some(to)?
+    } else {
+        place(r)?
+    };
     (from != to).then_some(())?;
     Some(vec![Effect::MoveCounters {
         from,

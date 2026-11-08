@@ -471,6 +471,7 @@ mod w17c_cast_only;
 mod w17c_vote_again;
 mod w18_wordings;
 mod w19a_flash;
+mod w19b_move_counters;
 mod w20a_look_pick;
 mod w20b_reflexive;
 mod w20c_counter;
