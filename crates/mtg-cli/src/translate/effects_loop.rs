@@ -82,6 +82,7 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "Reveal",
             "RememberChosen",
             "DefinedCards",
+            "TargetControls",
             "Optional",
             "ChooseEach",
         ],
@@ -118,6 +119,14 @@ pub fn choose_card(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         }
         Some(other) => return unmapped(format!("key:ChooseCard.ControlledByPlayer={other}")),
         None => {}
+    }
+    // "That player chooses up to two creatures they control": the pool is the chooser's own.
+    if p.get("TargetControls") == Some("True") && p.get("AtRandom") != Some("True") {
+        let player = match &chooser {
+            Some(target) => target.clone(),
+            None => defined(ctx, p.get("Defined").unwrap_or("You"))?,
+        };
+        filter.push(json!({"ControlledBy": player}));
     }
     if let Some(each) = p.get("ChooseEach") {
         return choose_each(ctx, p, each, &filter, chooser);
