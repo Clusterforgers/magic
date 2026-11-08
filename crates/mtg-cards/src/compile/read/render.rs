@@ -218,6 +218,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     texts.extend(attacking);
     let searches = library::other_wordings(&texts);
     texts.extend(searches);
+    let rest = super::e17b_exile_until::other_wordings(&texts);
+    texts.extend(rest);
     let replaced = instead_pairs::other_wordings(&texts);
     texts.extend(replaced);
     let hosts = w6e_control::w6e_wordings(&texts);
@@ -541,6 +543,18 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    // A return whose card enters with counters when of a kind reads as the plain return and the counters' sentence; the
+    // plain twin has no choice left, so this recurses once.
+    if let Some((plain, sentences)) = super::e17b_returned::plain(ability) {
+        for text in written_variants(&plain) {
+            for sentence in &sentences {
+                let text = format!("{}. {sentence}", text.trim_end_matches('.'));
+                if !texts.contains(&text) {
+                    texts.push(text);
+                }
+            }
+        }
+    }
     // A table of one row printed inline; the twin has no table left, so this recurses once.
     if let Some(inline) = super::fix23_dice::fix23_inline_roll(ability) {
         for text in written_variants(&inline) {
@@ -683,6 +697,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::g13a_wordings::add(&mut texts);
     super::w14_trailing_if::add(&mut texts);
     super::e16c_attacks::add(ability, &mut texts);
+    super::e17b_exile_until::add(ability, &mut texts);
     oracle_only::add_last(ability, &mut texts);
     texts
 }

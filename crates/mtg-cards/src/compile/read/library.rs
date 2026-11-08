@@ -691,7 +691,11 @@ pub fn sequence(effects: &[Effect]) -> Option<(String, usize)> {
             Some((format!("you may {text}"), used))
         }
         [Effect::Search { .. }, ..] => search_sequence(effects, &Ref::You),
-        [Effect::RevealUntil { .. }, ..] => super::reveal_until::sequence(effects),
+        [Effect::Choose { .. }, Effect::Either { .. }, ..] => {
+            super::e17b_exile_until::chosen_spared(effects)
+        }
+        [Effect::RevealUntil { .. }, ..] => super::e17b_exile_until::sequence(effects)
+            .or_else(|| super::reveal_until::sequence(effects)),
         [Effect::LookAtTop { .. }, ..] => look_sequence(effects)
             .or_else(|| super::among::sequence(effects))
             .or_else(|| super::w20a_look_pick::w20a_sequence(effects)),

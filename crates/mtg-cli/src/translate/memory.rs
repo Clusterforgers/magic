@@ -495,7 +495,12 @@ pub fn line(
     let mut line = p.without(&[]);
     let mut acted: Vec<Slot> = Vec::new();
     let mut moved: Vec<Slot> = Vec::new();
+    // The verb binds both memories itself.
+    let split = api == "DigUntil" && super::e17b_memory::split(p).is_some();
     for (key, slot) in &keys {
+        if split {
+            continue;
+        }
         if let Some(&(_, _, own)) = IMPRINT_AS
             .iter()
             .find(|(verb, imprint, _)| *verb == api && imprint == key)

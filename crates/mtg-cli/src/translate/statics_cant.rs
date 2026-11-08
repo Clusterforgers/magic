@@ -85,7 +85,12 @@ fn cant_be_cast(ctx: &Ctx, p: &Params, remembered: Option<&Value>) -> Tr<Value> 
     )?;
     let filter = match p.get("ValidCard") {
         None | Some("Card") => Vec::new(),
-        Some(valid) => selector_any(ctx, valid)?,
+        Some(valid) => {
+            // A spell is no permanent yet: "permanent spells" are spells of a permanent type.
+            let mut filter = selector_any(ctx, valid)?;
+            filter.extend(super::valid::permanent_card(valid)?);
+            filter
+        }
     };
     let mut action = json!({});
     if !filter.is_empty() {
