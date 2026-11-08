@@ -8,12 +8,14 @@
 pub(super) fn normal(text: &str) -> String {
     // Lines of a clause join as one text: a line break is a space.
     let mut text = text.split_whitespace().collect::<Vec<_>>().join(" ");
-    for step in [pronouns, dies, one_duration] {
+    for step in [pronouns, dies, one_duration, super::w17_forms::before_lists] {
         if let Some(changed) = step(&text) {
             text = changed;
         }
     }
-    super::w16d_forms::normal(&super::w16b_labels::normal(&text))
+    super::w17_wordings::normal(&super::w16d_forms::normal(&super::w16b_labels::normal(
+        &text,
+    )))
 }
 
 /// The words that end a clause where "her" is an object ("exile her.").

@@ -89,6 +89,10 @@ const AFTER_LABEL: [&str; 9] = [
 /// a trigger or a condition says nothing, and a chapter number (I, II) is no label.
 fn label(text: &str) -> Option<String> {
     let (label, rest) = text.split_once(" \u{2014} ")?;
+    // "Max speed" is a condition on the speed counter, not a name.
+    if label.eq_ignore_ascii_case("max speed") {
+        return None;
+    }
     let roman = label.chars().all(|c| {
         matches!(c, 'I' | 'V' | 'X' | ',' | ' ') || c.is_ascii_lowercase() && "ivx".contains(c)
     });

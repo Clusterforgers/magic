@@ -466,7 +466,33 @@ pub fn own_names(face: &PrintedFace) -> Vec<String> {
     } else if legendary && let Some(first) = first_name(face) {
         names.push(first);
     }
+    if legendary && !face.name.contains(',') {
+        names.extend(shorter_name(face));
+    }
     names
+}
+
+/// A legendary name the text shortens: "Rosie Cotton" for "Rosie Cotton of South Lane", "King Darien" for "King Darien
+/// XLVIII", when the text uses the short name alone.
+fn shorter_name(face: &PrintedFace) -> Option<String> {
+    let name = face.name.as_str();
+    let roman = |word: &str| !word.is_empty() && word.chars().all(|c| "IVXL".contains(c));
+    let short = [" of ", " and the "]
+        .iter()
+        .find_map(|cut| name.split_once(cut).map(|(short, _)| short))
+        .or_else(|| {
+            name.rsplit_once(' ')
+                .filter(|(_, last)| roman(last))
+                .map(|(short, _)| short)
+        })?;
+    let text = face.oracle_text.replace(name, "");
+    text.match_indices(short)
+        .any(|(at, _)| {
+            let before = text[..at].chars().next_back();
+            !before.is_some_and(char::is_alphanumeric)
+                && !text[at + short.len()..].starts_with(char::is_alphanumeric)
+        })
+        .then(|| short.to_owned())
 }
 
 /// The first word of a legendary name without a comma when the text uses it alone ("Legolas" for "Legolas Greenleaf").
@@ -1058,6 +1084,36 @@ mod tests {
         "Legendary Creature \u{2014} Elf Archer",
         "Legolas can't be blocked. Whenever Legolas Greenleaf attacks, draw a card.",
         "~ can't be blocked. Whenever ~ attacks, draw a card."
+    )]
+    #[case::name_before_of(
+        "Rosie Cotton of South Lane",
+        "Legendary Creature \u{2014} Halfling",
+        "When Rosie Cotton enters, create a Food token.",
+        "When ~ enters, create a Food token."
+    )]
+    #[case::name_without_numeral(
+        "King Darien XLVIII",
+        "Legendary Creature \u{2014} Human",
+        "{3}: Put a +1/+1 counter on King Darien.",
+        "{3}: Put a +1/+1 counter on ~."
+    )]
+    #[case::name_before_and_the(
+        "Shang-Chi and the Ten Rings",
+        "Legendary Creature \u{2014} Human",
+        "Whenever you draw a card, put a +1/+1 counter on Shang-Chi.",
+        "Whenever you draw a card, put a +1/+1 counter on ~."
+    )]
+    #[case::short_name_not_in_the_text(
+        "Rosie Cotton of South Lane",
+        "Legendary Creature \u{2014} Halfling",
+        "Rosie Cottontail can't be blocked.",
+        "Rosie Cottontail can't be blocked."
+    )]
+    #[case::short_name_of_a_card_that_is_not_legendary(
+        "Gate of Dawn",
+        "Instant",
+        "Gate deals 2 damage.",
+        "Gate deals 2 damage."
     )]
     #[case::first_name_of_a_card_that_is_not_legendary(
         "Fire Imp",
