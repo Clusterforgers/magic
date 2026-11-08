@@ -210,6 +210,8 @@ mod w16b_labels;
 mod w16c_lists;
 mod w16d_forms;
 mod w16e_sequence;
+mod w17_forms;
+mod w17_wordings;
 mod w17b_statics;
 mod w17c_cast_only;
 mod w20a_look_pick;
