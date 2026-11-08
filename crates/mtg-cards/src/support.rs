@@ -63,6 +63,9 @@ pub enum Support {
     /// game runs it like `Read` without a player's read and counts it apart; a `wrong` verdict ends it
     /// (`docs/cards-dsl.md`, Read tier).
     Forge,
+    /// A whole draft that waits for its first read: the game runs it like `Read` (fail-soft resolution included) but
+    /// shows and counts it apart, never as read; a `wrong` verdict ends it (`docs/cards-dsl.md`, Read tier).
+    Unverified,
     /// Rules exist except the listed clauses.
     Partial,
     /// No rules, or the engine runs none of them: the table resolves the card by hand.
@@ -74,9 +77,13 @@ pub enum Support {
 }
 
 impl Support {
-    /// Whether the game runs every rule of the card, so nothing is played by hand: `Verified`, `Read` or `Forge`.
+    /// Whether the game runs every rule of the card, so nothing is played by hand: `Verified`, `Read`, `Forge` or
+    /// `Unverified`.
     pub const fn runs_whole(self) -> bool {
-        matches!(self, Support::Verified | Support::Read | Support::Forge)
+        matches!(
+            self,
+            Support::Verified | Support::Read | Support::Forge | Support::Unverified
+        )
     }
 }
 
@@ -239,6 +246,7 @@ fn state_tag(state: Support) -> &'static str {
         Support::Verified => "verified",
         Support::Read => "read",
         Support::Forge => "forge",
+        Support::Unverified => "unverified",
         Support::Partial => "partial",
         Support::Manual => "manual",
         Support::Stale => "stale",

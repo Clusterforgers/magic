@@ -186,10 +186,10 @@ impl Survey {
 
     /// Cards and the buckets of their state, in report order.
     pub fn states(&self) -> Vec<(Bucket, usize)> {
-        // A card waits for a read only when its library holds drafts, which a Forge check never loads.
+        // A card waits for a read or runs unverified only when its library holds drafts, which a Forge check never loads.
         Bucket::ALL
             .into_iter()
-            .filter(|bucket| *bucket != Bucket::Waiting)
+            .filter(|bucket| !matches!(bucket, Bucket::Waiting | Bucket::Unverified))
             .map(|bucket| {
                 let cards = self
                     .checks

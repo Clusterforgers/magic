@@ -1,4 +1,4 @@
-//! Goal: a draft marked as reading back as other text (`differs`) runs only on a player's read: never as `Forge`, pending until read, `Read` once approved, read again after a change, listed to read in a deck with its differing clauses; an unmarked one never runs.
+//! Goal: a draft marked as reading back as other text (`differs`) never runs on trust: never as `Forge`, `Unverified` until read, `Read` once approved, `Unverified` again after a change, listed to read in a deck with its differing clauses; an unmarked one never runs.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
@@ -63,7 +63,7 @@ fn library(
     ReadState::Pending,
     true,
     true,
-    Support::Manual
+    Support::Unverified
 )]
 #[case::a_differs_draft_the_server_calls_approved_on_trust_is_read_not_forge(
     2,
@@ -81,7 +81,22 @@ fn library(
     true,
     Support::Read
 )]
-#[case::a_changed_rule_needs_a_new_read(1, 2, ReadState::Approved, false, true, Support::Manual)]
+#[case::a_changed_rule_needs_a_new_read(
+    1,
+    2,
+    ReadState::Approved,
+    false,
+    true,
+    Support::Unverified
+)]
+#[case::an_unmarked_pending_draft_that_differs_never_runs(
+    2,
+    2,
+    ReadState::Pending,
+    false,
+    false,
+    Support::Manual
+)]
 #[case::a_differs_draft_found_wrong(2, 2, ReadState::Wrong, false, true, Support::Manual)]
 #[case::an_unmarked_draft_that_differs_never_runs(
     2,
@@ -99,7 +114,7 @@ fn library(
     false,
     Support::Forge
 )]
-fn a_draft_that_differs_runs_on_a_players_read_alone(
+fn a_draft_that_differs_never_runs_on_trust(
     #[case] amount: i64,
     #[case] read_on: i64,
     #[case] read: ReadState,

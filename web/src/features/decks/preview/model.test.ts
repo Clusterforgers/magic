@@ -127,6 +127,7 @@ describe('support counts', () => {
       verified: 85,
       read: 5,
       forge: 0,
+      unverified: 0,
       partial: 2,
       manual: 3,
       stale: 1,

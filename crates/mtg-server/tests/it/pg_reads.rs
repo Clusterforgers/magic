@@ -186,7 +186,7 @@ async fn a_correct_read_approves_the_draft_and_leaves_it_to_others(pool: PgPool)
     let ann = register(server.addr, "ann", PASSWORD).await;
     let bo = register(server.addr, "bob", PASSWORD).await;
     let deck = store(&server, &ann).await;
-    assert_eq!(support(&server).await, "manual");
+    assert_eq!(support(&server).await, "unverified");
 
     let reply = verdict(
         &server,
@@ -331,7 +331,11 @@ async fn deleting_an_account_takes_its_verdicts_and_the_draft_waits_again(pool: 
         .await;
     assert_eq!(gone.status, 204, "{}", gone.text());
     assert_eq!(db.reads().list(false).await.unwrap().len(), 0);
-    assert_eq!(support(&server).await, "manual");
+    assert_eq!(
+        support(&server).await,
+        "unverified",
+        "unread again, it runs unverified"
+    );
 }
 
 async fn every_card(server: &TestServer, who: &Browser) -> Vec<Value> {

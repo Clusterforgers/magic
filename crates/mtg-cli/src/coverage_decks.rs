@@ -34,7 +34,7 @@ pub struct Row {
 pub struct Totals {
     /// Distinct cards in any saved deck.
     pub cards: usize,
-    /// Played whole by the game: `Verified`, `Read` or `Forge`.
+    /// Played whole by the game: `Verified`, `Read`, `Forge` or `Unverified`.
     pub automatic: usize,
     /// `Partial`: some clauses by hand.
     pub partly: usize,
@@ -44,7 +44,7 @@ pub struct Totals {
 
 /// Whether the deck check counts a card of this state as run whole.
 pub const fn is_automatic(support: Support) -> bool {
-    matches!(support, Support::Verified | Support::Read | Support::Forge)
+    support.runs_whole()
 }
 
 /// The totals over `rows`.

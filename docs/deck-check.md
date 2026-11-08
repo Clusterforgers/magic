@@ -10,17 +10,18 @@ A card without an implementation counts as `Manual` unless it has no rules text,
   - `Verified`: the rules cover the whole text, the text is unchanged, and the engine runs every primitive used. A card with no file and no rules text once reminder text (parentheses) is removed, such as a vanilla creature or a basic land, is `Verified` too.
   - `Read`: a whole draft the checker could not prove, read and found correct by a player; it runs like `Verified` and is counted apart.
   - `Forge`: a trusted whole translation of a Forge script whose Oracle text equals ours; it runs like `Read`, is counted apart and shown as "From Forge", and a `wrong` read ends it.
+  - `Unverified`: a whole draft no player has read yet; it runs like `Read`, is counted apart and shown as "Unverified", and a `wrong` read ends it.
   - `Partial`: implemented except the listed clauses; each carries a plain reason and the span of oracle text it covers.
   - `Manual`: no implementation; the table resolves the whole text by hand.
   - `Stale`: the oracle text changed since the rules were written (errata). Counts as `Manual` until reviewed.
   - `Unplayable`: the engine cannot host the card at all (digital-only actions, ante, joke-set mechanics).
 - Deck state (`DeckState`):
   - `Verified`: legal, and every card of every zone is `Verified`, the sideboard included.
-  - `Runs on reads` (`read`): legal, and every card is `Verified`, `Read` or `Forge`, at least one of the last two; the counts line names the copies from Forge.
-  - `Played by hand` (`manual_play`): legal, with some cards neither `Verified` nor `Read`.
+  - `Whole deck runs` (`read`): legal, and every card is `Verified`, `Read`, `Forge` or `Unverified`, at least one not `Verified`; a quiet line names the copies from Forge, unverified and read.
+  - `Played by hand` (`manual_play`): legal, with some cards the game does not run whole (no rules, `Partial`, a `wrong` read).
   - `Blocked`: illegal, or holds an `Unplayable` card.
   - `Unchecked`: never checked.
-- To read: a card whose current draft no player has judged is played by hand and counted in `summary.to_read` (distinct cards, any zone). A draft is `pending` while nobody judged it, and again once it or the card's text changed since the last read. Each card of the report that has such a draft carries `draft: pending`; a card with a wrong read carries `draft: wrong` and an approved one `draft: approved`. A card has no `draft` while a rules file or a `Verified` row outranks the draft, or the engine could not run the draft whole.
+- To read: a card whose current draft no player has judged runs as `Unverified` (a whole draft) and is counted in `summary.to_read` (distinct cards, any zone). A draft is `pending` while nobody judged it, and again once it or the card's text changed since the last read. Each card of the report that has such a draft carries `draft: pending`; a card with a wrong read carries `draft: wrong` and an approved one `draft: approved`. A card has no `draft` while a rules file or a `Verified` row outranks the draft, or the engine could not run the draft whole.
 
 ## The deck state
 
@@ -54,12 +55,12 @@ The server runs the engine's check in the game's format when a seat chooses a de
 
 ## Highlighting
 
-- Every card that is not `Verified` gets an icon, a word (Read, From Forge, Manual, Partial, Stale, Unplayable) and a coloured edge, never colour alone. The builder and the deck list count them with an "issues only" filter and a sort that puts them first, and say "N cards to read" where drafts wait. A card played by hand says whether its draft waits for a read or was found wrong.
+- Every card that is not `Verified` gets an icon, a word (Read, From Forge, Unverified, Manual, Partial, Stale, Unplayable) and a coloured edge, never colour alone. The builder and the deck list count them with an "issues only" filter and a sort that puts them first, and say "N cards to read" where drafts wait. An unverified card links to its read; a card played by hand says whether its draft was found wrong.
 - The builder lists each card played by hand with its state, reasons and a flag that marks it important to fix; the save bar names what stands in the way of saving (legality issues never do).
 - Card preview: the oracle text with the unsupported clauses underlined and the reason beside it, and a "Mark important to fix" button (`web.md`, Fix marks).
 - Not-validated list: `/decks/unvalidated` (every saved deck) and `/decks/$deckId/unvalidated` (one) list each card that is not `Verified` with its unread clauses (the quoted span beside its plain reason), the decks that hold it, a state filter and a "Copy as text" button; the cards of most decks come first. The precon details quote the same clauses.
 - Game: a card in play with manual text carries a small "manual" badge for every seat, and its prompt quotes only the unsupported clause.
-- Lobby and precon browser: each seat's deck and each precon shows its state ("Whole deck runs", "Runs on reads", "N cards played by hand", "Cannot be taken") and, where drafts wait, "N cards to read".
+- Lobby and precon browser: each seat's deck and each precon shows its state ("Whole deck runs", with a quiet breakdown of the copies that are not Verified, "N cards played by hand", "Cannot be taken") and, where drafts wait, "N cards to read".
 - `mtg-cli coverage-decks [--json]` lists, read-only and without account names, every card in any saved deck that the game does not play whole, most used first, with the number of decks and of owners. Fix marks rank cards too (`mtg-cli fix-marks`, `server.md`, Fix marks).
 
 ## Decisions

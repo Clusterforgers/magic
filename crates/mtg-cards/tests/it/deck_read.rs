@@ -1,4 +1,4 @@
-//! Goal: a deck's report counts the distinct cards that wait for a read (`summary.to_read`), says `read` when only approved reads stand beside Verified cards, stays `manual_play` while a card is neither run whole nor read, gives each card the state of the draft that decides it, and changes nothing for a deck without drafts.
+//! Goal: a deck's report counts the distinct cards that wait for a read (`summary.to_read`), says `read` when only reads, unverified drafts or Forge drafts stand beside Verified cards, stays `manual_play` while a card does not run whole, gives each card the state of the draft that decides it, and changes nothing for a deck without drafts.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -203,43 +203,44 @@ fn report_of(entries: &[Entry]) -> DeckReport {
     report_in(&library_of(entries), entries, &Caps::everything())
 }
 
-/// The state, the cards to read and the copies run on a read and played by hand.
-fn judged(report: &DeckReport) -> (DeckState, u32, u32, u32) {
+/// The state, the cards to read and the copies run on a read, run unverified and played by hand.
+fn judged(report: &DeckReport) -> (DeckState, u32, u32, u32, u32) {
     let summary = &report.summary;
     (
         summary.state,
         summary.to_read,
         summary.counts.read,
+        summary.counts.unverified,
         summary.counts.manual,
     )
 }
 
 #[rstest]
-#[case::lands_only(vec![(Kind::Land, 1, Main, 40)], (DeckState::Verified, 0, 0, 0))]
+#[case::lands_only(vec![(Kind::Land, 1, Main, 40)], (DeckState::Verified, 0, 0, 0, 0))]
 #[case::a_rules_file_outranks_its_approved_draft(
     vec![(Kind::Land, 1, Main, 36), (Kind::File, 2, Main, 4)],
-    (DeckState::Verified, 0, 0, 0),
+    (DeckState::Verified, 0, 0, 0, 0),
 )]
 #[case::approved_reads_beside_verified_cards(
     vec![(Kind::Land, 1, Main, 36), (Kind::Approved, 2, Main, 4)],
-    (DeckState::Read, 0, 4, 0),
+    (DeckState::Read, 0, 4, 0, 0),
 )]
 #[case::an_approved_read_in_the_sideboard_only(
     vec![(Kind::Land, 1, Main, 40), (Kind::Approved, 2, Sideboard, 1)],
-    (DeckState::Read, 0, 1, 0),
+    (DeckState::Read, 0, 1, 0, 0),
 )]
 #[case::an_approved_read_in_the_command_zone(
     vec![(Kind::Land, 1, Main, 40), (Kind::Approved, 2, Commander, 1)],
-    (DeckState::Read, 0, 1, 0),
+    (DeckState::Read, 0, 1, 0, 0),
 )]
-#[case::a_deck_of_reads_alone(vec![(Kind::Approved, 1, Main, 60)], (DeckState::Read, 0, 60, 0))]
-#[case::a_pending_draft_is_played_by_hand_and_to_read(
+#[case::a_deck_of_reads_alone(vec![(Kind::Approved, 1, Main, 60)], (DeckState::Read, 0, 60, 0, 0))]
+#[case::a_pending_draft_runs_unverified_and_is_to_read(
     vec![(Kind::Land, 1, Main, 36), (Kind::Pending, 2, Main, 4)],
-    (DeckState::ManualPlay, 1, 0, 4),
+    (DeckState::Read, 1, 0, 4, 0),
 )]
 #[case::a_pending_draft_beside_an_approved_one(
     vec![(Kind::Land, 1, Main, 30), (Kind::Approved, 2, Main, 4), (Kind::Pending, 3, Main, 2)],
-    (DeckState::ManualPlay, 1, 4, 2),
+    (DeckState::Read, 1, 4, 2, 0),
 )]
 #[case::each_waiting_card_counts_once(
     vec![
@@ -248,35 +249,35 @@ fn judged(report: &DeckReport) -> (DeckState, u32, u32, u32) {
         (Kind::Pending, 3, Main, 1),
         (Kind::ReadBeforeAnEdit, 4, Commander, 1),
     ],
-    (DeckState::ManualPlay, 3, 0, 7),
+    (DeckState::Read, 3, 0, 7, 0),
 )]
 #[case::a_read_on_an_older_hash_waits_for_a_new_one(
     vec![(Kind::Land, 1, Main, 39), (Kind::ReadBeforeAnEdit, 2, Main, 1)],
-    (DeckState::ManualPlay, 1, 0, 1),
+    (DeckState::Read, 1, 0, 1, 0),
 )]
 #[case::a_wrong_draft_is_not_to_read(
     vec![(Kind::Land, 1, Main, 39), (Kind::Wrong, 2, Main, 1)],
-    (DeckState::ManualPlay, 0, 0, 1),
+    (DeckState::ManualPlay, 0, 0, 0, 1),
 )]
 #[case::a_card_without_a_draft_is_not_to_read(
     vec![(Kind::Land, 1, Main, 39), (Kind::Plain, 2, Main, 1)],
-    (DeckState::ManualPlay, 0, 0, 1),
+    (DeckState::ManualPlay, 0, 0, 0, 1),
 )]
 #[case::a_card_by_hand_keeps_a_deck_of_reads_manual(
     vec![(Kind::Approved, 1, Main, 59), (Kind::Plain, 2, Sideboard, 1)],
-    (DeckState::ManualPlay, 0, 59, 1),
+    (DeckState::ManualPlay, 0, 59, 0, 1),
 )]
 #[case::an_unknown_card_blocks_a_deck_of_reads(
     vec![(Kind::Approved, 1, Main, 59), (Kind::Missing, 2, Main, 1)],
-    (DeckState::Blocked, 0, 59, 0),
+    (DeckState::Blocked, 0, 59, 0, 0),
 )]
 #[case::an_unknown_card_blocks_a_deck_with_cards_to_read(
     vec![(Kind::Pending, 1, Main, 59), (Kind::Missing, 2, Main, 1)],
-    (DeckState::Blocked, 1, 0, 59),
+    (DeckState::Blocked, 1, 0, 59, 0),
 )]
 fn the_state_and_the_cards_to_read_follow_the_cards_of_a_deck(
     #[case] entries: Vec<Entry>,
-    #[case] expected: (DeckState, u32, u32, u32),
+    #[case] expected: (DeckState, u32, u32, u32, u32),
 ) {
     let report = report_of(&entries);
     assert_eq!(judged(&report), expected);
@@ -287,9 +288,13 @@ fn the_state_and_the_cards_to_read_follow_the_cards_of_a_deck(
 #[case::a_land(Kind::Land, Support::Verified, None)]
 #[case::a_file_with_an_approved_draft(Kind::File, Support::Verified, None)]
 #[case::an_approved_draft(Kind::Approved, Support::Read, Some(ReadState::Approved))]
-#[case::a_pending_draft(Kind::Pending, Support::Manual, Some(ReadState::Pending))]
+#[case::a_pending_draft(Kind::Pending, Support::Unverified, Some(ReadState::Pending))]
 #[case::a_wrong_draft(Kind::Wrong, Support::Manual, Some(ReadState::Wrong))]
-#[case::a_read_before_an_edit(Kind::ReadBeforeAnEdit, Support::Manual, Some(ReadState::Pending))]
+#[case::a_read_before_an_edit(
+    Kind::ReadBeforeAnEdit,
+    Support::Unverified,
+    Some(ReadState::Pending)
+)]
 #[case::a_card_with_no_draft(Kind::Plain, Support::Manual, None)]
 #[case::an_unknown_card(Kind::Missing, Support::Unplayable, None)]
 fn each_card_of_the_report_carries_the_state_of_the_draft_that_decides_it(
@@ -312,7 +317,7 @@ fn each_card_of_the_report_carries_the_state_of_the_draft_that_decides_it(
 #[rstest]
 #[case::the_engine_runs_everything(
     Caps::everything(),
-    Support::Manual,
+    Support::Unverified,
     Some(ReadState::Pending),
     1
 )]
@@ -338,7 +343,7 @@ fn an_approved_draft_the_engine_cannot_run_is_played_by_hand_and_asks_for_nothin
     let entries = [(Kind::Land, 1, Main, 36), (Kind::Approved, 2, Main, 4)];
     let caps = Caps::from_names(["Ability.Spell"]);
     let report = report_in(&library_of(&entries), &entries, &caps);
-    assert_eq!(judged(&report), (DeckState::ManualPlay, 0, 0, 4));
+    assert_eq!(judged(&report), (DeckState::ManualPlay, 0, 0, 0, 4));
     let bolt = report
         .cards
         .iter()
@@ -392,7 +397,8 @@ fn a_verified_deck_keeps_its_counts_and_a_read_card_changes_only_its_own_copies(
 #[rstest]
 #[case::reads_only(vec![(Kind::Approved, 1, Main, 60)], DeckState::Read)]
 #[case::reads_beside_verified_cards(vec![(Kind::Land, 1, Main, 30), (Kind::Approved, 2, Main, 30)], DeckState::Read)]
-#[case::a_card_to_read(vec![(Kind::Land, 1, Main, 30), (Kind::Pending, 2, Main, 30)], DeckState::ManualPlay)]
+#[case::a_card_to_read(vec![(Kind::Land, 1, Main, 30), (Kind::Pending, 2, Main, 30)], DeckState::Read)]
+#[case::a_wrong_draft(vec![(Kind::Land, 1, Main, 30), (Kind::Wrong, 2, Main, 30)], DeckState::ManualPlay)]
 #[case::verified(vec![(Kind::Land, 1, Main, 60)], DeckState::Verified)]
 fn a_table_that_lifts_every_issue_leaves_the_state_the_cards_give(
     #[case] entries: Vec<Entry>,
@@ -453,14 +459,16 @@ proptest! {
         let by_hand = |kind: &&Kind| {
             matches!(
                 kind,
-                Kind::Pending | Kind::Wrong | Kind::ReadBeforeAnEdit | Kind::Plain
+                Kind::Wrong | Kind::Plain
             )
         };
         let expected = if used.contains(&Kind::Missing) {
             DeckState::Blocked
         } else if used.iter().any(|kind| by_hand(&kind)) {
             DeckState::ManualPlay
-        } else if used.contains(&Kind::Approved) {
+        } else if used.iter().any(|kind| {
+            matches!(kind, Kind::Approved | Kind::Pending | Kind::ReadBeforeAnEdit)
+        }) {
             DeckState::Read
         } else {
             DeckState::Verified
@@ -470,7 +478,7 @@ proptest! {
         prop_assert_eq!(report.summary.state, expected);
         prop_assert_eq!(report.summary.to_read as usize, waiting);
         let counts = report.summary.counts;
-        let runs_whole = counts.verified + counts.read;
+        let runs_whole = counts.verified + counts.read + counts.unverified;
         prop_assert_eq!(counts.total, entries.iter().map(|entry| entry.3).sum::<u32>());
         prop_assert_eq!(
             counts.total,

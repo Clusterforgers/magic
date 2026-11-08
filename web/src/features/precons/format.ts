@@ -1,12 +1,12 @@
 /** The precon browser as plain data: a deck's check in words, the filters, the dates and the copyable list. Pure, so tables test it. */
 import { cardsText } from '@/features/decks/format'
 import { BY_HAND, byHandCopies, cardsByHand, runsWhole } from '@/lib/byHand'
-import { cardsFromForge, cardsOnReads, RUNS_ON_READS } from '@/lib/toRead'
+import { runsBreakdown, WHOLE_DECK_RUNS } from '@/lib/toRead'
 import { copyText } from '@/features/decks/unvalidated/model'
 import type { FaceTexts, FlaggedCard } from '@/features/decks/unvalidated/model'
 import type { DeckZone, PreconCardView, PreconListItem, PreconView } from '@/protocol/generated'
 
-/** How a game treats a precon: it runs the whole deck, runs it with cards on a player's read, plays cards by hand, or cannot take the deck. */
+/** How a game treats a precon: it runs the whole deck (`read`: some of it not Verified), plays cards by hand, or cannot take the deck. */
 export type PreconStatus = 'whole' | 'read' | 'hand' | 'blocked'
 
 /** The statuses from the best to the worst, which the state filter lists in this order. */
@@ -19,20 +19,25 @@ export function statusOf(precon: Pick<PreconListItem, 'state' | 'playable'>): Pr
   return precon.state === 'read' ? 'read' : 'hand'
 }
 
-/** The words of a status for the state filter. */
+/** The words of a status for the state filter, which tells a deck of Verified cards from one with others that run. */
 export const STATUS_LABEL: Readonly<Record<PreconStatus, string>> = {
-  whole: 'Whole deck runs',
-  read: RUNS_ON_READS,
+  whole: `${WHOLE_DECK_RUNS}, all verified`,
+  read: `${WHOLE_DECK_RUNS}, not all verified`,
   hand: `Some cards ${BY_HAND}`,
   blocked: 'Cannot be taken',
 }
 
-/** The badge's words: "Whole deck runs", "Runs on reads", "3 cards played by hand" or "Cannot be taken". */
+/** The badge's words: "Whole deck runs", "3 cards played by hand" or "Cannot be taken". */
 export function statusWords(precon: PreconListItem): string {
   const status = statusOf(precon)
-  if (status !== 'hand') return STATUS_LABEL[status]
+  if (status === 'whole' || status === 'read') return WHOLE_DECK_RUNS
+  if (status === 'blocked') return STATUS_LABEL.blocked
   return cardsByHand(byHandCopies(precon.summary.counts))
 }
+
+/** The quiet line beside the badge of a deck that runs whole: "34 from Forge · 120 unverified · 2 read"; empty otherwise. */
+export const breakdownWords = (precon: PreconListItem): string =>
+  statusOf(precon) === 'read' ? runsBreakdown(precon.summary.counts) : ''
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as const
 
@@ -106,8 +111,9 @@ export function checkLine(precon: PreconListItem): string {
   const { counts } = precon.summary
   const hand = byHandCopies(counts)
   const parts = [
-    counts.read > 0 ? cardsOnReads(counts.read) : null,
-    counts.forge > 0 ? cardsFromForge(counts.forge) : null,
+    counts.forge > 0 ? `${counts.forge} from Forge` : null,
+    counts.unverified > 0 ? `${counts.unverified} unverified` : null,
+    counts.read > 0 ? `${counts.read} read` : null,
     hand > 0 ? `${hand} ${BY_HAND}` : null,
     counts.unplayable > 0 ? `${counts.unplayable} unplayable` : null,
   ].filter((part) => part !== null)

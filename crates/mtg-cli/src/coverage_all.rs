@@ -196,6 +196,7 @@ const fn state_name(state: Support) -> &'static str {
         Support::Verified => "verified",
         Support::Read => "read",
         Support::Forge => "forge",
+        Support::Unverified => "unverified",
         Support::Partial => "partial",
         Support::Manual => "manual",
         Support::Stale => "stale",

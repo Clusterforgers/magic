@@ -72,27 +72,36 @@ impl Draft {
         }
     }
 
-    /// The record of the card when the draft is approved for `printed`, covers its whole text, and the engine
-    /// runs every primitive it uses; `None` otherwise.
+    /// The record the draft gives the card in a game: what [`Draft::runs`] gives once the draft is approved for
+    /// `printed`; `Unverified` for a whole draft still `pending` that the engine runs; `None` for a `wrong` draft, a
+    /// pending partial one, or one the engine cannot run.
     pub fn record(&self, printed: &PrintedCard, caps: &Caps) -> Option<SupportRecord> {
-        if self.state_for(printed) != ReadState::Approved {
-            return None;
+        match self.state_for(printed) {
+            ReadState::Approved => self.runs(printed, caps),
+            ReadState::Pending if self.proof.is_none() => {
+                self.runs_as(printed, caps, Support::Unverified)
+            }
+            ReadState::Pending | ReadState::Wrong => None,
         }
-        self.runs(printed, caps)
     }
 
-    /// The record the draft gives the card when the engine can run it, whatever its read state: `Partial` for a proved
-    /// partial draft, else `Read` or `Forge`. `None` also when a clause reads back as other text than the card, unless
-    /// the draft is whole and marked as such: then it is `Read`, never `Forge`.
+    /// The record the draft gives the card once read, whatever its read state now: `Partial` for a proved partial
+    /// draft, else `Read` or `Forge`. `None` also when a clause reads back as other text than the card, unless the
+    /// draft is whole and marked as such: then it is `Read`, never `Forge`.
     pub fn runs(&self, printed: &PrintedCard, caps: &Caps) -> Option<SupportRecord> {
+        let tier = if self.forge && !self.differs {
+            Support::Forge
+        } else {
+            Support::Read
+        };
+        self.runs_as(printed, caps, tier)
+    }
+
+    /// [`Draft::runs`] with `tier` as the state of a whole draft.
+    fn runs_as(&self, printed: &PrintedCard, caps: &Caps, tier: Support) -> Option<SupportRecord> {
         let record = if self.proof.is_some() {
             partial_support(&self.card, printed, caps)
         } else {
-            let tier = if self.forge && !self.differs {
-                Support::Forge
-            } else {
-                Support::Read
-            };
             read_support(&self.card, printed, caps, tier)
         }?;
         let marked = self.differs && self.proof.is_none();

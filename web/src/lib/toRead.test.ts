@@ -1,15 +1,16 @@
-// Goal: cards that wait for a player's read are counted in one set of words and sent to one address everywhere a deck is judged: "N cards to read" joins and counts right, the review screen's path names the deck or the precon, and no source writes the phrase outside the shared module.
+// Goal: cards that wait for a player's read are counted in one set of words and sent to one address everywhere a deck is judged: "N cards to read" joins and counts right, a deck that runs whole breaks its other copies down by tier, the review screen's path names the deck or the precon, and no source writes the phrase outside the shared module.
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
-  cardsOnReads,
   cardsToRead,
   DRAFT_NOTE,
   readPath,
-  RUNS_ON_READS,
+  runsBreakdown,
   TO_READ,
   TO_READ_TITLE,
+  UNVERIFIED,
+  WHOLE_DECK_RUNS,
 } from './toRead'
 
 describe('the words', () => {
@@ -23,14 +24,21 @@ describe('the words', () => {
   })
 
   it.each([
-    [1, '1 card on reads'],
-    [4, '4 cards on reads'],
-  ])('count %i copies run on reads as "%s"', (count, words) => {
-    expect(cardsOnReads(count)).toBe(words)
+    [{ forge: 0, unverified: 0, read: 0 }, ''],
+    [{ forge: 34, unverified: 120, read: 2 }, '34 from Forge · 120 unverified · 2 read'],
+    [{ forge: 0, unverified: 1, read: 0 }, '1 unverified'],
+    [{ forge: 3, unverified: 0, read: 5 }, '3 from Forge · 5 read'],
+  ])('break %o down as "%s"', (counts, words) => {
+    expect(runsBreakdown(counts)).toBe(words)
   })
 
   it('name the deck state and the title of the filter', () => {
-    expect([RUNS_ON_READS, TO_READ, TO_READ_TITLE]).toEqual(['Runs on reads', 'to read', 'To read'])
+    expect([WHOLE_DECK_RUNS, UNVERIFIED, TO_READ, TO_READ_TITLE]).toEqual([
+      'Whole deck runs',
+      'Unverified',
+      'to read',
+      'To read',
+    ])
   })
 
   it('say what a draft that waits or was found wrong means for the card', () => {
