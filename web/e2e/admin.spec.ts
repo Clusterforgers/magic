@@ -57,7 +57,7 @@ test('the admin makes an account and the friend signs in with it', async ({ brow
   await admin.page.reload()
   await account(admin.page).getByRole('button', { name: owner }).click()
   await admin.page.getByRole('menuitem', { name: 'Accounts' }).click()
-  await expect(admin.page.getByRole('heading', { name: 'Accounts', exact: true })).toBeVisible()
+  await expect(admin.page.getByRole('heading', { level: 1, name: 'Accounts' })).toBeVisible()
 
   // A generated password is shown once, with the address and the username.
   const friendName = unique('friend')

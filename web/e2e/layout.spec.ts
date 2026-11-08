@@ -291,7 +291,7 @@ const STOPS: readonly Stop[] = [
     actions: { 'Make account': 'text:Make account' },
     async open(page) {
       await page.goto(`${DEV_WEB_URL}/dev/accounts?many=1&names=long`)
-      await expect(page.getByRole('heading', { name: 'Accounts', exact: true })).toBeVisible()
+      await expect(page.getByRole('heading', { level: 1, name: 'Accounts' })).toBeVisible()
       await expect(page.getByText(`friend_29_`.padEnd(32, 'x'))).toBeVisible()
     },
   },
