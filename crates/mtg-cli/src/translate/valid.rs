@@ -280,7 +280,7 @@ fn base(ctx: &Ctx, word: &str) -> Tr<Vec<Value>> {
         return Ok(vec![json!({"Type": word})]);
     }
     match word {
-        "Permanent" | "Card" | "Any" => Ok(Vec::new()),
+        "Permanent" | "Card" | "card" | "Any" => Ok(Vec::new()),
         "Spell" => Ok(vec![json!("Spell")]),
         _ if ctx.world.subtypes.contains(word) => Ok(vec![json!({"Subtype": word})]),
         _ => super::filter::base(word).map_or_else(|| unmapped(format!("valid-base:{word}")), Ok),
