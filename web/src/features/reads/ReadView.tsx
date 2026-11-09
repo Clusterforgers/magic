@@ -25,7 +25,17 @@ import type { ReadTarget } from '@/lib/toRead'
 import { decksApi } from '@/net/decks'
 import type { ReadsApi } from '@/net/reads'
 import type { ReadCard, ReadQueue, ReadVerdict } from '@/protocol/generated'
-import { STATE_WORDS, countLine, nextToRead, queueKey, rankText, savePosition, savedPosition } from './model'
+import {
+  STATE_WORDS,
+  allInDecks,
+  countLine,
+  nextToRead,
+  queueKey,
+  queueWords,
+  rankText,
+  savePosition,
+  savedPosition,
+} from './model'
 import { ReadCardView } from './ReadCardView'
 
 type QueueLoad =
@@ -88,6 +98,13 @@ function BackLink({ target }: { target: ReadTarget | null }) {
     return (
       <Link to="/decks" className={buttonVariants({ variant: 'outline' })}>
         Your decks
+      </Link>
+    )
+  }
+  if ('mine' in target) {
+    return (
+      <Link to="/decks/unvalidated" className={buttonVariants({ variant: 'outline' })}>
+        Cards to check
       </Link>
     )
   }
@@ -251,21 +268,17 @@ export function ReadView({ api, target, decks = decksApi }: ReadViewProps) {
     const card = cards[(index + by + cards.length) % cards.length]
     if (card !== undefined) setCurrent(card.oracle_id)
   }
-  const title = target === null ? 'Read every card' : `Read the cards of ${queue.title}`
+  const words = queueWords(target, queue.title)
   return (
     <section aria-labelledby="read-title" className="grid gap-4">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div className="grid min-w-0 gap-1">
           <h1 id="read-title" className="text-2xl font-semibold tracking-tight break-words">
-            {title}
+            {words.heading}
           </h1>
           <p className="text-sm text-muted-foreground">
             {cards.length === 0 ? (
-              target === null ? (
-                'Nothing waits for a first read.'
-              ) : (
-                'Nothing waits for your read in this deck.'
-              )
+              words.nothing
             ) : (
               <>
                 <span data-slot="read-count" className="font-medium text-foreground tabular-nums">
@@ -312,9 +325,7 @@ export function ReadView({ api, target, decks = decksApi }: ReadViewProps) {
         >
           {finished
             ? `Thank you. A card found correct counts as read from the next game; one found wrong is ${BY_HAND} until it is fixed.`
-            : target === null
-              ? 'Every draft has a read.'
-              : 'Every draft in this deck has your read, or the deck has none.'}
+            : words.empty}
         </EmptyState>
       ) : (
         <div className="grid gap-4 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
@@ -353,9 +364,7 @@ export function ReadView({ api, target, decks = decksApi }: ReadViewProps) {
                       </span>
                       <span className="flex flex-wrap items-center gap-x-1 text-xs text-muted-foreground">
                         {verdict === undefined ? STATE_WORDS[card.state] : `You said ${verdict}`}
-                        {card.in_decks && (target === null || !('deck' in target)) ? (
-                          <span>· in your decks</span>
-                        ) : null}
+                        {card.in_decks && !allInDecks(target) ? <span>· in your decks</span> : null}
                         {card.differs === 0 ? null : (
                           <>
                             <TriangleAlertIcon aria-hidden="true" className="size-3 text-support-partial" />

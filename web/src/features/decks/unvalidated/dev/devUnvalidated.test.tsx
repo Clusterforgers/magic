@@ -1,4 +1,4 @@
-// Goal: /dev/unvalidated reads its view from the address (shrugging off nonsense), serves the real page over the fixture decks, shows each view the page has (every deck, one deck, a deck that runs whole, no decks, a wait, a failed list, a server without decks, one failed check and unreadable card texts), and answers "not found" with no fixture in a production build.
+// Goal: /dev/unvalidated reads its view from the address (shrugging off nonsense), serves the real page over the fixture decks, shows each view the page has (every deck, one deck, a deck that runs whole, no decks, a wait, a failed list, a server without decks, one failed check, unreadable card texts and drafts that wait for a read), and answers "not found" with no fixture in a production build.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -45,6 +45,7 @@ describe('parseDevUnvalidatedSearch', () => {
       'unavailable',
       'failed',
       'texts',
+      'reads',
     ])
   })
 })
@@ -86,7 +87,7 @@ describe('the fixture', () => {
 describe('/dev/unvalidated', () => {
   it('draws the real page over the fixture decks', async () => {
     await visit('/dev/unvalidated')
-    expect(await screen.findByRole('heading', { level: 1, name: 'Not validated cards' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Cards to check' })).toBeInTheDocument()
     expect(await screen.findByRole('list', { name: 'Cards not validated' })).toBeInTheDocument()
     expect(document.querySelector(`[data-fixture="${UNVALIDATED_FIXTURE_MARKER}"]`)).not.toBeNull()
     expect(document.querySelector('li[data-card="oracle-rhystic-study"]')).not.toBeNull()
@@ -102,6 +103,15 @@ describe('/dev/unvalidated', () => {
   ])('draws the %s view', async (view, words) => {
     await visit(`/dev/unvalidated?view=${view}`)
     expect(await screen.findByText(words)).toBeInTheDocument()
+  })
+
+  it('offers to read the three cards that wait, each once, in the reads view', async () => {
+    await visit('/dev/unvalidated?view=reads')
+    expect(await screen.findByRole('link', { name: 'Read 3 cards' })).toHaveAttribute(
+      'href',
+      '/read?mine=true',
+    )
+    expect(screen.getByRole('button', { name: 'To read (3)' })).toBeInTheDocument()
   })
 
   it('waits for ever in the loading view', async () => {

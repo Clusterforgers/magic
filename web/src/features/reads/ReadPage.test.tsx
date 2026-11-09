@@ -199,6 +199,21 @@ describe('ReadPage', () => {
     expect(within(list).getAllByRole('button')[0]).toHaveTextContent('in your decks')
   })
 
+  it('reads the cards of the decks under its own title, without saying each is in a deck', async () => {
+    await renderInRouter(
+      <AuthContext value={signedIn()}>
+        <ReadPage target={{ mine: true }} api={fixtureReadsApi()} />
+      </AuthContext>,
+    )
+    expect(await screen.findByRole('heading', { level: 1, name: 'Cards in your decks' })).toBeVisible()
+    expect(document.title).toContain('Cards in your decks')
+    expect(document.querySelector('[data-slot="read-count"]')).toHaveTextContent(/^2 to read\.$/)
+    const list = screen.getByRole('navigation', { name: 'Cards to read' })
+    expect(within(list).getAllByRole('button')).toHaveLength(2)
+    expect(list).not.toHaveTextContent('in your decks')
+    expect(screen.getByRole('link', { name: 'Cards to check' })).toHaveAttribute('href', '/decks/unvalidated')
+  })
+
   it('loads the next card ahead, so a verdict opens it at once, and counts down', async () => {
     const api = fixtureReadsApi()
     const get = vi.fn(api.get)

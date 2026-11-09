@@ -9,9 +9,10 @@ export const DEV_VIEWS = [
   'unavailable',
   'failed',
   'texts',
+  'reads',
 ] as const
 
-/** One of the views: every deck, one deck, decks that run whole, no decks, a wait, a failed list, a server without decks, one failed check, or card texts that cannot be read. */
+/** One of the views: every deck, one deck, decks that run whole, no decks, a wait, a failed list, a server without decks, one failed check, card texts that cannot be read, or decks whose drafts wait for a read. */
 export type DevView = (typeof DEV_VIEWS)[number]
 
 /** The address parameters of `/dev/unvalidated`, read leniently: whatever makes no sense is ignored. */
