@@ -6,6 +6,8 @@ import {
   boardCounts,
   boardFrames,
   MIN_ROW_SHARE,
+  FLOOR_OWN_CARD_PX,
+  podColumnFloor,
   shareSplit,
   splitBoards,
   splitRegions,
@@ -13,6 +15,7 @@ import {
   theirChromeOf,
   withSplit,
 } from './boardSplit'
+import { POD_CRAMPED_PX } from './cornerFit'
 import { buildFixture } from './dev/fixture'
 import { laneHeight } from './laneFit'
 import type { LaneCounts } from './laneFit'
@@ -192,6 +195,53 @@ describe('the chrome of the opponents row', () => {
     )
     expect(regions.sheet).toBeGreaterThan(regions.shared + 32)
   })
+})
+
+describe('the pod column of the opponent', () => {
+  // The duel board at 1366x768 under a priority prompt with three stack items, whose sheet wants 76 px over the row.
+  it.each([
+    [1366, 768, 76],
+    [1440, 900, 64],
+    [1920, 1080, 76],
+  ])('keeps the column at %ix%i unfolded above a sheet that wants %i px', (width, height, overhang) => {
+    const table = planTable({ viewport: { width, height }, seatCount: 2, viewer: 0 })
+    const state = fixtureState(buildFixture({ seats: 2, board: 'duel' }))
+    const regions = splitRegions(table.regions, table.seats, boardCounts(state, table.seats), 64, 0, overhang)
+    const pads = boardFrames(table.regions, table.seats).theirs.chrome
+    expect(regions.opponents - pads - overhang).toBeGreaterThanOrEqual(POD_CRAMPED_PX)
+    expect(regions.own).toBeGreaterThanOrEqual((regions.opponents + regions.own) * MIN_ROW_SHARE)
+  })
+
+  it('asks for no floor on a phone or where the opponents stand in columns', () => {
+    const phone = planTable({ viewport: { width: 390, height: 844 }, seatCount: 2, viewer: 0 })
+    const columns = planTable({ viewport: { width: 1440, height: 900 }, seatCount: 4, viewer: 0 })
+    expect(podColumnFloor(phone.regions, phone.seats, 80)).toBe(0)
+    expect(podColumnFloor(columns.regions, columns.seats, 80)).toBe(0)
+  })
+
+  it.each([0, 200, 280, 1000])(
+    'lifts the opponents to a floor of %i px only while your creatures keep FLOOR_OWN_CARD_PX, else by what your lanes leave',
+    (floor) => {
+      const input = {
+        room: 520,
+        ownChrome: 24,
+        theirChrome: 24,
+        ownWidth: 900,
+        theirWidth: 900,
+        own: { lands: 4, creatures: 2, other: 0 },
+        theirs: [{ lands: 4, creatures: 2, other: 0 }],
+      }
+      const plain = splitBoards(input)
+      const split = splitBoards({ ...input, theirFloor: floor })
+      expect(split.opponents + split.own).toBeCloseTo(520)
+      expect(split.own).toBeGreaterThanOrEqual(520 * MIN_ROW_SHARE)
+      expect(split.opponents).toBeGreaterThanOrEqual(plain.opponents)
+      if (split.ownCard === plain.ownCard) return
+      // Your creatures gave way for the floor: no further than FLOOR_OWN_CARD_PX, and the floor holds.
+      expect(split.ownCard).toBeGreaterThanOrEqual(FLOOR_OWN_CARD_PX)
+      expect(split.opponents).toBeGreaterThanOrEqual(floor)
+    },
+  )
 })
 
 describe('the head of the opponents area', () => {
