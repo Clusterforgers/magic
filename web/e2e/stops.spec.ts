@@ -31,8 +31,14 @@ test('stops and Full Control are set in the browser, shown as the server holds t
   if (ada === undefined || bo === undefined) throw new Error('two players expected')
   try {
     await everyoneReady(players)
+    // A fresh table pins the own declare attackers and postcombat main, and nothing on the opponents' turns.
     for (const { page } of players) {
       await expect(page.getByRole('group', { name: 'Stops', exact: true })).toBeVisible()
+      await side(page, 'Mine')
+      await expect(stop(page, 'Your declare attackers stop: on every turn')).toBeVisible()
+      await expect(stop(page, 'Your postcombat main stop: on every turn')).toBeVisible()
+      await expect(lit(page)).toHaveCount(2)
+      await side(page, 'Theirs')
       await expect(lit(page)).toHaveCount(0)
       await expect(fullControl(page, 'off')).toHaveAttribute('aria-pressed', 'false')
     }
@@ -50,15 +56,16 @@ test('stops and Full Control are set in the browser, shown as the server holds t
     await expect(lit(ada.page)).toHaveCount(1)
 
     // The stops are Ada's alone.
+    await side(bo.page, 'Theirs')
     await expect(lit(bo.page)).toHaveCount(0)
 
     // Another press clears a stop; the Keep toggle makes a plain press set a lasting one.
     await side(ada.page, 'Mine')
     await stop(ada.page, 'Your upkeep stop: on for one turn').click()
-    await expect(lit(ada.page)).toHaveCount(0)
+    await expect(lit(ada.page)).toHaveCount(2)
     await ada.page.getByRole('button', { name: 'Keep stops' }).click()
-    await stop(ada.page, 'Your declare attackers stop: off').click()
-    await expect(stop(ada.page, 'Your declare attackers stop: on every turn')).toHaveAttribute(
+    await stop(ada.page, 'Your end step stop: off').click()
+    await expect(stop(ada.page, 'Your end step stop: on every turn')).toHaveAttribute(
       'aria-pressed',
       'true',
     )
@@ -85,10 +92,12 @@ test('stops and Full Control are set in the browser, shown as the server holds t
     // The server keeps both for the seat: a reload joins again and the Welcome brings them back.
     await ada.page.reload()
     await expect(fullControl(ada.page, 'held')).toHaveAttribute('aria-pressed', 'true')
-    await expect(lit(ada.page)).toHaveCount(1)
     await side(ada.page, 'Theirs')
+    await expect(lit(ada.page)).toHaveCount(1)
     await expect(stop(ada.page, "Opponents' end step stop: on every turn")).toBeVisible()
     await side(ada.page, 'Mine')
+    await expect(lit(ada.page)).toHaveCount(3)
+    await expect(stop(ada.page, 'Your end step stop: on every turn')).toBeVisible()
     await expect(stop(ada.page, 'Your declare attackers stop: on every turn')).toBeVisible()
     await fullControl(ada.page, 'held').click()
     await expect(fullControl(ada.page, 'off')).toHaveAttribute('aria-pressed', 'false')

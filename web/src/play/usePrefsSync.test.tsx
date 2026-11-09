@@ -6,6 +6,7 @@ import type { UserPrefs } from '@/protocol/generated'
 import {
   AUTO_CHOICES_KEY,
   AUTO_YIELDS_KEY,
+  DEFAULT_STOPS,
   DEFAULT_STOPS_KEY,
   END_TURN_KEY,
   flowPrefs,
@@ -27,7 +28,7 @@ const held: UserPrefs = {
   auto_yields: [warden],
 }
 const none: UserPrefs = {
-  default_stops: [],
+  default_stops: [...DEFAULT_STOPS],
   end_turn_by_hand: false,
   auto_choices: { order_triggers: false, assign_damage: false, smart_stops: false },
   auto_yields: [],
@@ -67,7 +68,7 @@ describe('usePrefsSync', () => {
 
     rerender({ on: false })
     expect(flowPrefs()).toEqual({
-      defaultStops: [],
+      defaultStops: DEFAULT_STOPS,
       endTurnByHand: false,
       autoChoices: none.auto_choices,
       autoYields: [],

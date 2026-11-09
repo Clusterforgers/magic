@@ -1,9 +1,10 @@
 //! Body of the account preference endpoints of `mtg-server`: `GET /api/me/prefs` and `PUT /api/me/prefs`.
 
+use mtg_engine::turn::Step;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-use crate::message::{AutoChoices, AutoYield, Stop};
+use crate::message::{AutoChoices, AutoYield, Stop, StopSide};
 
 /// The most default stops an account keeps.
 pub const MAX_DEFAULT_STOPS: usize = 40;
@@ -11,8 +12,21 @@ pub const MAX_DEFAULT_STOPS: usize = 40;
 /// The most abilities an account always yields to.
 pub const MAX_AUTO_YIELDS: usize = 200;
 
+/// The pinned stops of an account that saved none: its own declare attackers step and its postcombat main phase.
+#[must_use]
+pub fn default_stops() -> Vec<Stop> {
+    [Step::DeclareAttackers, Step::Main2]
+        .into_iter()
+        .map(|step| Stop {
+            side: StopSide::Own,
+            step,
+            keep: true,
+        })
+        .collect()
+}
+
 /// The pace preferences of an account, kept on the server and applied to every game it plays.
-#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct UserPrefs {
     /// The lasting stops a new game starts with.
     pub default_stops: Vec<Stop>,
@@ -24,4 +38,15 @@ pub struct UserPrefs {
     /// The abilities the account's seats always yield to; sorted, each once.
     #[serde(default)]
     pub auto_yields: Vec<AutoYield>,
+}
+
+impl Default for UserPrefs {
+    fn default() -> Self {
+        Self {
+            default_stops: default_stops(),
+            end_turn_by_hand: false,
+            auto_choices: AutoChoices::default(),
+            auto_yields: Vec::new(),
+        }
+    }
 }

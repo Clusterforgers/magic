@@ -275,7 +275,7 @@ const button = (page: Page, name: string): Locator => prompt(page).getByRole('bu
  * not. The prompt draws it in the controls dock at the bottom right of the table, away from the prompt's own line.
  */
 const primary = (page: Page): Locator => page.locator('[data-region="controls"] [data-slot="primary-action"]')
-/** "End turn" beside the primary button, which is not drawn in the last window of one's own turn. */
+/** "End turn" beside the primary button; in the last window of one's own turn it is drawn alone. */
 const endTurn = (page: Page): Locator =>
   page.locator('[data-region="controls"] [data-slot="secondary-action"]')
 const card = (page: Page, id: string): Locator => page.locator(`button[data-object-id="${id}"]`)
@@ -411,6 +411,11 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       if (style.yields && (await endTurn(player.page).count()) > 0) {
         await endTurn(player.page).click()
         run.yields.set(player.name, (run.yields.get(player.name) ?? 0) + 1)
+        return `${recalled}ends the turn`
+      }
+      // The last window of one's own turn has no primary button: "End turn" alone moves on.
+      if ((await primary(player.page).count()) === 0) {
+        await endTurn(player.page).click()
         return `${recalled}ends the turn`
       }
       await primary(player.page).click()
