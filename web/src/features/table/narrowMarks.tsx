@@ -3,11 +3,14 @@ import {
   BatteryLow,
   CheckCheck,
   CircleDot,
+  Coins,
   Copy,
   EyeOff,
   Ghost,
+  Heart,
   HeartCrack,
   Hourglass,
+  Info,
   Layers,
   Paperclip,
   Repeat,
@@ -84,6 +87,32 @@ export function linkGlyph(kind: 'host' | 'protector', name: string): Glyph {
   return kind === 'host'
     ? { icon: Paperclip, text: '', words: `On ${name}` }
     : { icon: ShieldCheck, text: '', words: `Protected by ${name}` }
+}
+
+const MUST_ICON: Partial<Record<string, LucideIcon>> = {
+  'Must attack': Swords,
+  'Must block': Shield,
+  'Must be blocked': ShieldAlert,
+}
+
+/**
+ * The corner label a prompt writes on a card ("Pay {2}", "Needs 2 more", "At Ana") as a glyph: an icon, plus the cost,
+ * the count or the label itself while it fits `GLYPH_MAX`; the label is its words.
+ */
+export function noteGlyph(label: string): Glyph {
+  const short = (text: string): string => (text.length <= GLYPH_MAX ? text : '')
+  const must = MUST_ICON[label]
+  if (must !== undefined) return { icon: must, text: '!', words: label }
+  const more = /^Needs (\d+) more$/.exec(label)
+  if (more !== null) return { icon: Shield, text: `+${countText(Number(more[1]))}`, words: label }
+  const least = /^Needs (\d+)\+ blockers$/.exec(label)
+  if (least !== null) return { icon: Shield, text: `${countText(Number(least[1]))}+`, words: label }
+  const life = /^Pay (\d+) life$/.exec(label)
+  if (life !== null) return { icon: Heart, text: countText(Number(life[1])), words: label }
+  const pay = /^Pay (.+)$/.exec(label)
+  if (pay !== null) return { icon: Coins, text: short(pay[1] ?? ''), words: label }
+  const text = short(label)
+  return { icon: text === '' ? Info : null, text, words: label }
 }
 
 interface GlyphMarkProps {

@@ -64,7 +64,6 @@ The table and its prompts are live; the items below polish them.
 
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
-- [ ] (ts6c) The prompt corner badge ("At Ana") on a narrow compact face reads whole as a glyph, its words in the tooltip
 - [ ] (ui1i3) At 1280×720 the prompt sheet takes the whole opponents area of the dev table, so moments on an opponent's board (an attacker blocked, damage, a target) are out of view; the opponents keep a minimum board height
 - [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus
 - [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)
