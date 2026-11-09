@@ -36,7 +36,7 @@ pub use divide::{DivideChoice, DivideOptions};
 pub use mode::{ModeChoice, ModeOption, ModeOptions};
 pub use name::{MAX_NAME_LEN, NameChoice, NameOptions, is_name};
 pub use number::{NumberChoice, NumberOptions};
-pub use option::{ChoiceOption, OptionChoice, OptionOptions};
+pub use option::{ChoiceOption, CoinSide, OptionChoice, OptionOptions};
 pub use order::{OrderChoice, OrderOptions};
 pub use replacement::{ReplacementCandidate, ReplacementChoice, ReplacementOptions};
 pub use scry::{ScryChoice, ScryOptions};

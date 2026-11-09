@@ -50,6 +50,7 @@ A companion (CR 702.139, `companions.rs`) is a card a seat names before the game
 ## Determinism and recovery
 
 - Random choices use a ChaCha8 substream keyed by (seed, counter in state). Events carry the results (a shuffle logs its whole order, a roll its result), so replay needs no RNG. A fold that draws a substream moves the counter on.
+- A coin flip (CR 705) first asks the flipping player to call (`ChooseOption` of `ChoiceOption::Side`, heads first, so the clock and the passive answer call heads); the side comes from the stream and `CoinFlipped` logs the call, the side and `won` (the call matched).
 - A half-finished cast (spell chosen, payment pending) lives outside game state; a rebuilt engine asks for priority again. Backing out of it (`Answer::Undo` or a kind's `Cancel`, at every question with `can_cancel`) drops it with no event: the card never left its zone and the mana sources picked for the payment were never tapped, so nothing needs rewinding (CR 727) and nothing hidden is shown.
 - Answers are validated before any mutation. A fold failure rolls back by replaying the log, and `checkpoint`/`restore` expose that rollback so the server can undo a step it failed to persist.
 - `concede` is legal at any time (CR 104.3a): `PlayerLost { Conceded }`, then the normal elimination path (the player's objects leave at once, even in the middle of a resolution, the effects that gave them control end, what they still control is exiled, the game ends when one player remains). A half-finished cast is dropped.

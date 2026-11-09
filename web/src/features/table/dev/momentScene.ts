@@ -1,4 +1,4 @@
-/** The dev table's `?moments=1`: one batch holding a reveal of three cards and a d20 roll, to look at both moments over the table. */
+/** The dev table's `?moments=1`: one batch holding a reveal of three cards, a d20 roll and a coin flip, to look at the moments over the table. */
 import type { PlayState } from '@/play/store'
 import type { EventBatch, ObjectView } from '@/protocol/generated'
 import { tableOf } from './fxScenarios'
@@ -14,7 +14,7 @@ const inHand = (object: ObjectView, seat: number): boolean =>
 
 /**
  * The batch of the first opponent revealing cards of its hand (copies of the viewer's hand cards under new ids) and the
- * viewer rolling a d20. Null without a table, an opponent or a hand.
+ * viewer rolling a d20, then the opponent calling heads on a coin that comes up tails. Null without a table, an opponent or a hand.
  */
 export function momentsBatch(state: PlayState): EventBatch | null {
   const { view, seq } = state
@@ -38,6 +38,7 @@ export function momentsBatch(state: PlayState): EventBatch | null {
     events: [
       { Public: { Revealed: { player: rival, cards: shown.map((card) => card.id) } } },
       { Public: { DieRolled: { player: view.viewer, sides: 20, result: ROLL_RESULT } } },
+      { Public: { CoinFlipped: { player: rival, won: false, call: 'Heads', side: 'Tails' } } },
     ],
     table: tableOf(next),
     objects: [],

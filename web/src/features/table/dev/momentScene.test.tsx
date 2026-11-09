@@ -1,4 +1,4 @@
-// Goal: the dev table's moments batch follows on from the table, names a reveal by the first opponent and the viewer's d20, and puts a reveal and a die on show over the table at any seat count.
+// Goal: the dev table's moments batch follows on from the table, names a reveal by the first opponent, the viewer's d20 and the opponent's coin flip, and puts a reveal, a die and a coin on show over the table at any seat count.
 import { act, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { createPlayStore } from '@/play/store'
@@ -24,5 +24,6 @@ describe('the moments of the dev table', () => {
     act(() => void applyBatchToStore(table.store, batch))
     expect(screen.getByRole('region', { name: /reveals$/ })).toHaveAttribute('data-kind', 'reveal')
     expect(screen.getByRole('region', { name: /rolls a d20$/ })).toHaveAttribute('data-kind', 'roll')
+    expect(screen.getByRole('region', { name: /flips a coin$/ })).toHaveAttribute('data-kind', 'coin')
   })
 })

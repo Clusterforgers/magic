@@ -17,6 +17,7 @@ mod card_grants_hidden;
 mod cast_hidden;
 mod chosen_view;
 mod cipher_view;
+mod coin_call_wire;
 mod combat_forecast;
 mod commander_damage_name;
 mod commander_draw_view;
