@@ -40,8 +40,8 @@ export function boardCounts(state: PlayState, seats: SeatPlan, grouped = true): 
   }
 }
 
-/** The most of a prompt sheet's overhang the split keeps free above the strip: two lines of a prompt. */
-export const SHEET_RESERVE_MAX_PX = 64
+/** The most of a prompt sheet's overhang the split keeps free above the strip: three lines of a prompt. */
+export const SHEET_RESERVE_MAX_PX = 96
 
 /** The room the split keeps for a sheet standing `overhang` px above the strip: in steps of 8 px, at most `SHEET_RESERVE_MAX_PX`. */
 export function sheetReserve(overhang: number): number {
