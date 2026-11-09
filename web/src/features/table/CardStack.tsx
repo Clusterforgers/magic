@@ -6,6 +6,7 @@ import { cardLabel } from './cardModel'
 import { HIGHLIGHT, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { CardFace } from './CardFace'
+import { ChosenMark } from './ChosenMark'
 import { useCardMark } from './prompt/marks'
 import { usePreviewHandlers } from './usePreviewHandlers'
 
@@ -79,6 +80,7 @@ export const CardStack = memo(function CardStack({
     >
       <CardFace object={object} role={null} size={size} fit={fit} stacked />
       <StackCount count={count} />
+      {highlight === 'selected' ? <ChosenMark /> : null}
     </button>
   )
 })

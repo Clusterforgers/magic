@@ -303,6 +303,25 @@ describe('sorting', () => {
     if (sort === 'hand')
       expect(within(option(/Merciless Rage/)).getByText('1 played by hand')).toBeInTheDocument()
   })
+
+  it('puts the starred precons first for an account', async () => {
+    width(true)
+    const { user } = await open({ starred: ['c17-arcane-wizardry'] })
+    await user.click(await screen.findByRole('tab', { name: 'Precons' }))
+    await screen.findByRole('option', { name: /Arcane Wizardry/ })
+    const shown = screen.getByRole('tabpanel', { name: 'Precons' })
+    await user.selectOptions(within(shown).getByRole('combobox', { name: 'Sort by' }), 'favorites')
+    const first = within(within(shown).getByRole('listbox')).getAllByRole('option')[0]
+    expect(first?.textContent).toMatch(/^Arcane Wizardry/)
+  })
+
+  it('offers a guest no favorites first', async () => {
+    width(true)
+    await open({ signedIn: false })
+    await screen.findByRole('option', { name: /Merciless Rage/ })
+    const sortBy = screen.getByRole('combobox', { name: 'Sort by' })
+    expect(within(sortBy).queryByRole('option', { name: 'Favorites first' })).toBeNull()
+  })
 })
 
 describe('favourite precons', () => {

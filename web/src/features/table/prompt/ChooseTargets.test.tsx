@@ -228,6 +228,29 @@ describe('choosing', () => {
     expect(undo()).toBeDisabled()
   })
 
+  it('draws a chosen target, player or card, in the chosen colour with a check, and the rest as offered', async () => {
+    const { listed, choose } = mount({
+      seats: 2,
+      legal: players(2).concat(objects(creaturesOf(fixtureOf(2), 1).slice(0, 2))),
+      min: 0,
+      max: 4,
+    })
+    await choose(0)
+    await choose(2)
+    const [chosenPlayer, otherPlayer, chosenCard, otherCard] = listed()
+    expect(chosenPlayer).toHaveClass('bg-selected')
+    expect(chosenPlayer?.querySelector('svg')).not.toBeNull()
+    expect(otherPlayer).not.toHaveClass('bg-selected')
+    expect(otherPlayer?.querySelector('svg')).toBeNull()
+    for (const [button, on] of [
+      [chosenCard, true],
+      [otherCard, false],
+    ] as const) {
+      expect(button?.classList.contains('ring-selected')).toBe(on)
+      expect(button?.querySelector('[data-slot="chosen-mark"]') !== null).toBe(on)
+    }
+  })
+
   it('sends an empty choice when up to some are asked for and none is chosen', async () => {
     const { confirm, answer, user } = withSpec(must(SPECS[2]))
     expect(confirm()).toBeEnabled()

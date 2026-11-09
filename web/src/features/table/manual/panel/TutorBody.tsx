@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
 import type { KeyboardEvent, ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
@@ -129,11 +130,20 @@ function SearchGrid({ id, input, searched, onClose }: GridProps) {
               onClick={() => setChosen(card.id)}
               className={cn(
                 'flex w-full min-w-0 items-center gap-1.5 rounded-md border border-transparent p-1 text-left text-xs outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring pointer-coarse:min-h-11',
-                chosen === card.id && 'border-primary bg-accent',
+                chosen === card.id && 'border-selected bg-accent ring-1 ring-selected',
               )}
             >
               <Thumb object={card.object} />
               <span className="min-w-0 truncate">{card.name}</span>
+              {chosen === card.id ? (
+                <span
+                  aria-hidden="true"
+                  data-slot="chosen-mark"
+                  className="ml-auto grid size-4 shrink-0 place-items-center rounded-full bg-selected text-on-selected"
+                >
+                  <Check className="size-3" strokeWidth={3} />
+                </span>
+              ) : null}
             </button>
           </li>
         ))}
