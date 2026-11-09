@@ -1,9 +1,9 @@
 /**
- * The viewer's own order of the hand dock: the auto sort is remembered in `localStorage` for every game, a dragged
- * custom order in `sessionStorage` per game, so it survives a reload of the tab. Every access can fail (blocked
- * storage, a private window, a full quota) and the dock works without it.
+ * The viewer's own order of the hand dock, shared by the dock and the table menu: the auto sort is remembered in
+ * `localStorage` for every game, a dragged custom order in `sessionStorage` per game, so it survives a reload of the
+ * tab. Every access can fail (blocked storage, a private window, a full quota) and the order then lives for the page.
  */
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useSyncExternalStore } from 'react'
 import { manaValue } from '@/features/table/prompt/payment'
 import type { ObjectId, ObjectView } from '@/protocol/generated'
 import { HAND_SORTS, isHandSort, mergeCustom, moveCard, parseCustom, sortHand } from './handOrder'
@@ -17,47 +17,73 @@ export function handOrderKey(game: string): string {
   return `magic.handOrder.${game}`
 }
 
-/** The few calls of a `Storage` the hand order uses. */
-export interface HandStore {
-  getItem(key: string): string | null
-  setItem(key: string, value: string): void
-  removeItem(key: string): void
-}
-
-function storage(kind: 'localStorage' | 'sessionStorage'): HandStore | null {
+function read(kind: 'localStorage' | 'sessionStorage', key: string): string | null {
   try {
-    return window[kind]
+    return window[kind].getItem(key)
   } catch {
     return null
   }
 }
 
-function read(store: HandStore | null, key: string): string | null {
+function write(kind: 'localStorage' | 'sessionStorage', key: string, value: string | null): void {
   try {
-    return store?.getItem(key) ?? null
+    if (value === null) window[kind].removeItem(key)
+    else window[kind].setItem(key, value)
   } catch {
-    return null
+    // Kept for this page only.
   }
 }
 
-function write(store: HandStore | null, key: string, value: string | null): void {
-  try {
-    if (value === null) store?.removeItem(key)
-    else store?.setItem(key, value)
-  } catch {
-    // The order still holds for this page; it is only not kept.
+const listeners = new Set<() => void>()
+let sort: HandSort | null = null
+const customs = new Map<string, ObjectId[] | null>()
+
+function changed(): void {
+  for (const listener of listeners) listener()
+}
+
+function subscribe(listener: () => void): () => void {
+  listeners.add(listener)
+  return () => {
+    listeners.delete(listener)
   }
 }
 
-/** The order the dock draws, how it came about, and the ways to change it. */
-export interface HandOrder {
-  /** The hand's ids in drawing order. */
-  ids: ObjectId[]
-  mode: HandOrderMode
-  /** Picks an auto sort, which drops the game's custom order. */
-  choose(sort: HandSort): void
-  /** Moves the card at `from` to `to` of `ids`, which makes the order custom. */
-  move(from: number, to: number): void
+/** The auto sort now: the stored one, "As drawn" by default. */
+export function handSort(): HandSort {
+  if (sort === null) {
+    const kept = read('localStorage', HAND_SORT_KEY)
+    sort = isHandSort(kept) ? kept : 'drawn'
+  }
+  return sort
+}
+
+/** The custom order of `game`, or null while an auto sort holds. */
+export function customOrder(game: string): ObjectId[] | null {
+  if (!customs.has(game)) customs.set(game, parseCustom(read('sessionStorage', handOrderKey(game))))
+  return customs.get(game) ?? null
+}
+
+/** Picks an auto sort for every game and drops the custom order of `game`. */
+export function chooseHandSort(game: string, next: HandSort): void {
+  sort = next
+  customs.set(game, null)
+  write('localStorage', HAND_SORT_KEY, next)
+  write('sessionStorage', handOrderKey(game), null)
+  changed()
+}
+
+/** Keeps `ids` as the custom order of `game`. */
+export function setCustomOrder(game: string, ids: ObjectId[]): void {
+  customs.set(game, ids)
+  write('sessionStorage', handOrderKey(game), JSON.stringify(ids))
+  changed()
+}
+
+/** Forgets the cached choices, so the next read goes to storage again (tests). */
+export function resetHandOrder(): void {
+  sort = null
+  customs.clear()
 }
 
 /** The menu label of a mode. */
@@ -74,44 +100,41 @@ export function factsOf(objects: Readonly<Record<ObjectId, ObjectView>>) {
   }
 }
 
+/** The order in force in `game` and the way to pick an auto sort, redrawn when either changes. */
+export function useHandMode(game: string): { mode: HandOrderMode; choose(sort: HandSort): void } {
+  const custom = useSyncExternalStore(subscribe, () => customOrder(game))
+  const auto = useSyncExternalStore(subscribe, handSort)
+  const choose = useCallback((next: HandSort) => chooseHandSort(game, next), [game])
+  return { mode: custom === null ? auto : 'custom', choose }
+}
+
+/** The order the dock draws, how it came about, and the ways to change it. */
+export interface HandOrder {
+  /** The hand's ids in drawing order. */
+  ids: ObjectId[]
+  mode: HandOrderMode
+  /** Picks an auto sort, which drops the game's custom order. */
+  choose(sort: HandSort): void
+  /** Moves the card at `from` to `to` of `ids`, which makes the order custom. */
+  move(from: number, to: number): void
+}
+
 /** The viewer's order of `cards` (the server's hand) in `game`. */
 export function useHandOrder(
   game: string,
   cards: readonly ObjectId[],
   objects: Readonly<Record<ObjectId, ObjectView>>,
-  stores: { local: HandStore | null; session: HandStore | null } = {
-    local: storage('localStorage'),
-    session: storage('sessionStorage'),
-  },
 ): HandOrder {
-  const { local, session } = stores
-  const [sort, setSort] = useState<HandSort>(() => {
-    const kept = read(local, HAND_SORT_KEY)
-    return isHandSort(kept) ? kept : 'drawn'
-  })
-  const [custom, setCustom] = useState<ObjectId[] | null>(() =>
-    parseCustom(read(session, handOrderKey(game))),
-  )
+  const custom = useSyncExternalStore(subscribe, () => customOrder(game))
+  const auto = useSyncExternalStore(subscribe, handSort)
   const ids = useMemo(
-    () => (custom === null ? sortHand(cards, factsOf(objects), sort) : mergeCustom(custom, cards)),
-    [cards, objects, sort, custom],
+    () => (custom === null ? sortHand(cards, factsOf(objects), auto) : mergeCustom(custom, cards)),
+    [cards, objects, auto, custom],
   )
-  const choose = useCallback(
-    (next: HandSort) => {
-      setSort(next)
-      setCustom(null)
-      write(local, HAND_SORT_KEY, next)
-      write(session, handOrderKey(game), null)
-    },
-    [game, local, session],
-  )
+  const choose = useCallback((next: HandSort) => chooseHandSort(game, next), [game])
   const move = useCallback(
-    (from: number, to: number) => {
-      const next = moveCard(ids, from, to)
-      setCustom(next)
-      write(session, handOrderKey(game), JSON.stringify(next))
-    },
-    [game, ids, session],
+    (from: number, to: number) => setCustomOrder(game, moveCard(ids, from, to)),
+    [game, ids],
   )
-  return { ids, mode: custom === null ? sort : 'custom', choose, move }
+  return { ids, mode: custom === null ? auto : 'custom', choose, move }
 }

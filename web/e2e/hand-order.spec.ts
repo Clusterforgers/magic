@@ -1,4 +1,4 @@
-// Goal: on the development table at 1400x900 and 390x844 the viewer drags a card of the hand in front of another with the mouse (and on a touch screen after a short hold) without playing it, a swipe still moves no card, the sort menu puts the hand in "Lands, creatures, spells" order and back to "As drawn", and a custom order lasts through a reload.
+// Goal: on the development table at 1400x900 and 390x844 the viewer drags a card of the hand in front of another with the mouse (and on a touch screen after a short hold) without playing it, a swipe still moves no card, the sort menu (on a phone the table menu's "Hand order") puts the hand in "Lands, creatures, spells" order and back to "As drawn", and a custom order lasts through a reload.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
@@ -20,14 +20,12 @@ const order = (page: Page): Promise<string[]> =>
 
 /** 0 for a land, 1 for a creature, 2 for any other card, read from each card's spoken name. */
 const groups = (page: Page): Promise<number[]> =>
-  page
-    .locator(`${HAND} button[data-object-id]`)
-    .evaluateAll((cards) =>
-      cards.map((card) => {
-        const label = card.getAttribute('aria-label') ?? ''
-        return /\bLand\b/.test(label) ? 0 : /\bCreature\b/.test(label) ? 1 : 2
-      }),
-    )
+  page.locator(`${HAND} button[data-object-id]`).evaluateAll((cards) =>
+    cards.map((card) => {
+      const label = card.getAttribute('aria-label') ?? ''
+      return /\bLand\b/.test(label) ? 0 : /\bCreature\b/.test(label) ? 1 : 2
+    }),
+  )
 
 /** Opens the table with the hand laid out and its line scrolled to the start; the hand's ids in order. */
 async function open(page: Page): Promise<string[]> {
@@ -52,6 +50,19 @@ async function centre(page: Page, id: string): Promise<{ x: number; y: number }>
   })
 }
 
+/**
+ * Scrolls the hand's line so the edge between the card with id `id` and the one before it is in the middle: a phone's
+ * line can be narrower than a card, and so shows a part of both.
+ */
+async function showEdge(page: Page, id: string): Promise<void> {
+  await page.locator(`${HAND} button[data-object-id="${id}"]`).evaluate((card) => {
+    const list = card.closest('ul')
+    if (list === null) return
+    const left = card.getBoundingClientRect().left - list.getBoundingClientRect().left + list.scrollLeft
+    list.scrollTo({ left: left - list.clientWidth / 2 })
+  })
+}
+
 /** `start` with the card at `from` put at `to`. */
 function moved(start: readonly string[], from: number, to: number): string[] {
   const next = [...start]
@@ -60,16 +71,39 @@ function moved(start: readonly string[], from: number, to: number): string[] {
   return next
 }
 
+/** The order in force by its label: the dock's sort button names it; a phone's table menu presses it (Custom: none). */
+async function expectMode(page: Page, label: string): Promise<void> {
+  const button = page.getByRole('button', { name: /^Sort hand:/ })
+  if ((await button.count()) > 0) {
+    await expect(button).toHaveAccessibleName(`Sort hand: ${label}`)
+    return
+  }
+  await page.getByRole('button', { name: 'Table menu' }).click()
+  const pressed = page.getByRole('group', { name: 'Hand order' }).locator('button[aria-pressed="true"]')
+  if (label === 'Custom') await expect(pressed).toHaveCount(0)
+  else await expect(pressed).toHaveText(label)
+  await page.keyboard.press('Escape')
+}
+
+/** Picks an auto sort: from the dock's sort button, or on a phone from the table menu's "Hand order". */
 async function chooseSort(page: Page, label: string): Promise<void> {
-  await page.getByRole('button', { name: /^Sort hand:/ }).click()
-  await page.getByRole('menuitemradio', { name: label }).click()
-  await expect(page.getByRole('button', { name: `Sort hand: ${label}` })).toBeVisible()
+  const button = page.getByRole('button', { name: /^Sort hand:/ })
+  if ((await button.count()) > 0) {
+    await button.click()
+    await page.getByRole('menuitemradio', { name: label }).click()
+  } else {
+    await page.getByRole('button', { name: 'Table menu' }).click()
+    await page.getByRole('group', { name: 'Hand order' }).getByRole('button', { name: label }).click()
+    await page.keyboard.press('Escape')
+  }
+  await expectMode(page, label)
 }
 
 for (const { width, height, from, to } of CASES) {
   test(`a hand card is dragged before another and the hand sorts at ${width}x${height}`, async ({ page }) => {
     await page.setViewportSize({ width, height })
     const start = await open(page)
+    await showEdge(page, start[Math.max(from, to)] ?? '')
     const a = await centre(page, start[from] ?? '')
     const b = await centre(page, start[to] ?? '')
     await page.mouse.move(a.x, a.y)
@@ -83,8 +117,8 @@ for (const { width, height, from, to } of CASES) {
     // The card moved in front and stayed in the hand: the drop played nothing.
     const want = moved(start, from, to)
     await expect.poll(() => order(page)).toEqual(want)
-    await expect(page.getByRole('button', { name: 'Sort hand: Custom' })).toBeVisible()
     await expect(page.locator('[data-slot="hand-drag-face"]')).toHaveCount(0)
+    await expectMode(page, 'Custom')
 
     await page.reload()
     await expect(page.locator(`${HAND} button[data-object-id]`)).toHaveCount(7)
@@ -117,7 +151,7 @@ test('a touch drags a hand card after a short hold, and a swipe does not', async
   await touch('touchEnd')
   await expect(page.locator('[data-slot="hand-drag-face"]')).toHaveCount(0)
   expect(await order(page)).toEqual(start)
-  await page.locator(HAND).evaluate((list) => list.scrollTo({ left: 0 }))
+  await showEdge(page, start[1] ?? '')
 
   // Held still past the hold, then moved: the second card goes in front of the first.
   const a = await centre(page, start[1] ?? '')

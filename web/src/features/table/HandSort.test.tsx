@@ -1,4 +1,4 @@
-// Goal: the hand dock's sort menu puts the viewer's hand in the chosen order and remembers it, Alt with an arrow key, Home or End moves the focused card, keeps its focus and says where it went, and a custom order takes new cards at the end, drops cards that left and lasts through a reload of the game.
+// Goal: the hand dock's sort menu and the table menu's "Hand order" put the viewer's hand in the chosen order and remember it, Alt with an arrow key, Home or End moves the focused card, keeps its focus and says where it went, and a custom order takes new cards at the end, drops cards that left and lasts through a reload of the game.
 import { act, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { CardType, ObjectView } from '@/protocol/generated'
@@ -7,7 +7,7 @@ import { indexById } from '@/play/view'
 import { clone, must } from '@/test-utils/batches'
 import { card } from '@/test-utils/cards'
 import { renderTable } from '@/test-utils/tableHarness'
-import { HAND_SORT_KEY, handOrderKey } from './useHandOrder'
+import { HAND_SORT_KEY, handOrderKey, resetHandOrder } from './useHandOrder'
 
 const HAND: ReadonlyArray<[number, string, CardType, number]> = [
   [9001, 'Shock', 'Instant', 1],
@@ -55,10 +55,32 @@ const sortButton = (): HTMLElement => screen.getByRole('button', { name: /^Sort 
 beforeEach(() => {
   localStorage.clear()
   sessionStorage.clear()
+  resetHandOrder()
 })
 afterEach(() => {
   localStorage.clear()
   sessionStorage.clear()
+})
+
+describe('table menu', () => {
+  it('sorts the hand from "Hand order" and shows the order in force, Custom checking none', async () => {
+    const table = renderTable({ seats: 2, state: withHand(HAND) })
+    await table.user.click(screen.getByRole('button', { name: 'Table menu' }))
+    const group = await screen.findByRole('group', { name: 'Hand order' })
+    expect(within(group).getByRole('button', { name: 'As drawn' })).toHaveAttribute('aria-pressed', 'true')
+    await table.user.click(within(group).getByRole('button', { name: 'Mana value' }))
+    expect(names()).toEqual(['Forest', 'Mountain', 'Shock', 'Centaur', 'Bloom'])
+    expect(sortButton()).toHaveAccessibleName('Sort hand: Mana value')
+    act(() => must(document.querySelector<HTMLElement>('button[data-object-id="9004"]')).focus())
+    await table.user.keyboard('{Alt>}{Home}{/Alt}')
+    expect(sortButton()).toHaveAccessibleName('Sort hand: Custom')
+    if (screen.queryByRole('group', { name: 'Hand order' }) === null)
+      await table.user.click(screen.getByRole('button', { name: 'Table menu' }))
+    const again = await screen.findByRole('group', { name: 'Hand order' })
+    for (const button of within(again).getAllByRole('button')) {
+      expect(button).toHaveAttribute('aria-pressed', 'false')
+    }
+  })
 })
 
 describe('sort menu', () => {
@@ -76,6 +98,7 @@ describe('sort menu', () => {
     expect(sortButton()).toHaveAccessibleName(`Sort hand: ${label}`)
     expect(localStorage.getItem(HAND_SORT_KEY)).toBe(key)
     table.unmount()
+    resetHandOrder()
     renderTable({ seats: 2, state: withHand(HAND) })
     expect(names()).toEqual(want)
   })
@@ -141,6 +164,7 @@ describe('keyboard reorder', () => {
     expect(names()).toEqual(['Bloom', 'Shock', 'Centaur', 'Forest'])
     expect(sessionStorage.getItem(handOrderKey('test-game'))).not.toBeNull()
     table.unmount()
+    resetHandOrder()
     const again = renderTable({ seats: 2, state: withHand(HAND.filter(([, name]) => name !== 'Mountain')) })
     expect(names()).toEqual(['Bloom', 'Shock', 'Centaur', 'Forest'])
     await again.user.click(sortButton())

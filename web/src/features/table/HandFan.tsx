@@ -1,5 +1,6 @@
 import {
   closestCenter,
+  pointerWithin,
   DndContext,
   DragOverlay,
   MouseSensor,
@@ -9,7 +10,13 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import type { Announcements, DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
+import type {
+  Announcements,
+  CollisionDetection,
+  DragEndEvent,
+  DragOverEvent,
+  DragStartEvent,
+} from '@dnd-kit/core'
 import { Crown } from 'lucide-react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react'
@@ -54,6 +61,12 @@ const MOUSE_DRAG_PX = 6
 /** How long a finger rests on a card before it drags, and how far it may stray meanwhile; a swipe scrolls instead. */
 const TOUCH_HOLD_MS = 250
 const TOUCH_STRAY_PX = 8
+
+/** The card under the pointer or finger is where the dragged card goes; between cards, the nearest one. */
+const underPointer: CollisionDetection = (args) => {
+  const hits = pointerWithin(args)
+  return hits.length > 0 ? hits : closestCenter(args)
+}
 
 // The dock announces a move itself, by the card's name; dnd-kit's own words name only the id. Its live region and
 // instructions go to an element outside the page, so the table keeps one status region and no second voice.
@@ -185,7 +198,7 @@ export function HandFan({ ids, label, size, cost = false, layout, commanders, on
       ) : (
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCenter}
+          collisionDetection={underPointer}
           accessibility={{
             announcements: SILENT,
             screenReaderInstructions: INSTRUCTIONS,
