@@ -1,0 +1,48 @@
+{
+  "oracle_id": "31061e34-042e-40c3-99ab-752795ab4324",
+  "name": "Hollowmurk Siege",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hollowmurk Siege",
+      "oracle_fingerprint": "07b147cfa8d669bb59f2085c272a2695",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["Sultai", "Abzan"] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "CountersPut": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": { "EnteredAs": "Sultai" },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": { "EnteredAs": "Abzan" },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Menace" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

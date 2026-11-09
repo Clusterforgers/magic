@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f3f10173-fead-48a2-9726-a4e7efec3951",
+  "name": "Noble's Purse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noble's Purse",
+      "oracle_fingerprint": "47807502942f13062720d58e257b52f3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "coin" }, "count": 3, "tapped": true } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": { "Other": "coin" } } }],
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

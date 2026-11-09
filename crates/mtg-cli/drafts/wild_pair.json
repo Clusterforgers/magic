@@ -1,0 +1,63 @@
+{
+  "oracle_id": "4fdde84f-4103-4209-a296-60d1bf94af65",
+  "name": "Wild Pair",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Pair",
+      "oracle_fingerprint": "7ac82243afc8d0294aae5055e2c3bb20",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Type": "Creature" },
+                          {
+                            "Test": {
+                              "left": {
+                                "Sum": [
+                                  { "Stat": { "of": "Candidate", "stat": "Power" } },
+                                  { "Stat": { "of": "Candidate", "stat": "Toughness" } }
+                                ]
+                              },
+                              "op": "Eq",
+                              "right": {
+                                "Sum": [
+                                  { "Stat": { "of": "Triggering", "stat": "Power" } },
+                                  { "Stat": { "of": "Triggering", "stat": "Toughness" } }
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

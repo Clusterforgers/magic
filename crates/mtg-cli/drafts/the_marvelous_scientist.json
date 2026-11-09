@@ -1,0 +1,58 @@
+{
+  "oracle_id": "258e4da4-e7fd-4049-92df-e5433b9f0ce9",
+  "name": "The Marvelous Scientist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Marvelous Scientist",
+      "oracle_fingerprint": "1af7c9dc547beccc26b7ee1522142de2",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["Cosplay", "Science"] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }],
+                "by": "You"
+              }
+            },
+            "if": { "EnteredAs": "Cosplay" },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                        "toughness": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "if": { "EnteredAs": "Science" },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

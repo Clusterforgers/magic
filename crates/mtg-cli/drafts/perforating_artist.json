@@ -1,0 +1,67 @@
+{
+  "oracle_id": "a3643f66-dfa2-4275-a093-23e162496354",
+  "name": "Perforating Artist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perforating Artist",
+      "oracle_fingerprint": "21b50d03903434c7200d3af56fb397e9",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "Bound": "each" },
+                        "options": [
+                          [
+                            {
+                              "Pay": {
+                                "who": { "Bound": "each" },
+                                "cost": [
+                                  { "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }] } }
+                                ],
+                                "unpaid": [
+                                  { "LoseLife": { "who": { "Bound": "each" }, "amount": 3 } }
+                                ]
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Pay": {
+                                "who": { "Bound": "each" },
+                                "cost": [{ "Discard": {} }],
+                                "unpaid": [
+                                  { "LoseLife": { "who": { "Bound": "each" }, "amount": 3 } }
+                                ]
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

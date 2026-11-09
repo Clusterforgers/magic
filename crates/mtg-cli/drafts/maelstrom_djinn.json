@@ -1,0 +1,30 @@
+{
+  "oracle_id": "351988f0-59c6-492d-8a39-efa0329e1447",
+  "name": "Maelstrom Djinn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maelstrom Djinn",
+      "oracle_fingerprint": "69b09c808fa3f5892ef0fb2d34bfbe5e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Morph": "{2}{U}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "time" }, "count": 2 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": { "Vanishing": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

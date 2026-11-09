@@ -1,0 +1,47 @@
+{
+  "oracle_id": "7798a4d9-1c1d-48e6-b9a2-ecd6aec1efa7",
+  "name": "Palantír of Orthanc",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Palantír of Orthanc",
+      "oracle_fingerprint": "6368c018dab22c4117c090376d5606e0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "influence" } } },
+              { "Scry": { "count": 2 } },
+              {
+                "OneOf": {
+                  "who": { "Target": 0 },
+                  "options": [
+                    [{ "Draw": {} }],
+                    [
+                      {
+                        "Mill": {
+                          "count": {
+                            "Counters": { "on": "This", "counter": { "Other": "influence" } }
+                          },
+                          "as": "milled"
+                        }
+                      },
+                      {
+                        "LoseLife": {
+                          "who": { "Target": 0 },
+                          "amount": { "Stat": { "of": { "Bound": "milled" }, "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

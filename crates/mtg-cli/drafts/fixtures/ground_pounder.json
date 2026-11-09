@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "c39f8801-4dff-4192-a783-2b5dfda24784",
+  "oracle_id": "6cde5aa5-729f-40d3-a4c7-3516f9dbf7f5",
+  "multiverse_ids": [
+    439499
+  ],
+  "tcgplayer_id": 153190,
+  "cardmarket_id": 314002,
+  "name": "Ground Pounder",
+  "lang": "en",
+  "released_at": "2017-12-08",
+  "uri": "https://api.scryfall.com/cards/c39f8801-4dff-4192-a783-2b5dfda24784",
+  "scryfall_uri": "https://scryfall.com/card/ust/110/ground-pounder?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:36:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/3/c39f8801-4dff-4192-a783-2b5dfda24784.jpg?1783935407",
+    "normal": "https://cards.scryfall.io/normal/front/c/3/c39f8801-4dff-4192-a783-2b5dfda24784.jpg?1783935407",
+    "large": "https://cards.scryfall.io/large/front/c/3/c39f8801-4dff-4192-a783-2b5dfda24784.jpg?1783935407",
+    "png": "https://cards.scryfall.io/png/front/c/3/c39f8801-4dff-4192-a783-2b5dfda24784.png?1783935407",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/3/c39f8801-4dff-4192-a783-2b5dfda24784.jpg?1783935407",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/3/c39f8801-4dff-4192-a783-2b5dfda24784.jpg?1783935407",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/3/c39f8801-4dff-4192-a783-2b5dfda24784.webp?1783935407",
+    "grid": "https://cards.scryfall.io/grid/front/c/3/c39f8801-4dff-4192-a783-2b5dfda24784.webp?1783935407",
+    "display": "https://cards.scryfall.io/display/front/c/3/c39f8801-4dff-4192-a783-2b5dfda24784.webp?1783935407",
+    "art": "https://cards.scryfall.io/art/front/c/3/c39f8801-4dff-4192-a783-2b5dfda24784.webp?1783935407",
+    "crop": "https://cards.scryfall.io/crop/front/c/3/c39f8801-4dff-4192-a783-2b5dfda24784.webp?1783935407",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/3/c39f8801-4dff-4192-a783-2b5dfda24784.jpg?1783935407"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Goblin Warrior",
+  "oracle_text": "{3}{G}: Roll a six-sided die. This creature gets +X/+X until end of turn, where X is the result.\nWhenever you roll a 5 or higher on a die, this creature gains trample until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "83491685-880d-41dd-a4af-47d2b3b17c10",
+  "set": "ust",
+  "set_name": "Unstable",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/83491685-880d-41dd-a4af-47d2b3b17c10",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aust&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ust?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c39f8801-4dff-4192-a783-2b5dfda24784/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6cde5aa5-729f-40d3-a4c7-3516f9dbf7f5&unique=prints",
+  "collector_number": "110",
+  "digital": false,
+  "rarity": "common",
+  "watermark": "goblinexplosioneers",
+  "flavor_text": "People came from miles away just to see the head of the hammer.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Warren Mahy",
+  "artist_ids": [
+    "002c739e-aa1f-4c1d-921b-37cb2d1b1c5b"
+  ],
+  "illustration_id": "a8bdc558-c69e-469b-a3e5-7ebb4e024669",
+  "border_color": "silver",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": "0.69",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.26",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=439499&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGround%2BPounder",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGround%2BPounder",
+    "edhrec": "https://edhrec.com/route/?cc=Ground+Pounder"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F153190%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=314002&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Ground+Pounder&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

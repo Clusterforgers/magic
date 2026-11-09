@@ -1,0 +1,42 @@
+{
+  "oracle_id": "03d2d7dd-54b6-469e-8b1c-c48db8cc0925",
+  "name": "Stenn, Paranoid Partisan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stenn, Paranoid Partisan",
+      "oracle_fingerprint": "78a56d44ded0ab56db7c75d078054a49",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "CardTypeOf": 443 } }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "ChosenSubtype", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}{U}",
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

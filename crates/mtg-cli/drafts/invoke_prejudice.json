@@ -1,0 +1,40 @@
+{
+  "oracle_id": "854ad486-0c59-4c57-9a76-ab1dff0ff37c",
+  "name": "Invoke Prejudice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invoke Prejudice",
+      "oracle_fingerprint": "c4402820a1537fa352087cbf15ad038f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "Opponents" },
+                  {
+                    "Not": {
+                      "SharesColor": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{1}",
+                  "times": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

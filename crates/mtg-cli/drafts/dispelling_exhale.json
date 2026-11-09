@@ -1,0 +1,31 @@
+{
+  "oracle_id": "dd3a4b64-0987-4e9b-a18d-c54365438857",
+  "name": "Dispelling Exhale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dispelling Exhale",
+      "oracle_fingerprint": "2feef63c94e0dc3e62496e1532664300",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Behold": { "filter": [{ "Subtype": "Dragon" }] } }] } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": {
+                    "When": { "condition": "AdditionalCostPaid", "then": 4, "otherwise": 2 }
+                  },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

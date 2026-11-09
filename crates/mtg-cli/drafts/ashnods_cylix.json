@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fdf4e4c3-fe17-4098-9f76-e98f3f00bd3e",
+  "name": "Ashnod's Cylix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashnod's Cylix",
+      "oracle_fingerprint": "12f4f448460f6a4b447ac975fc520d85",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 3, "as": "top" } },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Bound": "top" },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              { "Exile": { "what": { "Bound": "rest3" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

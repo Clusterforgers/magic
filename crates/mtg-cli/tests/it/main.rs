@@ -10,6 +10,7 @@ mod coverage;
 mod coverage_all;
 mod coverage_decks;
 mod coverage_read;
+mod d20b_translate;
 mod draft_store;
 mod drafts;
 mod drafts_smoke;

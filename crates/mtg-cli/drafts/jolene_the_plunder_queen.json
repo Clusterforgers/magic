@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8215f4a2-7131-426b-ad9c-6427caabd715",
+  "name": "Jolene, the Plunder Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jolene, the Plunder Queen",
+      "oracle_fingerprint": "c76fe66495de0b251103be21f801e3b1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "AttackingPlayer": "Opponents" }]
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "token": { "Named": "treasure" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "TokenCreation": { "what": [{ "Subtype": "Treasure" }] } },
+            "by": { "Plus": [{ "CreateToken": { "token": { "Named": "treasure" } } }] }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Treasure" }], "count": 5 } }],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

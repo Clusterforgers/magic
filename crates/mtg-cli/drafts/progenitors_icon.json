@@ -1,0 +1,38 @@
+{
+  "oracle_id": "747f6d0f-3c10-4fef-b7ae-f578c8964ab5",
+  "name": "Progenitor's Icon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Progenitor's Icon",
+      "oracle_fingerprint": "4452ffab021e96dba695189946e2b74f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "NextSpell": { "what": ["ChosenSubtype"], "benefit": "Flash" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

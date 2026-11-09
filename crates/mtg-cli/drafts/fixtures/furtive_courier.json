@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "6f359fc2-b9e4-4a01-9d04-442bb160b01e",
+  "oracle_id": "92d24b75-419b-4068-89c1-db9945f74972",
+  "multiverse_ids": [
+    646621
+  ],
+  "mtgo_id": 121604,
+  "arena_id": 88978,
+  "tcgplayer_id": 535254,
+  "cardmarket_id": 752597,
+  "name": "Furtive Courier",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/6f359fc2-b9e4-4a01-9d04-442bb160b01e",
+  "scryfall_uri": "https://scryfall.com/card/mkm/59/furtive-courier?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:21:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/f/6f359fc2-b9e4-4a01-9d04-442bb160b01e.jpg?1783912908",
+    "normal": "https://cards.scryfall.io/normal/front/6/f/6f359fc2-b9e4-4a01-9d04-442bb160b01e.jpg?1783912908",
+    "large": "https://cards.scryfall.io/large/front/6/f/6f359fc2-b9e4-4a01-9d04-442bb160b01e.jpg?1783912908",
+    "png": "https://cards.scryfall.io/png/front/6/f/6f359fc2-b9e4-4a01-9d04-442bb160b01e.png?1783912908",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/f/6f359fc2-b9e4-4a01-9d04-442bb160b01e.jpg?1783912908",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/f/6f359fc2-b9e4-4a01-9d04-442bb160b01e.jpg?1783912908",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/f/6f359fc2-b9e4-4a01-9d04-442bb160b01e.webp?1783912908",
+    "grid": "https://cards.scryfall.io/grid/front/6/f/6f359fc2-b9e4-4a01-9d04-442bb160b01e.webp?1783912908",
+    "display": "https://cards.scryfall.io/display/front/6/f/6f359fc2-b9e4-4a01-9d04-442bb160b01e.webp?1783912908",
+    "art": "https://cards.scryfall.io/art/front/6/f/6f359fc2-b9e4-4a01-9d04-442bb160b01e.webp?1783912908",
+    "crop": "https://cards.scryfall.io/crop/front/6/f/6f359fc2-b9e4-4a01-9d04-442bb160b01e.webp?1783912908",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/f/6f359fc2-b9e4-4a01-9d04-442bb160b01e.jpg?1783912908"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Merfolk Advisor",
+  "oracle_text": "This creature can't be blocked as long as you've sacrificed an artifact this turn.\nWhenever this creature attacks, draw a card, then discard a card.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set": "mkm",
+  "set_name": "Murders at Karlov Manor",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6f359fc2-b9e4-4a01-9d04-442bb160b01e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A92d24b75-419b-4068-89c1-db9945f74972&unique=prints",
+  "collector_number": "59",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Glad to see you made it in one piece. Next time, try not looking so obviously nervous.\"\n—Linghu of the Foundway Associates",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mark Behm",
+  "artist_ids": [
+    "ccf77963-723f-4137-b364-7417079e8ab9"
+  ],
+  "illustration_id": "5e6729cf-48f6-42cf-9393-d76784707659",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26979,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/products/murders-at-karlov-manor/card-image-gallery",
+    "previewed_at": "2024-01-23"
+  },
+  "prices": {
+    "usd": "0.09",
+    "usd_foil": "0.04",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.10",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=646621&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFurtive%2BCourier",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFurtive%2BCourier",
+    "edhrec": "https://edhrec.com/route/?cc=Furtive+Courier"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535254%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=752597&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/121604?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

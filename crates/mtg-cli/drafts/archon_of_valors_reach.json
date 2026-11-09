@@ -1,0 +1,29 @@
+{
+  "oracle_id": "baff00b8-b109-4e31-942b-38aeb1e45ab2",
+  "name": "Archon of Valor's Reach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archon of Valor's Reach",
+      "oracle_fingerprint": "7f0f8ba2ce9358df48fdd1ad64aa90b8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "CardTypeOf": 409 } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "EachPlayer", "action": { "Cast": { "filter": ["ChosenSubtype"] } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

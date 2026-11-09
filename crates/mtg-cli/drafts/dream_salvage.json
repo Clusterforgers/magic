@@ -1,0 +1,23 @@
+{
+  "oracle_id": "a05d478c-a703-4fc4-9496-2894a6acdaef",
+  "name": "Dream Salvage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Salvage",
+      "oracle_fingerprint": "abb90f779ede807a03f1a4e0ed2c713b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Draw": { "count": { "Tallied": { "who": { "Target": 0 }, "what": "Discarded" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

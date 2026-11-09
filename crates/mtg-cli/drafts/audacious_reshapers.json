@@ -1,0 +1,41 @@
+{
+  "oracle_id": "525c0e33-f073-4bed-be8a-14e436a0bcf1",
+  "name": "Audacious Reshapers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Audacious Reshapers",
+      "oracle_fingerprint": "0aba58f13d74f98810f742e6afd8dae7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Artifact" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "Let": {
+                  "as": "seen3",
+                  "amount": { "Count": [{ "Is": { "Bound": "revealed2" } }, { "In": "Library" }] }
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              { "DealDamage": { "to": "You", "amount": { "Bound": "seen3" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "cf01312d-305a-4587-8f54-03ee471bdf8c",
+  "name": "Vulshok Battlemaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vulshok Battlemaster",
+      "oracle_fingerprint": "08468d434f328f44df3284d1f609c678",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Attach": { "what": { "Each": [{ "Subtype": "Equipment" }] }, "to": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "oracle_id": "fc1eb1c9-b22b-41a1-8b13-94a0e758db0f",
+  "name": "Haphazard Bombardment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haphazard Bombardment",
+      "oracle_fingerprint": "ca2543fbb70a6cf48d3b804b76328c60",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "ControlledBy": "You" } },
+                      { "Not": { "Type": "Enchantment" } }
+                    ]
+                  },
+                  "count": { "min": 4, "max": 4 },
+                  "as": "card"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "card" }, "counter": { "Other": "aim" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Not": { "ControlledBy": "You" } },
+                    { "HasCounter": { "Other": "aim" } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "ControlledBy": "You" } },
+                      { "HasCounter": { "Other": "aim" } },
+                      { "Not": { "HasKeyword": "Indestructible" } }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "card" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "be3c7e4c-81fd-49e7-8fb5-5eb83994dafd",
+  "name": "Bonecache Overseer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bonecache Overseer",
+      "oracle_fingerprint": "96dea6b650995eb118ff446cc4dee6e7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 1 }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    { "Tallied": { "who": "You", "what": "CardsLeftGraveyard" } },
+                    {
+                      "Times": {
+                        "by": 3,
+                        "of": {
+                          "Tally": {
+                            "event": "Sacrificed",
+                            "who": "You",
+                            "filter": [{ "Subtype": "Food" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

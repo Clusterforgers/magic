@@ -1,0 +1,42 @@
+{
+  "oracle_id": "01591d42-4ef8-471d-beda-d31186bba6a6",
+  "name": "Gerrard's Hourglass Pendant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gerrard's Hourglass Pendant",
+      "oracle_fingerprint": "afd3b8c674ef9317477d3667dfc6abd0",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Rule": { "rule": { "SkipExtraTurns": "EachPlayer" } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap", "ExileSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Land" },
+                          { "Type": "Enchantment" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "ArrivedFrom": "Battlefield" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

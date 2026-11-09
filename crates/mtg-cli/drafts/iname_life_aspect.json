@@ -1,0 +1,50 @@
+{
+  "oracle_id": "cb806239-32bf-4850-be65-239444c347a5",
+  "name": "Iname, Life Aspect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iname, Life Aspect",
+      "oracle_fingerprint": "465ee9d8444b6d5f2032b3f5c235114f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Spirit" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Largest": {
+                      "who": "You",
+                      "of": [{ "Subtype": "Spirit" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Exile": { "what": "This", "as": "exiled" } }] } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

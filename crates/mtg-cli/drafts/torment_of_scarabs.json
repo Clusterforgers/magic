@@ -1,0 +1,46 @@
+{
+  "oracle_id": "4ba5bcee-fc95-4d05-965e-b1762529ec5f",
+  "name": "Torment of Scarabs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torment of Scarabs",
+      "oracle_fingerprint": "b70fdb08c884c4ff7ce0b12ac2ecd3a2",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "AttachedPlayer" } },
+            "effects": [
+              {
+                "OneOf": {
+                  "who": "Triggering",
+                  "options": [
+                    [
+                      {
+                        "Pay": {
+                          "who": "Triggering",
+                          "cost": [{ "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }] } }],
+                          "unpaid": [{ "LoseLife": { "who": "Triggering", "amount": 3 } }]
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Pay": {
+                          "who": "Triggering",
+                          "cost": [{ "Discard": {} }],
+                          "unpaid": [{ "LoseLife": { "who": "Triggering", "amount": 3 } }]
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

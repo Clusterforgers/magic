@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c915f815-77d7-4e08-b178-82b29a58bb03",
+  "name": "Fleeting Reflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleeting Reflection",
+      "oracle_fingerprint": "9d0484d11c17ac2f7040e8e5600f10a1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "BecomeCopy": {
+                  "what": { "Target": 0 },
+                  "of": { "Target": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "5ded56df-c7d5-4043-85df-410f47219faa",
+  "name": "Corpseberry Cultivator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Corpseberry Cultivator",
+      "oracle_fingerprint": "894ad5ae9b7d64e731d4bebd278b156e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": ["Forage"] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 118, "end": 176 }
+          }
+        }
+      ]
+    }
+  ]
+}

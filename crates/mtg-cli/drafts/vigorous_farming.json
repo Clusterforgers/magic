@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4c3ff272-5b0b-40dc-a585-9d52598c1e1b",
+  "name": "Vigorous Farming",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vigorous Farming",
+      "oracle_fingerprint": "03668ec2e4ff7c754fe64fa63f5ce002",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": [{ "Type": "Land" }, { "ControlledBy": "You" }] } },
+            "by": "Untapped"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 50, "end": 204 }
+          }
+        }
+      ]
+    }
+  ]
+}

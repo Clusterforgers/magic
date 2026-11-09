@@ -1,0 +1,39 @@
+{
+  "oracle_id": "275d0b90-a8d6-4388-b7db-34615287f532",
+  "name": "Precognitive Perception",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Precognitive Perception",
+      "oracle_fingerprint": "a5258751356adbf0ef9e6dd7668c7e9b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "CountOf": {
+                          "subject": "This",
+                          "selector": [{ "WasCast": {} }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] },
+                      "YourTurn"
+                    ]
+                  },
+                  "then": [{ "Scry": { "count": 3 } }]
+                }
+              },
+              { "Draw": { "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

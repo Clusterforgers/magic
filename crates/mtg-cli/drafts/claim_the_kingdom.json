@@ -1,0 +1,82 @@
+{
+  "oracle_id": "3cd15225-e9b6-4998-b545-76536c72e948",
+  "name": "Claim the Kingdom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Claim the Kingdom",
+      "oracle_fingerprint": "c9de952e2dbb599a4775f20301b2c5ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "PutCounters": { "on": { "Each": [{ "Is": { "Target": 0 } }] }, "counter": "+1/+1" }
+              },
+              { "PutCounters": { "on": { "Each": ["This"] }, "counter": { "Other": "plan" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersPut": { "what": ["This"], "counter": { "Other": "plan" } } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Counters": { "on": "This", "counter": { "Other": "plan" } } },
+                  "op": "Eq",
+                  "right": 4
+                }
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"], "as": "sacrificed" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "PutCounters": {
+                              "on": { "Target": 0 },
+                              "counter": { "Other": "indestructible" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

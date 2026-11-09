@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6b6e4ee2-52e6-452b-af15-c90eab5fc746",
+  "name": "Wheel of Sun and Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wheel of Sun and Moon",
+      "oracle_fingerprint": "9b3910db20f051477f3bf2fefdf78447",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": "Token" }, { "OwnedBy": "AttachedPlayer" }],
+                "to": "Graveyard"
+              }
+            },
+            "by": { "IntoLibrary": { "place": "Bottom", "reveal": true } }
+          }
+        }
+      ]
+    }
+  ]
+}

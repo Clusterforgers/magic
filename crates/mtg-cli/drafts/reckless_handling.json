@@ -20,7 +20,7 @@
                     "CountOf": {
                       "subject": { "Bound": "discarded2" },
                       "selector": [{ "Type": "Artifact" }],
-                      "op": "Eq",
+                      "op": "Ge",
                       "right": 1
                     }
                   },

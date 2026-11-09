@@ -1,0 +1,55 @@
+{
+  "oracle_id": "2c04371a-af69-4e42-8cda-096cf8312b5e",
+  "name": "Edgar's Awakening",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Edgar's Awakening",
+      "oracle_fingerprint": "225d9d892d25fdf7d5bc7cf3516bbca6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{B}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

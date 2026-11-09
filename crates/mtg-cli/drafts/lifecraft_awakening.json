@@ -1,0 +1,41 @@
+{
+  "oracle_id": "8919c8dd-d3b3-406f-a387-44cc1b6d92f3",
+  "name": "Lifecraft Awakening",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lifecraft Awakening",
+      "oracle_fingerprint": "d0e43927da8d3c30225f2d3e7e22becc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "X" } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Is": { "Target": 0 } },
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Subtype": "Vehicle" } }
+                    ]
+                  },
+                  "mods": [
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddSubtype": "Construct" },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

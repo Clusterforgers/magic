@@ -1,0 +1,51 @@
+{
+  "oracle_id": "26c09127-8225-4ba2-9f97-f5558b1c41b5",
+  "name": "Gastal Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gastal Raider",
+      "oracle_fingerprint": "48181fd92676b1299adf556ec9852559",
+      "abilities": [
+        { "Keyword": "StartYourEngines" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": "This",
+                    "mods": [
+                      { "ModifyPT": { "power": 1, "toughness": 1 } },
+                      { "AddKeyword": "Menace" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "MaxSpeed": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "62b69aaf-0aae-4f6e-a27f-0129882dfe1d",
+  "oracle_id": "5fcbb5d3-71d1-4946-b806-ba6376338eba",
+  "multiverse_ids": [
+    662340
+  ],
+  "mtgo_id": 126393,
+  "arena_id": 91038,
+  "tcgplayer_id": 552805,
+  "cardmarket_id": 772082,
+  "name": "Horrid Shadowspinner",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/62b69aaf-0aae-4f6e-a27f-0129882dfe1d",
+  "scryfall_uri": "https://scryfall.com/card/mh3/188/horrid-shadowspinner?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:54:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.jpg?1783911250",
+    "normal": "https://cards.scryfall.io/normal/front/6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.jpg?1783911250",
+    "large": "https://cards.scryfall.io/large/front/6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.jpg?1783911250",
+    "png": "https://cards.scryfall.io/png/front/6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.png?1783911250",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.jpg?1783911250",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.jpg?1783911250",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.webp?1783911250",
+    "grid": "https://cards.scryfall.io/grid/front/6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.webp?1783911250",
+    "display": "https://cards.scryfall.io/display/front/6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.webp?1783911250",
+    "art": "https://cards.scryfall.io/art/front/6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.webp?1783911250",
+    "crop": "https://cards.scryfall.io/crop/front/6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.webp?1783911250",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.jpg?1783911250"
+  },
+  "mana_cost": "{1}{U}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Horror",
+  "oracle_text": "Lifelink\nWhenever this creature attacks, you may draw cards equal to its power. If you do, discard that many cards.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Lifelink"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set": "mh3",
+  "set_name": "Modern Horizons 3",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh3&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh3?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/62b69aaf-0aae-4f6e-a27f-0129882dfe1d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5fcbb5d3-71d1-4946-b806-ba6376338eba&unique=prints",
+  "collector_number": "188",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"The daylight's done, the nightmare's spun. It crawls off the loom, and into your room.\"\n—Kithkin children's rhyme",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ben Wootten",
+  "artist_ids": [
+    "31cdca96-ecde-4245-bfb6-653929d57d9c"
+  ],
+  "illustration_id": "de4431cc-7291-42b1-ac75-779be2e2c9b2",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12274,
+  "preview": {
+    "source": "Ben Braun-Duin",
+    "source_uri": "https://twitter.com/braunduinit/status/1794005148391374994",
+    "previewed_at": "2024-05-24"
+  },
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.28",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.19",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=662340&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHorrid%2BShadowspinner",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHorrid%2BShadowspinner",
+    "edhrec": "https://edhrec.com/route/?cc=Horrid+Shadowspinner"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F552805%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=772082&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/126393?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

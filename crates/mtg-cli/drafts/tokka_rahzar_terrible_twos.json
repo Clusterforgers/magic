@@ -1,0 +1,34 @@
+{
+  "oracle_id": "86ef86de-104f-4eae-a2db-893b50e95ad7",
+  "name": "Tokka & Rahzar, Terrible Twos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tokka & Rahzar, Terrible Twos",
+      "oracle_fingerprint": "7fc5009a5e2901f47ab3ad5abe7ac1b8",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  "Spell",
+                  {
+                    "Test": {
+                      "left": { "Stat": { "of": "Candidate", "stat": "ManaSpent" } },
+                      "op": "Lt",
+                      "right": { "Stat": { "of": "This", "stat": "ManaValue" } }
+                    }
+                  }
+                ]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

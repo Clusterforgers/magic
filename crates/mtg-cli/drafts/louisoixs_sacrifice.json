@@ -1,0 +1,59 @@
+{
+  "oracle_id": "42d8ab49-703a-4fd3-84d0-0a3ac1eafca8",
+  "name": "Louisoix's Sacrifice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Louisoix's Sacrifice",
+      "oracle_fingerprint": "37b6cc852027a76b8a32489546f2bd9d",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "OneOf": [
+                  [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, { "Supertype": "Legendary" }]
+                      }
+                    }
+                  ],
+                  "{2}"
+                ]
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Ability": "Activated" },
+                        { "Ability": "Triggered" },
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": "Spell" },
+                              { "Not": { "Not": { "Type": "Creature" } } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

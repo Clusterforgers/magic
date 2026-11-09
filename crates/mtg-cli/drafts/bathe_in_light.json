@@ -1,0 +1,32 @@
+{
+  "oracle_id": "8e862a8e-7954-43ad-9bc0-09ce7b9859f0",
+  "name": "Bathe in Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bathe in Light",
+      "oracle_fingerprint": "15d035c5762661f7e2f8d6589a46373e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesColor": { "Target": 0 } }] },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "mods": ["AddProtectionFromChosenColor"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

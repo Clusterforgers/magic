@@ -1,0 +1,87 @@
+{
+  "oracle_id": "184d4672-05a9-4182-8b3f-3561fb33ed62",
+  "name": "Garruk, Curse Breaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garruk, Curse Breaker",
+      "oracle_fingerprint": "2ee08b6eca92b493b4c111bb8dc97524",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 4,
+                      "toughness": 4,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "GroupAttacksAt": { "what": [{ "Type": "Creature" }], "at": "Opponents" }
+                  },
+                  "once": false,
+                  "until": "UntilYourNextTurn",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [
+                          { "ModifyPT": { "power": 2, "toughness": 2 } },
+                          { "AddKeyword": "Trample" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

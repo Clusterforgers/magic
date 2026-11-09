@@ -1,0 +1,93 @@
+{
+  "oracle_id": "d0d90dd8-0642-489f-9afc-11c307f258f2",
+  "name": "Tifa's Limit Break",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tifa's Limit Break",
+      "oracle_fingerprint": "43dc96044374243f72f8f0e195ffbe26",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "mode_costs": ["{0}", "{2}", "{6}{G}"],
+                  "modes": [
+                    {
+                      "label": "Somersault",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Meteor Strikes",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                                  "toughness": {
+                                    "Stat": { "of": { "Target": 0 }, "stat": "Toughness" }
+                                  }
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Final Heaven",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              {
+                                "ModifyPT": {
+                                  "power": {
+                                    "Times": {
+                                      "by": 2,
+                                      "of": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                                    }
+                                  },
+                                  "toughness": {
+                                    "Times": {
+                                      "by": 2,
+                                      "of": {
+                                        "Stat": { "of": { "Target": 0 }, "stat": "Toughness" }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

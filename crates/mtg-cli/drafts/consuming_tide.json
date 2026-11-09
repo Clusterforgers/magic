@@ -1,0 +1,55 @@
+{
+  "oracle_id": "24cd8f54-c1d4-4040-93bf-a7b9b719ac30",
+  "name": "Consuming Tide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consuming Tide",
+      "oracle_fingerprint": "66f6717bff3f37d17916f8e76a47022c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": { "Each": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Chooser" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Not": { "Is": { "Bound": "card" } } }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                            "op": "Gt",
+                            "right": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Asker" }] }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

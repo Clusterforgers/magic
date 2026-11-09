@@ -1,0 +1,42 @@
+{
+  "oracle_id": "1c2a3f13-6bcb-42ad-98f6-642151ad54f1",
+  "name": "Discover the Impossible",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Discover the Impossible",
+      "oracle_fingerprint": "1a19e413ea2ff64d24b164d9bd898137",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "ExileHidden": { "what": { "Bound": "kept2" }, "sealed": true, "as": "exiled4" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled4" } },
+                      { "In": "Exile" },
+                      { "Type": "Instant" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                    ]
+                  },
+                  "free": true
+                }
+              },
+              { "Move": { "what": { "Bound": "exiled4" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "5ca4cb0e-63ad-4275-a27f-da476260b467",
+  "oracle_id": "76c97e3d-a9be-4ed7-a2ef-f97870d8f58a",
+  "multiverse_ids": [
+    583720
+  ],
+  "mtgo_id": 104888,
+  "arena_id": 82619,
+  "tcgplayer_id": 451862,
+  "cardmarket_id": 682014,
+  "name": "Feldon, Ronom Excavator",
+  "lang": "en",
+  "released_at": "2022-11-18",
+  "uri": "https://api.scryfall.com/cards/5ca4cb0e-63ad-4275-a27f-da476260b467",
+  "scryfall_uri": "https://scryfall.com/card/bro/135/feldon-ronom-excavator?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:21:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/c/5ca4cb0e-63ad-4275-a27f-da476260b467.jpg?1783920069",
+    "normal": "https://cards.scryfall.io/normal/front/5/c/5ca4cb0e-63ad-4275-a27f-da476260b467.jpg?1783920069",
+    "large": "https://cards.scryfall.io/large/front/5/c/5ca4cb0e-63ad-4275-a27f-da476260b467.jpg?1783920069",
+    "png": "https://cards.scryfall.io/png/front/5/c/5ca4cb0e-63ad-4275-a27f-da476260b467.png?1783920069",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/c/5ca4cb0e-63ad-4275-a27f-da476260b467.jpg?1783920069",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/c/5ca4cb0e-63ad-4275-a27f-da476260b467.jpg?1783920069",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/c/5ca4cb0e-63ad-4275-a27f-da476260b467.webp?1783920069",
+    "grid": "https://cards.scryfall.io/grid/front/5/c/5ca4cb0e-63ad-4275-a27f-da476260b467.webp?1783920069",
+    "display": "https://cards.scryfall.io/display/front/5/c/5ca4cb0e-63ad-4275-a27f-da476260b467.webp?1783920069",
+    "art": "https://cards.scryfall.io/art/front/5/c/5ca4cb0e-63ad-4275-a27f-da476260b467.webp?1783920069",
+    "crop": "https://cards.scryfall.io/crop/front/5/c/5ca4cb0e-63ad-4275-a27f-da476260b467.webp?1783920069",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/c/5ca4cb0e-63ad-4275-a27f-da476260b467.jpg?1783920069"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Artificer",
+  "oracle_text": "Haste\nFeldon can't block.\nWhenever Feldon is dealt damage, exile that many cards from the top of your library. Choose one of them. Until the end of your next turn, you may play that card.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4219a14e-6701-4ddd-a185-21dc054ab19b",
+  "set": "bro",
+  "set_name": "The Brothers' War",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/4219a14e-6701-4ddd-a185-21dc054ab19b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abro&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bro?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5ca4cb0e-63ad-4275-a27f-da476260b467/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A76c97e3d-a9be-4ed7-a2ef-f97870d8f58a&unique=prints",
+  "collector_number": "135",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Howard Lyon",
+  "artist_ids": [
+    "6dd06426-59fe-4b9c-aad5-6da8446a5c3d"
+  ],
+  "illustration_id": "74015f95-95cd-474c-b6a8-433d2ce047df",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17466,
+  "penny_rank": 452,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2022-10-28"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.66",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=583720&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFeldon%252C%2BRonom%2BExcavator",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFeldon%252C%2BRonom%2BExcavator",
+    "edhrec": "https://edhrec.com/route/?cc=Feldon%2C+Ronom+Excavator"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F451862%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=682014&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/104888?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,16 +1,39 @@
 {
   "oracle_id": "5370ee80-0354-454f-a16e-ec133e432ecb",
   "name": "Breaching Dragonstorm",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Breaching Dragonstorm",
       "oracle_fingerprint": "14c1d61a638bb4ea48ea49efbd351858",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 232 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Exile": { "what": { "Bound": "revealed2" } } },
+              {
+                "CastFromZone": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "found_exiled" } },
+                      { "In": "Exile" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 8 } }
+                    ]
+                  },
+                  "free": true
+                }
+              },
+              { "Move": { "what": { "Bound": "found_exiled" }, "to": "Hand" } }
+            ]
           }
         },
         {

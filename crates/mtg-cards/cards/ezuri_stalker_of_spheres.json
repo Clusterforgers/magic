@@ -1,0 +1,24 @@
+{
+  "oracle_id": "cffec16f-373b-43e7-a04c-4452987d7e02",
+  "name": "Ezuri, Stalker of Spheres",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ezuri, Stalker of Spheres",
+      "oracle_fingerprint": "642bf809fe51245708592fbea28bf0f4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Pay": { "cost": "{3}", "paid": [{ "Proliferate": {} }, { "Proliferate": {} }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": { "when": { "Proliferated": { "who": "You" } }, "effects": [{ "Draw": {} }] }
+        }
+      ]
+    }
+  ]
+}

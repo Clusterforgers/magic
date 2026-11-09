@@ -227,6 +227,7 @@ fn w9c_token_pred(pred: &Pred) -> bool {
     match pred {
         Pred::Type(_) | Pred::Subtype(_) | Pred::Supertype(_) | Pred::Color(_) => true,
         Pred::Not(inner) => w9c_token_pred(inner),
+        Pred::AnyOf(any) => any.iter().all(w9c_token_pred),
         _ => false,
     }
 }
@@ -4655,6 +4656,20 @@ impl Walker<'_> {
         (self.scope.in_trigger, self.scope.dealer) = saved;
     }
 
+    /// "Those tokens plus ...": tokens made with the ones of a token creation, by `CreateToken` steps alone.
+    fn ep21_plus(&mut self, when: &ReplaceWhen, effects: &[Effect]) {
+        if !matches!(when, ReplaceWhen::TokenCreation { .. }) {
+            self.problem("only a token creation takes more tokens");
+        }
+        if !effects
+            .iter()
+            .all(|effect| matches!(effect, Effect::CreateToken { who: Ref::You, .. }))
+        {
+            self.problem("`Plus` makes tokens for the same player and nothing else");
+        }
+        self.w5d_instead(when, effects);
+    }
+
     /// "Prevent that damage and ...": a prevention of damage whose steps read the event as `Instead` reads it.
     fn w9c_prevent_and(&mut self, when: &ReplaceWhen, effects: &[Effect]) {
         if !matches!(when, ReplaceWhen::Damage { .. }) {
@@ -4691,6 +4706,7 @@ impl Walker<'_> {
                 self.at("PreventCounted", |w| w.amount(amount));
             }
             ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
+            ReplaceBy::Plus(effects) => self.ep21_plus(when, effects),
             _ => {}
         }
     }

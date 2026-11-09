@@ -1,0 +1,60 @@
+{
+  "oracle_id": "a3e10b9b-9349-4b44-a46c-c825293dbd05",
+  "name": "The Dawning Archaic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Dawning Archaic",
+      "oracle_fingerprint": "456bd09f8947a77d9d66cd2cb9a0f9d2",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "OwnedBy": "You" },
+                { "In": "Graveyard" }
+              ]
+            }
+          }
+        },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "CastFromZone": { "what": { "Target": 0 }, "free": true, "as": "cast" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "6fbaac3b-37ec-4815-a4ea-544c547e90b1",
+  "name": "Hour of Eternity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hour of Eternity",
+      "oracle_fingerprint": "cb12ed6ea90e761e94fbbcd95dc8d7bd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Bound": "exiled" },
+                      "except": [
+                        { "SetPT": { "power": 4, "toughness": 4 } },
+                        { "SetColors": ["Black"] },
+                        { "SetCreatureTypes": ["Zombie"] }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

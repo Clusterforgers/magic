@@ -1,0 +1,74 @@
+{
+  "oracle_id": "5c7f02ad-1daf-4d1a-bef0-0b2064f9b67e",
+  "name": "Invasion of Tarkir // Defiant Thundermaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Tarkir",
+      "oracle_fingerprint": "6a95503e6611fc78d9073a63d37381a7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Subtype": "Dragon" }, { "OwnedBy": "You" }, { "In": "Hand" }]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              { "Bind": { "what": { "Bound": "revealed" }, "as": "when2" } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Either": [
+                          { "Object": [{ "Type": "Creature" }, "Other"] },
+                          "Player",
+                          { "Object": [{ "Type": "Planeswalker" }, "Other"] },
+                          { "Object": [{ "Type": "Battle" }, "Other"] }
+                        ]
+                      }
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": {
+                          "Sum": [{ "CountOf": { "of": { "Bound": "when2" }, "filter": [] } }, 2]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Defiant Thundermaw",
+      "oracle_fingerprint": "8ca65ac5c106baf161957f4ed840449b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "source": "Triggering", "to": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

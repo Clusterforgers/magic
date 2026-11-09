@@ -1,0 +1,38 @@
+{
+  "oracle_id": "da17da9b-f300-4613-978b-ba3026d4e275",
+  "name": "Evil Twin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evil Twin",
+      "oracle_fingerprint": "1fcd90141e23cdd0096d841b7a53a770",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "except": [
+                  {
+                    "GrantAbility": {
+                      "Activated": {
+                        "cost": [{ "Mana": "{U}{B}" }, "Tap"],
+                        "targets": [
+                          {
+                            "what": { "Object": [{ "Type": "Creature" }, { "SharesName": "This" }] }
+                          }
+                        ],
+                        "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

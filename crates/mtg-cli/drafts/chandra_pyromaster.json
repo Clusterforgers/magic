@@ -1,0 +1,108 @@
+{
+  "oracle_id": "68e12748-9a7b-4e99-a6de-be097a269342",
+  "name": "Chandra, Pyromaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra, Pyromaster",
+      "oracle_fingerprint": "f6923b4cca2fc7b772b09e0ee4a8bcfc",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "ControlledBy": { "Target": 0 } },
+                        { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+                    { "DealDamage": { "to": { "Target": 1 }, "amount": 1 } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 1 },
+                      "selector": [{ "Type": "Creature" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 1 },
+                        "mods": ["CantBlock"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              { "ExileTop": { "count": 10, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "Is": { "Bound": "exiled" } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "card2"
+                }
+              },
+              { "CopyCard": { "what": { "Bound": "card2" }, "as": "copy3" } },
+              { "CastFromZone": { "what": { "Bound": "copy3" }, "free": true } },
+              { "CopyCard": { "what": { "Bound": "card2" }, "as": "copy4" } },
+              { "CastFromZone": { "what": { "Bound": "copy4" }, "free": true } },
+              { "CopyCard": { "what": { "Bound": "card2" }, "as": "copy5" } },
+              { "CastFromZone": { "what": { "Bound": "copy5" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

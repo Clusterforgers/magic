@@ -1,0 +1,50 @@
+{
+  "oracle_id": "2eb1b429-8d11-42f3-8815-5a60b6a4e2d5",
+  "name": "Witch-king of Angmar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witch-king of Angmar",
+      "oracle_fingerprint": "1b9924139926051201a8d0fe3f987bed",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": { "source": [{ "Type": "Creature" }], "to": "You", "combat": true }
+              }
+            },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "DidThisTurn": { "event": "Damaged", "to": "You", "combat": true } }
+                  ]
+                }
+              },
+              { "RingTempts": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

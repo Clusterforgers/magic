@@ -1,0 +1,41 @@
+{
+  "oracle_id": "02d0b0fd-ff73-4e26-be44-d85c743d51e4",
+  "name": "Remembrance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Remembrance",
+      "oracle_fingerprint": "d588202d0fb78e0f7ddad697c41daddc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "SharesName": "Triggering" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9c482f1d-08b4-4882-918c-448a556d3fbe",
+  "name": "Nivix, Aerie of the Firemind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nivix, Aerie of the Firemind",
+      "oracle_fingerprint": "c39d3167799d2d7ca0dd56664682544b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}{R}" }, "Tap"],
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

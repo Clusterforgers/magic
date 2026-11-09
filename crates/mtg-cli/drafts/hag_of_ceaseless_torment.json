@@ -1,0 +1,59 @@
+{
+  "oracle_id": "0c595dc4-3692-424e-8699-9e8e663b32cc",
+  "name": "Hag of Ceaseless Torment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hag of Ceaseless Torment",
+      "oracle_fingerprint": "11c6503ccd3071e76c49f515fb16d431",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "Bound": "each" },
+                        "options": [
+                          [
+                            {
+                              "Pay": {
+                                "who": { "Bound": "each" },
+                                "cost": [
+                                  { "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }] } }
+                                ],
+                                "unpaid": [
+                                  { "LoseLife": { "who": { "Bound": "each" }, "amount": 3 } }
+                                ]
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Pay": {
+                                "who": { "Bound": "each" },
+                                "cost": [{ "Discard": {} }],
+                                "unpaid": [
+                                  { "LoseLife": { "who": { "Bound": "each" }, "amount": 3 } }
+                                ]
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

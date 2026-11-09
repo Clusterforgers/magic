@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d5f72164-441e-4e04-8b2b-0d6ab618d22e",
+  "name": "Leonin Bola",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leonin Bola",
+      "oracle_fingerprint": "9994f2372262801517e82df41db27485",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", "Unattach"],
+                    "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                    "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

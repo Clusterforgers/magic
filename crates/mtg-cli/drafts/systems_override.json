@@ -1,0 +1,80 @@
+{
+  "oracle_id": "4c9d9d47-1eb6-4981-ba83-d5ec04906e71",
+  "name": "Systems Override",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Systems Override",
+      "oracle_fingerprint": "248e59791d8556719eb83672cf4415c7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Is": { "Target": 0 } }, { "Subtype": "Spacecraft" }] },
+                  "counter": "charge",
+                  "count": 10
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [{ "Is": { "Target": 0 } }, { "Subtype": "Spacecraft" }]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "RemoveCounters": {
+                              "from": {
+                                "Each": [{ "Is": { "Target": 0 } }, { "Subtype": "Spacecraft" }]
+                              },
+                              "counter": "charge",
+                              "count": 10
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

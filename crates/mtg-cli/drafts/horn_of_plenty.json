@@ -19,6 +19,7 @@
                     {
                       "DelayedTrigger": {
                         "when": { "StepBegins": { "step": "End" } },
+                        "until": "Forever",
                         "effects": [{ "Draw": { "who": "Triggering" } }]
                       }
                     }

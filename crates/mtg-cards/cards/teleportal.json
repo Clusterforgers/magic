@@ -1,0 +1,37 @@
+{
+  "oracle_id": "d5b4876f-d28d-40dc-be7f-2c4f4c0bd6b3",
+  "name": "Teleportal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teleportal",
+      "oracle_fingerprint": "2eaa1c2773bae3619c0d6341e23714c7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Overload": "{3}{U}{R}" } }
+      ]
+    }
+  ]
+}

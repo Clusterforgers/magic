@@ -1,7 +1,7 @@
 {
   "oracle_id": "6c87c261-00a8-46f2-92c8-42009a0a2faf",
   "name": "Lorcan, Warlock Collector",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lorcan, Warlock Collector",
@@ -9,9 +9,36 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 230 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "OwnedBy": "Opponents" }],
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": { "Stat": { "of": "Triggering", "stat": "ManaValue" } } }],
+                  "paid": [
+                    {
+                      "Move": {
+                        "what": "Triggering",
+                        "to": { "Battlefield": { "under": "You" } },
+                        "as": "moved"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "moved" },
+                        "mods": [{ "AddSubtype": "Warlock" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

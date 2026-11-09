@@ -1,0 +1,47 @@
+{
+  "oracle_id": "cb905eb0-bb20-41c0-9695-0f5c71972561",
+  "name": "Chainer, Dementia Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chainer, Dementia Master",
+      "oracle_fingerprint": "627d630b040b0d6b8a78925266f6dde2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Nightmare" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}{B}{B}" }, { "PayLife": 3 }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Nightmare" }, { "SetColors": ["Black"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "Exile": { "what": { "Each": [{ "Subtype": "Nightmare" }] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

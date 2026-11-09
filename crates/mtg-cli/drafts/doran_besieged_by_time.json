@@ -1,7 +1,7 @@
 {
   "oracle_id": "dd35a377-0865-4b25-bd0f-aaead29a9f0e",
   "name": "Doran, Besieged by Time",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Doran, Besieged by Time",
@@ -26,9 +26,65 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 91, "end": 233 }
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Difference": [
+                            { "Stat": { "of": "Triggering", "stat": "Power" } },
+                            { "Stat": { "of": "Triggering", "stat": "Toughness" } }
+                          ]
+                        },
+                        "toughness": {
+                          "Difference": [
+                            { "Stat": { "of": "Triggering", "stat": "Power" } },
+                            { "Stat": { "of": "Triggering", "stat": "Toughness" } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Dealer",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Difference": [
+                            { "Stat": { "of": "Dealer", "stat": "Power" } },
+                            { "Stat": { "of": "Dealer", "stat": "Toughness" } }
+                          ]
+                        },
+                        "toughness": {
+                          "Difference": [
+                            { "Stat": { "of": "Dealer", "stat": "Power" } },
+                            { "Stat": { "of": "Dealer", "stat": "Toughness" } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

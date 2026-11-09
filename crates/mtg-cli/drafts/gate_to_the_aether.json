@@ -1,0 +1,50 @@
+{
+  "oracle_id": "a03ab63a-83f3-4dd6-926d-08d09ce2e696",
+  "name": "Gate to the Aether",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gate to the Aether",
+      "oracle_fingerprint": "32c7ca205ebda63ff430d6bec45233af",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              { "LookAtTop": { "who": "Triggering", "as": "top" } },
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

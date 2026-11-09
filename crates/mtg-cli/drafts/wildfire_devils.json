@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b446b485-c10b-4175-bb49-16ac2f9e7718",
+  "name": "Wildfire Devils",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wildfire Devils",
+      "oracle_fingerprint": "1f239c8352da4ebd58229b3b3a5e7772",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "StepBegins": { "step": "Upkeep", "whose": "You" } }
+              ]
+            },
+            "effects": [
+              { "ChooseAtRandom": { "from": "EachPlayer", "as": "player" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "player" },
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Bound": "player" } }
+                    ]
+                  },
+                  "as": "picked2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked2" }, "as": "exiled3" } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled3" } },
+                      { "ExiledWith": "This" },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "card4",
+                  "effects": [
+                    { "CopyCard": { "what": { "Bound": "card4" }, "as": "copy5" } },
+                    { "CastFromZone": { "what": { "Bound": "copy5" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

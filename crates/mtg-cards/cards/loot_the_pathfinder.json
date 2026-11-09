@@ -1,0 +1,38 @@
+{
+  "oracle_id": "68c7e459-0932-4644-a3c0-9a1eae1db7a3",
+  "name": "Loot, the Pathfinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loot, the Pathfinder",
+      "oracle_fingerprint": "d54b34a74e301ec70348e386379ff296",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "limit": "OncePerGame",
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "limit": "OncePerGame",
+            "effects": [{ "Draw": { "count": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "limit": "OncePerGame",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

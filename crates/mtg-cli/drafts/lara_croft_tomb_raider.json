@@ -16,8 +16,8 @@
               {
                 "what": {
                   "Object": [
-                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] },
                     { "Supertype": "Legendary" },
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] },
                     { "In": "Graveyard" }
                   ]
                 },

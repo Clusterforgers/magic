@@ -21,6 +21,7 @@
                 "Choose": {
                   "from": {
                     "Each": [
+                      { "Type": "Creature" },
                       { "Subtype": "Hero" },
                       { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
                       { "In": "Hand" },

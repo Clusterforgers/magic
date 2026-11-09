@@ -1,0 +1,76 @@
+{
+  "oracle_id": "575a0dc2-206a-406a-90b3-72a92f2ea87a",
+  "name": "Case of the Trampled Garden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Case of the Trampled Garden",
+      "oracle_fingerprint": "42215c6468c0b812051ec0fcbb777266",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 1, "max": 2 },
+                "divide": 2
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": ["This", { "Not": "Solved" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": {
+                      "Total": {
+                        "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                        "stat": "Power"
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 8
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Solve": { "what": "This" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": { "Compare": { "left": { "Count": ["This", "Solved"] }, "op": "Ge", "right": 1 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

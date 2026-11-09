@@ -1,0 +1,38 @@
+{
+  "oracle_id": "b5018037-cf4e-46d2-86c3-fb8eec6e44d1",
+  "name": "Lo and Li, Royal Advisors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lo and Li, Royal Advisors",
+      "oracle_fingerprint": "b2f7e7d7abe2af895967d11c28ec53f3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Discarded": { "by": "Opponents" } },
+                { "Batch": { "Milled": { "what": [], "by": "Opponents", "per_player": true } } }
+              ]
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Advisor" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U/B}",
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

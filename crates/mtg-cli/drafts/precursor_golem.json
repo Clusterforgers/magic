@@ -1,0 +1,56 @@
+{
+  "oracle_id": "668fc293-1b8f-4870-9784-4ac660925e30",
+  "name": "Precursor Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Precursor Golem",
+      "oracle_fingerprint": "b1df1887ae6a822f5ea2587da4ec8f2d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Golem",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Golem"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  "SingleTarget",
+                  { "Targeting": [{ "Subtype": "Golem" }, { "In": "Battlefield" }] }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": "Triggering",
+                  "who": "TriggeringPlayer",
+                  "each_target": [{ "Subtype": "Golem" }, { "In": "Battlefield" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

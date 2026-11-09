@@ -1,0 +1,52 @@
+{
+  "oracle_id": "98604673-62a5-40e7-bbb6-c8ede6e8add5",
+  "name": "Draconic Fealty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Draconic Fealty",
+      "oracle_fingerprint": "d4df1d7848ca38be333b49051b41cca6",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Behold": { "filter": [{ "Subtype": "Dragon" }] } }] } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Eq",
+                        "to": {
+                          "Greatest": {
+                            "of": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }],
+                            "stat": "ManaValue"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Exile": {
+                        "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

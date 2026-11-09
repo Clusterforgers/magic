@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6a3862f0-8dfc-4ac9-8eb9-faefcad685d4",
+  "name": "Dark Matter Manipulator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Matter Manipulator",
+      "oracle_fingerprint": "5d22267295d9a3188413a5776c617abb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 3 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Quotient": {
+                          "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                          "by": 7,
+                          "up": false
+                        }
+                      }
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

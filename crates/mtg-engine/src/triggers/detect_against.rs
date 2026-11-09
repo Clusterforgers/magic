@@ -71,6 +71,21 @@ fn a_block_names_the_blocker_as_dealer_and_the_attacker_as_against() {
     );
 }
 
+#[test]
+fn the_first_attack_of_a_turn_goes_against_what_it_attacks() {
+    let pre = board(r#"{"Nth":{"event":{"Attacks":{"what":[{"Type":"Creature"}]}},"nth":1}}"#);
+    let event = Event::AttackersDeclared {
+        player: ME,
+        attackers: vec![(id(&pre, "Bear"), AttackTarget::Player(FOE))],
+    };
+    let causes: Vec<_> = super::detect_events::fires(&pre, &[event])
+        .into_iter()
+        .map(|t| t.cause)
+        .collect();
+    assert_eq!(causes.len(), 1);
+    assert_eq!(causes[0].against, Some(Target::Player(FOE)));
+}
+
 #[rstest]
 #[case::at_the_player_they_attack(
     r#"{"GroupAttacksAt":{"what":[],"at":"Opponents"}}"#,

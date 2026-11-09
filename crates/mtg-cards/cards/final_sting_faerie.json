@@ -1,0 +1,21 @@
+{
+  "oracle_id": "299765d8-72b9-4ada-a607-efb36aa0f5db",
+  "name": "Final-Sting Faerie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Final-Sting Faerie",
+      "oracle_fingerprint": "4304e7b5bba3835829d74cf5cd47c16a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "DamagedThisTurn"] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

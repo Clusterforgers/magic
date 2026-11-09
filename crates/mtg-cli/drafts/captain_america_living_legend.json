@@ -1,0 +1,28 @@
+{
+  "oracle_id": "67aa946d-e694-494e-ba0c-44880d5bc03e",
+  "name": "Captain America, Living Legend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain America, Living Legend",
+      "oracle_fingerprint": "1c47cd836c6305f9e393b65ae88fecaa",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "Tapped": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                },
+                "nth": 1
+              }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [{ "Untap": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "fcd281e3-f336-449f-a887-4b98dc14dfe7",
+  "name": "Siegebreaker Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siegebreaker Giant",
+      "oracle_fingerprint": "7b0a62135591be6098c19806b374516b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

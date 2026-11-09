@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b9e4d34a-ba91-4ad6-b886-daeeda6c9498",
+  "name": "Hollow One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hollow One",
+      "oracle_fingerprint": "37ab2ea33f8f7c28ecd6f8f24c462b99",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Times": { "by": 2, "of": { "Tallied": { "who": "You", "what": "Discarded" } } }
+            }
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

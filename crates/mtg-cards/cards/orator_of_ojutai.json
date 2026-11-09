@@ -1,0 +1,40 @@
+{
+  "oracle_id": "fbed6f1a-e224-413c-b13e-3555caaef02a",
+  "name": "Orator of Ojutai",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orator of Ojutai",
+      "oracle_fingerprint": "555dde035a295c4c8371ab3388492aff",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "RevealFromHand": { "filter": [{ "Subtype": "Dragon" }] } }]
+          }
+        },
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Any": [
+                "AdditionalCostPaid",
+                {
+                  "AsCast": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

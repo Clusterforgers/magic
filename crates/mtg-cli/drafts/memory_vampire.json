@@ -1,0 +1,48 @@
+{
+  "oracle_id": "6031d854-10a8-43da-b5c4-b561194bcd4e",
+  "name": "Memory Vampire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memory Vampire",
+      "oracle_fingerprint": "fb0e775e75fe15ed5cb1f95606ef0de2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              { "what": "Player", "bounds": { "min": 0, "max": { "Players": "EachPlayer" } } }
+            ],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": "Triggering" } },
+              {
+                "Pay": {
+                  "cost": [{ "CollectEvidence": 9 }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Not": { "Type": "Land" } },
+                                { "OwnedBy": "Defending" },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [{ "CastFromZone": { "what": { "Target": 0 }, "free": true } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

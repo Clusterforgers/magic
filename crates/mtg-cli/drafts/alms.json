@@ -1,0 +1,28 @@
+{
+  "oracle_id": "efd46a6e-a901-4224-8a29-d53a4dc7750c",
+  "name": "Alms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alms",
+      "oracle_fingerprint": "6238253a45615e4d0f8154f70c21b343",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "ExileFromGraveyard": { "filter": ["TopOfGraveyard"] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

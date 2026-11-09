@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a3fc6888-0a4b-4e1d-b709-042b8b6b1a04",
+  "name": "Akroma's Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Akroma's Blessing",
+      "oracle_fingerprint": "cda21944610b59233a139453c08b6f61",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": { "Protection": [{ "ChosenAs": "chosen" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{W}" } }
+      ]
+    }
+  ]
+}

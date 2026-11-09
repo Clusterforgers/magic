@@ -1,0 +1,57 @@
+{
+  "oracle_id": "94dd397e-0127-4c79-b9d9-22ce62ccdfe7",
+  "name": "Sludge Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sludge Titan",
+      "oracle_fingerprint": "3a94388a96f9f5bedeebfde68a3586f1",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "Mill": { "count": 5, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked2"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "OwnedBy": "You" },
+                      { "Is": { "Bound": "milled" } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Exile" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked3"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked3" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

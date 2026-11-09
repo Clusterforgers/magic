@@ -1,0 +1,69 @@
+{
+  "oracle_id": "8eaa8833-ab9e-4bd8-92de-63e195b8d912",
+  "name": "Klaw, Master of Sound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Klaw, Master of Sound",
+      "oracle_fingerprint": "3e38f43562aadb0d7691f41f9218de32",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "WasCast": { "from": "Exile" } }, { "Not": "Token" }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "what": [
+                      { "Type": "Land" },
+                      { "ControlledBy": "You" },
+                      { "ArrivedFrom": "Exile" }
+                    ]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "LookAtTop": { "who": "Triggering", "as": "top" } },
+              { "ExileHidden": { "what": { "Bound": "top" }, "held": true, "as": "exiled4" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled4" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

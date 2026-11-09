@@ -1,0 +1,149 @@
+{
+  "object": "card",
+  "id": "cf3320ec-c4e8-405a-982d-e009c58c9e21",
+  "oracle_id": "129476ae-9dab-4e04-8e8e-f249afd56ff9",
+  "multiverse_ids": [
+    669014
+  ],
+  "mtgo_id": 129445,
+  "arena_id": 91636,
+  "tcgplayer_id": 558342,
+  "cardmarket_id": 777574,
+  "name": "Maha, Its Feathers Night",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/cf3320ec-c4e8-405a-982d-e009c58c9e21",
+  "scryfall_uri": "https://scryfall.com/card/blb/100/maha-its-feathers-night?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:47:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/f/cf3320ec-c4e8-405a-982d-e009c58c9e21.jpg?1783910833",
+    "normal": "https://cards.scryfall.io/normal/front/c/f/cf3320ec-c4e8-405a-982d-e009c58c9e21.jpg?1783910833",
+    "large": "https://cards.scryfall.io/large/front/c/f/cf3320ec-c4e8-405a-982d-e009c58c9e21.jpg?1783910833",
+    "png": "https://cards.scryfall.io/png/front/c/f/cf3320ec-c4e8-405a-982d-e009c58c9e21.png?1783910833",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/f/cf3320ec-c4e8-405a-982d-e009c58c9e21.jpg?1783910833",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/f/cf3320ec-c4e8-405a-982d-e009c58c9e21.jpg?1783910833",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/f/cf3320ec-c4e8-405a-982d-e009c58c9e21.webp?1783910833",
+    "grid": "https://cards.scryfall.io/grid/front/c/f/cf3320ec-c4e8-405a-982d-e009c58c9e21.webp?1783910833",
+    "display": "https://cards.scryfall.io/display/front/c/f/cf3320ec-c4e8-405a-982d-e009c58c9e21.webp?1783910833",
+    "art": "https://cards.scryfall.io/art/front/c/f/cf3320ec-c4e8-405a-982d-e009c58c9e21.webp?1783910833",
+    "crop": "https://cards.scryfall.io/crop/front/c/f/cf3320ec-c4e8-405a-982d-e009c58c9e21.webp?1783910833",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/f/cf3320ec-c4e8-405a-982d-e009c58c9e21.jpg?1783910833"
+  },
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Elemental Bird",
+  "oracle_text": "Flying, trample\nWard—Discard a card.\nCreatures your opponents control have base toughness 1.",
+  "power": "6",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Trample",
+    "Ward"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a2f58272-bba6-439d-871e-7a46686ac018",
+  "set": "blb",
+  "set_name": "Bloomburrow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a2f58272-bba6-439d-871e-7a46686ac018",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ablb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/blb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cf3320ec-c4e8-405a-982d-e009c58c9e21/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A129476ae-9dab-4e04-8e8e-f249afd56ff9&unique=prints",
+  "collector_number": "100",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "Its wingspan reaches from dusk to dawn.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alessandra Pisano",
+  "artist_ids": [
+    "15869690-bf3c-4498-a577-409a6bde5c83"
+  ],
+  "illustration_id": "448ee062-41ff-4804-9477-8de911cdafc7",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": true,
+  "edhrec_rank": 1977,
+  "penny_rank": 7598,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/products/bloomburrow/card-image-gallery",
+    "previewed_at": "2024-07-09"
+  },
+  "prices": {
+    "usd": "21.17",
+    "usd_foil": "23.12",
+    "usd_etched": null,
+    "eur": "18.90",
+    "eur_foil": "21.50",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=669014&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMaha%252C%2BIts%2BFeathers%2BNight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMaha%252C%2BIts%2BFeathers%2BNight",
+    "edhrec": "https://edhrec.com/route/?cc=Maha%2C+Its+Feathers+Night"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F558342%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=777574&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/129445?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "b9ca8ead-c267-4170-a6c8-04498330c82b",
+  "name": "Jet, Rebel Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jet, Rebel Leader",
+      "oracle_fingerprint": "ed57351ea5dd4db8bec9a6476e536568",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept2" },
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "moved4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "moved4" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

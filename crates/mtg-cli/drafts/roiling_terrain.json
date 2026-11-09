@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5e90f187-42fe-4f32-ad75-302e6709192d",
+  "name": "Roiling Terrain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roiling Terrain",
+      "oracle_fingerprint": "cdf053276261ea0b0b1a64a8869ba22b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "DealDamage": {
+                  "to": { "ControllerOf": { "Target": 0 } },
+                  "amount": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

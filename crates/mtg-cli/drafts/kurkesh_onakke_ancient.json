@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ea7302b3-c9a2-4bc4-81b8-3a8d1d7c3b8b",
+  "name": "Kurkesh, Onakke Ancient",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kurkesh, Onakke Ancient",
+      "oracle_fingerprint": "961c677e2b7c50b1730c8ae952af2a52",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Did": { "action": "Activated", "who": "You", "what": [{ "Type": "Artifact" }] }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{R}",
+                  "paid": [{ "CopyAbility": { "what": "Dealer", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

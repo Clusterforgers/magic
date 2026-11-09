@@ -14,10 +14,12 @@
                 "Modal": {
                   "modes": [
                     {
+                      "label": "Break Their Chains",
                       "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
                       "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
                     },
                     {
+                      "label": "Interrogate Them",
                       "targets": [{ "what": "Opponent" }],
                       "effects": [
                         { "ExileTop": { "who": { "Target": 0 }, "count": 3, "as": "exiled" } },

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "16437a83-be52-44cd-a768-a767c9347eb2",
+  "name": "Fatal Push",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fatal Push",
+      "oracle_fingerprint": "0c99f1e1fbbcb1935bc755cdbea6bcc3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        { "Type": "Creature" },
+                        {
+                          "Compare": {
+                            "stat": "ManaValue",
+                            "op": "Le",
+                            "to": {
+                              "When": {
+                                "condition": {
+                                  "Compare": {
+                                    "left": {
+                                      "Tallied": { "who": "You", "what": "PermanentsLeftUnder" }
+                                    },
+                                    "op": "Ge",
+                                    "right": 1
+                                  }
+                                },
+                                "then": 4,
+                                "otherwise": 2
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

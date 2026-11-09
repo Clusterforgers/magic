@@ -1,16 +1,31 @@
 {
   "oracle_id": "bcb5af89-a304-4de0-86af-b3f4cfabafc4",
   "name": "Leeching Licid",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Leeching Licid",
       "oracle_fingerprint": "33750a15ca07e0d682e53ec151a16ad2",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 163 }
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Aura" },
+                    { "SetTypes": ["Enchantment"] },
+                    { "AddKeyword": { "Enchant": [{ "Type": "Creature" }] } },
+                    "LoseThisAbility"
+                  ],
+                  "duration": { "UntilPaid": "{B}" }
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Target": 0 } } }
+            ]
           }
         },
         {

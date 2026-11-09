@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b4f7b1eb-6cd4-40f9-b259-3c39291edf27",
+  "name": "Reverent Mantra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reverent Mantra",
+      "oracle_fingerprint": "909112fa49c65b1249547953020144a7",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [{ "ExileFromHand": { "filter": [{ "Color": "White" }, "Other"] } }]
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "AddKeyword": { "Protection": [{ "ChosenAs": "chosen" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

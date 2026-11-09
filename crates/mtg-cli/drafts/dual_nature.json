@@ -1,0 +1,61 @@
+{
+  "oracle_id": "7a8fcf6f-3bda-485c-b960-62a37112f0eb",
+  "name": "Dual Nature",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dual Nature",
+      "oracle_fingerprint": "0264f7002049c18a3fe21140f90fc3a7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "token": { "CopyOf": { "of": "Triggering" } },
+                  "as": "copy"
+                }
+              },
+              { "Remember": { "what": { "Bound": "copy" }, "slot": "remembered" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }],
+                "from": "Battlefield"
+              }
+            },
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "SharesName": "Triggering" }, "Token"] } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [{ "Is": { "Remembered": { "on": "This", "slot": "remembered" } } }]
+                  }
+                }
+              },
+              { "Forget": { "slot": "remembered" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

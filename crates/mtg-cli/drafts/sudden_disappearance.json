@@ -1,0 +1,36 @@
+{
+  "oracle_id": "dbe28518-d795-4bc5-afa6-63c696c86fca",
+  "name": "Sudden Disappearance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sudden Disappearance",
+      "oracle_fingerprint": "7e2949cc214567d21dfa9fdf35f4ad26",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [{ "Not": { "Type": "Land" } }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

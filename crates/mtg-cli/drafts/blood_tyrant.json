@@ -14,7 +14,7 @@
             "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
             "effects": [
               { "LoseLife": { "who": "EachPlayer", "amount": 1 } },
-              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 0 } }
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "LifeLostThisWay" } }
             ]
           }
         },

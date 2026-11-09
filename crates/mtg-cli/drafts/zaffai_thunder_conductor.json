@@ -1,0 +1,76 @@
+{
+  "oracle_id": "02d529df-6299-4e8f-9794-70c8061efdc4",
+  "name": "Zaffai, Thunder Conductor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zaffai, Thunder Conductor",
+      "oracle_fingerprint": "92a812566605bb5d460a18f5087dbe43",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "Scry": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elemental",
+                            "colors": ["Blue", "Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elemental"],
+                            "power": 4,
+                            "toughness": 4
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "ChooseAtRandom": { "from": "Opponents", "as": "player" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                      "op": "Ge",
+                      "right": 10
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Bound": "player" }, "amount": 10 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

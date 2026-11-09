@@ -1,0 +1,43 @@
+{
+  "oracle_id": "59925461-99f5-4217-8343-49c9b1ce24c1",
+  "name": "Rise and Shine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rise and Shine",
+      "oracle_fingerprint": "45e17e7ac15e04e839d978be1bf56f1e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Not": { "Type": "Creature" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 0, "toughness": 0 } },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 4 } }
+            ]
+          }
+        },
+        { "Keyword": { "Overload": "{4}{U}{U}" } }
+      ]
+    }
+  ]
+}

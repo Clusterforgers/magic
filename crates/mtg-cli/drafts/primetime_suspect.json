@@ -1,0 +1,51 @@
+{
+  "oracle_id": "714ebb3d-303e-4f4b-b219-96a2b7d6b751",
+  "name": "Primetime Suspect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primetime Suspect",
+      "oracle_fingerprint": "4514e5fb818b05772a43e4a456e31a04",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Land" }],
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Sum": [
+                              {
+                                "Count": [{ "Type": "Creature" }, { "Is": "Attached" }, "Suspected"]
+                              },
+                              1
+                            ]
+                          }
+                        },
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

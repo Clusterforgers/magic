@@ -1,0 +1,221 @@
+{
+  "oracle_id": "913ec957-5f4e-46b4-a819-9448837f72a3",
+  "name": "Revival Experiment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revival Experiment",
+      "oracle_fingerprint": "e702089543b5ff10951c1182d4f56bbb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Chooser" },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Chooser" },
+                      { "Type": "Battle" },
+                      { "Not": { "Is": { "Bound": "card2" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card3"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Chooser" },
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "Not": { "Is": { "Bound": "card3" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card4"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Chooser" },
+                      { "Type": "Enchantment" },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "Not": { "Is": { "Bound": "card3" } } },
+                      { "Not": { "Is": { "Bound": "card4" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card5"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Chooser" },
+                      { "Type": "Land" },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "Not": { "Is": { "Bound": "card3" } } },
+                      { "Not": { "Is": { "Bound": "card4" } } },
+                      { "Not": { "Is": { "Bound": "card5" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card6"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Chooser" },
+                      { "Type": "Planeswalker" },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "Not": { "Is": { "Bound": "card3" } } },
+                      { "Not": { "Is": { "Bound": "card4" } } },
+                      { "Not": { "Is": { "Bound": "card5" } } },
+                      { "Not": { "Is": { "Bound": "card6" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card7"
+                }
+              },
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Bound": "card2" } },
+                          { "Is": { "Bound": "card3" } },
+                          { "Is": { "Bound": "card4" } },
+                          { "Is": { "Bound": "card5" } },
+                          { "Is": { "Bound": "card6" } },
+                          { "Is": { "Bound": "card7" } }
+                        ]
+                      },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "picks"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "picks" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "picks" },
+                  "to": { "Battlefield": {} },
+                  "as": "moved8"
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": { "Times": { "by": 3, "of": { "Bound": "moved8~moved" } } }
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

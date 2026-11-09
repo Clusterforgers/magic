@@ -1,0 +1,38 @@
+{
+  "oracle_id": "bce30fd0-ed1e-495d-9149-6a4c81c45c7b",
+  "name": "Axgard Armory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Axgard Armory",
+      "oracle_fingerprint": "5dc8c8a5b37dd33b1086539ec870652b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}{R}{R}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Aura" }], "reveal": true, "as": "found" } },
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Equipment" }, { "Not": { "Is": { "Bound": "found" } } }],
+                  "reveal": true,
+                  "as": "found2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

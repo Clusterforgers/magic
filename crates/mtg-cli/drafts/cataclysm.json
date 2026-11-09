@@ -1,0 +1,103 @@
+{
+  "oracle_id": "b0479ca4-e925-4aa7-a4fa-f7e01f899ac5",
+  "name": "Cataclysm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cataclysm",
+      "oracle_fingerprint": "98beb432f128c34b798502dd666a28ac",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": { "Each": [{ "ControlledBy": "Chooser" }, { "Type": "Artifact" }] },
+                  "as": "card2"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Bound": "card2" } } }
+                    ]
+                  },
+                  "as": "card3"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Enchantment" },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "Not": { "Is": { "Bound": "card3" } } }
+                    ]
+                  },
+                  "as": "card4"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Land" },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "Not": { "Is": { "Bound": "card3" } } },
+                      { "Not": { "Is": { "Bound": "card4" } } }
+                    ]
+                  },
+                  "as": "card5"
+                }
+              },
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Bound": "card2" } },
+                          { "Is": { "Bound": "card3" } },
+                          { "Is": { "Bound": "card4" } },
+                          { "Is": { "Bound": "card5" } }
+                        ]
+                      },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "picks"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "picks" } } },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Not": { "Is": { "Bound": "picks" } } }],
+                  "count": { "Count": [{ "Not": { "Is": { "Bound": "picks" } } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

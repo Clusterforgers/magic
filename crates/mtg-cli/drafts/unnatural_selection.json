@@ -1,0 +1,29 @@
+{
+  "oracle_id": "0be10525-09dc-4970-b495-2db7d4d3c3e7",
+  "name": "Unnatural Selection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unnatural Selection",
+      "oracle_fingerprint": "f06397dc807160512b9de5ba96713cce",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CreatureTypeExcept": ["Wall"] }, "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetCreatureTypesChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

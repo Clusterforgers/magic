@@ -527,7 +527,8 @@ fn at_end_step(condition: &str, amount: &str) -> String {
     )
 }
 
-const OPPONENT_LOST_LIFE: &str = r#"{"Tallied":{"who":"Opponents","what":"LifeLost"}}"#;
+const OPPONENT_LOST_LIFE: &str = r#"{"Tallied":{"who":"Opponents","what":"LifeLostMost"}}"#;
+const OPPONENTS_LOST_TOGETHER: &str = r#"{"Tallied":{"who":"Opponents","what":"LifeLost"}}"#;
 const YOU_LOST_LIFE: &str = r#"{"Tallied":{"who":"You","what":"LifeLost"}}"#;
 
 #[test]
@@ -551,6 +552,11 @@ fn an_opponent_who_lost_life_this_turn_is_a_condition() {
     OPPONENT_LOST_LIFE,
     "3",
     "At the beginning of each end step, if an opponent gained 3 or more life this turn, you may draw a card."
+)]
+#[case::the_opponents_together(
+    OPPONENTS_LOST_TOGETHER,
+    "3",
+    "At the beginning of each end step, if an opponent lost 3 or more life this turn, you may draw a card."
 )]
 #[case::the_player_of_the_data(
     YOU_LOST_LIFE,

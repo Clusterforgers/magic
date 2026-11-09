@@ -1,0 +1,22 @@
+{
+  "oracle_id": "70538676-2ffb-4cad-827e-b55e81088678",
+  "name": "Dwarven Mauler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Mauler",
+      "oracle_fingerprint": "ceeea6022854ae90598b03356ccdada9",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "activating": "Equip",
+            "targeting": ["This"]
+          }
+        }
+      ]
+    }
+  ]
+}

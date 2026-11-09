@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ca29588c-f117-418e-be9e-fa2ee89862ca",
+  "name": "Blessed Reincarnation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blessed Reincarnation",
+      "oracle_fingerprint": "773797efb80588cc7a458ed900734ed0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "RevealUntil": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

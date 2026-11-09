@@ -1,0 +1,38 @@
+{
+  "oracle_id": "cc5b1276-d13e-4392-988d-1315bc90a9b1",
+  "name": "Veteran Survivor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veteran Survivor",
+      "oracle_fingerprint": "ec0f145dd696e15852414862666ab535",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "if": {
+              "CountOf": { "subject": "This", "selector": ["Tapped"], "op": "Ge", "right": 1 }
+            },
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }, { "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

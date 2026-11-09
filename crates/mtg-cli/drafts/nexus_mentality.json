@@ -1,0 +1,87 @@
+{
+  "oracle_id": "6bdbe36f-b46d-4746-baf2-04f0977bb532",
+  "name": "Nexus Mentality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nexus Mentality",
+      "oracle_fingerprint": "0964a780a004eb6fbf33a364eae62500",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 1,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                          }
+                        },
+                        {
+                          "what": {
+                            "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "MoveCounters": {
+                            "from": { "Target": 0 },
+                            "to": { "Target": 1 },
+                            "count": { "AnyCounters": { "Target": 0 } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "RememberValue": {
+                            "value": { "AnyCounters": { "Target": 0 } },
+                            "slot": "remembered_number"
+                          }
+                        },
+                        { "RemoveAllCounters": { "from": { "Target": 0 } } },
+                        {
+                          "Draw": {
+                            "count": { "Remembered": { "on": "This", "slot": "remembered_number" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

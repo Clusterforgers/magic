@@ -1,0 +1,61 @@
+{
+  "oracle_id": "57994ace-3dd6-407f-b465-c70b552bd466",
+  "name": "Meatsqueak, Hoard Lord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meatsqueak, Hoard Lord",
+      "oracle_fingerprint": "188c0e58aa07d0802ca8d8c0a25758e2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Squirrel" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 3,
+                      "of": {
+                        "Quotient": {
+                          "of": { "Count": [{ "Subtype": "Food" }, { "ControlledBy": "You" }] },
+                          "by": 7,
+                          "up": false
+                        }
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": 3,
+                      "of": {
+                        "Quotient": {
+                          "of": { "Count": [{ "Subtype": "Food" }, { "ControlledBy": "You" }] },
+                          "by": 7,
+                          "up": false
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

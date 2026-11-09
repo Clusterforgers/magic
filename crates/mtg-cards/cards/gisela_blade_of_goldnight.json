@@ -1,0 +1,29 @@
+{
+  "oracle_id": "66f9f325-5e8e-4ebf-b5b3-c6410d80f2c5",
+  "name": "Gisela, Blade of Goldnight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gisela, Blade of Goldnight",
+      "oracle_fingerprint": "6d7e7c9c2349633c40720d63ba071afa",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        { "Replacement": { "when": { "Damage": { "to": "Opponents" } }, "by": { "Multiply": 2 } } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": { "Each": [{ "ControlledBy": "Opponents" }] } } },
+            "by": { "Multiply": 2 }
+          }
+        },
+        { "Replacement": { "when": { "Damage": { "to": "You" } }, "by": "PreventHalf" } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": { "Each": [{ "ControlledBy": "You" }] } } },
+            "by": "PreventHalf"
+          }
+        }
+      ]
+    }
+  ]
+}

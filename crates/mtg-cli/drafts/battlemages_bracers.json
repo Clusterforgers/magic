@@ -1,0 +1,33 @@
+{
+  "oracle_id": "bd56225e-8c80-4328-9ca0-0fff4969573d",
+  "name": "Battlemage's Bracers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battlemage's Bracers",
+      "oracle_fingerprint": "99d2e9f16f10eee8445afec9361104cb",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Haste" }] } },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "what": [{ "Type": "Creature" }, { "Is": "Attached" }, { "In": "Battlefield" }]
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [{ "CopyAbility": { "what": "Dealer", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

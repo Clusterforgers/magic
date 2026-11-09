@@ -1,0 +1,39 @@
+{
+  "oracle_id": "eb7c9442-7bfa-4bcf-a394-b5de187f224a",
+  "name": "Impelled Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impelled Giant",
+      "oracle_fingerprint": "4eec561731a87407e2105dc972cbfdc8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "TapPermanents": { "filter": [{ "Type": "Creature" }, { "Color": "Red" }, "Other"] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Paid", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

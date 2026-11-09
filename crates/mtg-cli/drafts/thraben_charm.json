@@ -1,0 +1,64 @@
+{
+  "oracle_id": "7eccd10d-f224-4467-af25-f2b768993f9f",
+  "name": "Thraben Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thraben Charm",
+      "oracle_fingerprint": "e69b061565902af22e5c625a516eecea",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": { "Target": 0 },
+                            "amount": {
+                              "Times": {
+                                "by": 2,
+                                "of": {
+                                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": "Player",
+                          "bounds": { "min": 0, "max": { "Players": "EachPlayer" } }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Exile": {
+                            "what": {
+                              "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

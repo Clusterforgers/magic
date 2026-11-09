@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9be5a350-c38e-425f-9d6a-8eb111132a89",
+  "name": "Surveillance Monitor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Surveillance Monitor",
+      "oracle_fingerprint": "4048e8c10b07596eff674b3f41b5be1b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Pay": { "cost": [{ "CollectEvidence": 4 }] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 125, "end": 223 }
+          }
+        }
+      ]
+    }
+  ]
+}

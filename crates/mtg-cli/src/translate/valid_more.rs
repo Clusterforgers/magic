@@ -148,6 +148,14 @@ fn name_pool(ctx: &Ctx, word: &str) -> Tr<Value> {
     if word == "YourGraveyard" {
         return Ok(json!({"Each": [{"In": "Graveyard"}, {"OwnedBy": "You"}]}));
     }
+    // The pool is read with the tested object as the candidate, so it leaves the object out of its own comparison.
+    if word == "OtherYourBattlefield" {
+        return Ok(json!({"Each": [
+            {"In": "Battlefield"},
+            {"ControlledBy": "You"},
+            {"Not": {"Is": "Candidate"}},
+        ]}));
+    }
     if word.contains('.') {
         return objects(defined(ctx, &format!("Valid {word}"))?);
     }

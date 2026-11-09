@@ -1,0 +1,27 @@
+{
+  "oracle_id": "22b0de2d-47a8-4269-ba21-4bc2b4b10b40",
+  "name": "Wall of Junk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Junk",
+      "oracle_fingerprint": "88e18399957d1757e8011903926d5bb5",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

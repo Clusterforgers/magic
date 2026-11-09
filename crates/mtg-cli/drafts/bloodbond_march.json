@@ -1,0 +1,26 @@
+{
+  "oracle_id": "fc17d8dd-887f-405e-a195-777aa3da36f5",
+  "name": "Bloodbond March",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodbond March",
+      "oracle_fingerprint": "9de40811e3069727b08be2aee2b5b6c5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "SharesName": "Triggering" }, { "In": "Graveyard" }] },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

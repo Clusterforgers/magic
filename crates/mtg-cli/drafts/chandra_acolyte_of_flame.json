@@ -1,0 +1,108 @@
+{
+  "oracle_id": "626e8acc-20da-496c-9a79-bfbf7529c01d",
+  "name": "Chandra, Acolyte of Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra, Acolyte of Flame",
+      "oracle_fingerprint": "c53406448b9fd6c445d0bb2dae946dff",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Planeswalker" },
+                      { "ControlledBy": "You" },
+                      { "Color": "Red" }
+                    ]
+                  },
+                  "counter": "loyalty"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2,
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Is": { "Bound": "token" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "token" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "CastFromZone": { "what": { "Target": 0 }, "as": "cast" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

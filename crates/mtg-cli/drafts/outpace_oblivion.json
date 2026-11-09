@@ -1,0 +1,46 @@
+{
+  "oracle_id": "4d92f48d-c851-4b71-b7fa-916459928d59",
+  "name": "Outpace Oblivion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Outpace Oblivion",
+      "oracle_fingerprint": "c11bceb869b64c9a5686f7416ff06a12",
+      "abilities": [
+        { "Keyword": "StartYourEngines" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "MaxSpeed": "You" } }
+                    }
+                  },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

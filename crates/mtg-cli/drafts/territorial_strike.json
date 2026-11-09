@@ -1,0 +1,24 @@
+{
+  "oracle_id": "ea48640e-a135-4d06-9a24-f8c4a6dab78d",
+  "name": "Territorial Strike",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Territorial Strike",
+      "oracle_fingerprint": "d5e102a104b0c9608fb7899e9bc79d68",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Behold": { "filter": [{ "Type": "Creature" }, { "Subtype": "Dragon" }] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 76, "end": 169 }
+          }
+        }
+      ]
+    }
+  ]
+}

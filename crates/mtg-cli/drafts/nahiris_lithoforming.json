@@ -1,0 +1,34 @@
+{
+  "oracle_id": "888e711a-1251-4704-8ef1-b4b98ec54b5a",
+  "name": "Nahiri's Lithoforming",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nahiri's Lithoforming",
+      "oracle_fingerprint": "4ee3ae37e2b1a61581f8ca79ceea2997",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Land" }], "count": "X", "as": "sacrificed" } },
+              { "Draw": { "count": { "Bound": "sacrificed~moved" } } },
+              {
+                "Rule": {
+                  "rule": { "AdditionalLandPlays": { "count": "X" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Enters": { "what": [{ "Type": "Land" }, { "ControlledBy": "You" }] } },
+                  "by": "Tapped",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

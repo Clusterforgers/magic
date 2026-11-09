@@ -1,0 +1,64 @@
+{
+  "oracle_id": "0c12abcc-6ada-43b3-8750-9cb6ce2b0785",
+  "name": "Shadow the Hedgehog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow the Hedgehog",
+      "oracle_fingerprint": "cdbdbd003578378a9306ab2dbabb70fd",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": { "HasKeyword": "Flash" } }
+                          ]
+                        }
+                      },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": "Other" },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": { "HasKeyword": "Haste" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "WasCast": { "by": "You" } },
+                { "SpentFrom": { "from": { "types": ["Artifact"] }, "least": 1 } },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "SplitSecond" }]
+          }
+        }
+      ]
+    }
+  ]
+}

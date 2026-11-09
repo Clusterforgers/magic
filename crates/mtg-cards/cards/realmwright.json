@@ -1,0 +1,25 @@
+{
+  "oracle_id": "bad869dd-e844-46ca-be53-73c4bc19d09c",
+  "name": "Realmwright",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Realmwright",
+      "oracle_fingerprint": "dc576754984c211ac8a3babd14eac2ef",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "BasicLandType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+            "mods": ["AddChosenSubtype"]
+          }
+        }
+      ]
+    }
+  ]
+}

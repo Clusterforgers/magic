@@ -1,0 +1,33 @@
+{
+  "oracle_id": "16c39265-72d9-4c86-a961-8dd38ff9adcd",
+  "name": "Consign to Memory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consign to Memory",
+      "oracle_fingerprint": "bb3f0bb5c1e7950523b285c63e8ef8fb",
+      "abilities": [
+        { "Keyword": { "Replicate": "{1}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Not": { "AnyOf": [{ "Not": "Spell" }, { "Not": "Colorless" }] } },
+                        { "Ability": "Triggered" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

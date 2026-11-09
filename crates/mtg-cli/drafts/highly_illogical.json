@@ -1,0 +1,40 @@
+{
+  "oracle_id": "38c43f30-0e01-4dcd-88fc-f1de318a5e29",
+  "name": "Highly Illogical",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Highly Illogical",
+      "oracle_fingerprint": "f1bc0f33b69d22e5834b2760bf836006",
+      "abilities": [
+        { "Keyword": { "Kicker": "{1}{U}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }]
+                },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } },
+                  "max": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } }
+                }
+              },
+              {
+                "what": { "Object": ["Spell"] },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } },
+                  "max": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } }
+                }
+              }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Counter": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

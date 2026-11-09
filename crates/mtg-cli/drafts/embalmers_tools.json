@@ -12,7 +12,7 @@
             "applies_to": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }],
             "change": "Reduce",
             "mana": "{1}",
-            "activating": "Any"
+            "activating": "Every"
           }
         },
         {

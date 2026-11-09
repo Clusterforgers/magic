@@ -1,0 +1,64 @@
+{
+  "oracle_id": "376601b6-fe51-4e2d-8ec6-98f965d649a3",
+  "name": "Cromat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cromat",
+      "oracle_fingerprint": "32b38299295c707e4063448e2c1628ff",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}{B}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Blocks": "This" }, { "BlockedBy": "This" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{B}{G}", "effects": [{ "Regenerate": { "what": "This" } }] } },
+        {
+          "Activated": {
+            "cost": "{W}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}{G}",
+            "effects": [{ "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

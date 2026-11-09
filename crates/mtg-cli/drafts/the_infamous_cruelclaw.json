@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e229d55c-9513-437d-bd67-015ac46aaa18",
+  "name": "The Infamous Cruelclaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Infamous Cruelclaw",
+      "oracle_fingerprint": "8d9608cf7618739109393a60b4fa6cfc",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Exile": { "what": { "Bound": "revealed2" } } },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "found_exiled" },
+                  "rather": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

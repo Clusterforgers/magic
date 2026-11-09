@@ -1,0 +1,34 @@
+{
+  "oracle_id": "32ddb0a3-2848-4939-87ad-ebcc5547fd60",
+  "name": "Crown of Ascension",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crown of Ascension",
+      "oracle_fingerprint": "4d140b19946ba43f17052291949a081a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Flying" }] } },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Is": "Attached" }, { "SharesSubtype": "Attached" }] }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

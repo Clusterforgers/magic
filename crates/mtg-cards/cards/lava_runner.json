@@ -1,0 +1,24 @@
+{
+  "oracle_id": "48a77c0c-a179-47f2-83b2-da80ba5448f9",
+  "name": "Lava Runner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lava Runner",
+      "oracle_fingerprint": "7fbda92b6c6c4f9e5e514c253c6be9ba",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": ["This"] } },
+            "effects": [
+              {
+                "Sacrifice": { "who": { "ControllerOf": "Dealer" }, "filter": [{ "Type": "Land" }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

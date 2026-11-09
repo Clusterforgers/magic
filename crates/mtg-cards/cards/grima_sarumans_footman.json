@@ -1,0 +1,61 @@
+{
+  "oracle_id": "9df60bb7-2dd4-4d22-b814-f52145356424",
+  "name": "Gríma, Saruman's Footman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gríma, Saruman's Footman",
+      "oracle_fingerprint": "c878b3872538ea5ff819bb61e579df31",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": "Triggering",
+                  "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_moved3" } },
+              { "Exile": { "what": { "Bound": "revealed2" }, "as": "rest_moved4" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "Is": { "Bound": "found_moved3" } },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked5"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "picked5" }, "free": true } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Bound": "rest_moved4" } },
+                          { "Is": { "Bound": "found_moved3" } }
+                        ]
+                      },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

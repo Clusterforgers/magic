@@ -1,0 +1,44 @@
+{
+  "oracle_id": "da8a93c6-66e2-492d-8894-397ba9ec5a87",
+  "name": "Graveyard Shift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graveyard Shift",
+      "oracle_fingerprint": "d233700e25ec61c1783010c8ca9a676c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "In": "Hand" }, "This"] },
+            "mods": [{ "AddKeyword": "Flash" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }],
+                    "stat": "ManaValue"
+                  }
+                },
+                "op": "Ge",
+                "right": 5
+              }
+            },
+            "from": "Hand"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

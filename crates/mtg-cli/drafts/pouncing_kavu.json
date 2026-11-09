@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5f9a968d-cc23-46d3-b28f-3779dd89c531",
+  "name": "Pouncing Kavu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pouncing Kavu",
+      "oracle_fingerprint": "7c21c5b9293cb64a8caa111f97a83b3c",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{R}" } },
+        { "Keyword": "FirstStrike" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 2,
+                "mods": [{ "AddKeyword": "Haste" }]
+              }
+            },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

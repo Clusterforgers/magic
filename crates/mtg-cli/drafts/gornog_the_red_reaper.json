@@ -1,0 +1,57 @@
+{
+  "oracle_id": "adfd6c2d-a7f8-4f5c-bc31-d65c8150ed49",
+  "name": "Gornog, the Red Reaper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gornog, the Red Reaper",
+      "oracle_fingerprint": "eb906469c07f360cddffc4a243fa4a37",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Warrior" }] },
+            "mods": [{ "CantBeBlockedBy": [{ "Subtype": "Coward" }] }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Subtype": "Warrior" }, { "ControlledBy": "You" }],
+                "at": "EachPlayer"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Against" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetCreatureTypes": ["Coward"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Subtype": "Warrior" }, "Attacking", { "ControlledBy": "You" }]
+            },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Subtype": "Coward" }, { "ControlledBy": "Opponents" }] },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

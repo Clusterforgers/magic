@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d4cbf380-1a05-48ea-9187-de931b00866d",
+  "name": "Rising Waters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rising Waters",
+      "oracle_fingerprint": "2bf0957094842fa7b6fbe64e999e985d",
+      "abilities": [
+        { "Static": { "affected": { "Each": [{ "Type": "Land" }] }, "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "ActivePlayer" }] },
+                  "as": "untap"
+                }
+              },
+              { "Untap": { "what": { "Bound": "untap" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

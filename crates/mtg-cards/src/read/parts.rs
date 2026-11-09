@@ -527,6 +527,10 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             out.push(Step::new(depth, "instead:"));
             effects::list(ctx, list, depth + 1, out);
         }
+        ReplaceBy::Plus(list) => {
+            out.push(Step::new(depth, "it happens, and with it:"));
+            effects::list(ctx, list, depth + 1, out);
+        }
         ReplaceBy::PreventAnd(list) => {
             out.push(Step::new(depth, "prevent it, then:"));
             effects::list(ctx, list, depth + 1, out);

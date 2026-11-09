@@ -1,0 +1,26 @@
+{
+  "oracle_id": "45645a97-f41d-47fb-b943-293ffc18fc82",
+  "name": "Erithizon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Erithizon",
+      "oracle_fingerprint": "c99521acedada2eeae841d9c4bb3f584",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": { "who": "Defending", "what": { "Object": [{ "Type": "Creature" }] } }
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

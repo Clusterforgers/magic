@@ -1,0 +1,23 @@
+{
+  "oracle_id": "e1e82283-01ec-447f-b0d4-5bd4619ab3d8",
+  "name": "Hyperion's Atomic Vision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hyperion's Atomic Vision",
+      "oracle_fingerprint": "7f09b8451de5fa5ef7c95644d60b8eaa",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Behold": { "filter": [{ "Subtype": "Hero" }] } }] } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "If": { "condition": "AdditionalCostPaid", "then": [{ "Scry": { "count": 2 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

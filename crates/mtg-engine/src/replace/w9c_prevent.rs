@@ -27,6 +27,7 @@ fn w9c_token_pred(definition: &CardDefinition, pred: &Pred) -> bool {
         Pred::Supertype(supertype) => definition.supertypes.contains(supertype),
         Pred::Color(color) => definition.colors().contains(*color),
         Pred::Not(inner) => !w9c_token_pred(definition, inner),
+        Pred::AnyOf(any) => any.iter().any(|one| w9c_token_pred(definition, one)),
         _ => false,
     }
 }

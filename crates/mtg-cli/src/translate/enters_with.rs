@@ -38,6 +38,44 @@ pub(super) fn condition(ctx: &Ctx, valid: &str) -> Tr<Value> {
     }
 }
 
+/// `K:ETBReplacement:Other:<tap>:Optional` where the part taps the permanent and its sub-ability gives the controller
+/// rad counters ("you may have this land enter tapped. If you do, you get two rad counters").
+pub(super) fn tapped_for_rad(ctx: &mut Ctx, name: &str) -> Tr<Value> {
+    let gap = || unmapped("keyword:ETBReplacement-shape");
+    let tap = ctx.sub(name)?;
+    check_keys(
+        &tap,
+        "ETBReplacement",
+        &["DB", "ETB", "Defined", "SubAbility", "SpellDescription"],
+        |_, _| false,
+    )?;
+    if tap.get("DB") != Some("Tap")
+        || tap.get("ETB") != Some("True")
+        || !matches!(tap.get("Defined"), None | Some("Self"))
+    {
+        return gap();
+    }
+    let Some(next) = tap.get("SubAbility") else {
+        return gap();
+    };
+    let rad = ctx.sub(next)?;
+    check_keys(
+        &rad,
+        "ETBReplacement",
+        &["DB", "Defined", "Num", "SpellDescription"],
+        |_, _| false,
+    )?;
+    if rad.get("DB") != Some("Radiation") || rad.get("Defined") != Some("You") {
+        return gap();
+    }
+    let Ok(count) = rad.get("Num").unwrap_or("1").parse::<u32>() else {
+        return gap();
+    };
+    Ok(json!({"Replacement": {
+        "when": {"Enters": {"what": ["This"]}},
+        "by": {"TappedForCounters": {"counter": {"Other": "rad"}, "count": count}}}}))
+}
+
 /// The replacement of a permanent that enters with the counters and the changes the chain of parts names.
 pub fn self_enters(ctx: &mut Ctx, name: &str, valid: &str) -> Tr<Value> {
     let when = condition(ctx, valid)?;

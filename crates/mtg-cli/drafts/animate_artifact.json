@@ -12,13 +12,13 @@
           "Static": {
             "affected": "Attached",
             "mods": [
+              { "AddType": "Creature" },
               {
                 "SetPT": {
                   "power": { "Stat": { "of": "Affected", "stat": "ManaValue" } },
                   "toughness": { "Stat": { "of": "Affected", "stat": "ManaValue" } }
                 }
-              },
-              { "AddType": "Creature" }
+              }
             ],
             "condition": {
               "Matches": { "subject": "Attached", "selector": [{ "Not": { "Type": "Creature" } }] }

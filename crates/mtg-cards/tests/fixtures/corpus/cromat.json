@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "7d9e0a23-d2a8-40a6-9076-ed6fb539141b",
+  "oracle_id": "376601b6-fe51-4e2d-8ec6-98f965d649a3",
+  "multiverse_ids": [
+    28670
+  ],
+  "mtgo_id": 16278,
+  "mtgo_foil_id": 16279,
+  "tcgplayer_id": 7928,
+  "cardmarket_id": 3206,
+  "name": "Cromat",
+  "lang": "en",
+  "released_at": "2001-06-04",
+  "uri": "https://api.scryfall.com/cards/7d9e0a23-d2a8-40a6-9076-ed6fb539141b",
+  "scryfall_uri": "https://scryfall.com/card/apc/94/cromat?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:22:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/d/7d9e0a23-d2a8-40a6-9076-ed6fb539141b.jpg?1783945336",
+    "normal": "https://cards.scryfall.io/normal/front/7/d/7d9e0a23-d2a8-40a6-9076-ed6fb539141b.jpg?1783945336",
+    "large": "https://cards.scryfall.io/large/front/7/d/7d9e0a23-d2a8-40a6-9076-ed6fb539141b.jpg?1783945336",
+    "png": "https://cards.scryfall.io/png/front/7/d/7d9e0a23-d2a8-40a6-9076-ed6fb539141b.png?1783945336",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/d/7d9e0a23-d2a8-40a6-9076-ed6fb539141b.jpg?1783945336",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/d/7d9e0a23-d2a8-40a6-9076-ed6fb539141b.jpg?1783945336",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/d/7d9e0a23-d2a8-40a6-9076-ed6fb539141b.webp?1783945336",
+    "grid": "https://cards.scryfall.io/grid/front/7/d/7d9e0a23-d2a8-40a6-9076-ed6fb539141b.webp?1783945336",
+    "display": "https://cards.scryfall.io/display/front/7/d/7d9e0a23-d2a8-40a6-9076-ed6fb539141b.webp?1783945336",
+    "art": "https://cards.scryfall.io/art/front/7/d/7d9e0a23-d2a8-40a6-9076-ed6fb539141b.webp?1783945336",
+    "crop": "https://cards.scryfall.io/crop/front/7/d/7d9e0a23-d2a8-40a6-9076-ed6fb539141b.webp?1783945336",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/d/7d9e0a23-d2a8-40a6-9076-ed6fb539141b.jpg?1783945336"
+  },
+  "mana_cost": "{W}{U}{B}{R}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Illusion",
+  "oracle_text": "{W}{B}: Destroy target creature blocking or blocked by Cromat.\n{U}{R}: Cromat gains flying until end of turn.\n{B}{G}: Regenerate Cromat.\n{R}{W}: Cromat gets +1/+1 until end of turn.\n{G}{U}: Put Cromat on top of its owner's library.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Regenerate"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e4e00913-d08d-4899-86ea-5cf631e09ce0",
+  "set": "apc",
+  "set_name": "Apocalypse",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e4e00913-d08d-4899-86ea-5cf631e09ce0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aapc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/apc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7d9e0a23-d2a8-40a6-9076-ed6fb539141b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A376601b6-fe51-4e2d-8ec6-98f965d649a3&unique=prints",
+  "collector_number": "94",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Donato Giancola",
+  "artist_ids": [
+    "90332db2-aecb-4d79-917b-95cbeb8d0cb6"
+  ],
+  "illustration_id": "338b7fb5-0926-451a-8950-d0174f54be86",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17280,
+  "prices": {
+    "usd": "5.45",
+    "usd_foil": "155.59",
+    "usd_etched": null,
+    "eur": "2.31",
+    "eur_foil": "36.23",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=28670&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCromat",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCromat",
+    "edhrec": "https://edhrec.com/route/?cc=Cromat"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7928%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3206&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/16278?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

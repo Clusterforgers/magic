@@ -1,0 +1,50 @@
+{
+  "oracle_id": "726c911d-6543-4400-a8fa-b8a5c9f0c15d",
+  "name": "Deadlock Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadlock Trap",
+      "oracle_fingerprint": "e4f3408a6b36611c3a1f0ea294e8c020",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 1 }],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": "EachPlayer",
+                      "action": {
+                        "ActivateKind": { "kind": "Every", "sources": [{ "Is": { "Target": 0 } }] }
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

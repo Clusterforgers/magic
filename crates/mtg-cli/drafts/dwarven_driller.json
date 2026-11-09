@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5967c3d3-2ef1-4496-b51c-23478fa77f09",
+  "name": "Dwarven Driller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dwarven Driller",
+      "oracle_fingerprint": "a1c6fbd9892cbffff1f2a6fa2963a41b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": [{ "DamageToYou": 2 }],
+                  "unpaid": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "oracle_id": "3194c964-1693-40b6-b4f2-64fe056e7cd9",
+  "name": "Tsagan, Raider Warlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tsagan, Raider Warlord",
+      "oracle_fingerprint": "e12af69eb1f2377d383f7a3a23a448e6",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "StartYourEngines" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            {
+                              "AnyOf": [
+                                { "HasKeyword": "FirstStrike" },
+                                { "HasKeyword": "DoubleStrike" }
+                              ]
+                            }
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Static": { "affected": "This", "mods": [{ "AddKeyword": "Deathtouch" }] }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Static": {
+                    "affected": {
+                      "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                    },
+                    "mods": [{ "AddKeyword": "FirstStrike" }]
+                  }
+                }
+              }
+            ],
+            "condition": { "MaxSpeed": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

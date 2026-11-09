@@ -1,0 +1,81 @@
+{
+  "oracle_id": "400b2e17-ee48-4e22-a8a6-a607c215d1a2",
+  "name": "Academic Probation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Academic Probation",
+      "oracle_fingerprint": "4a64b2be88eb49c5de47af74ab48f196",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "ChooseValue": {
+                            "kind": { "CardName": [{ "Not": { "Type": "Land" } }] },
+                            "as": "name"
+                          }
+                        },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Cant": {
+                                "who": "Opponents",
+                                "action": {
+                                  "Cast": {
+                                    "filter": [
+                                      { "Not": { "Type": "Land" } },
+                                      { "ChosenAs": "name" }
+                                    ]
+                                  }
+                                }
+                              }
+                            },
+                            "duration": "UntilYourNextTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": ["CantAttack", "CantBlock"],
+                            "duration": "UntilYourNextTurn"
+                          }
+                        },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "Cant": {
+                                "who": "EachPlayer",
+                                "action": {
+                                  "ActivateKind": {
+                                    "kind": "Every",
+                                    "sources": [{ "Is": { "Target": 0 } }]
+                                  }
+                                }
+                              }
+                            },
+                            "duration": "UntilYourNextTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

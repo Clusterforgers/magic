@@ -18,6 +18,10 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 
 Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `gn1a` and `gn1j` are writer items beside this list; a new decision comes with its web prompt in the same piece.
 
+- [ ] (ep21a) Deck-card engine pieces: "choose a counter on it, give it another of that kind" (Animation Module, Ichormoon Gauntlet), "if it had counters on it" as a leave trigger's condition (The Ozolith), Nesting Grounds' Pump-then-MoveCounter shape
+- [ ] (ep21b) Coin flips with a count of flips and wins and a flipper (Yusri, Ral Zarek, Planar Chaos, Karplusan Minotaur); repeat with an optional continue and over targets (Dance with Calamity, Game of Chaos, Delina)
+- [ ] (ep21c) Cost changes paid in life (Terror of the Peaks) and of coloured mana only (Morophon), `Amount.X.Elsewhere` (Hierophant Bio-Titan, Rottenmouth Viper); statics outside the battlefield and on spells (Maskwood Nexus, Mycosynth Lattice, Echoes of Eternity)
+- [ ] (ep21d) Player hexproof from a colour with "spells can't be countered" (Veil of Summer) and "can't be sacrificed by opponents' effects" (Sigarda, needs the sacrificing effect's controller at the prohibition); Lazav, Saw in Half, Brimaz, Forsaken Monument
 - [ ] (fg5ea) Effect verbs with no mapper yet that free the most scripts: Vote, Repeat, ChooseSource; `translate/effects_verbs.rs`; MakeCard and Seek need engine nodes (conjure a named card, seek a card from the library); GenericChoice maps only two parts chosen by you, SetState only Transform; `translate/effects_verbs2.rs`
 - [ ] (fg5eb) Replacement events beyond entering and token multiplying: `Counter`, `AddCounter` (needs a selector for `CountersPut.on`), `Draw`, `ProduceMana`, `GameLoss`, `LifeReduced`, `Untap-affected`, token halving and added tokens; `translate/replacements_token.rs`
 - [ ] (fg5ec) Trigger modes beyond the batches mapped: `AbilityCast`, `AttackersDeclaredOneTarget`, `DamageDealtOnce`, `CounterAddedAll`, `Unattached`, `Always`, `CommitCrime`, and `FirstTime$` and `ValidSource$` on batches; `translate/triggers_batch.rs`

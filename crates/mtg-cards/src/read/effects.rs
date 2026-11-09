@@ -400,7 +400,9 @@ fn counters(ctx: &Ctx, effect: &Effect) -> Option<String> {
         } => format!(
             "move {} {} counters from {} to {}",
             phrase::amount(ctx, count),
-            phrase::counter_text(counter),
+            counter
+                .as_ref()
+                .map_or_else(|| "any".to_owned(), phrase::counter_text),
             phrase::who(ctx, from),
             phrase::who(ctx, to)
         ),

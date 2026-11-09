@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ab41243d-b178-4ebe-a7ac-bea37427be99",
+  "name": "Wojek Investigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wojek Investigator",
+      "oracle_fingerprint": "1a7a5dee0fe1decb2489cef0ee34c145",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "clue" },
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                            "op": "Gt",
+                            "right": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Asker" }] }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

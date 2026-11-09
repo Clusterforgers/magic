@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d9e752f2-d552-4d72-babd-29eca3508820",
+  "name": "Wedding Invitation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wedding Invitation",
+      "oracle_fingerprint": "506b9233cf7de078b6aad0aed96a0cba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Is": { "Target": 0 } }, { "Subtype": "Vampire" }] },
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "4abb4fb0-f674-44b5-962c-c66219fb0deb",
+  "name": "Goblin Brawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Brawler",
+      "oracle_fingerprint": "14b99395ef830f126a20cef2589fb1df",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "This", "action": { "BeAttachedBy": [{ "Subtype": "Equipment" }] } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "83c8f1ca-194e-4cb6-9d5f-029133c1edbc",
+  "name": "Lotuslight Dancers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lotuslight Dancers",
+      "oracle_fingerprint": "ce71e41bc41fa96c3f83854bfca108f0",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Search": { "filter": [{ "Color": "Black" }], "as": "found" } },
+              {
+                "Search": {
+                  "filter": [{ "Color": "Green" }, { "Not": { "Is": { "Bound": "found" } } }],
+                  "as": "found2"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [
+                    { "Color": "Blue" },
+                    { "Not": { "Is": { "Bound": "found" } } },
+                    { "Not": { "Is": { "Bound": "found2" } } }
+                  ],
+                  "as": "found3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Graveyard" } },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Graveyard" } },
+              { "Move": { "what": { "Bound": "found3" }, "to": "Graveyard" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

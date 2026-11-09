@@ -1,0 +1,49 @@
+{
+  "oracle_id": "b83a3ba0-249e-4c39-bbf0-cb005413f7d2",
+  "name": "Show and Tell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Show and Tell",
+      "oracle_fingerprint": "ae8fb2151402cfacfa2e4f2d3f1ef080",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                { "Type": "Creature" },
+                                { "Type": "Artifact" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" }
+                              ]
+                            },
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked2"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked2" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

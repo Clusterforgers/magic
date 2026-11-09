@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c9fb22b4-dc22-4291-91f2-89c07cee7569",
+  "name": "The Speed Demon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Speed Demon",
+      "oracle_fingerprint": "288b5fc1a7ec44ac1194b70d8faaabb0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": "StartYourEngines" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Draw": { "count": { "Speed": "You" } } },
+              { "LoseLife": { "amount": { "Speed": "You" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

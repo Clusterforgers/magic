@@ -1,0 +1,53 @@
+{
+  "oracle_id": "84ac3096-098a-477a-8907-fc30ac15f00f",
+  "name": "Masked Bandits",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Masked Bandits",
+      "oracle_fingerprint": "d91289c7d1fdf3afde5be112836cb58d",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "ExileSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": ["Tap"],
+                          "effects": [
+                            { "AddMana": { "mana": { "OneOf": ["Black", "Red", "Green"] } } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilCastFromExile"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Arrived": { "of": "This", "zone": "Exile" } }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

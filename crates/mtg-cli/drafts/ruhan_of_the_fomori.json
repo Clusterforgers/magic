@@ -1,0 +1,29 @@
+{
+  "oracle_id": "82d109ea-3421-46eb-9bbf-f7f28b548ea6",
+  "name": "Ruhan of the Fomori",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruhan of the Fomori",
+      "oracle_fingerprint": "b0d75bc9abf5a85a728439091e21a113",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "ChooseAtRandom": { "from": "Opponents", "as": "player" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttackPlayers": { "who": "This", "players": { "Bound": "player" } }
+                  },
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

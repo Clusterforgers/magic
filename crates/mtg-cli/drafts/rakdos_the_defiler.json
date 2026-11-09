@@ -1,0 +1,59 @@
+{
+  "oracle_id": "789bf406-38f0-4888-b2ff-c4a95ac79283",
+  "name": "Rakdos the Defiler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakdos the Defiler",
+      "oracle_fingerprint": "c06d5b60c69d54bd20c7e1621d87c6bc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Not": { "Subtype": "Demon" } }],
+                  "count": {
+                    "Half": {
+                      "of": {
+                        "Count": [{ "Not": { "Subtype": "Demon" } }, { "ControlledBy": "You" }]
+                      },
+                      "up": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Triggering",
+                  "filter": [{ "Not": { "Subtype": "Demon" } }],
+                  "count": {
+                    "Half": {
+                      "of": {
+                        "Largest": {
+                          "who": "Triggering",
+                          "of": [{ "Not": { "Subtype": "Demon" } }, { "ControlledBy": "You" }]
+                        }
+                      },
+                      "up": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

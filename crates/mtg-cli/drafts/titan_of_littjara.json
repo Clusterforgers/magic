@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f62250c6-0832-46c8-a800-806589504f5f",
+  "name": "Titan of Littjara",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Titan of Littjara",
+      "oracle_fingerprint": "aa96a1c10593607f2c2aabac90dab4aa",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        { "Static": { "affected": "This", "mods": ["AddChosenSubtype"] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Draw": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          "Other",
+                          { "SharesSubtype": "This" }
+                        ]
+                      }
+                    }
+                  ],
+                  "paid": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

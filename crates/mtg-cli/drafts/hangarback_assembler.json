@@ -1,0 +1,60 @@
+{
+  "oracle_id": "c18d9839-d04e-4ffc-b3d0-02745a3ef6b8",
+  "name": "Hangarback Assembler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hangarback Assembler",
+      "oracle_fingerprint": "c042f884d1ffd32352d70b3f682d9eb8",
+      "abilities": [
+        { "Keyword": "StartYourEngines" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 20, "end": 139 }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                    "effects": [
+                      {
+                        "PutCounters": {
+                          "on": {
+                            "Each": [
+                              {
+                                "AnyOf": [
+                                  {
+                                    "Not": {
+                                      "AnyOf": [
+                                        { "Not": { "Type": "Creature" } },
+                                        { "Not": { "Type": "Artifact" } }
+                                      ]
+                                    }
+                                  },
+                                  { "Subtype": "Vehicle" }
+                                ]
+                              },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "counter": "+1/+1"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "MaxSpeed": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

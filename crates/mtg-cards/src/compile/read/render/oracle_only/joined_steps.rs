@@ -6,7 +6,7 @@
 use crate::ability::Ability;
 
 /// The effect the ability must hold, the wording the renderers write and the one the oracle uses, one line each.
-const EDITS: [(&str, &str, &str); 6] = [
+const EDITS: [(&str, &str, &str); 7] = [
     (
         "\"LookAtTop\"",
         "Put one of them into your hand",
@@ -26,6 +26,11 @@ const EDITS: [(&str, &str, &str); 6] = [
         "\"Proliferate\"",
         "proliferate. Then proliferate",
         "proliferate, then proliferate again",
+    ),
+    (
+        "\"Proliferate\"",
+        "roliferate. Then proliferate.",
+        "roliferate twice.",
     ),
     (
         "\"Discard\"",

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3cc857b4-3cc7-44d5-9c51-ef819d1289c6",
+  "name": "Tidewalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tidewalker",
+      "oracle_fingerprint": "67007a40a8e9f5edb86e49d2ff0e3737",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": { "Other": "time" },
+                "count": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] }
+              }
+            }
+          }
+        },
+        { "Keyword": { "Vanishing": 0 } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "time" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "time" } } }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

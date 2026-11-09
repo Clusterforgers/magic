@@ -1,7 +1,7 @@
 {
   "oracle_id": "b707c131-de13-4d4d-839d-b9f47d62f090",
   "name": "Faunsbane Troll",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Faunsbane Troll",
@@ -40,9 +40,33 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 120, "end": 309 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Subtype": "Aura" }, { "AttachedTo": "This" }] } }
+            ],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "Fight": { "what": "This", "with": { "Target": 0 } } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,79 @@
+{
+  "oracle_id": "62855d00-4a6b-45a5-a1c0-2e7699e821cb",
+  "name": "Herald of the Forgotten",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Herald of the Forgotten",
+      "oracle_fingerprint": "8f6ed8222f3bb73dfc06e9c6489444ac",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "HasKeywordNamed": "Cycling" },
+                        { "HasKeywordNamed": "Typecycling" }
+                      ]
+                    },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Largest": {
+                      "who": { "ControllerOf": "Triggering" },
+                      "of": [
+                        { "OwnedBy": "You" },
+                        {
+                          "AnyOf": [
+                            { "HasKeywordNamed": "Cycling" },
+                            { "HasKeywordNamed": "Typecycling" }
+                          ]
+                        },
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Battle" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        },
+                        { "In": "Graveyard" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

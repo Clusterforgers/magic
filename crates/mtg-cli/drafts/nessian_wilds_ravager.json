@@ -1,0 +1,24 @@
+{
+  "oracle_id": "fa1a5797-3076-48a4-b64b-ce3dfe2a3e7b",
+  "name": "Nessian Wilds Ravager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nessian Wilds Ravager",
+      "oracle_fingerprint": "755e150a4779393ff71a18979a8816d3",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "tribute", "amount": 6 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Compare": { "left": "Chosen", "op": "Eq", "right": 0 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "May": { "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

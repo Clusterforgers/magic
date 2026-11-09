@@ -1,0 +1,15 @@
+{
+  "oracle_id": "cfb8cdde-11f6-441a-942b-32d8c191fc90",
+  "name": "Nyx Lotus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nyx Lotus",
+      "oracle_fingerprint": "b079e150f207947c06d55ff7d90cff3c",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        { "Activated": { "cost": ["Tap"], "effects": [{ "AddMana": { "mana": "Devotion" } }] } }
+      ]
+    }
+  ]
+}

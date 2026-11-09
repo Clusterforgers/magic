@@ -1,0 +1,45 @@
+{
+  "oracle_id": "602d0d09-00c6-4073-80ec-2ad33aef1a97",
+  "name": "Crown of Awe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crown of Awe",
+      "oracle_fingerprint": "a67d69ecbaf9da06b02819d7697441aa",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": { "Protection": [{ "Color": "Black" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "Red" }] } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Is": "Attached" }, { "SharesSubtype": "Attached" }] }
+                    ]
+                  },
+                  "mods": [
+                    { "AddKeyword": { "Protection": [{ "Color": "Black" }] } },
+                    { "AddKeyword": { "Protection": [{ "Color": "Red" }] } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

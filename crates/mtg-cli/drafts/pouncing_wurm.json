@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3e299484-32e9-4646-9032-062d08a70bb9",
+  "name": "Pouncing Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pouncing Wurm",
+      "oracle_fingerprint": "433ce7116045b4dd5fda7f6eda38a423",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}{G}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 3,
+                "mods": [{ "AddKeyword": "Haste" }]
+              }
+            },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

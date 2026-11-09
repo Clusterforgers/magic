@@ -1,0 +1,53 @@
+{
+  "oracle_id": "525d98d6-b117-44f4-b19c-3dd26e7c9fd4",
+  "name": "Tail Swipe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tail Swipe",
+      "oracle_fingerprint": "8784067ec90a3c51da8a27b811fddd05",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "CountOf": {
+                          "subject": "This",
+                          "selector": [{ "WasCast": {} }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] },
+                      "YourTurn"
+                    ]
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

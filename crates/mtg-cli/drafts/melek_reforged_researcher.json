@@ -1,0 +1,73 @@
+{
+  "oracle_id": "23140c6f-c674-4d13-9b78-bce0ffcb981f",
+  "name": "Melek, Reforged Researcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Melek, Reforged Researcher",
+      "oracle_fingerprint": "d2d0ef06dfadd7a8d851a74a76400350",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "You",
+                    "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

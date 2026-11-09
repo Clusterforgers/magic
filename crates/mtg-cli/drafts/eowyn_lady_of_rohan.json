@@ -1,0 +1,78 @@
+{
+  "oracle_id": "1ee3753c-3b6e-4182-9305-2ab757f485f0",
+  "name": "Éowyn, Lady of Rohan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Éowyn, Lady of Rohan",
+      "oracle_fingerprint": "227e942ac8cb4d6cd60fef9d2b24e4fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": { "Target": 0 },
+                          "filter": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+                        }
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "FirstStrike" }, { "AddKeyword": "Vigilance" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "AddKeyword": "FirstStrike" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "AddKeyword": "Vigilance" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Equip"
+          }
+        }
+      ]
+    }
+  ]
+}

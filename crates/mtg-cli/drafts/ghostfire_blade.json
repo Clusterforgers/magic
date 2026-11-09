@@ -1,0 +1,29 @@
+{
+  "oracle_id": "093b1d8d-c836-4e9b-855b-4020361aa6ac",
+  "name": "Ghostfire Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghostfire Blade",
+      "oracle_fingerprint": "2626b642e883e752c4a9092a78bc5e30",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "activating": "Equip",
+            "targeting": [{ "Type": "Creature" }, "Colorless"]
+          }
+        }
+      ]
+    }
+  ]
+}

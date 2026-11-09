@@ -1,0 +1,44 @@
+{
+  "oracle_id": "28aefa3a-16d3-4207-bb8c-588b722a4041",
+  "name": "Elrond, Master of Healing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elrond, Master of Healing",
+      "oracle_fingerprint": "80b6bfad83eeb66a40dba71d4fedc1e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Scried", "who": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": "Triggering" }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasCounter": "+1/+1" },
+                  { "In": "Battlefield" }
+                ],
+                "by": [
+                  { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                  { "ControlledBy": "Opponents" }
+                ]
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

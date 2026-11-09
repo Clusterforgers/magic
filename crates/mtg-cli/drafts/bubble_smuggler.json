@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ca22fa33-5460-4d31-a9c8-4115d35b994c",
+  "name": "Bubble Smuggler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bubble Smuggler",
+      "oracle_fingerprint": "88d918790dfaecdd9144a4bd3299e7f6",
+      "abilities": [
+        { "Keyword": { "Disguise": "{5}{U}" } },
+        {
+          "Replacement": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 4 } }
+          }
+        }
+      ]
+    }
+  ]
+}

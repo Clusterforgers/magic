@@ -1,0 +1,65 @@
+{
+  "oracle_id": "810e1371-e028-47e7-b97e-a627a35932e0",
+  "name": "Localized Destruction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Localized Destruction",
+      "oracle_fingerprint": "01b310bc55586acef803166cb9cf4c98",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" } } },
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [0, { "Counters": { "on": "You", "counter": { "Other": "energy" } } }]
+                  },
+                  "as": "number"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "ChosenAs": "number" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "Pay": {
+                        "cost": [{ "PayEnergy": 1 }],
+                        "times": { "ChosenAs": "number" },
+                        "paid": [
+                          {
+                            "Continuous": {
+                              "affected": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  {
+                                    "Compare": {
+                                      "stat": "Power",
+                                      "op": "Eq",
+                                      "to": { "ChosenAs": "number" }
+                                    }
+                                  }
+                                ]
+                              },
+                              "mods": [{ "AddKeyword": "Indestructible" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

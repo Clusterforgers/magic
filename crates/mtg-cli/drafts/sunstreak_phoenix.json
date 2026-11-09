@@ -1,0 +1,31 @@
+{
+  "oracle_id": "94f14f42-ea66-4432-81cc-667ad62a4497",
+  "name": "Sunstreak Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunstreak Phoenix",
+      "oracle_fingerprint": "132354cc491b577557f8d1953db62abf",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "DayIfNeither" } },
+        {
+          "Triggered": {
+            "when": { "DayNightChanges": {} },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{R}",
+                  "paid": [
+                    { "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

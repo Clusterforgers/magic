@@ -1,0 +1,42 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "At the beginning of your upkeep, draft a card from CARDNAME's spellbook, then exile it. Until end of turn, you may play that card.",
+      "abilities": [],
+      "gap": "effect:Draft"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "Equip abilities you activate cost {1} less to activate.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 135
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 136,
+          "end": 191
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

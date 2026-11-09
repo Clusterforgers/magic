@@ -1,0 +1,93 @@
+{
+  "oracle_id": "67a9357c-4713-4e01-a60d-532bf0dd80b6",
+  "name": "Codie, Vociferous Codex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Codie, Vociferous Codex",
+      "oracle_fingerprint": "8199bd79880d3eb5a9e08dfc9118b58e",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "You",
+                "action": {
+                  "Cast": {
+                    "filter": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["White", "Blue", "Black", "Red", "Green"] } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "by": "You" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "filter": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Lt",
+                              "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                            }
+                          }
+                        ],
+                        "as": "found",
+                        "revealed_as": "revealed2"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "found" }, "as": "found_moved3" } },
+                    { "Exile": { "what": { "Bound": "revealed2" }, "as": "rest_moved4" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "what": [{ "Not": { "Type": "Land" } }],
+                            "from": "Exile",
+                            "free": true,
+                            "only": { "Bound": "found_moved3" }
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [{ "Is": { "Bound": "rest_moved4" } }, { "In": "Exile" }]
+                        },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

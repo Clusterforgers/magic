@@ -1,0 +1,105 @@
+{
+  "oracle_id": "f701ada1-e9e1-42ce-9a62-c11bcec03da7",
+  "name": "Surtland Flinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surtland Flinger",
+      "oracle_fingerprint": "0fdb5985eb534f4dbbd0ec13b8ade82c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, "Other"],
+                        "as": "sacrificed2"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed2~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          { "Bind": { "what": { "Bound": "sacrificed2" }, "as": "when" } },
+                          {
+                            "Reflexive": {
+                              "targets": [{ "what": "AnyTarget" }],
+                              "effects": [
+                                {
+                                  "If": {
+                                    "condition": {
+                                      "CountOf": {
+                                        "subject": { "Bound": "when" },
+                                        "selector": [{ "Subtype": "Giant" }],
+                                        "op": "Eq",
+                                        "right": 0
+                                      }
+                                    },
+                                    "then": [
+                                      {
+                                        "DealDamage": {
+                                          "to": { "Target": 0 },
+                                          "amount": {
+                                            "Stat": { "of": { "Bound": "when" }, "stat": "Power" }
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                },
+                                {
+                                  "If": {
+                                    "condition": {
+                                      "CountOf": {
+                                        "subject": { "Bound": "when" },
+                                        "selector": [{ "Subtype": "Giant" }],
+                                        "op": "Ge",
+                                        "right": 1
+                                      }
+                                    },
+                                    "then": [
+                                      {
+                                        "DealDamage": {
+                                          "to": { "Target": 0 },
+                                          "amount": {
+                                            "Times": {
+                                              "by": 2,
+                                              "of": {
+                                                "Stat": {
+                                                  "of": { "Bound": "when" },
+                                                  "stat": "Power"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

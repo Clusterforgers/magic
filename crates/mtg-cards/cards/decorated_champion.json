@@ -1,0 +1,24 @@
+{
+  "oracle_id": "e7c0052e-6dda-4fcf-9368-7749aa9b9c5c",
+  "name": "Decorated Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decorated Champion",
+      "oracle_fingerprint": "32946d5ba17f5c966c30ac96be78a515",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Warrior" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

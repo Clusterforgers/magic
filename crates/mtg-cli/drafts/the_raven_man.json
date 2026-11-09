@@ -1,0 +1,52 @@
+{
+  "oracle_id": "19918740-f6e3-40cd-9848-3c7a852a6c2a",
+  "name": "The Raven Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Raven Man",
+      "oracle_fingerprint": "5f885a5b5c14bf596ac63202fa598358",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "Discarded" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{B}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [{ "Discard": { "who": "Opponents" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
