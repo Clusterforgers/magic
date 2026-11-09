@@ -1,4 +1,4 @@
-// Goal: the words and rules of the card prompts hold for every min, max and number of cards on offer: the bounds never ask for more than is shown, a press changes a choice by the rules of one or several, the sentences say the numbers and what is left to do, the filter matches names and types, and an order says where a card went.
+// Goal: the words and rules of the card prompts hold for every min, max and number of cards on offer: the bounds never ask for more than is shown, a press changes a choice by the rules of one or several, the sentences say the numbers and what is left to do, the filter matches every word in the name, type line or rules text and counts what it shows, and an order says where a card went.
 import { describe, expect, it } from 'vitest'
 import type { ObjectView } from '@/protocol/generated'
 import {
@@ -12,6 +12,7 @@ import {
   cardsTitle,
   countFits,
   distinctCards,
+  filterCount,
   matchesFilter,
   orderSentence,
   orderTitle,
@@ -161,6 +162,31 @@ describe('the filter', () => {
   it('passes a card the view does not hold only while the filter is empty', () => {
     expect(matchesFilter(undefined, '')).toBe(true)
     expect(matchesFilter(undefined, 'bear')).toBe(false)
+  })
+
+  const rules = 'Flying\nWhen this creature enters, draw a card.'
+  it.each([
+    ['flying', rules, true],
+    ['DRAW a CARD', rules, true],
+    ['bear draw', rules, true],
+    ['enters island', rules, false],
+    ['flying', '', false],
+    ['flying', undefined, false],
+    ['grizzly', '', true],
+  ])('"%s" against the rules text %j matches %s', (filter, text, match) => {
+    expect(matchesFilter(bears, filter, text)).toBe(match)
+  })
+})
+
+describe('the count beside the filter', () => {
+  it.each([
+    [40, 40, 0, '40 of 40'],
+    [3, 40, 0, '3 of 40'],
+    [0, 40, 0, '0 of 40'],
+    [3, 40, 1, '3 of 40 · 1 chosen out of view'],
+    [0, 12, 2, '0 of 12 · 2 chosen out of view'],
+  ])('%i shown of %i with %i chosen hidden reads "%s"', (shown, total, hidden, line) => {
+    expect(filterCount(shown, total, hidden)).toBe(line)
   })
 })
 
