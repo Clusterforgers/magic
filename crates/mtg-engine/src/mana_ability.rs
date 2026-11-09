@@ -164,7 +164,13 @@ pub(crate) fn split(made: &[ManaType]) -> Option<(ManaType, u32, Vec<ManaType>)>
 /// every type is a distinct source of one permanent and a client taps for the type it wants.
 // One pass over the shape of each ability: its condition, limit, cost, the mana it adds and what it does besides.
 #[allow(clippy::too_many_lines)]
-fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) -> Vec<RuleMana> {
+fn rule_mana(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    printed: usize,
+    here: bool,
+) -> Vec<RuleMana> {
     let Some(object) = state.object(id) else {
         return Vec::new();
     };
@@ -174,7 +180,8 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         let Some(shape) = mana_shape(&rules) else {
             continue;
         };
-        if shape.from != crate::resolve::zone_kind(object.zone()) {
+        // A payment uses only the abilities that work where the card is; a view previews a hand card's ways too.
+        if here && shape.from != crate::resolve::zone_kind(object.zone()) {
             continue;
         }
         // The mana is counted after what the ability does first (a counter put on the source).
@@ -430,7 +437,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
     found
 }
 
-/// The mana abilities in the rules of `id` that its controller can use now, by address, each with an option for every
+/// The mana abilities in the rules of `id` for a view, in any zone (a hand card previews its ways), by address, each with an option for every
 /// way to use it as the payment offers it: the mana counted now, the chosen colour, the mana it costs.
 pub fn mana_ways(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Vec<ManaOption>)> {
     let (Some(object), Some(chars)) = (state.object(id), characteristics(state, id)) else {
@@ -440,7 +447,7 @@ pub fn mana_ways(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Vec<ManaOp
     if mana_forbidden(state, player, id) {
         return Vec::new();
     }
-    rule_mana(state, player, id, chars.abilities.len())
+    rule_mana(state, player, id, chars.abilities.len(), false)
         .into_iter()
         .map(|mana| (mana.address, mana.options))
         .collect()
@@ -498,7 +505,7 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
                 found.push(option);
             }
         }
-        for mana in rule_mana(state, player, id, chars.abilities.len()) {
+        for mana in rule_mana(state, player, id, chars.abilities.len(), true) {
             if !mana.tap || can_tap {
                 found.extend(mana.options);
             }
@@ -523,7 +530,7 @@ fn hand_options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
             continue;
         }
         let printed = characteristics(state, id).map_or(0, |chars| chars.abilities.len());
-        for mana in rule_mana(state, player, id, printed) {
+        for mana in rule_mana(state, player, id, printed, true) {
             found.extend(mana.options);
         }
     }
@@ -573,7 +580,7 @@ pub(crate) fn activation(
     let printed = characteristics(state, id).map_or(0, |chars| chars.abilities.len());
     // The variants a triggered mana ability's pick makes of an option are numbered past the ability's own sources.
     let base = option.source.ability % mana_bonus::STRIDE;
-    let rule = rule_mana(state, player, id, printed)
+    let rule = rule_mana(state, player, id, printed, true)
         .into_iter()
         .find(|mana| {
             mana.options
