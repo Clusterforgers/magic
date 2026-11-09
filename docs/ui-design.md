@@ -30,6 +30,7 @@ Tokens are CSS variables in `index.css`, mapped by `@theme inline`; shadcn's nam
 | `turn-you`, `on-turn-you`, `turn-you-edge`, `turn-them` | your-turn pill and banner (gold); pod edge and ring; opponent turn marker, pod and tile edge |
 | `phase-<id>`, `-soft`, `on-phase-<id>` | accent, tint and text of the four phases ([Phase themes](#phase-themes)); the live `phase`, `phase-soft`, `on-phase` follow the table root's `data-phase` |
 | `success`, `warning`, `destructive` | ready; urgent clock; lethal and Concede |
+| `selected`, `on-selected` | a chosen card or target: crimson, at least 12° of hue from `destructive` (damage, loss) and apart from the gold of attackers, with a check badge so colour is never the only sign |
 | `mana-<colour>`, `on-mana-<colour>` | pip fill and ink, the same in both themes, 5.6:1 or more |
 
 | Token | Scale |
