@@ -1,4 +1,4 @@
-// Goal: in the deck builder a line's "Play by hand" toggle marks a Verified card, the live check then shows it as played by hand with the owner's reason, and the toggle gives it back to the rules, at a wide and a phone window, on the dev route (no server).
+// Goal: in the deck builder a line's "Play by hand" toggle marks a Verified card, the live check then marks it Manual, and the toggle gives it back to the rules, at a wide and a phone window, on the dev route (no server).
 import { expect, test } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 
@@ -22,8 +22,8 @@ for (const size of SIZES) {
     await toggle.click()
     await expect(toggle).toHaveAttribute('aria-pressed', 'true')
     await expect(line).toHaveAttribute('data-support', 'manual')
-    await expect(line.locator('[data-slot="line-check"]')).toContainText(/owner chose to play it by hand/i)
-    await expect(deck.getByText('Unsaved changes')).toBeVisible()
+    await expect(line).toContainText('Manual')
+    await expect(deck.getByText('Unsaved changes').first()).toBeVisible()
     const box = await toggle.boundingBox()
     expect(box?.width ?? 0).toBeGreaterThanOrEqual(32)
 

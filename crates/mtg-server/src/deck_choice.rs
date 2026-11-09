@@ -274,18 +274,13 @@ async fn assemble(source: &CardSource, lines: &[Line]) -> Result<Assembled, ApiE
         .cloned()
         .collect();
     let (mut library, mut reads) = source.deck_pinned(&all).await?;
+    // The companion keeps its rules: its condition is a rule of deck building the game needs.
     let by_hand: Vec<String> = by_hand_ids(lines)
         .into_iter()
-        .filter(|id| all.contains(id))
+        .filter(|id| ids.contains(id) || leaders.contains(id))
         .collect();
     let manual = source.by_hand(&by_hand).await?;
     reads.retain(|id, _| !manual.contains_key(id));
-    // The companion condition is a rule of deck building: it is read off the card's own rules before the card is
-    // replaced.
-    let keeps_companion = companion.is_some()
-        && library
-            .last()
-            .is_some_and(|card| card.companion_condition().is_some());
     hosted_by_hand(&mut library, &all, &manual);
     let (conjured, conjured_reads) = source.conjured_for(&library).await?;
     reads.extend(conjured_reads);
@@ -298,7 +293,9 @@ async fn assemble(source: &CardSource, lines: &[Line]) -> Result<Assembled, ApiE
     Ok(Assembled {
         library,
         commanders: rest,
-        companion: companion.zip(card).filter(|_| keeps_companion),
+        companion: companion
+            .zip(card)
+            .filter(|(_, card)| card.companion_condition().is_some()),
         reads,
         conjured,
         by_hand,
