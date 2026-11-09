@@ -257,6 +257,8 @@ describe('play by hand', () => {
     expect(toggle('Mountain')).toHaveAttribute('aria-pressed', 'false')
     expect(pane().getByText('Unsaved changes')).toBeInTheDocument()
     expect(screen.getByText('Lightning Bolt is played by hand.')).toBeInTheDocument()
+    expect(await within(deckLine('Lightning Bolt')).findByText(/owner chose to play it by hand/i)).toBeVisible()
+    expect(deckLine('Lightning Bolt')).toHaveAttribute('data-support', 'manual')
     await user.click(toggle('Lightning Bolt'))
     expect(toggle('Lightning Bolt')).toHaveAttribute('aria-pressed', 'false')
     expect(pane().queryByText('Unsaved changes')).toBeNull()
