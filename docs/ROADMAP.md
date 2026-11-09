@@ -64,8 +64,6 @@ The table and its prompts are live; the items below polish them.
 
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
-- [ ] (ts6c) The prompt corner badge ("At Ana") on a narrow compact face reads whole as a glyph, its words in the tooltip
-- [ ] (ui1i2) The effect moments attack, block, damage, life, enter, rival, activate, resolve, counter, land, draw and equip are still to be read by screenshot at the six design sizes (death, enter and draw read at 1024 and 390)
 - [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus
 - [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)
 - [ ] (eq1j) `gives` of an Aura on a player names the rules it gives outside keywords ("Enchanted player can't cast spells", skipped draws), which the layers do not record for players (`gives.rs`, `layers.rs` `PlayerHeld`)
@@ -117,7 +115,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (r4e1) Cleave: an alternative cost whose spell reads without the bracketed words (nine cards: Path of Peril, Dig Up, Lantern Flare ...); the spell ability and its targets differ by cast way
 - [ ] (r4e2) A static ability that gives replicate or emerge at its card's mana cost (Djinn Illuminatus, Hatchery Sliver, Ian Chesterton, Herigast): the optional costs and ways read the printed card, not the layered keywords
 - [ ] (fg5ka) `translate-forge`: the largest `key:` gaps left after `fg5k` and `en2`: `Discard.DiscardValid` (53; needs a card filter on `Effect::Discard`), `DealDamage.DamageMap` (44), `Attach.Object` (37), `Unless.UnlessCost` with X, `ChangeZone.Choose.DefinedPlayer` of each player, `Dig.ChangeNum` of X, `ChangeZone.LibraryPosition` (27; a search that leaves the cards in the library with `Shuffle$ False`, a counted or random position), `ChangeZone.WithCountersType` (11; a counted amount, keyword counters, and the Token, CopyPermanent and Replacement forms), `Dig.LibraryPosition` (4), `ChangeZone.Search.OriginAlternative` of the sideboard
-- [ ] (rt1p) The dev fixtures of the builder, lobby, precons and not-validated list show a deck on reads and one with drafts waiting, and the layout gate screenshots them in both themes at 390x844 and 1440x900 (`web/src/features/*/dev`, `web/e2e`; after rt1i)
 - [ ] (rt1n) A 4-seat bot game with 16 copies of Exotic Orchard takes 94 s for 2,635 answers (about 40 ms an answer, against 0.1 ms usual), so the smoke gate stops it at its 20 s limit; find the slow step of its mana ability and make it fast (`crates/mtg-engine` mana; no dependency)
 - [ ] Gate: every corpus card is Verified or played through manual clauses and actions that show each unread clause, and fuzz games with a deck from each cluster pass every invariant, and a four-seat Commander game plays from the lobby to a winner in the web
 
@@ -143,9 +140,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 ## M7 Product
 
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
-- [ ] (w2g) `precon-game.spec.ts --repeat-each=6` plays out every time; a two-seat table that casts no spell in nine turns keeps its trail for the cause
 - [ ] (f1c) The deck report carries the quoted span with each reason (`mtg-cards` `Reason`), so the not-validated list and the precon details read no card per flagged card from `GET /api/cards/{oracle_id}` (`docs/web.md`, the not-validated list)
-- [ ] (f1d) The builder links its check bar to `/decks/$deckId/unvalidated` (`docs/web.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch

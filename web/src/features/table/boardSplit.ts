@@ -49,22 +49,42 @@ export function sheetReserve(overhang: number): number {
 }
 
 /**
+ * What the opponents' row spends besides its lanes: the estimate of `boardFrames`, or more where their battlefields
+ * begin `head` px down the row (a pod line wrapped to several lines), with the zone's padding and the row's bottom gap.
+ */
+export function theirChromeOf(estimate: number, head: number): number {
+  const measured = finite(head) === 0 ? 0 : Math.ceil((finite(head) + 2 * ZONE_PAD_PX + ZONE_GAP_PX) / 8) * 8
+  return Math.max(finite(estimate), measured)
+}
+
+/** The least of the opponents' boards their row keeps below their pods, and a prompt sheet leaves off a phone: a row of their smallest cards. */
+export const BOARD_KEEP_PX = 64
+
+/**
  * `regions` with the board rows split for these boards (`splitBoards` over `boardFrames`); `reserve` px of the
  * opponents' row are kept for the prompt sheet (`sheetReserve`), so a two-line prompt shrinks both boards a little
- * instead of the opponents' a lot.
+ * instead of the opponents' a lot. Their battlefields begin `head` px down their row (`theirChromeOf`), and the sheet
+ * leaves them `BOARD_KEEP_PX` below that.
  */
-export function splitRegions(regions: Regions, seats: SeatPlan, counts: BoardCounts, reserve = 0): Regions {
+export function splitRegions(
+  regions: Regions,
+  seats: SeatPlan,
+  counts: BoardCounts,
+  reserve = 0,
+  head = 0,
+): Regions {
   const frames = boardFrames(regions, seats)
+  const theirChrome = theirChromeOf(frames.theirs.chrome, head)
   const split = splitBoards({
     room: regions.opponents + regions.own,
     ownChrome: frames.own.chrome,
-    theirChrome: frames.theirs.chrome + finite(reserve),
+    theirChrome: theirChrome + finite(reserve),
     ownWidth: frames.own.width,
     theirWidth: frames.theirs.width,
     own: counts.own,
     theirs: counts.theirs,
   })
-  return withSplit(regions, split)
+  return withSplit(regions, split, theirChrome + BOARD_KEEP_PX)
 }
 
 /** An opponent's cards are this share of yours: their board shrinks first. */
@@ -113,7 +133,8 @@ export function shareSplit(room: number): BoardSplit {
  * The largest card `w` of the ladder at which your lanes at `w` and every opponent's at `THEIR_SCALE` of it fit the
  * room together; the opponents' row gets what its lanes need and your row the rest, each at least `MIN_ROW_SHARE` of
  * the room. What is left lifts the opponents' cards further, up to `w`. Without a fit at the floor, or with no
- * permanent anywhere, the room splits by `OWN_SHARE`.
+ * permanent anywhere, the room splits by `OWN_SHARE`, the opponents' row keeping its chrome and `BOARD_KEEP_PX` (your
+ * row keeping `MIN_ROW_SHARE`).
  */
 export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS): BoardSplit {
   const room = finite(input.room)
@@ -127,7 +148,12 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
   const theirCard = (card: number): number => Math.floor(card * THEIR_SCALE)
   const fits = (rung: number): boolean => ownRow(at(rung)) + theirRow(theirCard(at(rung))) <= room
   const empty = laneHeight(input.ownWidth, input.own, at(0), limits) + theirNeed(theirCard(at(0)))
-  if (!fits(0) || empty === 0) return shareSplit(room)
+  if (!fits(0) || empty === 0) {
+    const share = shareSplit(room)
+    if (input.theirs.length === 0) return share
+    const floor = Math.min(room - least, finite(input.theirChrome) + BOARD_KEEP_PX)
+    return share.opponents >= floor ? share : { ...share, opponents: floor, own: room - floor }
+  }
   const card = at(highestRung(rungs, fits))
   const spare = room - ownRow(card)
   let theirs = theirCard(card)
@@ -158,12 +184,15 @@ export function boardFrames(regions: Regions, seats: SeatPlan): { own: BoardFram
   return { own, theirs: { width: regions.phone ? full : aside, chrome: pads + strip } }
 }
 
-/** `regions` with the rows of a split, and the sheet's most kept inside the opponents' row and the strip. */
-export function withSplit(regions: Regions, split: BoardSplit): Regions {
+/**
+ * `regions` with the rows of a split, and the sheet's most kept inside the opponents' row and the strip, leaving `keep`
+ * px of that row off a phone (`sheetMost`).
+ */
+export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Regions {
   return {
     ...regions,
     opponents: split.opponents,
     own: split.own,
-    sheet: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone),
+    sheet: sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone, keep),
   }
 }
