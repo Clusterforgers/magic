@@ -95,16 +95,25 @@ export function cardsProgress(asker: string, chosen: number, { lo, hi }: Bounds)
   return `${head} Press Confirm, or choose up to ${hi - chosen} more.`
 }
 
-/** Whether a card passes the filter: every word of it is in the card's name or type line. A card the view does not hold passes only an empty filter. */
-export function matchesFilter(object: ObjectView | undefined, filter: string): boolean {
+/**
+ * Whether a card passes the filter: every word of it, ignoring case, is in the card's name, type line or `rules` (its
+ * rules text, once read). A card the view does not hold passes only an empty filter.
+ */
+export function matchesFilter(object: ObjectView | undefined, filter: string, rules = ''): boolean {
   const words = filter
     .toLowerCase()
     .split(/\s+/u)
     .filter((word) => word !== '')
   if (words.length === 0) return true
   if (object === undefined) return false
-  const text = `${object.name} ${typeLine(object)}`.toLowerCase()
+  const text = `${object.name} ${typeLine(object)} ${rules}`.toLowerCase()
   return words.every((word) => text.includes(word))
+}
+
+/** The line beside a filter box: how many cards are in view of how many, and the chosen ones the filter hides. */
+export function filterCount(shown: number, total: number, hiddenChosen: number): string {
+  const count = `${shown} of ${total}`
+  return hiddenChosen === 0 ? count : `${count} · ${hiddenChosen} chosen out of view`
 }
 
 /** The title of an order of cards that came without words of its own. */
