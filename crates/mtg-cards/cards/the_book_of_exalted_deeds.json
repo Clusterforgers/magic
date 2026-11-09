@@ -1,0 +1,67 @@
+{
+  "oracle_id": "046add85-952f-46ac-974a-463d2a7d3fd4",
+  "name": "The Book of Exalted Deeds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Book of Exalted Deeds",
+      "oracle_fingerprint": "5cc52f49f42051025fd155a86a31d0ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{W}{W}" }, "Tap", "ExileSelf"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Angel" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "enlightened" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Rule": {
+                          "rule": { "CantLoseGame": { "who": "You", "opponents_cant_win": true } }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

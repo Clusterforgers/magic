@@ -27,10 +27,21 @@ pub(super) fn w2f_run(
     count: u32,
     up_to: bool,
 ) -> Result<Run, ResolveError> {
+    w2f_pick(cx, holders(cx, from)?, counter, count, up_to)
+}
+
+/// The same over holders already found.
+pub(super) fn w2f_pick(
+    cx: &Cx<'_>,
+    holders: Vec<Target>,
+    counter: Option<&CounterKind>,
+    count: u32,
+    up_to: bool,
+) -> Result<Run, ResolveError> {
     let mut answers = cx.journal().iter();
     let player = cx.scope.controller;
     let mut events = Vec::new();
-    for holder in holders(cx, from)? {
+    for holder in holders {
         let mut held: Vec<(CounterKind, u32)> = kinds_held(cx.state(), holder)
             .into_iter()
             .filter(|(kind, _)| counter.is_none_or(|wanted| wanted == kind))

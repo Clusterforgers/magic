@@ -16,6 +16,9 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         "SpellCastOrCopy" => cast_or_copy(ctx, p),
         "DiscardedAll" if p.get("FirstTime").is_some() => first_discards(ctx, p),
         "DiscardedAll" => discarded(ctx, p).map(|inner| batch(&inner)),
+        "Milled" => milled(ctx, p, false),
+        "MilledAll" => milled(ctx, p, false).map(|inner| batch(&inner)),
+        "MilledOnce" => milled(ctx, p, true).map(|inner| batch(&inner)),
         "LifeLostAll" => life_lost(p).map(|inner| batch(&inner)),
         "SacrificedOnce" => sacrificed(ctx, p).map(|inner| batch(&inner)),
         "DamageAll" => damage(ctx, p, "DamageAll").map(|inner| batch(&inner)),
@@ -28,6 +31,13 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         "Attached" => attached(ctx, p),
         "CounterAddedOnce" if p.has("ValidPlayer") && !p.has("ValidCard") => {
             player_counters(p).map(|inner| batch(&inner))
+        }
+        "CounterTypeAddedAll" => {
+            counters(ctx, &p.without(&["FirstTime"]), "CountersPut").and_then(|inner| {
+                // The engine counts the first counters put on an object in a turn as the event itself, not a batch.
+                let first = p.get("FirstTime") == Some("True");
+                super::triggers::first_time(p, if first { inner } else { batch(&inner) })
+            })
         }
         "CounterAddedOnce" | "CounterPlayerAddedAll" => {
             counters(ctx, p, "CountersPut").map(|inner| {
@@ -117,6 +127,18 @@ fn first_discards(ctx: &Ctx, p: &Params) -> Tr<Value> {
     let line = p.without(&["FirstTime"]);
     let inner = discarded(ctx, &line)?;
     super::triggers::first_time(p, batch(&inner))
+}
+
+/// Cards milled: `ValidPlayer` is whose library they come from; `MilledOnce` batches them for each player.
+fn milled(ctx: &Ctx, p: &Params, per_player: bool) -> Tr<Value> {
+    keys(p, "Milled", &["ValidCard", "ValidPlayer"])?;
+    let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
+    let by = player_ref(p.get("ValidPlayer"))?;
+    let mut pattern = json!({ "what": what, "by": by });
+    if per_player {
+        pattern["per_player"] = json!(true);
+    }
+    Ok(json!({ "Milled": pattern }))
 }
 
 fn life_lost(p: &Params) -> Tr<Value> {

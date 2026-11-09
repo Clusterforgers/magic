@@ -127,15 +127,20 @@ fn sacrifice_named(ctx: &mut Ctx, p: &Params, word: &str) -> Tr<Value> {
 /// sacrifices all the permanents they control that match, as a count the filter itself gives, which no hand of one
 /// player exceeds.
 fn sacrifice_group(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
-    if p.has("Controller") {
-        return unmapped("key:SacrificeAll.Controller");
-    }
+    // "That player sacrifices the rest": the player the trigger names sacrifices from their own permanents.
+    let named = match p.get("Controller") {
+        None => None,
+        Some(word @ "TriggeredPlayer") => Some(defined(ctx, word)?),
+        Some(_) => return unmapped("key:SacrificeAll.Controller"),
+    };
     let Some(valid) = p.get("ValidCards") else {
         return unmapped("key:SacrificeAll.no-ValidCards");
     };
     let filter = selector_any(ctx, valid)?;
     let controlled = |who: &str| filter.contains(&json!({"ControlledBy": who}));
-    let who = if controlled("You") {
+    let who = if let Some(player) = named {
+        player
+    } else if controlled("You") {
         json!("You")
     } else if controlled("Opponents") {
         json!("Opponents")

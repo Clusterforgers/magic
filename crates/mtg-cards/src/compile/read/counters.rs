@@ -279,10 +279,18 @@ pub fn remove(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// "Move a +1/+1 counter from target creature onto ~.", "Move a charge counter from ~ onto target
-/// artifact." One of the two is the card itself.
+/// artifact.", "Move a counter from target permanent you control onto a second target permanent.", "Move all counters
+/// from ~ onto target creature." One of the two is the card itself or a second target.
 pub fn moving(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("move")?;
-    let (counter, number) = counters(r)?;
+    // Counters of any kind: one the controller picks, or every one there is.
+    let all = r.words("all counters");
+    let (counter, number) = if all || r.words("a counter") {
+        (None, 1)
+    } else {
+        let (counter, number) = counters(r)?;
+        (Some(counter), number)
+    };
     r.need("from")?;
     let from = place(r)?;
     r.need("onto")?;
@@ -297,12 +305,32 @@ pub fn moving(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         place(r)?
     };
     (from != to).then_some(())?;
+    let count = if all {
+        Amount::AnyCounters(from.clone())
+    } else {
+        Amount::Fixed(i32::try_from(number).ok()?)
+    };
     Some(vec![Effect::MoveCounters {
         from,
         to,
         counter,
-        count: Amount::Fixed(i32::try_from(number).ok()?),
+        count,
     }])
+}
+
+/// The counters a move names: "a +1/+1 counter", "two charge counters", "a counter" of any kind or, with the count of
+/// every counter where they leave, "all counters".
+pub(super) fn ep21_move_text(
+    counter: Option<&CounterKind>,
+    count: &Amount,
+    from: &Ref,
+) -> Option<String> {
+    match counter {
+        Some(counter) => text(counter, count),
+        None if *count == Amount::one() => Some("a counter".to_owned()),
+        None if *count == Amount::AnyCounters(from.clone()) => Some("all counters".to_owned()),
+        None => None,
+    }
 }
 
 /// "Double the number of +1/+1 counters on ~.", "Triple the number of each kind of counter on target creature.", "Double

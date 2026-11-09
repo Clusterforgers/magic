@@ -349,7 +349,19 @@ describe('the panel', () => {
     const slot = must(panel('Cy').querySelector<HTMLElement>('[data-slot="mana-slot"]'))
     expect(slot).toHaveClass('min-h-5')
     expect(slot).toBeEmptyDOMElement()
-    expect(slot.previousElementSibling).toBe(panel('Cy').querySelector('h3')?.parentElement)
+    // The slot heads the block under the name row, which holds the name and then the life.
+    const header = must(panel('Cy').querySelector('header'))
+    expect(slot.previousElementSibling).toBeNull()
+    expect(slot.parentElement).toBe(header.lastElementChild)
+  })
+
+  it('keeps the life on the name row, beside the name that truncates', () => {
+    show(0)
+    const header = must(panel('Alice (you)').querySelector('header'))
+    expect(header).toHaveClass('grid-cols-[minmax(0,1fr)_auto]')
+    const [name, life] = [...header.children]
+    expect(name?.querySelector('h3')).toHaveClass('truncate')
+    expect(life?.querySelector('[data-slot="life"]')).not.toBeNull()
   })
 
   it('is one column that may shrink, so a long commander chip is cut inside the pod and life stays in its column', () => {

@@ -122,21 +122,49 @@ fn another_permanent_may_say_other_than_this(#[case] other: &str, #[case] reads:
     assert_eq!(written(&json, YOMIJI), reads);
 }
 
-fn life_lost(who: &str, number: u32) -> String {
+fn life_lost(what: &str, who: &str, number: u32) -> String {
     format!(
-        r#"{{"Triggered":{{"effects":[{{"Draw":{{}}}}],"if":{{"Compare":{{"left":{{"Tallied":{{"what":"LifeLost","who":"{who}"}}}},"op":"Ge","right":{number}}}}},"when":{{"ZoneChange":{{"to":"Battlefield","what":["This"]}}}}}}}}"#
+        r#"{{"Triggered":{{"effects":[{{"Draw":{{}}}}],"if":{{"Compare":{{"left":{{"Tallied":{{"what":"{what}","who":"{who}"}}}},"op":"Ge","right":{number}}}}},"when":{{"ZoneChange":{{"to":"Battlefield","what":["This"]}}}}}}}}"#
     )
 }
 
 #[rstest]
-#[case::an_opponent("Opponents", 1, true)]
-#[case::two_life("Opponents", 2, false)]
-#[case::you("You", 1, false)]
-fn an_opponent_lost_life(#[case] who: &str, #[case] number: u32, #[case] reads: bool) {
+#[case::an_opponent("LifeLost", "Opponents", 1, true)]
+#[case::the_most_of_one("LifeLostMost", "Opponents", 1, true)]
+#[case::two_life("LifeLost", "Opponents", 2, false)]
+#[case::two_life_of_one("LifeLostMost", "Opponents", 2, false)]
+#[case::you("LifeLost", "You", 1, false)]
+fn an_opponent_lost_life(
+    #[case] what: &str,
+    #[case] who: &str,
+    #[case] number: u32,
+    #[case] reads: bool,
+) {
     assert_eq!(
         written(
-            &life_lost(who, number),
+            &life_lost(what, who, number),
             "When ~ enters, if an opponent lost life this turn, draw a card."
+        ),
+        reads
+    );
+}
+
+/// "An opponent lost 3 or more life" is one opponent's loss: the sum over the opponents reads `Differs`.
+#[rstest]
+#[case::one_opponent("LifeLostMost", "Opponents", 3, true)]
+#[case::the_sum("LifeLost", "Opponents", 3, false)]
+#[case::another_number("LifeLostMost", "Opponents", 2, false)]
+#[case::every_player("LifeLostMost", "EachPlayer", 3, false)]
+fn an_opponent_lost_three_life(
+    #[case] what: &str,
+    #[case] who: &str,
+    #[case] number: u32,
+    #[case] reads: bool,
+) {
+    assert_eq!(
+        written(
+            &life_lost(what, who, number),
+            "When ~ enters, if an opponent lost 3 or more life this turn, draw a card."
         ),
         reads
     );

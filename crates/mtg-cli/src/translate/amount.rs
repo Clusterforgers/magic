@@ -120,6 +120,9 @@ pub fn amount(ctx: &Ctx, text: &str) -> Tr<Value> {
     {
         return Ok(json!({ "Bound": bound }));
     }
+    if text == "Wins" && ctx.flip_win {
+        return Ok(json!(1));
+    }
     if ctx.die_result.as_deref() == Some(text) {
         return Ok(json!({"DieResult": "Only"}));
     }
@@ -281,8 +284,12 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
         }
         "TriggerObjectsAttackers" | "TriggeredDefendingPlayer" => return attacks(ctx, head, what),
         "DungeonsCompleted" => return super::amount_more::dungeons(what).map(Some),
-        "PlayerCountOpponents" | "PlayerCountRegisteredOpponents" | "PlayerCountPlayers" => {
-            let who = if head == "PlayerCountPlayers" {
+        "PlayerCountOpponents"
+        | "PlayerCountRegisteredOpponents"
+        | "PlayerCountPlayers"
+        // The players registered in the game: every player.
+        | "PlayerCountDefinedRegistered" => {
+            let who = if matches!(head, "PlayerCountPlayers" | "PlayerCountDefinedRegistered") {
                 "EachPlayer"
             } else {
                 "Opponents"
@@ -293,12 +300,19 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
                     json!({"Tally": {"event": "Attacked", "who": who, "filter": []}}),
                 ));
             }
+            // "The total number of rad counters among players": the counters of the kind on the players added up.
+            if let Some(kind) = what.strip_prefix("Counters.") {
+                let Some(counter) = counter_kind(kind) else {
+                    return unmapped(format!("amount:{head}$Counters.{kind}"));
+                };
+                return Ok(Some(json!({"Counters": {"on": who, "counter": counter}})));
+            }
             // The cards in all their hands together.
             if what == "CardsInHand" {
                 return Ok(Some(json!({"Count": [{"In": "Hand"}, {"OwnedBy": who}]})));
             }
             let tally = match what {
-                "HighestLifeLostThisTurn" => Some("LifeLost"),
+                "HighestLifeLostThisTurn" => Some("LifeLostMost"),
                 "HighestCardsDrawn" => Some("Drawn"),
                 "LifeGainedThisTurn" => Some("LifeGainedTotal"),
                 "CardsDiscardedThisTurn" if who == "EachPlayer" => Some("Discarded"),
@@ -450,6 +464,10 @@ fn attacks(ctx: &Ctx, head: &str, what: &str) -> Tr<Option<Value>> {
         .is_some_and(|shape| matches!(shape.pattern.as_str(), "GroupAttacks" | "GroupAttacksAt"));
     match (group, what) {
         (true, "Amount") => Ok(Some(json!("Triggering"))),
+        // The attackers are the subjects of the group event.
+        (true, "GreatestCardPower") => Ok(Some(
+            json!({"Greatest": {"of": [{"Is": "Triggering"}], "stat": "Power"}}),
+        )),
         (true, _) => unmapped(format!("amount:{head}${what}")),
         (false, _) => unmapped(format!("amount:{head}-outside-a-group")),
     }
@@ -599,6 +617,8 @@ fn count_base(ctx: &Ctx, base: &str) -> Tr<Value> {
         },
         "CardPower" => Ok(stat_of_this("Power")),
         "CardToughness" => Ok(stat_of_this("Toughness")),
+        "CardBasePower" => Ok(stat_of_this("BasePower")),
+        "CardBaseToughness" => Ok(stat_of_this("BaseToughness")),
         "CardManaCost" => Ok(stat_of_this("ManaValue")),
         "YourLifeTotal" => Ok(json!({"Life": "You"})),
         "LifeYouGainedThisTurn" => Ok(tallied("You", "LifeGainedTotal")),

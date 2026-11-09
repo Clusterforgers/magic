@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2daa5b89-e772-4a2b-ad52-bbbf148c7b2f",
+  "name": "Mutational Advantage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mutational Advantage",
+      "oracle_fingerprint": "9cd4c01eaffa699bf405ed52f18b109c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "You" }, "HasAnyCounter"] },
+                  "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Each": [{ "ControlledBy": "You" }, "HasAnyCounter"] } }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Proliferate": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

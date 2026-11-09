@@ -58,7 +58,8 @@ export function ForecastMarks({ outlook, tapped, compact }: ForecastMarksProps) 
           </svg>
         </span>
       ) : null}
-      <span className="absolute top-0.5 right-0.5 flex items-center gap-0.5">
+      {/* On a card too narrow for both badges the damage wraps under the skull instead of leaving the card. */}
+      <span className="absolute inset-x-0.5 top-0.5 flex flex-wrap items-center justify-end gap-0.5">
         {dies ? (
           <span
             data-slot="forecast-doomed"

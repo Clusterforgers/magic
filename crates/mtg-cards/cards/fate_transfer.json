@@ -1,0 +1,30 @@
+{
+  "oracle_id": "7a07451f-70b3-4bfd-af54-6b4182369652",
+  "name": "Fate Transfer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fate Transfer",
+      "oracle_fingerprint": "f0bfa438a79ed364674b1eaa6a06beb1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "MoveCounters": {
+                  "from": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "count": { "AnyCounters": { "Target": 0 } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

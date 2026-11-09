@@ -227,6 +227,8 @@ pub fn argument(ctx: &Ctx, prop: &str) -> Tr<Option<Vec<Value>>> {
             });
             one(json!({"AnyOf": each.collect::<Vec<_>>()}))
         }
+        // The object dealt combat damage to the player this turn.
+        "dealtCombatDamageThisTurn" if arg == "You" => one(did("Damaged", Some("You"), true)),
         // This attachment sits on one of the objects the word names.
         "AttachedTo" => one(json!({"AttachedTo": objects_of(ctx, arg)?})),
         // The object has an attachment that matches: the opposite direction of `AttachedTo`.
@@ -314,6 +316,8 @@ pub fn extreme(ctx: &Ctx, prop: &str, group: &[Value]) -> Tr<Option<Vec<Value>>>
             .strip_prefix("ControlledBy")
             .and_then(|word| match word {
                 "Opponent" => Some(json!("Opponents")),
+                // "Creature.greatestPowerControlledByTargeted": the targeted player.
+                "Targeted" => ctx.player_target().ok(),
                 // The player of the pass the line is in ("each opponent sacrifices a creature with the greatest power").
                 "Remembered" => ctx
                     .player_loop

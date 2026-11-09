@@ -1,0 +1,86 @@
+{
+  "oracle_id": "fbdffef0-9119-4650-9f92-58e8a664db6f",
+  "name": "Goblin Traprunner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Traprunner",
+      "oracle_fingerprint": "b73bd99a0a16f48ba35fa8105fd1b028",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Goblin",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Goblin"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "tapped": true,
+                        "attacking": true
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Goblin",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Goblin"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "tapped": true,
+                        "attacking": true
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Goblin",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Goblin"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "tapped": true,
+                        "attacking": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

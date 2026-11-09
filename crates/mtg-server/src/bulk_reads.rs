@@ -10,7 +10,7 @@ use axum::extract::{Request, State};
 use axum::http::HeaderMap;
 use mtg_cards::ReadState;
 use mtg_cards::wording::{ClauseMatch, Rule, bulk_candidate};
-use mtg_db::{DraftKey, Verdict};
+use mtg_db::{Card, DraftKey, Verdict};
 use mtg_import::ids::OracleId;
 use mtg_protocol::rest::{
     BulkApprovalBody, BulkApprovalResult, BulkCard, BulkClause, BulkReads, BulkRule,
@@ -19,7 +19,7 @@ use mtg_protocol::rest::{
 
 use crate::api::{ApiError, read_json_limited};
 use crate::card_api::failed;
-use crate::cards::printed_card;
+use crate::cards::{Rules, printed_card};
 use crate::reads::{Session, card_draft, session};
 use crate::server::AppState;
 
@@ -106,32 +106,41 @@ impl Session<'_> {
             .get_many(&ids)
             .await
             .map_err(|error| failed(&error))?;
-        let mut cards = Vec::new();
-        for card in &stored {
-            let Some(current) = card_draft(&rules, card) else {
-                continue;
-            };
-            if current.state != ReadState::Pending || !waiting.contains(&current.read_hash) {
-                continue;
-            }
-            let Some(draft) = rules.library().draft(card.oracle_id.as_str()) else {
-                continue;
-            };
-            let found = matched(&current.read_hash, || {
-                bulk_candidate(&draft.differs(&printed_card(card)))
-            });
-            if let Some(clauses) = found {
-                cards.push(wire_card(
-                    card.oracle_id.as_str(),
-                    &card.name,
-                    &current.read_hash,
-                    &clauses,
-                ));
-            }
-        }
-        cards.sort_by(|a, b| a.name.cmp(&b.name).then(a.oracle_id.cmp(&b.oracle_id)));
-        Ok(cards)
+        // Reading back every draft takes seconds to minutes; it runs on the blocking pool so requests and
+        // `/healthz` keep answering.
+        tokio::task::spawn_blocking(move || judge(&rules, &stored, &waiting))
+            .await
+            .map_err(|error| failed(&error))
     }
+}
+
+/// The candidates among `stored`: pending on a hash in `waiting`, every differing clause matched; by name.
+fn judge(rules: &Rules, stored: &[Card], waiting: &HashSet<String>) -> Vec<BulkCard> {
+    let mut cards = Vec::new();
+    for card in stored {
+        let Some(current) = card_draft(rules, card) else {
+            continue;
+        };
+        if current.state != ReadState::Pending || !waiting.contains(&current.read_hash) {
+            continue;
+        }
+        let Some(draft) = rules.library().draft(card.oracle_id.as_str()) else {
+            continue;
+        };
+        let found = matched(&current.read_hash, || {
+            bulk_candidate(&draft.differs(&printed_card(card)))
+        });
+        if let Some(clauses) = found {
+            cards.push(wire_card(
+                card.oracle_id.as_str(),
+                &card.name,
+                &current.read_hash,
+                &clauses,
+            ));
+        }
+    }
+    cards.sort_by(|a, b| a.name.cmp(&b.name).then(a.oracle_id.cmp(&b.oracle_id)));
+    cards
 }
 
 /// The rules the listed cards need, in their fixed order.

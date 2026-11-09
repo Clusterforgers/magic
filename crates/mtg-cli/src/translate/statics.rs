@@ -826,9 +826,16 @@ fn restriction(ctx: &Ctx, p: &Params, modifications: &[&str]) -> Tr<Value> {
 /// `CantBlockBy`: the attacker named by `ValidAttacker$` is not blocked by the blockers of `ValidBlocker$`, or a blocker
 /// that is the card itself blocks only attackers that are not excluded.
 fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "CantBlockBy", &["ValidAttacker", "ValidBlocker"])?;
+    keys(
+        p,
+        "CantBlockBy",
+        &["ValidAttacker", "ValidBlocker", "ValidDefender"],
+    )?;
     let attacker = p.get("ValidAttacker").unwrap_or_default();
     let blocker = p.get("ValidBlocker");
+    if let Some(defender) = p.get("ValidDefender") {
+        return defender_counters(attacker, blocker, defender);
+    }
     match (attacker, blocker) {
         ("Creature.Self" | "Card.Self", None) => {
             Ok(json!({"Static": {"affected": "This", "mods": ["CantBeBlocked"]}}))
@@ -882,6 +889,30 @@ fn cant_block_by(ctx: &Ctx, p: &Params) -> Tr<Value> {
             "mods": [{"CantBeBlockedBy": selector_any(ctx, blockers)?}],
         }})),
     }
+}
+
+/// `ValidDefender$ Player.Condition Counters.RAD`: the card can't be blocked while the defending player has a counter of
+/// that kind; any other defender filter would be lost.
+fn defender_counters(attacker: &str, blocker: Option<&str>, defender: &str) -> Tr<Value> {
+    let kind = defender
+        .strip_prefix("Player.Condition Counters.")
+        .and_then(super::amount::counter_kind);
+    let (true, true, Some(kind)) = (
+        matches!(attacker, "Creature.Self" | "Card.Self"),
+        blocker.is_none(),
+        kind,
+    ) else {
+        return unmapped("key:Static.CantBlockBy.ValidDefender");
+    };
+    Ok(json!({"Static": {
+        "affected": "This",
+        "mods": ["CantBeBlocked"],
+        "condition": {"Compare": {
+            "left": {"Counters": {"on": "Defending", "counter": kind}},
+            "op": "Ge",
+            "right": 1,
+        }},
+    }}))
 }
 
 /// `MustAttack` and `MustBlock`: the creatures `ValidCreature$` names attack or block each combat if able.

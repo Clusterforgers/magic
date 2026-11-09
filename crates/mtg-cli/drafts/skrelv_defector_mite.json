@@ -1,0 +1,45 @@
+{
+  "oracle_id": "20053847-6623-493c-8cdb-a69cda3b1577",
+  "name": "Skrelv, Defector Mite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skrelv, Defector Mite",
+      "oracle_fingerprint": "41b1b176260db2489d3a2fd00d9812bd",
+      "abilities": [
+        { "Keyword": { "Toxic": 1 } },
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W/P}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": { "HexproofFrom": [{ "ChosenAs": "chosen" }] } },
+                    { "AddKeyword": { "Toxic": 1 } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "CantBeBlockedBy": [{ "Type": "Creature" }, { "ChosenAs": "chosen" }] }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

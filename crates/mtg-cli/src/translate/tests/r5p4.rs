@@ -85,6 +85,7 @@ fn a_doubled_pump_of_several_objects_stays_a_gap() {
 #[case::opponents("PlayerCountRegisteredOpponents", "Opponents")]
 #[case::opponents_plain("PlayerCountOpponents", "Opponents")]
 #[case::everyone("PlayerCountPlayers", "EachPlayer")]
+#[case::registered("PlayerCountDefinedRegistered", "EachPlayer")]
 fn the_most_life_lost_this_turn_reads_the_turn_tally(#[case] head: &str, #[case] who: &str) {
     let script = format!(
         "Name:S\nTypes:Sorcery\nA:SP$ Draw | NumCards$ X\nSVar:X:{head}$HighestLifeLostThisTurn\n"
@@ -92,7 +93,19 @@ fn the_most_life_lost_this_turn_reads_the_turn_tally(#[case] head: &str, #[case]
     let found = abilities(&script);
     assert_eq!(
         found[0]["Spell"]["effects"][0]["Draw"]["count"],
-        json!({"Tallied": {"who": who, "what": "LifeLost"}})
+        json!({"Tallied": {"who": who, "what": "LifeLostMost"}})
+    );
+}
+
+#[rstest]
+#[case::everyone("PlayerCountPlayers", "EachPlayer")]
+#[case::opponents("PlayerCountOpponents", "Opponents")]
+fn the_counters_of_a_kind_among_players_are_added_up(#[case] head: &str, #[case] who: &str) {
+    let script =
+        format!("Name:S\nTypes:Sorcery\nA:SP$ Draw | NumCards$ X\nSVar:X:{head}$Counters.RAD\n");
+    assert_eq!(
+        abilities(&script)[0]["Spell"]["effects"][0]["Draw"]["count"],
+        json!({"Counters": {"on": who, "counter": {"Other": "rad"}}})
     );
 }
 

@@ -280,6 +280,8 @@ mod enchanted_player;
 mod entered_this_turn;
 mod enters;
 mod enters_tapped;
+mod ep21_move_any;
+mod ep21_plus;
 mod evasion;
 mod event_batches;
 mod events;

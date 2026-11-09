@@ -467,6 +467,9 @@ pub fn keyword_ability(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         ["ETBReplacement", "Other", name, "Mandatory", zone, valid] if !valid.contains("Self") => {
             return extra::others(ctx, name, zone, valid);
         }
+        ["ETBReplacement", "Other", name, "Optional"] => {
+            return super::enters_with::tapped_for_rad(ctx, name);
+        }
         ["ETBReplacement", "Copy", name, "Optional"] => {
             super::effects_copy::enters_as_copy(ctx, name)?
         }
@@ -626,7 +629,7 @@ fn etb_condition(ctx: &Ctx, field: Option<&str>) -> Tr<Option<Value>> {
         return Ok(None);
     };
     match field {
-        "no Condition" => return Ok(None),
+        "no Condition" | "" => return Ok(None),
         "CheckSVar$ WasKicked" => return Ok(Some(json!("Kicked"))),
         "ValidCard$ Card.Self+escaped" => return Ok(Some(json!({"CastWith": "Escape"}))),
         "Revolt$ True" => return Ok(Some(super::condition::revolt())),

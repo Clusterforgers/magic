@@ -39,13 +39,14 @@ export const TEXT_FLOOR = 12
 
 /**
  * What the table scrolls or clips on purpose: the art of a card is a picture of a card, and the strip of opponents, the
- * chips of the stack and the hand scroll inside their own box where the width is short (docs/ui-design.md, Table
+ * chips of the stack, a line of the payment and the hand scroll inside their own box where the width is short (docs/ui-design.md, Table
  * layout).
  */
 export const TABLE_EXEMPT = [
   '[data-slot="card-face"]',
   '[data-slot="tile-strip"]',
   '[data-slot="stack-chips"] ol',
+  '[data-slot="payment"] [data-line]',
   '[data-slot="hand-fan"]',
 ]
 

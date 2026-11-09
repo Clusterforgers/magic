@@ -520,6 +520,10 @@ pub fn named(name: &str) -> Tr<Value> {
         "NoOpponentHasMoreLifeThanAttacked" => {
             json!({"Compare": {"left": {"Life": "Against"}, "op": "Ge", "right": {"HighestLife": "Opponents"}}})
         }
+        // "If it's attacking the player with the most life or tied for most life": no player has more life than the attacked one.
+        "AttackedPlayerWithMostLife" => {
+            json!({"Compare": {"left": {"Life": "Against"}, "op": "Ge", "right": {"HighestLife": "EachPlayer"}}})
+        }
         // Fateful hour: you have 5 or less life.
         "FatefulHour" => json!({"Compare": {"left": {"Life": "You"}, "op": "Le", "right": 5}}),
         "Metalcraft" => {

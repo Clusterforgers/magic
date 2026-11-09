@@ -1,0 +1,99 @@
+{
+  "oracle_id": "984adc49-421b-488f-b316-ed7323c5735b",
+  "name": "Captain Rex Nebula",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain Rex Nebula",
+      "oracle_fingerprint": "b7c695826f59e9c99c20e750448eb99f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                        "toughness": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                      }
+                    },
+                    { "SetCreatureTypes": ["Vehicle"] },
+                    { "SetTypes": ["Artifact"] },
+                    { "AddKeyword": { "Crew": 2 } },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+                          "targets": [{ "what": "AnyTarget" }],
+                          "effects": [
+                            {
+                              "RollDice": {
+                                "sides": 6,
+                                "results": [
+                                  {
+                                    "from": 1,
+                                    "effects": [
+                                      {
+                                        "If": {
+                                          "condition": {
+                                            "Compare": {
+                                              "left": { "DieResult": "Only" },
+                                              "op": "Eq",
+                                              "right": {
+                                                "Stat": { "of": "This", "stat": "ManaValue" }
+                                              }
+                                            }
+                                          },
+                                          "then": [{ "Sacrifice": { "filter": ["This"] } }]
+                                        }
+                                      },
+                                      {
+                                        "If": {
+                                          "condition": {
+                                            "Compare": {
+                                              "left": { "DieResult": "Only" },
+                                              "op": "Eq",
+                                              "right": {
+                                                "Stat": { "of": "This", "stat": "ManaValue" }
+                                              }
+                                            }
+                                          },
+                                          "then": [
+                                            {
+                                              "DealDamage": {
+                                                "to": { "Target": 0 },
+                                                "amount": {
+                                                  "Stat": { "of": "This", "stat": "ManaValue" }
+                                                }
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
