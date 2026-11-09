@@ -259,7 +259,11 @@ export function TextFace({
         data-slot="card-art"
         className={cn(
           'mx-1 my-0.5 flex min-h-0 flex-1 flex-wrap content-start gap-0.5 overflow-hidden rounded-sm p-0.5',
-          turned && size === 'compact' && 'my-px p-px',
+          // A compact turned face has a few px of art: its marks are 12 px high, and drop out (their words stay in the
+          // card's name) where even that row does not fit, rather than show cut in half.
+          turned &&
+            size === 'compact' &&
+            'my-0 p-0 [container-type:size] [&>[data-glyph]]:h-3 *:[@container(max-height:11.5px)]:hidden',
           // Glyph marks (`narrowMarks`) that never shrink: a word cut to a stub would not read.
           narrow && 'items-start *:shrink-0',
           dark ? 'bg-black/25' : 'bg-foreground/5',
@@ -438,7 +442,14 @@ export function TextFace({
       ) : null}
       {pt === null && stat === null ? (
         // The mana strip lies over the bottom left of the face, so the type line moves up clear of it.
-        <span data-slot="card-foot" className="h-1 shrink-0 group-has-[[data-slot=mana-strip]]/card:h-5" />
+        <span
+          data-slot="card-foot"
+          className={cn(
+            'h-1 shrink-0 group-has-[[data-slot=mana-strip]]/card:h-5',
+            // Two px more for the marks row of a compact turned face, so a tapped land's mark fits whole.
+            turned && size === 'compact' && 'h-0.5',
+          )}
+        />
       ) : (
         <span
           data-slot={pt === null && stat !== null ? `card-${stat.kind}` : undefined}
