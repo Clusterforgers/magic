@@ -15,6 +15,8 @@ export const TABLE_FROM = '(min-width: 64rem)'
 /** What both layouts need to draw the rows. */
 export interface RowsProps {
   rows: readonly PreconListItem[]
+  /** The name of the list, which says its order ("Precons, newest release first"). */
+  label: string
   /** Opens the details of a precon; `opener` is the button that asked. */
   onDetails(precon: PreconListItem, opener: HTMLElement): void
   /** Starts a game with a precon; `opener` is the button that asked. */
@@ -105,7 +107,7 @@ const CELL = 'border-b px-4 py-3 align-middle text-sm'
 function PreconTable(props: RowsProps) {
   return (
     <table className="w-full border-separate border-spacing-0 text-left">
-      <caption className="sr-only">Precons, newest release first</caption>
+      <caption className="sr-only">{props.label}</caption>
       <thead>
         <tr>
           <th scope="col" className={HEAD}>
@@ -163,7 +165,7 @@ function PreconTable(props: RowsProps) {
 /** Under the L breakpoint: one stacked row a precon, its buttons under the words. */
 function PreconList(props: RowsProps) {
   return (
-    <ul aria-label="Precons, newest release first" className="grid">
+    <ul aria-label={props.label} className="grid">
       {props.rows.map((precon) => (
         <li
           key={precon.code}

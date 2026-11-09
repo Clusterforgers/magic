@@ -145,7 +145,9 @@ export function DeckChooser({
     choice,
     selectedId: selected?.id ?? null,
     pictures: (id: string) => details.known(id)?.commanders ?? [],
-    sort,
+    // A guest has no stars, so a kept "Favorites first" lists in the default order.
+    sort: sort === 'favorites' && !signedIn ? 'default' : sort,
+    favoritesSort: signedIn,
     onSort: setSort,
     onSelect: select,
     onClear: clear,
