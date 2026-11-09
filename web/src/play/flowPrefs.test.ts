@@ -1,10 +1,11 @@
-// Goal: the saved pace preferences (default stops, end turn by hand, auto choices, kept yields) survive in storage, keep only pinned stops, and reach the server at Welcome: the default stops once per game and only to a seat with none, the end-turn choice whenever the server holds the other one.
+// Goal: the saved pace preferences (default stops, end turn by hand, auto choices, kept yields) survive in storage, start with the own declare attackers and postcombat main pinned, keep a cleared list cleared and only pinned stops, and reach the server at Welcome: the default stops once per game and only to a seat with none, the end-turn choice whenever the server holds the other one.
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Stop, StopSide } from '@/protocol/generated'
 import { startSession } from '@/test-utils/harness'
 import {
   APPLIED_LIMIT,
   AUTO_YIELDS_KEY,
+  DEFAULT_STOPS,
   DEFAULT_STOPS_KEY,
   flowPrefs,
   resetDefaultStops,
@@ -36,8 +37,23 @@ describe('default stops', () => {
     },
   )
 
-  it('starts with none, resets to none, and ignores stored junk', () => {
+  it('starts with the own declare attackers and postcombat main pinned, and keeps a cleared list cleared', () => {
+    expect(flowPrefs().defaultStops).toEqual([pinned('Own', 'DeclareAttackers'), pinned('Own', 'Main2')])
+    expect(flowPrefs().defaultStops).toEqual(DEFAULT_STOPS)
+    resetDefaultStops()
+    resetFlowPrefs()
     expect(flowPrefs().defaultStops).toEqual([])
+  })
+
+  it('a fresh table gets the pinned defaults at its first Welcome', () => {
+    const requests = welcomeRequests({ game: 'fresh', stops: [], endTurnByHand: false, autoChoices: OFF })
+    expect(requests).toEqual([
+      { type: 'SetStop', side: 'Own', step: 'DeclareAttackers', on: true, keep: true },
+      { type: 'SetStop', side: 'Own', step: 'Main2', on: true, keep: true },
+    ])
+  })
+
+  it('resets to none, and ignores stored junk', () => {
     saveDefaultStops([pinned('Own', 'End')])
     resetDefaultStops()
     resetFlowPrefs()

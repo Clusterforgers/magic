@@ -15,7 +15,7 @@ use mtg_core::mana::ManaType;
 use rstest::rstest;
 
 use super::detect;
-use crate::choose::Target;
+use crate::choose::{CoinSide, Target};
 use crate::combat::{AttackTarget, DamageTarget};
 use crate::counters::CountersChanged;
 use crate::events::Event;
@@ -426,7 +426,19 @@ fn c8_vote_a_won_flip_triggers_for_the_players_the_pattern_names(
     #[case] expected: usize,
 ) {
     let pre = board(when);
-    let found = fires(&pre, &[Event::CoinFlipped { player, won }]);
+    let found = fires(
+        &pre,
+        &[Event::CoinFlipped {
+            player,
+            won,
+            call: CoinSide::Heads,
+            side: if won {
+                CoinSide::Heads
+            } else {
+                CoinSide::Tails
+            },
+        }],
+    );
     assert_eq!(found.len(), expected);
     if expected == 1 {
         assert_eq!(found[0].cause.subjects, vec![Target::Player(player)]);

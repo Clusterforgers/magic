@@ -1,3 +1,4 @@
+import { Coins } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -85,6 +86,7 @@ export const ChooseOptionPrompt: PromptComponent<'ChooseOption'> = ({ options })
               onClick={choose(index)}
             >
               {'Color' in option ? <ManaDot type={option.Color} /> : null}
+              {'Side' in option ? <Coins aria-hidden="true" /> : null}
               {label}
               {key === undefined ? null : <KeyHint>{key}</KeyHint>}
             </Button>

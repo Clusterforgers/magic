@@ -1,7 +1,7 @@
 // Goal: the Full Control menu ends with the pace settings: "End my turn by hand" shows what the server holds and asks for the other value, the auto choices show what the server holds and ask for the one toggled, the abilities the seat always yields to are listed and a click takes one back, and the pinned stops are saved as the default of new games or reset, with the count in words.
 import { screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { flowPrefs, resetFlowPrefs, saveDefaultStops } from '@/play/flowPrefs'
+import { flowPrefs, resetDefaultStops, resetFlowPrefs, saveDefaultStops } from '@/play/flowPrefs'
 import type { PlayState } from '@/play/store'
 import type { AutoChoices, AutoYield, Stop } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
@@ -101,7 +101,14 @@ describe('always yielding to', () => {
 })
 
 describe('default stops', () => {
+  it('says the two pinned by default for a viewer who saved none', async () => {
+    const { user } = renderTable({ state: withState({ stops: [] }) })
+    await user.click(trigger())
+    expect(await screen.findByText('Default: 2 pinned stops')).toBeInTheDocument()
+  })
+
   it('saves the pinned stops only, and says how many are saved', async () => {
+    resetDefaultStops()
     const { user } = renderTable({ state: withState({ stops: [pinned, oneTurn] }) })
     await user.click(trigger())
     expect(await screen.findByText('No default stops')).toBeInTheDocument()
@@ -115,6 +122,7 @@ describe('default stops', () => {
     ['no pinned stop to save', [oneTurn], 'Save pinned stops as default'],
     ['no default to reset', [pinned], 'Reset default stops'],
   ] as const)('is disabled with %s', async (_, stops, name) => {
+    resetDefaultStops()
     const { user } = renderTable({ state: withState({ stops: [...stops] }) })
     await user.click(trigger())
     expect(await screen.findByRole('menuitem', { name })).toHaveAttribute('aria-disabled', 'true')

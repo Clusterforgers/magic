@@ -26,6 +26,19 @@ pub enum ChoiceOption {
     Label(String),
     /// A name voted for face down: the answer is not shown to the other seats until the vote is done.
     Secret(String),
+    /// A side of a coin, called before the flip (CR 705.1).
+    Side(CoinSide),
+}
+
+/// A side of a coin: what a player calls and what a flip comes up.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum CoinSide {
+    /// Heads.
+    #[default]
+    Heads,
+    /// Tails.
+    Tails,
 }
 
 /// The things a player may choose between.

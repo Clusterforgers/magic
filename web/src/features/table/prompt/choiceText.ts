@@ -58,6 +58,7 @@ export function optionLabel(
     return option.Player === viewer ? `${name} (you)` : name
   }
   if ('Color' in option) return option.Color
+  if ('Side' in option) return option.Side
   return 'Secret' in option ? option.Secret : option.Label
 }
 

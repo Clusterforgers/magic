@@ -14,6 +14,7 @@ const STATES = `${DEV_WEB_URL}/dev/table?states=1&turn=you&prompt=priority&hand=
 interface Stop {
   region: string
   slot: string
+  seat: string
   name: string
 }
 
@@ -21,12 +22,14 @@ interface Stop {
 const focused = (page: Page): Promise<Stop> =>
   page.evaluate(() => {
     const el = document.activeElement
-    if (el === null || el === document.body) return { region: 'body', slot: '', name: '' }
+    if (el === null || el === document.body) return { region: 'body', slot: '', seat: '', name: '' }
     const region =
       el.closest('[data-region]')?.getAttribute('data-region') ??
       (el.closest('header') === null ? (el.closest('main') === null ? 'page' : 'main') : 'bar')
     const name = el.getAttribute('aria-label') ?? el.textContent ?? ''
-    return { region, slot: el.getAttribute('data-slot') ?? '', name: name.slice(0, 60) }
+    // Two seats draw buttons of the same name (each pod's graveyard); the seat tells them apart.
+    const seat = el.closest('[data-seat-area]')?.getAttribute('data-seat-area') ?? ''
+    return { region, slot: el.getAttribute('data-slot') ?? '', seat, name: name.slice(0, 60) }
   })
 
 /** Opens a scene and waits until the table has drawn its hand. */
@@ -39,7 +42,7 @@ async function open(page: Page, url: string): Promise<void> {
 
 /** Presses Tab until `done` holds for the focused element, at most `limit` times; fails with the last stop. */
 async function tabTo(page: Page, done: (stop: Stop) => boolean, limit = 80): Promise<Stop> {
-  let last: Stop = { region: '', slot: '', name: '' }
+  let last: Stop = { region: '', slot: '', seat: '', name: '' }
   for (let press = 0; press < limit; press++) {
     await page.keyboard.press('Tab')
     last = await focused(page)
@@ -66,7 +69,7 @@ for (const { label, size } of SIZES) {
       await page.keyboard.press('Tab')
       const stop = await focused(page)
       if (stop.region === 'body' || (press > 0 && stop.name.startsWith('Skip to content'))) break
-      const key = `${stop.region}|${stop.slot}|${stop.name}`
+      const key = `${stop.region}|${stop.slot}|${stop.seat}|${stop.name}`
       expect(seen.has(key), `visited twice: ${key}`).toBe(false)
       seen.add(key)
       lap.push(stop)

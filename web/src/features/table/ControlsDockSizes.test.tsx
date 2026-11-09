@@ -184,13 +184,6 @@ describe('the pass button', () => {
       'Next: Blockers',
       true,
     ],
-    [
-      'the end step of your turn',
-      { own: true, stacked: false, step: 'End' as const },
-      'End turn',
-      'End turn',
-      false,
-    ],
     ['an opponent’s empty step', { stacked: false, step: 'Upkeep' as const }, 'Continue', 'Continue', true],
   ])('says what passing does in %s, at every size', (_name, situation, whole, short, endTurn) => {
     for (const [width, height, words] of [
@@ -200,8 +193,21 @@ describe('the pass button', () => {
     ] as const) {
       const { unmount } = dockOf({ ...situation, width, height })
       expect(primaryButton()).toHaveTextContent(words)
-      // "End turn" beside the button only where the button does not already say it; a phone keeps it in the menu.
+      // "End turn" beside the button; a phone keeps it in the menu.
       expect(dock().querySelector('[data-slot="secondary-action"]') !== null).toBe(endTurn && width > 640)
+      unmount()
+    }
+  })
+
+  it('draws only "End turn" in the end step of your turn, at every size, so no Resolve turns into it', () => {
+    for (const [width, height] of [
+      [1920, 1080],
+      [1024, 768],
+      [390, 844],
+    ] as const) {
+      const { unmount } = dockOf({ own: true, stacked: false, step: 'End', width, height })
+      expect(dock().querySelector('[data-slot="primary-action"]')).toBeNull()
+      expect(must(dock().querySelector('[data-slot="secondary-action"]'))).toHaveAccessibleName('End turn')
       unmount()
     }
   })

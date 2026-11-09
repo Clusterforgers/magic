@@ -60,6 +60,7 @@ export type { ChooseDeck } from "./ChooseDeck";
 export type { Chosen } from "./Chosen";
 export type { ClauseKind } from "./ClauseKind";
 export type { ClientMessage } from "./ClientMessage";
+export type { CoinSide } from "./CoinSide";
 export type { Color } from "./Color";
 export type { ColorSet } from "./ColorSet";
 export type { CombatForecast } from "./CombatForecast";

@@ -1,9 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import type { KeyboardEvent, ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
+import { CardSearchField } from '../../prompt/CardSearchField'
+import { matchesFilter } from '../../prompt/cardsText'
+import { useOracleTexts } from '../../prompt/oracleWords'
 import { useObjects } from '../../prompt/useCombatNames'
+import { rovingTarget } from '../../useRoving'
 import { FeedbackLine } from './FeedbackLine'
 import { useManualSender } from './feedback'
 import { Thumb } from './LookTopBody'
@@ -20,7 +24,9 @@ interface BodyProps {
 
 /**
  * The body of the Search for a card row: the plain form while no search is open, and once the seat looked through its
- * library the grid of its cards by name, with Apply for the card chosen and a shuffle without one.
+ * library the grid of its cards by name under a search box (name, type line, rules text; focused when the grid
+ * opens, Arrow Down goes on to the cards, which the arrow keys move along), with Apply for the card chosen, which
+ * stays chosen while the search hides it, and a shuffle without one.
  */
 export function TutorBody({ id, input, onClose, plain }: BodyProps) {
   const searched = input.searched ?? []
@@ -45,7 +51,19 @@ function SearchGrid({ id, input, searched, onClose }: GridProps) {
       object: byId.get(card.id),
     }))
   }, [searched, objects])
+  const [filter, setFilter] = useState('')
+  const views = useMemo(() => cards.map((card) => card.object), [cards])
+  const rules = useOracleTexts(views)
+  const shown = useMemo(
+    () =>
+      cards.filter((card) =>
+        matchesFilter(card.object, filter, card.object === undefined ? '' : rules.get(card.object)),
+      ),
+    [cards, filter, rules],
+  )
+  const grid = useRef<HTMLUListElement>(null)
   const [chosen, setChosen] = useState<ObjectId | null>(null)
+  const hiddenChosen = chosen !== null && !shown.some((card) => card.id === chosen) ? 1 : 0
   const preview = tutorPreview(
     cards.find((card) => card.id === chosen),
     input.library,
@@ -54,6 +72,15 @@ function SearchGrid({ id, input, searched, onClose }: GridProps) {
   const busy = feedback?.state === 'sending'
   const apply = (): void => {
     if (ready && !busy) send(preview.action, preview.apply)
+  }
+  const onGridKey = (event: KeyboardEvent<HTMLUListElement>): void => {
+    if (event.altKey || event.ctrlKey || event.metaKey) return
+    const buttons = [...event.currentTarget.querySelectorAll<HTMLElement>('button[data-card]')]
+    const index = buttons.findIndex((button) => button === document.activeElement)
+    const to = rovingTarget(event.key, Math.max(index, 0), buttons.length)
+    if (index < 0 || to === null) return
+    event.preventDefault()
+    buttons[to]?.focus()
   }
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
     event.stopPropagation()
@@ -73,8 +100,27 @@ function SearchGrid({ id, input, searched, onClose }: GridProps) {
       <p className="text-xs text-muted-foreground">
         {`Your library: ${cards.length} cards by name. Choose one for your hand.`}
       </p>
-      <ul data-slot="tutor-grid" className="grid max-h-80 grid-cols-2 gap-1 overflow-y-auto sm:grid-cols-3">
-        {cards.map((card) => (
+      <CardSearchField
+        value={filter}
+        onChange={setFilter}
+        shown={shown.length}
+        total={cards.length}
+        hiddenChosen={hiddenChosen}
+        onLeave={() => grid.current?.querySelector<HTMLElement>('button[data-card]')?.focus()}
+        focusOnOpen
+      />
+      {shown.length === 0 ? (
+        <p data-slot="no-match" className="text-sm text-muted-foreground">
+          {`No card has “${filter.trim()}” in its name, type or text.`}
+        </p>
+      ) : null}
+      <ul
+        ref={grid}
+        data-slot="tutor-grid"
+        onKeyDown={onGridKey}
+        className="grid max-h-80 grid-cols-2 gap-1 overflow-y-auto sm:grid-cols-3"
+      >
+        {shown.map((card) => (
           <li key={card.id}>
             <button
               type="button"

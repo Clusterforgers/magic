@@ -92,11 +92,13 @@ function tableStop(name: string, query: string, primary: 'pass' | 'keep' | 'prom
 /** Shows the Deck pane with Stats and the cards played by hand open; from 1440 px they sit in the rail, which has no disclosure to click. */
 async function openStats(page: Page): Promise<void> {
   await showPane(page, 'Stats')
+  // Two frames, so a resize across 1440 px has swapped the disclosures for the rail (or back) before they are read.
+  await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))))
   for (const name of [/^Stats/, /^Played by hand/]) {
     const heading = page.getByRole('region', { name: 'Deck', exact: true }).getByRole('button', { name })
-    if ((await heading.count()) > 0 && (await heading.getAttribute('aria-expanded')) !== 'true') {
-      await heading.click()
-    }
+    if ((await heading.count()) === 0) continue
+    const open = await heading.getAttribute('aria-expanded', { timeout: 2000 }).catch(() => null)
+    if (open === 'false') await heading.click()
   }
 }
 
@@ -203,6 +205,21 @@ const STOPS: readonly Stop[] = [
   tableStop(
     'The table (dev), 4 seats, revealed cards and notes',
     'seats=4&reveal=1&prompt=priority&turn=you',
+    'pass',
+  ),
+  tableStop(
+    'The table (dev), the duel board, counters on players',
+    'board=duel&counters=1&prompt=priority&turn=you',
+    'pass',
+  ),
+  tableStop(
+    'The table (dev), 4 seats, counters on players',
+    'seats=4&counters=1&prompt=priority&turn=you',
+    'pass',
+  ),
+  tableStop(
+    'The table (dev), 12 seats in focus mode, counters on players',
+    'seats=12&counters=1&prompt=priority&turn=you',
     'pass',
   ),
   tableStop('The table (dev), the heavy board, declaring blockers', 'board=heavy&prompt=block', 'prompt'),

@@ -1,4 +1,4 @@
-// Goal: the Priority prompt passes through one primary button whose words say what passing does now, an "End turn" beside it and a small menu, each asking the session for the right yield exactly once per prompt; Space or Enter presses the primary button only when nothing else has the keyboard; and nothing says "pass priority" except the description a screen reader gets.
+// Goal: the Priority prompt passes through one primary button whose words say what passing does now (resolve, the next step, continue; never "End turn"), an "End turn" button of its own beside it and a small menu, each asking the session for the right yield exactly once per prompt; in the last window of the own turn only "End turn" is drawn, so a Resolve pressed twice never ends the turn; Space or Enter presses the buttons only when nothing else has the keyboard; and nothing says "pass priority" except the description a screen reader gets.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { PlayState } from '@/play/store'
@@ -115,7 +115,7 @@ describe('the words on the buttons', () => {
       { own: true, stacked: false, step: 'EndCombat' },
       'Next: Postcombat main',
     ],
-    ['in the last window of your turn', { own: true, stacked: false, step: 'End' }, 'End turn'],
+    ['over a stack in the last window of your turn', { own: true, step: 'End' }, 'Resolve Lightning Bolt'],
     ['on the opponent’s turn', { stacked: false, step: 'Upkeep' }, 'Continue'],
     ['in the last window of the opponent’s turn', { stacked: false, step: 'End' }, 'Continue'],
   ] satisfies [string, Situation, string][])('%s the primary button says "%s"', (_when, situation, label) => {
@@ -162,10 +162,6 @@ describe('the words on the buttons', () => {
   })
 
   it.each([
-    [
-      'in the last window of your turn, where the primary button ends it',
-      { own: true, stacked: false, step: 'End' },
-    ],
     ['under Full Control', { fullControl: 'Held' }],
     [
       'under Full Control for the next window',
@@ -179,17 +175,51 @@ describe('the words on the buttons', () => {
     expect(secondary()).toBeNull()
   })
 
-  it('has "End turn" beside the primary button, except where the primary button already ends the turn', () => {
+  it('has "End turn" as a button of its own beside the primary button, which never ends the turn', () => {
     expect(renderControls().secondary()).toHaveTextContent('End turn')
     expect(renderControls({ stacked: false, step: 'Upkeep' }).secondary()).toHaveTextContent('End turn')
     expect(renderControls({ own: true, stacked: false, step: 'Main2' }).secondary()).toHaveTextContent(
       'End turn',
     )
-    expect(renderControls({ own: true, stacked: false, step: 'End' }).secondary()).toBeNull()
-    // With a spell still on the stack in that window, ending the turn is more than the primary button does.
-    expect(renderControls({ own: true, stacked: true, step: 'End' }).secondary()).toHaveTextContent(
-      'End turn',
-    )
+    // Over a stack in the last window, Resolve and End turn are two buttons.
+    const stacked = renderControls({ own: true, stacked: true, step: 'End' })
+    expect(stacked.secondary()).toHaveTextContent('End turn')
+    expect(stacked.primary()).toHaveTextContent('Resolve Lightning Bolt')
+    expect(stacked.primary()).not.toBe(stacked.secondary())
+  })
+
+  it.each([
+    ['Off', 'yields'],
+    ['Held', 'passes once'],
+  ] satisfies [FullControlMode, string][])(
+    'in the last window of your turn draws only "End turn", never a primary button (Full Control %s: it %s)',
+    async (fullControl, does) => {
+      const { container, secondary, answer, yieldUntil, user } = renderControls({
+        own: true,
+        stacked: false,
+        step: 'End',
+        fullControl,
+      })
+      expect(container.querySelector('[data-slot="primary-action"]')).toBeNull()
+      expect(secondary()).toHaveAccessibleName('End turn')
+      await user.click(must(secondary()))
+      if (does === 'yields') {
+        expect(yieldUntil).toHaveBeenCalledExactlyOnceWith('EndOfTurn')
+        expect(answer).not.toHaveBeenCalled()
+      } else {
+        expect(answer).toHaveBeenCalledExactlyOnceWith({ Priority: 'Pass' })
+        expect(yieldUntil).not.toHaveBeenCalled()
+      }
+    },
+  )
+
+  it('keeps the Resolve slot empty once a resolved stack leaves the last window, so a second press ends nothing', () => {
+    const before = renderControls({ own: true, stacked: true, step: 'End' })
+    const resolve = before.primary()
+    expect(resolve).toHaveTextContent('Resolve')
+    before.unmount()
+    const after = renderControls({ own: true, stacked: false, step: 'End' })
+    expect(after.container.querySelector('[data-slot="primary-action"]')).toBeNull()
   })
 
   it('has one prompt, its title and a live sentence, and draws the three buttons in the controls dock', () => {
@@ -522,11 +552,14 @@ describe('Enter', () => {
     expect(yieldUntil).toHaveBeenCalledTimes(1)
   })
 
+  it('asks for the end-of-turn yield in the last window of your turn, as "End turn" there does', async () => {
+    const { answer, yieldUntil, user } = renderControls({ own: true, stacked: false, step: 'End' })
+    await user.keyboard('{Enter}')
+    expect(yieldUntil).toHaveBeenCalledExactlyOnceWith('EndOfTurn')
+    expect(answer).not.toHaveBeenCalled()
+  })
+
   it.each([
-    [
-      'in the last window of your turn, where the primary button ends it',
-      { own: true, stacked: false, step: 'End' },
-    ],
     ['under Full Control', { fullControl: 'Held' }],
     ['under Full Control for the next window', { fullControl: 'NextWindow' }],
   ] satisfies [string, Situation][])('passes once, like Space, %s', async (_where, situation) => {

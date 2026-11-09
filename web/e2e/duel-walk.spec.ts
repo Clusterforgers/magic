@@ -20,9 +20,12 @@ const stack = (player: Player) =>
 /** The turn banner: whose turn, which turn and which step. */
 const banner = (player: Player) => player.page.locator('[data-slot="banner"]')
 
-/** Presses the primary button of the prompt: pass priority, or whatever the moment calls the pass. */
+/** Presses the primary button of the prompt, or "End turn" in the last window of one's own turn, where it stands alone. */
 const pass = (player: Player) =>
-  player.page.locator('[data-region="controls"] [data-slot="primary-action"]').click()
+  player.page
+    .locator('[data-region="controls"] :is([data-slot="primary-action"], [data-slot="secondary-action"])')
+    .last()
+    .click()
 
 const handCard = (player: Player, name: string) =>
   player.page
