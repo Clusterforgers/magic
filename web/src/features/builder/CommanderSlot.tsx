@@ -63,14 +63,14 @@ function Tile({
           title={card.name}
           data-slot="card-name"
           onClick={(event) => onPreview(event.currentTarget)}
-          className="min-h-6 min-w-0 line-clamp-2 rounded-sm text-left text-sm font-semibold underline-offset-4 hover:underline pointer-coarse:min-h-11"
+          className="min-h-6 min-w-0 line-clamp-2 rounded-sm break-words text-left text-sm font-semibold underline-offset-4 hover:underline pointer-coarse:min-h-11"
         >
           {card.name}
           {count > 1 ? <span className="font-normal text-muted-foreground"> ×{count}</span> : null}
         </button>
         <span className="line-clamp-2 text-xs text-muted-foreground">{card.type_line}</span>
         <IdentityPips identity={card.color_identity} />
-        {issue ? <SupportMark support={check.support} className="justify-self-start" /> : null}
+        {issue ? <SupportMark support={check.support} className="max-w-full justify-self-start" /> : null}
       </div>
       <Button
         type="button"
@@ -112,7 +112,7 @@ export function CommanderSlot({
     </Button>
   )
   return (
-    <section aria-labelledby={`${id}-commander`} data-slot="commander-slot" className="grid gap-2">
+    <section aria-labelledby={`${id}-commander`} data-slot="commander-slot" className="@container grid gap-2">
       <h3
         id={`${id}-commander`}
         className="flex items-baseline justify-between gap-2 border-b pb-1 text-sm font-semibold"
@@ -133,7 +133,7 @@ export function CommanderSlot({
           </span>
         </p>
       )}
-      <ul aria-label="Commander cards" className="grid gap-2 sm:grid-cols-2">
+      <ul aria-label="Commander cards" className="grid gap-2 @lg:grid-cols-2">
         {lines.map((line) => (
           <Tile
             key={line.card.oracle_id}
@@ -145,7 +145,7 @@ export function CommanderSlot({
         ))}
         {first ? (
           <li
-            className="grid min-w-0 content-start gap-1 rounded-lg border border-dashed p-2 sm:col-span-2"
+            className="grid min-w-0 content-start gap-1 rounded-lg border border-dashed p-2 @lg:col-span-2"
             data-slot="open-seat"
           >
             <p className="text-sm font-medium">No commander yet</p>
