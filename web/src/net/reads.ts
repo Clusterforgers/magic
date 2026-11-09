@@ -22,7 +22,8 @@ export interface ReadsOptions {
 export interface ReadsApi {
   /**
    * `GET /api/reads?deck=` or `?precon=`: what the account has left to read in that deck, pending drafts first; with
-   * no target, `GET /api/reads`: every card waiting for a first read. Each part is most played first.
+   * no target, `GET /api/reads`: every card waiting for a first read, and `?mine=true` those of the account's decks.
+   * Each part is most played first.
    */
   queue(target: ReadTarget | null): Promise<ReadQueue>
   /** `GET /api/reads/{oracle_id}`: the card's current draft with its read sheet and the account's verdict. */
@@ -122,6 +123,7 @@ function failure(response: Response, body: unknown): DeckError {
 /** The query string of a deck's list, with its `?`; none for every card. */
 function queueQuery(target: ReadTarget | null): string {
   if (target === null) return ''
+  if ('mine' in target) return '?mine=true'
   return (
     '?' +
     ('deck' in target

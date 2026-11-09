@@ -54,11 +54,12 @@ export const DRAFT_NOTE: Readonly<Record<'pending' | 'wrong', string>> = {
   wrong: `A player found the draft of its rules wrong, so the card stays ${BY_HAND}`,
 }
 
-/** The deck whose cards are to be read: a stored deck by id or a precon by code. */
-export type ReadTarget = { deck: string } | { precon: string }
+/** The cards to be read: a stored deck by id, a precon by code, or those of the account's own decks. */
+export type ReadTarget = { deck: string } | { precon: string } | { mine: true }
 
-/** The address of the review screen for `target`: `/read?deck=<id>` or `/read?precon=<code>`. */
+/** The address of the review screen for `target`: `/read?deck=<id>`, `/read?precon=<code>` or `/read?mine=true`. */
 export function readPath(target: ReadTarget): string {
+  if ('mine' in target) return '/read?mine=true'
   return 'deck' in target
     ? `/read?deck=${encodeURIComponent(target.deck)}`
     : `/read?precon=${encodeURIComponent(target.precon)}`

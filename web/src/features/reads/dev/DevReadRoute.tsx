@@ -72,11 +72,13 @@ export function DevReadRoute() {
             key={view}
             api={api}
             target={
-              view === 'all'
-                ? null
-                : view === 'precon'
-                  ? { precon: 'c18-adaptive-enchantment' }
-                  : { deck: 'deck-izzet' }
+              view === 'mine'
+                ? { mine: true }
+                : view === 'all'
+                  ? null
+                  : view === 'precon'
+                    ? { precon: 'c18-adaptive-enchantment' }
+                    : { deck: 'deck-izzet' }
             }
           />
         )}

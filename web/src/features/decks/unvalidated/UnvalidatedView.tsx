@@ -129,9 +129,9 @@ export function UnvalidatedView({ api, cards, scope, fixMarks }: UnvalidatedView
           {state.status === 'ready' && toRead > 0 ? (
             <Link
               to="/read"
-              search={single ? { deck: scope.id } : {}}
+              search={single ? { deck: scope.id } : { mine: true }}
               data-slot="read-all"
-              data-read-path={single ? readPath({ deck: scope.id }) : '/read'}
+              data-read-path={readPath(single ? { deck: scope.id } : { mine: true })}
               className={buttonVariants({ size: 'sm' })}
             >
               <BookOpenIcon aria-hidden="true" />

@@ -3,6 +3,7 @@ export const DEV_READ_VIEWS = [
   'deck',
   'precon',
   'all',
+  'mine',
   'done',
   'loading',
   'error',
@@ -10,7 +11,7 @@ export const DEV_READ_VIEWS = [
   'dialog',
 ] as const
 
-/** One of the views: a deck to read, a precon, every card, nothing left, a wait, a failed list, a verdict that meets a changed draft, or the table's dialog. */
+/** One of the views: a deck to read, a precon, every card, the cards of the account's decks, nothing left, a wait, a failed list, a verdict that meets a changed draft, or the table's dialog. */
 export type DevReadView = (typeof DEV_READ_VIEWS)[number]
 
 /** The address parameters of `/dev/read`, read leniently: whatever makes no sense is ignored. */

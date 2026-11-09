@@ -326,7 +326,7 @@ describe('the drafts that wait for a read', () => {
     expect(itemOf('Mystic Remora').querySelector('[data-slot="draft-note"]')).toBeNull()
   })
 
-  it('counts the cards to read once on the Read button and on a filter next to All that narrows to them', async () => {
+  it('counts the cards to read once on the Read button, which reads the cards of the decks, and on a filter next to All that narrows to them', async () => {
     const { user } = await renderPage({ decks: WAITERS })
     await settled()
     const filter = screen.getByRole('group', { name: 'Show cards in state' })
@@ -336,8 +336,8 @@ describe('the drafts that wait for a read', () => {
         .map((button) => button.textContent),
     ).toEqual(['All (3)', 'To read (1)', 'Partial (1)', 'Manual (1)', 'Stale (1)'])
     const read = screen.getByRole('link', { name: 'Read 1 card' })
-    expect(read).toHaveAttribute('data-read-path', '/read')
-    expect(read).toHaveAttribute('href', '/read')
+    expect(read).toHaveAttribute('data-read-path', '/read?mine=true')
+    expect(read).toHaveAttribute('href', '/read?mine=true')
     await user.click(within(filter).getByRole('button', { name: 'To read (1)' }))
     expect(cardNames(await settled())).toEqual(['Rhystic Study'])
   })
