@@ -101,6 +101,9 @@ export function splitRegions(
   return withSplit(regions, split, theirChrome + BOARD_KEEP_PX)
 }
 
+/** The least width in px of your creatures for which the split gives an opponent's pod column its floor. */
+export const FLOOR_OWN_CARD_PX = 100
+
 /** An opponent's cards are this share of yours: their board shrinks first. */
 export const THEIR_SCALE = 0.8
 /** Neither row gets less than this share of the room both share, so an empty board keeps a place for a prompt sheet. */
@@ -118,7 +121,7 @@ export interface SplitInput {
   /** What each row spends on other things than its board's lanes: padding, a pod line, the tile strip. */
   ownChrome: number
   theirChrome: number
-  /** The least height of the opponents' row, while your row keeps `MIN_ROW_SHARE` (`podColumnFloor`). */
+  /** The height an opponent's pod column asks of the opponents' row (`podColumnFloor`). */
   theirFloor?: number
   /** The width of the lanes of your board and of each opponent's board in px. */
   ownWidth: number
@@ -150,7 +153,8 @@ export function shareSplit(room: number): BoardSplit {
  * room together; the opponents' row gets what its lanes need and your row the rest, each at least `MIN_ROW_SHARE` of
  * the room. What is left lifts the opponents' cards further, up to `w`. Without a fit at the floor, or with no
  * permanent anywhere, the room splits by `OWN_SHARE`, the opponents' row keeping its chrome and `BOARD_KEEP_PX` (your
- * row keeping `MIN_ROW_SHARE`). The opponents' row is never lower than `theirFloor` while your row keeps its share.
+ * row keeping `MIN_ROW_SHARE`). The opponents' row is at least `theirFloor` where your creatures keep
+ * `FLOOR_OWN_CARD_PX`; elsewhere only room your lanes leave lifts it towards that.
  */
 export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS): BoardSplit {
   const room = finite(input.room)
@@ -160,23 +164,27 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
     Math.max(least, laneHeight(input.ownWidth, input.own, card, limits) + finite(input.ownChrome))
   const theirNeed = (card: number): number =>
     Math.max(0, ...input.theirs.map((counts) => laneHeight(input.theirWidth, counts, card, limits)))
-  const floor = Math.min(room - least, finite(input.theirFloor ?? 0))
-  const theirRow = (card: number): number =>
-    Math.max(least, floor, theirNeed(card) + finite(input.theirChrome))
+  const theirRow = (card: number): number => Math.max(least, theirNeed(card) + finite(input.theirChrome))
   const theirCard = (card: number): number => Math.floor(card * THEIR_SCALE)
   const fits = (rung: number): boolean => ownRow(at(rung)) + theirRow(theirCard(at(rung))) <= room
   const empty = laneHeight(input.ownWidth, input.own, at(0), limits) + theirNeed(theirCard(at(0)))
   if (!fits(0) || empty === 0) {
     const share = shareSplit(room)
     if (input.theirs.length === 0) return share
-    const keep = Math.min(room - least, Math.max(floor, finite(input.theirChrome) + BOARD_KEEP_PX))
+    const keep = Math.min(room - least, finite(input.theirChrome) + BOARD_KEEP_PX)
     return share.opponents >= keep ? share : { ...share, opponents: keep, own: room - keep }
   }
-  const card = at(highestRung(rungs, fits))
+  // The opponents' row is lifted to the floor where your creatures stay `FLOOR_OWN_CARD_PX` wide; otherwise it takes
+  // only what your lanes leave.
+  const floor = Math.min(room - least, finite(input.theirFloor ?? 0))
+  const floored = (rung: number): boolean =>
+    ownRow(at(rung)) + Math.max(floor, theirRow(theirCard(at(rung)))) <= room
+  const lifted = floor > 0 && floored(0) ? at(highestRung(rungs, floored)) : 0
+  const card = lifted >= FLOOR_OWN_CARD_PX ? lifted : at(highestRung(rungs, fits))
   const spare = room - ownRow(card)
   let theirs = theirCard(card)
   while (theirs + limits.step <= card && theirRow(theirs + limits.step) <= spare) theirs += limits.step
-  const opponents = theirRow(theirs)
+  const opponents = Math.max(theirRow(theirs), Math.min(floor, spare))
   return { opponents, own: room - opponents, ownCard: card, theirCard: theirs }
 }
 

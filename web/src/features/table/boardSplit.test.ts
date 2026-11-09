@@ -6,6 +6,7 @@ import {
   boardCounts,
   boardFrames,
   MIN_ROW_SHARE,
+  FLOOR_OWN_CARD_PX,
   podColumnFloor,
   shareSplit,
   splitBoards,
@@ -218,20 +219,29 @@ describe('the pod column of the opponent', () => {
     expect(podColumnFloor(columns.regions, columns.seats, 80)).toBe(0)
   })
 
-  it('never takes your row below its share', () => {
-    const split = splitBoards({
-      room: 400,
-      ownChrome: 24,
-      theirChrome: 24,
-      theirFloor: 1000,
-      ownWidth: 900,
-      theirWidth: 900,
-      own: { lands: 4, creatures: 2, other: 0 },
-      theirs: [{ lands: 4, creatures: 2, other: 0 }],
-    })
-    expect(split.own).toBeCloseTo(400 * MIN_ROW_SHARE)
-    expect(split.opponents + split.own).toBeCloseTo(400)
-  })
+  it.each([0, 200, 280, 1000])(
+    'lifts the opponents to a floor of %i px only while your creatures keep FLOOR_OWN_CARD_PX, else by what your lanes leave',
+    (floor) => {
+      const input = {
+        room: 520,
+        ownChrome: 24,
+        theirChrome: 24,
+        ownWidth: 900,
+        theirWidth: 900,
+        own: { lands: 4, creatures: 2, other: 0 },
+        theirs: [{ lands: 4, creatures: 2, other: 0 }],
+      }
+      const plain = splitBoards(input)
+      const split = splitBoards({ ...input, theirFloor: floor })
+      expect(split.opponents + split.own).toBeCloseTo(520)
+      expect(split.own).toBeGreaterThanOrEqual(520 * MIN_ROW_SHARE)
+      expect(split.opponents).toBeGreaterThanOrEqual(plain.opponents)
+      if (split.ownCard === plain.ownCard) return
+      // Your creatures gave way for the floor: no further than FLOOR_OWN_CARD_PX, and the floor holds.
+      expect(split.ownCard).toBeGreaterThanOrEqual(FLOOR_OWN_CARD_PX)
+      expect(split.opponents).toBeGreaterThanOrEqual(floor)
+    },
+  )
 })
 
 describe('the head of the opponents area', () => {
