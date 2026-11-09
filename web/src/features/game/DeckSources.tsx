@@ -28,6 +28,8 @@ interface SourceProps {
   pictures(id: string): DeckEntry['pictures']
   /** The order of the rows, for every list. */
   sort: SortKey
+  /** Whether the order may put the starred precons first: only a signed-in player has stars. */
+  favoritesSort: boolean
   onSort(sort: SortKey): void
   onSelect(entry: DeckEntry): void
   /** Drops the selection, which a search or filter hid and no row stands in for. */
@@ -75,6 +77,7 @@ function List({
       colours={colours}
       pictures={source.pictures}
       sort={source.sort}
+      favoritesSort={source.favoritesSort}
       onSort={source.onSort}
       onSelect={source.onSelect}
       onClear={source.onClear}
