@@ -1,4 +1,4 @@
-// Goal: the not-validated page lists each card the game does not run whole once, the cards of most decks first, with its picture, state, decks and each unread clause quoted beside its reason; arranges them by card or by deck, narrows them to a state, copies them as text in the exact format, and says it plainly while loading, when empty, when a deck or the whole list could not be checked and when card texts could not be read.
+// Goal: the not-validated page ("Cards to check") names its two jobs, offers a Read button for the cards that wait, lists each card the game does not run whole once, the cards of most decks first, with its picture, state, decks and each unread clause quoted beside its reason; arranges them by card or by deck, narrows them to a state, copies them as text in the exact format, and says it plainly while loading, when empty, when a deck or the whole list could not be checked and when card texts could not be read.
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -107,6 +107,17 @@ describe('the fix-mark button', () => {
 })
 
 describe('every saved deck', () => {
+  it('is headed Cards to check, with its two jobs in one sentence', async () => {
+    await renderPage()
+    await settled()
+    expect(screen.getByRole('heading', { level: 1, name: 'Cards to check' })).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        "Read a card's rules and say whether the game has them right, or play a card by hand when it misbehaves.",
+      ),
+    ).toBeInTheDocument()
+  })
+
   it('lists each card once, the cards of most decks first, then by name', async () => {
     await renderPage()
     const list = await settled()
@@ -315,7 +326,7 @@ describe('the drafts that wait for a read', () => {
     expect(itemOf('Mystic Remora').querySelector('[data-slot="draft-note"]')).toBeNull()
   })
 
-  it('counts the cards to read once on a chip, in the summary and on a filter that narrows to them', async () => {
+  it('counts the cards to read once on the Read button and on a filter next to All that narrows to them', async () => {
     const { user } = await renderPage({ decks: WAITERS })
     await settled()
     const filter = screen.getByRole('group', { name: 'Show cards in state' })
@@ -323,25 +334,27 @@ describe('the drafts that wait for a read', () => {
       within(filter)
         .getAllByRole('button')
         .map((button) => button.textContent),
-    ).toEqual(['All (3)', 'Partial (1)', 'Manual (1)', 'Stale (1)', 'To read (1)'])
-    expect(document.querySelector('[data-slot="to-read-summary"]')).toHaveTextContent('1 card to read')
+    ).toEqual(['All (3)', 'To read (1)', 'Partial (1)', 'Manual (1)', 'Stale (1)'])
+    const read = screen.getByRole('link', { name: 'Read 1 card' })
+    expect(read).toHaveAttribute('data-read-path', '/read')
+    expect(read).toHaveAttribute('href', '/read')
     await user.click(within(filter).getByRole('button', { name: 'To read (1)' }))
     expect(cardNames(await settled())).toEqual(['Rhystic Study'])
   })
 
-  it('names the deck to read for when the list is of one deck', async () => {
+  it('reads the one deck when the list is of one deck', async () => {
     await renderPage({ decks: WAITERS, deckId: 'deck-w' })
     await settled()
-    expect(document.querySelector('[data-slot="to-read-summary"] [data-slot="to-read"]')).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Read 1 card' })).toHaveAttribute(
       'data-read-path',
       '/read?deck=deck-w',
     )
   })
 
-  it('shows no count and no filter for decks with no draft waiting', async () => {
+  it('shows no Read button and no filter for decks with no draft waiting', async () => {
     await renderPage()
     await settled()
-    expect(document.querySelector('[data-slot="to-read-summary"]')).toBeNull()
+    expect(screen.queryByRole('link', { name: /^Read \d/ })).toBeNull()
     expect(screen.queryByRole('button', { name: /^To read/ })).toBeNull()
   })
 })
