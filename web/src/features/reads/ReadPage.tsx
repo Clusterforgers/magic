@@ -3,6 +3,7 @@ import { Loading } from '@/components/Loading'
 import { PageShell } from '@/components/PageShell'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/context'
+import type { ByHandApi } from '@/features/decks/byHand'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { readPath } from '@/lib/toRead'
 import type { ReadTarget } from '@/lib/toRead'
@@ -15,6 +16,8 @@ interface ReadPageProps {
   target: ReadTarget | null
   /** The read endpoints; the shared client unless a test brings its own. */
   api?: ReadsApi
+  /** The deck endpoints that mark a card found wrong "play by hand"; the shared client unless a test brings its own. */
+  decks?: ByHandApi
 }
 
 function Notice({ children, action }: { children: string; action?: React.ReactNode }) {
@@ -35,7 +38,7 @@ function Notice({ children, action }: { children: string; action?: React.ReactNo
  * `/read` (every card), `/read?deck=<id>` and `/read?precon=<code>`: the review screen, where a signed-in player reads
  * the drafts of cards and says whether each is correct. Someone who is not signed in is sent to the sign-in form and back.
  */
-export function ReadPage({ target, api = readsApi }: ReadPageProps) {
+export function ReadPage({ target, api = readsApi, decks }: ReadPageProps) {
   usePageTitle('Read cards')
   const status = useAuth((state) => state.status)
 
@@ -64,7 +67,7 @@ export function ReadPage({ target, api = readsApi }: ReadPageProps) {
   }
   return (
     <PageShell width="wide">
-      <ReadView key={path} api={api} target={target} />
+      <ReadView key={path} api={api} target={target} {...(decks === undefined ? {} : { decks })} />
     </PageShell>
   )
 }

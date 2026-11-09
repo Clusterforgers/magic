@@ -1,5 +1,5 @@
-// Goal: the deck pane lists the lines by zone with a total each, steps a line's copies up and down (the last copy removed takes the line out), removes a line outright, moves copies between zones onto the line already there, edits the name and the format, marks every change as unsaved and an undone change as saved again, stops at the card limit, and designs its empty states.
-import { screen, within } from '@testing-library/react'
+// Goal: the deck pane lists the lines by zone with a total each, steps a line's copies up and down (the last copy removed takes the line out), removes a line outright, moves copies between zones onto the line already there, edits the name and the format, marks every change as unsaved and an undone change as saved again, toggles "play by hand" on a line and sends it with the check and the save, stops at the card limit, and designs its empty states.
+import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { lineOf } from '@/features/decks/fakeDecks'
 import { absent, BOLT, copies, deckLine, deckPane, MOUNTAIN, renderBuilder, searchBox } from './renderBuilder'
@@ -241,5 +241,43 @@ describe('targets and layout of the lines', () => {
     await renderBuilder()
     const row = deckLine('Lightning Bolt')
     expect(row).toHaveClass('grid-cols-[minmax(0,1fr)_auto]', 'sm:grid-cols-[auto_minmax(0,1fr)_auto_auto]')
+  })
+})
+
+describe('play by hand', () => {
+  const toggle = (name: string, zone?: string) =>
+    within(deckLine(name, zone)).getByRole('button', { name: `Play ${name} by hand` })
+
+  it('is a toggle on each line that marks the card, says so aloud and leaves the deck unsaved', async () => {
+    const { user } = await renderBuilder()
+    expect(toggle('Lightning Bolt')).toHaveAttribute('aria-pressed', 'false')
+    await user.click(toggle('Lightning Bolt'))
+    expect(toggle('Lightning Bolt')).toHaveAttribute('aria-pressed', 'true')
+    expect(toggle('Lightning Bolt')).toHaveClass('text-support-manual')
+    expect(toggle('Mountain')).toHaveAttribute('aria-pressed', 'false')
+    expect(pane().getByText('Unsaved changes')).toBeInTheDocument()
+    expect(screen.getByText('Lightning Bolt is played by hand.')).toBeInTheDocument()
+    await user.click(toggle('Lightning Bolt'))
+    expect(toggle('Lightning Bolt')).toHaveAttribute('aria-pressed', 'false')
+    expect(pane().queryByText('Unsaved changes')).toBeNull()
+  })
+
+  it('reads the mark of a stored line, and the check and the save send it', async () => {
+    const { user, decks, checks } = await renderBuilder({
+      view: {
+        cards: [
+          lineOf('Mountain', 20, { card: MOUNTAIN }),
+          lineOf('Lightning Bolt', 4, { card: BOLT, by_hand: true }),
+        ],
+      },
+    })
+    expect(toggle('Lightning Bolt')).toHaveAttribute('aria-pressed', 'true')
+    await user.click(toggle('Mountain'))
+    await waitFor(() =>
+      expect(checks.requests.at(-1)?.cards?.map((card) => card.by_hand)).toEqual([true, true]),
+    )
+    await user.click(pane().getByRole('button', { name: 'Save' }))
+    await waitFor(() => expect(decks.updated).toHaveLength(1))
+    expect(decks.updated[0]?.body.cards.map((card) => card.by_hand)).toEqual([true, true])
   })
 })

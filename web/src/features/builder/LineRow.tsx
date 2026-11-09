@@ -9,7 +9,7 @@ import type { ReadTarget } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
 import type { FixMarksApi } from '@/net/fixMarks'
 import type { Line } from './deckEdit'
-import { Copies, MoveMenu } from './LineControls'
+import { ByHandToggle, Copies, MoveMenu } from './LineControls'
 import type { LineActions } from './LineControls'
 import { ManaCost } from './ManaCost'
 import { isIssue, reasonLines } from './report'
@@ -88,6 +88,7 @@ export function LineRow({
         {issue && fixMarks !== undefined ? (
           <FixMarkButton compact oracleId={id} name={card.name} api={fixMarks} emphasis="prominent" />
         ) : null}
+        <ByHandToggle line={line} actions={actions} />
         <MoveMenu line={line} format={format} actions={actions} />
         <Button
           type="button"

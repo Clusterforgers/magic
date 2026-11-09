@@ -24,6 +24,7 @@ import {
   moveLine,
   openingPane,
   removeLine,
+  setByHand,
   sameDeck,
   totalOf,
 } from './deckEdit'
@@ -245,6 +246,11 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
       }
       setAnnouncement(`Moved ${nameOf(zone, id)} to ${ZONE_TO[to]}.`)
       setDraft((current) => moveLine(current, zone, id, to, count))
+    },
+    byHand: (id, on) => {
+      const name = draft.lines.find((line) => line.card.oracle_id === id)?.card.name ?? "the card"
+      setAnnouncement(on ? `${name} is played by hand.` : `${name} is played by the rules again.`)
+      setDraft((current) => setByHand(current, id, on))
     },
     preview: showPreview,
   }

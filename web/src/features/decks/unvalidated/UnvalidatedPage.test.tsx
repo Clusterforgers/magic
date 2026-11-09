@@ -1,4 +1,4 @@
-// Goal: the not-validated page lists each card the game does not run whole once, the cards of most decks first, with its picture, state, decks and each unread clause quoted beside its reason; arranges them by card or by deck, narrows them to a state, copies them as text in the exact format, and says it plainly while loading, when empty, when a deck or the whole list could not be checked and when card texts could not be read.
+// Goal: the not-validated page lists each card the game does not run whole once, the cards of most decks first, with its picture, state, decks and each unread clause quoted beside its reason; arranges them by card or by deck, offers to play a card by hand in each deck that holds it, narrows them to a state, copies them as text in the exact format, and says it plainly while loading, when empty, when a deck or the whole list could not be checked and when card texts could not be read.
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -10,6 +10,7 @@ import type { FixMarksApi } from '@/net/fixMarks'
 import { renderApp } from '@/test-utils/appHarness'
 import { renderInRouter } from '@/test-utils/router'
 import { fixMarksClient } from '../../fixmarks/client'
+import type { ByHandApi } from '../byHand'
 import { deckView } from '../fakeDecks'
 import { deckOf, filler, FIXTURE_DECKS, fixtureCardsApi, fixtureDecksApi, reportLine } from './fixture'
 import type { FixtureOptions } from './fixture'
@@ -18,8 +19,9 @@ import { UnvalidatedPage } from './UnvalidatedPage'
 async function renderPage({
   deckId,
   fixMarks,
+  byHand,
   ...fixture
-}: { deckId?: string; fixMarks?: FixMarksApi } & FixtureOptions = {}) {
+}: { deckId?: string; fixMarks?: FixMarksApi; byHand?: ByHandApi } & FixtureOptions = {}) {
   const decks = fixtureDecksApi(fixture)
   const cards = fixtureCardsApi(fixture)
   const auth = createAuthStore({
@@ -33,6 +35,7 @@ async function renderPage({
         api={decks}
         cards={cards}
         fixMarks={fixMarks}
+        {...(byHand === undefined ? {} : { byHand })}
       />
     </AuthContext>,
   )
@@ -103,6 +106,37 @@ describe('the fix-mark button', () => {
   it('is not drawn without them', async () => {
     await renderPage()
     expect(within(await settled()).queryByRole('button', { name: 'Mark important to fix' })).toBeNull()
+  })
+})
+
+describe('play by hand', () => {
+  const byHandApi = () => ({
+    get: vi.fn(async (id: string) => deckView({ id })),
+    update: vi.fn(async (id: string) => deckView({ id })),
+  })
+
+  it('offers each deck that holds a card, saves the one chosen and says the card is played by hand there', async () => {
+    const api = byHandApi()
+    const { user } = await renderPage({ byHand: api })
+    await settled()
+    const rhystic = within(itemOf('Rhystic Study'))
+    const offered = rhystic
+      .getAllByRole('button', { name: /^Play Rhystic Study by hand in / })
+      .map((button) => button.textContent)
+    expect(offered).toEqual([`Play by hand in ${ATRAXA}`, 'Play by hand in Izzet Spells', `Play by hand in ${CHAOS}`])
+    await user.click(rhystic.getByRole('button', { name: 'Play Rhystic Study by hand in Izzet Spells' }))
+    expect(await rhystic.findByText('Played by hand in Izzet Spells')).toBeInTheDocument()
+    const deckId = api.get.mock.calls[0]?.[0]
+    expect(api.update.mock.calls.map(([id]) => id)).toEqual([deckId])
+    expect(rhystic.getAllByRole('button', { name: /^Play Rhystic Study by hand in / })).toHaveLength(2)
+  })
+
+  it('is not offered for a card the game cannot host', async () => {
+    await renderPage({ byHand: byHandApi() })
+    await settled()
+    expect(
+      within(itemOf('Contract from Below')).queryByRole('button', { name: /by hand in/ }),
+    ).toBeNull()
   })
 })
 
