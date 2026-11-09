@@ -40,7 +40,8 @@ function Flier({ flight, travel }: { flight: Flight; travel: Travel }) {
     }
     // An ability's chip has the size its stylesheet gives it; before the animation starts nothing moves it.
     const size = flight.size ?? element.getBoundingClientRect()
-    const timing = { duration: flight.duration, delay: flight.delay, easing: EASE_OUT, fill: 'both' } as const
+    // Forwards only: through its delay a leg keeps the stylesheet's opacity 0 instead of standing at its start.
+    const timing = { duration: flight.duration, delay: flight.delay, easing: EASE_OUT, fill: 'forwards' } as const
     const bounds = { width: window.innerWidth, height: window.innerHeight }
     const flying = element.animate(keyframesOf(flight, size, bounds), timing)
     flying.onfinish = () => travel.done(flight.key)
