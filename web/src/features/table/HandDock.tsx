@@ -1,16 +1,19 @@
-import { memo, useLayoutEffect, useMemo, useRef } from 'react'
-import { usePlay } from '@/features/game/gameContext'
+import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useGame, usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView, PlayerId, PlayerView } from '@/protocol/generated'
 import { castCostLine } from './commander'
 import { HandBacks } from './Hand'
 import { COMMAND_GAP_PX, handDockNeed, handLayout, OPENING_CARD_MAX_PX, openingDockNeed } from './handFit'
 import { HAND_GROW_VAR } from './layout'
 import { HandFan } from './HandFan'
+import { HandSortMenu } from './HandSortMenu'
 import type { HandCommander } from './HandFan'
 import type { HandLayout } from './handFit'
 import { useSeatNamer } from './names'
 import { playerOf } from './selectors'
 import { useCoarsePointer } from './useCoarsePointer'
+import { useCompactDock } from './dockLayout'
+import { useHandOrder } from './useHandOrder'
 import { useContentBox } from './useZoneFit'
 
 /** Room kept round the line, so the focus ring of the first and last card is not cut by the line's scrolling. */
@@ -20,6 +23,7 @@ const PAD_PX = 4
 const NORMAL_FACE_PX = 76
 
 const NO_COMMANDERS: ReadonlyMap<ObjectId, HandCommander> = new Map()
+const NO_CARDS: readonly ObjectId[] = []
 
 /**
  * The seat's commanders that wait in its command zone, in command zone order, each with its tax and the words of
@@ -68,6 +72,22 @@ export const HandDock = memo(function HandDock({
   const player = usePlay((state) => playerOf(state, seat))
   const objects = usePlay((state) => state.objectsById)
   const cards = player?.hand.cards ?? null
+  const { game } = useGame()
+  // The viewer's own order: an auto sort or the order they dragged; the server's hand order stays as it is.
+  const order = useHandOrder(game, cards ?? NO_CARDS, objects)
+  const [moved, setMoved] = useState('')
+  // A phone's dock has no width to spare beside the hand: there the sort waits in the table menu.
+  const phone = useCompactDock()
+  const { ids: ordered, move } = order
+  const onMove = useCallback(
+    (from: number, to: number) => {
+      const id = ordered[from]
+      move(from, to)
+      const name = id === undefined ? 'Card' : (objects[id]?.name ?? 'Card')
+      setMoved(`${name} moved to place ${to + 1} of ${ordered.length}.`)
+    },
+    [ordered, move, objects],
+  )
   const waiting = useMemo(() => commandersInHand(player, objects), [player, objects])
   const count = player?.hand.count ?? 0
   const zone = useRef<HTMLDivElement>(null)
@@ -119,6 +139,14 @@ export const HandDock = memo(function HandDock({
       data-fx-anchor={`${seat}:hand`}
       className="flex min-h-0 min-w-0 items-center justify-center border-t bg-table px-2 py-1"
     >
+      {cards === null || phone ? null : (
+        <div className="flex shrink-0 self-start pr-1">
+          <HandSortMenu mode={order.mode} onChoose={order.choose} />
+        </div>
+      )}
+      <p aria-live="polite" className="sr-only">
+        {moved}
+      </p>
       <div ref={zone} className="flex size-full min-h-0 min-w-0 items-end justify-center gap-1">
         {cards === null || waiting.size === 0 ? null : (
           // As high as the dock and no higher: the fan inside stands taller (the room for a lifted card) and the
@@ -142,7 +170,7 @@ export const HandDock = memo(function HandDock({
         ) : cards.length === 0 ? (
           <p className="self-center text-sm text-muted-foreground">Your hand is empty.</p>
         ) : (
-          <HandFan ids={cards} label={`${owner}'s hand`} size={size} cost layout={layout} />
+          <HandFan ids={ordered} label={`${owner}'s hand`} size={size} cost layout={layout} onMove={onMove} />
         )}
       </div>
     </section>
