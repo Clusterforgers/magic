@@ -1,8 +1,16 @@
-// Goal: /dev/unvalidated reads its view from the address (shrugging off nonsense), serves the real page over the fixture decks, shows each view the page has (every deck, one deck, a deck that runs whole, no decks, a wait, a failed list, a server without decks, one failed check, unreadable card texts and drafts that wait for a read), and answers "not found" with no fixture in a production build.
+// Goal: /dev/unvalidated reads its view from the address (shrugging off nonsense), serves the real page over the fixture decks, shows each view the page has (every deck, one deck, a deck that runs whole, no decks, a wait, a failed list, a server without decks, one failed check, unreadable card texts and drafts that wait for a read beside a deck on approved reads), and answers "not found" with no fixture in a production build.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { CARDS, FIXTURE_DECKS, UNVALIDATED_FIXTURE_MARKER, detailOf, reportLine, spanOf } from '../fixture'
+import {
+  CARDS,
+  FIXTURE_DECKS,
+  READ_FIXTURE_DECKS,
+  UNVALIDATED_FIXTURE_MARKER,
+  detailOf,
+  reportLine,
+  spanOf,
+} from '../fixture'
 import { DEV_VIEWS, parseDevUnvalidatedSearch } from './unvalidatedSearch'
 
 /** The real route tree, loaded fresh so the route sees the `import.meta.env.DEV` the test has set. */
@@ -51,6 +59,14 @@ describe('parseDevUnvalidatedSearch', () => {
 })
 
 describe('the fixture', () => {
+  it('holds, for the reads view, a deck on approved reads with nothing to read and decks with drafts waiting', () => {
+    expect(READ_FIXTURE_DECKS.map((deck) => [deck.item.state, deck.item.summary.to_read])).toEqual([
+      ['read', 0],
+      ['manual_play', 2],
+      ['manual_play', 2],
+    ])
+  })
+
   it('has a clause of every card that lies in its text, and a card of every state but Verified', () => {
     const states = new Set<string>()
     for (const key of Object.keys(CARDS)) {

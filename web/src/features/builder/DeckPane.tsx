@@ -308,6 +308,7 @@ export function DeckPane({
               counts={counts}
               toRead={report.summary.to_read}
               readTarget={deckId === undefined ? undefined : { deck: deckId }}
+              deckId={deckId}
               asSaved={asSaved}
               status={check.status}
               error={check.error}

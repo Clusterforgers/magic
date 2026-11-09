@@ -5,7 +5,15 @@
  */
 import { reportCard, reportOf } from '@/features/decks/fakeDecks'
 import type { Fetch } from '@/net/api'
-import type { CardHit, CheckRequest, DeckReport, DeckZone, Issue, Reason } from '@/protocol/generated'
+import type {
+  CardHit,
+  CheckRequest,
+  DeckReport,
+  DeckZone,
+  Issue,
+  ReadState,
+  Reason,
+} from '@/protocol/generated'
 import { jsonResponse } from '@/test-utils/fakeFetch'
 
 /** The reason the server gives a card its deck's owner plays by hand (`OWNER_BY_HAND` in `mtg-cards`). */
@@ -17,6 +25,8 @@ export interface CheckScript {
   cards?: readonly CardHit[]
   /** The clauses left to the table, by oracle id. */
   reasons?: Readonly<Record<string, readonly Reason[]>>
+  /** The read state of the draft that decides a card, by oracle id; a card left out has none. */
+  drafts?: Readonly<Record<string, ReadState>>
   /** The ways a list breaks the rules of its format; none by default. */
   legality?: (request: CheckRequest) => Issue[]
   /** Milliseconds every answer waits, so a page can be seen while it checks. */
@@ -61,6 +71,7 @@ export function reportFor(request: CheckRequest, script: CheckScript = {}): Deck
           ? [{ face: 0, span: { start: 0, end: 0 }, text: OWNER_BY_HAND }]
           : [...(script.reasons?.[line.oracle_id] ?? [])],
         ...(chosen ? { by_hand: true } : {}),
+        ...(script.drafts?.[line.oracle_id] === undefined ? {} : { draft: script.drafts[line.oracle_id] }),
       })
     })
     .sort(
