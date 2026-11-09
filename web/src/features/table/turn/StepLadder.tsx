@@ -145,17 +145,21 @@ export function StepLadder({ place = 'bar' }: { place?: 'bar' | 'panel' }) {
     const timer = setTimeout(() => setDashed([]), SKIPPED_MARK_MS * slow)
     return () => clearTimeout(timer)
   }, [dashed, slow])
-  if (stage !== 'Turns') return null
   // With a provider the ladder is drawn in one place only; without one it is the top bar's picture.
   if (controls !== null && controls.shown && controls.inBar !== (place === 'bar')) return null
   const interactive = controls !== null && controls.shown
-  const steps = ladderSteps(step, stops)
-  const states = pipStates(steps, step, on ? dashed : [])
+  const turns = stage === 'Turns'
+  // Before the first turn (opening hands) a seat that can set stops already has its marks, every one still to come.
+  if (!turns && !interactive) return null
+  const steps = ladderSteps(turns ? step : null, stops)
+  const states: readonly PipState[] = turns
+    ? pipStates(steps, step, on ? dashed : [])
+    : steps.map(() => 'upcoming')
   const runs = phaseRuns(steps)
   const phase = phaseOf(step)
   // The run holding the current step; a step the ladder does not draw (untap, cleanup) lights the run of its phase.
   const holding = runs.findIndex((run) => run.steps.some((name) => name === step))
-  const here = holding >= 0 ? holding : runs.findIndex((run) => run.phase.id === phase.id)
+  const here = !turns ? -1 : holding >= 0 ? holding : runs.findIndex((run) => run.phase.id === phase.id)
   // Where each run starts among the marks, which `pipStates` gave in the order of the steps.
   const starts = runs.map((_run, index) =>
     runs.slice(0, index).reduce((sum, run) => sum + run.steps.length, 0),
