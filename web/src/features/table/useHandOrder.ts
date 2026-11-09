@@ -89,7 +89,9 @@ export function useHandOrder(
     const kept = read(local, HAND_SORT_KEY)
     return isHandSort(kept) ? kept : 'drawn'
   })
-  const [custom, setCustom] = useState<ObjectId[] | null>(() => parseCustom(read(session, handOrderKey(game))))
+  const [custom, setCustom] = useState<ObjectId[] | null>(() =>
+    parseCustom(read(session, handOrderKey(game))),
+  )
   const ids = useMemo(
     () => (custom === null ? sortHand(cards, factsOf(objects), sort) : mergeCustom(custom, cards)),
     [cards, objects, sort, custom],
