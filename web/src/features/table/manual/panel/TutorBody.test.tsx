@@ -96,6 +96,11 @@ describe('the search grid of a search by hand', () => {
     expect(cards()[1]).toHaveFocus()
     await user.keyboard('{Enter}')
     expect(cards()[1]).toHaveAttribute('aria-pressed', 'true')
+    // The chosen card wears the chosen colour and a check; the others neither.
+    expect(cards().map((card) => card.querySelector('[data-slot="chosen-mark"]') !== null)).toEqual(
+      cards().map((_, index) => index === 1),
+    )
+    expect(cards()[1]).toHaveClass('border-selected')
   })
 
   it('keeps the card chosen while the search hides it, and Apply takes it', async () => {

@@ -92,6 +92,7 @@ text('opponent turn', 'turn-them', SURFACES)
 text('state', 'success', SURFACES)
 text('state', 'warning', SURFACES)
 text('state', 'destructive', SURFACES)
+text('chosen mark', 'on-selected', ['selected'])
 for (const name of MANA) text(`${name} mana symbol`, `on-mana-${name}`, [`mana-${name}`])
 for (const name of SUPPORT) text(`${name} support mark`, `support-${name}`, SURFACES)
 
@@ -104,6 +105,8 @@ edge('opponent turn', 'turn-them', SURFACES)
 edge('state', 'success', SURFACES)
 edge('state', 'warning', SURFACES)
 edge('state', 'destructive', SURFACES)
+// The ring of a chosen card sits on the lanes as well as on the table and the prompt's panels.
+edge('chosen card', 'selected', [...FILLS, 'lane'])
 for (const name of SUPPORT) edge(`${name} support mark`, `support-${name}`, FILLS)
 
 describe.each(['light', 'dark'] as const)('contrast in the %s theme', (themeName) => {
@@ -119,6 +122,7 @@ describe.each(['light', 'dark'] as const)('contrast in the %s theme', (themeName
   const GROUNDS = ['background', 'surface', 'raised'] as const
   const TINTS: ReadonlyArray<{ use: string; fg: string; of: string; share: number }> = [
     { use: 'main action hovered', fg: 'on-primary', of: 'primary', share: 0.9 },
+    { use: 'chosen target hovered', fg: 'on-selected', of: 'selected', share: 0.9 },
     ...STATUS.map((name) => ({ use: `${name} tint`, fg: name, of: name, share: 0.12 })),
     { use: 'destructive tint hovered', fg: 'destructive', of: 'destructive', share: 0.15 },
   ]
@@ -213,7 +217,18 @@ describe('the colour roles', () => {
     'success',
     'warning',
     'destructive',
+    'selected',
+    'on-selected',
   ]
+
+  it.each(['light', 'dark'] as const)(
+    'keeps the chosen mark a hue apart from the red of damage and loss in the %s theme',
+    (themeName) => {
+      const hue = (name: string): number => parseOklch(valueOf(VARS[themeName], name)).h
+      const apart = Math.abs(hue('destructive') - hue('selected'))
+      expect(Math.min(apart, 360 - apart)).toBeGreaterThanOrEqual(12)
+    },
+  )
 
   it.each(['light', 'dark'] as const)('has every role of the design system in the %s theme', (themeName) => {
     for (const role of ROLES) expect(parseOklch(valueOf(VARS[themeName], role)).alpha, role).toBe(1)

@@ -160,6 +160,10 @@ describe('a choice of one', () => {
     expect(card(1)).toHaveAttribute('data-chosen')
     expect(card(1).querySelector('[data-slot="chosen-mark"]')).not.toBeNull()
     expect(card(0).querySelector('[data-slot="chosen-mark"]')).toBeNull()
+    // The chosen card turns from the offer's colour to the chosen one.
+    expect(card(1)).toHaveClass('ring-selected')
+    expect(card(1)).not.toHaveClass('ring-primary')
+    expect(card(0)).not.toHaveClass('ring-selected')
   })
 })
 
