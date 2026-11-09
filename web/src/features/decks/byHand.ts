@@ -13,7 +13,10 @@ export interface ByHandDeck {
 }
 
 /** The body that saves `view` with every line of `oracleId` marked "play by hand", the other lines as they are. */
-export function byHandBody(view: Pick<DeckView, 'name' | 'format' | 'notes' | 'cards'>, oracleId: string): DeckBody {
+export function byHandBody(
+  view: Pick<DeckView, 'name' | 'format' | 'notes' | 'cards'>,
+  oracleId: string,
+): DeckBody {
   return {
     name: view.name,
     format: view.format,

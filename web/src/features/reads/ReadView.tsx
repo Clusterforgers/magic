@@ -172,10 +172,7 @@ function WrongOfferNote({
               decks={[{ id: target.deck, name: deckName, byHand: false }]}
             />
           ) : (
-            <Link
-              to="/decks/unvalidated"
-              className={buttonVariants({ variant: 'outline', size: 'xs' })}
-            >
+            <Link to="/decks/unvalidated" className={buttonVariants({ variant: 'outline', size: 'xs' })}>
               Choose the decks to play it by hand in
             </Link>
           )}
@@ -221,7 +218,7 @@ export function ReadView({ api, target, decks = decksApi }: ReadViewProps) {
   const judged = (oracleId: string, name: string, verdict: ReadVerdict): void => {
     const next = new Map(done).set(oracleId, verdict)
     const inDecks = cards.find((card) => card.oracle_id === oracleId)?.in_decks ?? false
-    setOffer(verdict === "wrong" ? { oracleId, name, inDecks } : null)
+    setOffer(verdict === 'wrong' ? { oracleId, name, inDecks } : null)
     setDone(next)
     const after = nextToRead(cards, new Set(next.keys()), oracleId)
     const nextName = cards.find((card) => card.oracle_id === after)?.name

@@ -97,7 +97,12 @@ describe('PlayByHand', () => {
 
   it('draws nothing for a card in none of the owner’s decks', () => {
     const { container } = render(
-      <PlayByHand oracleId="oracle-bolt" name="Lightning Bolt" api={fakeApi(async () => stored())} decks={[]} />,
+      <PlayByHand
+        oracleId="oracle-bolt"
+        name="Lightning Bolt"
+        api={fakeApi(async () => stored())}
+        decks={[]}
+      />,
     )
     expect(container).toBeEmptyDOMElement()
   })

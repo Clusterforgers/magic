@@ -383,7 +383,11 @@ describe('play by hand', () => {
 
   it('reads back from a stored deck, on the merged line when any of its lines says so', () => {
     const view = deckView({
-      cards: [lineOf('Lightning Bolt', 2), lineOf('Lightning Bolt', 2, { by_hand: true }), lineOf('Mountain', 20)],
+      cards: [
+        lineOf('Lightning Bolt', 2),
+        lineOf('Lightning Bolt', 2, { by_hand: true }),
+        lineOf('Mountain', 20),
+      ],
     })
     expect(draftOf(view).lines.map((item) => [item.card.name, item.count, item.byHand === true])).toEqual([
       ['Lightning Bolt', 4, true],

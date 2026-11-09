@@ -123,7 +123,11 @@ describe('play by hand', () => {
     const offered = rhystic
       .getAllByRole('button', { name: /^Play Rhystic Study by hand in / })
       .map((button) => button.textContent)
-    expect(offered).toEqual([`Play by hand in ${ATRAXA}`, 'Play by hand in Izzet Spells', `Play by hand in ${CHAOS}`])
+    expect(offered).toEqual([
+      `Play by hand in ${ATRAXA}`,
+      'Play by hand in Izzet Spells',
+      `Play by hand in ${CHAOS}`,
+    ])
     await user.click(rhystic.getByRole('button', { name: 'Play Rhystic Study by hand in Izzet Spells' }))
     expect(await rhystic.findByText('Played by hand in Izzet Spells')).toBeInTheDocument()
     const deckId = api.get.mock.calls[0]?.[0]
@@ -134,9 +138,7 @@ describe('play by hand', () => {
   it('is not offered for a card the game cannot host', async () => {
     await renderPage({ byHand: byHandApi() })
     await settled()
-    expect(
-      within(itemOf('Contract from Below')).queryByRole('button', { name: /by hand in/ }),
-    ).toBeNull()
+    expect(within(itemOf('Contract from Below')).queryByRole('button', { name: /by hand in/ })).toBeNull()
   })
 })
 

@@ -93,7 +93,8 @@ describe('mergeDecks', () => {
 })
 
 describe('the decks a card is played by hand in', () => {
-  const mine = (byHand: boolean) => reportCard('Zed', { support: 'manual', ...(byHand ? { by_hand: true } : {}) })
+  const mine = (byHand: boolean) =>
+    reportCard('Zed', { support: 'manual', ...(byHand ? { by_hand: true } : {}) })
   it.each([
     ['in none', [false, false, false], undefined],
     ['in one', [false, true, false], ['b']],

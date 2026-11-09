@@ -6,7 +6,8 @@ import { playByHand } from './byHand'
 import type { ByHandApi, ByHandDeck } from './byHand'
 import { describeDeckError } from './errors'
 
-type Marking = { status: 'idle' } | { status: 'saving' } | { status: 'done' } | { status: 'failed'; message: string }
+type Marking =
+  { status: 'idle' } | { status: 'saving' } | { status: 'done' } | { status: 'failed'; message: string }
 
 /** "Play by hand in <deck>" for one deck, or the note that the owner plays the card by hand there. */
 function DeckButton({

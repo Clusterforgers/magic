@@ -44,7 +44,9 @@ const ZONE_ORDER: readonly DeckZone[] = ['main', 'sideboard', 'commander', 'comp
 export function reportFor(request: CheckRequest, script: CheckScript = {}): DeckReport {
   const known = new Map((script.cards ?? []).map((card) => [card.oracle_id, card]))
   // As on the server, a card is played by hand when any of its lines says so.
-  const byHand = new Set((request.cards ?? []).filter((line) => line.by_hand === true).map((line) => line.oracle_id))
+  const byHand = new Set(
+    (request.cards ?? []).filter((line) => line.by_hand === true).map((line) => line.oracle_id),
+  )
   const cards = (request.cards ?? [])
     .map((line) => {
       const card = known.get(line.oracle_id)
