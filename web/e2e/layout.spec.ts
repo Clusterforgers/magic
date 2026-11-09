@@ -92,11 +92,13 @@ function tableStop(name: string, query: string, primary: 'pass' | 'keep' | 'prom
 /** Shows the Deck pane with Stats and the cards played by hand open; from 1440 px they sit in the rail, which has no disclosure to click. */
 async function openStats(page: Page): Promise<void> {
   await showPane(page, 'Stats')
+  // Two frames, so a resize across 1440 px has swapped the disclosures for the rail (or back) before they are read.
+  await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))))
   for (const name of [/^Stats/, /^Played by hand/]) {
     const heading = page.getByRole('region', { name: 'Deck', exact: true }).getByRole('button', { name })
-    if ((await heading.count()) > 0 && (await heading.getAttribute('aria-expanded')) !== 'true') {
-      await heading.click()
-    }
+    if ((await heading.count()) === 0) continue
+    const open = await heading.getAttribute('aria-expanded', { timeout: 2000 }).catch(() => null)
+    if (open === 'false') await heading.click()
   }
 }
 
