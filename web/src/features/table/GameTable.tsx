@@ -1,4 +1,4 @@
-import { memo, useCallback, useContext, useMemo, useState } from 'react'
+import { memo, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useFullBleed } from '@/components/appChrome'
@@ -31,6 +31,7 @@ import { StopControlsProvider } from './stops/stopControls'
 import { SidePanelMount, SideSheet, SideTabs } from './SideTabs'
 import { TableGrid } from './TableGrid'
 import { useBoardSplit } from './useBoardSplit'
+import { useTheirHead } from './useTheirHead'
 import { sheetReserve } from './boardSplit'
 import { TableOptionsContext } from './tableOptions'
 import { TopBar } from './TopBar'
@@ -64,7 +65,12 @@ const Table = memo(function Table() {
   const { seats: plan } = table
   const [overhang, setOverhang] = useState(0)
   const onOverhang = useCallback((px: number) => setOverhang(sheetReserve(px)), [])
-  const regions = useBoardSplit(table.regions, plan, overhang)
+  const [head, setHead] = useState(0)
+  // Steps of 8 px, so a pod that grows by a pixel does not move the boards.
+  const onHead = useCallback((px: number) => setHead(Math.ceil(px / 8) * 8), [])
+  const section = useRef<HTMLElement>(null)
+  useTheirHead(section, onHead, `${ready}|${plan.shape}|${plan.boards.join(',')}`)
+  const regions = useBoardSplit(table.regions, plan, overhang, head)
   const size: CardSize = plan.compact ? 'compact' : 'normal'
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
   const moments = useTableMoments(options.effects ?? EFFECTS_BY_DEFAULT)
@@ -78,6 +84,7 @@ const Table = memo(function Table() {
               <StopControlsProvider inBar={table.ladderInBar}>
                 <ControlsSlotProvider form={table.dock}>
                   <section
+                    ref={section}
                     aria-label="Game table"
                     data-mode={plan.mode}
                     className="relative h-dvh w-full overflow-hidden bg-table"

@@ -19,7 +19,7 @@ const parse = (key: string): LaneCounts => {
  * `regions` with the opponents' row and yours sized by `splitRegions`. The counts are read as one string, so a tap or
  * a change inside a stack redraws nothing here.
  */
-export function useBoardSplit(regions: Regions, plan: SeatPlan, reserve = 0): Regions {
+export function useBoardSplit(regions: Regions, plan: SeatPlan, reserve = 0, head = 0): Regions {
   const grouped = useContext(TableOptionsContext).stacks ?? STACKS_BY_DEFAULT
   const key = usePlay((state) =>
     [plan.viewer, ...plan.boards]
@@ -31,6 +31,6 @@ export function useBoardSplit(regions: Regions, plan: SeatPlan, reserve = 0): Re
   )
   return useMemo(() => {
     const [own = '0,0,0', ...theirs] = key.split('|')
-    return splitRegions(regions, plan, { own: parse(own), theirs: theirs.map(parse) }, reserve)
-  }, [key, regions, plan, reserve])
+    return splitRegions(regions, plan, { own: parse(own), theirs: theirs.map(parse) }, reserve, head)
+  }, [key, regions, plan, reserve, head])
 }
