@@ -6,6 +6,7 @@ import {
   boardCounts,
   boardFrames,
   MIN_ROW_SHARE,
+  podColumnFloor,
   shareSplit,
   splitBoards,
   splitRegions,
@@ -13,6 +14,7 @@ import {
   theirChromeOf,
   withSplit,
 } from './boardSplit'
+import { POD_CRAMPED_PX } from './cornerFit'
 import { buildFixture } from './dev/fixture'
 import { laneHeight } from './laneFit'
 import type { LaneCounts } from './laneFit'
@@ -191,6 +193,44 @@ describe('the chrome of the opponents row', () => {
       192 + BOARD_KEEP_PX - 1e-9,
     )
     expect(regions.sheet).toBeGreaterThan(regions.shared + 32)
+  })
+})
+
+describe('the pod column of the opponent', () => {
+  // The duel board at 1366x768 under a priority prompt with three stack items, whose sheet wants 76 px over the row.
+  it.each([
+    [1366, 768, 76],
+    [1440, 900, 64],
+    [1920, 1080, 76],
+  ])('keeps the column at %ix%i unfolded above a sheet that wants %i px', (width, height, overhang) => {
+    const table = planTable({ viewport: { width, height }, seatCount: 2, viewer: 0 })
+    const state = fixtureState(buildFixture({ seats: 2, board: 'duel' }))
+    const regions = splitRegions(table.regions, table.seats, boardCounts(state, table.seats), 64, 0, overhang)
+    const pads = boardFrames(table.regions, table.seats).theirs.chrome
+    expect(regions.opponents - pads - overhang).toBeGreaterThanOrEqual(POD_CRAMPED_PX)
+    expect(regions.own).toBeGreaterThanOrEqual((regions.opponents + regions.own) * MIN_ROW_SHARE)
+  })
+
+  it('asks for no floor on a phone or where the opponents stand in columns', () => {
+    const phone = planTable({ viewport: { width: 390, height: 844 }, seatCount: 2, viewer: 0 })
+    const columns = planTable({ viewport: { width: 1440, height: 900 }, seatCount: 4, viewer: 0 })
+    expect(podColumnFloor(phone.regions, phone.seats, 80)).toBe(0)
+    expect(podColumnFloor(columns.regions, columns.seats, 80)).toBe(0)
+  })
+
+  it('never takes your row below its share', () => {
+    const split = splitBoards({
+      room: 400,
+      ownChrome: 24,
+      theirChrome: 24,
+      theirFloor: 1000,
+      ownWidth: 900,
+      theirWidth: 900,
+      own: { lands: 4, creatures: 2, other: 0 },
+      theirs: [{ lands: 4, creatures: 2, other: 0 }],
+    })
+    expect(split.own).toBeCloseTo(400 * MIN_ROW_SHARE)
+    expect(split.opponents + split.own).toBeCloseTo(400)
   })
 })
 

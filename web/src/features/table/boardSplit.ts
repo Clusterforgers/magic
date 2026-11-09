@@ -1,6 +1,7 @@
 /** Pure height split between the opponents' boards and yours, weighted by the lanes each must hold. */
 import { LANE_LIMITS, highestRung, ladderOf, laneHeight } from './laneFit'
 import type { LaneCounts, LaneLimits } from './laneFit'
+import { POD_CRAMPED_PX } from './cornerFit'
 import { OWN_SHARE, POD_COLUMN_PX, ZONE_GAP_PX, sheetMost } from './layout'
 import type { Regions, SeatPlan } from './layout'
 import type { PlayState } from '@/play/store'
@@ -61,10 +62,21 @@ export function theirChromeOf(estimate: number, head: number): number {
 export const BOARD_KEEP_PX = 64
 
 /**
+ * The least height of the opponents' row where an opponent's pod stands as a column beside the board (off a phone,
+ * not in columns): the column holds the pod's tight blocks and the least picture (`POD_CRAMPED_PX`) above a sheet
+ * standing `overhang` px over the row, so it neither scrolls nor folds its chips under the corner. 0 elsewhere.
+ */
+export function podColumnFloor(regions: Regions, seats: SeatPlan, overhang: number): number {
+  if (regions.phone || seats.shape === 'columns') return 0
+  return boardFrames(regions, seats).theirs.chrome + POD_CRAMPED_PX + Math.ceil(finite(overhang) / 8) * 8
+}
+
+/**
  * `regions` with the board rows split for these boards (`splitBoards` over `boardFrames`); `reserve` px of the
  * opponents' row are kept for the prompt sheet (`sheetReserve`), so a two-line prompt shrinks both boards a little
  * instead of the opponents' a lot. Their battlefields begin `head` px down their row (`theirChromeOf`), and the sheet
- * leaves them `BOARD_KEEP_PX` below that.
+ * leaves them `BOARD_KEEP_PX` below that. The sheet wants `overhang` px over the row, which a pod column keeps free
+ * below itself (`podColumnFloor`).
  */
 export function splitRegions(
   regions: Regions,
@@ -72,6 +84,7 @@ export function splitRegions(
   counts: BoardCounts,
   reserve = 0,
   head = 0,
+  overhang = reserve,
 ): Regions {
   const frames = boardFrames(regions, seats)
   const theirChrome = theirChromeOf(frames.theirs.chrome, head)
@@ -79,6 +92,7 @@ export function splitRegions(
     room: regions.opponents + regions.own,
     ownChrome: frames.own.chrome,
     theirChrome: theirChrome + finite(reserve),
+    theirFloor: podColumnFloor(regions, seats, overhang),
     ownWidth: frames.own.width,
     theirWidth: frames.theirs.width,
     own: counts.own,
@@ -104,6 +118,8 @@ export interface SplitInput {
   /** What each row spends on other things than its board's lanes: padding, a pod line, the tile strip. */
   ownChrome: number
   theirChrome: number
+  /** The least height of the opponents' row, while your row keeps `MIN_ROW_SHARE` (`podColumnFloor`). */
+  theirFloor?: number
   /** The width of the lanes of your board and of each opponent's board in px. */
   ownWidth: number
   theirWidth: number
@@ -134,7 +150,7 @@ export function shareSplit(room: number): BoardSplit {
  * room together; the opponents' row gets what its lanes need and your row the rest, each at least `MIN_ROW_SHARE` of
  * the room. What is left lifts the opponents' cards further, up to `w`. Without a fit at the floor, or with no
  * permanent anywhere, the room splits by `OWN_SHARE`, the opponents' row keeping its chrome and `BOARD_KEEP_PX` (your
- * row keeping `MIN_ROW_SHARE`).
+ * row keeping `MIN_ROW_SHARE`). The opponents' row is never lower than `theirFloor` while your row keeps its share.
  */
 export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS): BoardSplit {
   const room = finite(input.room)
@@ -144,15 +160,17 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
     Math.max(least, laneHeight(input.ownWidth, input.own, card, limits) + finite(input.ownChrome))
   const theirNeed = (card: number): number =>
     Math.max(0, ...input.theirs.map((counts) => laneHeight(input.theirWidth, counts, card, limits)))
-  const theirRow = (card: number): number => Math.max(least, theirNeed(card) + finite(input.theirChrome))
+  const floor = Math.min(room - least, finite(input.theirFloor ?? 0))
+  const theirRow = (card: number): number =>
+    Math.max(least, floor, theirNeed(card) + finite(input.theirChrome))
   const theirCard = (card: number): number => Math.floor(card * THEIR_SCALE)
   const fits = (rung: number): boolean => ownRow(at(rung)) + theirRow(theirCard(at(rung))) <= room
   const empty = laneHeight(input.ownWidth, input.own, at(0), limits) + theirNeed(theirCard(at(0)))
   if (!fits(0) || empty === 0) {
     const share = shareSplit(room)
     if (input.theirs.length === 0) return share
-    const floor = Math.min(room - least, finite(input.theirChrome) + BOARD_KEEP_PX)
-    return share.opponents >= floor ? share : { ...share, opponents: floor, own: room - floor }
+    const keep = Math.min(room - least, Math.max(floor, finite(input.theirChrome) + BOARD_KEEP_PX))
+    return share.opponents >= keep ? share : { ...share, opponents: keep, own: room - keep }
   }
   const card = at(highestRung(rungs, fits))
   const spare = room - ownRow(card)
