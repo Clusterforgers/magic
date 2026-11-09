@@ -1,4 +1,4 @@
-// Goal: the overlaps the playtest screenshots showed stay fixed at the sizes of the design: a card's type line ends above the mana symbols at its foot, the crown and tax of a commander in the hand lie clear of its power and toughness, a compact tapped land shows its Tapped chip whole on a phone, a pod of the four-seat table keeps its zone chips inside it, the lobby's Ready bar stays inside the deck column, and a phone's turn badge shows whose turn it is uncut.
+// Goal: the overlaps the playtest screenshots showed stay fixed at the sizes of the design: a card's type line ends above the mana symbols at its foot, the crown and tax of a commander in the hand lie clear of its power and toughness, a compact tapped land shows its Tapped chip whole on a phone and a tapped attacker or blocker its combat mark beside its stats, a pod of the four-seat table keeps its zone chips inside it, the lobby's Ready bar stays inside the deck column, and a phone's turn badge shows whose turn it is uncut.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
@@ -163,6 +163,43 @@ test('a compact tapped land on a phone shows its Tapped chip whole', async ({ pa
   })
   expect(cut).toBe(0)
   expect(shown, 'a tapped land wide enough for the mark shows it').toBeGreaterThan(0)
+})
+
+test('a tapped attacker and a tapped blocker on a phone show their combat marks whole beside the stats', async ({
+  page,
+}) => {
+  await page.goto(`${DEV_WEB_URL}/dev/table?board=duel`)
+  await page.waitForSelector('[data-slot="mana-strip"]')
+  await atSize(page, { width: 390, height: 844 })
+  const { cut, shown } = await page.evaluate(() => {
+    const marks = [
+      ...document.querySelectorAll<HTMLElement>(
+        '[data-slot="card-face"][data-turned] [data-slot="card-turned-mark"]',
+      ),
+    ]
+    // A mark wrapped onto the row's hidden second line is not drawn; one on the first line lies whole on the face.
+    const drawn = marks.filter((mark) => {
+      const at = mark.getBoundingClientRect()
+      const row = mark.parentElement?.getBoundingClientRect()
+      return at.height > 0 && row !== undefined && at.top < row.bottom - 0.5
+    })
+    return {
+      cut: drawn.flatMap((mark) => {
+        const face = mark.closest<HTMLElement>('[data-slot="card-face"]')
+        const stat = face?.lastElementChild?.getBoundingClientRect()
+        const box = face?.getBoundingClientRect()
+        const at = mark.getBoundingClientRect()
+        if (box === undefined || stat === undefined) return []
+        const outside = at.left < box.left - 0.5 || at.right > box.right + 0.5 || at.bottom > box.bottom + 0.5
+        const overStat = stat.height > 4 && at.right > stat.left + 0.5 && at.bottom > stat.top + 0.5
+        return outside || overStat ? [mark.title] : []
+      }),
+      shown: drawn.map((mark) => mark.title),
+    }
+  })
+  expect(cut).toEqual([])
+  expect(shown).toContain('Attacking')
+  expect(shown).toContain('Blocking')
 })
 
 test('a seat pod keeps its zone chips inside the pod on the four-seat table', async ({ page }) => {

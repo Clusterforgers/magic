@@ -17,7 +17,7 @@ import {
   statusChips,
   typeLine,
 } from './cardModel'
-import type { CombatRole, Frame, Links } from './cardModel'
+import type { CombatRole, Frame, Links, StatusChip } from './cardModel'
 import { FRAME, NARROW_PX, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { isUnattached } from '@/play/hosts'
@@ -28,7 +28,7 @@ import { NoteMark, RevealedMark } from './HandMarks'
 import { ByHandMark } from './manual/ByHand'
 import { ReadMark } from './manual/ReadMark'
 import { ManaPips } from './ManaPips'
-import { GlyphMark, counterGlyph, linkGlyph, noteGlyph, statusGlyph } from './narrowMarks'
+import { GlyphMark, counterGlyph, linkGlyph, noteGlyph, statusGlyph, turnedMarks } from './narrowMarks'
 import { statBadge } from './overlay'
 import { usePrinted } from './printed'
 import { roomTitle } from './rooms'
@@ -182,6 +182,53 @@ const PARTS = {
   },
 }
 
+interface TurnedMarksProps {
+  chips: readonly StatusChip[]
+  /** The stat box's number, drawn invisible to keep its room; none when the face has no stat box. */
+  statText: string | number | null
+  statClass: string
+}
+
+/**
+ * The stat row of a compact turned face whose art slot holds no row of marks: the most important marks as 12 px
+ * glyphs left of the stat box, as many as fit whole. A child of the art slot, so its container query shows the row
+ * exactly where the slot hides its own marks; positioned on the face, so the slot does not clip it. Drawn for the eye
+ * only: the card's name says the same words.
+ */
+function TurnedMarks({ chips, statText, statClass }: TurnedMarksProps) {
+  const marks = turnedMarks(chips)
+  if (marks.length === 0) return null
+  return (
+    <span
+      data-turned-marks
+      aria-hidden="true"
+      className="absolute inset-x-0 bottom-0.5 hidden items-center [@container(max-height:11.5px)]:flex"
+    >
+      {/* A first item of no width: a glyph wider than the room wraps onto the hidden second line, never cut. */}
+      <span className="flex h-3 min-w-0 flex-1 flex-wrap overflow-hidden pl-px">
+        <span className="h-3 w-0" />
+        {marks.map((chip) => (
+          <GlyphMark
+            key={chip.label}
+            glyph={statusGlyph(chip)}
+            slot="card-turned-mark"
+            tone={chip.tone}
+            quiet
+            className={cn(
+              'ml-0.5 h-3 px-px text-xs font-medium text-background',
+              chip.tone === 'danger' ? 'bg-destructive' : 'bg-foreground',
+            )}
+          />
+        ))}
+      </span>
+      {/* The stat box's room: its number drawn invisible, as generated content so the card's text holds it once. */}
+      {statText === null ? null : (
+        <span data-stat={statText} className={cn(statClass, 'invisible before:content-[attr(data-stat)]')} />
+      )}
+    </span>
+  )
+}
+
 interface TextFaceProps extends CardFaceProps {
   /** Draw it as a card: the face of a token whose picture the server has none of. */
   card?: boolean
@@ -226,6 +273,10 @@ export function TextFace({
   const token = object.kind === 'Token'
   // Only a token drawn as text is dark; one drawn as a card (its picture is missing) keeps its frame colour.
   const dark = token && !card
+  const statText = pt ?? stat?.count ?? null
+  const shortTurned = turned && size === 'compact'
+  // A compact turned face pads its stat box less, so a 50 px creature keeps room for one mark beside it.
+  const statClass = cn(classes.name, parts.stat, 'leading-snug font-bold tabular-nums', shortTurned && 'px-1')
   return (
     <span
       data-slot="card-face"
@@ -259,11 +310,10 @@ export function TextFace({
         data-slot="card-art"
         className={cn(
           'mx-1 my-0.5 flex min-h-0 flex-1 flex-wrap content-start gap-0.5 overflow-hidden rounded-sm p-0.5',
-          // A compact turned face has a few px of art: its marks are 12 px high, and drop out (their words stay in the
-          // card's name) where even that row does not fit, rather than show cut in half.
-          turned &&
-            size === 'compact' &&
-            'my-0 p-0 [container-type:size] [&>[data-glyph]]:h-3 *:[@container(max-height:11.5px)]:hidden',
+          // A compact turned face has a few px of art: its marks are 12 px high, and where even that row does not fit
+          // they drop out rather than show cut in half; the most important move beside the stat box (`turnedMarks`).
+          shortTurned &&
+            'my-0 p-0 [container-type:size] [&>[data-glyph]]:h-3 [&>:not([data-turned-marks])]:[@container(max-height:11.5px)]:hidden',
           // Glyph marks (`narrowMarks`) that never shrink: a word cut to a stub would not read.
           narrow && 'items-start *:shrink-0',
           dark ? 'bg-black/25' : 'bg-foreground/5',
@@ -402,6 +452,7 @@ export function TextFace({
         {handNote === undefined ? null : (
           <NoteMark note={handNote} compact={size === 'compact'} text={classes.text} />
         )}
+        {shortTurned ? <TurnedMarks chips={chips} statText={statText} statClass={statClass} /> : null}
       </span>
       {/* A corner badge: the art slot shrinks to nothing on a small card, which would hide the label. */}
       {note?.label === undefined ? null : narrow ? (
@@ -455,9 +506,7 @@ export function TextFace({
           data-slot={pt === null && stat !== null ? `card-${stat.kind}` : undefined}
           data-modified={modified ?? undefined}
           className={cn(
-            classes.name,
-            parts.stat,
-            'leading-snug font-bold tabular-nums',
+            statClass,
             modified === 'up' && 'border-background bg-support-verified text-background',
             modified === 'down' && 'border-background bg-destructive text-background',
           )}
