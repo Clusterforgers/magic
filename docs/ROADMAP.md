@@ -145,7 +145,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (w2d) Handicaps (life and opening hand per seat) on the create form's house rules
 - [ ] (w2g) `precon-game.spec.ts --repeat-each=6` plays out every time; a two-seat table that casts no spell in nine turns keeps its trail for the cause
 - [ ] (f1c) The deck report carries the quoted span with each reason (`mtg-cards` `Reason`), so the not-validated list and the precon details read no card per flagged card from `GET /api/cards/{oracle_id}` (`docs/web.md`, the not-validated list)
-- [ ] (f1d) The builder links its check bar to `/decks/$deckId/unvalidated` (`docs/web.md`)
 - [ ] The importer fixtures of `mtg-import` hold real records instead of invented oracle ids and printings; synthetic edge cases stay marked as synthetic
 - [ ] Verify the MTGO and Arena export parsers against real exports, with companions and custom cards (`docs/data-sources.md`)
 - [ ] (v1f) A spectator's connection in the server: a socket that holds no seat, is sent `StateView::for_spectator` and the spectator's batches, and a rule for who may watch
