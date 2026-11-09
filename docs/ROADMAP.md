@@ -35,7 +35,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Game flow: auto-pass, response clocks, yields, stops (own declare attackers and postcombat main pinned by default), Resolve and End turn as separate buttons, Full Control, the timer bank, the by-hand window, the answer to a one-option question, auto choices (trigger order, damage), smart stops, per-ability yields, Undo of a cast or activation at every step and leak tests (`docs/ui-design.md`).
 - Commander: house rules, format rules, deck check, every partner pair kind end to end, companion in the engine, tax, commander damage and any number of seats (`docs/server.md`).
 - Manual play: the Commands panel, by-hand clauses with chips, manual actions at any time on any turn and fix marks (`docs/web.md`, `docs/protocol.md`).
-- Web table: lanes and card sizes, the seat corner, battles with their defense and protector, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons, a crowded stack folded into counted chips and a big attack bundled by target, fit at six sizes and a 12 px text floor (`docs/web.md`, `docs/ui-design.md`).
+- Web table: lanes and card sizes, the seat corner, battles with their defense and protector, click combat, the mana strip, legible play (flights, spotlight, target arrows, marks, combat strikes), Equipment tucked at its host with its grants, hand reasons, counters on players at every seat, a crowded stack folded into counted chips and a big attack bundled by target, fit at six sizes, a 12 px text floor and glyph marks on narrow faces (`docs/web.md`, `docs/ui-design.md`).
 - Lobby, decks and precons: invites, the deck builder with pictures and stats, import and export, the deck check, the not-validated list and the precon browser (`docs/web.md`).
 - Reading cards: the read endpoints with the fix mark of a `wrong`, `stale_read` and account deletion, and the review screen `/read` (a deck, a precon or every card, most played first, the next card loaded ahead) with the 2 s delay, keys C and W, `ReadDialog` from the table's preview and a link to it from every deck check (`docs/server.md`, `docs/web.md`).
 - Card images: a server cache with a warm-up, and pictures in the table, builder and preview (`docs/server.md`, `docs/web.md`).
@@ -64,10 +64,8 @@ The table and its prompts are live; the items below polish them.
 
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
-- [ ] (ts6b) Narrow compact faces (under 76 px) cut their marks to stubs ("Si", "+1/+…"): marks as icons or short glyphs that read whole at 1024 (`CardFace.tsx`)
-- [ ] (pc1) Counters on players (rad, poison, energy, experience and the rest) show at the seat for every viewer, with their count
+- [ ] (ts6c) The prompt corner badge ("At Ana") on a narrow compact face reads whole as a glyph, its words in the tooltip
 - [ ] (cf1) A coin flip plays a coin animation and the seat that calls it picks heads or tails
-- [ ] (ls1) Searching your library has a search field over the card list (name, type, text)
 - [ ] (ui1i2) The effect moments attack, block, damage, life, enter, rival, activate, resolve, counter, land, draw and equip are still to be read by screenshot at the six design sizes (death, enter and draw read at 1024 and 390)
 - [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus
 - [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)

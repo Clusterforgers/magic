@@ -1,12 +1,13 @@
 import { useMemo, useRef, useState } from 'react'
 import type { FocusEvent, KeyboardEvent, ReactNode, Ref } from 'react'
-import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import type { ObjectId, ObjectView } from '@/protocol/generated'
 import { rovingTarget } from '../useRoving'
+import { CardSearchField } from './CardSearchField'
 import { FILTER_FROM, matchesFilter } from './cardsText'
 import { ChoiceAnchorContext } from './choiceAnchor'
 import { numberKey } from './choiceText'
+import { useOracleTexts } from './oracleWords'
 import { tileSizeFor } from './PromptCard'
 import { PromptCard } from './PromptCard'
 import type { PromptCardSize } from './PromptCard'
@@ -39,6 +40,8 @@ export interface CardChoicesProps {
   lead?: ReactNode
   /** The sheet's room for the grid, as a Tailwind class; the default leaves what the sentence and the buttons take. */
   className?: string
+  /** A search of a library: the search box shows from two cards and takes focus when the prompt appears. */
+  search?: boolean
 }
 
 /** The card a focused element belongs to, or null. */
@@ -54,8 +57,9 @@ function candidateOf(element: EventTarget | null): ObjectId | null {
  * The cards a prompt offers, as pictures in a grid that scrolls inside the sheet: the one place every choice of
  * cards is drawn (the cards of a search, a discard, the targets in a graveyard or in exile). A card is a toggle; Tab
  * reaches one card, the arrow keys, Home and End move along the grid, the first ten have number keys, and a long list
- * gets a filter box. The card under the pointer or focus is large at the side (the table's preview), and so is the
- * last one chosen while none is hovered, which is how a tap on a phone shows its card.
+ * and a search of a library get a search box over name, type line and rules text (`CardSearchField`). The card under
+ * the pointer or focus is large at the side (the table's preview), and so is the last one chosen while none is
+ * hovered, which is how a tap on a phone shows its card.
  */
 export function CardChoices({
   cards,
@@ -70,14 +74,27 @@ export function CardChoices({
   focusFirst,
   lead,
   className,
+  search = false,
 }: CardChoicesProps) {
   const total = cards.length
   const [filter, setFilter] = useState('')
-  const filtering = total > FILTER_FROM
-  const visible = useMemo(
-    () => (filtering ? cards.filter((id) => matchesFilter(objects.get(id), filter)) : cards),
-    [filtering, cards, objects, filter],
+  const filtering = total > FILTER_FROM || (search && total > 1)
+  const views = useMemo(
+    () => (filtering ? cards.map((id) => objects.get(id)) : []),
+    [filtering, cards, objects],
   )
+  const rules = useOracleTexts(views)
+  const visible = useMemo(
+    () =>
+      filtering
+        ? cards.filter((id) => {
+            const object = objects.get(id)
+            return matchesFilter(object, filter, object === undefined ? '' : rules.get(object))
+          })
+        : cards,
+    [filtering, cards, objects, filter, rules],
+  )
+  const hiddenChosen = chosen.filter((id) => !visible.includes(id)).length
   // Tab reaches one card of the list (the last one focused, else the first); the arrow keys move along it.
   const [last, setLast] = useState<ObjectId | null>(null)
   const current = last !== null && visible.includes(last) ? last : (visible[0] ?? null)
@@ -114,14 +131,15 @@ export function CardChoices({
   return (
     <ChoiceAnchorContext value={root}>
       {filtering ? (
-        <Input
-          type="search"
-          aria-label="Filter cards"
-          placeholder="Filter by name or type"
-          autoComplete="off"
+        <CardSearchField
           value={filter}
-          className="h-9 min-w-40 flex-1 basis-40"
-          onChange={(event) => setFilter(event.target.value)}
+          onChange={setFilter}
+          shown={visible.length}
+          total={total}
+          hiddenChosen={hiddenChosen}
+          onLeave={() => root.current?.querySelector<HTMLElement>('button[data-candidate]')?.focus()}
+          focusOnOpen={search}
+          className="min-w-48 flex-1 basis-48"
         />
       ) : null}
       <div
@@ -165,7 +183,7 @@ export function CardChoices({
         })}
         {visible.length === 0 && total > 0 ? (
           <p data-slot="no-match" className="p-2 text-sm text-muted-foreground">
-            No card matches that filter.
+            {`No card has “${filter.trim()}” in its name, type or text.`}
           </p>
         ) : null}
       </div>

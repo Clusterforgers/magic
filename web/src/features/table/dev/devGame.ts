@@ -19,6 +19,7 @@ import { STATES_BASE_PERMANENTS, withStates } from './states'
 import { withCrowd } from './crowdScene'
 import { withEquip } from './equip'
 import { withRevealed } from './revealScene'
+import { withPlayerCounters } from './countersScene'
 
 /**
  * The play state of a seat that has just seen `fixture`. It faces `pending`, by default a priority decision with
@@ -215,6 +216,8 @@ export interface FixtureGameOptions extends FixtureOptions {
   crowd?: true
   /** The first opponent's revealed hand cards and top card, a revealed card of the viewer's and two notes join the table (`dev/revealScene.ts`). */
   reveal?: true
+  /** Counters on every player join the table (`dev/countersScene.ts`). */
+  counters?: true
   /** Milliseconds the table takes to answer a preview; `PREVIEW_LATENCY_MS` when left out. */
   previewMs?: number
   /** Gives the viewer a plain priority decision (nothing to play) when no prompt is named, so manual actions can be taken. */
@@ -250,7 +253,8 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const laid = buildFixture(sized.turn === 'you' ? { ...sized, active: sized.viewer ?? 0 } : sized)
   const stated = options.states === true ? withStates(laid) : laid
   const equipped = options.equip === true ? withEquip(stated) : stated
-  const revealed = options.reveal === true ? withRevealed(equipped) : equipped
+  const unveiled = options.reveal === true ? withRevealed(equipped) : equipped
+  const revealed = options.counters === true ? withPlayerCounters(unveiled) : unveiled
   const plain = options.crowd === true ? withCrowd(revealed) : revealed
   const built = options.real === undefined ? plain : withRealCards(plain, options.real, options.viewer ?? 0)
   const store = createPlayStore()
