@@ -230,7 +230,7 @@ export interface Regions {
   own: number
   /**
    * The most a prompt sheet grows to: 40 % of the height, up over the opponents' board (on a phone leaving
-   * `SHEET_KEEP_PX` of it) and no further than the top bar. Never down over your board (the cards a prompt asks you to click are yours), the hand dock or the controls.
+   * `SHEET_KEEP_PX` of it, elsewhere their pods and `BOARD_KEEP_PX` of their boards once split) and no further than the top bar. Never down over your board (the cards a prompt asks you to click are yours), the hand dock or the controls.
    */
   sheet: number
 }
@@ -238,9 +238,18 @@ export interface Regions {
 const finite = (value: number): number => (Number.isFinite(value) ? Math.max(0, value) : 0)
 const clampTo = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value))
 
-/** The most a prompt sheet grows to in a window of this height, over a strip and an opponents' area of these heights. */
-export function sheetMost(height: number, shared: number, opponents: number, phone: boolean): number {
-  const room = phone ? Math.max(0, opponents - SHEET_KEEP_PX) : opponents
+/**
+ * The most a prompt sheet grows to in a window of this height, over a strip and an opponents' area of these heights:
+ * it leaves `SHEET_KEEP_PX` of the area on a phone and `keep` px elsewhere.
+ */
+export function sheetMost(
+  height: number,
+  shared: number,
+  opponents: number,
+  phone: boolean,
+  keep = 0,
+): number {
+  const room = Math.max(0, opponents - (phone ? SHEET_KEEP_PX : keep))
   return Math.min((height * SHEET_MAX_VH) / 100, shared + room)
 }
 

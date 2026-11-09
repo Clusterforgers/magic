@@ -1,7 +1,8 @@
-//! Goal: the board rows split by what each board holds, so the duel board draws large cards and no board scrolls.
+//! Goal: the board rows split by what each board holds, so the duel board draws large cards and no board scrolls, and the opponents keep their pods and a row of cards under a prompt sheet.
 import { describe, expect, it } from 'vitest'
 import { fixtureState } from './dev/devGame'
 import {
+  BOARD_KEEP_PX,
   boardCounts,
   boardFrames,
   MIN_ROW_SHARE,
@@ -9,6 +10,7 @@ import {
   splitBoards,
   splitRegions,
   THEIR_SCALE,
+  theirChromeOf,
   withSplit,
 } from './boardSplit'
 import { buildFixture } from './dev/fixture'
@@ -16,6 +18,7 @@ import { laneHeight } from './laneFit'
 import type { LaneCounts } from './laneFit'
 import { planTable, regionSizes, SHEET_KEEP_PX } from './layout'
 import { battlefieldStacks, layoutSeat } from './rowStacks'
+import { headOf } from './useTheirHead'
 
 const counts = (lands: number, creatures: number, other: number): LaneCounts => ({ lands, creatures, other })
 const NONE = counts(0, 0, 0)
@@ -27,9 +30,25 @@ describe('splitBoards', () => {
     ['both empty', NONE, [NONE]],
     ['nothing fits at the floor', counts(40, 40, 40), [counts(40, 40, 40)]],
   ])('splits by the default shares when %s', (_, own, theirs) => {
-    const split = splitBoards({ ...base, room: 100, own, theirs })
-    expect(split).toEqual(shareSplit(100))
+    const split = splitBoards({ ...base, room: 400, own, theirs })
+    expect(split).toEqual(shareSplit(400))
   })
+
+  it.each([
+    // The opponents' row keeps its chrome and a row of cards, and your row a quarter of the room.
+    [600, 260, 324],
+    [400, 200, 264],
+    [400, 300, 300],
+  ])(
+    'lifts the opponents of a %i px room with %i px of chrome to %f px when nothing fits',
+    (room, chrome, most) => {
+      const crowded = counts(40, 40, 40)
+      const split = splitBoards({ ...base, room, theirChrome: chrome, own: crowded, theirs: [crowded] })
+      expect(split.opponents).toBeCloseTo(most, 6)
+      expect(split.opponents + split.own).toBeCloseTo(room, 6)
+      expect(split.own).toBeGreaterThanOrEqual(room * MIN_ROW_SHARE)
+    },
+  )
 
   it.each([
     [counts(4, 5, 3), [counts(4, 4, 2)]],
@@ -128,6 +147,62 @@ describe('the prompt sheet of a split table', () => {
       expect(regions.sheet).toBeCloseTo(Math.min(height * 0.4, regions.shared + room), 6)
     },
   )
+
+  it.each([
+    [1280, 720, 192],
+    [1366, 768, 160],
+    [1024, 768, 72],
+  ])(
+    'on %ix%i leaves the opponents their pods and a row of cards (%i px of chrome)',
+    (width, height, chrome) => {
+      const regions = withSplit(
+        regionSizes({ width, height }),
+        { opponents: 320, own: 200, ownCard: 60, theirCard: 48 },
+        chrome + BOARD_KEEP_PX,
+      )
+      expect(regions.sheet).toBeCloseTo(
+        Math.min(height * 0.4, regions.shared + 320 - chrome - BOARD_KEEP_PX),
+        6,
+      )
+    },
+  )
+})
+
+describe('the chrome of the opponents row', () => {
+  it.each([
+    // No board measured, or pods no taller than the estimate: the estimate.
+    [72, 0, 72],
+    [72, 40, 72],
+    // A pod line wrapped to four lines: the measured head with the zone's padding and the row's gap, in steps of 8.
+    [72, 174, 192],
+    [72, 177, 200],
+    [72, Number.NaN, 72],
+  ])('of an estimate of %i px with battlefields %f px down is %i px', (estimate, head, chrome) => {
+    expect(theirChromeOf(estimate, head)).toBe(chrome)
+  })
+
+  it('makes the opponents row of a short window keep their pods and a row of cards under a long prompt', () => {
+    const viewport = { width: 1280, height: 720 }
+    const table = planTable({ viewport, seatCount: 4, viewer: 0 })
+    const state = fixtureState(buildFixture({ seats: 4 }))
+    const regions = splitRegions(table.regions, table.seats, boardCounts(state, table.seats), 64, 174)
+    expect(regions.opponents).toBeGreaterThanOrEqual(192 + BOARD_KEEP_PX)
+    expect(regions.opponents - (regions.sheet - regions.shared)).toBeGreaterThanOrEqual(
+      192 + BOARD_KEEP_PX - 1e-9,
+    )
+    expect(regions.sheet).toBeGreaterThan(regions.shared + 32)
+  })
+})
+
+describe('the head of the opponents area', () => {
+  it.each([
+    [44, [], 0],
+    [44, [218, 190, 246], 202],
+    [100, [80], 0],
+    [44, [Number.NaN, 120], 76],
+  ])('of an area at %i px over zones at %o is %i px', (top, zones, head) => {
+    expect(headOf(top, zones)).toBe(head)
+  })
 })
 
 describe('a four-seat table', () => {
