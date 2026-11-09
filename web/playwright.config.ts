@@ -2,6 +2,8 @@ import { defineConfig } from '@playwright/test'
 import type { PlaywrightTestConfig } from '@playwright/test'
 import {
   ACCOUNTS_DATABASE_URL,
+  ACTIVE_SECS,
+  EXTENSION_SECS,
   ACCOUNTS_SERVER_PORT,
   ACCOUNTS_SERVER_URL,
   ACCOUNTS_WEB_PORT,
@@ -77,6 +79,9 @@ export default defineConfig({
         DATABASE_URL: '',
         MTG_DWELL_MS: NO_DWELL,
         MTG_SEED: GAME_SEED,
+        ...(ACTIVE_SECS === undefined
+          ? {}
+          : { MTG_ACTIVE_SECS: ACTIVE_SECS, MTG_EXTENSION_SECS: EXTENSION_SECS }),
       },
       url: `${SERVER_URL}/healthz`,
       reuseExistingServer,
