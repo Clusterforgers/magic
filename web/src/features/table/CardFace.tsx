@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
 import {
   costPips,
+  counterChips,
   counterLabels,
   frameOf,
   keywordLine,
@@ -27,6 +28,7 @@ import { NoteMark, RevealedMark } from './HandMarks'
 import { ByHandMark } from './manual/ByHand'
 import { ReadMark } from './manual/ReadMark'
 import { ManaPips } from './ManaPips'
+import { GlyphMark, counterGlyph, linkGlyph, statusGlyph } from './narrowMarks'
 import { statBadge } from './overlay'
 import { usePrinted } from './printed'
 import { roomTitle } from './rooms'
@@ -258,14 +260,26 @@ export function TextFace({
         className={cn(
           'mx-1 my-0.5 flex min-h-0 flex-1 flex-wrap content-start gap-0.5 overflow-hidden rounded-sm p-0.5',
           turned && size === 'compact' && 'my-px p-px',
-          // One row of marks, each cut with an ellipsis, rather than a second row the slot clips.
-          narrow && 'flex-nowrap items-start *:min-w-0 *:shrink *:truncate',
+          // Glyph marks (`narrowMarks`) that never shrink: a word cut to a stub would not read.
+          narrow && 'items-start *:shrink-0',
           dark ? 'bg-black/25' : 'bg-foreground/5',
         )}
       >
         <ByHandMark object={object} spot="chip" compact={size === 'compact'} text={classes.text} />
         <ReadMark object={object} spot="chip" compact={size === 'compact'} text={classes.text} />
-        {chips.map(({ label, tone }) => {
+        {chips.map((chip) => {
+          const { label, tone } = chip
+          const back = tone === 'danger' ? 'bg-destructive' : 'bg-foreground'
+          if (narrow)
+            return (
+              <GlyphMark
+                key={label}
+                glyph={statusGlyph(chip)}
+                slot="card-status"
+                tone={tone}
+                className={cn('font-medium text-background', back, classes.text)}
+              />
+            )
           const compactIcon = size === 'compact' && label === 'Tapped'
           return (
             <span
@@ -274,7 +288,7 @@ export function TextFace({
               data-tone={tone}
               className={cn(
                 'h-fit rounded-sm px-1 leading-snug font-medium text-background',
-                tone === 'danger' ? 'bg-destructive' : 'bg-foreground',
+                back,
                 classes.text,
                 // A compact tapped land is too narrow for the word: an icon, the word kept for screen readers.
                 compactIcon && 'inline-flex items-center px-0.5 py-px leading-none',
@@ -285,19 +299,40 @@ export function TextFace({
             </span>
           )
         })}
-        {counters.map((label) => (
-          <span
-            key={`counter-${label}`}
-            data-slot="card-counter"
+        {narrow
+          ? counterChips(object).map((chip) => (
+              <GlyphMark
+                key={`counter-${chip.key}`}
+                glyph={counterGlyph(chip)}
+                slot="card-counter"
+                className={cn(
+                  'border border-foreground bg-background font-semibold text-foreground',
+                  classes.text,
+                )}
+              />
+            ))
+          : counters.map((label) => (
+              <span
+                key={`counter-${label}`}
+                data-slot="card-counter"
+                className={cn(
+                  'h-fit rounded-sm border border-foreground bg-background px-1 leading-snug font-semibold text-foreground',
+                  classes.text,
+                )}
+              >
+                {label}
+              </span>
+            ))}
+        {links?.host === undefined ? null : narrow ? (
+          <GlyphMark
+            glyph={linkGlyph('host', links.host)}
+            slot="card-attached-to"
             className={cn(
-              'h-fit rounded-sm border border-foreground bg-background px-1 leading-snug font-semibold text-foreground',
+              'border border-dashed border-foreground bg-background text-foreground',
               classes.text,
             )}
-          >
-            {label}
-          </span>
-        ))}
-        {links?.host === undefined ? null : (
+          />
+        ) : (
           <span
             data-slot="card-attached-to"
             className={cn(
@@ -308,7 +343,13 @@ export function TextFace({
             On {links.host}
           </span>
         )}
-        {links?.protector === undefined ? null : (
+        {links?.protector === undefined ? null : narrow ? (
+          <GlyphMark
+            glyph={linkGlyph('protector', links.protector)}
+            slot="card-protector"
+            className={cn('border border-foreground bg-background text-foreground', classes.text)}
+          />
+        ) : (
           <span
             data-slot="card-protector"
             className={cn(
