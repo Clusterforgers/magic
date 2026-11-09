@@ -148,6 +148,7 @@ describe('a row', () => {
     'poison',
     'energy',
     'experience',
+    'rad',
     'draw',
     'look',
     'tutor',

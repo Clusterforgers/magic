@@ -13,6 +13,8 @@ import { EnchantChips } from './EnchantChips'
 import { BankMark } from './BankMark'
 import { ACTIVE_EDGE, ACTIVE_TINT, AwayMark, CountChip, PriorityDot, SeatDot } from './PodParts'
 import { chipZones, podCounts, podState, priorityName, showsPriorityDot, tileName } from './podFigures'
+import { PlayerCounterChips } from './PlayerCounterChips'
+import { playerCounterChips } from './playerCounters'
 import { RevealedFigure } from './RevealedChip'
 import { revealedLabel, revealedOf } from './revealed'
 import { exileOf, holdsPriority, isActiveSeat, playerOf } from './selectors'
@@ -75,6 +77,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
           focused,
           commander: [...chips.tax, ...chips.damage].map((chip) => chip.words),
           enchanted: enchants.map((chip) => chip.words),
+          counters: playerCounterChips(player).map((chip) => chip.words),
           revealed: shown.length === 0 ? undefined : revealedLabel(shown.length).toLowerCase(),
         }) +
         (defender.state === 'chosen'
@@ -123,6 +126,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       {/* What does not fit the tile is cut, the last figure first; the spoken name has it all. */}
       <span className="flex h-5 items-center gap-x-1.5 overflow-hidden whitespace-nowrap text-muted-foreground">
         <DamageChips chips={chips.damage} density="tile" />
+        <PlayerCounterChips owner={name} player={player} density="tile" />
         {chipZones(counts).map((zone) => (
           <Fragment key={zone}>
             <CountChip zone={zone} count={counts[zone]} density="tile" />
