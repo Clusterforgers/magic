@@ -20,3 +20,14 @@ export function useDockForm(): DockForm {
 export function useCompactDock(): boolean {
   return useDockForm() === 'compact'
 }
+
+/** The place of the hand's sort control on a phone, in the controls dock: the hand dock has no width to spare there. */
+export const SortSlotContext = createContext<HTMLElement | null>(null)
+
+/** Registers the controls dock's element for the hand's sort control (`SortSlotContext`). */
+export const SetSortSlotContext = createContext<(element: HTMLElement | null) => void>(() => undefined)
+
+/** The element of the controls dock that holds the hand's sort control on a phone, or null where there is none. */
+export function useHandSortSlot(): HTMLElement | null {
+  return useContext(SortSlotContext)
+}

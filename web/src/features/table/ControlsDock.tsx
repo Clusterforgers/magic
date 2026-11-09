@@ -1,7 +1,7 @@
 import { createContext, useContext, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { DockFormContext } from './dockLayout'
+import { DockFormContext, SetSortSlotContext, SortSlotContext } from './dockLayout'
 import type { DockForm } from './dockLayout'
 import { StopsDock } from './stops/StopsDock'
 import { useEdgeFade } from './useEdgeFade'
@@ -17,10 +17,15 @@ const SetSlotContext = createContext<(element: HTMLElement | null) => void>(() =
  */
 export function ControlsSlotProvider({ children, form = 'full' }: { children: ReactNode; form?: DockForm }) {
   const [slot, setSlot] = useState<HTMLElement | null>(null)
+  const [sortSlot, setSortSlot] = useState<HTMLElement | null>(null)
   return (
     <SetSlotContext value={setSlot}>
       <SlotContext value={slot}>
-        <DockFormContext value={form}>{children}</DockFormContext>
+        <SetSortSlotContext value={setSortSlot}>
+          <SortSlotContext value={sortSlot}>
+            <DockFormContext value={form}>{children}</DockFormContext>
+          </SortSlotContext>
+        </SetSortSlotContext>
       </SlotContext>
     </SetSlotContext>
   )
@@ -45,6 +50,7 @@ export function InControlsDock({ children }: { children: ReactNode }) {
  */
 export function ControlsDock({ stopsRow }: { stopsRow: boolean }) {
   const setSlot = useContext(SetSlotContext)
+  const setSortSlot = useContext(SetSortSlotContext)
   const dock = useRef<HTMLElement>(null)
   useEdgeFade(dock)
   return (
@@ -58,6 +64,7 @@ export function ControlsDock({ stopsRow }: { stopsRow: boolean }) {
       <div data-slot="yield-slot" className="max-w-full empty:hidden max-sm:basis-full">
         <YieldIndicator />
       </div>
+      <div ref={setSortSlot} data-slot="hand-sort-slot" className="empty:hidden" />
       <div data-slot="stops-slot" className="max-w-full empty:hidden">
         <StopsDock row={stopsRow} />
       </div>

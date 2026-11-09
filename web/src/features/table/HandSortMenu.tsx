@@ -27,6 +27,7 @@ export function HandSortMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
+        data-slot="hand-sort"
         render={
           <Button
             variant="ghost"

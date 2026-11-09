@@ -55,7 +55,8 @@ const MOUSE_DRAG_PX = 6
 const TOUCH_HOLD_MS = 250
 const TOUCH_STRAY_PX = 8
 
-// The dock announces a move itself, by the card's name; dnd-kit's own words name only the id.
+// The dock announces a move itself, by the card's name; dnd-kit's own words name only the id. Its live region and
+// instructions go to an element outside the page, so the table keeps one status region and no second voice.
 const SILENT: Announcements = {
   onDragStart: () => undefined,
   onDragMove: () => undefined,
@@ -63,8 +64,11 @@ const SILENT: Announcements = {
   onDragEnd: () => undefined,
   onDragCancel: () => undefined,
 }
-const INSTRUCTIONS = {
-  draggable: 'Press Alt with the left or right arrow to move the focused card in your hand.',
+const INSTRUCTIONS = { draggable: '' }
+let offPage: HTMLElement | undefined
+function offPageElement(): HTMLElement {
+  offPage ??= document.createElement('div')
+  return offPage
 }
 
 /**
@@ -182,7 +186,11 @@ export function HandFan({ ids, label, size, cost = false, layout, commanders, on
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
-          accessibility={{ announcements: SILENT, screenReaderInstructions: INSTRUCTIONS }}
+          accessibility={{
+            announcements: SILENT,
+            screenReaderInstructions: INSTRUCTIONS,
+            container: offPageElement(),
+          }}
           onDragStart={(event: DragStartEvent) => setDragging(Number(event.active.id))}
           onDragOver={(event: DragOverEvent) => setOver(event.over === null ? null : Number(event.over.id))}
           onDragCancel={end}

@@ -8,7 +8,7 @@ import { renderTable } from '@/test-utils/tableHarness'
 
 const ROW = ['stop-ladder', 'full-control', 'secondary-action', 'more-passing', 'primary-action']
 const BUTTON = ['stops-button', 'secondary-action', 'more-passing', 'primary-action']
-const PHONE = ['stops-button', 'more-passing', 'primary-action']
+const PHONE = ['hand-sort', 'stops-button', 'more-passing', 'primary-action']
 
 /** Window widths with the controls each shows, in the order of reading. 1599 is one pixel short of the row. */
 const SIZES: ReadonlyArray<[number, number, string[]]> = [
@@ -247,9 +247,9 @@ describe('the pass button', () => {
     expect(document.querySelector('[data-slot="primary-action"]')).toBeNull()
   })
 
-  it('leaves the Stops button alone in the dock of a phone without a decision', () => {
+  it('leaves the sort control and the Stops button alone in the dock of a phone without a decision', () => {
     dockOf({ prompt: false, width: 390, height: 844 })
-    expect(controls().map(slotOf)).toEqual(['stops-button'])
+    expect(controls().map(slotOf)).toEqual(['hand-sort', 'stops-button'])
   })
 
   it('keeps "End turn" in the menu on a phone, where it asks for the same yield as the button does elsewhere', async () => {

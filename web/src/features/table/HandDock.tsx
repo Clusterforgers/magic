@@ -1,4 +1,5 @@
 import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useGame, usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView, PlayerId, PlayerView } from '@/protocol/generated'
 import { castCostLine } from './commander'
@@ -12,6 +13,7 @@ import type { HandLayout } from './handFit'
 import { useSeatNamer } from './names'
 import { playerOf } from './selectors'
 import { useCoarsePointer } from './useCoarsePointer'
+import { useCompactDock, useHandSortSlot } from './dockLayout'
 import { useHandOrder } from './useHandOrder'
 import { useContentBox } from './useZoneFit'
 
@@ -75,6 +77,8 @@ export const HandDock = memo(function HandDock({
   // The viewer's own order: an auto sort or the order they dragged; the server's hand order stays as it is.
   const order = useHandOrder(game, cards ?? NO_CARDS, objects)
   const [moved, setMoved] = useState('')
+  const sortSlot = useHandSortSlot()
+  const phoneSlot = useCompactDock() ? sortSlot : null
   const { ids: ordered, move } = order
   const onMove = useCallback(
     (from: number, to: number) => {
@@ -136,7 +140,10 @@ export const HandDock = memo(function HandDock({
       data-fx-anchor={`${seat}:hand`}
       className="flex min-h-0 min-w-0 items-center justify-center border-t bg-table px-2 py-1"
     >
-      {cards === null ? null : (
+      {cards === null ? null : phoneSlot !== null ? (
+        // A phone's dock has no width to spare beside the hand: the control waits in the controls dock.
+        createPortal(<HandSortMenu mode={order.mode} onChoose={order.choose} />, phoneSlot)
+      ) : (
         <div className="flex shrink-0 self-start pr-1">
           <HandSortMenu mode={order.mode} onChoose={order.choose} />
         </div>
