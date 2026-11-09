@@ -65,10 +65,7 @@ test('stops and Full Control are set in the browser, shown as the server holds t
     await expect(lit(ada.page)).toHaveCount(2)
     await ada.page.getByRole('button', { name: 'Keep stops' }).click()
     await stop(ada.page, 'Your end step stop: off').click()
-    await expect(stop(ada.page, 'Your end step stop: on every turn')).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
+    await expect(stop(ada.page, 'Your end step stop: on every turn')).toHaveAttribute('aria-pressed', 'true')
     await ada.page.getByRole('button', { name: 'Keep stops' }).click()
 
     // The keys: Control asks for the next window (and again takes it back), Control with Shift for Full Control held.

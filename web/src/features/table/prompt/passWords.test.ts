@@ -128,13 +128,17 @@ describe('the primary button', () => {
   )
 
   it('is missing only in the last window of your own turn, over an empty stack', () => {
-    const missing = CASES.filter(([step, yourTurn, top]) => primaryLabel(situation(step, yourTurn, top)) === null)
+    const missing = CASES.filter(
+      ([step, yourTurn, top]) => primaryLabel(situation(step, yourTurn, top)) === null,
+    )
     expect(missing).toEqual([
       ['End', true, null],
       ['Cleanup', true, null],
     ])
     expect(missing.every(([step, yourTurn, top]) => lastWindow(situation(step, yourTurn, top)))).toBe(true)
-    expect(CASES.filter(([step, yourTurn, top]) => lastWindow(situation(step, yourTurn, top)))).toEqual(missing)
+    expect(CASES.filter(([step, yourTurn, top]) => lastWindow(situation(step, yourTurn, top)))).toEqual(
+      missing,
+    )
   })
 })
 

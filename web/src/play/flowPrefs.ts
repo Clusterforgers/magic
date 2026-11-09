@@ -163,7 +163,10 @@ function isDefault(prefs: FlowPrefs): boolean {
 
 /** Whether `a` and `b` pin the same stops, in any order. */
 function sameStops(a: readonly Stop[], b: readonly Stop[]): boolean {
-  return a.length === b.length && a.every((stop) => b.some((other) => other.side === stop.side && other.step === stop.step))
+  return (
+    a.length === b.length &&
+    a.every((stop) => b.some((other) => other.side === stop.side && other.step === stop.step))
+  )
 }
 
 /**
