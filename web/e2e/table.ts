@@ -1,5 +1,5 @@
 // Goal: the shared setup of the specs that play real decks: accounts, saved and precon decks, the create form, the lobby's chooser and the milestone screenshots.
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { expect } from '@playwright/test'
 import type { Browser, TestInfo } from '@playwright/test'
@@ -16,6 +16,8 @@ import { ACCOUNTS_WEB_URL } from './ports'
 import { ACCOUNTS_SEED } from './seeds'
 
 export const PASSWORD = 'correct horse battery'
+/** How long the first precon list may wait for the server's warm-up of the card library and the precon index. */
+const WARM_UP_MS = 120_000
 /** Where the milestone screenshots go; none are taken while it is unset (the repo keeps no images). */
 export const SHOTS_DIR = process.env['E2E_SHOTS_DIR']
 
@@ -41,6 +43,25 @@ export async function signUp(browser: Browser, prefix: string): Promise<Account>
   } finally {
     await context.close()
   }
+}
+
+/**
+ * One account per prefix, registered once per invocation: a failed test restarts the worker and every `--repeat-each`
+ * round runs in a worker of its own, and each would register again (ten an address in 15 minutes). The accounts are
+ * kept in the project's output directory, which Playwright empties when an invocation starts.
+ */
+export async function signUpOnce(
+  browser: Browser,
+  testInfo: TestInfo,
+  prefixes: readonly string[],
+): Promise<Account[]> {
+  const file = join(testInfo.project.outputDir, `accounts-${prefixes.join('-')}.json`)
+  if (existsSync(file)) return JSON.parse(readFileSync(file, 'utf8')) as Account[]
+  const accounts: Account[] = []
+  for (const prefix of prefixes) accounts.push(await signUp(browser, prefix))
+  mkdirSync(testInfo.project.outputDir, { recursive: true })
+  writeFileSync(file, JSON.stringify(accounts))
+  return accounts
 }
 
 /** A player signed in as the account, in a browser context of its own, with the page's uncaught exceptions collected. */
@@ -69,7 +90,9 @@ export async function precons(
 ): Promise<{ verified: PreconListItem[]; manual: PreconListItem[] }> {
   const context = await browser.newContext({ baseURL: ACCOUNTS_WEB_URL })
   try {
-    const response = await context.request.get('/api/precons')
+    // The server builds its card library and precon index once after it boots (about 20 s in a debug build) and
+    // answers the first list when they are built: /healthz is up before then.
+    const response = await context.request.get('/api/precons', { timeout: WARM_UP_MS })
     expect(response.status()).toBe(200)
     const { precons } = (await response.json()) as PreconList
     const playable = precons.filter((precon) => precon.playable && precon.commanders.length > 0)
@@ -265,8 +288,24 @@ export class Shots {
   }
 }
 
+/**
+ * Attaches what a failed run leaves for its cause: the trail headed by the run's summary, the plays that came back
+ * unanswered and the cards given up after a cancel (why a table cast nothing), the seed, and each page's picture and
+ * words. With `E2E_SHOTS_DIR` set they are saved there too.
+ */
 export async function attachFailure(testInfo: TestInfo, run: Run, players: readonly Player[]): Promise<void> {
-  await testInfo.attach('trail.txt', { body: run.trail.join('\n') || '(no decision was answered)' })
+  const trail = [
+    run.summary(),
+    `unanswered plays: ${run.unanswered.join('; ') || 'none'}`,
+    `cards given up after a cancel: ${run.skip.size}`,
+    '',
+    run.trail.join('\n') || '(no decision was answered)',
+  ].join('\n')
+  await testInfo.attach('trail.txt', { body: trail })
+  if (SHOTS_DIR !== undefined) {
+    mkdirSync(SHOTS_DIR, { recursive: true })
+    writeFileSync(join(SHOTS_DIR, 'failure-trail.txt'), trail)
+  }
   // The server's seed makes the game replayable: `E2E_SEED=<it>` runs the same shuffles again.
   await testInfo.attach('seed.txt', { body: `MTG_SEED=${ACCOUNTS_SEED || 'random'}` })
   for (const { name, page } of players) {

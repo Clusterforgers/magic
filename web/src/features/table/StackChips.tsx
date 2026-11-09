@@ -53,7 +53,7 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
     ? `Ability of ${object.name}${object.rules_text === undefined ? '' : ` (${object.rules_text})`}, controlled`
     : `${cardLabel(object, null)}, cast`
   return (
-    <li className={cn('shrink-0', hidden && 'invisible')} aria-hidden={hidden || undefined}>
+    <li className={cn('max-w-full shrink-0', hidden && 'invisible')} aria-hidden={hidden || undefined}>
       <button
         type="button"
         data-object-id={hidden ? undefined : id}
@@ -66,7 +66,7 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
         {...(hidden ? {} : handlers)}
         className={cn(
           'relative flex h-8 items-center gap-1.5 rounded-lg border bg-background px-2 text-sm font-medium outline-offset-2 outline-primary focus-visible:outline-2',
-          top ? 'max-w-72 border-primary' : 'max-w-48',
+          top ? 'max-w-[min(18rem,100%)] border-primary' : 'max-w-[min(12rem,100%)]',
           empty && 'border-dashed',
         )}
       >

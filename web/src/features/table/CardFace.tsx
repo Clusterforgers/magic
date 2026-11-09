@@ -28,7 +28,7 @@ import { NoteMark, RevealedMark } from './HandMarks'
 import { ByHandMark } from './manual/ByHand'
 import { ReadMark } from './manual/ReadMark'
 import { ManaPips } from './ManaPips'
-import { GlyphMark, counterGlyph, linkGlyph, statusGlyph } from './narrowMarks'
+import { GlyphMark, counterGlyph, linkGlyph, noteGlyph, statusGlyph } from './narrowMarks'
 import { statBadge } from './overlay'
 import { usePrinted } from './printed'
 import { roomTitle } from './rooms'
@@ -400,7 +400,16 @@ export function TextFace({
         )}
       </span>
       {/* A corner badge: the art slot shrinks to nothing on a small card, which would hide the label. */}
-      {note?.label === undefined ? null : (
+      {note?.label === undefined ? null : narrow ? (
+        <GlyphMark
+          glyph={noteGlyph(note.label)}
+          slot="card-note"
+          className={cn(
+            'absolute top-0.5 right-0.5 z-10 bg-primary font-medium text-primary-foreground shadow-sm',
+            classes.text,
+          )}
+        />
+      ) : (
         <span
           data-slot="card-note"
           className={cn(
