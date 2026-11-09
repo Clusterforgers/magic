@@ -25,6 +25,7 @@ import type { Filters } from './format'
 import { PreconDialog } from './PreconDialog'
 import { PreconFilters } from './PreconFilters'
 import { PreconRows } from './PreconRows'
+import { PRECON_SORT_CAPTION, sortPrecons, usePreconSort } from './sort'
 import { useFavourites } from './useFavourites'
 import { usePlayPrecon } from './usePlayPrecon'
 import { usePreconDetail } from './usePreconDetail'
@@ -80,12 +81,18 @@ export function PreconsPage({
   const signedIn = useAuth((state) => state.status === 'signed-in')
   const favourites = useFavourites(favouritesSource, signedIn)
   const [filters, setFilters] = useState<Filters>(NO_FILTERS)
+  const [chosenSort, setSort] = usePreconSort()
+  // A guest has no favorites, so a kept "Favorites first" lists the newest first until the player signs in.
+  const sort = chosenSort === 'favorites' && !signedIn ? 'newest' : chosenSort
   const [details, setDetails] = useState<Details | null>(null)
   const detail = usePreconDetail(api, details?.precon.code ?? null)
 
   const precons = useMemo(() => (list.state.status === 'ready' ? list.state.precons : []), [list.state])
   const sets = useMemo(() => setOptions(precons), [precons])
-  const rows = useMemo(() => filterPrecons(precons, filters), [precons, filters])
+  const rows = useMemo(
+    () => sortPrecons(filterPrecons(precons, filters), sort, favourites.codes),
+    [precons, filters, sort, favourites.codes],
+  )
   const { asking, failure } = play
 
   const openDetails = (precon: PreconListItem, opener: HTMLElement | null): void =>
@@ -133,6 +140,7 @@ export function PreconsPage({
       >
         <PreconRows
           rows={rows}
+          label={PRECON_SORT_CAPTION[sort]}
           onDetails={openDetails}
           onPlay={(precon, opener) => play.start(precon, opener)}
           playing={play.playing}
@@ -213,7 +221,14 @@ export function PreconsPage({
       )}
 
       {list.state.status === 'ready' && precons.length > 0 ? (
-        <PreconFilters filters={filters} sets={sets} onChange={setFilters} />
+        <PreconFilters
+          filters={filters}
+          sets={sets}
+          onChange={setFilters}
+          sort={sort}
+          onSort={setSort}
+          signedIn={signedIn}
+        />
       ) : null}
 
       <div className="flex min-h-0 flex-col">{body}</div>

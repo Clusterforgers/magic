@@ -8,6 +8,9 @@ export const PRECONS_FIXTURE_MARKER = 'dev-precons-fixture'
 const commander = (code: string, name: string, over: Partial<PreconListItem>): PreconListItem =>
   preconItem({ code, name, ...over })
 
+/** The precons the signed-in player of `/dev/precons?account=1` starred: two older ones, so favorites first moves them. */
+export const FIXTURE_FAVORITES: readonly string[] = ['c18-exquisite-invention', 'c16-entropic-uprising']
+
 /** The list, newest release first and then by name, as the server sorts it. */
 export const FIXTURE_PRECONS: readonly PreconListItem[] = [
   checked(
