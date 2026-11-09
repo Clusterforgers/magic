@@ -34,24 +34,28 @@ test('stops and Full Control are set in the browser, shown as the server holds t
     // A fresh table pins the own declare attackers and postcombat main, and nothing on the opponents' turns.
     for (const { page } of players) {
       await expect(page.getByRole('group', { name: 'Stops', exact: true })).toBeVisible()
-      await side(page, 'Mine')
-      await expect(stop(page, 'Your declare attackers stop: on every turn')).toBeVisible()
-      await expect(stop(page, 'Your postcombat main stop: on every turn')).toBeVisible()
-      await expect(lit(page)).toHaveCount(2)
-      await side(page, 'Theirs')
-      await expect(lit(page)).toHaveCount(0)
+      const sides = page.getByRole('group', { name: 'Stops for' })
+      await expect(sides.getByRole('button', { name: 'Mine, 2 set' })).toBeVisible()
+      await expect(sides.getByRole('button', { name: 'Theirs, none set' })).toBeVisible()
       await expect(fullControl(page, 'off')).toHaveAttribute('aria-pressed', 'false')
     }
+    // The step ladder holds the stop buttons once the turns begin, after both opening hands are kept.
+    await Promise.all(
+      players.map(({ page }) => page.getByRole('button', { name: 'Keep', exact: true }).click()),
+    )
 
     // A press sets a one-turn stop, shift and press a lasting one with its pin; each shows once the server says so.
     await side(ada.page, 'Mine')
     await stop(ada.page, 'Your upkeep stop: off').click()
     await expect(stop(ada.page, 'Your upkeep stop: on for one turn')).toHaveAttribute('aria-pressed', 'true')
+    await expect(stop(ada.page, 'Your declare attackers stop: on every turn')).toBeVisible()
+    await expect(stop(ada.page, 'Your postcombat main stop: on every turn')).toBeVisible()
     await side(ada.page, 'Theirs')
     await stop(ada.page, "Opponents' end step stop: off").click({ modifiers: ['Shift'] })
     const pinned = stop(ada.page, "Opponents' end step stop: on every turn")
     await expect(pinned).toHaveAttribute('data-keep', 'lasting')
-    await expect(pinned.locator('.lucide-pin')).toBeVisible()
+    // The pin is drawn under the mark, beside its button in the same step.
+    await expect(pinned.locator('xpath=..').locator('.lucide-pin')).toBeVisible()
     // The ladder shows one side at a time: Theirs is on show with its one stop.
     await expect(lit(ada.page)).toHaveCount(1)
 
