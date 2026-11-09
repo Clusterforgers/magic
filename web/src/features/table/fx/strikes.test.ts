@@ -247,6 +247,8 @@ describe('strikeKeyframes', () => {
       Math.round(370 - travel + Math.min(STRIKE_RECOIL_PX, travel)),
     ])
     expect(moveOf(frames.at(-1) ?? {})).toEqual([50, 370])
+    // The striker's `.fx-flier` starts hidden, so a frame without opacity would leave it unseen while its card hides.
+    expect(frames.map((frame) => frame.opacity)).toEqual([1, 1, 1, 1, 1])
   })
 
   it('never passes through a target it already touches', () => {
