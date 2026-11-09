@@ -64,7 +64,7 @@ The table and its prompts are live; the items below polish them.
 
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
-- [ ] (ui1i2) The effect moments attack, block, damage, life, enter, rival, activate, resolve, counter, land, draw and equip are still to be read by screenshot at the six design sizes (death, enter and draw read at 1024 and 390)
+- [ ] (ui1i3) At 1280×720 the prompt sheet takes the whole opponents area of the dev table, so moments on an opponent's board (an attacker blocked, damage, a target) are out of view; the opponents keep a minimum board height
 - [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus
 - [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)
 - [ ] (eq1j) `gives` of an Aura on a player names the rules it gives outside keywords ("Enchanted player can't cast spells", skipped draws), which the layers do not record for players (`gives.rs`, `layers.rs` `PlayerHeld`)
