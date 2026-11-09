@@ -6,13 +6,11 @@ import { HandBacks } from './Hand'
 import { COMMAND_GAP_PX, handDockNeed, handLayout, OPENING_CARD_MAX_PX, openingDockNeed } from './handFit'
 import { HAND_GROW_VAR } from './layout'
 import { HandFan } from './HandFan'
-import { HandSortMenu } from './HandSortMenu'
 import type { HandCommander } from './HandFan'
 import type { HandLayout } from './handFit'
 import { useSeatNamer } from './names'
 import { playerOf } from './selectors'
 import { useCoarsePointer } from './useCoarsePointer'
-import { useCompactDock } from './dockLayout'
 import { useHandOrder } from './useHandOrder'
 import { useContentBox } from './useZoneFit'
 
@@ -76,8 +74,6 @@ export const HandDock = memo(function HandDock({
   // The viewer's own order: an auto sort or the order they dragged; the server's hand order stays as it is.
   const order = useHandOrder(game, cards ?? NO_CARDS, objects)
   const [moved, setMoved] = useState('')
-  // A phone's dock has no width to spare beside the hand: there the sort waits in the table menu.
-  const phone = useCompactDock()
   const { ids: ordered, move } = order
   const onMove = useCallback(
     (from: number, to: number) => {
@@ -139,11 +135,6 @@ export const HandDock = memo(function HandDock({
       data-fx-anchor={`${seat}:hand`}
       className="flex min-h-0 min-w-0 items-center justify-center border-t bg-table px-2 py-1"
     >
-      {cards === null || phone ? null : (
-        <div className="flex shrink-0 self-start pr-1">
-          <HandSortMenu mode={order.mode} onChoose={order.choose} />
-        </div>
-      )}
       <p aria-live="polite" className="sr-only">
         {moved}
       </p>

@@ -6,7 +6,7 @@
 import { useCallback, useMemo, useSyncExternalStore } from 'react'
 import { manaValue } from '@/features/table/prompt/payment'
 import type { ObjectId, ObjectView } from '@/protocol/generated'
-import { HAND_SORTS, isHandSort, mergeCustom, moveCard, parseCustom, sortHand } from './handOrder'
+import { isHandSort, mergeCustom, moveCard, parseCustom, sortHand } from './handOrder'
 import type { HandFacts, HandOrderMode, HandSort } from './handOrder'
 
 /** The `localStorage` key of the auto sort. */
@@ -84,11 +84,6 @@ export function setCustomOrder(game: string, ids: ObjectId[]): void {
 export function resetHandOrder(): void {
   sort = null
   customs.clear()
-}
-
-/** The menu label of a mode. */
-export function modeLabel(mode: HandOrderMode): string {
-  return HAND_SORTS.find((entry) => entry.value === mode)?.label ?? 'Custom'
 }
 
 /** The facts a sort reads, from the objects of the view. */
