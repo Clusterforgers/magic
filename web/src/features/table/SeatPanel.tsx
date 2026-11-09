@@ -18,6 +18,7 @@ import { LiveManaPool } from './LiveManaPool'
 import { UntappedSources } from './UntappedSources'
 import { usePodRoom } from './podRoom'
 import { useSeatNamer } from './names'
+import { BankMark } from './BankMark'
 import { ACTIVE_EDGE, AwayMark, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
 import { podCounts, podState, podStateWords, priorityName, showsPriorityDot } from './podFigures'
 import { exileOf, holdsPriority, isActiveSeat, isYourTurn, NO_IDS, playerOf } from './selectors'
@@ -161,6 +162,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         <PriorityDot label={priorityName(owner, flags.you)} />
       ) : null}
       {away ? <AwayMark /> : null}
+      <BankMark seat={seat} />
     </div>
   )
 

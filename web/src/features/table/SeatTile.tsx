@@ -10,6 +10,7 @@ import { useSeatNamer } from './names'
 import { DamageChips, TaxChips, useCommanderChips } from './CommanderChips'
 import { useEnchantChips } from './enchantChips'
 import { EnchantChips } from './EnchantChips'
+import { BankMark } from './BankMark'
 import { ACTIVE_EDGE, ACTIVE_TINT, AwayMark, CountChip, PriorityDot, SeatDot } from './PodParts'
 import { chipZones, podCounts, podState, priorityName, showsPriorityDot, tileName } from './podFigures'
 import { RevealedFigure } from './RevealedChip'
@@ -104,6 +105,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
             <PriorityDot label={priorityName(name, false)} />
           ) : null}
           {away ? <AwayMark /> : null}
+          <BankMark seat={seat} />
         </span>
         <span className="flex shrink-0 items-center gap-1">
           <LifeForecast seat={seat} />
