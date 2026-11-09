@@ -6,7 +6,7 @@ import type { Hooks, Seen, Style } from './driver'
 import { everyoneReady } from './lobby'
 import type { Player } from './lobby'
 import { ACCOUNTS_DATABASE_URL } from './ports'
-import { attachFailure, precons, Shots, signUp, startTable, SHOTS_DIR } from './table'
+import { attachFailure, precons, Shots, signUpOnce, startTable, SHOTS_DIR } from './table'
 import type { Account } from './table'
 
 // Needs Postgres with the card data (`mtg-cli ingest` and `compile`) and the precons: set E2E_DATABASE_URL to such a
@@ -68,14 +68,14 @@ const count = (run: Run, who: string, verb: string): number =>
   run.trail.filter((line) => line.includes(` ${who} `) && new RegExp(`#\\d+ ${verb} `).test(line)).length
 
 test.describe('real precon decks', () => {
-  // A failed test restarts the worker and its beforeAll would register four more accounts (ten an address in 15 minutes).
-  test.describe.configure({ mode: 'serial' })
-  const accounts: Account[] = []
+  let accounts: Account[] = []
   let chosen: { verified: PreconListItem[]; manual: PreconListItem[] } = { verified: [], manual: [] }
 
-  test.beforeAll(async ({ browser }) => {
-    // A server counts registrations per address (ten in 15 minutes): the four accounts serve every test of the file.
-    for (const prefix of ['ada', 'bo', 'cy', 'di']) accounts.push(await signUp(browser, prefix))
+  test.beforeAll(async ({ browser }, testInfo) => {
+    // The first precon list waits for the server's warm-up (`precons`).
+    test.setTimeout(3 * 60_000)
+    // A server counts registrations per address (ten in 15 minutes): four accounts serve every test and every round.
+    accounts = await signUpOnce(browser, testInfo, ['ada', 'bo', 'cy', 'di'])
     chosen = await precons(browser)
   })
 
