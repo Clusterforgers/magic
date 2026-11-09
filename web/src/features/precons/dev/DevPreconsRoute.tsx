@@ -6,10 +6,11 @@ import { ApiError } from '@/net/api'
 import type { Api } from '@/net/api'
 import { cardDetail } from '@/features/builder/fakeCards'
 import type { CardsApi } from '@/net/cards'
+import type { FavouritesApi } from '@/net/favourites'
 import { PreconError } from '@/net/precons'
 import type { PreconsApi } from '@/net/precons'
 import { PreconsPage } from '../PreconsPage'
-import { FIXTURE_PRECONS, fixtureView, PRECONS_FIXTURE_MARKER } from './fixture'
+import { FIXTURE_FAVORITES, FIXTURE_PRECONS, fixtureView, PRECONS_FIXTURE_MARKER } from './fixture'
 import type { DevView } from './preconsSearch'
 
 const never = <T,>(signal?: AbortSignal): Promise<T> =>
@@ -50,6 +51,22 @@ const devCards: Pick<CardsApi, 'get'> = {
     Promise.resolve(cardDetail(id, { faces: [{ ...cardDetail(id).faces[0]!, oracle_text: MADE_UP }] })),
 }
 
+// The signed-in player starred two older precons, so "Favorites first" changes the order; stars change in memory.
+const devFavorites = (): FavouritesApi => {
+  const starred = new Set(FIXTURE_FAVORITES)
+  return {
+    list: () => Promise.resolve([...starred]),
+    star: (code) => {
+      starred.add(code)
+      return Promise.resolve()
+    },
+    unstar: (code) => {
+      starred.delete(code)
+      return Promise.resolve()
+    },
+  }
+}
+
 const devGames = (refused: boolean): Pick<Api, 'createGame'> => ({
   createGame: () =>
     refused
@@ -68,6 +85,7 @@ export function DevPreconsRoute() {
   const { view, account, play } = useSearch({ from: '/dev/precons' })
   const api = useMemo(() => devApi(view), [view])
   const games = useMemo(() => devGames(play === 'refused'), [play])
+  const favorites = useMemo(devFavorites, [])
   const auth = useMemo(
     () =>
       createAuthStore({
@@ -84,7 +102,7 @@ export function DevPreconsRoute() {
       <p className="sr-only" data-fixture={PRECONS_FIXTURE_MARKER}>
         Development precon list
       </p>
-      <PreconsPage api={api} games={games} cards={devCards} />
+      <PreconsPage api={api} games={games} cards={devCards} favouritesApi={favorites} />
     </AuthContext>
   )
 }

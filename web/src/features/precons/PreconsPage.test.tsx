@@ -181,6 +181,45 @@ describe('favourites', () => {
   })
 })
 
+describe('the order', () => {
+  const names = () => rows().map((row) => within(row).getByRole('rowheader').textContent ?? '')
+  const sortBy = () => screen.getByRole('combobox', { name: 'Sort by' })
+
+  it.each([
+    ['newest', 'Precons, newest release first', 'Eldrazi Unbound'],
+    ['name', 'Precons by name', 'Adaptive Enchantment'],
+    ['favorites', 'Precons, your favorites first', 'Izzet Challenger'],
+  ] as const)('lists %s and keeps the choice', async (sort, caption, first) => {
+    const page = await open({ user: 'Ada_L', starred: ['chl-izzet-challenger'] })
+    await listed()
+    await page.user.selectOptions(sortBy(), sort)
+    expect(await screen.findByRole('table', { name: caption })).toBeInTheDocument()
+    expect(names()[0]).toContain(first)
+    expect(window.localStorage.getItem('magic.preconSort')).toBe(sort)
+  })
+
+  it('puts a precon starred on the page among the favorites', async () => {
+    const page = await open({ user: 'Ada_L', starred: ['chl-izzet-challenger'] })
+    await listed()
+    await page.user.selectOptions(sortBy(), 'favorites')
+    await page.user.click(
+      within(rowOf('Arcane Maelstrom')).getByRole('button', {
+        name: 'Add Arcane Maelstrom to your favourites',
+      }),
+    )
+    expect(names().slice(0, 2).join('|')).toMatch(/Arcane Maelstrom.*\|.*Izzet Challenger/)
+  })
+
+  it('offers a guest no favorites first and lists a kept one newest first', async () => {
+    window.localStorage.setItem('magic.preconSort', 'favorites')
+    await open()
+    expect(await listed()).toBeInTheDocument()
+    expect(sortBy()).toHaveValue('newest')
+    const option = within(sortBy()).getByRole('option', { name: 'Favorites first (sign in)' })
+    expect(option).toBeDisabled()
+  })
+})
+
 describe('the reads', () => {
   const READS = [
     checked(preconItem({ code: 'r1', name: 'On Reads', set: 'RRR' }), { read: 4 }),
