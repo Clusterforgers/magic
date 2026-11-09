@@ -63,14 +63,15 @@ const Table = memo(function Table() {
     [viewport, seatCount, seat, mode, chosen, followed, active],
   )
   const { seats: plan } = table
+  // The overhang the sheet wants in steps of 8 px: the split reserves part of it, and a pod column keeps all of it free.
   const [overhang, setOverhang] = useState(0)
-  const onOverhang = useCallback((px: number) => setOverhang(sheetReserve(px)), [])
+  const onOverhang = useCallback((px: number) => setOverhang(Math.ceil(Math.max(0, px) / 8) * 8), [])
   const [head, setHead] = useState(0)
   // Steps of 8 px, so a pod that grows by a pixel does not move the boards.
   const onHead = useCallback((px: number) => setHead(Math.ceil(px / 8) * 8), [])
   const section = useRef<HTMLElement>(null)
   useTheirHead(section, onHead, `${ready}|${plan.shape}|${plan.boards.join(',')}`)
-  const regions = useBoardSplit(table.regions, plan, overhang, head)
+  const regions = useBoardSplit(table.regions, plan, sheetReserve(overhang), head, overhang)
   const size: CardSize = plan.compact ? 'compact' : 'normal'
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
   const moments = useTableMoments(options.effects ?? EFFECTS_BY_DEFAULT)

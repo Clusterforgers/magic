@@ -353,11 +353,12 @@ test.describe('the development table with 40 permanents a seat', () => {
       [1366, 768],
     ] as const) {
       await page.setViewportSize({ width, height })
+      // The board split settles once the prompt sheet has told it the room it wants over the opponents' row.
       await expect
-        .poll(async () => (await read()).opponent?.corner, {
+        .poll(async () => (await read()).opponent, {
           message: `${width}x${height}: the opponent's corner`,
         })
-        .toBe(true)
+        .toMatchObject({ corner: true, scrolls: false, pictures: 3 })
       const { opponent, you } = await read()
       // The commander, the graveyard and the exile of the opponent; the graveyard and the exile of yours.
       expect(opponent, `${width}x${height}: the opponent's pod`).toMatchObject({

@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cueDom, renderCueTable, useCueClock } from '@/test-utils/cueTable'
 import { renderTable } from '@/test-utils/tableHarness'
 import { grant, pass, passTurn, stepRound } from '@/test-utils/turnEvents'
+import { BANNER_BAR_MIN_PX } from './bannerPlace'
 import { BANNER_TIMES, BANNER_TIMES_REDUCED } from './timing'
 import { TurnBanner } from './TurnBanner'
 
@@ -183,6 +184,13 @@ describe('where it sits', () => {
     renderCueTable()
     expect(document.querySelector('[data-region="bar"]')).toContainElement(banner())
     expect(banner()?.style.bottom).toBe('')
+  })
+
+  it('keeps its least room in the bar from 1024 px, so the badge gives way before the banner leaves the bar', () => {
+    renderCueTable()
+    // lg:min-w-28 is 7rem, the 112 px below which `bannerPlace` hangs the banner under the bar.
+    expect(BANNER_BAR_MIN_PX).toBe(7 * 16)
+    expect(document.querySelector('[data-slot="turn-banner-room"]')).toHaveClass('flex-1', 'lg:min-w-28')
   })
 
   it('keeps to the room it stands in and is for the eye only', () => {
