@@ -1,6 +1,8 @@
 // The run of the layout gate that `layout.spec.ts` and `accounts.spec.ts` share: a themed browser context and a page held to the rules at every size.
+import { mkdir, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { expect } from '@playwright/test'
-import type { Browser, BrowserContext, BrowserContextOptions, Page } from '@playwright/test'
+import type { Browser, BrowserContext, BrowserContextOptions, Page, TestInfo } from '@playwright/test'
 import { GATE_SIZES, measure, SIZES, settle, sizeName, storeTheme, TEXT_FLOOR } from './layoutAudit'
 import type { Ask, Theme } from './layoutAudit'
 
@@ -69,4 +71,29 @@ export async function holdsAtEverySize(page: Page, rules: Rules, label: string):
     if (problems.length > 0 && !broken.includes(line)) broken.push(line)
   }
   expect(broken, label).toEqual([])
+}
+
+/** The sizes a stop with `shots` is screenshotted at: a phone and a laptop. */
+export const SHOT_SIZES = [
+  { width: 390, height: 844 },
+  { width: 1440, height: 900 },
+] as const
+
+/** Where the gate's screenshots are written besides the report; none are written while it is unset (the repo keeps no images). */
+const SHOTS_DIR = process.env['E2E_SHOTS_DIR']
+
+/** Screenshots the page at each of `SHOT_SIZES`, attached to the test and written to `E2E_SHOTS_DIR` when it is set. */
+export async function screenshots(page: Page, rules: Rules, name: string, testInfo: TestInfo): Promise<void> {
+  for (const size of SHOT_SIZES) {
+    await page.setViewportSize(size)
+    await rules.afterResize?.(page)
+    await page.evaluate(frames)
+    const file = `${name.replace(/\W+/g, '-').toLowerCase()}-${size.width}x${size.height}.png`
+    const body = await page.screenshot({ fullPage: true })
+    await testInfo.attach(file, { body, contentType: 'image/png' })
+    if (SHOTS_DIR !== undefined && SHOTS_DIR !== '') {
+      await mkdir(SHOTS_DIR, { recursive: true })
+      await writeFile(join(SHOTS_DIR, file), body)
+    }
+  }
 }

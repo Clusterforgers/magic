@@ -40,6 +40,21 @@ const BASE: readonly FixtureDeck[] = [
     commanders: [['Atraxa, Praetors’ Voice', ['W', 'U', 'B', 'G']]],
     hand: ['Rhystic Study', 'Beast Within'],
   },
+  {
+    id: 'stored-omnath',
+    name: 'Omnath Landfall on Reads',
+    format: 'commander',
+    commanders: [['Omnath, Locus of Rage', ['R', 'G']]],
+    reads: ['Cultivate', 'Courser of Kruphix'],
+  },
+  {
+    id: 'stored-kenrith',
+    name: 'Kenrith Drafts Waiting',
+    format: 'commander',
+    commanders: [['Kenrith, the Returned King', ['W', 'U', 'B', 'R', 'G']]],
+    reads: ['Cultivate'],
+    drafts: ['Mulldrifter', 'Smothering Tithe'],
+  },
 ]
 
 const PRECONS: readonly (FixtureDeck & { set: string; state?: 'verified' | 'manual_play' | 'blocked' })[] = [
@@ -104,7 +119,12 @@ export function lobbyDecks(switches: DevDeckSwitches = {}): DecksApi {
     fetch: async (url, init) => {
       if (url.endsWith('/api/decks/check')) {
         const asked = JSON.parse(String(init?.body)) as { deck: string }
-        return answer(tableReport(asked.deck))
+        // The decks on reads and with drafts waiting answer their own cards; the base decks keep the verdict tests' report.
+        const own = storedFixtures(many).find(
+          (candidate) =>
+            candidate.id === asked.deck && (candidate.reads !== undefined || candidate.drafts !== undefined),
+        )
+        return answer(own === undefined ? tableReport(asked.deck) : fixtureDeckView(own).report)
       }
       if (url.endsWith('/api/decks')) {
         if (switches.list === 'loading') return never<Response>()

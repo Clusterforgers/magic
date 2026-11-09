@@ -123,9 +123,9 @@ export function reportOf(
   const state: DeckState =
     legality.length > 0 || all.unplayable > 0
       ? 'blocked'
-      : all.verified + all.read + all.forge < all.total
+      : all.verified + all.read + all.forge + all.unverified < all.total
         ? 'manual_play'
-        : all.read + all.forge > 0
+        : all.read + all.forge + all.unverified > 0
           ? 'read'
           : 'verified'
   const toRead = new Set(cards.filter((card) => card.draft === 'pending').map((card) => card.oracle_id)).size

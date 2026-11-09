@@ -226,23 +226,28 @@ export function measure(ask: Ask): Look {
       actions[name] = null
       continue
     }
-    let box = boxOf(element)
-    if (ask.reveal && !inside(box)) {
-      element.scrollIntoView({ block: 'center', inline: 'nearest' })
-      box = boxOf(element)
-    }
     // A disabled control has its pointer events off, so the hit test would skip it: it is tested as if they were on.
     const target = element as HTMLElement
     const kept = target.style.pointerEvents
     target.style.pointerEvents = 'auto'
     // A point outside the window has nothing to hit; the action being outside is a finding of its own.
-    const free = spots.every((spot) => {
-      const top = document.elementFromPoint(
-        box.left + (box.right - box.left) * spot.x,
-        box.top + (box.bottom - box.top) * spot.y,
-      )
-      return top === null || element.contains(top)
-    })
+    const hit = (at: Box): boolean =>
+      spots.every((spot) => {
+        const top = document.elementFromPoint(
+          at.left + (at.right - at.left) * spot.x,
+          at.top + (at.bottom - at.top) * spot.y,
+        )
+        return top === null || element.contains(top)
+      })
+    let box = boxOf(element)
+    let free = hit(box)
+    // An action inside the window can still lie out of view in a list that scrolls on its own (a scroll left there
+    // by an earlier size): a page that may scroll brings it into view as a person would.
+    if (ask.reveal && (!inside(box) || !free)) {
+      element.scrollIntoView({ block: 'center', inline: 'nearest' })
+      box = boxOf(element)
+      free = hit(box)
+    }
     target.style.pointerEvents = kept
     actions[name] = { box, free }
   }

@@ -51,6 +51,8 @@ function DeckButton({
         type="button"
         variant="outline"
         size="xs"
+        // A long deck name wraps inside the button rather than pushing a phone's page sideways.
+        className="h-auto min-h-6 max-w-full py-1 text-left whitespace-normal pointer-coarse:h-auto pointer-coarse:min-h-8"
         data-slot="play-by-hand"
         aria-label={`Play ${name} by hand in ${deck.name}`}
         disabled={marking.status === 'saving'}

@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { LoaderCircleIcon, TriangleAlertIcon } from 'lucide-react'
 import { useId } from 'react'
 import type { ReactNode } from 'react'
@@ -5,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Switch } from '@/components/ui/switch'
-import { countsText } from '@/features/decks/format'
+import { countsText, hasUnvalidated } from '@/features/decks/format'
 import { ToRead } from '@/features/decks/ToRead'
 import { cn } from '@/lib/utils'
 import { cardsToRead } from '@/lib/toRead'
@@ -21,6 +22,8 @@ interface CheckBarProps {
   toRead: number
   /** The saved deck the cards are read for; null (every card) while the deck is not saved. */
   readTarget?: ReadTarget | null
+  /** The saved deck, whose not-validated list "Cards to check" opens; none while the deck is not saved. */
+  deckId?: string
   /** The counts are those of the saved deck while the draft's cards differ: no check of the draft has come back. */
   asSaved: boolean
   /** Whether the counts are of the draft on screen, a newer check is on its way, or the check failed. */
@@ -47,6 +50,7 @@ export function CheckBar({
   counts,
   toRead,
   readTarget,
+  deckId,
   asSaved,
   status,
   error,
@@ -73,6 +77,16 @@ export function CheckBar({
             <ToRead count={toRead} target={readTarget} />
           </p>
         )}
+        {deckId !== undefined && (hasUnvalidated(counts) || toRead > 0) ? (
+          <Link
+            to="/decks/$deckId/unvalidated"
+            params={{ deckId }}
+            data-slot="check-unvalidated"
+            className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+          >
+            Cards to check
+          </Link>
+        ) : null}
         <p
           data-slot="check-status"
           role="status"

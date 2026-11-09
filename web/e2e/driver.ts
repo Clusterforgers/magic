@@ -270,6 +270,8 @@ export const isPlayable = (card: Card): boolean => !/, not castable/.test(card.l
 const named = (card: Card): string => card.label.split(',')[0] ?? card.label
 const prompt = (page: Page): Locator => page.locator('[data-decision]')
 const button = (page: Page, name: string): Locator => prompt(page).getByRole('button', { name, exact: true })
+/** The prompt's Undo ("Undo the spell", "Undo the ability"): backs out of the spell or ability being announced. */
+const undo = (page: Page): Locator => prompt(page).locator('[data-slot="undo"]')
 /**
  * The Priority prompt's primary button: its words depend on the moment ("Next: Combat", "Continue"...), its slot does
  * not. The prompt draws it in the controls dock at the bottom right of the table, away from the prompt's own line.
@@ -285,7 +287,7 @@ const enabled = (seen: Seen, label: string): boolean =>
 /**
  * Presses one of the payment prompt's "pay for me" buttons. The server refuses a payment the seat's mana cannot make
  * ("That answer is not allowed") and the prompt stays, so a prompt that is still the same after two seconds is
- * backed out of with "Cancel casting".
+ * backed out of with Undo.
  */
 async function payFor(page: Page, label: string, id: string, done: string): Promise<string> {
   await button(page, label).click()
@@ -300,7 +302,7 @@ async function payFor(page: Page, label: string, id: string, done: string): Prom
       () => false,
     )
   if (moved) return done
-  await button(page, 'Cancel casting').click()
+  await undo(page).click()
   return 'cancels casting, the server refused the payment'
 }
 
@@ -465,7 +467,7 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     if (now !== null && enabled(now, rest)) {
       return payFor(page, rest, seen.id, 'pays automatically (nothing left to tap by hand)')
     }
-    await button(page, 'Cancel casting').click()
+    await undo(page).click()
     return 'cancels casting, the cost could not be met'
   },
 
@@ -522,19 +524,22 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
   // with the prompt's words, which is the finding.
   async ChooseTargets({ player }) {
     const { page } = player
-    const legal = prompt(page).locator('[data-slot="legal-targets"] button')
+    // Every legal target is offered in the "Legal targets" group: a player as a button, an object as its card picture.
+    const legal = prompt(page)
+      .getByRole('group', { name: 'Legal targets' })
+      .locator('button:not([disabled]):not([aria-disabled="true"])')
     const confirm = button(page, 'Confirm targets')
     const count = await legal.count()
     if (count === 0) {
-      await prompt(page)
-        .getByRole('button', { name: /^Cancel the (spell|ability)$/ })
-        .click()
+      await undo(page).click()
       return 'has no legal target and cancels'
     }
     const names: string[] = []
     for (let index = 0; index < count; index += 1) {
-      await legal.nth(index).click()
-      names.push(((await legal.nth(index).textContent()) ?? '').trim())
+      const target = legal.nth(index)
+      // A card picture is named by its label, a player's button by its words.
+      names.push(((await target.getAttribute('aria-label')) ?? (await target.textContent()) ?? '').trim())
+      await target.click()
       if (await confirm.isEnabled()) break
     }
     await confirm.click()
@@ -574,7 +579,7 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
         return `takes modes up to ${index + 1}`
       }
     }
-    await button(page, 'Cancel the spell').click()
+    await undo(page).click()
     return 'cancels the spell, too few modes can be taken'
   },
 
