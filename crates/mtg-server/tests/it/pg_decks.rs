@@ -1,4 +1,4 @@
-//! Goal: stored decks work end to end over real HTTP on Postgres: only a signed-in account reaches them and only its own, a save runs the deck check and stores its hashes, the deck state is the check of the moment (a clean deck is verified whatever its stored hashes say, a ban, other rules or another engine show their result at once, and nothing reads "changed"), the check endpoint reports without saving, a pasted list resolves to cards or is reported line by line, exports read back through the importer, the caps and rules of a deck are enforced, and a server without a database says so.
+//! Goal: stored decks work end to end over real HTTP on Postgres: only a signed-in account reaches them and only its own, a save runs the deck check and stores its hashes, the deck state is the check of the moment (a clean deck is verified whatever its stored hashes say, a ban, other rules or another engine show their result at once, and nothing reads "changed"), the check endpoint reports without saving, a pasted list resolves to cards or is reported line by line, exports read back through the importer, the caps and rules of a deck are enforced, a line its owner plays by hand is stored and checked as played by hand, and a server without a database says so.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -1426,4 +1426,81 @@ async fn an_export_that_would_be_misread_is_refused_and_bad_queries_are_400s(poo
     assert_eq!(missing.status, 404);
     let unsigned = get(server.addr, &path).await;
     assert_eq!(unsigned.status, 401);
+}
+
+/// The Modern deck with its Lightning Bolts (the fifth line) marked "play by hand", or not.
+fn modern_bolts_by_hand(by_hand: bool) -> Value {
+    let mut deck = modern();
+    deck["cards"][4]["by_hand"] = json!(by_hand);
+    deck
+}
+
+/// The report's entry of Lightning Bolt: its support, whether it is by hand, and its reasons.
+fn bolt_in(report: &Value) -> (Value, Value, Vec<String>) {
+    let card = report["cards"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|card| card["name"] == "Lightning Bolt")
+        .unwrap();
+    let reasons = card["reasons"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|reason| reason["text"].as_str().unwrap().to_owned())
+        .collect();
+    (card["support"].clone(), card["by_hand"].clone(), reasons)
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_line_its_owner_plays_by_hand_is_stored_shown_and_checked_as_played_by_hand(
+    pool: PgPool,
+) {
+    let server = start(&pool).await;
+    let ann = register_ann(&server).await;
+    let view = create(&server, &ann, &modern_bolts_by_hand(true)).await;
+    let id = id_of(&view);
+    let owner_reason = vec![mtg_cards::support::OWNER_BY_HAND.to_owned()];
+
+    assert_eq!(view["cards"][4]["card"]["name"], "Lightning Bolt");
+    assert_eq!(view["cards"][4]["by_hand"], true);
+    assert!(
+        view["cards"][0].get("by_hand").is_none(),
+        "a line by the rules leaves it out"
+    );
+    assert_eq!(
+        bolt_in(&view["report"]),
+        (json!("manual"), json!(true), owner_reason.clone()),
+        "a Verified card its owner chose to play by hand"
+    );
+    assert_eq!(view["state"], "manual_play");
+    assert_eq!(view["report"]["summary"]["counts"]["manual"], 4);
+    let saved = stored(&pool, &ann, &id).await;
+    let marked: Vec<bool> = saved.lines.iter().map(|line| line.by_hand).collect();
+    assert_eq!(marked, vec![false, false, false, false, true, false, false]);
+
+    let unsaved = json!({"format": "modern", "cards": modern_bolts_by_hand(true)["cards"]});
+    let unsaved = ann
+        .post(server.addr, "/api/decks/check", &unsaved.to_string())
+        .await;
+    assert_eq!(unsaved.status, 200, "{}", unsaved.text());
+    assert_eq!(
+        bolt_in(&unsaved.json()),
+        (json!("manual"), json!(true), owner_reason)
+    );
+
+    let path = format!("/api/decks/{id}");
+    let cleared = ann
+        .put(server.addr, &path, &modern_bolts_by_hand(false).to_string())
+        .await;
+    assert_eq!(cleared.status, 200, "{}", cleared.text());
+    let cleared = cleared.json();
+    assert_eq!(cleared["state"], "verified", "the rules play it again");
+    assert!(cleared["cards"][4].get("by_hand").is_none());
+    assert_eq!(bolt_in(&cleared["report"]).0, json!("verified"));
+    assert_ne!(
+        cleared["report"]["coverage_hash"],
+        view["report"]["coverage_hash"]
+    );
+    assert_eq!(cleared["report"]["deck_hash"], view["report"]["deck_hash"]);
 }

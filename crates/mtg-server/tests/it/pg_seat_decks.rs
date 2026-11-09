@@ -1,4 +1,4 @@
-//! Goal: on Postgres an account plays one of its stored decks: it chooses it at creation, when joining and later by token or session, the table is told the deck's name, format and a count of manual cards and never a card, another account's deck is the 404 of a deck nobody has, a blocked deck is refused with its issues to its owner alone, the recipe names the decks at the start with the fingerprint of their cards, a started game survives the deletion of its stored decks and resumes with the same decks and state, a start whose recipe cannot be stored is refused and tried again, and a table with a deck played by hand lists as one, stores that when it starts and resumes as one after a restart, and the printing a deck line chose is the printing of the cards in the game's views (a line with none leaves it out, a built-in deck has none) and in the recipe, and the same after a restart.
+//! Goal: on Postgres an account plays one of its stored decks: it chooses it at creation, when joining and later by token or session, the table is told the deck's name, format and a count of manual cards and never a card, another account's deck is the 404 of a deck nobody has, a blocked deck is refused with its issues to its owner alone, a card its owner plays by hand makes the table one played by hand and the recipe names it, the recipe names the decks at the start with the fingerprint of their cards, a started game survives the deletion of its stored decks and resumes with the same decks and state, a start whose recipe cannot be stored is refused and tried again, and a table with a deck played by hand lists as one, stores that when it starts and resumes as one after a restart, and the printing a deck line chose is the printing of the cards in the game's views (a line with none leaves it out, a built-in deck has none) and in the recipe, and the same after a restart.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -568,7 +568,7 @@ async fn plays_by_hand_through_a_restart(
     host_deck: Value,
     guest_deck: Value,
     expected: bool,
-) {
+) -> String {
     let mut server = start(&pool).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
     let bo = register(server.addr, "bob", PASSWORD).await;
@@ -621,6 +621,7 @@ async fn plays_by_hand_through_a_restart(
     assert_eq!(status.manual_play, expected, "the resumed game keeps it");
     assert_eq!(flags(&server, &game).await, (expected, None));
     assert_eq!(stored_flag(&pool, &game).await, expected);
+    game
 }
 
 #[sqlx::test(migrations = false)]
@@ -636,6 +637,44 @@ async fn a_table_where_the_guest_plays_by_hand_starts_and_resumes_as_one(pool: P
 #[sqlx::test(migrations = false)]
 async fn a_table_whose_decks_are_run_whole_starts_and_resumes_as_one(pool: PgPool) {
     plays_by_hand_through_a_restart(pool, forests(), bears(), false).await;
+}
+
+/// Fifty-six Forests and four Llanowar Elves, a card the game runs whole, marked "play by hand" by its owner.
+fn elves_by_hand() -> Value {
+    let mut deck = deck(
+        "Elves by hand",
+        "modern",
+        &[
+            line("main", "Forest", 56),
+            line("main", "Llanowar Elves", 4),
+        ],
+    );
+    deck["cards"][1]["by_hand"] = json!(true);
+    deck
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_card_its_owner_plays_by_hand_makes_the_table_one_played_by_hand_through_a_restart(
+    pool: PgPool,
+) {
+    let game =
+        plays_by_hand_through_a_restart(pool.clone(), forests(), elves_by_hand(), true).await;
+    let (stored, _) = recipe(&pool, &game).await;
+    assert_eq!(
+        stored["decks"][1]["by_hand"],
+        json!([oracle("Llanowar Elves")])
+    );
+    assert!(stored["decks"][0].get("by_hand").is_none());
+
+    // The guest's elves are their printed side alone: the deck the game holds is not the deck the rules assemble.
+    let ids: Vec<String> = stored["decks"][1]["cards"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|id| id.as_str().unwrap().to_owned())
+        .collect();
+    let by_rules = DeckFingerprint::of(&source(&pool).deck(&ids).await.unwrap()).unwrap();
+    assert_ne!(stored["fingerprints"][1], by_rules.to_string());
 }
 
 /// The Scryfall id of the corpus printing of `name`.
