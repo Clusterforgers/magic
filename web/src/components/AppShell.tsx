@@ -1,5 +1,5 @@
-import { Link, Outlet } from '@tanstack/react-router'
-import { PlusIcon, SparklesIcon } from 'lucide-react'
+import { Link, Outlet, useLocation } from '@tanstack/react-router'
+import { ListChecksIcon, PlusIcon, SparklesIcon } from 'lucide-react'
 import { useRef } from 'react'
 import { useIsFitWindow, useIsFullBleed } from '@/components/appChrome'
 import { FlashNotice } from '@/components/FlashNotice'
@@ -9,6 +9,8 @@ import { buttonVariants } from '@/components/ui/button'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { AccountNav, AuthNotice } from '@/features/auth/AccountNav'
 import { useAuth } from '@/features/auth/context'
+import { useToReadCount } from '@/features/reads/useToReadCount'
+import { TO_READ } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
 import { usePrefsSync } from '@/play/usePrefsSync'
 
@@ -16,9 +18,41 @@ import { usePrefsSync } from '@/play/usePrefsSync'
 const TAB =
   "relative inline-flex h-11 items-center border-b-2 whitespace-nowrap border-transparent px-2 text-sm font-medium sm:px-3 text-muted-foreground transition-colors duration-fast ease-out hover:text-foreground aria-[current='page']:border-primary aria-[current='page']:text-foreground sm:h-14"
 
+/**
+ * "Cards to check": the cards of the account's decks that wait for a read or a fix, with a count of those to read
+ * (hidden at none). Under `lg` the words give way to the icon, so the tabs fit a phone's row.
+ */
+function CardsToCheckTab({ account }: { account: string | null }) {
+  const toRead = useToReadCount(account)
+  const badge = toRead > 99 ? '99+' : String(toRead)
+  return (
+    <Link
+      to="/decks/unvalidated"
+      className={cn(TAB, 'gap-2')}
+      aria-label={toRead > 0 ? `Cards to check, ${toRead} ${TO_READ}` : 'Cards to check'}
+      title="Cards to check"
+      data-slot="cards-to-check"
+    >
+      <ListChecksIcon aria-hidden="true" className="size-4 shrink-0 lg:hidden" />
+      <span className="hidden lg:inline">Cards to check</span>
+      {toRead > 0 ? (
+        <span
+          aria-hidden="true"
+          data-slot="to-read-badge"
+          className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-support-read px-1 text-xs font-semibold text-on-primary tabular-nums"
+        >
+          {badge}
+        </span>
+      ) : null}
+    </Link>
+  )
+}
+
 /** The brand, the main navigation, the theme and the account. */
 function ShellHeader() {
   const signedIn = useAuth((state) => state.status === 'signed-in')
+  const account = useAuth((state) => (state.status === 'signed-in' ? (state.user?.id ?? null) : null))
+  const checking = useLocation({ select: (location) => location.pathname === '/decks/unvalidated' })
   usePrefsSync(signedIn)
   return (
     <header className="border-b bg-surface">
@@ -42,12 +76,14 @@ function ShellHeader() {
           </Link>
           {signedIn ? (
             <>
-              <Link to="/decks" className={TAB}>
+              {/* Cards to check lives under /decks but is a tab of its own, so Decks is not current there. */}
+              <Link to="/decks" className={TAB} activeOptions={{ exact: checking }}>
                 Decks
               </Link>
               <Link to="/games" className={TAB}>
                 My games
               </Link>
+              <CardsToCheckTab account={account} />
             </>
           ) : null}
           <Link to="/new" className={cn(buttonVariants({ size: 'sm' }), 'my-auto ml-auto')}>

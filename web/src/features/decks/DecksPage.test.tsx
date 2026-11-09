@@ -69,7 +69,7 @@ describe('the page in the app', () => {
       within(nav)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Play', 'Precons', 'Decks', 'My games', 'Create'])
+    ).toEqual(['Play', 'Precons', 'Decks', 'My games', 'Cards to check', 'Create'])
     expect(within(nav).getByRole('link', { name: 'Decks' })).toHaveAttribute('aria-current', 'page')
     expect(within(nav).getByRole('link', { name: 'My games' })).not.toHaveAttribute('aria-current')
     expect(app.router.state.location.pathname).toBe('/decks')

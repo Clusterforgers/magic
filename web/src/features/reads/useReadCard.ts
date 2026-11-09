@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { DeckError } from '@/net/decks'
 import type { ReadsApi } from '@/net/reads'
 import type { ReadCard, ReadVerdict } from '@/protocol/generated'
+import { forgetToReadCount } from './useToReadCount'
 
 /** Where the card stands: loading, shown, without a draft to read (404), or failed. */
 export type CardLoad =
@@ -77,6 +78,7 @@ export function useReadCard(
           if (round.current !== mine) return
           setLoad({ status: 'ready', card })
           setSending({ status: 'sent', verdict })
+          forgetToReadCount()
           judged.current?.(card, verdict)
         },
         (error: unknown) => {
