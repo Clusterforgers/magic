@@ -47,6 +47,15 @@ export const FIXTURE_PRECONS: readonly PreconListItem[] = [
     { manual: 1 },
   ),
   checked(
+    commander('clb-exit-from-exile', 'Exit from Exile', {
+      set: 'CLB',
+      release_date: '2022-06-10',
+      commanders: ['Faldorn, Dread Wolf Herald'],
+    }),
+    // Runs whole on approved reads and Forge's rules, with no draft waiting for a read.
+    { forge: 12, read: 6 },
+  ),
+  checked(
     commander(
       'c21-silverquill-statement-with-a-very-long-name-that-wraps-onto-lines',
       'Silverquill Statement of Purpose and Other Words That Make This Name Run Long',

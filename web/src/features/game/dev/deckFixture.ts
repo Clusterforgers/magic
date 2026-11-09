@@ -83,31 +83,52 @@ export interface FixtureDeck {
   commanders: readonly (readonly [string, readonly Colour[]])[]
   /** Pool cards played by hand, by name. */
   hand?: readonly string[]
+  /** Pool cards that run whole on approved reads, by name. */
+  reads?: readonly string[]
+  /** Pool cards whose draft runs unverified while it waits for a read, by name. */
+  drafts?: readonly string[]
   /** Copies in all, the commanders included; 100 when left out. */
   size?: number
 }
 
 interface Made {
   commanders: CardHit[]
-  /** Card, copies and support for the main board. */
-  main: { card: CardHit; count: number; support: Support; reasons: Reason[] }[]
+  /** Card, copies, support and draft for the main board. */
+  main: {
+    card: CardHit
+    count: number
+    support: Support
+    reasons: Reason[]
+    draft?: 'approved' | 'pending'
+  }[]
 }
 
 function make(deck: FixtureDeck): Made {
   const hand = new Set(deck.hand ?? [])
+  const reads = new Set(deck.reads ?? [])
+  const drafts = new Set(deck.drafts ?? [])
   const commanders = deck.commanders.map(([name, identity]) => commanderHit(name, identity))
   const size = deck.size ?? 100
   const seed = [...deck.id].reduce((sum, letter) => sum + letter.charCodeAt(0), 0)
+  const named = hand.size + reads.size + drafts.size > 0
   // A rotation of the pool, so decks differ without a random number.
-  const picked = POOL.filter((_, index) => (index + seed) % 5 !== 0 || hand.size > 0)
+  const picked = POOL.filter((_, index) => (index + seed) % 5 !== 0 || named)
   const main = picked.map(([name, type, value, cost, identity]) => {
-    const manual = hand.has(name)
-    return {
-      card: hit(name, type, value, cost, identity),
-      count: 1,
-      support: manual ? ('manual' as const) : ('verified' as const),
-      reasons: manual ? [reasonOf('The game does not resolve this ability; resolve it by hand.')] : [],
+    const card = hit(name, type, value, cost, identity)
+    if (hand.has(name)) {
+      return {
+        card,
+        count: 1,
+        support: 'manual' as const,
+        reasons: [reasonOf('The game does not resolve this ability; resolve it by hand.')],
+      }
     }
+    if (reads.has(name))
+      return { card, count: 1, support: 'read' as const, reasons: [], draft: 'approved' as const }
+    if (drafts.has(name)) {
+      return { card, count: 1, support: 'unverified' as const, reasons: [], draft: 'pending' as const }
+    }
+    return { card, count: 1, support: 'verified' as const, reasons: [] }
   })
   const spent = main.reduce((sum, line) => sum + line.count, 0) + commanders.length
   const basics = Math.max(0, size - spent)
@@ -161,7 +182,12 @@ const stateOf = (counts: Counts): DeckState =>
     ? 'blocked'
     : counts.manual + counts.partial + counts.stale > 0
       ? 'manual_play'
-      : 'verified'
+      : counts.read + counts.forge + counts.unverified > 0
+        ? 'read'
+        : 'verified'
+
+/** Distinct cards whose draft waits for a read. */
+const toReadOf = (made: Made): number => made.main.filter((line) => line.draft === 'pending').length
 
 /** A stored deck as the list of `GET /api/decks` shows it. */
 export function fixtureListItem(deck: FixtureDeck): DeckListItem {
@@ -174,7 +200,14 @@ export function fixtureListItem(deck: FixtureDeck): DeckListItem {
     format: deck.format,
     state,
     verified: state === 'verified',
-    summary: { format: deck.format, state, counts, zones: [{ zone: 'main', counts }], issues: 0, to_read: 0 },
+    summary: {
+      format: deck.format,
+      state,
+      counts,
+      zones: [{ zone: 'main', counts }],
+      issues: 0,
+      to_read: toReadOf(made),
+    },
     commanders: made.commanders,
     pictures: picturesOf(made),
   })
@@ -200,7 +233,12 @@ export function fixtureDeckView(deck: FixtureDeck): DeckView {
       [
         ...made.commanders.map((card) => reportCard(card.name, { zone: 'commander' })),
         ...made.main.map((line) =>
-          reportCard(line.card.name, { count: line.count, support: line.support, reasons: line.reasons }),
+          reportCard(line.card.name, {
+            count: line.count,
+            support: line.support,
+            reasons: line.reasons,
+            ...(line.draft === undefined ? {} : { draft: line.draft }),
+          }),
         ),
       ],
       state === 'blocked' ? [legalityIssue('the deck is not legal in this format')] : [],
@@ -227,7 +265,14 @@ export function fixturePreconItem(deck: FixtureDeck & { set: string; state?: Dec
     state,
     verified: state === 'verified',
     playable: state !== 'blocked',
-    summary: { format: 'commander', state, counts, zones: [{ zone: 'main', counts }], issues: 0, to_read: 0 },
+    summary: {
+      format: 'commander',
+      state,
+      counts,
+      zones: [{ zone: 'main', counts }],
+      issues: 0,
+      to_read: toReadOf(made),
+    },
   }
 }
 
