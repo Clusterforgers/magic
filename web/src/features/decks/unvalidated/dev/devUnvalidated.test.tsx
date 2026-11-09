@@ -107,7 +107,10 @@ describe('/dev/unvalidated', () => {
 
   it('offers to read the three cards that wait, each once, in the reads view', async () => {
     await visit('/dev/unvalidated?view=reads')
-    expect(await screen.findByRole('link', { name: 'Read 3 cards' })).toHaveAttribute('href', '/read')
+    expect(await screen.findByRole('link', { name: 'Read 3 cards' })).toHaveAttribute(
+      'href',
+      '/read?mine=true',
+    )
     expect(screen.getByRole('button', { name: 'To read (3)' })).toBeInTheDocument()
   })
 

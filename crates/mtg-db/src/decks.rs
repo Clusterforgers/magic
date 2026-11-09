@@ -464,6 +464,19 @@ impl DeckRepo {
         Ok(deleted.rows_affected())
     }
 
+    /// The distinct cards of every deck of `owner`, in any zone, by oracle id.
+    pub async fn card_ids(&self, owner: Uuid) -> Result<Vec<OracleId>, DbError> {
+        let ids: Vec<Uuid> = sqlx::query_scalar(
+            "SELECT DISTINCT dc.oracle_id
+             FROM deck_cards dc JOIN decks d ON d.id = dc.deck_id
+             WHERE d.owner = $1 ORDER BY dc.oracle_id",
+        )
+        .bind(owner)
+        .fetch_all(&self.pool)
+        .await?;
+        Ok(ids.into_iter().map(|id| OracleId(id.to_string())).collect())
+    }
+
     /// How many decks `owner` holds.
     pub async fn count(&self, owner: Uuid) -> Result<u64, DbError> {
         let held = sqlx::query_scalar!(

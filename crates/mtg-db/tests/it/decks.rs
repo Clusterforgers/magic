@@ -1,4 +1,4 @@
-//! Goal: stored decks read back exactly as saved (lines in order, printings, notes, the stored check, UTC timestamps), one owner never sees, replaces or deletes another's deck, the cap on decks per owner holds under racing creations, lines cascade with their deck, a removed printing leaves the card, and the database refuses what the server would not send.
+//! Goal: stored decks read back exactly as saved (lines in order, printings, notes, the stored check, UTC timestamps), one owner never sees, replaces or deletes another's deck, the cap on decks per owner holds under racing creations, lines cascade with their deck, an owner's distinct cards span every deck of its own and no other, a removed printing leaves the card, and the database refuses what the server would not send.
 
 use crate::common;
 
@@ -358,6 +358,44 @@ async fn deleting_all_of_an_owner_takes_every_deck_and_line_and_only_theirs(pool
         .await
         .unwrap();
     assert_eq!(again, 0, "an owner with no decks loses none");
+}
+
+#[sqlx::test]
+async fn card_ids_are_the_owners_distinct_cards_over_every_deck_and_zone(pool: PgPool) {
+    let database = seeded(pool).await;
+    let repo = database.decks();
+    assert_eq!(repo.card_ids(owner(1)).await.unwrap(), vec![]);
+    let first = vec![
+        line(DeckZone::Main, "Lightning Bolt", 4),
+        line(DeckZone::Sideboard, "Lightning Bolt", 1),
+        line(DeckZone::Main, "Mountain", 20),
+    ];
+    let second = vec![
+        line(DeckZone::Commander, "Lightning Bolt", 1),
+        line(DeckZone::Main, "Forest", 30),
+    ];
+    let other = vec![line(DeckZone::Main, "Island", 9)];
+    repo.create(owner(1), &draft("One", first), 10)
+        .await
+        .unwrap();
+    repo.create(owner(1), &draft("Two", second), 10)
+        .await
+        .unwrap();
+    repo.create(owner(2), &draft("Other", other), 10)
+        .await
+        .unwrap();
+
+    let mut want = vec![
+        oracle_of("Lightning Bolt"),
+        oracle_of("Mountain"),
+        oracle_of("Forest"),
+    ];
+    want.sort_by(|a, b| a.0.cmp(&b.0));
+    assert_eq!(repo.card_ids(owner(1)).await.unwrap(), want);
+    assert_eq!(
+        repo.card_ids(owner(2)).await.unwrap(),
+        vec![oracle_of("Island")]
+    );
 }
 
 #[sqlx::test]

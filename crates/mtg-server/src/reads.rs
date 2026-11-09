@@ -169,9 +169,27 @@ impl Session<'_> {
         self.queue(title, waiting, false).await
     }
 
-    /// Every card whose current draft decides it and waits for a first read, most played first. The library is
-    /// walked off the runtime; nothing here judges a deck or a precon.
-    async fn all_queue(&self) -> Result<ReadQueue, ApiError> {
+    /// Every card whose current draft decides it and waits for a first read, most played first; with `mine`, only
+    /// those in the account's decks. The library is walked off the runtime; nothing here judges a deck or a precon.
+    async fn all_queue(&self, mine: bool) -> Result<ReadQueue, ApiError> {
+        let mut waiting = self.all_waiting().await?;
+        if mine {
+            let held: HashSet<OracleId> = self
+                .cards
+                .database()
+                .decks()
+                .card_ids(self.user)
+                .await
+                .map_err(|error| failed(&error))?
+                .into_iter()
+                .collect();
+            waiting.retain(|card| held.contains(&card.oracle_id));
+        }
+        self.queue(String::new(), waiting, true).await
+    }
+
+    /// The cards waiting for a first read, from the list held for the stamp of now when it is that list.
+    async fn all_waiting(&self) -> Result<Vec<Waiting>, ApiError> {
         let rules = self.cards.rules().await?;
         let cards = self
             .cards
@@ -183,11 +201,11 @@ impl Session<'_> {
         let stamp = (rules.version().clone(), cards);
         let held = self.cards.pending_reads();
         if let Some(waiting) = held.get(&stamp) {
-            return self.queue(String::new(), waiting, true).await;
+            return Ok(waiting);
         }
         let waiting = self.pending_now(rules).await?;
         held.keep(stamp, &waiting);
-        self.queue(String::new(), waiting, true).await
+        Ok(waiting)
     }
 
     /// The cards whose current draft decides them and is pending, worked out again.
@@ -232,11 +250,10 @@ impl Session<'_> {
         let ranks = db.ranks().of(&ids).await.map_err(|error| failed(&error))?;
         let mine: HashSet<OracleId> = db
             .decks()
-            .list(self.user)
+            .card_ids(self.user)
             .await
             .map_err(|error| failed(&error))?
             .into_iter()
-            .flat_map(|deck| deck.lines.into_iter().map(|line| line.oracle_id))
             .collect();
         let cards = rows
             .into_iter()
@@ -318,38 +335,40 @@ fn wire_state(state: mtg_db::ReadState) -> ReadState {
     }
 }
 
-/// Which cards a list is for: at most one of `deck` (the account's own) and `precon` (a code); neither is every card.
+/// Which cards a list is for: at most one of `deck` (the account's own), `precon` (a code) and `mine=true` (the
+/// account's decks); none is every card.
 enum Target {
     Deck(DeckId),
     Precon(String),
+    Mine,
     All,
 }
 
 fn target_of(params: &HashMap<String, String>) -> Result<Target, ApiError> {
-    let deck = params.get("deck").filter(|value| !value.trim().is_empty());
-    let precon = params
-        .get("precon")
-        .filter(|value| !value.trim().is_empty());
+    let given = |key: &str| params.get(key).filter(|value| !value.trim().is_empty());
     if params
         .keys()
-        .any(|key| key.as_str() != "deck" && key.as_str() != "precon")
+        .any(|key| !matches!(key.as_str(), "deck" | "precon" | "mine"))
     {
-        return Err(ApiError::invalid("only `deck` or `precon` may be given"));
+        return Err(ApiError::invalid(
+            "only `deck`, `precon` or `mine` may be given",
+        ));
     }
-    match (deck, precon) {
-        (Some(id), None) => Uuid::parse_str(id.trim())
+    match (given("deck"), given("precon"), given("mine")) {
+        (Some(id), None, None) => Uuid::parse_str(id.trim())
             .map(|uuid| Target::Deck(DeckId(uuid)))
             .map_err(|_| ApiError::not_found()),
-        (None, Some(code)) => Ok(Target::Precon(code.trim().to_ascii_lowercase())),
-        (None, None) if params.is_empty() => Ok(Target::All),
+        (None, Some(code), None) => Ok(Target::Precon(code.trim().to_ascii_lowercase())),
+        (None, None, Some(flag)) if flag.trim() == "true" => Ok(Target::Mine),
+        (None, None, None) if params.is_empty() => Ok(Target::All),
         _ => Err(ApiError::invalid(
-            "name either a `deck` or a `precon`, or neither",
+            "name a `deck`, a `precon` or `mine=true`, or none",
         )),
     }
 }
 
 /// `GET /api/reads?deck=<id>` or `?precon=<code>`: what the account has left to read in that deck; `GET /api/reads`:
-/// every card waiting for a first read. A deck of another account and an unknown code are 404.
+/// every card waiting for a first read; `?mine=true`: those of them in the account's decks. A deck of another account and an unknown code are 404.
 pub(crate) async fn list(
     State(app): State<AppState>,
     Query(params): Query<HashMap<String, String>>,
@@ -357,7 +376,8 @@ pub(crate) async fn list(
 ) -> Result<Json<ReadQueue>, ApiError> {
     let s = session(&app, &headers).await?;
     let (title, report) = match target_of(&params)? {
-        Target::All => return Ok(Json(s.all_queue().await?)),
+        Target::All => return Ok(Json(s.all_queue(false).await?)),
+        Target::Mine => return Ok(Json(s.all_queue(true).await?)),
         Target::Deck(id) => {
             let deck = s
                 .cards
@@ -454,7 +474,7 @@ pub(crate) async fn put(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a list names exactly one deck or precon, and a deck id that is no uuid is the 404 of an unknown deck.
+    //! Goal: a list names at most one deck, precon or `mine=true`, and a deck id that is no uuid is the 404 of an unknown deck.
     use rstest::rstest;
 
     use super::*;
@@ -470,6 +490,9 @@ mod tests {
     #[case(&[("deck", " ")], 400)]
     #[case(&[("deck", "4457ed35-7c10-48c8-9776-456485fdf070"), ("precon", "c18")], 400)]
     #[case(&[("precon", "c18"), ("page", "2")], 400)]
+    #[case(&[("mine", "false")], 400)]
+    #[case(&[("mine", "")], 400)]
+    #[case(&[("mine", "true"), ("precon", "c18")], 400)]
     #[case(&[("deck", "not-a-uuid")], 404)]
     fn a_list_names_one_target(#[case] pairs: &[(&str, &str)], #[case] status: u16) {
         let Err(error) = target_of(&params(pairs)) else {
@@ -481,6 +504,14 @@ mod tests {
     #[test]
     fn no_parameter_lists_every_card() {
         assert!(matches!(target_of(&params(&[])), Ok(Target::All)));
+    }
+
+    #[test]
+    fn mine_true_lists_the_cards_of_the_accounts_decks() {
+        assert!(matches!(
+            target_of(&params(&[("mine", "true")])),
+            Ok(Target::Mine)
+        ));
     }
 
     #[test]
