@@ -1,8 +1,10 @@
-// Goal: the review screen lists a deck's cards (or every card, with its count and ranks) to read beside the card being read, loads the next card ahead, reopens where the reader was, highlights a clause the game words differently, gives no verdict for the first 2 s, takes Correct with C or the button and moves to the next card, needs a note for Wrong (W opens it), asks to load a draft that changed meanwhile, ends with every card read, and the table's ReadDialog shows the same sheet.
+// Goal: the review screen lists a deck's cards (or every card, with its count and ranks) to read beside the card being read, loads the next card ahead, reopens where the reader was, highlights a clause the game words differently, gives no verdict for the first 2 s, takes Correct with C or the button and moves to the next card, needs a note for Wrong (W opens it) and then offers to play the card by hand in the deck, asks to load a draft that changed meanwhile, ends with every card read, and the table's ReadDialog shows the same sheet.
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
+import type { ByHandApi } from '@/features/decks/byHand'
+import { deckView } from '@/features/decks/fakeDecks'
 import type { ReadsApi } from '@/net/reads'
 import { renderInRouter } from '@/test-utils/router'
 import { ReadsApiContext } from './apiContext'
@@ -31,11 +33,11 @@ function spied(options: ReadFixtureOptions = {}) {
   return { api: { ...api, judge } satisfies ReadsApi, judge }
 }
 
-async function renderPage(options: ReadFixtureOptions = {}) {
+async function renderPage(options: ReadFixtureOptions = {}, decks?: ByHandApi) {
   const { api, judge } = spied(options)
   await renderInRouter(
     <AuthContext value={signedIn()}>
-      <ReadPage target={{ deck: 'deck-izzet' }} api={api} />
+      <ReadPage target={{ deck: 'deck-izzet' }} api={api} {...(decks === undefined ? {} : { decks })} />
     </AuthContext>,
   )
   await screen.findByRole('heading', { level: 2, name: FIRST.name })
@@ -129,6 +131,35 @@ describe('ReadPage', () => {
     })
   })
 
+  it('offers to play a card found wrong by hand in the deck being read, and nothing after Correct', async () => {
+    const decks = {
+      get: vi.fn(async (id: string) => deckView({ id })),
+      update: vi.fn(async (id: string) => deckView({ id })),
+    }
+    await renderPage({}, decks)
+    await pass(READ_DELAY_MS)
+    fireEvent.keyDown(document.body, { key: 'w' })
+    fireEvent.change(screen.getByRole('textbox', { name: 'What do the rules do wrong?' }), {
+      target: { value: 'it never discards' },
+    })
+    fireEvent.click(button(/^Send: wrong/))
+    await screen.findByRole('heading', { level: 2, name: SECOND.name })
+    const offer = screen.getByText(`${FIRST.name} is found wrong`).closest('[data-slot="wrong-offer"]')
+    expect(offer).not.toBeNull()
+    fireEvent.click(
+      within(offer as HTMLElement).getByRole('button', {
+        name: `Play ${FIRST.name} by hand in Izzet Spellcraft`,
+      }),
+    )
+    expect(await within(offer as HTMLElement).findByText('Played by hand in Izzet Spellcraft')).toBeVisible()
+    expect(decks.update).toHaveBeenCalledWith('deck-izzet', expect.anything())
+
+    await pass(READ_DELAY_MS)
+    fireEvent.keyDown(document.body, { key: 'c' })
+    await screen.findByRole('heading', { level: 2, name: THIRD.name })
+    expect(screen.queryByText(/is found wrong$/)).toBeNull()
+  })
+
   it('asks to load a draft that changed since the page loaded it', async () => {
     await renderPage({ stale: true })
     await pass(READ_DELAY_MS)
@@ -166,6 +197,21 @@ describe('ReadPage', () => {
     expect(within(list).getAllByRole('button')[0]).toHaveTextContent('#14')
     expect(within(list).getAllByRole('button')[1]).toHaveTextContent('#1,204')
     expect(within(list).getAllByRole('button')[0]).toHaveTextContent('in your decks')
+  })
+
+  it('reads the cards of the decks under its own title, without saying each is in a deck', async () => {
+    await renderInRouter(
+      <AuthContext value={signedIn()}>
+        <ReadPage target={{ mine: true }} api={fixtureReadsApi()} />
+      </AuthContext>,
+    )
+    expect(await screen.findByRole('heading', { level: 1, name: 'Cards in your decks' })).toBeVisible()
+    expect(document.title).toContain('Cards in your decks')
+    expect(document.querySelector('[data-slot="read-count"]')).toHaveTextContent(/^2 to read\.$/)
+    const list = screen.getByRole('navigation', { name: 'Cards to read' })
+    expect(within(list).getAllByRole('button')).toHaveLength(2)
+    expect(list).not.toHaveTextContent('in your decks')
+    expect(screen.getByRole('link', { name: 'Cards to check' })).toHaveAttribute('href', '/decks/unvalidated')
   })
 
   it('loads the next card ahead, so a verdict opens it at once, and counts down', async () => {

@@ -47,6 +47,7 @@ fn oracle(ids: &[String], companion: Option<&str>) -> DeckRef {
         commanders: Vec::new(),
         companion: companion.map(str::to_owned),
         printings: Vec::new(),
+        by_hand: Vec::new(),
     }
 }
 

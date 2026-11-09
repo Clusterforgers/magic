@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { CircleAlertIcon, ShieldCheckIcon, TriangleAlertIcon } from 'lucide-react'
+import { BookOpenIcon, CircleAlertIcon, ShieldCheckIcon, TriangleAlertIcon } from 'lucide-react'
 import { useState } from 'react'
 import { CopyButton } from '@/components/CopyButton'
 import { EmptyState } from '@/components/EmptyState'
@@ -10,9 +10,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 import type { CardsApi } from '@/net/cards'
 import type { DecksApi } from '@/net/decks'
 import type { FixMarksApi } from '@/net/fixMarks'
-import { TO_READ_TITLE } from '@/lib/toRead'
+import { readPath, TO_READ_TITLE } from '@/lib/toRead'
+import type { ByHandApi } from '../byHand'
 import { SUPPORT_LABEL } from '../format'
-import { ToRead } from '../ToRead'
 import { copyText, filterCards, groupByDeck, mergeDecks, stateCounts, waitsForRead } from './model'
 import type { FlaggedCard, StateFilter } from './model'
 import { UnvalidatedCard } from './UnvalidatedCard'
@@ -21,6 +21,10 @@ import { useUnvalidated } from './useUnvalidated'
 import type { Scope } from './useUnvalidated'
 
 type Arrangement = 'cards' | 'decks'
+
+/** The two jobs of the page, in one sentence under its title. */
+const CHECK_JOBS =
+  "Read a card's rules and say whether the game has them right, or play a card by hand when it misbehaves."
 
 function ListSkeleton() {
   return (
@@ -67,6 +71,8 @@ interface UnvalidatedViewProps {
   cards: Pick<CardsApi, 'get'>
   scope: Scope
   fixMarks?: FixMarksApi
+  /** The endpoints that mark a card "play by hand" in a deck; with them each card offers it for its decks. */
+  byHand?: ByHandApi
 }
 
 /**
@@ -74,7 +80,7 @@ interface UnvalidatedViewProps {
  * quoted from its text, merged with the decks that hold it (the most used first) or grouped by deck, narrowed to a
  * state, and copyable as plain text.
  */
-export function UnvalidatedView({ api, cards, scope, fixMarks }: UnvalidatedViewProps) {
+export function UnvalidatedView({ api, cards, scope, fixMarks, byHand }: UnvalidatedViewProps) {
   const { state, reload } = useUnvalidated(api, scope)
   const [arrangement, setArrangement] = useState<Arrangement>('cards')
   const [chosen, setChosen] = useState<StateFilter>('all')
@@ -105,6 +111,7 @@ export function UnvalidatedView({ api, cards, scope, fixMarks }: UnvalidatedView
           pending={pending}
           showDecks={showDecks}
           fixMarks={fixMarks}
+          byHand={byHand}
         />
       ))}
     </ul>
@@ -114,14 +121,27 @@ export function UnvalidatedView({ api, cards, scope, fixMarks }: UnvalidatedView
     <section aria-labelledby="unvalidated-title" className="grid gap-6">
       <div className="grid gap-2">
         <h1 id="unvalidated-title" className="text-2xl font-semibold tracking-tight">
-          Not validated cards
+          Cards to check
         </h1>
+        <p className="max-w-prose text-base">{CHECK_JOBS}</p>
         <p className="max-w-prose text-sm text-muted-foreground">
           {single && decks[0] !== undefined
             ? `Cards of ${decks[0].name} that the game does not run whole, with the clauses it leaves to the table.`
             : 'Cards of your decks that the game does not run whole, with the clauses it leaves to the table. Copy the list to name what to fix first.'}
         </p>
         <div className="flex flex-wrap items-center gap-2">
+          {state.status === 'ready' && toRead > 0 ? (
+            <Link
+              to="/read"
+              search={single ? { deck: scope.id } : { mine: true }}
+              data-slot="read-all"
+              data-read-path={readPath(single ? { deck: scope.id } : { mine: true })}
+              className={buttonVariants({ size: 'sm' })}
+            >
+              <BookOpenIcon aria-hidden="true" />
+              {`Read ${toRead} ${toRead === 1 ? 'card' : 'cards'}`}
+            </Link>
+          ) : null}
           {single ? (
             <>
               <Link to="/decks/unvalidated" className={buttonVariants({ variant: 'outline', size: 'sm' })}>
@@ -242,13 +262,13 @@ export function UnvalidatedView({ api, cards, scope, fixMarks }: UnvalidatedView
                 value={filter}
                 options={[
                   { value: 'all', text: `All (${merged.length})` },
+                  ...(toRead === 0
+                    ? []
+                    : [{ value: 'to_read' as const, text: `${TO_READ_TITLE} (${toRead})` }]),
                   ...states.map(([name, count]) => ({
                     value: name,
                     text: `${SUPPORT_LABEL[name]} (${count})`,
                   })),
-                  ...(toRead === 0
-                    ? []
-                    : [{ value: 'to_read' as const, text: `${TO_READ_TITLE} (${toRead})` }]),
                 ]}
                 onChange={setChosen}
               />
@@ -266,11 +286,6 @@ export function UnvalidatedView({ api, cards, scope, fixMarks }: UnvalidatedView
           <p className="text-sm text-muted-foreground" data-slot="summary">
             {`${shown.length} ${shown.length === 1 ? 'card' : 'cards'} in ${single ? 'this deck' : `${groups.length} of ${state.saved} ${state.saved === 1 ? 'deck' : 'decks'}`}`}
           </p>
-          {toRead === 0 ? null : (
-            <p data-slot="to-read-summary" className="text-sm">
-              <ToRead count={toRead} target={single ? { deck: scope.id } : undefined} />
-            </p>
-          )}
           {unread > 0 ? (
             <p className="text-sm text-muted-foreground" role="status">
               {`The text of ${unread} ${unread === 1 ? 'card' : 'cards'} could not be read, so ${unread === 1 ? 'its' : 'their'} clauses show without the quote.`}

@@ -36,6 +36,11 @@ pub struct DeckLineBody {
     pub printing_id: Option<String>,
     /// How many copies, 1 to 999 (at most `MAX_DECK_CARDS` in the deck).
     pub count: u32,
+    /// Whether the owner plays the card by hand: the game hosts it as a manual card and the check counts it as played
+    /// by hand, whatever its rules. Absent for false.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub by_hand: bool,
 }
 
 /// The body of `POST /api/decks` and `PUT /api/decks/{id}`: the whole deck.
@@ -62,6 +67,10 @@ pub struct DeckLineView {
     pub count: u32,
     /// The chosen printing; null for the default one.
     pub printing_id: Option<String>,
+    /// Whether the owner plays the card by hand ([`DeckLineBody::by_hand`]); absent for false.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub by_hand: bool,
     /// The card; its pictures are those of the chosen printing, else of the default one.
     pub card: CardHit,
 }

@@ -4,6 +4,7 @@ import {
   CheckIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  HandIcon,
   LibraryIcon,
   TriangleAlertIcon,
 } from 'lucide-react'
@@ -15,13 +16,26 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { BulkLink } from '@/features/bulk-reads/BulkLink'
 import { describeDeckError } from '@/features/decks/errors'
+import { PlayByHand } from '@/features/decks/PlayByHand'
+import type { ByHandApi } from '@/features/decks/byHand'
 import { cn } from '@/lib/utils'
 import { BY_HAND } from '@/lib/byHand'
 import { TO_READ } from '@/lib/toRead'
 import type { ReadTarget } from '@/lib/toRead'
+import { decksApi } from '@/net/decks'
 import type { ReadsApi } from '@/net/reads'
 import type { ReadCard, ReadQueue, ReadVerdict } from '@/protocol/generated'
-import { STATE_WORDS, countLine, nextToRead, queueKey, rankText, savePosition, savedPosition } from './model'
+import {
+  STATE_WORDS,
+  allInDecks,
+  countLine,
+  nextToRead,
+  queueKey,
+  queueWords,
+  rankText,
+  savePosition,
+  savedPosition,
+} from './model'
 import { ReadCardView } from './ReadCardView'
 
 type QueueLoad =
@@ -87,6 +101,13 @@ function BackLink({ target }: { target: ReadTarget | null }) {
       </Link>
     )
   }
+  if ('mine' in target) {
+    return (
+      <Link to="/decks/unvalidated" className={buttonVariants({ variant: 'outline' })}>
+        Cards to check
+      </Link>
+    )
+  }
   return 'deck' in target ? (
     <Link
       to="/decks/$deckId"
@@ -106,6 +127,62 @@ interface ReadViewProps {
   api: ReadsApi
   /** The deck whose cards are read; null for every card waiting for a first read. */
   target: ReadTarget | null
+  /** The endpoints that mark a card "play by hand" in a deck; with them a card found wrong offers that. */
+  decks?: ByHandApi
+}
+
+/** A card the reader just found wrong, offered to be played by hand. */
+interface WrongOffer {
+  oracleId: string
+  name: string
+  inDecks: boolean
+}
+
+/**
+ * After a Wrong verdict: the offer to play the card by hand, in the deck being read (a button that marks it there) or,
+ * for a card of the reader's decks read from elsewhere, a link to the not-validated list that offers it per deck.
+ */
+function WrongOfferNote({
+  offer,
+  target,
+  deckName,
+  decks,
+  onClose,
+}: {
+  offer: WrongOffer
+  target: ReadTarget | null
+  deckName: string
+  decks: ByHandApi
+  onClose: () => void
+}) {
+  const inDeck = target !== null && 'deck' in target
+  if (!inDeck && !offer.inDecks) return null
+  return (
+    <Alert data-slot="wrong-offer">
+      <HandIcon aria-hidden="true" />
+      <AlertTitle>{`${offer.name} is found wrong`}</AlertTitle>
+      <AlertDescription className="grid justify-items-start gap-2">
+        <span>{`Mark it to keep it ${BY_HAND} at your table, even once its rules change.`}</span>
+        <div className="flex flex-wrap items-center gap-3">
+          {inDeck ? (
+            <PlayByHand
+              oracleId={offer.oracleId}
+              name={offer.name}
+              api={decks}
+              decks={[{ id: target.deck, name: deckName, byHand: false }]}
+            />
+          ) : (
+            <Link to="/decks/unvalidated" className={buttonVariants({ variant: 'outline', size: 'xs' })}>
+              Choose the decks to play it by hand in
+            </Link>
+          )}
+          <Button type="button" variant="ghost" size="xs" onClick={onClose}>
+            Dismiss
+          </Button>
+        </div>
+      </AlertDescription>
+    </Alert>
+  )
 }
 
 /**
@@ -113,13 +190,14 @@ interface ReadViewProps {
  * a "Card 2 of 7" bar with Previous and Next under it) beside the card being read. A verdict opens the next card not
  * judged at once, loaded ahead; the browser keeps the card the reader is on, so a reload opens the queue there.
  */
-export function ReadView({ api, target }: ReadViewProps) {
+export function ReadView({ api, target, decks = decksApi }: ReadViewProps) {
   const { load, retry } = useQueue(api, target)
   const { client, prefetch } = usePrefetching(api)
   const key = queueKey(target)
   const [current, setCurrent] = useState<string | null>(null)
   const [done, setDone] = useState<ReadonlyMap<string, ReadVerdict>>(new Map())
   const [said, setSaid] = useState('')
+  const [offer, setOffer] = useState<WrongOffer | null>(null)
   const cards = load.status === 'ready' ? load.queue.cards : []
   const kept = useMemo(() => savedPosition(key), [key])
   const resumed = cards.some((card) => card.oracle_id === kept) ? kept : null
@@ -139,6 +217,8 @@ export function ReadView({ api, target }: ReadViewProps) {
 
   const judged = (oracleId: string, name: string, verdict: ReadVerdict): void => {
     const next = new Map(done).set(oracleId, verdict)
+    const inDecks = cards.find((card) => card.oracle_id === oracleId)?.in_decks ?? false
+    setOffer(verdict === 'wrong' ? { oracleId, name, inDecks } : null)
     setDone(next)
     const after = nextToRead(cards, new Set(next.keys()), oracleId)
     const nextName = cards.find((card) => card.oracle_id === after)?.name
@@ -185,21 +265,17 @@ export function ReadView({ api, target }: ReadViewProps) {
     const card = cards[(index + by + cards.length) % cards.length]
     if (card !== undefined) setCurrent(card.oracle_id)
   }
-  const title = target === null ? 'Read every card' : `Read the cards of ${queue.title}`
+  const words = queueWords(target, queue.title)
   return (
     <section aria-labelledby="read-title" className="grid gap-4">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div className="grid min-w-0 gap-1">
           <h1 id="read-title" className="text-2xl font-semibold tracking-tight break-words">
-            {title}
+            {words.heading}
           </h1>
           <p className="text-sm text-muted-foreground">
             {cards.length === 0 ? (
-              target === null ? (
-                'Nothing waits for a first read.'
-              ) : (
-                'Nothing waits for your read in this deck.'
-              )
+              words.nothing
             ) : (
               <>
                 <span data-slot="read-count" className="font-medium text-foreground tabular-nums">
@@ -226,6 +302,15 @@ export function ReadView({ api, target }: ReadViewProps) {
           )}
         </div>
       </header>
+      {offer === null ? null : (
+        <WrongOfferNote
+          offer={offer}
+          target={target}
+          deckName={queue.title}
+          decks={decks}
+          onClose={() => setOffer(null)}
+        />
+      )}
       <p aria-live="polite" className="sr-only">
         {said}
       </p>
@@ -237,9 +322,7 @@ export function ReadView({ api, target }: ReadViewProps) {
         >
           {finished
             ? `Thank you. A card found correct counts as read from the next game; one found wrong is ${BY_HAND} until it is fixed.`
-            : target === null
-              ? 'Every draft has a read.'
-              : 'Every draft in this deck has your read, or the deck has none.'}
+            : words.empty}
         </EmptyState>
       ) : (
         <div className="grid gap-4 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
@@ -278,9 +361,7 @@ export function ReadView({ api, target }: ReadViewProps) {
                       </span>
                       <span className="flex flex-wrap items-center gap-x-1 text-xs text-muted-foreground">
                         {verdict === undefined ? STATE_WORDS[card.state] : `You said ${verdict}`}
-                        {card.in_decks && (target === null || !('deck' in target)) ? (
-                          <span>· in your decks</span>
-                        ) : null}
+                        {card.in_decks && !allInDecks(target) ? <span>· in your decks</span> : null}
                         {card.differs === 0 ? null : (
                           <>
                             <TriangleAlertIcon aria-hidden="true" className="size-3 text-support-partial" />

@@ -209,6 +209,22 @@ export const FIXTURE_DECKS: readonly FixtureDeck[] = [
   ]),
 ]
 
+/** Two decks whose drafts wait for a read, one card of them in both: three cards to read. */
+export const READ_FIXTURE_DECKS: readonly FixtureDeck[] = [
+  deckOf('deck-atraxa', 'Atraxa Superfriends', [
+    reportLine('drain', 'main', 'pending'),
+    reportLine('season', 'main', 'pending'),
+    filler(95),
+    reportLine('rhystic', 'main', 'wrong'),
+  ]),
+  deckOf('deck-izzet', 'Izzet Spells', [
+    reportLine('delver', 'main', 'pending'),
+    reportLine('drain', 'main', 'pending'),
+    reportLine('remora'),
+    filler(80),
+  ]),
+]
+
 /** How the fixture's servers misbehave; none by default. */
 export interface FixtureOptions {
   /** The list of decks is refused with the code of a `DeckError`. */

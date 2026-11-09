@@ -3,18 +3,22 @@ import { Loading } from '@/components/Loading'
 import { PageShell } from '@/components/PageShell'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/context'
+import type { ByHandApi } from '@/features/decks/byHand'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { readPath } from '@/lib/toRead'
 import type { ReadTarget } from '@/lib/toRead'
 import { readsApi } from '@/net/reads'
 import type { ReadsApi } from '@/net/reads'
+import { queueWords } from './model'
 import { ReadView } from './ReadView'
 
 interface ReadPageProps {
-  /** The deck whose cards are read, from the address; null for every card waiting for a first read. */
+  /** The cards read, from the address: a deck, a precon or the account's decks; null for every card waiting for a first read. */
   target: ReadTarget | null
   /** The read endpoints; the shared client unless a test brings its own. */
   api?: ReadsApi
+  /** The deck endpoints that mark a card found wrong "play by hand"; the shared client unless a test brings its own. */
+  decks?: ByHandApi
 }
 
 function Notice({ children, action }: { children: string; action?: React.ReactNode }) {
@@ -32,11 +36,11 @@ function Notice({ children, action }: { children: string; action?: React.ReactNo
 }
 
 /**
- * `/read` (every card), `/read?deck=<id>` and `/read?precon=<code>`: the review screen, where a signed-in player reads
+ * `/read` (every card), `/read?mine=true` (the account's decks), `/read?deck=<id>` and `/read?precon=<code>`: the review screen, where a signed-in player reads
  * the drafts of cards and says whether each is correct. Someone who is not signed in is sent to the sign-in form and back.
  */
-export function ReadPage({ target, api = readsApi }: ReadPageProps) {
-  usePageTitle('Read cards')
+export function ReadPage({ target, api = readsApi, decks }: ReadPageProps) {
+  usePageTitle(target !== null && 'mine' in target ? queueWords(target, '').heading : 'Read cards')
   const status = useAuth((state) => state.status)
 
   const path = target === null ? '/read' : readPath(target)
@@ -64,7 +68,7 @@ export function ReadPage({ target, api = readsApi }: ReadPageProps) {
   }
   return (
     <PageShell width="wide">
-      <ReadView key={path} api={api} target={target} />
+      <ReadView key={path} api={api} target={target} {...(decks === undefined ? {} : { decks })} />
     </PageShell>
   )
 }

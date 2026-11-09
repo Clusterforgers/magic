@@ -98,6 +98,11 @@ pub enum DeckRef {
         /// one, which is also how a recipe stored before printings reads; a short list leaves the rest without.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         printings: Vec<Option<String>>,
+        /// The oracle ids of the cards the deck's owner plays by hand, once each: every copy of them is the card's
+        /// printed side with its text left to the table ([`Catalog::with_by_hand`]). Left out of the stored form
+        /// while empty, which is also how a recipe stored before the choice reads.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        by_hand: Vec<String>,
     },
 }
 
@@ -109,6 +114,15 @@ impl DeckRef {
             commanders: Vec::new(),
             companion: None,
             printings: Vec::new(),
+            by_hand: Vec::new(),
+        }
+    }
+
+    /// The oracle ids of the cards the deck's owner plays by hand; none for a built-in deck.
+    pub fn by_hand(&self) -> &[String] {
+        match self {
+            DeckRef::Oracle { by_hand, .. } => by_hand,
+            DeckRef::Demo { .. } => &[],
         }
     }
 }
@@ -150,6 +164,7 @@ impl fmt::Display for DeckRef {
 pub struct Catalog {
     cards: BTreeMap<String, Arc<CardDefinition>>,
     conjured: BTreeMap<String, Arc<CardDefinition>>,
+    by_hand: BTreeMap<String, Arc<CardDefinition>>,
 }
 
 impl Catalog {
@@ -158,6 +173,44 @@ impl Catalog {
         Catalog {
             cards: cards.into_iter().collect(),
             conjured: BTreeMap::new(),
+            by_hand: BTreeMap::new(),
+        }
+    }
+
+    /// The catalog with the definitions of the cards an owner plays by hand, by oracle id: a seat whose deck names a
+    /// card in [`DeckRef::by_hand`] plays every copy of it as this definition.
+    #[must_use]
+    pub fn with_by_hand(
+        mut self,
+        cards: impl IntoIterator<Item = (String, Arc<CardDefinition>)>,
+    ) -> Catalog {
+        self.by_hand = cards.into_iter().collect();
+        self
+    }
+
+    /// The cards of a deck in deck order, as [`Catalog::deck`] gives them, with each card of `by_hand` taken from the
+    /// cards played by hand; when some are missing, the ids of all of them, once each.
+    fn deck_by_hand(
+        &self,
+        ids: &[String],
+        by_hand: &[String],
+    ) -> Result<Vec<Arc<CardDefinition>>, Vec<String>> {
+        let mut cards = self.deck(ids)?;
+        let mut missing: Vec<String> = Vec::new();
+        for (card, id) in cards.iter_mut().zip(ids) {
+            if !by_hand.contains(id) {
+                continue;
+            }
+            match self.by_hand.get(id) {
+                Some(manual) => *card = Arc::clone(manual),
+                None if !missing.contains(id) => missing.push(id.clone()),
+                None => {}
+            }
+        }
+        if missing.is_empty() {
+            Ok(cards)
+        } else {
+            Err(missing)
         }
     }
 
@@ -430,6 +483,7 @@ impl GameRecipe {
                 commanders,
                 companion,
                 printings,
+                ..
             } = deck
             else {
                 continue;
@@ -445,6 +499,17 @@ impl GameRecipe {
             }
         }
         art
+    }
+
+    /// The oracle ids that some seat's owner plays by hand, once each, in the order they first appear.
+    pub fn by_hand_ids(&self) -> Vec<String> {
+        let mut seen = BTreeSet::new();
+        self.decks
+            .iter()
+            .flat_map(DeckRef::by_hand)
+            .filter(|id| seen.insert(id.as_str()))
+            .cloned()
+            .collect()
     }
 
     /// Whether the recipe carries fingerprints, so that [`GameRecipe::build`] checks its decks.
@@ -547,6 +612,7 @@ impl GameRecipe {
                     commanders,
                     companion,
                     printings,
+                    by_hand,
                 } => {
                     let ids: Vec<String> = cards
                         .iter()
@@ -555,7 +621,7 @@ impl GameRecipe {
                         .cloned()
                         .collect();
                     let library = catalog
-                        .deck(&ids)
+                        .deck_by_hand(&ids, by_hand)
                         .map_err(|ids| RecipeError::UnknownCards { seat, ids })?;
                     let mut library = with_printings(&library, printings);
                     let mut rest = library.split_off(cards.len());
@@ -604,7 +670,7 @@ impl GameRecipe {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a recipe survives its JSON form for every seed and table size, keeps the on-disk shape stable, rebuilds the very game it describes, refuses what is not playable, and refuses a deck that no longer matches the fingerprint it was created with while a recipe stored before fingerprints still builds; a deck of oracle ids builds from a catalog, names every card the catalog lacks, and fails the game when a definition changes.
+    //! Goal: a recipe survives its JSON form for every seed and table size, keeps the on-disk shape stable, rebuilds the very game it describes, refuses what is not playable, and refuses a deck that no longer matches the fingerprint it was created with while a recipe stored before fingerprints still builds; a deck of oracle ids builds from a catalog, names every card the catalog lacks, fails the game when a definition changes, and plays the cards a seat's owner chose by hand from their own definitions.
     use mtg_core::color::Color;
     use mtg_engine::state::GameState;
     use rstest::rstest;
@@ -947,6 +1013,77 @@ mod tests {
             .unwrap()
     }
 
+    /// A deck of `ids()` whose owner plays the cards of `by_hand` by hand.
+    fn by_hand_deck(by_hand: &[&str]) -> DeckRef {
+        DeckRef::Oracle {
+            cards: ids(),
+            commanders: Vec::new(),
+            companion: None,
+            printings: Vec::new(),
+            by_hand: by_hand.iter().map(|id| (*id).to_owned()).collect(),
+        }
+    }
+
+    /// The bear of `bear-40` as its owner plays it by hand: a card the catalog tells apart by name.
+    fn manual_bears() -> Vec<(String, Arc<CardDefinition>)> {
+        vec![(
+            "bear-40".to_owned(),
+            Arc::new(CardDefinition::new("Bear 40 by hand")),
+        )]
+    }
+
+    #[rstest]
+    #[case::nothing_by_hand(&[], &[], 0)]
+    #[case::one_card_by_hand_in_one_seat(&["bear-40"], &[], 1)]
+    #[case::the_same_card_by_hand_in_both_seats(&["bear-40"], &["bear-40"], 1)]
+    fn a_seat_plays_every_copy_of_its_cards_by_hand_and_the_other_seat_its_own_choice(
+        #[case] first: &[&str],
+        #[case] second: &[&str],
+        #[case] manual_in_first: usize,
+    ) {
+        let catalog = catalog(2).with_by_hand(manual_bears());
+        let recipe = GameRecipe::normal(8, [by_hand_deck(first), by_hand_deck(second)])
+            .with_fingerprints_from(&catalog)
+            .unwrap();
+        let back: GameRecipe =
+            serde_json::from_value(serde_json::to_value(&recipe).unwrap()).unwrap();
+        assert_eq!(back, recipe, "the choice survives the stored form");
+        let seats = recipe.resolve(&catalog).unwrap();
+        let by_hand = |seat: &SeatCards| {
+            seat.library
+                .iter()
+                .filter(|card| card.name == "Bear 40 by hand")
+                .count()
+        };
+        assert_eq!(by_hand(&seats[0]), manual_in_first);
+        assert_eq!(by_hand(&seats[1]), second.len());
+        assert_eq!(
+            seats[0].fingerprint().unwrap() == seats[1].fingerprint().unwrap(),
+            first == second
+        );
+        recipe.build_with(&catalog).unwrap();
+        assert_eq!(
+            recipe.by_hand_ids(),
+            if first.is_empty() && second.is_empty() {
+                Vec::<String>::new()
+            } else {
+                vec!["bear-40".to_owned()]
+            }
+        );
+    }
+
+    #[test]
+    fn a_card_by_hand_without_its_definition_names_the_card_and_none_stays_out_of_the_stored_form()
+    {
+        let recipe = GameRecipe::normal(8, [by_hand_deck(&["bear-41"])]);
+        assert!(matches!(
+            recipe.build_with(&catalog(2).with_by_hand(manual_bears())),
+            Err(RecipeError::UnknownCards { seat: 0, ref ids }) if ids == &["bear-41".to_owned()]
+        ));
+        let plain = serde_json::to_value(GameRecipe::normal(8, [by_hand_deck(&[])])).unwrap();
+        assert!(plain["decks"][0].get("by_hand").is_none());
+    }
+
     #[test]
     fn the_stored_shape_of_a_deck_of_oracle_ids_is_stable() {
         let recipe = GameRecipe::normal(5, [oracle(vec!["a".into(), "b".into(), "a".into()])]);
@@ -1176,6 +1313,7 @@ mod tests {
             commanders: commanders.iter().map(|id| (*id).to_owned()).collect(),
             companion: None,
             printings: Vec::new(),
+            by_hand: Vec::new(),
         }
     }
 
@@ -1299,6 +1437,7 @@ mod tests {
             commanders: strings(commanders),
             companion: companion.map(str::to_owned),
             printings: printings.iter().map(|id| id.map(str::to_owned)).collect(),
+            by_hand: Vec::new(),
         };
         let recipe = GameRecipe::normal(1, [deck.clone(), deck]);
         assert_eq!(recipe.card_art(), art(expected));
@@ -1311,6 +1450,7 @@ mod tests {
             commanders: Vec::new(),
             companion: None,
             printings: printings.iter().map(|id| id.map(str::to_owned)).collect(),
+            by_hand: Vec::new(),
         };
         let recipe = GameRecipe::normal(
             1,
