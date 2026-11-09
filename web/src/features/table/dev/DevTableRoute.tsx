@@ -97,7 +97,7 @@ export function DevTableRoute() {
       states,
       equip,
       reveal,
-    counters,
+      counters,
       crowd,
       seats,
       board,
