@@ -90,11 +90,21 @@ describe('the marks', () => {
     expect(cueDom().pips).toHaveLength(10)
   })
 
-  it('is not drawn before the turns begin or after they end', () => {
+  it('is the stop buttons during the opening hands, every step to come and no phase lit, and gone once the game ends', () => {
     const table = renderCueTable()
     table.update((state) => ({ view: state.view && { ...state.view, stage: 'Mulligan' } }))
-    expect(ladder()).toBeNull()
+    expect(ladder()?.querySelectorAll('li > button[data-slot="stop"]')).toHaveLength(10)
+    expect(marks()).toBe('u'.repeat(10))
+    expect(ladder()?.querySelector('[data-slot="phase-run"][data-current]')).toBeNull()
+    expect(ladder()?.querySelector('[aria-current]')).toBeNull()
     table.update((state) => ({ view: state.view && { ...state.view, stage: 'Finished' } }))
+    expect(ladder()).toBeNull()
+  })
+
+  it('is not drawn as a picture before the turns begin', () => {
+    const table = renderCueTable({}, { state: (state) => ({ ...state, phase: 'over' }) })
+    expect(ladder()).not.toBeNull()
+    table.update((state) => ({ view: state.view && { ...state.view, stage: 'Mulligan' } }))
     expect(ladder()).toBeNull()
   })
 })
