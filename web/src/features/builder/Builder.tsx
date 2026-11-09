@@ -7,6 +7,7 @@ import { describeDeckError, isSessionEnded } from '@/features/decks/errors'
 import { STATE_LABEL } from '@/features/decks/format'
 import { nameProblem as checkName } from '@/features/decks/rules'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import { BY_HAND } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { CardsApi } from '@/net/cards'
 import type { DecksApi } from '@/net/decks'
@@ -249,7 +250,7 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
     },
     byHand: (id, on) => {
       const name = draft.lines.find((line) => line.card.oracle_id === id)?.card.name ?? 'the card'
-      setAnnouncement(on ? `${name} is played by hand.` : `${name} is played by the rules again.`)
+      setAnnouncement(on ? `${name} is ${BY_HAND}.` : `${name} is played by the rules again.`)
       setDraft((current) => setByHand(current, id, on))
     },
     preview: showPreview,

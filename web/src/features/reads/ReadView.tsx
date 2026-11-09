@@ -162,7 +162,7 @@ function WrongOfferNote({
       <HandIcon aria-hidden="true" />
       <AlertTitle>{`${offer.name} is found wrong`}</AlertTitle>
       <AlertDescription className="grid justify-items-start gap-2">
-        <span>Mark it to keep it played by hand at your table, even once its rules change.</span>
+        <span>{`Mark it to keep it ${BY_HAND} at your table, even once its rules change.`}</span>
         <div className="flex flex-wrap items-center gap-3">
           {inDeck ? (
             <PlayByHand
