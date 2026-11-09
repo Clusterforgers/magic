@@ -70,6 +70,30 @@ export function statusGlyph(chip: StatusChip): Glyph {
   return { icon: STATUS_ICON[chip.label] ?? CircleDot, text: '', words }
 }
 
+// The rank of a mark the stat row of a short turned face draws: lower first.
+function turnedRank(chip: StatusChip): number | null {
+  if (chip.label === 'Attacking' || chip.label === 'Blocking') return 0
+  if (chip.label === 'Blocked') return 1
+  if (chip.kind === 'damage') return 2
+  if (chip.kind === 'sick') return 3
+  if (chip.kind === 'tapped') return 4
+  return null
+}
+
+/**
+ * The marks a compact turned face too short for its art row draws beside its stat box, most important first:
+ * Attacking or Blocking, Blocked, damage, Sick, Tapped. The row shows as many as fit whole, in this order.
+ */
+export function turnedMarks(chips: readonly StatusChip[]): StatusChip[] {
+  return chips
+    .flatMap((chip) => {
+      const rank = turnedRank(chip)
+      return rank === null ? [] : [{ chip, rank }]
+    })
+    .sort((a, b) => a.rank - b.rank)
+    .map(({ chip }) => chip)
+}
+
 const COUNTER_ICON: Partial<Record<string, LucideIcon>> = { shield: ShieldCheck }
 
 /** A counter chip as a glyph: "+2" for two +1/+1 counters, "−1" for a −1/−1, its symbol or icon and the count otherwise. */
@@ -122,10 +146,12 @@ interface GlyphMarkProps {
   /** The look of the mark: the same background and border as its wide form. */
   className: string
   tone?: string | undefined
+  /** Drawn for the eye only, its words said elsewhere: no screen-reader text. */
+  quiet?: boolean
 }
 
 /** A narrow mark: never shrinks nor cuts, its words in a tooltip and for a screen reader. */
-export function GlyphMark({ glyph, slot, className, tone }: GlyphMarkProps) {
+export function GlyphMark({ glyph, slot, className, tone, quiet = false }: GlyphMarkProps) {
   const Icon = glyph.icon
   return (
     <span
@@ -140,7 +166,7 @@ export function GlyphMark({ glyph, slot, className, tone }: GlyphMarkProps) {
     >
       {Icon === null ? null : <Icon aria-hidden="true" className="size-2.5 shrink-0" />}
       {glyph.text === '' ? null : <span aria-hidden="true">{glyph.text}</span>}
-      <span className="sr-only">{glyph.words}</span>
+      {quiet ? null : <span className="sr-only">{glyph.words}</span>}
     </span>
   )
 }
