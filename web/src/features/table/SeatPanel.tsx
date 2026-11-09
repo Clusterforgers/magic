@@ -101,6 +101,9 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   // The blocks above the corner: its room is the column less these (the column is measured by `PodColumn`).
   const above = useRef<HTMLDivElement>(null)
   const aboveHeight = useBoxHeight(above)
+  // The chips a cramped column lays under the corner, which the corner leaves room for, so the column never scrolls.
+  const below = useRef<HTMLDivElement>(null)
+  const belowHeight = useBoxHeight(below)
   const room = usePodRoom()
   if (player === undefined) return null
   const graveyard = player.graveyard.cards ?? NO_IDS
@@ -324,16 +327,19 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         inDock={flags.you}
         commandSlot={commanderGame && (player.commanders?.length ?? 0) > 0}
         tax={taxOnCards}
-        height={cornerHeight(room.height, aboveHeight)}
+        height={cornerHeight(room.height, aboveHeight, cramped ? belowHeight : null)}
         card={room.card}
       />
-      {cramped ? (
-        <div data-slot="pod-more" className="flex flex-wrap items-center gap-1 empty:hidden">
-          {mana}
-          <UntappedSources seat={seat} />
-          {extraChips}
-        </div>
-      ) : null}
+      {/* Always in the page, so it is measured from the start; empty (and hidden) unless the column is cramped. */}
+      <div ref={below} data-slot="pod-more" className="flex flex-wrap items-center gap-1 empty:hidden">
+        {cramped ? (
+          <>
+            {mana}
+            <UntappedSources seat={seat} />
+            {extraChips}
+          </>
+        ) : null}
+      </div>
     </section>
   )
 })
