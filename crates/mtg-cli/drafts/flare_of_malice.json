@@ -1,0 +1,79 @@
+{
+  "oracle_id": "4ce156f8-6b0b-41ce-9e8f-b2735c757406",
+  "name": "Flare of Malice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flare of Malice",
+      "oracle_fingerprint": "a5b28cbd4bc3337749936bf4055c25db",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "Color": "Black" }, { "Not": "Token" }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "each" },
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                            { "ControlledBy": { "Bound": "each" } },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Eq",
+                                "to": {
+                                  "Greatest": {
+                                    "of": [
+                                      {
+                                        "AnyOf": [
+                                          { "Type": "Creature" },
+                                          { "Type": "Planeswalker" }
+                                        ]
+                                      },
+                                      { "ControlledBy": { "Bound": "each" } }
+                                    ],
+                                    "stat": "ManaValue"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "as": "card2"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "card2" }, "as": "picks3", "adds": true } },
+                    { "Reveal": { "what": { "Bound": "card2" } } }
+                  ]
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Is": { "Bound": "picks3" } }],
+                  "count": { "Count": [{ "Is": { "Bound": "picks3" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

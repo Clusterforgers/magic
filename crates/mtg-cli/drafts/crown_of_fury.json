@@ -1,0 +1,45 @@
+{
+  "oracle_id": "8ce4a4c0-3350-43ef-95d9-2b2f76ca61d9",
+  "name": "Crown of Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crown of Fury",
+      "oracle_fingerprint": "47ff36fe030ed62df618d2e57e93fcb3",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 0 } },
+              { "AddKeyword": "FirstStrike" }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Is": "Attached" }, { "SharesSubtype": "Attached" }] }
+                    ]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "ee7ebbc1-2f9e-4867-a522-424869b6d772",
+  "name": "Combat Calligrapher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Combat Calligrapher",
+      "oracle_fingerprint": "cda9fe6e1b19eabc5f4e573fd040da7c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Inkling" }] },
+            "mods": [{ "CantAttackYou": "Both" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "GroupAttacksAt": { "what": [{ "Type": "Creature" }], "at": "Opponents" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "token": {
+                    "Custom": {
+                      "name": "Inkling",
+                      "colors": ["White", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Inkling"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "against": "Against"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

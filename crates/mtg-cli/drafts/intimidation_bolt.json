@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3018c0ef-876a-4254-9513-42f351e1da3e",
+  "name": "Intimidation Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intimidation Bolt",
+      "oracle_fingerprint": "c9e46acc1d5724b8b67b0dd53997514a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }]
+                  },
+                  "mods": ["CantAttack"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

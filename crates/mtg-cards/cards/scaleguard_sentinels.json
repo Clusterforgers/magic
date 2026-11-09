@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5c0c01c1-c207-4348-aaec-fbefa77cfcd4",
+  "name": "Scaleguard Sentinels",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scaleguard Sentinels",
+      "oracle_fingerprint": "3ade4634990675a9d9f3f80d2c583837",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "RevealFromHand": { "filter": [{ "Subtype": "Dragon" }] } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Any": [
+                "AdditionalCostPaid",
+                {
+                  "AsCast": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -293,7 +293,7 @@ const HAD_PLUS: &str =
 const LUCK: &str = r#"{"Compare":{"left":{"Counters":{"counter":{"Other":"luck"},"on":"This"}},"op":"Ge","right":10}}"#;
 const CHARGE: &str =
     r#"{"Compare":{"left":{"Counters":{"counter":"charge","on":"This"}},"op":"Ge","right":10}}"#;
-const LOST: &str = r#"{"Compare":{"left":{"Tallied":{"what":"LifeLost","who":"EachPlayer"}},"op":"Ge","right":4}}"#;
+const LOST: &str = r#"{"Compare":{"left":{"Tallied":{"what":"LifeLostMost","who":"EachPlayer"}},"op":"Ge","right":4}}"#;
 const GAINED: &str = r#"{"Compare":{"left":{"Tallied":{"what":"LifeGained","who":"EachPlayer"}},"op":"Ge","right":4}}"#;
 
 #[rstest]

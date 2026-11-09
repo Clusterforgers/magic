@@ -1,0 +1,56 @@
+{
+  "oracle_id": "40262ae5-1472-4777-b759-d1752c0b0148",
+  "name": "The Master, Transcendent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Master, Transcendent",
+      "oracle_fingerprint": "992152091ce8c00370893ff623460958",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "rad" }, "count": 2 }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "MilledThisTurn", { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "SetCreatureTypes": ["Mutant"] },
+                    { "SetColors": ["Green"] }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

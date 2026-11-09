@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ff48cf80-4950-4ae4-9f7c-8d826b2f26f7",
+  "name": "Dralnu's Crusade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dralnu's Crusade",
+      "oracle_fingerprint": "58be38a884b1bc7eb72e176867422237",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Goblin" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Goblin" }] },
+            "mods": [{ "SetColors": ["Black"] }, { "AddSubtype": "Zombie" }]
+          }
+        }
+      ]
+    }
+  ]
+}

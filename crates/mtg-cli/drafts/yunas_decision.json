@@ -1,0 +1,121 @@
+{
+  "oracle_id": "77dd6ce0-91fc-4e71-99ff-47cdf3359067",
+  "name": "Yuna's Decision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yuna's Decision",
+      "oracle_fingerprint": "62dcde64fa4c2e0ed5f21e71f31c3c14",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Continue the Pilgrimage",
+                      "effects": [
+                        { "Sacrifice": { "filter": [{ "Type": "Creature" }], "as": "sacrificed" } },
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Bound": "sacrificed" },
+                                "selector": [{ "Type": "Creature" }],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [{ "Draw": {} }]
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": {
+                              "CountOf": {
+                                "subject": { "Bound": "sacrificed" },
+                                "selector": [{ "Type": "Creature" }],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "then": [
+                              {
+                                "Choose": {
+                                  "from": {
+                                    "Each": [
+                                      { "Type": "Creature" },
+                                      { "In": "Hand" },
+                                      { "OwnedBy": "You" }
+                                    ]
+                                  },
+                                  "count": { "min": 0, "max": 1 },
+                                  "as": "picked2"
+                                }
+                              },
+                              {
+                                "Move": {
+                                  "what": { "Bound": "picked2" },
+                                  "to": { "Battlefield": {} }
+                                }
+                              },
+                              {
+                                "Choose": {
+                                  "from": {
+                                    "Each": [
+                                      { "Type": "Land" },
+                                      { "In": "Hand" },
+                                      { "OwnedBy": "You" }
+                                    ]
+                                  },
+                                  "count": { "min": 0, "max": 1 },
+                                  "as": "picked3"
+                                }
+                              },
+                              {
+                                "Move": {
+                                  "what": { "Bound": "picked3" },
+                                  "to": { "Battlefield": {} }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Find Another Way",
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "OwnedBy": "You" },
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              },
+                              { "In": "Graveyard" }
+                            ]
+                          },
+                          "bounds": { "min": 1, "max": 2 }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "3d5b71d4-ed5e-4c6d-be70-bebbb1475257",
+  "name": "Clockwork Avian",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Clockwork Avian",
+      "oracle_fingerprint": "7b7ead862962b3971194c9af02587fd1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "+1/+0" }, "count": 4 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    {
+                      "AnyOf": [
+                        { "DidThisTurn": { "event": "Attacked", "combat": true } },
+                        { "DidThisTurn": { "event": "Blocked", "combat": true } }
+                      ]
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "+1/+0" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 160, "end": 350 }
+          }
+        }
+      ]
+    }
+  ]
+}

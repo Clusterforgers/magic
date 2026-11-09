@@ -1,0 +1,45 @@
+{
+  "oracle_id": "32476743-c9d4-49ca-bec2-0669c215841b",
+  "name": "Anrakyr the Traveller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anrakyr the Traveller",
+      "oracle_fingerprint": "a7276397b188c7be15fd3e3af86b963d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Artifact" },
+                            { "OwnedBy": "You" },
+                            { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "picked" },
+                        "rather": [{ "PayLife": { "Stat": { "of": "This", "stat": "ManaValue" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

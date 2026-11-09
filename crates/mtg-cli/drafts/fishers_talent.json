@@ -1,0 +1,126 @@
+{
+  "oracle_id": "44ba2aa5-2bf5-4267-ae82-f0daf8f5e3e8",
+  "name": "Fisher's Talent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fisher's Talent",
+      "oracle_fingerprint": "161185af55a987c49e5e920e0c691e8a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, { "Type": "Land" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Fish",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Fish"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}{G}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "TokenCreation": { "what": [{ "Subtype": "Fish" }] } },
+            "by": {
+              "Instead": [
+                {
+                  "CreateToken": {
+                    "token": {
+                      "Custom": {
+                        "name": "Shark",
+                        "colors": ["Blue"],
+                        "types": ["Creature"],
+                        "subtypes": ["Shark"],
+                        "power": 3,
+                        "toughness": 3
+                      }
+                    },
+                    "count": "Triggering"
+                  }
+                }
+              ]
+            },
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 2 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}{G}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "TokenCreation": { "what": [{ "Subtype": "Shark" }] } },
+            "by": {
+              "Instead": [
+                {
+                  "CreateToken": {
+                    "token": {
+                      "Custom": {
+                        "name": "Octopus",
+                        "colors": ["Blue"],
+                        "types": ["Creature"],
+                        "subtypes": ["Octopus"],
+                        "power": 8,
+                        "toughness": 8
+                      }
+                    },
+                    "count": "Triggering"
+                  }
+                }
+              ]
+            },
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 3 } }
+          }
+        }
+      ]
+    }
+  ]
+}

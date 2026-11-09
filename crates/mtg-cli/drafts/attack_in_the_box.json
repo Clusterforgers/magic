@@ -27,7 +27,6 @@
                         "effects": [
                           {
                             "Sacrifice": {
-                              "who": { "ControllerOf": "This" },
                               "filter": [{ "Is": "This" }],
                               "count": { "Count": [{ "Is": "This" }] }
                             }

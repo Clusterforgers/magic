@@ -1,0 +1,29 @@
+{
+  "oracle_id": "43f89524-4b22-4707-9aba-6eb4c01d75dc",
+  "name": "Whirling Dervish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whirling Dervish",
+      "oracle_fingerprint": "13c9a06b260b804de4cf22b73038862c",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": ["This", { "DidThisTurn": { "event": "Damaged", "to": "Opponents" } }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

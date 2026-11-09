@@ -1,0 +1,40 @@
+{
+  "oracle_id": "684e2237-b860-45bf-a053-a02cc7ed1527",
+  "name": "Madcap Experiment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Madcap Experiment",
+      "oracle_fingerprint": "bccbcba58bb43321cff8defb3fdc5034",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Artifact" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              {
+                "Let": {
+                  "as": "seen3",
+                  "amount": { "Count": [{ "Is": { "Bound": "revealed2" } }, { "In": "Library" }] }
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              { "DealDamage": { "to": "You", "amount": { "Bound": "seen3" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

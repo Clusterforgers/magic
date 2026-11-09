@@ -1,0 +1,33 @@
+{
+  "oracle_id": "25781dc5-d6ea-4273-9fe3-06a8808b3718",
+  "name": "Reject Imperfection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reject Imperfection",
+      "oracle_fingerprint": "aa209987e68d0eb29c2af8e2b2fe471b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                      "op": "Le",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Proliferate": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "288fdfbb-1236-4732-afd7-e7eaba860007",
+  "name": "Merieke Ri Berit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merieke Ri Berit",
+      "oracle_fingerprint": "aa58d4265d7f34ef8fb5b07cd34b0834",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["DoesntUntap"] } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSource"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Count": ["This"] }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                        "until": "Forever",
+                        "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "Untapped": { "what": ["This"] } },
+                        "until": "Forever",
+                        "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

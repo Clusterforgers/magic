@@ -1,0 +1,88 @@
+{
+  "oracle_id": "d343c116-b33a-4ed6-ad15-d7270e739b04",
+  "name": "Aspiring Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aspiring Champion",
+      "oracle_fingerprint": "e43d0fcc4e1f082682f11b9f3b771b74",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                        "as": "found",
+                        "revealed_as": "revealed2"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": {} },
+                        "as": "found_moved"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed2" },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    },
+                    { "Shuffle": {} },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "found_moved" },
+                            "selector": [{ "Subtype": "Demon" }],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "DealDamage": {
+                              "source": { "Bound": "found" },
+                              "to": "Opponents",
+                              "amount": {
+                                "Total": {
+                                  "of": [
+                                    { "Is": { "Bound": "found" } },
+                                    {
+                                      "AnyOf": [
+                                        { "In": "Battlefield" },
+                                        { "In": "Hand" },
+                                        { "In": "Library" },
+                                        { "In": "Graveyard" },
+                                        { "In": "Exile" },
+                                        { "In": "Stack" }
+                                      ]
+                                    }
+                                  ],
+                                  "stat": "Power"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

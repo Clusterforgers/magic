@@ -1,0 +1,32 @@
+{
+  "oracle_id": "24dca209-9781-4bde-ad61-18c20e8ccbd8",
+  "name": "Surge of Zeal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surge of Zeal",
+      "oracle_fingerprint": "74a5c8aa7fc79a381e217f4a43928291",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesColor": { "Target": 0 } }] },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

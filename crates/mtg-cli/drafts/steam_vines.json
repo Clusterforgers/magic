@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1e687c04-b573-425d-b2d1-0e0cbe02bb52",
+  "name": "Steam Vines",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steam Vines",
+      "oracle_fingerprint": "d34f819131c6f53f804349e4570a92fe",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "Destroy": { "what": "Triggering" } },
+              { "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 1 } },
+              {
+                "Choose": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "from": { "Each": [{ "Type": "Land" }] },
+                  "as": "attach"
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Bound": "attach" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

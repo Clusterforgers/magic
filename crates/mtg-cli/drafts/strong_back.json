@@ -1,0 +1,72 @@
+{
+  "oracle_id": "097992a9-7b88-4c3f-8191-1ff10a4a735d",
+  "name": "Strong Back",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strong Back",
+      "oracle_fingerprint": "4d107364fd8c9f1513bfcabac07f23e7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{3}",
+            "activating": "Equip",
+            "targeting": [{ "Type": "Creature" }, { "Is": "Attached" }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "Subtype": "Aura" },
+              { "ControlledBy": "You" },
+              { "Targeting": [{ "Type": "Creature" }, { "Is": "Attached" }] }
+            ],
+            "change": "Reduce",
+            "mana": "{3}"
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                          {
+                            "AttachedTo": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                          {
+                            "AttachedTo": { "Each": [{ "Type": "Creature" }, { "Is": "Attached" }] }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

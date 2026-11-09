@@ -13,9 +13,15 @@
               {
                 "Modal": {
                   "modes": [
-                    { "effects": [{ "Conjure": { "name": "Plummet", "zone": "Hand" } }] },
-                    { "effects": [{ "Conjure": { "name": "Naturalize", "zone": "Hand" } }] },
-                    { "effects": [{ "Draw": {} }] }
+                    {
+                      "label": "Aim For the Wyvern",
+                      "effects": [{ "Conjure": { "name": "Plummet", "zone": "Hand" } }]
+                    },
+                    {
+                      "label": "Aim For the Cursed Amulet",
+                      "effects": [{ "Conjure": { "name": "Naturalize", "zone": "Hand" } }]
+                    },
+                    { "label": "Fire a Warning Shot", "effects": [{ "Draw": {} }] }
                   ]
                 }
               }

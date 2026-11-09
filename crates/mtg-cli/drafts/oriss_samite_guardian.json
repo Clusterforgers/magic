@@ -1,7 +1,7 @@
 {
   "oracle_id": "8d6e0dab-400a-4761-8343-92c7eb7e8735",
   "name": "Oriss, Samite Guardian",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Oriss, Samite Guardian",
@@ -23,9 +23,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 74, "end": 237 }
+          "Activated": {
+            "cost": [{ "Discard": { "filter": [{ "Named": "Oriss, Samite Guardian" }] } }],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": { "Cast": {} } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": ["CantAttack"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

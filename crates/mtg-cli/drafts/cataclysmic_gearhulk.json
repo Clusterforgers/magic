@@ -1,0 +1,122 @@
+{
+  "oracle_id": "2e4865c5-a590-4820-81ec-926014ddb8c4",
+  "name": "Cataclysmic Gearhulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cataclysmic Gearhulk",
+      "oracle_fingerprint": "ad3e9a3f42bf4108498df80a5fe21e4b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "as": "card2"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Bound": "card2" } } }
+                    ]
+                  },
+                  "as": "card3"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Enchantment" },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "Not": { "Is": { "Bound": "card3" } } }
+                    ]
+                  },
+                  "as": "card4"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Planeswalker" },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "Not": { "Is": { "Bound": "card3" } } },
+                      { "Not": { "Is": { "Bound": "card4" } } }
+                    ]
+                  },
+                  "as": "card5"
+                }
+              },
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Bound": "card2" } },
+                          { "Is": { "Bound": "card3" } },
+                          { "Is": { "Bound": "card4" } },
+                          { "Is": { "Bound": "card5" } }
+                        ]
+                      },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "picks"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "picks" } } },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Not": { "Is": { "Bound": "picks" } } }
+                  ],
+                  "count": {
+                    "Count": [
+                      { "Not": { "Type": "Land" } },
+                      { "Not": { "Is": { "Bound": "picks" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

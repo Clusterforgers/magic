@@ -1,0 +1,38 @@
+{
+  "oracle_id": "89215e6d-ebe7-4eb0-9999-11ee2e6eb1d2",
+  "name": "Devourer of Destiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devourer of Destiny",
+      "oracle_fingerprint": "050ccd51ebdfdd492c831f513153ffc2",
+      "abilities": [
+        {
+          "OpeningReveal": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept2",
+                  "rest_as": "rest3"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept2" }, "to": { "Library": { "place": "Top" } } } },
+              { "Exile": { "what": { "Bound": "rest3" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Not": "Colorless" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

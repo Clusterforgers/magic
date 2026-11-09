@@ -1,0 +1,60 @@
+{
+  "oracle_id": "7cbdba72-ed33-40c6-a9c0-4d65c280a4d0",
+  "name": "Lifestream's Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lifestream's Blessing",
+      "oracle_fingerprint": "8da080c05274621fc4133aa1b5e8ed46",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "CountedAsCast": {
+                      "Greatest": {
+                        "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                        "stat": "Power"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Product": [
+                      {
+                        "CountedAsCast": {
+                          "Greatest": {
+                            "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                            "stat": "Power"
+                          }
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Matches": {
+                              "subject": "This",
+                              "selector": [{ "WasCast": { "from": "Exile" } }]
+                            }
+                          },
+                          "then": 2,
+                          "otherwise": 0
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{4}{G}" } }
+      ]
+    }
+  ]
+}

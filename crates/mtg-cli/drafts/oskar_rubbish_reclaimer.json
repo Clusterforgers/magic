@@ -1,0 +1,40 @@
+{
+  "oracle_id": "14c2c818-0ce2-4809-a5ff-ee4a6253defa",
+  "name": "Oskar, Rubbish Reclaimer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oskar, Rubbish Reclaimer",
+      "oracle_fingerprint": "6360aa5050d32fe505cc45cbe738a578",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Distinct": {
+                "of": [{ "OwnedBy": "You" }, { "In": "Graveyard" }],
+                "stat": "ManaValue"
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "what": [{ "Not": { "Type": "Land" } }], "by": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Triggering",
+                  "as": "card",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

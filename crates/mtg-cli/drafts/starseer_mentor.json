@@ -1,0 +1,60 @@
+{
+  "oracle_id": "12a165c4-229b-458b-8fc7-c1b7cba35a8e",
+  "name": "Starseer Mentor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starseer Mentor",
+      "oracle_fingerprint": "7c9128912aec8bc7e6505e9540cf98b8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                    { "Tallied": { "who": "You", "what": "LifeLost" } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "OneOf": {
+                  "who": { "Target": 0 },
+                  "options": [
+                    [
+                      {
+                        "Pay": {
+                          "who": { "Target": 0 },
+                          "cost": [{ "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }] } }],
+                          "unpaid": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 3 } }]
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Pay": {
+                          "who": { "Target": 0 },
+                          "cost": [{ "Discard": {} }],
+                          "unpaid": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 3 } }]
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

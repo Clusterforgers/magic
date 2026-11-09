@@ -1,0 +1,53 @@
+{
+  "oracle_id": "955504bc-050a-42a2-b2e4-ab213183b2be",
+  "name": "Case of the Crimson Pulse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Case of the Crimson Pulse",
+      "oracle_fingerprint": "855b3b9ff1d0e5a060ad010356e4ef43",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Discard": {} }, { "Draw": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": ["This", { "Not": "Solved" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Solve": { "what": "This" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Compare": { "left": { "Count": ["This", "Solved"] }, "op": "Ge", "right": 1 } },
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              { "Draw": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

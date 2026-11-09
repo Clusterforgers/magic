@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b057c8ff-f169-41cd-a594-026f1a6cb0f9",
+  "name": "Fabrication Module",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fabrication Module",
+      "oracle_fingerprint": "bfd40949504b742ac88f66113f9677fd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "PlayerCountersPut": { "who": "You", "counter": { "Other": "energy" } } }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

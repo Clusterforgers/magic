@@ -1,0 +1,73 @@
+{
+  "oracle_id": "0158634a-08a3-4eb8-8216-bf85161fd168",
+  "name": "Discreet Retreat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Discreet Retreat",
+      "oracle_fingerprint": "bb6e6250bbe425f24e7bb32e213a55fe",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [
+                      {
+                        "AddMana": {
+                          "mana": { "AnyColor": 2 },
+                          "only": [
+                            {
+                              "Spell": {
+                                "subtypes": ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
+                              }
+                            },
+                            {
+                              "Ability": {
+                                "subtypes": ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": {
+                    "what": [
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Assassin" },
+                          { "Subtype": "Mercenary" },
+                          { "Subtype": "Pirate" },
+                          { "Subtype": "Rogue" },
+                          { "Subtype": "Warlock" }
+                        ]
+                      }
+                    ],
+                    "by": "You"
+                  }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

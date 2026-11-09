@@ -1,0 +1,96 @@
+{
+  "oracle_id": "933afaa3-3b23-454c-9465-8f2ba9652b4f",
+  "name": "Myrkul's Edict",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myrkul's Edict",
+      "oracle_fingerprint": "300996784a318ecf6e6527517015331b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        { "Choose": { "from": "Opponents", "as": "player" } },
+                        {
+                          "Sacrifice": {
+                            "who": { "Bound": "player" },
+                            "filter": [{ "Type": "Creature" }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [
+                        { "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }
+                      ]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        {
+                          "RepeatEach": {
+                            "over": "Opponents",
+                            "as": "each2",
+                            "effects": [
+                              {
+                                "Choose": {
+                                  "who": { "Bound": "each2" },
+                                  "from": {
+                                    "Each": [
+                                      { "Type": "Creature" },
+                                      { "ControlledBy": { "Bound": "each2" } },
+                                      {
+                                        "GreatestAmong": {
+                                          "stat": "Power",
+                                          "group": [
+                                            { "Type": "Creature" },
+                                            { "ControlledBy": { "Bound": "each2" } }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  "as": "card3"
+                                }
+                              },
+                              {
+                                "Bind": {
+                                  "what": { "Bound": "card3" },
+                                  "as": "picks4",
+                                  "adds": true
+                                }
+                              },
+                              { "Reveal": { "what": { "Bound": "card3" } } }
+                            ]
+                          }
+                        },
+                        {
+                          "Sacrifice": {
+                            "who": "EachPlayer",
+                            "filter": [{ "Is": { "Bound": "picks4" } }],
+                            "count": { "Count": [{ "Is": { "Bound": "picks4" } }] }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

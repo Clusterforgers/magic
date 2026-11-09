@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9fea3f42-643f-43c8-a9a9-4516dd72af5b",
+  "name": "Collapsing Borders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Collapsing Borders",
+      "oracle_fingerprint": "be82add96ead8eec31c8b66a41ed3e47",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "who": "Triggering",
+                  "amount": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "ActivePlayer" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              },
+              { "DealDamage": { "to": "Triggering", "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

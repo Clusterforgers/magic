@@ -1,0 +1,74 @@
+{
+  "oracle_id": "d0e99535-0ea0-4aa5-99f5-6c5255b27c38",
+  "name": "Phelddagrif",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phelddagrif",
+      "oracle_fingerprint": "abe85a3d9a4dd98d06146a31056436bd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G}",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Custom": {
+                      "name": "Hippo",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Hippo"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "GainLife": { "who": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Move": { "what": "This", "to": "Hand" } },
+              {
+                "May": {
+                  "who": { "Target": 0 },
+                  "effects": [{ "Draw": { "who": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

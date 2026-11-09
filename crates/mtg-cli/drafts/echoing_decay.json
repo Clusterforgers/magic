@@ -23,7 +23,8 @@
                   "affected": {
                     "Each": [
                       { "SharesName": { "Target": 0 } },
-                      { "Not": { "Is": { "Target": 0 } } }
+                      { "Not": { "Is": { "Target": 0 } } },
+                      { "Type": "Creature" }
                     ]
                   },
                   "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "81dad7c5-5950-4c45-adb0-cf1a15a74250",
+  "name": "Firkraag, Cunning Instigator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Firkraag, Cunning Instigator",
+      "oracle_fingerprint": "2dc6447a54fedcd098b578e6c35d51c7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                "at": "Opponents"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Against" }] } }
+            ],
+            "effects": [{ "Goad": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 118, "end": 284 }
+          }
+        }
+      ]
+    }
+  ]
+}

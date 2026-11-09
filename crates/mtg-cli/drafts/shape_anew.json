@@ -1,0 +1,42 @@
+{
+  "oracle_id": "21b7cf4f-1c86-4700-be71-68c974d143b0",
+  "name": "Shape Anew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shape Anew",
+      "oracle_fingerprint": "0fd95d042b1d434d24d3ad4a9588ed6f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Is": { "Target": 0 } }]
+                }
+              },
+              {
+                "RevealUntil": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Type": "Artifact" }],
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed2" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              { "Shuffle": { "who": { "ControllerOf": { "Target": 0 } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

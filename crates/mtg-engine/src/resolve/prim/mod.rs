@@ -55,6 +55,8 @@ mod done;
 mod draw;
 mod encode;
 mod end_turn;
+#[cfg(test)]
+mod ep21_move_any;
 mod exile;
 mod exile_hidden;
 mod exile_top;

@@ -1,0 +1,70 @@
+{
+  "oracle_id": "d53fecd7-aa12-482e-8f45-5efe6348070d",
+  "name": "Fireflux Squad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fireflux Squad",
+      "oracle_fingerprint": "f90522f2c1c635f1db16fa18c3d0f576",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Attacking",
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": { "left": { "Bound": "exiled~moved" }, "op": "Ge", "right": 1 }
+                        },
+                        "then": [
+                          {
+                            "RevealUntil": {
+                              "filter": [{ "Type": "Creature" }],
+                              "as": "found2",
+                              "revealed_as": "revealed3"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "found2" },
+                              "to": { "Battlefield": { "tapped": true } },
+                              "as": "moved4"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "revealed3" },
+                              "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                            }
+                          },
+                          { "JoinAttack": { "what": { "Bound": "moved4" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+{
+  "oracle_id": "5e958212-6a5b-4288-8d31-f1572619d7dc",
+  "name": "Liliana, Dreadhorde General",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana, Dreadhorde General",
+      "oracle_fingerprint": "da0ef4d5571985991ed0d96357350f70",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 4 },
+            "effects": [
+              {
+                "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }], "count": 2 }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 9 },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": { "Each": [{ "ControlledBy": "Chooser" }, { "Type": "Artifact" }] },
+                  "as": "card2"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Battle" },
+                      { "Not": { "Is": { "Bound": "card2" } } }
+                    ]
+                  },
+                  "as": "card3"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "Not": { "Is": { "Bound": "card3" } } }
+                    ]
+                  },
+                  "as": "card4"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Enchantment" },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "Not": { "Is": { "Bound": "card3" } } },
+                      { "Not": { "Is": { "Bound": "card4" } } }
+                    ]
+                  },
+                  "as": "card5"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Land" },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "Not": { "Is": { "Bound": "card3" } } },
+                      { "Not": { "Is": { "Bound": "card4" } } },
+                      { "Not": { "Is": { "Bound": "card5" } } }
+                    ]
+                  },
+                  "as": "card6"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Planeswalker" },
+                      { "Not": { "Is": { "Bound": "card2" } } },
+                      { "Not": { "Is": { "Bound": "card3" } } },
+                      { "Not": { "Is": { "Bound": "card4" } } },
+                      { "Not": { "Is": { "Bound": "card5" } } },
+                      { "Not": { "Is": { "Bound": "card6" } } }
+                    ]
+                  },
+                  "as": "card7"
+                }
+              },
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Bound": "card2" } },
+                          { "Is": { "Bound": "card3" } },
+                          { "Is": { "Bound": "card4" } },
+                          { "Is": { "Bound": "card5" } },
+                          { "Is": { "Bound": "card6" } },
+                          { "Is": { "Bound": "card7" } }
+                        ]
+                      },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "picks"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "picks" } } },
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [
+                    { "Not": { "Is": { "Bound": "picks" } } },
+                    { "ControlledBy": "Opponents" }
+                  ],
+                  "count": {
+                    "Count": [
+                      { "Not": { "Is": { "Bound": "picks" } } },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

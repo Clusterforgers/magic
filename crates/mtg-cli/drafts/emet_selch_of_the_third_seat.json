@@ -1,7 +1,7 @@
 {
   "oracle_id": "634475d9-a1d7-4146-9a37-645d3d162af1",
   "name": "Emet-Selch of the Third Seat",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Emet-Selch of the Third Seat",
@@ -20,9 +20,42 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 59, "end": 260 }
+          "Triggered": {
+            "when": { "Batch": { "LifeLost": { "who": "Opponents" } } },
+            "limit": "OncePerTurnDone",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "CastFromZone": { "what": { "Target": 0 }, "as": "cast" } },
+                    {
+                      "Shield": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                            "from": "Stack",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "by": { "MoveTo": "Exile" },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

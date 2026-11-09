@@ -1,7 +1,7 @@
 {
   "oracle_id": "11765eaf-87a1-48bd-90c1-7a5f21be5918",
   "name": "Roxanne, Starfall Savant",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Roxanne, Starfall Savant",
@@ -46,9 +46,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 194, "end": 293 }
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Artifact" }, "Token"], "by": "You" } },
+            "effects": [{ "AddMana": { "mana": "OfTapped" } }]
           }
         }
       ]

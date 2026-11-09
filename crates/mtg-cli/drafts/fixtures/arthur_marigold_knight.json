@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "9b3603aa-58a2-41d4-a58f-2b3306876e35",
+  "oracle_id": "8d6ce07f-b21b-42eb-a3d6-df810664e2be",
+  "multiverse_ids": [
+    671102
+  ],
+  "mtgo_id": 128983,
+  "tcgplayer_id": 559720,
+  "cardmarket_id": 779409,
+  "name": "Arthur, Marigold Knight",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/9b3603aa-58a2-41d4-a58f-2b3306876e35",
+  "scryfall_uri": "https://scryfall.com/card/blc/5/arthur-marigold-knight?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:45:38Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/b/9b3603aa-58a2-41d4-a58f-2b3306876e35.jpg?1783910738",
+    "normal": "https://cards.scryfall.io/normal/front/9/b/9b3603aa-58a2-41d4-a58f-2b3306876e35.jpg?1783910738",
+    "large": "https://cards.scryfall.io/large/front/9/b/9b3603aa-58a2-41d4-a58f-2b3306876e35.jpg?1783910738",
+    "png": "https://cards.scryfall.io/png/front/9/b/9b3603aa-58a2-41d4-a58f-2b3306876e35.png?1783910738",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/b/9b3603aa-58a2-41d4-a58f-2b3306876e35.jpg?1783910738",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/b/9b3603aa-58a2-41d4-a58f-2b3306876e35.jpg?1783910738",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/b/9b3603aa-58a2-41d4-a58f-2b3306876e35.webp?1783910738",
+    "grid": "https://cards.scryfall.io/grid/front/9/b/9b3603aa-58a2-41d4-a58f-2b3306876e35.webp?1783910738",
+    "display": "https://cards.scryfall.io/display/front/9/b/9b3603aa-58a2-41d4-a58f-2b3306876e35.webp?1783910738",
+    "art": "https://cards.scryfall.io/art/front/9/b/9b3603aa-58a2-41d4-a58f-2b3306876e35.webp?1783910738",
+    "crop": "https://cards.scryfall.io/crop/front/9/b/9b3603aa-58a2-41d4-a58f-2b3306876e35.webp?1783910738",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/b/9b3603aa-58a2-41d4-a58f-2b3306876e35.jpg?1783910738"
+  },
+  "mana_cost": "{2}{U}{R}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Mouse Knight",
+  "oracle_text": "Haste\nWhenever Arthur and at least one other creature attack, look at the top six cards of your library. You may put a creature card from among them onto the battlefield tapped and attacking. Put the rest on the bottom of your library in a random order. Return that creature to its owner's hand at end of combat.",
+  "power": "4",
+  "toughness": "5",
+  "colors": [
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": false,
+  "finishes": [
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c0f860b9-a2d0-4fd7-bfac-a49ac60c84f1",
+  "set": "blc",
+  "set_name": "Bloomburrow Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c0f860b9-a2d0-4fd7-bfac-a49ac60c84f1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ablc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/blc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9b3603aa-58a2-41d4-a58f-2b3306876e35/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8d6ce07f-b21b-42eb-a3d6-df810664e2be&unique=prints",
+  "collector_number": "5",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Steven Belledin",
+  "artist_ids": [
+    "f07d73b9-52a0-4fe5-858b-61f7b42174a5"
+  ],
+  "illustration_id": "4245fdee-082b-4ed7-af23-cff1c90b3067",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8184,
+  "preview": {
+    "source": "TCGplayer",
+    "source_uri": "https://infinite.tcgplayer.com/article/Our-EXCLUSIVE-Bloomburrow-Commander-Precon-Preview-Family-Matters/db16627b-2ee4-45d3-9608-14924d166916",
+    "previewed_at": "2024-07-18"
+  },
+  "prices": {
+    "usd": null,
+    "usd_foil": "0.38",
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": "0.34",
+    "tix": "1.30"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=671102&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DArthur%252C%2BMarigold%2BKnight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DArthur%252C%2BMarigold%2BKnight",
+    "edhrec": "https://edhrec.com/route/?cc=Arthur%2C+Marigold+Knight"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F559720%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=779409&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128983?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

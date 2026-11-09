@@ -1,0 +1,79 @@
+{
+  "oracle_id": "6f72ce67-3c17-4338-904b-26e2bf4aecdc",
+  "name": "Loki, God of Lies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loki, God of Lies",
+      "oracle_fingerprint": "e39ea33d75eb297614e1ab2c77909bc0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  "SingleTarget",
+                  { "Targeting": [{ "Type": "Creature" }, { "In": "Battlefield" }] }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "TargetedBy": "Triggering" },
+                      { "Type": "Creature" },
+                      { "In": "Battlefield" }
+                    ]
+                  },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "YourTurn",
+                  "then": [
+                    {
+                      "Untap": {
+                        "what": {
+                          "Each": [
+                            { "TargetedBy": "Triggering" },
+                            { "Type": "Creature" },
+                            { "In": "Battlefield" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "YourTurn",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [
+                            { "TargetedBy": "Triggering" },
+                            { "Type": "Creature" },
+                            { "In": "Battlefield" }
+                          ]
+                        },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

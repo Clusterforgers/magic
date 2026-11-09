@@ -1,0 +1,21 @@
+{
+  "oracle_id": "2a521811-7106-4531-b69c-631e207b8988",
+  "name": "Chancellor of the Tangle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chancellor of the Tangle",
+      "oracle_fingerprint": "814c5adcf1aa5915b8fb660be3a11853",
+      "abilities": [
+        {
+          "OpeningReveal": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "597d1dce-67e8-4c37-9781-eeaeb7c2d7b7",
+  "name": "Unnatural Aggression",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unnatural Aggression",
+      "oracle_fingerprint": "338294f290fdec06aee327db50f75ad3",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 1 } }, { "Type": "Creature" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

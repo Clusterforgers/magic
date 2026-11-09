@@ -593,7 +593,7 @@ fn api_line(ctx: &mut Ctx, p: &Params, api: &str) -> Tr<Vec<Value>> {
         "Mill" => one(mill(ctx, p)),
         "Scry" => one(scry(ctx, p)),
         "Surveil" => one(count_verb(ctx, p, "Surveil", "Amount")),
-        "Proliferate" => one(proliferate(p)),
+        "Proliferate" => proliferate(p),
         "Cleanup" => cleanup(ctx, p),
         "Effect" => effects_effect::effects(ctx, p),
         "RepeatEach" => effects_loop::repeat_each(ctx, p),
@@ -1291,6 +1291,20 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         own = p.without(&["RememberObjects"]);
         p = &own;
     }
+    // `RememberNumber$`: the number an earlier step remembered ("that spell's mana value"), kept as the trigger is set up and
+    // read by its lines as `TriggerRememberAmount`.
+    let outer_amount = ctx.trigger_amount.take();
+    let own_number;
+    if p.get("RememberNumber") == Some("True") {
+        let Some(number) = ctx.number.clone() else {
+            return unmapped("key:DelayedTrigger.RememberNumber-without-a-number");
+        };
+        let name = ctx.fresh("number");
+        out.push(json!({"Let": {"as": name, "amount": number}}));
+        ctx.trigger_amount = Some(name);
+        own_number = p.without(&["RememberNumber"]);
+        p = &own_number;
+    }
     // The object an event of this trigger is about, named now: the delayed trigger fires on another event.
     if let Some(word) = p
         .get("RememberObjects")
@@ -1331,6 +1345,7 @@ fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     }
     let node = delayed_node(ctx, p);
     ctx.delayed_remembered = outer;
+    ctx.trigger_amount = outer_amount;
     out.push(node?);
     Ok(out)
 }
@@ -1448,7 +1463,13 @@ fn delayed_step(p: &Params) -> Tr<Value> {
     if p.get("NextTurn").is_some() && !(p.get("Phase") == Some("Upkeep") && every_upkeep) {
         return unmapped("key:DelayedTrigger.NextTurn");
     }
-    let step = super::triggers::step(p.get("Phase").unwrap_or_default())?;
+    let words = p.get("Phase").unwrap_or_default();
+    // "Your next main phase": the first of the two main phases to begin.
+    let steps = if words == "Main1,Main2" {
+        vec!["Main1", "Main2"]
+    } else {
+        vec![super::triggers::step(words)?]
+    };
     let whose = match p.get("ValidPlayer") {
         None | Some("Player") => "EachPlayer",
         Some("You") => "You",
@@ -1456,12 +1477,28 @@ fn delayed_step(p: &Params) -> Tr<Value> {
         Some("Opponent") if p.get("Phase") == Some("EndCombat") => "EachPlayer",
         Some(other) => return unmapped(format!("key:DelayedTrigger.ValidPlayer={other}")),
     };
-    Ok(json!({"StepBegins": {"step": step, "whose": whose}}))
+    let mut patterns: Vec<Value> = steps
+        .iter()
+        .map(|step| json!({"StepBegins": {"step": step, "whose": whose}}))
+        .collect();
+    Ok(if patterns.len() == 1 {
+        patterns.remove(0)
+    } else {
+        json!({"AnyOf": patterns})
+    })
 }
 
-fn proliferate(p: &Params) -> Tr<Value> {
-    only(p, "Proliferate", &[])?;
-    Ok(json!({"Proliferate": {}}))
+/// `Proliferate`, `Amount$ N` times over ("proliferate twice" runs it again, choosing afresh each time).
+fn proliferate(p: &Params) -> Tr<Vec<Value>> {
+    only(p, "Proliferate", &["Amount"])?;
+    let times = match p.get("Amount") {
+        None => 1,
+        Some(n) => match n.parse::<usize>() {
+            Ok(n @ 1..=5) => n,
+            _ => return unmapped("key:Proliferate.Amount"),
+        },
+    };
+    Ok(vec![json!({"Proliferate": {}}); times])
 }
 
 /// The targets a delayed trigger's own effects declare are chosen when it triggers, not when the spell is cast: they move

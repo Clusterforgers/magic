@@ -1,0 +1,57 @@
+{
+  "oracle_id": "c0ebc1df-51ea-413b-bb88-7666a53ad783",
+  "name": "Otherworldly Escort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Otherworldly Escort",
+      "oracle_fingerprint": "a93098fd1007e563c7de6ba5c83b69da",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "Not": { "Subtype": "Spirit" } }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": { "Battlefield": { "counters": [["charge", 4]] } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "SetCreatureTypes": ["Spirit", "Detective"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "DidThisTurn": { "event": "Damaged", "to": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

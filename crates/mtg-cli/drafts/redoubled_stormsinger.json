@@ -37,7 +37,6 @@
                   "effects": [
                     {
                       "Sacrifice": {
-                        "who": { "ControllerOf": { "Bound": "copy" } },
                         "filter": [{ "Is": { "Bound": "copy" } }],
                         "count": { "Count": [{ "Is": { "Bound": "copy" } }] }
                       }

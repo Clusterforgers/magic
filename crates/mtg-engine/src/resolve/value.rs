@@ -426,6 +426,7 @@ impl<'a> Scope<'a> {
             TurnTally::ArtifactSpellsCast => Tally::C11aArtifactCast,
             TurnTally::Discarded => Tally::Discarded,
             TurnTally::Drawn => Tally::Drawn,
+            TurnTally::LifeLostMost => Tally::Lost,
             TurnTally::LandsPlayed => Tally::LandsPlayed,
             TurnTally::Scried => Tally::Scried,
             TurnTally::Surveilled => Tally::Surveilled,

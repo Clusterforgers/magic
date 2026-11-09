@@ -1,0 +1,51 @@
+{
+  "oracle_id": "9ae13026-960a-4d31-b775-d47209a1e313",
+  "name": "Ardyn, the Usurper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ardyn, the Usurper",
+      "oracle_fingerprint": "bb7949188ad69fe9e92ce012fcd8c2d4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Demon" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "AddKeyword": "Menace" },
+              { "AddKeyword": "Lifelink" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Bound": "exiled" },
+                      "except": [
+                        { "SetPT": { "power": 5, "toughness": 5 } },
+                        { "SetColors": ["Black"] },
+                        { "SetCreatureTypes": ["Demon"] }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

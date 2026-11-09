@@ -1,0 +1,43 @@
+{
+  "oracle_id": "783f059f-90d0-4148-898b-9e694b22ac0a",
+  "name": "Enemy of Enlightenment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Enemy of Enlightenment",
+      "oracle_fingerprint": "367f84a2163b73710746c63be9ff9f43",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": -1,
+                      "of": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Opponents" }] }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": -1,
+                      "of": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Opponents" }] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Discard": { "who": "EachPlayer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

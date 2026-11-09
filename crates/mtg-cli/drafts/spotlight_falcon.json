@@ -1,0 +1,22 @@
+{
+  "oracle_id": "da42a37f-a930-4139-8dc2-2516308b1cad",
+  "name": "Spotlight Falcon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spotlight Falcon",
+      "oracle_fingerprint": "33a6210d0192098ee6d04d2c228d09e6",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "CollectEvidence": 5 }] } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "AdditionalCostPaid",
+            "effects": [{ "Conjure": { "name": "Spotlight Falcon", "zone": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

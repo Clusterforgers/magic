@@ -67,6 +67,7 @@ pub(super) fn w9c_replaced(r: &mut Reader<'_>) -> Option<Ability> {
     r.attempt(w9c_counters_static)
         .or_else(|| r.attempt(w9c_all_but))
         .or_else(|| r.attempt(w9c_token_kind))
+        .or_else(|| r.attempt(super::ep21_plus::ep21_plus))
 }
 
 /// "If equipped creature would be dealt damage, prevent that damage and put that many +1/+1 counters on it."
@@ -195,7 +196,7 @@ pub(super) fn w9c_sentences(ability: &Ability) -> Vec<String> {
     else {
         return Vec::new();
     };
-    w9c_texts(when, by).unwrap_or_default()
+    w9c_texts(when, by).unwrap_or_else(|| super::ep21_plus::ep21_sentences(ability))
 }
 
 fn w9c_texts(when: &ReplaceWhen, by: &ReplaceBy) -> Option<Vec<String>> {

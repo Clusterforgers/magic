@@ -1,0 +1,54 @@
+{
+  "oracle_id": "2a2ea189-b663-4f4a-bb23-ff7a4af25f71",
+  "name": "Settle the Wreckage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Settle the Wreckage",
+      "oracle_fingerprint": "e9f3439c79a5a1d9a441d448e716dfa3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Attacking",
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "May": {
+                  "who": { "Target": 0 },
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "Target": 0 },
+                        "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                        "count": { "min": 0, "max": { "Bound": "exiled~moved" } },
+                        "as": "found2"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found2" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": { "who": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

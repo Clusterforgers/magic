@@ -1,0 +1,36 @@
+{
+  "oracle_id": "72eabfcc-61b6-4a07-9a9c-b40a9c05cf66",
+  "name": "Whirlwind, Killer Cyclone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whirlwind, Killer Cyclone",
+      "oracle_fingerprint": "9bcfdbe3460a8bacd7572081d3569d99",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "EnteredThisTurn"],
+                "at": "EachPlayer"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Against" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

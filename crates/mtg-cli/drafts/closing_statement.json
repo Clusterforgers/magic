@@ -1,0 +1,43 @@
+{
+  "oracle_id": "79ac7b6a-1c25-45f6-84b4-5c4a78d6fd6e",
+  "name": "Closing Statement",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Closing Statement",
+      "oracle_fingerprint": "20a61b3f75e18f07fdb4c9be7cc9fc26",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": { "All": ["YourTurn", { "Step": "End" }] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "6a381297-ebce-403c-b1dc-b7405fa6902c",
+  "name": "Disturbed Slumber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disturbed Slumber",
+      "oracle_fingerprint": "8676c78f59ebc883e79adacb34cc16fd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddSubtype": "Dinosaur" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Reach" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "AtLeastOne" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

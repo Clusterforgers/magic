@@ -1,7 +1,7 @@
 {
   "oracle_id": "879ba7c4-4557-4166-adb0-b52454816e5a",
   "name": "Enslave",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Enslave",
@@ -10,9 +10,13 @@
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 49, "end": 129 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "DealDamage": { "source": "Attached", "to": { "OwnerOf": "Attached" }, "amount": 1 }
+              }
+            ]
           }
         }
       ]

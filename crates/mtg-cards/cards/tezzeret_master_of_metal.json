@@ -1,0 +1,68 @@
+{
+  "oracle_id": "3fba19a9-44c6-4771-9587-9d2c4009e996",
+  "name": "Tezzeret, Master of Metal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tezzeret, Master of Metal",
+      "oracle_fingerprint": "818184c53bb1008300fe2d0c6b097d26",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Artifact" }],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

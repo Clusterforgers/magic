@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e3cd53c1-86bd-4177-adb0-a1fa693b44c6",
+  "name": "Auntie Ool, Cursewretch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auntie Ool, Cursewretch",
+      "oracle_fingerprint": "d4ab58926bf457d756099508e2609af1",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "Blight": 2 }] } },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "CountersPut": {
+                  "what": [{ "Type": "Creature" }, { "In": "Battlefield" }],
+                  "counter": "-1/-1",
+                  "each": true
+                }
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "ControlledBy": "You" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Not": { "ControlledBy": "You" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

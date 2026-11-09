@@ -1,0 +1,24 @@
+{
+  "oracle_id": "d273f87d-1271-49d2-a628-2d1bd888f56c",
+  "name": "Bilbo, Fellow Conspirator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bilbo, Fellow Conspirator",
+      "oracle_fingerprint": "20aec556575dd4e71070c6bed77df5b2",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "TokenCreation": { "what": [{ "Subtype": "Food" }] } },
+            "by": {
+              "Instead": [
+                { "CreateToken": { "token": { "Named": "food" }, "count": "Triggering" } },
+                { "CreateToken": { "token": { "Named": "treasure" }, "count": "Triggering" } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "b519a04b-64a6-456f-b02a-a54be50342be",
+  "oracle_id": "6f72ce67-3c17-4338-904b-26e2bf4aecdc",
+  "multiverse_ids": [],
+  "resource_id": "BF82053AB0849BE0B3BEF76BD03725CC671E34AED9D8B9A9B1453DB8AF56FE05",
+  "mtgo_id": 152127,
+  "arena_id": 105529,
+  "tcgplayer_id": 699617,
+  "cardmarket_id": 893271,
+  "name": "Loki, God of Lies",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/b519a04b-64a6-456f-b02a-a54be50342be",
+  "scryfall_uri": "https://scryfall.com/card/msc/512/loki-god-of-lies?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:38:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/5/b519a04b-64a6-456f-b02a-a54be50342be.jpg?1783903108",
+    "normal": "https://cards.scryfall.io/normal/front/b/5/b519a04b-64a6-456f-b02a-a54be50342be.jpg?1783903108",
+    "large": "https://cards.scryfall.io/large/front/b/5/b519a04b-64a6-456f-b02a-a54be50342be.jpg?1783903108",
+    "png": "https://cards.scryfall.io/png/front/b/5/b519a04b-64a6-456f-b02a-a54be50342be.png?1783903108",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/5/b519a04b-64a6-456f-b02a-a54be50342be.jpg?1783903108",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/5/b519a04b-64a6-456f-b02a-a54be50342be.jpg?1783903108",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/5/b519a04b-64a6-456f-b02a-a54be50342be.webp?1783903108",
+    "grid": "https://cards.scryfall.io/grid/front/b/5/b519a04b-64a6-456f-b02a-a54be50342be.webp?1783903108",
+    "display": "https://cards.scryfall.io/display/front/b/5/b519a04b-64a6-456f-b02a-a54be50342be.webp?1783903108",
+    "art": "https://cards.scryfall.io/art/front/b/5/b519a04b-64a6-456f-b02a-a54be50342be.webp?1783903108",
+    "crop": "https://cards.scryfall.io/crop/front/b/5/b519a04b-64a6-456f-b02a-a54be50342be.webp?1783903108",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/5/b519a04b-64a6-456f-b02a-a54be50342be.jpg?1783903108"
+  },
+  "mana_cost": "{1}{R}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — God Sorcerer Villain",
+  "oracle_text": "Whenever you cast a spell that targets only a single creature, gain control of that creature until end of turn. If it's your turn, untap that creature and it gains haste until end of turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b519a04b-64a6-456f-b02a-a54be50342be/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6f72ce67-3c17-4338-904b-26e2bf4aecdc&unique=prints",
+  "collector_number": "512",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kieran Yanner",
+  "artist_ids": [
+    "aa7e89ed-d294-4633-9057-ce04dacfcfa4"
+  ],
+  "illustration_id": "59137513-2932-4fe9-b342-7dc028223690",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 19921,
+  "prices": {
+    "usd": "1.19",
+    "usd_foil": "0.95",
+    "usd_etched": null,
+    "eur": "1.77",
+    "eur_foil": "0.89",
+    "tix": "1.76"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLoki%252C%2BGod%2Bof%2BLies",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLoki%252C%2BGod%2Bof%2BLies",
+    "edhrec": "https://edhrec.com/route/?cc=Loki%2C+God+of+Lies"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F699617%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=893271&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/152127?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

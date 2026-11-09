@@ -1,0 +1,34 @@
+{
+  "oracle_id": "c8fedb0e-27d5-4fae-8058-3e9666a9661d",
+  "name": "Needlebite Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Needlebite Trap",
+      "oracle_fingerprint": "234e40c31994506b0bff8ed1a17a6751",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": "{B}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 5 } },
+              { "GainLife": { "amount": 5 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

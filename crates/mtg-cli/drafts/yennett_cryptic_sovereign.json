@@ -1,0 +1,75 @@
+{
+  "oracle_id": "4eec6838-3565-407f-8941-ce9421402f0b",
+  "name": "Yennett, Cryptic Sovereign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yennett, Cryptic Sovereign",
+      "oracle_fingerprint": "ce12e1024513b860860f30f85f6cb8fc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "as": "revealed2"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed2" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2" },
+                      "selector": [
+                        {
+                          "Test": {
+                            "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                            "op": "Ne",
+                            "right": {
+                              "Times": {
+                                "by": 2,
+                                "of": {
+                                  "Half": {
+                                    "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                    "up": false
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CastFromZone": { "what": { "Bound": "revealed2" }, "free": true } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed2" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

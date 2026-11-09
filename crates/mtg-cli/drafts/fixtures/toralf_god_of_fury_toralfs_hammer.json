@@ -1,0 +1,183 @@
+{
+  "object": "card",
+  "id": "22a6a5f1-1405-4efb-af3e-e1f58d664e99",
+  "oracle_id": "fffcb71f-e802-436e-917d-eaa6607ab74f",
+  "multiverse_ids": [
+    503766,
+    503767
+  ],
+  "mtgo_id": 87643,
+  "arena_id": 75197,
+  "tcgplayer_id": 230214,
+  "cardmarket_id": 530502,
+  "name": "Toralf, God of Fury // Toralf's Hammer",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/22a6a5f1-1405-4efb-af3e-e1f58d664e99",
+  "scryfall_uri": "https://scryfall.com/card/khm/154/toralf-god-of-fury-toralfs-hammer?utm_source=api",
+  "layout": "modal_dfc",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:37:07Z",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — God // Legendary Artifact — Equipment",
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample",
+    "Equip"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Toralf, God of Fury",
+      "mana_cost": "{2}{R}{R}",
+      "type_line": "Legendary Creature — God",
+      "oracle_text": "Trample\nWhenever a creature or planeswalker an opponent controls is dealt excess noncombat damage, Toralf deals damage equal to the excess to any target other than that permanent.",
+      "colors": [
+        "R"
+      ],
+      "power": "5",
+      "toughness": "4",
+      "artist": "Tyler Jacobson",
+      "artist_id": "522af130-8db4-4b4b-950c-6e2b246339cf",
+      "illustration_id": "301e24c6-6821-440a-9523-b359c5c276ee",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.jpg?1783928227",
+        "normal": "https://cards.scryfall.io/normal/front/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.jpg?1783928227",
+        "large": "https://cards.scryfall.io/large/front/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.jpg?1783928227",
+        "png": "https://cards.scryfall.io/png/front/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.png?1783928227",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.jpg?1783928227",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.jpg?1783928227",
+        "thumb": "https://cards.scryfall.io/thumb/front/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.webp?1783928227",
+        "grid": "https://cards.scryfall.io/grid/front/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.webp?1783928227",
+        "display": "https://cards.scryfall.io/display/front/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.webp?1783928227",
+        "art": "https://cards.scryfall.io/art/front/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.webp?1783928227",
+        "crop": "https://cards.scryfall.io/crop/front/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.webp?1783928227",
+        "jpeg": "https://cards.scryfall.io/normal/front/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.jpg?1783928227"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Toralf's Hammer",
+      "mana_cost": "{1}{R}",
+      "type_line": "Legendary Artifact — Equipment",
+      "oracle_text": "Equipped creature has \"{1}{R}, {T}, Unattach Toralf's Hammer: It deals 3 damage to any target. Return Toralf's Hammer to its owner's hand.\"\nEquipped creature gets +3/+0 as long as it's legendary.\nEquip {1}{R}",
+      "colors": [
+        "R"
+      ],
+      "artist": "Tyler Jacobson",
+      "artist_id": "522af130-8db4-4b4b-950c-6e2b246339cf",
+      "illustration_id": "a2cefe36-7b95-40cb-8bc5-48ff6f63b511",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.jpg?1783928227",
+        "normal": "https://cards.scryfall.io/normal/back/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.jpg?1783928227",
+        "large": "https://cards.scryfall.io/large/back/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.jpg?1783928227",
+        "png": "https://cards.scryfall.io/png/back/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.png?1783928227",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.jpg?1783928227",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.jpg?1783928227",
+        "thumb": "https://cards.scryfall.io/thumb/back/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.webp?1783928227",
+        "grid": "https://cards.scryfall.io/grid/back/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.webp?1783928227",
+        "display": "https://cards.scryfall.io/display/back/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.webp?1783928227",
+        "art": "https://cards.scryfall.io/art/back/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.webp?1783928227",
+        "crop": "https://cards.scryfall.io/crop/back/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.webp?1783928227",
+        "jpeg": "https://cards.scryfall.io/normal/back/2/2/22a6a5f1-1405-4efb-af3e-e1f58d664e99.jpg?1783928227"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/22a6a5f1-1405-4efb-af3e-e1f58d664e99/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afffcb71f-e802-436e-917d-eaa6607ab74f&unique=prints",
+  "collector_number": "154",
+  "digital": false,
+  "rarity": "mythic",
+  "artist": "Tyler Jacobson",
+  "artist_ids": [
+    "522af130-8db4-4b4b-950c-6e2b246339cf"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 4917,
+  "penny_rank": 13970,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/making-magic/norsing-around-part-1-2021-01-11",
+    "previewed_at": "2021-01-11"
+  },
+  "prices": {
+    "usd": "4.98",
+    "usd_foil": "5.50",
+    "usd_etched": null,
+    "eur": "3.52",
+    "eur_foil": "3.86",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=503766&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DToralf%252C%2BGod%2Bof%2BFury%2B%252F%252F%2BToralf%2527s%2BHammer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DToralf%252C%2BGod%2Bof%2BFury%2B%252F%252F%2BToralf%2527s%2BHammer",
+    "edhrec": "https://edhrec.com/route/?cc=Toralf%2C+God+of+Fury"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F230214%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=530502&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87643?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

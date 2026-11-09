@@ -15,7 +15,10 @@
                 "what": {
                   "PerPlayer": {
                     "players": "EachPlayer",
-                    "what": [{ "AnyOf": [{ "Type": "Enchantment" }, { "Type": "Creature" }] }]
+                    "what": [
+                      { "AnyOf": [{ "Type": "Enchantment" }, { "Type": "Creature" }] },
+                      "Other"
+                    ]
                   }
                 },
                 "bounds": { "min": 0, "max": 1 }

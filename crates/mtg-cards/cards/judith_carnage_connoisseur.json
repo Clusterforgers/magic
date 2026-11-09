@@ -1,0 +1,76 @@
+{
+  "oracle_id": "e86c965b-ac10-4fff-b682-dddd6d9747c6",
+  "name": "Judith, Carnage Connoisseur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Judith, Carnage Connoisseur",
+      "oracle_fingerprint": "32af639a2689a47f64f32cf5d51fd4f2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "Triggering",
+                            "mods": [{ "AddKeyword": "Deathtouch" }, { "AddKeyword": "Lifelink" }],
+                            "duration": "Forever"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Imp",
+                                "colors": ["Red"],
+                                "types": ["Creature"],
+                                "subtypes": ["Imp"],
+                                "power": 2,
+                                "toughness": 2,
+                                "abilities": [
+                                  {
+                                    "Triggered": {
+                                      "when": {
+                                        "ZoneChange": {
+                                          "what": ["This"],
+                                          "from": "Battlefield",
+                                          "to": "Graveyard"
+                                        }
+                                      },
+                                      "effects": [
+                                        { "DealDamage": { "to": "Opponents", "amount": 2 } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

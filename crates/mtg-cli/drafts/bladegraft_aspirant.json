@@ -1,0 +1,34 @@
+{
+  "oracle_id": "644c785d-3061-44bc-9f78-bc939c565bf4",
+  "name": "Bladegraft Aspirant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bladegraft Aspirant",
+      "oracle_fingerprint": "4e6f268ce676a587446ff58e3474ae5d",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Equipment" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [
+              { "Subtype": "Equipment" },
+              { "ControlledBy": "You" },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Every",
+            "targeting": ["This"]
+          }
+        }
+      ]
+    }
+  ]
+}

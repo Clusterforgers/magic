@@ -1,0 +1,57 @@
+{
+  "oracle_id": "920c4df3-9517-44cd-8304-28b1ef69d60e",
+  "name": "Colfenor's Urn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colfenor's Urn",
+      "oracle_fingerprint": "61e033b9e6fe8785b5a54d3062a94c75",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Toughness", "op": "Ge", "to": 4 } },
+                  { "OwnedBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Exile": { "what": "Triggering" } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

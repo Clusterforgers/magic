@@ -1,0 +1,75 @@
+{
+  "oracle_id": "435c8d98-9fa3-40d8-9b7c-32474099e08e",
+  "name": "Grave Consequences",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grave Consequences",
+      "oracle_fingerprint": "f83039237bcfd6f7c432ce33cff299cb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "who": { "Bound": "each" },
+                        "kind": {
+                          "Number": [
+                            0,
+                            { "Count": [{ "OwnedBy": { "Bound": "each" } }, { "In": "Graveyard" }] }
+                          ]
+                        },
+                        "as": "number2"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "each" },
+                        "from": {
+                          "Each": [{ "OwnedBy": { "Bound": "each" } }, { "In": "Graveyard" }]
+                        },
+                        "count": {
+                          "min": { "ChosenAs": "number2" },
+                          "max": { "ChosenAs": "number2" }
+                        },
+                        "as": "card3"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "card3" }, "as": "picks4", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Is": { "Bound": "picks4" } }, { "In": "Graveyard" }] }
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each5",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "each5" },
+                        "amount": {
+                          "Count": [{ "OwnedBy": { "Bound": "each5" } }, { "In": "Graveyard" }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

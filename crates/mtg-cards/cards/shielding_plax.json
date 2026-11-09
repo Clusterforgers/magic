@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e9bdb194-745d-4abb-9312-a65a68c40a18",
+  "name": "Shielding Plax",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shielding Plax",
+      "oracle_fingerprint": "fb0435bafaf00e26d00306b35f17772a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Attached",
+                "action": { "BeTargeted": [{ "ControlledBy": "Opponents" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

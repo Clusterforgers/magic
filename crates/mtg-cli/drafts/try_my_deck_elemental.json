@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1a9ebfcf-3392-40a0-84fa-d195dc2adc5a",
+  "name": "Try-My-Deck Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Try-My-Deck Elemental",
+      "oracle_fingerprint": "efbb782c47f8b40d3c0b3af4bf6dd4f9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": ["Commander", { "ControlledBy": "You" }, { "In": "Stack" }] },
+            "mods": [{ "AddKeyword": "Demonstrate" }]
+          }
+        },
+        { "Rule": { "rule": { "NoLegendRuleFor": ["Commander", { "ControlledBy": "You" }] } } }
+      ]
+    }
+  ]
+}

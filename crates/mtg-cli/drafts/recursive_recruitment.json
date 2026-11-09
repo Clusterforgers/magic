@@ -1,0 +1,62 @@
+{
+  "oracle_id": "b73e35b0-b8c9-471a-bdff-f7dc8f453d7a",
+  "name": "Recursive Recruitment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Recursive Recruitment",
+      "oracle_fingerprint": "ce6136895a372481091c85e98a71b63a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cadet",
+                      "types": ["Creature"],
+                      "subtypes": ["Wizard", "Soldier"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2,
+                  "as": "token"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "This",
+                      "selector": [{ "WasCast": { "from": "Graveyard" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "token" },
+                        "counter": "+1/+1",
+                        "count": {
+                          "Quotient": {
+                            "of": { "Count": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] },
+                            "by": 3,
+                            "up": false
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{6}{U}{B}" } }
+      ]
+    }
+  ]
+}

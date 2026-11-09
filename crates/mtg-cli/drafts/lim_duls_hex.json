@@ -1,0 +1,57 @@
+{
+  "oracle_id": "7f9116e1-9aab-470b-90eb-f51a3fbb3c0e",
+  "name": "Lim-Dûl's Hex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lim-Dûl's Hex",
+      "oracle_fingerprint": "f65453bad4fd3d1b70e755e708cb7064",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "Bound": "each" },
+                        "options": [
+                          [
+                            {
+                              "Pay": {
+                                "who": { "Bound": "each" },
+                                "cost": "{B}",
+                                "unpaid": [
+                                  { "DealDamage": { "to": { "Bound": "each" }, "amount": 1 } }
+                                ]
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Pay": {
+                                "who": { "Bound": "each" },
+                                "cost": "{3}",
+                                "unpaid": [
+                                  { "DealDamage": { "to": { "Bound": "each" }, "amount": 1 } }
+                                ]
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

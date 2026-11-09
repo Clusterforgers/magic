@@ -136,6 +136,8 @@ pub struct Ctx<'a> {
     pub ability_cost: Option<String>,
     /// The name a reflexive trigger reads as `TriggerRememberAmount`: the number its setup kept (`RememberSVarAmount$`).
     pub trigger_amount: Option<String>,
+    /// Inside the win part of a flip run once for each flip, `Wins` is one.
+    pub flip_win: bool,
     /// The memories the card reads on a line other than the one that wrote them.
     pub memory: super::memory::Plan,
     /// The objects an `Effect` object remembers, which a trigger or static it carries reads as `IsRemembered`; kept across
@@ -232,6 +234,7 @@ impl<'a> Ctx<'a> {
             arrived: std::collections::BTreeSet::new(),
             ability_cost: None,
             trigger_amount: None,
+            flip_win: false,
             counted: std::collections::BTreeSet::new(),
             scoped: std::collections::BTreeSet::new(),
             in_cost: std::cell::Cell::new(false),

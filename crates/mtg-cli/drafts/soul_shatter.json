@@ -1,0 +1,68 @@
+{
+  "oracle_id": "615927c2-3fb0-4e64-a1a7-55fb56de1423",
+  "name": "Soul Shatter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Shatter",
+      "oracle_fingerprint": "82c3a24dae13c13c97f3b311c4042d9a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "each" },
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                            { "ControlledBy": { "Bound": "each" } },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Eq",
+                                "to": {
+                                  "Greatest": {
+                                    "of": [
+                                      {
+                                        "AnyOf": [
+                                          { "Type": "Creature" },
+                                          { "Type": "Planeswalker" }
+                                        ]
+                                      },
+                                      { "ControlledBy": { "Bound": "each" } }
+                                    ],
+                                    "stat": "ManaValue"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "as": "card2"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "card2" }, "as": "picks3", "adds": true } },
+                    { "Reveal": { "what": { "Bound": "card2" } } }
+                  ]
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Is": { "Bound": "picks3" } }],
+                  "count": { "Count": [{ "Is": { "Bound": "picks3" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

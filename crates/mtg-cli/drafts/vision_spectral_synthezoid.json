@@ -17,8 +17,7 @@
                 "free": true,
                 "once": true
               }
-            },
-            "condition": "YourTurn"
+            }
           }
         }
       ]

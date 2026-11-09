@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d6c46906-1339-4440-8cd0-2bb9890d4975",
+  "name": "Disruptor Flute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disruptor Flute",
+      "oracle_fingerprint": "241680cab9473050f236732336d3e8b0",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CardName" }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "ChosenName"],
+            "change": "Increase",
+            "mana": "{3}"
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "EachPlayer", "action": { "Activate": ["ChosenName"] } } }
+          }
+        }
+      ]
+    }
+  ]
+}

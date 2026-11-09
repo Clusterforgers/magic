@@ -1,7 +1,7 @@
 {
   "oracle_id": "e4cf3710-8600-4f95-abb2-faefdc25693d",
   "name": "Taigam, Ojutai Master",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Taigam, Ojutai Master",
@@ -23,9 +23,35 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 68, "end": 321 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "WasCast": { "from": "Hand" } },
+                  { "OwnedBy": "You" }
+                ],
+                "by": "You"
+              }
+            },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Count": ["This", "AttackedThisTurn"] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Rebound" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

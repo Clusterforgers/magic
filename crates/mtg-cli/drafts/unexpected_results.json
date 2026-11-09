@@ -1,0 +1,75 @@
+{
+  "oracle_id": "048bdc4a-4d26-420c-88ed-23a073c30fff",
+  "name": "Unexpected Results",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unexpected Results",
+      "oracle_fingerprint": "17d07c0a960ab5937558cb34c38267cb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Shuffle": {} },
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CastFromZone": { "what": { "Bound": "top" }, "free": true } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "top" },
+                              "to": { "Battlefield": {} },
+                              "as": "moved2"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "moved2" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

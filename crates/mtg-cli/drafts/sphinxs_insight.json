@@ -1,0 +1,39 @@
+{
+  "oracle_id": "01f675c3-d1c4-45c8-8a2e-75f535db3025",
+  "name": "Sphinx's Insight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx's Insight",
+      "oracle_fingerprint": "859f0e7fb4b81681994215e2678f60e8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "CountOf": {
+                          "subject": "This",
+                          "selector": [{ "WasCast": {} }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] },
+                      "YourTurn"
+                    ]
+                  },
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

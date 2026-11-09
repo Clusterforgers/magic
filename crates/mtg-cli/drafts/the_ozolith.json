@@ -1,0 +1,48 @@
+{
+  "oracle_id": "1946ded1-5f53-409f-b0a6-5433bb0357d2",
+  "name": "The Ozolith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Ozolith",
+      "oracle_fingerprint": "9d0729fb3d2b483b289bf1a8c567643f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"],
+                "from": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCountersOf": { "on": "This", "of": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": { "left": { "Count": ["This", "HasAnyCounter"] }, "op": "Ge", "right": 1 }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "MoveCounters": {
+                        "from": "This",
+                        "to": { "Target": 0 },
+                        "count": { "AnyCounters": "This" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "oracle_id": "b7ac6e89-941f-4ad9-a437-38ec38ec5263",
+  "name": "Narset of the Ancient Way",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Narset of the Ancient Way",
+      "oracle_fingerprint": "10efa3d491d622d9c6a6341375cf5b66",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "GainLife": { "amount": 2 } },
+              {
+                "AddMana": {
+                  "mana": { "OneOf": ["Blue", "Red", "White"] },
+                  "only": [{ "Spell": { "without": ["Creature"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              { "Draw": {} },
+              { "May": { "effects": [{ "Discard": { "as": "discarded" } }] } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Not": { "Type": "Land" } }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Bind": { "what": { "Bound": "discarded" }, "as": "when2" } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Target": 0 },
+                              "amount": {
+                                "Stat": { "of": { "Bound": "when2" }, "stat": "ManaValue" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" }
+                        },
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

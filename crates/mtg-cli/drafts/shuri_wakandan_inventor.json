@@ -1,0 +1,48 @@
+{
+  "oracle_id": "a8c047fc-20a9-4c62-b8a6-9ead56d60ad0",
+  "name": "Shuri, Wakandan Inventor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shuri, Wakandan Inventor",
+      "oracle_fingerprint": "f72b8bc960c4883e53dfc7d2d2a7f542",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Type": "Artifact" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "Is": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": { "Target": 0 },
+                  "of": { "Target": 1 },
+                  "except": [{ "RemoveSupertype": "Legendary" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

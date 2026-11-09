@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7121b877-d262-4627-acd8-a159f8a779b1",
+  "name": "Predator's Rapport",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Predator's Rapport",
+      "oracle_fingerprint": "3764e4822be5636fb3957142da5f5411",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "GainLife": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "amount": {
+                    "Sum": [
+                      { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                      { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

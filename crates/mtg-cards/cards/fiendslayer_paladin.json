@@ -1,0 +1,31 @@
+{
+  "oracle_id": "3eb02993-b2fc-4185-aa67-08c8f133ce42",
+  "name": "Fiendslayer Paladin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiendslayer Paladin",
+      "oracle_fingerprint": "76e68fdf96e8c100985ae23a07a2c71b",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Lifelink" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "BeTargeted": [
+                    { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] },
+                    "Spell",
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

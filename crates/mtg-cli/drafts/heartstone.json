@@ -12,7 +12,7 @@
             "applies_to": [{ "Type": "Creature" }],
             "change": "Reduce",
             "mana": "{1}",
-            "activating": "Any",
+            "activating": "Every",
             "least": 1
           }
         }

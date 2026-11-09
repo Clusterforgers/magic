@@ -1,0 +1,47 @@
+{
+  "oracle_id": "0a0d25a8-4f28-453b-9270-4d449fe0ca65",
+  "name": "Helga, Skittish Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Helga, Skittish Seer",
+      "oracle_fingerprint": "82911f453d2eafc428269a55f15ea94a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              { "GainLife": { "amount": 1 } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": { "Stat": { "of": "This", "stat": "Power" } } },
+                  "only": [
+                    { "Spell": { "types": ["Creature"], "min_value": 4 } },
+                    { "Spell": { "types": ["Creature"], "facts": ["XInCost"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

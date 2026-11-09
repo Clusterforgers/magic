@@ -1,7 +1,7 @@
 {
   "oracle_id": "4605d8b3-b714-4717-8ff3-155fabfc1999",
   "name": "Mastermind Plum",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Mastermind Plum",
@@ -32,9 +32,17 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 226, "end": 335 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  "Spell",
+                  { "SpentFrom": { "from": { "subtypes": ["Treasure"] }, "least": 1 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
           }
         }
       ]

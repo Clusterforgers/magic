@@ -13,7 +13,7 @@
             "change": "Reduce",
             "mana": "{1}",
             "per": { "Stat": { "of": "This", "stat": "Power" } },
-            "activating": "Any",
+            "activating": "Every",
             "least": 1
           }
         },

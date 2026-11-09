@@ -1,0 +1,57 @@
+{
+  "oracle_id": "9567d963-4815-466b-a319-6d138b6a0cd2",
+  "name": "Triple Triad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triple Triad",
+      "oracle_fingerprint": "08a1290e069c53378453dc6d25b9a3d9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "who": "EachPlayer", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [
+                        {
+                          "AnyOf": [
+                            { "OwnedBy": "You" },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Lt",
+                                "to": {
+                                  "Total": {
+                                    "of": [
+                                      { "OwnedBy": "You" },
+                                      { "Is": { "Bound": "exiled" } },
+                                      { "In": "Exile" }
+                                    ],
+                                    "stat": "ManaValue"
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "from": "Exile",
+                      "free": true,
+                      "only": { "Bound": "exiled" },
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

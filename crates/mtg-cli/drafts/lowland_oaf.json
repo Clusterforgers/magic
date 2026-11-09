@@ -35,7 +35,6 @@
                         "effects": [
                           {
                             "Sacrifice": {
-                              "who": { "ControllerOf": { "Bound": "pumped" } },
                               "filter": [{ "Is": { "Bound": "pumped" } }],
                               "count": { "Count": [{ "Is": { "Bound": "pumped" } }] }
                             }

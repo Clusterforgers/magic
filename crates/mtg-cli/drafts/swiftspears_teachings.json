@@ -1,0 +1,50 @@
+{
+  "oracle_id": "c3f27547-d1bf-4fdd-bafa-66abab071d92",
+  "name": "Swiftspear's Teachings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swiftspear's Teachings",
+      "oracle_fingerprint": "870353ed0d31149c85a259ff2a581724",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+                  "until": "Forever",
+                  "effects": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": "Triggering",
+                              "mods": [{ "AddKeyword": "Haste" }],
+                              "duration": "Forever"
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Continuous": {
+                              "affected": "Triggering",
+                              "mods": [{ "AddKeyword": "Prowess" }],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

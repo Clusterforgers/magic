@@ -23,7 +23,8 @@
                         "to": {
                           "Each": [
                             { "SharesName": { "Target": 0 } },
-                            { "Not": { "Is": { "Target": 0 } } }
+                            { "Not": { "Is": { "Target": 0 } } },
+                            { "Type": "Creature" }
                           ]
                         },
                         "amount": 1

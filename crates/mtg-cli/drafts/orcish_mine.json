@@ -1,0 +1,49 @@
+{
+  "oracle_id": "a6bfa03e-6317-4550-960b-fbd2a30e521f",
+  "name": "Orcish Mine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orcish Mine",
+      "oracle_fingerprint": "b65c276bf53b7a290e38e9ecbeeb6c81",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "ore" }, "count": 3 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                { "Tapped": { "what": [{ "Is": "Attached" }] } }
+              ]
+            },
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "ore" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersRemoved": { "what": ["This"], "counter": { "Other": "ore" } } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": { "Counters": { "on": "This", "counter": { "Other": "ore" } } },
+                  "op": "Eq",
+                  "right": 0
+                }
+              }
+            },
+            "effects": [
+              { "DealDamage": { "to": { "ControllerOf": "Attached" }, "amount": 2 } },
+              { "Destroy": { "what": "Attached" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

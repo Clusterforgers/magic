@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "481d268a-848c-4ccd-95ff-eed77dc20776",
+  "oracle_id": "f275039e-3dba-49b0-92aa-92721b1c7f95",
+  "multiverse_ids": [
+    640502
+  ],
+  "mtgo_id": 118812,
+  "tcgplayer_id": 525734,
+  "cardmarket_id": 743558,
+  "name": "Pact of the Serpent",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/481d268a-848c-4ccd-95ff-eed77dc20776",
+  "scryfall_uri": "https://scryfall.com/card/lcc/206/pact-of-the-serpent?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:37:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/8/481d268a-848c-4ccd-95ff-eed77dc20776.jpg?1783913870",
+    "normal": "https://cards.scryfall.io/normal/front/4/8/481d268a-848c-4ccd-95ff-eed77dc20776.jpg?1783913870",
+    "large": "https://cards.scryfall.io/large/front/4/8/481d268a-848c-4ccd-95ff-eed77dc20776.jpg?1783913870",
+    "png": "https://cards.scryfall.io/png/front/4/8/481d268a-848c-4ccd-95ff-eed77dc20776.png?1783913870",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/8/481d268a-848c-4ccd-95ff-eed77dc20776.jpg?1783913870",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/8/481d268a-848c-4ccd-95ff-eed77dc20776.jpg?1783913870",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/8/481d268a-848c-4ccd-95ff-eed77dc20776.webp?1783913870",
+    "grid": "https://cards.scryfall.io/grid/front/4/8/481d268a-848c-4ccd-95ff-eed77dc20776.webp?1783913870",
+    "display": "https://cards.scryfall.io/display/front/4/8/481d268a-848c-4ccd-95ff-eed77dc20776.webp?1783913870",
+    "art": "https://cards.scryfall.io/art/front/4/8/481d268a-848c-4ccd-95ff-eed77dc20776.webp?1783913870",
+    "crop": "https://cards.scryfall.io/crop/front/4/8/481d268a-848c-4ccd-95ff-eed77dc20776.webp?1783913870",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/8/481d268a-848c-4ccd-95ff-eed77dc20776.jpg?1783913870"
+  },
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose a creature type. Target player draws X cards and loses X life, where X is the number of creatures they control of the chosen type.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/481d268a-848c-4ccd-95ff-eed77dc20776/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af275039e-3dba-49b0-92aa-92721b1c7f95&unique=prints",
+  "collector_number": "206",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Our quarrels behind us. Our foes before us. Death or triumph for us all!\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Donato Giancola",
+  "artist_ids": [
+    "90332db2-aecb-4d79-917b-95cbeb8d0cb6"
+  ],
+  "illustration_id": "93008236-b2c1-48f9-9cd8-19281146e670",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2248,
+  "prices": {
+    "usd": "1.18",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "2.16",
+    "eur_foil": null,
+    "tix": "4.39"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640502&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPact%2Bof%2Bthe%2BSerpent",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPact%2Bof%2Bthe%2BSerpent",
+    "edhrec": "https://edhrec.com/route/?cc=Pact+of+the+Serpent"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525734%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743558&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118812?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "e853e2fb-f90d-4934-aa70-c8d3cdf12e56",
+  "name": "Grim Repriser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Repriser",
+      "oracle_fingerprint": "96ef4add74b6a2d6f1f653009bfafacf",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Activated": {
+            "cost": "{B}{R}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "NoncombatDamageTaken" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

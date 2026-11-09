@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b2bd40a1-1857-4f4c-aed6-d4e224ac0ef7",
+  "name": "Thrumming Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thrumming Stone",
+      "oracle_fingerprint": "85add6dfde32bc44d10788a9fe0901ec",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "ControlledBy": "You" }, { "WasCast": {} }, { "In": "Stack" }]
+            },
+            "mods": [{ "AddKeyword": { "Ripple": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

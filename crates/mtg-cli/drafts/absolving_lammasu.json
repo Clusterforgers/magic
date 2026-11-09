@@ -1,0 +1,28 @@
+{
+  "oracle_id": "dbedd45e-f76c-4be7-ad89-ff57bed6626f",
+  "name": "Absolving Lammasu",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Absolving Lammasu",
+      "oracle_fingerprint": "7820e28efafe15827b650a5a1bd2b578",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Unsuspect": { "what": { "Each": [{ "Type": "Creature" }, "Suspected"] } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 83, "end": 234 }
+          }
+        }
+      ]
+    }
+  ]
+}

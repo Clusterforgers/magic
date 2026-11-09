@@ -1,0 +1,62 @@
+{
+  "oracle_id": "d51f0f1f-4468-4ad3-8412-d38c6222b203",
+  "name": "Intruder's Inquisition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intruder's Inquisition",
+      "oracle_fingerprint": "65ebd7904c18503655f221fdee64df47",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                  "excess": { "as": "excess" }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "excess" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "Discard": {
+                        "who": { "ControllerOf": { "Target": 1 } },
+                        "filter": [
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Eq",
+                              "to": {
+                                "Greatest": {
+                                  "of": [
+                                    { "OwnedBy": { "ControllerOf": { "Target": 1 } } },
+                                    { "In": "Hand" }
+                                  ],
+                                  "stat": "ManaValue"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

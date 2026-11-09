@@ -1,0 +1,48 @@
+{
+  "oracle_id": "eb97c8db-ac6c-476c-b14d-87785e9c82f0",
+  "name": "Clockwork Beast",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Clockwork Beast",
+      "oracle_fingerprint": "ff583593a7d51a90d98a595034435454",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "+1/+0" }, "count": 7 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    "This",
+                    {
+                      "AnyOf": [
+                        { "DidThisTurn": { "event": "Attacked", "combat": true } },
+                        { "DidThisTurn": { "event": "Blocked", "combat": true } }
+                      ]
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "+1/+0" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 154, "end": 345 }
+          }
+        }
+      ]
+    }
+  ]
+}

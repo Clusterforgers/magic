@@ -1,0 +1,123 @@
+{
+  "oracle_id": "f0d8bde1-76db-4bd2-ae90-3e3a3418de0b",
+  "name": "Szat's Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Szat's Will",
+      "oracle_fingerprint": "ee5ecbe6cbf4f08f406f9e5670acb2a9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 1,
+                    "max": {
+                      "When": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": 2,
+                        "otherwise": 1
+                      }
+                    }
+                  },
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "RepeatEach": {
+                            "over": "Opponents",
+                            "as": "each",
+                            "effects": [
+                              {
+                                "Choose": {
+                                  "who": { "Bound": "each" },
+                                  "from": {
+                                    "Each": [
+                                      { "Type": "Creature" },
+                                      { "ControlledBy": { "Bound": "each" } },
+                                      {
+                                        "GreatestAmong": {
+                                          "stat": "Power",
+                                          "group": [
+                                            { "Type": "Creature" },
+                                            { "ControlledBy": { "Bound": "each" } }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  "as": "card2"
+                                }
+                              },
+                              {
+                                "Bind": {
+                                  "what": { "Bound": "card2" },
+                                  "as": "picks3",
+                                  "adds": true
+                                }
+                              },
+                              { "Reveal": { "what": { "Bound": "card2" } } }
+                            ]
+                          }
+                        },
+                        {
+                          "Sacrifice": {
+                            "who": "EachPlayer",
+                            "filter": [{ "Is": { "Bound": "picks3" } }],
+                            "count": { "Count": [{ "Is": { "Bound": "picks3" } }] }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Exile": {
+                            "what": { "Each": [{ "OwnedBy": "Opponents" }, { "In": "Graveyard" }] },
+                            "as": "exiled4"
+                          }
+                        },
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Thrull",
+                                "colors": ["Black"],
+                                "types": ["Creature"],
+                                "subtypes": ["Thrull"],
+                                "power": 0,
+                                "toughness": 1
+                              }
+                            },
+                            "count": {
+                              "Greatest": {
+                                "of": [
+                                  { "Type": "Creature" },
+                                  { "Is": { "Bound": "exiled4" } },
+                                  { "In": "Exile" }
+                                ],
+                                "stat": "Power"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

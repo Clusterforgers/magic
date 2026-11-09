@@ -1,0 +1,37 @@
+{
+  "oracle_id": "4a17fb46-70db-4c9a-ac0e-dfc774345673",
+  "name": "Oppressive Rays",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oppressive Rays",
+      "oracle_fingerprint": "9d3f95e347f9ddc320bd723cd089420c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Rule": {
+            "rule": {
+              "AttackTax": {
+                "who": "EachPlayer",
+                "attacked": "Both",
+                "attackers": [{ "Is": "Attached" }],
+                "mana": "{3}"
+              }
+            }
+          }
+        },
+        {
+          "Rule": { "rule": { "BlockTax": { "blockers": [{ "Is": "Attached" }], "mana": "{3}" } } }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "Type": "Creature" }, { "Is": "Attached" }],
+            "change": "Increase",
+            "mana": "{3}",
+            "activating": "Every"
+          }
+        }
+      ]
+    }
+  ]
+}

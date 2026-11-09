@@ -1,0 +1,37 @@
+{
+  "oracle_id": "83ccbcb1-7cf0-41a0-8abd-18f4bc647b5f",
+  "name": "Katara's Reversal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Katara's Reversal",
+      "oracle_fingerprint": "8f047b175a8bd5cd4b683f196a40af5e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 4 }
+              },
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                },
+                "bounds": { "min": 0, "max": 4 }
+              }
+            ],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Untap": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

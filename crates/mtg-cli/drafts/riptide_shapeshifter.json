@@ -1,0 +1,36 @@
+{
+  "oracle_id": "49f292ab-0533-436b-a309-8bc795b66e5c",
+  "name": "Riptide Shapeshifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riptide Shapeshifter",
+      "oracle_fingerprint": "929b1c67467dd7a61d72b6a55eb10bd0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}{U}" }, "SacrificeSelf"],
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "chosen" } },
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Creature" }, { "ChosenAs": "chosen" }],
+                  "as": "found2",
+                  "revealed_as": "revealed3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

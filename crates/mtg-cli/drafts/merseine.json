@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b6b6e085-eef8-486d-9d66-1b7f1ee7d0dc",
+  "name": "Merseine",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Merseine",
+      "oracle_fingerprint": "50b4694cdc4bdcf073acf365abb799e9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "net" }, "count": 3 } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": ["DoesntUntap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["This", { "HasCounter": { "Other": "net" } }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 171, "end": 316 }
+          }
+        }
+      ]
+    }
+  ]
+}

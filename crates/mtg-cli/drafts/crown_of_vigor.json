@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0b5f94be-7e56-44ee-9af2-d664d9f91193",
+  "name": "Crown of Vigor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crown of Vigor",
+      "oracle_fingerprint": "4523c98db9485ab3e99ac26f13fed5a3",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Is": "Attached" }, { "SharesSubtype": "Attached" }] }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

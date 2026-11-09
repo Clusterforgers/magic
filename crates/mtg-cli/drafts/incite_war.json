@@ -1,0 +1,57 @@
+{
+  "oracle_id": "8a640369-59ab-4506-b473-1f804721414c",
+  "name": "Incite War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incite War",
+      "oracle_fingerprint": "853fecd0bf8683ef15a8b2ec1cd61e58",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MustAttack": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Target": 0 } }
+                                ]
+                              }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [{ "AddKeyword": "FirstStrike" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Entwine": "{2}" } }
+      ]
+    }
+  ]
+}

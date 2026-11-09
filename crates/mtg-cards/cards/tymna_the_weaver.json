@@ -1,0 +1,66 @@
+{
+  "oracle_id": "d15642e4-e61c-4d29-af48-de837991245e",
+  "name": "Tymna the Weaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tymna the Weaver",
+      "oracle_fingerprint": "2982bb41bc0d017a6c457874a100d0bd",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "PayLife": {
+                        "Players": {
+                          "PlayersWhere": {
+                            "who": "Opponents",
+                            "test": {
+                              "Compare": {
+                                "left": { "Tallied": { "who": "You", "what": "CombatDamageTaken" } },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Draw": {
+                        "count": {
+                          "Players": {
+                            "PlayersWhere": {
+                              "who": "Opponents",
+                              "test": {
+                                "Compare": {
+                                  "left": {
+                                    "Tallied": { "who": "You", "what": "CombatDamageTaken" }
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ebf3fd80-9574-489b-9428-f4251834bdc4",
+  "name": "Nikya of the Old Ways",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nikya of the Old Ways",
+      "oracle_fingerprint": "0cc1a3594690032e548b1bc00d781de7",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "You",
+                "action": { "Cast": { "filter": [{ "Not": { "Type": "Creature" } }] } }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "effects": [{ "AddMana": { "mana": "OfTapped" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

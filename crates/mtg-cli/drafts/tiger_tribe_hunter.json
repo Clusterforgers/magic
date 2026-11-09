@@ -1,0 +1,73 @@
+{
+  "oracle_id": "d5b4e9fd-3df6-4d1d-8135-d7c8615b05a7",
+  "name": "Tiger-Tribe Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tiger-Tribe Hunter",
+      "oracle_fingerprint": "38a65444a89eb305e7cc48d0c6a0db50",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": { "of": [{ "Type": "Creature" }, "Attacking"], "stat": "Power" }
+                  },
+                  "op": "Ge",
+                  "right": 6
+                }
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, "Other"],
+                        "as": "sacrificed2"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Bound": "sacrificed2~moved" },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          { "Bind": { "what": { "Bound": "sacrificed2" }, "as": "when" } },
+                          {
+                            "Reflexive": {
+                              "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                              "effects": [
+                                {
+                                  "DealDamage": {
+                                    "to": { "Target": 0 },
+                                    "amount": {
+                                      "Stat": { "of": { "Bound": "when" }, "stat": "Power" }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

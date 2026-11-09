@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0264b059-75cb-41e6-9e51-262ac22b4c60",
+  "name": "Flycatcher Giraffid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flycatcher Giraffid",
+      "oracle_fingerprint": "df01c660390032bff016d600fa9f778a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounterOf": [{ "Other": "vigilance" }, { "Other": "reach" }] }
+          }
+        }
+      ]
+    }
+  ]
+}

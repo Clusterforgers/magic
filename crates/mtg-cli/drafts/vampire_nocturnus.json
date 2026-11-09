@@ -1,0 +1,52 @@
+{
+  "oracle_id": "2109c49e-dc81-4a10-8265-3cf8c90db523",
+  "name": "Vampire Nocturnus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampire Nocturnus",
+      "oracle_fingerprint": "c96e1ecdf696b7f7db8ebacc3338abcd",
+      "abilities": [
+        { "Rule": { "rule": { "RevealTop": "You" } } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    {
+                      "Not": {
+                        "AnyOf": [
+                          { "Not": { "Type": "Creature" } },
+                          { "Not": { "Subtype": "Vampire" } },
+                          { "Not": "Other" },
+                          { "Not": { "ControlledBy": "You" } }
+                        ]
+                      }
+                    },
+                    "This"
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }, { "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "In": "Library" },
+                    { "OwnedBy": "You" },
+                    "TopOfLibrary",
+                    { "Color": "Black" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

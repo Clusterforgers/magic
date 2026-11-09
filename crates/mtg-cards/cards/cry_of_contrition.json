@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2b455d6a-dfee-4828-8873-094caf85c584",
+  "name": "Cry of Contrition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cry of Contrition",
+      "oracle_fingerprint": "04b2d8e2d0b9ee94cc760196596549b0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": "Haunt" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "HauntedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "from": "Exile",
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0d0d97dd-2653-4d37-b475-ac3b50c5ee53",
+  "name": "Alaborn Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alaborn Zealot",
+      "oracle_fingerprint": "6db959c21748aaa6c205ba88d416c20d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "AnyOf": [{ "Is": "Triggering" }, { "Is": "This" }] }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

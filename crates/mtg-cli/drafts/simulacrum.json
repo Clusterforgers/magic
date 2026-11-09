@@ -1,0 +1,29 @@
+{
+  "oracle_id": "20d69989-7250-40c7-a064-8ed78ccbe556",
+  "name": "Simulacrum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Simulacrum",
+      "oracle_fingerprint": "80a8781821629ee85bd8c171d3107eec",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "GainLife": { "amount": { "Tallied": { "who": "You", "what": "DamageTaken" } } } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Tallied": { "who": "You", "what": "DamageTaken" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

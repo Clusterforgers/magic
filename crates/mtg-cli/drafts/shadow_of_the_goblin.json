@@ -1,7 +1,7 @@
 {
   "oracle_id": "f343b6f9-41c3-419b-a57c-a7b08603ef5c",
   "name": "Shadow of the Goblin",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Shadow of the Goblin",
@@ -29,9 +29,53 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 104, "end": 250 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "what": [
+                      { "Type": "Land" },
+                      { "ControlledBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "ArrivedFrom": "Command" },
+                          { "ArrivedFrom": "Exile" },
+                          { "ArrivedFrom": "Graveyard" },
+                          { "ArrivedFrom": "Library" }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "what": [
+                      { "Type": "Land" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "OwnedBy": "You" } },
+                      { "ArrivedFrom": "Hand" }
+                    ]
+                  }
+                },
+                {
+                  "SpellCast": {
+                    "what": [
+                      {
+                        "AnyOf": [
+                          { "Not": { "WasCast": { "from": "Hand" } } },
+                          { "Not": { "OwnedBy": "You" } }
+                        ]
+                      }
+                    ],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
           }
         }
       ]

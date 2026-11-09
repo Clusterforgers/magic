@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4c67359d-5590-4eb0-827e-b411967ee238",
+  "name": "Uncover the Moon-Letters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uncover the Moon-Letters",
+      "oracle_fingerprint": "ebd513988d8c8241c0c7be88e90aa032",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Draw": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } } }],
+                  "paid": [{ "Discard": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

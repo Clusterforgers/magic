@@ -1,0 +1,45 @@
+{
+  "oracle_id": "aa41e0e6-d04e-48d6-8450-02b972dd0bb1",
+  "name": "Mnemonic Betrayal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mnemonic Betrayal",
+      "oracle_fingerprint": "d58efe3de34b0588f8b087e121de531e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "Opponents" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Not": { "Type": "Land" } }],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "exiled" }, "to": "Graveyard" } }]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

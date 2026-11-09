@@ -1,0 +1,47 @@
+{
+  "oracle_id": "73d8c33d-916a-4220-96ae-9622aad36210",
+  "name": "Call the Coppercoats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call the Coppercoats",
+      "oracle_fingerprint": "2619060c33083e770b7f110333f1f7f4",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{1}{W}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Opponent", "bounds": { "min": 0, "max": { "Players": "Opponents" } } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

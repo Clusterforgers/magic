@@ -1,0 +1,59 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "K",
+      "text": "Haste",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters, suspect it. (It has menace and can't block.)",
+      "abilities": [
+        1
+      ],
+      "gap": null
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "Whenever one or more other creatures you control enter, if CARDNAME is suspected, you may suspect one of the other creatures. If you do, CARDNAME is no longer suspected.",
+      "abilities": [],
+      "gap": "key:ChooseCard.DefinedCards"
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 5
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 6,
+          "end": 77
+        },
+        "mark": "Auto"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 78,
+          "end": 257
+        },
+        "mark": "ByHand"
+      }
+    ]
+  }
+}

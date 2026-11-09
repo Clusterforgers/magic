@@ -10,6 +10,8 @@ mod distinct_names;
 #[cfg(test)]
 mod entered;
 #[cfg(test)]
+mod ep21_life_lost;
+#[cfg(test)]
 mod fe1a_atoms;
 #[cfg(test)]
 mod g13a_atoms;

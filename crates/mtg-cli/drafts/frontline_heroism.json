@@ -1,0 +1,78 @@
+{
+  "oracle_id": "4c340b82-22e1-445a-b236-82471b442031",
+  "name": "Frontline Heroism",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frontline Heroism",
+      "oracle_fingerprint": "0a59081e9c0c2b9c0bab6726dbdd645a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  "SingleTarget",
+                  {
+                    "Targeting": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "In": "Battlefield" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "CopySpell": {
+                  "what": "Triggering",
+                  "each_target": [{ "Is": { "Bound": "token" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

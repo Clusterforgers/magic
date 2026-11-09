@@ -1,0 +1,41 @@
+{
+  "oracle_id": "fde06097-1cf1-4774-b6ca-7cf15dfe4837",
+  "name": "Obsessive Astronomer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obsessive Astronomer",
+      "oracle_fingerprint": "d59f4ffbb84381628171681b401d0c23",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "DayIfNeither" } },
+        {
+          "Triggered": {
+            "when": { "DayNightChanges": {} },
+            "effects": [
+              { "Discard": { "count": 2, "optional": true, "as": "discarded" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Is": { "Bound": "discarded" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

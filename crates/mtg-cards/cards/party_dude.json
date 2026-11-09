@@ -1,0 +1,80 @@
+{
+  "oracle_id": "8df7a58c-053f-4ead-a778-2747718e5f10",
+  "name": "Party Dude",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Party Dude",
+      "oracle_fingerprint": "81e921c4006459a80c196885ee992244",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "who": "EachPlayer", "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{G}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "AttackingPlayer": "Opponents" }]
+              }
+            },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                        "toughness": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

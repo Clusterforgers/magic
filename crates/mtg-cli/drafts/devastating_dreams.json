@@ -1,0 +1,22 @@
+{
+  "oracle_id": "18994c4c-9b5d-4b58-a5c3-646fbc92f9c7",
+  "name": "Devastating Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devastating Dreams",
+      "oracle_fingerprint": "98f4bab80f7b680c4f438a5d7ec4bcf2",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "DiscardRandom": "X" }], "required": true } },
+        {
+          "Spell": {
+            "effects": [
+              { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Land" }], "count": "X" } },
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

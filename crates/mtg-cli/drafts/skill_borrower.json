@@ -1,0 +1,45 @@
+{
+  "oracle_id": "9e862e4a-254d-4d39-b2cf-4beed6db761f",
+  "name": "Skill Borrower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skill Borrower",
+      "oracle_fingerprint": "21a385a04a5809c48e66276c6c0552bc",
+      "abilities": [
+        { "Rule": { "rule": { "RevealTop": "You" } } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                    "TopOfLibrary",
+                    { "OwnedBy": "You" },
+                    { "In": "Library" }
+                  ]
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "In": "Library" },
+                    { "OwnedBy": "You" },
+                    "TopOfLibrary",
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

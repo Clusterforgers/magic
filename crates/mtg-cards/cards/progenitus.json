@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2d7e00b6-12f0-4b03-82a6-50e3d1b5395e",
+  "name": "Progenitus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Progenitus",
+      "oracle_fingerprint": "37a6f3365da69dfa4fac9f9bd9dce295",
+      "abilities": [
+        { "Keyword": { "Protection": [] } },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "IntoLibrary": { "place": "Shuffled", "reveal": true } }
+          }
+        }
+      ]
+    }
+  ]
+}

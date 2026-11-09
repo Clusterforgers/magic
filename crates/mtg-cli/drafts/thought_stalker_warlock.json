@@ -1,0 +1,48 @@
+{
+  "oracle_id": "25a63171-a1a0-4c61-ac61-49bb59fe83c1",
+  "name": "Thought-Stalker Warlock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought-Stalker Warlock",
+      "oracle_fingerprint": "63a8e387156817957b6cb7606043d0d1",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": { "Target": 0 }, "what": "LifeLost" } },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Reveal": {
+                        "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                      }
+                    },
+                    {
+                      "Discard": {
+                        "who": { "Target": 0 },
+                        "filter": [{ "Not": { "Type": "Land" } }],
+                        "by": "You"
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Discard": { "who": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "oracle_id": "89f1aefd-feb6-45ce-a992-707d027714e7",
+  "name": "Moonshae Pixie // Pixie Dust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonshae Pixie",
+      "oracle_fingerprint": "fd5410c09154cacdb473c3518154b382",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "You", "what": "CombatDamageTaken" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pixie Dust",
+      "oracle_fingerprint": "b0cc97ab907c81400f3435da5a176d7e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 3 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

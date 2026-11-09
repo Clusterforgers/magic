@@ -1,0 +1,24 @@
+{
+  "oracle_id": "f2ad82e6-4669-4d87-bea3-f2ac6ebe5ba9",
+  "name": "Favor of the Mighty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Favor of the Mighty",
+      "oracle_fingerprint": "6073142bb80ecff57986a306d7e743f6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "GreatestAmong": { "stat": "ManaValue", "group": [{ "Type": "Creature" }] } }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Protection": [{ "Not": "Colorless" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

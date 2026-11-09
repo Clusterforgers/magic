@@ -672,6 +672,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::WithCounterOf(_)
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
+        ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
         ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. } | ReplaceBy::Redirect { .. } => {
             matches!(unit, Unit::Damage { .. })
         }
@@ -1961,8 +1962,8 @@ impl Pass<'_> {
             (ReplaceBy::PreventAllBut(kept), Unit::Damage { .. }) => {
                 self.w9c_prevent_all_but(at, candidate, *kept, applied);
             }
-            (ReplaceBy::Instead(effects), _) => {
-                self.w5d_instead(at, candidate, effects, &unit, applied);
+            (ReplaceBy::Instead(effects) | ReplaceBy::Plus(effects), _) => {
+                self.w5d_instead(at, candidate, by, effects, &unit, applied);
             }
             (ReplaceBy::RedirectUpTo { most, .. }, Unit::Damage { .. }) => {
                 self.r6f_redirect_up_to(at, candidate, *most, applied);
@@ -3311,6 +3312,8 @@ mod shields;
 #[cfg(test)]
 mod umbra;
 
+#[cfg(test)]
+mod ep21_plus;
 mod r6f_redirect;
 mod w13a_moved;
 mod w5d_instead;

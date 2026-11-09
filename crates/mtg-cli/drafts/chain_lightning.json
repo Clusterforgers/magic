@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8785f42f-87b9-4a0a-89ce-ea423649ba9c",
+  "name": "Chain Lightning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chain Lightning",
+      "oracle_fingerprint": "353cc00d7e85f1295c243744c1ff92a4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "Pay": {
+                  "who": { "OrController": { "Target": 0 } },
+                  "cost": "{R}{R}",
+                  "paid": [
+                    {
+                      "CopySpell": {
+                        "what": "This",
+                        "who": { "OrController": { "Target": 0 } },
+                        "new_targets": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

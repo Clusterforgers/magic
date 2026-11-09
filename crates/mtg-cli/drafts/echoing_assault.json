@@ -1,0 +1,69 @@
+{
+  "oracle_id": "d15dba3a-3b85-43fb-b5f3-c4d8d1e23b1d",
+  "name": "Echoing Assault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echoing Assault",
+      "oracle_fingerprint": "2b84982c889c11fa1413c50f4be35a43",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacksAt": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at": "EachPlayer"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": "Token" },
+                    { "AttackingPlayer": "Against" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [{ "SetPT": { "power": 1, "toughness": 1 } }]
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "against": "Against",
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Is": { "Bound": "copy" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "copy" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

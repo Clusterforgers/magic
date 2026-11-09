@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2a838818-d590-4374-9a63-d9e6381a0f0d",
+  "name": "Cloud Key",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloud Key",
+      "oracle_fingerprint": "eeee6a795685dc6f337de7f271bee036",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "CardTypeOf": 285 } }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "ChosenSubtype", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

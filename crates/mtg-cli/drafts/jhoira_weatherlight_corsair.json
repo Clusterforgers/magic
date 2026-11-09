@@ -23,9 +23,19 @@
                   "filter": [
                     {
                       "AnyOf": [
-                        { "Supertype": "Legendary" },
                         { "Type": "Artifact" },
+                        { "Supertype": "Legendary" },
                         { "Subtype": "Saga" }
+                      ]
+                    },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
                       ]
                     }
                   ],

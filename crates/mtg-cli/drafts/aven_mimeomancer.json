@@ -1,0 +1,39 @@
+{
+  "oracle_id": "176c0ca2-0ca1-45e2-8412-86de5dbead48",
+  "name": "Aven Mimeomancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aven Mimeomancer",
+      "oracle_fingerprint": "c250c6272716dac8d4ca353c2e977a97",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "feather" } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "SetPT": { "power": 3, "toughness": 1 } },
+                          { "AddKeyword": "Flying" }
+                        ],
+                        "duration": { "WhileHasCounter": { "Other": "feather" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

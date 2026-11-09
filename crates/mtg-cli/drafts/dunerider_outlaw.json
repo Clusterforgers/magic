@@ -1,0 +1,29 @@
+{
+  "oracle_id": "934808a1-31d9-4b82-9626-5f1286a52f1d",
+  "name": "Dunerider Outlaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dunerider Outlaw",
+      "oracle_fingerprint": "fd543e3fe135e08b47eb06bf47ef881c",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Green" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": ["This", { "DidThisTurn": { "event": "Damaged", "to": "Opponents" } }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "c8b3a070-408e-4a8f-8597-6476eeec0a5f",
   "name": "Heartwood Crafter // Soul Tether",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Heartwood Crafter",
@@ -9,9 +9,20 @@
       "abilities": [
         { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 112, "end": 181 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "only": [
+                    { "Spell": { "facts": ["NotFromHand"] } },
+                    { "Ability": {} },
+                    "OtherCosts"
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

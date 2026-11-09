@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1ec365f8-bfb8-416f-b4db-868a8f5d042a",
+  "name": "Chain Stasis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chain Stasis",
+      "oracle_fingerprint": "be2c3b28ff62a8a17b143d14a0910c83",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "TapOrUntap": { "what": { "Target": 0 } } },
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{2}{U}",
+                  "paid": [
+                    {
+                      "CopySpell": {
+                        "what": "This",
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "new_targets": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

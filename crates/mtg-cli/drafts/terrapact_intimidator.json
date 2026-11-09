@@ -1,0 +1,65 @@
+{
+  "oracle_id": "c08e0958-8fa2-49c7-ab17-a70dfc1ef33a",
+  "name": "Terrapact Intimidator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Terrapact Intimidator",
+      "oracle_fingerprint": "c1276ab3ba5a81ff14e915a40d2fc870",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "OneOf": {
+                  "who": { "Target": 0 },
+                  "options": [
+                    [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Lander",
+                              "types": ["Artifact"],
+                              "subtypes": ["Lander"],
+                              "abilities": [
+                                {
+                                  "Activated": {
+                                    "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                                    "effects": [
+                                      {
+                                        "Search": {
+                                          "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                                          "as": "found"
+                                        }
+                                      },
+                                      {
+                                        "Move": {
+                                          "what": { "Bound": "found" },
+                                          "to": { "Battlefield": { "tapped": true } }
+                                        }
+                                      },
+                                      { "Shuffle": {} }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "count": 2
+                        }
+                      }
+                    ],
+                    [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

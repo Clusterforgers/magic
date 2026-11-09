@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8512bd08-ecba-4e0e-b65c-8209764a65e5",
+  "name": "Cloud, Planet's Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloud, Planet's Champion",
+      "oracle_fingerprint": "a4c5ff6b24a634f8a487a0d056671858",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "DoubleStrike" }, { "AddKeyword": "Indestructible" }],
+            "condition": {
+              "All": [
+                {
+                  "Matches": {
+                    "subject": "This",
+                    "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+                  }
+                },
+                "YourTurn"
+              ]
+            }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "activating": "Equip",
+            "targeting": ["This"]
+          }
+        }
+      ]
+    }
+  ]
+}

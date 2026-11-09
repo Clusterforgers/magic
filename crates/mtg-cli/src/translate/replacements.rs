@@ -34,6 +34,9 @@ pub fn replacement_lines(ctx: &mut Ctx, body: &str) -> Tr<Vec<Value>> {
         return super::replacements_life::life_reduced(ctx, &p, condition.as_ref())
             .map(|ability| vec![ability]);
     }
+    if all.get("Event") == Some("GameWin") {
+        return super::replacements_loss::opponents_cant_win(&all).map(|()| Vec::new());
+    }
     single(ctx, body).map(|ability| vec![ability])
 }
 

@@ -39,7 +39,7 @@
             "applies_to": [{ "Type": "Land" }, { "ControlledBy": "You" }],
             "change": "Reduce",
             "mana": "{1}",
-            "activating": "Any"
+            "activating": "Every"
           }
         },
         {

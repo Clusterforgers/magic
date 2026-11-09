@@ -397,17 +397,18 @@ fn state_texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
         (
             Amount::Tallied {
                 who: Ref::Opponents,
-                what: TurnTally::LifeLost,
+                what: TurnTally::LifeLostMost,
             },
             Cmp::Ge,
         ) if number > 1 => quantity_texts(number)
             .iter()
             .map(|n| format!("an opponent lost {n} or more life this turn"))
             .collect(),
+        // One life lost by the opponents together is one lost by one of them.
         (
             Amount::Tallied {
                 who: Ref::Opponents,
-                what: TurnTally::LifeLost,
+                what: TurnTally::LifeLost | TurnTally::LifeLostMost,
             },
             Cmp::Ge,
         ) if number == 1 => vec!["an opponent lost life this turn".to_owned()],

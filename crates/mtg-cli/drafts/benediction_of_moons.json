@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3ff2fc3c-0871-4ba7-9b7c-8634ec770d6b",
+  "name": "Benediction of Moons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benediction of Moons",
+      "oracle_fingerprint": "ae74304e49a0b6ccf232721667ba9631",
+      "abilities": [
+        { "Spell": { "effects": [{ "GainLife": { "amount": { "Players": "EachPlayer" } } }] } },
+        { "Keyword": "Haunt" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "HauntedBy": "This" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "from": "Exile",
+            "effects": [{ "GainLife": { "amount": { "Players": "EachPlayer" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

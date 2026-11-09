@@ -1,0 +1,55 @@
+{
+  "oracle_id": "f5d1bd3c-0e65-4999-a810-881b2389b40e",
+  "name": "Conspicuous Snoop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conspicuous Snoop",
+      "oracle_fingerprint": "3a1628edeea982f1155957238513f547",
+      "abilities": [
+        { "Rule": { "rule": { "RevealTop": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Subtype": "Goblin" }, "TopOfLibrary", { "Not": { "Type": "Land" } }],
+                "from": "Library"
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [
+                    { "Subtype": "Goblin" },
+                    "TopOfLibrary",
+                    { "OwnedBy": "You" },
+                    { "In": "Library" }
+                  ]
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "In": "Library" },
+                    { "OwnedBy": "You" },
+                    "TopOfLibrary",
+                    { "Subtype": "Goblin" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "oracle_id": "d3daca53-d40e-4537-a16a-f1e97333bc87",
+  "name": "Mul Daya Channelers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mul Daya Channelers",
+      "oracle_fingerprint": "920d8cd270808df33f9afde0de9efea6",
+      "abilities": [
+        { "Rule": { "rule": { "RevealTop": "You" } } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "In": "Library" },
+                    { "OwnedBy": "You" },
+                    "TopOfLibrary",
+                    { "Type": "Creature" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 2 } } }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "In": "Library" },
+                    { "OwnedBy": "You" },
+                    "TopOfLibrary",
+                    { "Type": "Land" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

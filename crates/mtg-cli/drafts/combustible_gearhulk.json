@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3494a575-f68e-4e78-9f6b-142cd8a0edea",
+  "name": "Combustible Gearhulk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Combustible Gearhulk",
+      "oracle_fingerprint": "208f2b1333650945914b46b5cbbcde01",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "OneOf": {
+                  "who": { "Target": 0 },
+                  "options": [
+                    [{ "Draw": { "count": 3 } }],
+                    [
+                      { "Mill": { "count": 3, "as": "milled" } },
+                      {
+                        "DealDamage": {
+                          "to": { "Target": 0 },
+                          "amount": { "Stat": { "of": { "Bound": "milled" }, "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

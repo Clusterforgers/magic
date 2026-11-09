@@ -1,0 +1,26 @@
+{
+  "oracle_id": "8a449915-8bd7-4a9c-abb1-a95852f33695",
+  "name": "Rootwater Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootwater Shaman",
+      "oracle_fingerprint": "752eaf6eeafc5e89e735a6973b1c0be4",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "Subtype": "Aura" },
+                  { "HasKeyword": { "Enchant": [{ "Type": "Creature" }] } }
+                ],
+                "flash": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

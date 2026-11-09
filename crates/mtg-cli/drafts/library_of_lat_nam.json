@@ -1,0 +1,43 @@
+{
+  "oracle_id": "67f68a0f-bd3d-47ba-ad99-95c1a2acd170",
+  "name": "Library of Lat-Nam",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Library of Lat-Nam",
+      "oracle_fingerprint": "946a3a0f67c36bb938d973403b142670",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "who": "Opponents",
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "DelayedTrigger": {
+                            "when": { "StepBegins": { "step": "Upkeep" } },
+                            "effects": [{ "Draw": { "count": 3 } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "Search": { "filter": [], "as": "found" } },
+                        { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                        { "Shuffle": {} }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

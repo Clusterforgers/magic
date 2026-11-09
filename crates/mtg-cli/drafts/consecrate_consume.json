@@ -1,0 +1,52 @@
+{
+  "oracle_id": "20e7a93f-77ce-466b-8586-35d390689d0c",
+  "name": "Consecrate // Consume",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consecrate",
+      "oracle_fingerprint": "7c1cddd018155f62031dfdfd8fd7ea44",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Consume",
+      "oracle_fingerprint": "e2c584c3de5b28d9305b28d46c1a433a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "GreatestAmong": {
+                        "stat": "Power",
+                        "group": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                      }
+                    }
+                  ],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": { "Bound": "sacrificed" }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

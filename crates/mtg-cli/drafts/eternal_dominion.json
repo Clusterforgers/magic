@@ -1,0 +1,44 @@
+{
+  "oracle_id": "ede2a435-bf9a-4f87-b579-259cfdebc13f",
+  "name": "Eternal Dominion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eternal Dominion",
+      "oracle_fingerprint": "dba4fe6113fa5f39a4d1afa149ac782a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" }
+                      ]
+                    }
+                  ],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        },
+        { "Keyword": "Epic" }
+      ]
+    }
+  ]
+}

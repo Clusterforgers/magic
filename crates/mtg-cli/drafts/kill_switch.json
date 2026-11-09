@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0cd5eef6-6830-4c6d-8578-2726900c39a5",
+  "name": "Kill Switch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kill Switch",
+      "oracle_fingerprint": "c8ad1ab5ca06589920ef002f9b5ec085",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              { "Tap": { "what": { "Each": [{ "Type": "Artifact" }, "Other"] } } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Artifact" }, "Other"] },
+                  "mods": ["DoesntUntap"],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

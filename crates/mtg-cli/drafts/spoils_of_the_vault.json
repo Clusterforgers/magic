@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ef86f861-1fdf-4be0-9497-8adc064af3de",
+  "name": "Spoils of the Vault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spoils of the Vault",
+      "oracle_fingerprint": "b7c9be278d93a6f9fb7ca07e0c726592",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "RevealUntil": {
+                  "filter": [{ "ChosenAs": "name" }],
+                  "as": "found2",
+                  "revealed_as": "revealed3"
+                }
+              },
+              { "Move": { "what": { "Bound": "found2" }, "to": "Hand" } },
+              { "Exile": { "what": { "Bound": "revealed3" }, "as": "revealed4" } },
+              { "LoseLife": { "amount": { "Bound": "revealed4~moved" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

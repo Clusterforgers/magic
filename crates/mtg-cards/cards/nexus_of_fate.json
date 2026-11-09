@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6c1d22d4-f28e-4041-a9b6-1575e8929b61",
+  "name": "Nexus of Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nexus of Fate",
+      "oracle_fingerprint": "bd540500bfbe52131c4d021212e47e29",
+      "abilities": [
+        { "Spell": { "effects": [{ "ExtraTurn": {} }] } },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "by": { "IntoLibrary": { "place": "Shuffled", "reveal": true } }
+          }
+        }
+      ]
+    }
+  ]
+}

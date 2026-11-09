@@ -1,0 +1,42 @@
+{
+  "oracle_id": "bf09b97b-9387-4b94-a3fc-00080881f052",
+  "name": "Surestrike Trident",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surestrike Trident",
+      "oracle_fingerprint": "5a5669378da347ad7f1802b0cdefc966",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": "FirstStrike" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", "Unattach"],
+                    "targets": [
+                      {
+                        "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] }
+                      }
+                    ],
+                    "effects": [
+                      {
+                        "DealDamage": {
+                          "to": { "Target": 0 },
+                          "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

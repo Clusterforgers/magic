@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fb7f45eb-c134-4493-af05-e3b14d80e48c",
+  "name": "Horde Ambusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horde Ambusher",
+      "oracle_fingerprint": "8eaed396b496335acb31dc64952a65a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+          }
+        },
+        { "Keyword": { "Morph": [{ "RevealFromHand": { "filter": [{ "Color": "Red" }] } }] } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "85845b6c-abb5-4591-b987-a375972cf25b",
+  "name": "Pyromancer Ascension",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyromancer Ascension",
+      "oracle_fingerprint": "23f68038f8a9bb23ad25ce934225362a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "SharesName": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      "This",
+                      { "CounterCount": { "kind": { "Other": "quest" }, "op": "Ge", "to": 2 } }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

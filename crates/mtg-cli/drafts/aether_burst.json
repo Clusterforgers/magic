@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1e33f39b-a61a-4a09-a541-16cc1bd53d02",
+  "name": "Aether Burst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Burst",
+      "oracle_fingerprint": "ee663f058f7570d30df9480364e07110",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Sum": [{ "Count": [{ "Named": "Aether Burst" }, { "In": "Graveyard" }] }, 1]
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

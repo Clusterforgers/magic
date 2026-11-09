@@ -26,13 +26,14 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "Phases" => object_verb(ctx, p, api, "PhaseOut"),
         "AddTurn" => add_turn(ctx, p),
         "Radiation" => radiation(ctx, p),
+        "Blight" => return Some(blight(ctx, p)),
         "Manifest" => manifest(ctx, p, "Manifest"),
         "Cloak" => manifest(ctx, p, "Cloak"),
         "MultiplyCounter" => multiply_counter(ctx, p),
         "MoveCounter" => move_counter(ctx, p),
         "ExchangeControl" => exchange_control(ctx, p),
         "ExchangeLife" => exchange_life(ctx, p),
-        "FlipCoin" => flip_coin(ctx, p),
+        "FlipCoin" => return Some(flip_coins(ctx, p)),
         "Clash" => clash(ctx, p),
         _ => return None,
     };
@@ -101,6 +102,20 @@ pub fn skip_turn(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     };
     let rule = json!({"Rule": {"rule": {"Cant": {"who": who, "action": "SkipTurn"}}, "duration": "UntilTurnSkipped"}});
     Ok(vec![rule; turns])
+}
+
+/// `Blight`: the player puts that many -1/-1 counters on a creature they control and pick.
+fn blight(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(p, "Blight", &["Num", "Defined"])?;
+    if p.get("Defined").is_some_and(|who| who != "You") {
+        return unmapped("key:Blight.Defined");
+    }
+    let count = amount(ctx, p.get("Num").unwrap_or("1"))?;
+    let bind = ctx.fresh("blighted");
+    Ok(vec![
+        json!({"Choose": {"from": {"Each": [{"Type": "Creature"}, {"ControlledBy": "You"}]}, "count": {"min": 1, "max": 1}, "as": bind}}),
+        json!({"PutCounters": {"on": {"Bound": bind}, "counter": "-1/-1", "count": count}}),
+    ])
 }
 
 /// `Radiation`: the players get rad counters (CR 725), counters of the kind `rad` on a player.
@@ -172,19 +187,39 @@ fn multiply_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     Ok(effect)
 }
 
-/// `MoveCounter` of one named kind from the `Source$` onto the target or `Defined$`.
+/// `MoveCounter` of one named kind, of a kind the controller picks (`CounterType$ Any`, one counter) or of every kind
+/// (`CounterType$ All | CounterNum$ All`) from the `Source$` onto the target or `Defined$`.
 fn move_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let mut read = TARGETING.to_vec();
     read.extend(["Source", "CounterType", "CounterNum"]);
     only(p, "MoveCounter", &read)?;
-    let Some(kind) = p.get("CounterType").and_then(counter_kind) else {
-        return unmapped("key:MoveCounter.Source-or-CounterType");
+    // `None`: any kind; `all`: every counter there is.
+    let (kind, all) = match (p.get("CounterType"), p.get("CounterNum")) {
+        (Some("Any"), None | Some("1")) => (None, false),
+        (Some("All"), Some("All")) => (None, true),
+        (Some(word), number) => {
+            let Some(kind) = counter_kind(word) else {
+                return unmapped("key:MoveCounter.Source-or-CounterType");
+            };
+            if number.is_some_and(|n| n.trim().parse::<u32>().is_err()) {
+                return unmapped("key:MoveCounter.CounterNum");
+            }
+            (Some(kind), false)
+        }
+        (None, _) => return unmapped("key:MoveCounter.Source-or-CounterType"),
     };
-    if p.get("CounterNum")
-        .is_some_and(|n| n.trim().parse::<u32>().is_err())
-    {
-        return unmapped("key:MoveCounter.CounterNum");
-    }
+    let moved = |ctx: &mut Ctx, from: Value, to: Value| -> Tr<Value> {
+        let count = if all {
+            json!({ "AnyCounters": from.clone() })
+        } else {
+            amount(ctx, p.get("CounterNum").unwrap_or("1"))?
+        };
+        let mut effect = json!({"from": from, "to": to, "count": count});
+        if let Some(kind) = &kind {
+            effect["counter"] = json!(kind);
+        }
+        Ok(json!({ "MoveCounters": effect }))
+    };
     // "Move a counter from target creature onto a second target creature": two targets of the same kind.
     let two = p.get("TargetMin") == Some("2") && p.get("TargetMax") == Some("2");
     if two && p.has("ValidTgts") && !p.has("Source") && !p.has("Defined") {
@@ -193,10 +228,7 @@ fn move_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             subject(ctx, &one, "Self", None)?,
             subject(ctx, &one, "Self", None)?,
         );
-        let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
-        return Ok(
-            json!({"MoveCounters": {"from": from, "to": to, "counter": kind, "count": count}}),
-        );
+        return moved(ctx, from, to);
     }
     // Without `Source$` the target is the source and `Defined$` the object that receives them.
     let (from, to) = match (p.get("Source"), p.get("Defined"), p.has("ValidTgts")) {
@@ -207,8 +239,7 @@ fn move_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         ),
         _ => return unmapped("key:MoveCounter.Source-or-CounterType"),
     };
-    let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
-    Ok(json!({"MoveCounters": {"from": from, "to": to, "counter": kind, "count": count}}))
+    moved(ctx, from, to)
 }
 
 /// `ExchangeControl` for good between the `Defined$` permanent and the one target.
@@ -244,8 +275,14 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "FlipUntilYouLose",
             "Defined",
             "ValidTgts",
+            "Amount",
+            "RememberNumber",
         ],
     )?;
+    // `RememberNumber$ Wins` keeps the wins for a part that reads `Wins`; the win part runs once per win, where it is one.
+    if p.get("RememberNumber").is_some_and(|word| word != "Wins") {
+        return unmapped("key:FlipCoin.RememberNumber");
+    }
     if !matches!(p.get("Defined"), None | Some("You")) {
         return unmapped("key:FlipCoin.Defined");
     }
@@ -264,10 +301,30 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     for (key, field) in [("WinSubAbility", "win"), ("LoseSubAbility", "lose")] {
         if let Some(name) = p.get(key) {
             let part = ctx.sub(name)?;
-            node["FlipCoin"][field] = Value::Array(chain_at(ctx, &part, false)?);
+            ctx.flip_win = key == "WinSubAbility";
+            let chain = chain_at(ctx, &part, false);
+            ctx.flip_win = false;
+            node["FlipCoin"][field] = Value::Array(chain?);
         }
     }
     Ok(node)
+}
+
+/// `FlipCoin` with `Amount$ N`: N flips in a row, each with the win part ("for each flip you win"), so a part that reads
+/// the wins reads one. A lose part with several flips is a gap.
+fn flip_coins(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    let times = match p.get("Amount") {
+        None => 1,
+        Some(word) => match word.parse::<usize>() {
+            Ok(n) if (1..=10).contains(&n) => n,
+            _ => return unmapped("key:FlipCoin.Amount"),
+        },
+    };
+    if times > 1 && (p.has("LoseSubAbility") || p.get("FlipUntilYouLose").is_some()) {
+        return unmapped("key:FlipCoin.Amount-with-more");
+    }
+    let node = flip_coin(ctx, p)?;
+    Ok(vec![node; times])
 }
 
 /// `Clash` of the controller with an opponent they choose: the win and the otherwise part.

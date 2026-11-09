@@ -1,0 +1,58 @@
+{
+  "oracle_id": "aaafcd69-6295-4d79-8e67-98df0c9bae88",
+  "name": "Mu Yanling, Wind Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mu Yanling, Wind Rider",
+      "oracle_fingerprint": "51e1b6b103c6ab663313171d92f82660",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vehicle",
+                      "types": ["Artifact"],
+                      "subtypes": ["Vehicle"],
+                      "power": 3,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": { "Crew": 1 } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "HasKeyword": "Flying" }
+                  ],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

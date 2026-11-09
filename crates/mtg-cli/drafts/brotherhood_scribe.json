@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e22bb590-9c9a-4a99-8cd7-1dbe742f4cdd",
+  "name": "Brotherhood Scribe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brotherhood Scribe",
+      "oracle_fingerprint": "af4b714381836c23011ca96a33eaaadd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "PlayerCountersPut": { "who": "You", "counter": { "Other": "energy" } } }
+            },
+            "if": { "AtTrigger": "YourTurn" },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

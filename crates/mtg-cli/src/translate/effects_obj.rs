@@ -898,6 +898,15 @@ fn radiance_of(target: &Value, kind: &str) -> Tr<Value> {
 
 fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(p, "Pump", &PUMP_KEYS)?;
+    // "You and permanents you control gain hexproof": the player and the objects are two passes of the same line.
+    if let Some(("You", group)) = p.get("Defined").and_then(|word| word.split_once(" & "))
+        && group.starts_with("Valid ")
+        && !p.has("ValidTgts")
+    {
+        let mut effects = pump(ctx, &p.without(&["Defined"]).with("Defined", "You"))?;
+        effects.extend(pump(ctx, &p.without(&["Defined"]).with("Defined", group))?);
+        return Ok(effects);
+    }
     // A line with no parameter at all ("SP$ Pump" on a spell whose abilities are all keywords) does nothing when it resolves.
     if !PUMP_KEYS.iter().any(|key| p.has(key)) {
         return Ok(Vec::new());
@@ -1020,10 +1029,13 @@ fn player_keywords(p: &Params, subject: &Value, duration: &str) -> Option<Tr<Vec
     let keywords = p.get("KW")?;
     let mut rules = Vec::new();
     for word in keywords.split('&').map(str::trim) {
-        if !matches!(word, "Hexproof" | "Shroud") {
-            return Some(unmapped(format!("key:Pump.player-keyword-{word}")));
-        }
-        rules.push(json!({"Rule": {"rule": {"PlayersHave": {"who": subject, "keyword": word}}, "duration": duration}}));
+        let keyword = match word {
+            "Hexproof" | "Shroud" => json!(word),
+            // CR 702.16j: protection from everything is the protection keyword with no quality.
+            "Protection from everything" => json!({"Protection": []}),
+            _ => return Some(unmapped(format!("key:Pump.player-keyword-{word}"))),
+        };
+        rules.push(json!({"Rule": {"rule": {"PlayersHave": {"who": subject, "keyword": keyword}}, "duration": duration}}));
     }
     Some(Ok(rules))
 }

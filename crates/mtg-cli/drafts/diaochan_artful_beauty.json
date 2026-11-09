@@ -1,0 +1,43 @@
+{
+  "oracle_id": "bf20bc37-3205-45af-a3be-05d6835c0d87",
+  "name": "Diaochan, Artful Beauty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diaochan, Artful Beauty",
+      "oracle_fingerprint": "83bc9b11d59aff765a35de48becdc2ae",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Any": [
+                    { "Step": "Upkeep" },
+                    { "Step": "Draw" },
+                    { "Step": "Main1" },
+                    { "Step": "BeginCombat" }
+                  ]
+                }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": {
+                  "ChosenBy": { "who": "Opponents", "what": { "Object": [{ "Type": "Creature" }] } }
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "Destroy": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

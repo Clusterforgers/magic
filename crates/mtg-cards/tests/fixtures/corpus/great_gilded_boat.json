@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "b2fb3995-5b43-4776-88b2-346d353edee0",
+  "oracle_id": "d4607026-80b2-4fa6-99d5-694cd3b43868",
+  "multiverse_ids": [],
+  "resource_id": "AEBC04336B8EF2DBA13A706848A388441C9951A3D5C3FFFF43B198DD94C0E44A",
+  "mtgo_id": 154006,
+  "arena_id": 103414,
+  "tcgplayer_id": 707484,
+  "cardmarket_id": 898938,
+  "name": "Great Gilded Boat",
+  "lang": "en",
+  "released_at": "2026-08-14",
+  "uri": "https://api.scryfall.com/cards/b2fb3995-5b43-4776-88b2-346d353edee0",
+  "scryfall_uri": "https://scryfall.com/card/hob/42/great-gilded-boat?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-24T03:16:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/2/b2fb3995-5b43-4776-88b2-346d353edee0.jpg?1784862975",
+    "normal": "https://cards.scryfall.io/normal/front/b/2/b2fb3995-5b43-4776-88b2-346d353edee0.jpg?1784862975",
+    "large": "https://cards.scryfall.io/large/front/b/2/b2fb3995-5b43-4776-88b2-346d353edee0.jpg?1784862975",
+    "png": "https://cards.scryfall.io/png/front/b/2/b2fb3995-5b43-4776-88b2-346d353edee0.png?1784862975",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/2/b2fb3995-5b43-4776-88b2-346d353edee0.jpg?1784862975",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/2/b2fb3995-5b43-4776-88b2-346d353edee0.jpg?1784862975",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/2/b2fb3995-5b43-4776-88b2-346d353edee0.webp?1784862975",
+    "grid": "https://cards.scryfall.io/grid/front/b/2/b2fb3995-5b43-4776-88b2-346d353edee0.webp?1784862975",
+    "display": "https://cards.scryfall.io/display/front/b/2/b2fb3995-5b43-4776-88b2-346d353edee0.webp?1784862975",
+    "art": "https://cards.scryfall.io/art/front/b/2/b2fb3995-5b43-4776-88b2-346d353edee0.webp?1784862975",
+    "crop": "https://cards.scryfall.io/crop/front/b/2/b2fb3995-5b43-4776-88b2-346d353edee0.webp?1784862975",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/2/b2fb3995-5b43-4776-88b2-346d353edee0.jpg?1784862975"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "Whenever you attack, recruit. (Draw a card, then discard a card. If you discarded a nonland card, create a 1/1 white Human Soldier creature token.)\nCrew 2 (Tap any number of creatures you control with total power 2 or more: This Vehicle becomes an artifact creature until end of turn.)",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Crew",
+    "Recruit"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "6007af81-4541-4b55-90ea-03d365362ae5",
+      "component": "token",
+      "name": "Human Soldier",
+      "type_line": "Token Creature — Human Soldier",
+      "uri": "https://api.scryfall.com/cards/6007af81-4541-4b55-90ea-03d365362ae5"
+    },
+    {
+      "object": "related_card",
+      "id": "d2b59872-0e11-41c3-9858-3e2dd5a1c3c3",
+      "component": "combo_piece",
+      "name": "Great Gilded Boat",
+      "type_line": "Artifact — Vehicle",
+      "uri": "https://api.scryfall.com/cards/d2b59872-0e11-41c3-9858-3e2dd5a1c3c3"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "59218c23-cb7a-4fde-9cff-3f2f71af1308",
+  "set": "hob",
+  "set_name": "The Hobbit",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/59218c23-cb7a-4fde-9cff-3f2f71af1308",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ahob&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/hob?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b2fb3995-5b43-4776-88b2-346d353edee0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad4607026-80b2-4fa6-99d5-694cd3b43868&unique=prints",
+  "collector_number": "42",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Josu Solano",
+  "artist_ids": [
+    "fb7b61a8-13c5-4813-a749-9d3396801906"
+  ],
+  "illustration_id": "360ba32a-24c6-4d37-9348-702c5f8c81de",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 16888,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://x.com/MTGArenaJP/status/2079571314650812864",
+    "previewed_at": "2026-07-21"
+  },
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.20",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGreat%2BGilded%2BBoat",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGreat%2BGilded%2BBoat",
+    "edhrec": "https://edhrec.com/route/?cc=Great+Gilded+Boat"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F707484%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=898938&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/154006?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

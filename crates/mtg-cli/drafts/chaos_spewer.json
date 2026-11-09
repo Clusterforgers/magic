@@ -1,0 +1,40 @@
+{
+  "oracle_id": "77217a66-4ba8-443f-b915-178cfcc233e1",
+  "name": "Chaos Spewer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaos Spewer",
+      "oracle_fingerprint": "fed58a5fbee4ec996d371810b0bb1ccd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "unpaid": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "blighted"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "blighted" },
+                        "counter": "-1/-1",
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "oracle_id": "4f212675-e34d-4387-a125-e17b25757083",
+  "name": "Council Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Council Guardian",
+      "oracle_fingerprint": "a5f782b240db419394963866f263e8f5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Vote": { "options": { "Named": ["blue", "black", "red", "green"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Bound": "blue" } },
+                          "op": "Ge",
+                          "right": { "Players": { "Bound": "black" } }
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Bound": "blue" } },
+                          "op": "Ge",
+                          "right": { "Players": { "Bound": "red" } }
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Bound": "blue" } },
+                          "op": "Ge",
+                          "right": { "Players": { "Bound": "green" } }
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": { "Protection": [{ "Color": "Blue" }] } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Bound": "black" } },
+                          "op": "Ge",
+                          "right": { "Players": { "Bound": "blue" } }
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Bound": "black" } },
+                          "op": "Ge",
+                          "right": { "Players": { "Bound": "red" } }
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Bound": "black" } },
+                          "op": "Ge",
+                          "right": { "Players": { "Bound": "green" } }
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": { "Protection": [{ "Color": "Black" }] } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Bound": "red" } },
+                          "op": "Ge",
+                          "right": { "Players": { "Bound": "blue" } }
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Bound": "red" } },
+                          "op": "Ge",
+                          "right": { "Players": { "Bound": "black" } }
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Bound": "red" } },
+                          "op": "Ge",
+                          "right": { "Players": { "Bound": "green" } }
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": { "Protection": [{ "Color": "Red" }] } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Bound": "green" } },
+                          "op": "Ge",
+                          "right": { "Players": { "Bound": "blue" } }
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Bound": "green" } },
+                          "op": "Ge",
+                          "right": { "Players": { "Bound": "black" } }
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Bound": "green" } },
+                          "op": "Ge",
+                          "right": { "Players": { "Bound": "red" } }
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": { "Protection": [{ "Color": "Green" }] } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

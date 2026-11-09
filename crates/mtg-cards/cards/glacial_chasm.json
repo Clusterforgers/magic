@@ -1,0 +1,27 @@
+{
+  "oracle_id": "73e7a2ad-d11c-4867-b97d-f971809da778",
+  "name": "Glacial Chasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glacial Chasm",
+      "oracle_fingerprint": "b1d5304c2d78685c588ef5024ddd079e",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": [{ "PayLife": 2 }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": ["CantAttack"]
+          }
+        },
+        { "Replacement": { "when": { "Damage": { "to": "You" } }, "by": "Prevent" } }
+      ]
+    }
+  ]
+}

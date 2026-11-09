@@ -1,0 +1,85 @@
+{
+  "oracle_id": "530dc119-e266-4525-abe9-7fab599e9de2",
+  "name": "Invasion of New Capenna // Holy Frazzle-Cannon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of New Capenna",
+      "oracle_fingerprint": "94c02e6a6156f38f3f141d8bd94bdb4e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                                { "ControlledBy": "Opponents" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Holy Frazzle-Cannon",
+      "oracle_fingerprint": "d409fc32019c4cf5e4f5a00307ca3aeb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "Is": "Attached" }] } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      {
+                        "AnyOf": [
+                          { "Is": "Triggering" },
+                          {
+                            "Not": {
+                              "AnyOf": [
+                                { "Not": { "ControlledBy": "You" } },
+                                { "Not": { "SharesSubtype": "Triggering" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

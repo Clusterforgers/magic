@@ -1,0 +1,49 @@
+{
+  "oracle_id": "33b31fb0-71ce-408a-a256-2a5a3b085cb6",
+  "name": "Case of the Filched Falcon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Case of the Filched Falcon",
+      "oracle_fingerprint": "be44387cc790c7e0a3453ae55d43b9f9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 3
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": ["This", { "Not": "Solved" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Solve": { "what": "This" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 227, "end": 395 }
+          }
+        }
+      ]
+    }
+  ]
+}

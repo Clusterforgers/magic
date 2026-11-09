@@ -1,0 +1,24 @@
+{
+  "oracle_id": "d3142c6b-86e9-42b7-916c-ce7c34e7bd53",
+  "name": "Bladehold War-Whip",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bladehold War-Whip",
+      "oracle_fingerprint": "f28bc8b2b785f622a18318c5a10d967a",
+      "abilities": [
+        { "Keyword": "ForMirrodin" },
+        {
+          "CostModifier": {
+            "applies_to": [{ "Subtype": "Equipment" }, "Other", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "Equip"
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "DoubleStrike" }] } },
+        { "Keyword": { "Equip": "{3}{W}{R}" } }
+      ]
+    }
+  ]
+}

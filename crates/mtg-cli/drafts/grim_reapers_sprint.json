@@ -1,7 +1,7 @@
 {
   "oracle_id": "99a6d7fe-40a1-4f2f-a3f6-6777884d5d1a",
   "name": "Grim Reaper's Sprint",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Grim Reaper's Sprint",
@@ -29,9 +29,21 @@
         },
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 90, "end": 224 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [{ "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }, "YourTurn"]
+                  },
+                  "then": [{ "AddPhase": { "phases": ["Combat"] } }]
+                }
+              }
+            ]
           }
         },
         {

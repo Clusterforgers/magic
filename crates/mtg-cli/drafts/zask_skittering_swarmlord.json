@@ -1,0 +1,57 @@
+{
+  "oracle_id": "3c4966b9-26f9-46ff-8d41-7fd01c70986d",
+  "name": "Zask, Skittering Swarmlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zask, Skittering Swarmlord",
+      "oracle_fingerprint": "b84e8d367d908bac71cf3600f37c21c1",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "AnyOf": [{ "Type": "Land" }, { "Subtype": "Insect" }] }],
+                "from": "Graveyard",
+                "play": true
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Insect" }, { "ControlledBy": "You" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Library": { "place": "Bottom" } } } },
+              { "Mill": { "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B/G}",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Insect" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Deathtouch" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

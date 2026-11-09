@@ -157,7 +157,7 @@ fn life_lost(condition: &Condition) -> Option<String> {
         left:
             Amount::Tallied {
                 who: Ref::EachPlayer,
-                what: TurnTally::LifeLost,
+                what: TurnTally::LifeLostMost,
             },
         op: Cmp::Ge,
         right: Amount::Fixed(number),

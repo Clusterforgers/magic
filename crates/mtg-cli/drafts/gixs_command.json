@@ -1,0 +1,131 @@
+{
+  "oracle_id": "9270eb03-4600-40cc-83a5-ea987d5d4978",
+  "name": "Gix's Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gix's Command",
+      "oracle_fingerprint": "d3e2ac7dd94ce73a7d4df120d52e9855",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "Type": "Creature" }] },
+                            "count": { "min": 0, "max": 1 },
+                            "as": "card"
+                          }
+                        },
+                        {
+                          "PutCounters": {
+                            "on": { "Bound": "card" },
+                            "counter": "+1/+1",
+                            "count": 2
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Bound": "card" },
+                            "mods": [{ "AddKeyword": "Lifelink" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Destroy": {
+                            "what": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "count": { "min": 0, "max": 2 },
+                            "as": "picked2"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "picked2" }, "to": "Hand" } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "RepeatEach": {
+                            "over": "Opponents",
+                            "as": "each3",
+                            "effects": [
+                              {
+                                "Choose": {
+                                  "who": { "Bound": "each3" },
+                                  "from": {
+                                    "Each": [
+                                      { "Type": "Creature" },
+                                      { "ControlledBy": { "Bound": "each3" } },
+                                      {
+                                        "GreatestAmong": {
+                                          "stat": "Power",
+                                          "group": [
+                                            { "Type": "Creature" },
+                                            { "ControlledBy": { "Bound": "each3" } }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  "as": "card4"
+                                }
+                              },
+                              {
+                                "Bind": {
+                                  "what": { "Bound": "card4" },
+                                  "as": "picks5",
+                                  "adds": true
+                                }
+                              },
+                              { "Reveal": { "what": { "Bound": "card4" } } }
+                            ]
+                          }
+                        },
+                        {
+                          "Sacrifice": {
+                            "who": "EachPlayer",
+                            "filter": [{ "Is": { "Bound": "picks5" } }],
+                            "count": { "Count": [{ "Is": { "Bound": "picks5" } }] }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

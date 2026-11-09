@@ -1,0 +1,91 @@
+{
+  "oracle_id": "c0cbb347-b060-43ce-a9c5-8c835be3cf1b",
+  "name": "Azor's Gateway // Sanctum of the Sun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azor's Gateway",
+      "oracle_fingerprint": "a4880ade165da2476b6156cb4725033d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                          "stat": "ManaValue"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 5 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                          "stat": "ManaValue"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "Untap": { "what": "This" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                          "stat": "ManaValue"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sanctum of the Sun",
+      "oracle_fingerprint": "698912b4e3a9ce45ab99896d9542e640",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": { "Life": "You" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

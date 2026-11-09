@@ -1,0 +1,32 @@
+{
+  "oracle_id": "5e238e67-00f2-4656-bf69-0115e47321a5",
+  "name": "Crimestopper Sprite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crimestopper Sprite",
+      "oracle_fingerprint": "e0a7942dc372df25712ece582923480a",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "CollectEvidence": 6 }] } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

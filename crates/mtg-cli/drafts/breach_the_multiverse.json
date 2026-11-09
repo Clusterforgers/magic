@@ -1,0 +1,54 @@
+{
+  "oracle_id": "ebbd5b9c-07ff-4b42-81c2-ba09539f3a42",
+  "name": "Breach the Multiverse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breach the Multiverse",
+      "oracle_fingerprint": "acaa89062319ef4d84e90a2c64baa08c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "who": "EachPlayer", "count": 10 } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                            { "OwnedBy": { "Bound": "each" } },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "as": "card2"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "card2" }, "as": "picks3", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picks3" },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddSubtype": "Phyrexian" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "3d8f9b58-d011-4ed2-99ae-c626243fab26",
+  "name": "Kaima, the Fractured Calm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaima, the Fractured Calm",
+      "oracle_fingerprint": "b374145e08a7f97a66a5cd7ea06d109e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Goad": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "Opponents" },
+                      { "HasAttached": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }] }
+                    ]
+                  }
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Count": [
+                      {
+                        "Is": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "Opponents" },
+                            { "HasAttached": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }] }
+                          ]
+                        }
+                      },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "6dc7f837-158f-4ccf-86a5-a07a20891ec5",
+  "name": "Vindictive Lich",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vindictive Lich",
+      "oracle_fingerprint": "6ab6de8a9b46db7300b88953a4573635",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": { "Players": "Opponents" } },
+                  "different_players": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Sacrifice": {
+                            "who": { "Target": 0 },
+                            "filter": [{ "Type": "Creature" }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 5 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

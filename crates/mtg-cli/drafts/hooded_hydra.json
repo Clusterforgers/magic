@@ -1,0 +1,48 @@
+{
+  "oracle_id": "637ddd65-112d-40f7-9bab-a61724d9165c",
+  "name": "Hooded Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hooded Hydra",
+      "oracle_fingerprint": "c5bde68e2738a90a69d40ebb0773330b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Snake",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Snake"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Morph": "{3}{G}{G}" } },
+        {
+          "Replacement": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 5 } }
+          }
+        }
+      ]
+    }
+  ]
+}

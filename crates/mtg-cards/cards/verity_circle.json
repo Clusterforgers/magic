@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1b80b910-c0e6-42e3-929c-2b4c85c850fe",
+  "name": "Verity Circle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verity Circle",
+      "oracle_fingerprint": "9eda92ff785c1382244e6542d904a5a7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "TappedNotAttacking": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{U}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

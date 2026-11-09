@@ -1,0 +1,39 @@
+{
+  "oracle_id": "6586f8d1-196d-42a4-816f-629d432ece2f",
+  "name": "Crown of Suspicion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crown of Suspicion",
+      "oracle_fingerprint": "fc033a197fc405691cb357d2ad27723b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": -1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Is": "Attached" }, { "SharesSubtype": "Attached" }] }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

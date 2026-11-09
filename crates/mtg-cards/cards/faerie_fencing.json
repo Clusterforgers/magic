@@ -1,0 +1,92 @@
+{
+  "oracle_id": "450a9b73-9024-4103-b9f9-216a2f395cff",
+  "name": "Faerie Fencing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Fencing",
+      "oracle_fingerprint": "11d089af178f7fa5efb61468b2550eff",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Sum": [
+                                "X",
+                                {
+                                  "When": {
+                                    "condition": {
+                                      "Compare": {
+                                        "left": {
+                                          "CountedAsCast": {
+                                            "Count": [
+                                              { "Subtype": "Faerie" },
+                                              { "ControlledBy": "You" }
+                                            ]
+                                          }
+                                        },
+                                        "op": "Ge",
+                                        "right": 1
+                                      }
+                                    },
+                                    "then": 3,
+                                    "otherwise": 0
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Sum": [
+                                "X",
+                                {
+                                  "When": {
+                                    "condition": {
+                                      "Compare": {
+                                        "left": {
+                                          "CountedAsCast": {
+                                            "Count": [
+                                              { "Subtype": "Faerie" },
+                                              { "ControlledBy": "You" }
+                                            ]
+                                          }
+                                        },
+                                        "op": "Ge",
+                                        "right": 1
+                                      }
+                                    },
+                                    "then": 3,
+                                    "otherwise": 0
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

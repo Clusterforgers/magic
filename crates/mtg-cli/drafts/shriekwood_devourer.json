@@ -1,0 +1,34 @@
+{
+  "oracle_id": "56314980-5f18-4b93-a9a0-6002ee8a880c",
+  "name": "Shriekwood Devourer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shriekwood Devourer",
+      "oracle_fingerprint": "82c9f6a4f11a425e95905b479fd64926",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }] },
+                  "count": {
+                    "min": 0,
+                    "max": { "Greatest": { "of": [{ "Is": "Triggering" }], "stat": "Power" } }
+                  },
+                  "as": "untap"
+                }
+              },
+              { "Untap": { "what": { "Bound": "untap" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
