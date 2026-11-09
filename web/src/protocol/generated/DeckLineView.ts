@@ -19,6 +19,10 @@ count: number,
  */
 printing_id: string | null, 
 /**
+ * Whether the owner plays the card by hand ([`DeckLineBody::by_hand`]); absent for false.
+ */
+by_hand?: boolean, 
+/**
  * The card; its pictures are those of the chosen printing, else of the default one.
  */
 card: CardHit, };

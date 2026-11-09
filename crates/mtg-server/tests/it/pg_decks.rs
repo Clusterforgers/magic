@@ -567,6 +567,7 @@ async fn the_state_is_the_check_of_the_moment_not_the_stored_one(pool: PgPool) {
         oracle_id: OracleId(oracle("Forest")),
         printing_id: None,
         count: 1,
+        by_hand: false,
     });
     repo.replace(owner, DeckId(Uuid::parse_str(&id).unwrap()), &edited)
         .await

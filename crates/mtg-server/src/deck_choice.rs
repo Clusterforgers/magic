@@ -24,7 +24,7 @@ use std::sync::Arc;
 use crate::api::ApiError;
 use crate::card_api::failed;
 use crate::cards::{CardSource, Reads};
-use crate::deck_cards::{Line, Loaded};
+use crate::deck_cards::{Line, Loaded, by_hand_ids};
 use crate::decks::lines_of;
 use crate::demo;
 use crate::precon_api::judged_precon;
@@ -216,6 +216,7 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
         companion,
         reads,
         conjured,
+        by_hand,
     } = assemble(source, &lines).await?;
     let note = SeatDeck {
         name: deck.name.clone(),
@@ -233,7 +234,8 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
     let chosen = ChosenDeck::led(ids, library, commander_ids, commanders, note)
         .map_err(unreadable)?
         .with_reads(reads)
-        .with_conjured(conjured);
+        .with_conjured(conjured)
+        .with_by_hand(by_hand);
     let printings = printings_of(&lines, companion.is_some());
     let chosen = match companion {
         Some((id, card)) => chosen.with_companion(id, card).map_err(unreadable)?,
@@ -254,6 +256,8 @@ struct Assembled {
     reads: Reads,
     /// The cards the deck's cards can conjure, by name.
     conjured: BTreeMap<String, Arc<CardDefinition>>,
+    /// The oracle ids of the cards the owner plays by hand, once each.
+    by_hand: Vec<String>,
 }
 
 /// The definitions of the main deck, the commanders and the companion of `lines`, read in one query.
@@ -270,6 +274,19 @@ async fn assemble(source: &CardSource, lines: &[Line]) -> Result<Assembled, ApiE
         .cloned()
         .collect();
     let (mut library, mut reads) = source.deck_pinned(&all).await?;
+    let by_hand: Vec<String> = by_hand_ids(lines)
+        .into_iter()
+        .filter(|id| all.contains(id))
+        .collect();
+    let manual = source.by_hand(&by_hand).await?;
+    reads.retain(|id, _| !manual.contains_key(id));
+    // The companion condition is a rule of deck building: it is read off the card's own rules before the card is
+    // replaced.
+    let keeps_companion = companion.is_some()
+        && library
+            .last()
+            .is_some_and(|card| card.companion_condition().is_some());
+    hosted_by_hand(&mut library, &all, &manual);
     let (conjured, conjured_reads) = source.conjured_for(&library).await?;
     reads.extend(conjured_reads);
     let mut rest = library.split_off(ids.len());
@@ -281,12 +298,24 @@ async fn assemble(source: &CardSource, lines: &[Line]) -> Result<Assembled, ApiE
     Ok(Assembled {
         library,
         commanders: rest,
-        companion: companion
-            .zip(card)
-            .filter(|(_, card)| card.companion_condition().is_some()),
+        companion: companion.zip(card).filter(|_| keeps_companion),
         reads,
         conjured,
+        by_hand,
     })
+}
+
+/// Replaces each card of `cards` (the oracle ids of `ids`, one for one) that `manual` holds with that definition.
+fn hosted_by_hand(
+    cards: &mut [Arc<CardDefinition>],
+    ids: &[String],
+    manual: &BTreeMap<String, Arc<CardDefinition>>,
+) {
+    for (card, id) in cards.iter_mut().zip(ids) {
+        if let Some(by_hand) = manual.get(id) {
+            *card = Arc::clone(by_hand);
+        }
+    }
 }
 
 /// The report of a deck as the table with this `format` and these `house` rules reads it: the issues
@@ -589,6 +618,7 @@ mod tests {
             oracle_id: id.to_owned(),
             printing_id: None,
             count,
+            by_hand: false,
         }
     }
 
@@ -602,6 +632,7 @@ mod tests {
             draft: None,
             differs: Vec::new(),
             reasons: Vec::new(),
+            by_hand: false,
         }
     }
 

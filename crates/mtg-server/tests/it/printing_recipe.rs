@@ -75,6 +75,7 @@ fn each_position_of_the_library_and_the_companion_takes_the_printing_of_its_line
         commanders: Vec::new(),
         companion: Some(COMPANION.to_owned()),
         printings: printings.clone(),
+        by_hand: Vec::new(),
     };
     let recipe = GameRecipe::normal(7, vec![deck; seats]);
     let setup = recipe.build_with(&catalog).unwrap();
@@ -99,6 +100,7 @@ fn printings_change_neither_the_fingerprints_nor_the_game(#[values(2, 3, 4)] sea
         commanders: Vec::new(),
         companion: Some(COMPANION.to_owned()),
         printings,
+        by_hand: Vec::new(),
     };
     let plain = GameRecipe::normal(7, vec![deck(Vec::new()); seats])
         .with_fingerprints_from(&catalog)
@@ -137,6 +139,7 @@ fn a_commander_takes_the_printing_after_the_library(#[values(2, 3, 4)] seats: us
         commanders: vec!["chief".to_owned()],
         companion: None,
         printings,
+        by_hand: Vec::new(),
     };
     let setup = GameRecipe::commander(3, vec![deck; seats])
         .build_with(&catalog)
@@ -174,6 +177,7 @@ fn the_stored_form_names_printings_only_when_there_are_some(
         commanders: vec!["c".to_owned()],
         companion: Some("p".to_owned()),
         printings,
+        by_hand: Vec::new(),
     };
     assert_eq!(serde_json::to_value(&deck).unwrap(), stored);
     let back: DeckRef = serde_json::from_value(stored).unwrap();

@@ -1,4 +1,4 @@
-//! Goal: stored decks read back exactly as saved (lines in order, printings, notes, the stored check, UTC timestamps), one owner never sees, replaces or deletes another's deck, the cap on decks per owner holds under racing creations, lines cascade with their deck, a removed printing leaves the card, and the database refuses what the server would not send.
+//! Goal: stored decks read back exactly as saved (lines in order, printings, the by-hand mark, notes, the stored check, UTC timestamps), one owner never sees, replaces or deletes another's deck, the cap on decks per owner holds under racing creations, lines cascade with their deck, a removed printing leaves the card, and the database refuses what the server would not send.
 
 use crate::common;
 
@@ -20,6 +20,7 @@ fn line(zone: DeckZone, name: &str, count: u32) -> DeckLine {
         oracle_id: oracle_of(name),
         printing_id: None,
         count,
+        by_hand: false,
     }
 }
 
@@ -61,7 +62,10 @@ async fn a_deck_reads_back_exactly_as_it_was_saved(pool: PgPool) {
                 printing_id: Some(bolt.printing_id.clone()),
                 ..line(DeckZone::Main, "Lightning Bolt", 4)
             },
-            line(DeckZone::Sideboard, "Shock", 2),
+            DeckLine {
+                by_hand: true,
+                ..line(DeckZone::Sideboard, "Shock", 2)
+            },
             line(DeckZone::Commander, "Atraxa, Praetors' Voice", 1),
             line(DeckZone::Companion, "Sol Ring", 1),
             // The same card twice in a zone, as two printings would be.
