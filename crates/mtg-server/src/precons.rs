@@ -213,6 +213,7 @@ impl<'a> Judge<'a> {
                         oracle_id: id,
                         printing_id: entry.printing_id.as_ref().map(ToString::to_string),
                         count: entry.count,
+                        by_hand: false,
                     });
                 }
                 None => unresolved.push(Unresolved {

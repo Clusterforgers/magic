@@ -1,4 +1,4 @@
-//! Goal: the deck bodies keep their documented JSON shape and refuse what a client may not send, the check report and the stored check travel exactly as `docs/deck-check.md` defines them, every error code has one spelling shared by serde and `as_str`, and the TypeScript bindings carry the deck types with their unions, and a check may name the game or the rules of the table that judges the deck.
+//! Goal: the deck bodies keep their documented JSON shape (a line by hand says so, one by the rules leaves the flag out) and refuse what a client may not send, the check report and the stored check travel exactly as `docs/deck-check.md` defines them, every error code has one spelling shared by serde and `as_str`, and the TypeScript bindings carry the deck types with their unions, and a check may name the game or the rules of the table that judges the deck.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -82,6 +82,7 @@ fn report() -> DeckReport {
             draft: None,
             differs: Vec::new(),
             reasons: vec![],
+            by_hand: false,
         }],
         summary: summary(),
     }
@@ -99,12 +100,14 @@ fn a_deck_body_has_the_documented_wire_shape() {
                 oracle_id: ID.into(),
                 printing_id: Some("e3285e6b-3e79-4d7c-bf96-d920f973b122".into()),
                 count: 4,
+                by_hand: false,
             },
             DeckLineBody {
                 zone: DeckZone::Companion,
                 oracle_id: ID.into(),
                 printing_id: None,
                 count: 1,
+                by_hand: true,
             },
         ],
     };
@@ -115,7 +118,7 @@ fn a_deck_body_has_the_documented_wire_shape() {
             "name": "Burn", "format": "modern", "notes": "notes",
             "cards": [
                 {"zone": "main", "oracle_id": ID, "printing_id": "e3285e6b-3e79-4d7c-bf96-d920f973b122", "count": 4},
-                {"zone": "companion", "oracle_id": ID, "printing_id": null, "count": 1}
+                {"zone": "companion", "oracle_id": ID, "printing_id": null, "count": 1, "by_hand": true}
             ]
         })
     );
@@ -131,6 +134,10 @@ fn notes_and_printings_may_be_left_out_of_a_request() {
     .unwrap();
     assert_eq!(body.notes, "");
     assert_eq!(body.cards[0].printing_id, None);
+    assert!(
+        !body.cards[0].by_hand,
+        "a line is played by the rules unless it says otherwise"
+    );
 }
 
 #[rstest]

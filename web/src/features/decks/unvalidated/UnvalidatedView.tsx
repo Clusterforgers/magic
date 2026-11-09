@@ -11,6 +11,7 @@ import type { CardsApi } from '@/net/cards'
 import type { DecksApi } from '@/net/decks'
 import type { FixMarksApi } from '@/net/fixMarks'
 import { readPath, TO_READ_TITLE } from '@/lib/toRead'
+import type { ByHandApi } from '../byHand'
 import { SUPPORT_LABEL } from '../format'
 import { copyText, filterCards, groupByDeck, mergeDecks, stateCounts, waitsForRead } from './model'
 import type { FlaggedCard, StateFilter } from './model'
@@ -70,6 +71,8 @@ interface UnvalidatedViewProps {
   cards: Pick<CardsApi, 'get'>
   scope: Scope
   fixMarks?: FixMarksApi
+  /** The endpoints that mark a card "play by hand" in a deck; with them each card offers it for its decks. */
+  byHand?: ByHandApi
 }
 
 /**
@@ -77,7 +80,7 @@ interface UnvalidatedViewProps {
  * quoted from its text, merged with the decks that hold it (the most used first) or grouped by deck, narrowed to a
  * state, and copyable as plain text.
  */
-export function UnvalidatedView({ api, cards, scope, fixMarks }: UnvalidatedViewProps) {
+export function UnvalidatedView({ api, cards, scope, fixMarks, byHand }: UnvalidatedViewProps) {
   const { state, reload } = useUnvalidated(api, scope)
   const [arrangement, setArrangement] = useState<Arrangement>('cards')
   const [chosen, setChosen] = useState<StateFilter>('all')
@@ -108,6 +111,7 @@ export function UnvalidatedView({ api, cards, scope, fixMarks }: UnvalidatedView
           pending={pending}
           showDecks={showDecks}
           fixMarks={fixMarks}
+          byHand={byHand}
         />
       ))}
     </ul>

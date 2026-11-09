@@ -84,6 +84,13 @@ pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Ass
     assemble_record(printed, rules, support(rules, printed, caps), caps, false)
 }
 
+/// The definition of a card its deck's owner plays by hand: the printed side alone, its rules text left to the table
+/// with [`crate::support::OWNER_BY_HAND`] as the reason, whatever rules the card has (`record` is its own support).
+pub fn assemble_by_hand(printed: &PrintedCard, record: &SupportRecord, caps: &Caps) -> Assembled {
+    let record = crate::support::by_owner_hand(record);
+    assemble_record(printed, None, record, caps, false)
+}
+
 /// [`assemble`] for a card whose support record is decided: a `Read` draft is attached like a `Verified` file. `from_draft` marks a card a draft decides, so a failed automatic line fails soft whatever its state.
 pub(crate) fn assemble_record(
     printed: &PrintedCard,
