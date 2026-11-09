@@ -65,7 +65,6 @@ The table and its prompts are live; the items below polish them.
 
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
-- [ ] (k1h) Table states of `layout.spec.ts` fail the layout gate: "life is covered" at 1366x768 and 1024x768, "hand is covered" at 1024x768 and 1600x1000 (4 seats priority, 2 seats opening hand, duel board, Commands panel and other states); the failures at the six design sizes predate the extra sizes
 - [ ] (ts6b) Narrow compact faces (under 76 px) cut their marks to stubs ("Si", "+1/+…"): marks as icons or short glyphs that read whole at 1024 (`CardFace.tsx`)
 - [ ] (pc1) Counters on players (rad, poison, energy, experience and the rest) show at the seat for every viewer, with their count
 - [ ] (rb1) Resolve and End turn are separate buttons, so passing a stack item never ends the turn; by default the Declare attackers and the second main stops are pinned on for your own turn

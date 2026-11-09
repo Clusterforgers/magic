@@ -81,6 +81,8 @@ function tableStop(name: string, query: string, primary: 'pass' | 'keep' | 'prom
     async open(page) {
       await page.goto(`${DEV_WEB_URL}/dev/table?${query}`)
       await page.locator('[data-region="controls"]').waitFor()
+      // The route's own Effects button is a tool for looking at the table, not part of it, so it is not judged.
+      await page.addStyleTag({ content: '[data-dev-tool] { display: none !important; }' })
       // A panel scene opens its row once the table is up, in the rail's panel or the sheet where the side area is one.
       if (query.startsWith('panel=')) await page.locator('[data-slot="commands-panel"] [data-open]').waitFor()
     },
