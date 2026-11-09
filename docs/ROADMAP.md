@@ -67,6 +67,10 @@ The table and its prompts are live; the items below polish them.
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
 - [ ] (k1h) Table states of `layout.spec.ts` fail the layout gate: "life is covered" at 1366x768 and 1024x768, "hand is covered" at 1024x768 and 1600x1000 (4 seats priority, 2 seats opening hand, duel board, Commands panel and other states); the failures at the six design sizes predate the extra sizes
 - [ ] (ts6b) Narrow compact faces (under 76 px) cut their marks to stubs ("Si", "+1/+…"): marks as icons or short glyphs that read whole at 1024 (`CardFace.tsx`)
+- [ ] (pc1) Counters on players (rad, poison, energy, experience and the rest) show at the seat for every viewer, with their count
+- [ ] (rb1) Resolve and End turn are separate buttons, so passing a stack item never ends the turn; by default the Declare attackers and the second main stops are pinned on for your own turn
+- [ ] (cf1) A coin flip plays a coin animation and the seat that calls it picks heads or tails
+- [ ] (ls1) Searching your library has a search field over the card list (name, type, text)
 - [ ] (ui1i2) The effect moments attack, block, damage, life, enter, rival, activate, resolve, counter, land, draw and equip are still to be read by screenshot at the six design sizes (death, enter and draw read at 1024 and 390)
 - [ ] (st1a) The Stasis family (Stasis Field, Stasis Cell, Stunning Strike) is measured in a scratch database after `compile`: each becomes Verified or names the clause the checker still lacks, with its Scryfall record in the corpus
 - [ ] (st1b) "Its activated abilities can't be activated" (Arrest, Stasis Cocoon) is a restriction the compiler reads and the activation rules enforce (`Modification` and the activation check)
