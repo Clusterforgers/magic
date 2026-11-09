@@ -86,12 +86,20 @@ function ShellHeader() {
               <CardsToCheckTab account={account} />
             </>
           ) : null}
-          <Link to="/new" className={cn(buttonVariants({ size: 'sm' }), 'my-auto ml-auto')}>
+          <Link
+            to="/new"
+            className={cn(buttonVariants({ size: 'sm' }), 'my-auto ml-auto hidden sm:inline-flex')}
+          >
             <PlusIcon aria-hidden="true" />
             Create
           </Link>
         </nav>
         <div className="ml-auto flex items-center gap-1 sm:ml-0">
+          {/* Under 640 px the tabs fill their own row, so Create moves up beside the account. */}
+          <Link to="/new" className={cn(buttonVariants({ size: 'sm' }), 'mr-1 sm:hidden')}>
+            <PlusIcon aria-hidden="true" />
+            Create
+          </Link>
           <ThemeMenu />
           <AccountNav />
         </div>
