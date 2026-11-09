@@ -142,21 +142,27 @@ test('a compact tapped land on a phone shows its Tapped chip whole', async ({ pa
   await page.goto(`${DEV_WEB_URL}/dev/table?board=duel`)
   await page.waitForSelector('[data-slot="mana-strip"]')
   await atSize(page, { width: 390, height: 844 })
-  const cut = await page.evaluate(() => {
+  const { cut, shown } = await page.evaluate(() => {
     const chips = [
       ...document.querySelectorAll<HTMLElement>(
         '[data-slot="card-face"][data-turned] [data-slot="card-status"]',
       ),
     ]
-    return chips.filter((chip) => {
-      const art = chip.closest<HTMLElement>('[data-slot="card-art"]')
-      if (art === null) return false
-      const mine = chip.getBoundingClientRect()
-      const room = art.getBoundingClientRect()
-      return mine.bottom > room.bottom + 0.5 || mine.right > room.right + 0.5
-    }).length
+    // A face too short for even one row of marks drops them (their words stay in the card's name): not drawn, not cut.
+    const drawn = chips.filter((chip) => chip.getBoundingClientRect().height > 0)
+    return {
+      cut: drawn.filter((chip) => {
+        const art = chip.closest<HTMLElement>('[data-slot="card-art"]')
+        if (art === null) return false
+        const mine = chip.getBoundingClientRect()
+        const room = art.getBoundingClientRect()
+        return mine.bottom > room.bottom + 0.5 || mine.right > room.right + 0.5
+      }).length,
+      shown: drawn.filter((chip) => chip.textContent === 'Tapped').length,
+    }
   })
   expect(cut).toBe(0)
+  expect(shown, 'a tapped land wide enough for the mark shows it').toBeGreaterThan(0)
 })
 
 test('a seat pod keeps its zone chips inside the pod on the four-seat table', async ({ page }) => {
