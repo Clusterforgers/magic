@@ -68,10 +68,17 @@ describe('the marks', () => {
     ])
   })
 
-  it('is a picture: hidden from a screen reader, which has the badge, and with nothing to press', () => {
-    renderCueTable()
+  it('is a picture for a seat that cannot set stops: hidden from a screen reader, which has the badge, and with nothing to press', () => {
+    renderCueTable({}, { state: (state) => ({ ...state, phase: 'over' }) })
     expect(ladder()).toHaveAttribute('aria-hidden', 'true')
     expect(ladder()?.querySelector('button, a, input, [tabindex]')).toBeNull()
+  })
+
+  it('is the stop buttons for a seat that can: a group named for the side on show, each step a button', () => {
+    renderCueTable()
+    expect(ladder()).not.toHaveAttribute('aria-hidden')
+    expect(ladder()).toHaveAttribute('role', 'group')
+    expect(ladder()?.querySelectorAll('li > button[data-slot="stop"]')).toHaveLength(10)
   })
 
   it('draws first-strike damage only while it is the step', () => {

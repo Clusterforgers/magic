@@ -1,4 +1,4 @@
-// Goal: every page sits in one centred column of one of three widths with the same gutters, and the three widths are the ascending tokens of the stylesheet, so pages cannot drift apart in width again.
+// Goal: every page sits in one centred column of one of four widths with the same gutters, and the four widths are the ascending tokens of the stylesheet, so pages cannot drift apart in width again.
 import { render } from '@testing-library/react'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -11,6 +11,7 @@ const WIDTHS: ReadonlyArray<[PageWidth, string]> = [
   ['narrow', 'max-w-narrow'],
   ['page', 'max-w-page'],
   ['wide', 'max-w-wide'],
+  ['wider', 'max-w-wider'],
 ]
 
 const STYLESHEET = readFileSync(join(import.meta.dirname, '..', 'index.css'), 'utf8')

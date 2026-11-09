@@ -21,7 +21,7 @@ pub mod wording;
 
 pub use error::ProtocolError;
 pub use events::{
-    EventBatch, EventView, HiddenEvent, LogName, LogWindow, SNAPSHOT_LOG, SNAPSHOT_NAMES,
+    EventBatch, EventView, HiddenEvent, LogHost, LogName, LogWindow, SNAPSHOT_LOG, SNAPSHOT_NAMES,
     project_events, project_log, project_window,
 };
 pub use message::{

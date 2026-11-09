@@ -18,6 +18,7 @@ import { LiveManaPool } from './LiveManaPool'
 import { UntappedSources } from './UntappedSources'
 import { usePodRoom } from './podRoom'
 import { useSeatNamer } from './names'
+import { BankMark } from './BankMark'
 import { ACTIVE_EDGE, AwayMark, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
 import { podCounts, podState, podStateWords, priorityName, showsPriorityDot } from './podFigures'
 import { exileOf, holdsPriority, isActiveSeat, isYourTurn, NO_IDS, playerOf } from './selectors'
@@ -161,6 +162,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         <PriorityDot label={priorityName(owner, flags.you)} />
       ) : null}
       {away ? <AwayMark /> : null}
+      <BankMark seat={seat} />
     </div>
   )
 
@@ -267,31 +269,17 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     >
       {/* Everything above the corner: its height does not depend on how the corner is drawn, so the corner can be sized by it. */}
       <div ref={above} data-slot="pod-top" className="grid grid-cols-[minmax(0,1fr)] content-start gap-2">
-        <header className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5">
-          <div className="grid min-w-24 flex-auto gap-0.5">
-            {tight ? (
-              <div data-slot="pod-name-row" className="flex min-w-0 flex-wrap items-center gap-1">
-                {name}
-                {handChips}
-              </div>
-            ) : (
-              name
-            )}
-            {cramped ? null : (
-              <>
-                {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
-                <div
-                  data-slot="mana-slot"
-                  className={cn('min-h-5', tight && 'flex flex-wrap items-center gap-1')}
-                >
-                  {mana}
-                  {tight ? extraChips : null}
-                </div>
-                <UntappedSources seat={seat} />
-              </>
-            )}
-          </div>
-          <div className="ml-auto flex shrink-0 items-center gap-1.5">
+        {/* The life stays on the name row, whose name truncates, so it is never pushed under the rows below. */}
+        <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-0.5">
+          {tight ? (
+            <div data-slot="pod-name-row" className="flex min-w-0 flex-wrap items-center gap-1">
+              {name}
+              {handChips}
+            </div>
+          ) : (
+            name
+          )}
+          <div className="flex items-center gap-1.5">
             <LifeForecast seat={seat} />
             <Life
               seat={seat}
@@ -300,6 +288,19 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
               className={cramped ? 'text-3xl font-semibold tabular-nums' : 'text-life'}
             />
           </div>
+          {cramped ? null : (
+            <div className="col-span-2 grid grid-cols-[minmax(0,1fr)] gap-0.5">
+              {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
+              <div
+                data-slot="mana-slot"
+                className={cn('min-h-5', tight && 'flex flex-wrap items-center gap-1')}
+              >
+                {mana}
+                {tight ? extraChips : null}
+              </div>
+              <UntappedSources seat={seat} />
+            </div>
+          )}
         </header>
         {words === '' ? null : <p className="sr-only">{words}</p>}
         <div data-slot="pod-status" className="grid content-start gap-1 empty:hidden">

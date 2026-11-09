@@ -10,6 +10,7 @@ import type { EventView } from "./EventView";
 import type { FullControlMode } from "./FullControlMode";
 import type { GameResult } from "./GameResult";
 import type { LobbySeat } from "./LobbySeat";
+import type { LogHost } from "./LogHost";
 import type { LogName } from "./LogName";
 import type { PlayerId } from "./PlayerId";
 import type { StateView } from "./StateView";
@@ -119,7 +120,12 @@ log?: Array<EventView>,
  * away), at most [`SNAPSHOT_NAMES`](crate::SNAPSHOT_NAMES), as this client saw them; a client names such a line
  * from here. Left out while there are none.
  */
-names?: Array<LogName>, } | { "type": "Chat", 
+names?: Array<LogName>, 
+/**
+ * The host each attach event of `log` replaced, for those the client may read it for, by index into `log`; a
+ * client words such a line "moves from A to B" from here. Left out while there are none.
+ */
+hosts?: Array<LogHost>, } | { "type": "Chat", 
 /**
  * The sender.
  */

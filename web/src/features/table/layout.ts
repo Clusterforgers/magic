@@ -208,6 +208,8 @@ export const LANDSCAPE_MAX_HEIGHT = 500
  * behind its "Stops" button.
  */
 export const STOPS_ROW_MIN_WIDTH_PX = BREAKPOINT_FROM.xl
+/** The window width from which the step ladder, which also sets the stops, sits in the top bar; below it the stops popover holds it. */
+export const LADDER_IN_BAR_MIN_WIDTH_PX = BREAKPOINT_FROM.m
 
 /** The sizes of the table's regions in a window, in px. Rounded nowhere, as CSS is not. */
 export interface Regions {
@@ -434,6 +436,8 @@ export interface TablePlan {
   opponentPod: PodPlace
   /** Whether the controls dock draws the stop ladder and Full Control as one row; otherwise they open from its "Stops" button. */
   stopsRow: boolean
+  /** Whether the step ladder (the stop buttons) sits in the top bar; otherwise it is in the dock's "Stops" popover. */
+  ladderInBar: boolean
   /** How much the controls dock writes (`dockForm`). */
   dock: DockForm
 }
@@ -453,6 +457,7 @@ export function planTable(input: TableInput): TablePlan {
     pod,
     opponentPod: regions.phone && seats.shape === 'focus' ? 'none' : pod,
     stopsRow: BREAKPOINT_FROM[regions.breakpoint] >= STOPS_ROW_MIN_WIDTH_PX,
+    ladderInBar: BREAKPOINT_FROM[regions.breakpoint] >= LADDER_IN_BAR_MIN_WIDTH_PX,
     dock: dockForm(regions),
   }
 }

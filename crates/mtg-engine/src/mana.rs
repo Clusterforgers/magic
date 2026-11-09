@@ -391,6 +391,10 @@ pub struct ManaOption {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub sacrifice: bool,
+    /// Its source is a card in the hand that the activation exiles (a Spirit Guide); left out means a permanent.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub exile: bool,
     /// What the mana it adds may be spent on (Mishra's Workshop: artifact spells); left out means anything.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<SpendOn>>", optional))]
@@ -476,6 +480,7 @@ impl ManaOption {
             count: 1,
             extra: false,
             sacrifice: false,
+            exile: false,
             tapless: false,
             only: Vec::new(),
             also: Vec::new(),
@@ -491,13 +496,18 @@ impl ManaOption {
     /// Whether it adds one mana, keeps its source and does nothing else, so a permanent is one mana for one tap.
     pub fn is_simple(&self) -> bool {
         self.count == 1
-            && !self.sacrifice
+            && !self.gives_up()
             && !self.extra
             && self.also.is_empty()
             && self.life == 0
             && self.takes.is_empty()
             && self.energy == 0
             && !self.is_costly()
+    }
+
+    /// Whether using it loses its source: a sacrificed permanent or a card exiled from the hand, which a payment spares.
+    pub const fn gives_up(&self) -> bool {
+        self.sacrifice || self.exile
     }
 
     /// Whether using it costs mana, which comes from other sources of the same payment.
@@ -1148,7 +1158,7 @@ fn preference(
         .filter_map(|tap| sources.iter().find(|o| o.source == *tap))
         .collect();
     let common = used.iter().map(|o| plenty(o.produces)).sum();
-    let sacrificed = used.iter().filter(|o| o.sacrifice).count();
+    let sacrificed = used.iter().filter(|o| o.gives_up()).count();
     let extras = used.iter().filter(|o| o.extra).count();
     // A snow source stays untapped for a later {S} unless the payment needs it.
     let snow = used.iter().filter(|o| mana_snow::is_snow(&o.only)).count();

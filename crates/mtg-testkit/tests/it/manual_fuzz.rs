@@ -34,6 +34,7 @@ pub(crate) fn kind(action: &ManualAction) -> &'static str {
         ManualAction::PlayerCounters { .. } => "player counters",
         ManualAction::Life { .. } => "life",
         ManualAction::CreateToken { .. } => "token",
+        ManualAction::CopyToken { .. } => "copy token",
         ManualAction::Tap { .. } => "tap",
         ManualAction::Untap { .. } => "untap",
         ManualAction::Draw { .. } => "draw",
