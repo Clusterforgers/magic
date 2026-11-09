@@ -32,7 +32,7 @@ fn stop(side: &str, step: &str, keep: bool) -> Value {
 }
 
 fn defaults() -> Value {
-    json!({"default_stops": [], "end_turn_by_hand": false, "auto_choices": {"order_triggers": false, "assign_damage": false, "smart_stops": false}})
+    json!({"default_stops": [], "end_turn_by_hand": false, "auto_yields": [], "auto_choices": {"order_triggers": false, "assign_damage": false, "smart_stops": false}})
 }
 
 #[tokio::test]
@@ -74,6 +74,7 @@ async fn a_new_account_reads_the_defaults_and_a_save_reads_back_per_account(pool
     let expected = json!({
         "default_stops": [stop("Own", "Upkeep", true), stop("Opponent", "Upkeep", true)],
         "end_turn_by_hand": true,
+        "auto_yields": [],
         "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": true}
     });
     assert_eq!(saved.json(), expected);
