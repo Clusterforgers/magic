@@ -102,7 +102,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
-  CoinFlipped: [{ CoinFlipped: { player: 1, won: true } }, 'Bo wins a coin flip'],
+  CoinFlipped: [
+    { CoinFlipped: { player: 1, won: true, call: 'Tails', side: 'Tails' } },
+    'Bo calls tails, the coin comes up tails: Bo wins the flip',
+  ],
   ManualRolled: [
     { ManualRolled: { player: 1, kind: { Die: { sides: 20 } }, result: 14 } },
     'Bo rolls a d20: 14',

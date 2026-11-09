@@ -937,7 +937,7 @@ mod tests {
     use mtg_cards::value::CounterKind;
     use mtg_core::ids::ObjectId;
     use mtg_engine::abilities::{Cause, PutOnStack};
-    use mtg_engine::choose::{Choice, Choices, Target};
+    use mtg_engine::choose::{Choice, Choices, CoinSide, Target};
     use mtg_engine::counters::CountersChanged;
     use mtg_engine::events::{ResolutionOutcome, ZoneCause};
     use mtg_engine::library::{
@@ -1371,6 +1371,8 @@ mod tests {
             Event::CoinFlipped {
                 player: OTHER,
                 won: true,
+                call: CoinSide::Tails,
+                side: CoinSide::Tails,
             },
         ];
         for event in &events {

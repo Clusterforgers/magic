@@ -43,6 +43,22 @@ describe('the list', () => {
     expect(mount(labels(count), text).text()).toBe(sentence)
   })
 
+  it.each([
+    [0, 'Heads'],
+    [1, 'Tails'],
+  ])('calls a coin with Heads or Tails, a coin on each, and answers %i for %s', async (index, side) => {
+    const { buttons, user, answer, text } = mount(
+      [{ Side: 'Heads' }, { Side: 'Tails' }],
+      'Call heads or tails.',
+    )
+    expect(text()).toBe(`${sourceName}: Call heads or tails. Press 1 or 2 to choose.`)
+    expect(buttons().map((b) => b.getAttribute('aria-label'))).toEqual(['Heads', 'Tails'])
+    expect(buttons().map((b) => b.querySelectorAll('svg[aria-hidden="true"]').length)).toEqual([1, 1])
+    await user.click(must(buttons()[index]))
+    expect(answer.mock.calls).toEqual([[{ ChooseOption: index }]])
+    expect(buttons()[index]).toHaveAccessibleName(side)
+  })
+
   it('draws a color with its symbol and a label without one', () => {
     const { buttons } = mount([{ Color: 'Red' }, { Label: 'Goblin' }])
     const dots = (b: HTMLElement): number => b.querySelectorAll('span[aria-hidden="true"]').length
