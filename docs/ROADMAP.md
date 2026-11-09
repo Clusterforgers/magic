@@ -64,6 +64,7 @@ The table and its prompts are live; the items below polish them.
 
 - [ ] (a2g) A token lookup that finds several equal records prefers the one with the most printings (`token_pictures` returns the printing count) instead of the smallest oracle id
 - [ ] (a2f) The real database holds every precon printing (`fetch scryfall --printings`), so the table draws each card in its precon art instead of the card's default picture
+- [ ] (ts6c) The prompt corner badge ("At Ana") on a narrow compact face reads whole as a glyph, its words in the tooltip
 - [ ] (pc1) Counters on players (rad, poison, energy, experience and the rest) show at the seat for every viewer, with their count
 - [ ] (rb1) Resolve and End turn are separate buttons, so passing a stack item never ends the turn; by default the Declare attackers and the second main stops are pinned on for your own turn
 - [ ] (cf1) A coin flip plays a coin animation and the seat that calls it picks heads or tails
