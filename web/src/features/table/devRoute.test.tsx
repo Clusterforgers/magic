@@ -2,6 +2,7 @@
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { must } from '@/test-utils/batches'
 import { flushFakeClock, installFakeClock, settle } from '@/test-utils/fakeClock'
 import { scaled } from '@/test-utils/loadFactor'
 import { maybePrimaryButton, primaryButton } from '@/test-utils/passControls'
@@ -150,7 +151,6 @@ describe('/dev/table with the controls of the Priority prompt', () => {
   it.each([
     ['priority', 'Resolve Lightning Bolt', true],
     ['priority-main', 'Next: Combat', true],
-    ['priority-end', 'End turn', false],
     ['priority-wait', 'Continue', true],
   ])('?prompt=%s reads "%s" (an End turn beside it: %s)', async (prompt, label, hasSecondary) => {
     await visit(`/dev/table?seats=2&prompt=${prompt}`)
@@ -158,6 +158,16 @@ describe('/dev/table with the controls of the Priority prompt', () => {
     expect(await findPrimary()).toHaveTextContent(label)
     expect(document.querySelector('[data-slot="secondary-action"]') !== null).toBe(hasSecondary)
     expect(document.querySelector('[data-slot="yield-indicator"]')).toBeNull()
+  })
+
+  it('?prompt=priority-end draws only "End turn", with no primary button', async () => {
+    await visit('/dev/table?seats=2&prompt=priority-end')
+    await screen.findByRole('region', { name: 'Game table' })
+    const endTurn = await waitFor(() =>
+      must(document.querySelector<HTMLElement>('[data-slot="secondary-action"]')),
+    )
+    expect(endTurn).toHaveTextContent('End turn')
+    expect(document.querySelector('[data-slot="primary-action"]')).toBeNull()
   })
 
   it('starts a yield from the prompt as the server would: the prompt gives way to the line, which can be stopped', async () => {

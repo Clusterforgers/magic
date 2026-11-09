@@ -1,4 +1,4 @@
-//! Goal: account preferences are one row per account that reads back as saved, default when absent, replaced by a later save, private per account, refused by the database when the stops are no array, and removed with the account's transaction.
+//! Goal: account preferences are one row per account that reads back as saved, default when absent (the own declare attackers and postcombat main stops pinned), an empty stop list kept as saved, replaced by a later save, private per account, refused by the database when the stops are no array, and removed with the account's transaction.
 
 #![allow(clippy::unwrap_used)]
 
@@ -32,6 +32,19 @@ fn prefs(on: bool) -> StoredPrefs {
 async fn absent_means_defaults_and_a_save_is_replaced_by_the_next(pool: PgPool) {
     let repo = repo(pool).await;
     assert_eq!(repo.get(user(1)).await.unwrap(), StoredPrefs::default());
+    assert_eq!(
+        StoredPrefs::default().default_stops,
+        json!([
+            {"side": "Own", "step": "DeclareAttackers", "keep": true},
+            {"side": "Own", "step": "Main2", "keep": true}
+        ])
+    );
+    let cleared = StoredPrefs {
+        default_stops: json!([]),
+        ..StoredPrefs::default()
+    };
+    repo.put(user(1), &cleared).await.unwrap();
+    assert_eq!(repo.get(user(1)).await.unwrap(), cleared);
     repo.put(user(1), &prefs(true)).await.unwrap();
     assert_eq!(repo.get(user(1)).await.unwrap(), prefs(true));
     repo.put(user(1), &prefs(false)).await.unwrap();

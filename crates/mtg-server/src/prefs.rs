@@ -75,17 +75,22 @@ fn checked(mut prefs: UserPrefs) -> Result<UserPrefs, ApiError> {
     Ok(prefs)
 }
 
-/// `GET /api/me/prefs`: the account's preferences; the defaults (no stops, turns ended by the server) when none were saved.
+/// `GET /api/me/prefs`: the account's preferences; the defaults (own declare attackers and postcombat main pinned,
+/// turns ended by the server) when none were saved.
 pub(crate) async fn get(
     State(app): State<AppState>,
     headers: HeaderMap,
 ) -> Result<Json<UserPrefs>, ApiError> {
     let s = session(&app, &headers).await?;
     let stored = s.repo.get(s.user).await.map_err(|error| failed(&error))?;
-    // A row the server wrote reads back; one that does not (hand-edited) reads as the defaults.
-    let default_stops = serde_json::from_value(stored.default_stops).unwrap_or_default();
-    Ok(Json(UserPrefs {
-        default_stops,
+    Ok(Json(read(stored)))
+}
+
+/// The preferences a stored row holds.
+fn read(stored: StoredPrefs) -> UserPrefs {
+    // A row the server wrote reads back; one that does not (hand-edited) reads as no stops and no yields.
+    UserPrefs {
+        default_stops: serde_json::from_value(stored.default_stops).unwrap_or_default(),
         end_turn_by_hand: stored.end_turn_by_hand,
         auto_choices: AutoChoices {
             order_triggers: stored.auto_order_triggers,
@@ -93,7 +98,7 @@ pub(crate) async fn get(
             smart_stops: stored.auto_smart_stops,
         },
         auto_yields: serde_json::from_value(stored.auto_yields).unwrap_or_default(),
-    }))
+    }
 }
 
 /// `PUT /api/me/prefs`: replaces the preferences with the body and answers them as stored.
@@ -127,7 +132,7 @@ pub(crate) async fn put(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: only lasting stops at steps with priority are stored, each side and step once and in order, and at most the limit.
+    //! Goal: an account that saved nothing has its own declare attackers and postcombat main pinned, a saved empty list stays empty, and only lasting stops at steps with priority are stored, each side and step once and in order, and at most the limit.
     use mtg_engine::turn::Step;
     use mtg_protocol::{AutoYield, Stop, StopSide};
 
@@ -144,6 +149,29 @@ mod tests {
             auto_choices: AutoChoices::default(),
             auto_yields: Vec::new(),
         }
+    }
+
+    #[test]
+    fn an_account_that_saved_nothing_has_its_own_attackers_and_second_main_pinned() {
+        let got = read(StoredPrefs::default());
+        assert_eq!(got, UserPrefs::default());
+        assert_eq!(
+            got.default_stops,
+            vec![
+                stop(StopSide::Own, Step::DeclareAttackers, true),
+                stop(StopSide::Own, Step::Main2, true),
+            ]
+        );
+        assert_eq!(checked(got.clone()).unwrap(), got);
+    }
+
+    #[test]
+    fn a_saved_empty_list_stays_empty() {
+        let stored = StoredPrefs {
+            default_stops: serde_json::json!([]),
+            ..StoredPrefs::default()
+        };
+        assert_eq!(read(stored).default_stops, Vec::<Stop>::new());
     }
 
     #[test]

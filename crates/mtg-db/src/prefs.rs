@@ -2,7 +2,7 @@
 //! (smart stops among them).
 //! Every query names the account, so one account never reads or changes another's row.
 
-use serde_json::Value;
+use serde_json::{Value, json};
 use sqlx::{PgConnection, PgPool};
 use uuid::Uuid;
 
@@ -27,10 +27,19 @@ pub struct StoredPrefs {
     pub auto_yields: Value,
 }
 
+/// The stops an account that saved none has pinned: its own declare attackers step and its postcombat main phase.
+#[must_use]
+pub fn default_stops() -> Value {
+    json!([
+        {"side": "Own", "step": "DeclareAttackers", "keep": true},
+        {"side": "Own", "step": "Main2", "keep": true},
+    ])
+}
+
 impl Default for StoredPrefs {
     fn default() -> Self {
         Self {
-            default_stops: Value::Array(Vec::new()),
+            default_stops: default_stops(),
             end_turn_by_hand: false,
             auto_order_triggers: false,
             auto_assign_damage: false,

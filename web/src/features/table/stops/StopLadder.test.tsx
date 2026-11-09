@@ -1,7 +1,8 @@
 // Goal: the step ladder is the stop ladder: each mark of a step that gives priority is a button that toggles the stop on the side on show (Mine or Theirs, following the turn until picked by hand), a held stop is an outline and a dot (a pin when it lasts) apart from the filled current step, the Keep toggle and shift make a press lasting, one tab stop with the arrow keys, nothing is predicted before the server answers, and the ladder is drawn once: in the top bar from 1024 px, in the stops popover below.
 import { act, screen, within } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ConnectionStatus } from '@/net/socket'
+import { resetDefaultStops } from '@/play/flowPrefs'
 import type { Session } from '@/play/session'
 import { STOP_STEPS } from '@/play/stops'
 import type { StopStep } from '@/play/stops'
@@ -404,6 +405,9 @@ describe('where the ladder is drawn', () => {
 })
 
 describe('over a live session', () => {
+  // A seat that saved no stops is sent the pinned defaults at Welcome; these tests count the frames of one press.
+  beforeEach(resetDefaultStops)
+
   function mount(stops: Stop[] = []) {
     const h = startSession()
     h.session.connect()

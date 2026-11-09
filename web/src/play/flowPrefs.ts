@@ -22,7 +22,7 @@ export const APPLIED_LIMIT = 50
 
 /** The preferences at one moment. */
 export interface FlowPrefs {
-  /** The pinned stops a new game starts with; empty when none were saved. */
+  /** The pinned stops a new game starts with; `DEFAULT_STOPS` when none were saved. */
   defaultStops: readonly Stop[]
   /** Whether the seat ends its own turns by hand. */
   endTurnByHand: boolean
@@ -64,9 +64,20 @@ function parseJson(text: string | null): unknown {
   }
 }
 
-/** The stored stops that are still well formed: a side, a step that can hold a stop, and lasting. */
+/**
+ * The stops pinned for a viewer who saved none, as the server holds them for a new account: the own declare
+ * attackers step and postcombat main phase, so the turn never runs past the attack or the second main by itself.
+ */
+export const DEFAULT_STOPS: readonly Stop[] = [
+  { side: 'Own', step: 'DeclareAttackers', keep: true },
+  { side: 'Own', step: 'Main2', keep: true },
+]
+
+/** The stored stops that are still well formed: a side, a step that can hold a stop, and lasting; `DEFAULT_STOPS` when none were saved. */
 function readStops(): Stop[] {
-  const raw = parseJson(readItem(DEFAULT_STOPS_KEY))
+  const text = readItem(DEFAULT_STOPS_KEY)
+  if (text === null) return [...DEFAULT_STOPS]
+  const raw = parseJson(text)
   if (!Array.isArray(raw)) return []
   return raw.flatMap((item: unknown) => {
     if (typeof item !== 'object' || item === null) return []
@@ -103,7 +114,7 @@ function readYields(): AutoYield[] {
   })
 }
 
-/** The preferences now: the stored ones, none by default. */
+/** The preferences now: the stored ones, `DEFAULT_STOPS` and everything else off by default. */
 export function flowPrefs(): FlowPrefs {
   current ??= readLocal()
   return current
@@ -143,10 +154,18 @@ function hasAuto(auto: AutoChoices): boolean {
 /** Whether `prefs` are what a new account has. */
 function isDefault(prefs: FlowPrefs): boolean {
   return (
-    prefs.defaultStops.length === 0 &&
+    sameStops(prefs.defaultStops, DEFAULT_STOPS) &&
     !prefs.endTurnByHand &&
     !hasAuto(prefs.autoChoices) &&
     prefs.autoYields.length === 0
+  )
+}
+
+/** Whether `a` and `b` pin the same stops, in any order. */
+function sameStops(a: readonly Stop[], b: readonly Stop[]): boolean {
+  return (
+    a.length === b.length &&
+    a.every((stop) => b.some((other) => other.side === stop.side && other.step === stop.step))
   )
 }
 

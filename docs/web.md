@@ -261,18 +261,18 @@ The Priority prompt's controls (`prompt/PassControls.tsx`, drawn in the controls
 
 ### Primary button and yields
 
-`data-slot="primary-action"` answers `Pass` (disabled when `can_pass` is false). `primaryLabel` (`passWords.ts`) is display only; the server decides what happens. "Pass priority" is never a visible label; it is the `aria-description`.
+`data-slot="primary-action"` answers `Pass` (disabled when `can_pass` is false). `primaryLabel` (`passWords.ts`) is display only; the server decides what happens. "Pass priority" is never a visible label; it is the `aria-description`. Resolve and End turn are never one button: the primary button never says "End turn", and in the last window of the viewer's turn over an empty stack (`lastWindow`) it is not drawn, so a Resolve pressed twice never ends the turn.
 
 | Situation | Label |
 |---|---|
 | a spell on the stack | "Resolve <top spell>" ("Resolve" in a short dock) |
 | the viewer's turn, before the last window | "Next: <next step>" |
-| the viewer's turn, the End step | "End turn" |
+| the viewer's turn, the End step, empty stack | no primary button; "End turn" alone |
 | another seat's turn | "Continue" |
 
 The dock's form (`DockForm`, `dockForm(regions)` in `layout.ts`) decides how much these words say: `full` (a main area of 1161 px or more, `DOCK_FULL_MIN_MAIN_PX`) draws the key hints (`data-slot="key-cap"`) and the whole words; `short` leaves the hints to the tooltips, `aria-keyshortcuts` and the menu's legend, writes the short words and trims the buttons; `compact` is the phone's dock.
 
-- "End turn" (`data-slot="secondary-action"`; not drawn when the primary button already ends the turn, and in a phone's dock the first item of the menu) asks for `yieldUntil('EndOfTurn')`. The menu "More ways to pass" has "Resolve everything on the stack" (`Resolve`, only over a stack) and "Pass until my next turn" (`MyTurn`).
+- "End turn" (`data-slot="secondary-action"`, `endTurnShown`; in a phone's dock the first item of the menu, except in the last window, where it stands in the dock) asks for `yieldUntil('EndOfTurn')`; under Full Control it is drawn only in the last window and passes once. The menu "More ways to pass" has "Resolve everything on the stack" (`Resolve`, only over a stack) and "Pass until my next turn" (`MyTurn`).
 - A yield is asked once per prompt: the buttons stay off until the server answers with `Yielding` or a fresh decision. The server refuses a yield under Full Control, so there `yieldUntil` sends nothing and the prompt draws neither "End turn" nor the menu.
 - `YieldIndicator` ("Passing until the end of turn", with "Stop passing" for `cancelYield()`) shows while the store's `yielding` is set; only `Welcome` and `Yielding` set it.
 
@@ -281,6 +281,7 @@ The dock's form (`DockForm`, `dockForm(regions)` in `layout.ts`) decides how muc
 `features/table/stops/` and `play/session.ts`. The server decides the windows from the stops and the mode ([protocol.md](protocol.md), Stops and Full Control); the page only asks for them and shows what the server holds.
 
 - `stops` (`{side, step, keep}`) and `fullControl` (`Off`, `NextWindow`, `Held`) are replaced whole by `Welcome`, `Stops` and `FullControl` and survive a dropped connection until the next `Welcome`.
+- The default stops (`play/flowPrefs.ts`): an account or guest that saved none has `DEFAULT_STOPS` pinned, the own declare attackers and postcombat main, which a fresh table gets at its first `Welcome`; a cleared list stays cleared.
 - The by-hand window (`play/byHand.ts`, `PlayState.byHand`): the server holds a seat at every priority window from the resolution of its own spell or ability whose card is flagged `ObjectView.manual_owed` until it passes, and does not say so, so the client reads the same from the events and the flag. While `byHand` is set the Priority prompt reads "Apply <Card name>'s text by hand, then continue." in place of its options; no other prompt and no other seat reads it.
 - The step ladder is the stop ladder (`turn/StepLadder`, `StopMark`): for a seat that can set stops every mark of a step that gives priority (ten; first-strike damage joins while it is the current step or holds a stop) is a button, `data-slot="stop"`, `aria-pressed` while the server holds a stop there (`data-keep` is `turn` or `lasting`). A held stop is an outline round the mark with a dot under it, a pin for a lasting one; the current step is the mark's fill, so the two read apart. Untap and cleanup get none: the server refuses them, so `setStop` sends nothing for them (`play/stops.ts`). The ladder is one tab stop (arrows, Home, End across the phases) and its group is named for the side on show.
 - `StopControlsProvider` (`stops/stopControls.tsx`, around the table) holds what the ladder and the dock share: the Keep toggle, the side picked by hand (it follows the turn until picked, then holds until the turn changes hands) and `press`. `StopLadder` (in `StopsBar`, beside `FullControlToggle`) is the dock's part: `StopSideSwitch`, "Mine" or "Theirs", and the Keep toggle. The ladder shows and sets the stops of the side on show.
