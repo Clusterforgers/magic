@@ -17,7 +17,11 @@ import { splitBattlefield } from './selectors'
 // The probe sits on two seams: every render of a card face is one render of a card, and every render of a
 // `CardRow` is one render of the component that owns it (a battlefield row, a hand, a command zone). `drawn` counts the
 // faces that draw inside (each reads the image setting once), which a card redrawn for its mark alone skips.
-const probe = vi.hoisted(() => ({ faces: new Map<number, number>(), rows: new Map<string, number>(), drawn: 0 }))
+const probe = vi.hoisted(() => ({
+  faces: new Map<number, number>(),
+  rows: new Map<string, number>(),
+  drawn: 0,
+}))
 
 vi.mock('@/features/cards/imageSetting', async (importOriginal) => {
   const original = await importOriginal<typeof import('@/features/cards/imageSetting')>()
@@ -329,13 +333,17 @@ describe('a decision at the same table', () => {
   it('draws again only the faces a run of mana taps changes, though every tap answers and replaces the prompt', () => {
     const { h, send, view } = mount()
     const sources = view().objects.filter(
-      (object) => object.controller === 0 && object.zone === 'Battlefield' && object.permanent?.tapped === false,
+      (object) =>
+        object.controller === 0 && object.zone === 'Battlefield' && object.permanent?.tapped === false,
     )
     const taps = 20
     expect(sources.length).toBeGreaterThan(taps)
     const offer = (left: readonly ObjectView[]): Partial<PriorityOptions> => ({
       castable: handOf(view()).slice(0, 2),
-      mana_abilities: left.map((object) => ({ source: { object: object.id, ability: 0 }, produces: 'Green' })),
+      mana_abilities: left.map((object) => ({
+        source: { object: object.id, ability: 0 },
+        produces: 'Green',
+      })),
     })
     act(() => h.deliver(priority(100, offer(sources))))
     reset()
