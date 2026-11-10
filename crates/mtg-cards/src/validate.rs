@@ -4505,6 +4505,7 @@ impl Walker<'_> {
             GameRule::TriggerAgain { .. }
             | GameRule::NoLegendRule(_)
             | GameRule::NoLegendRuleFor(_)
+            | GameRule::AbilitiesAsThoughHaste(_)
             | GameRule::MaxHandSize { .. }
             | GameRule::HandSizeChange { .. }
             | GameRule::NextSpell { .. }
@@ -4534,7 +4535,9 @@ impl Walker<'_> {
                 self.scope = saved;
             }
             GameRule::NoLegendRule(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::NoLegendRuleFor(what) => self.at(tag, |w| w.selector(what)),
+            GameRule::NoLegendRuleFor(what) | GameRule::AbilitiesAsThoughHaste(what) => {
+                self.at(tag, |w| w.selector(what));
+            }
             GameRule::NextSpell { what, .. } => {
                 self.at(tag, |w| w.at("what", |w| w.selector(what)));
             }

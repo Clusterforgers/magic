@@ -2,6 +2,7 @@
 //! phases end", "Players don't lose unspent mana as steps and phases end") or turned into one type ("If you would lose
 //! unspent mana, that mana becomes colorless instead"), and mana of one colour among objects.
 
+use mtg_core::card::CardType;
 use mtg_core::mana::ManaType;
 
 use super::selectors::{Form, phrase_text};
@@ -127,6 +128,18 @@ pub(super) fn ep24_rule_texts(rule: &GameRule) -> Vec<String> {
             let symbol = ManaType::from(*color).symbol();
             vec![format!(
                 "For each {{{symbol}}} in a cost, you may pay 2 life rather than pay that mana"
+            )]
+        }
+        GameRule::AbilitiesAsThoughHaste(what) => {
+            let mine = [Pred::Type(CardType::Creature), Pred::ControlledBy(Ref::You)];
+            let other = match what.0.as_slice() {
+                [a, b] if [a, b] == [&mine[0], &mine[1]] => "",
+                [a, b, c] if [a, b] == [&mine[0], &mine[1]] && *c == Pred::Other => "other ",
+                [a, b, c] if [a, c] == [&mine[0], &mine[1]] && *b == Pred::Other => "other ",
+                _ => return Vec::new(),
+            };
+            vec![format!(
+                "You may activate abilities of {other}creatures you control as though those creatures had haste"
             )]
         }
         GameRule::OpponentsCantMakeSacrifice(Ref::You) => vec![

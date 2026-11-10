@@ -786,6 +786,9 @@ pub enum GameRule {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         mana: Option<ManaType>,
     },
+    /// The controller may activate abilities of the creatures the selector picks as though they had haste (CR 302.6): "You
+    /// may activate abilities of creatures you control as though those creatures had haste." They still can't attack.
+    AbilitiesAsThoughHaste(Selector),
     /// For each mana symbol of the color in a cost, the players may pay 2 life rather than pay that mana: "For each {B} in a
     /// cost, you may pay 2 life rather than pay that mana."
     PayLifeForMana {

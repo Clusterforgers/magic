@@ -20,6 +20,7 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
     let found = match mode {
         "CantGainLife" => players(p, mode, "ValidPlayer").map(|who| json!({"CantGainLife": who})),
         "CantDraw" if p.has("DrawLimit") => super::ep24_rules::ep24_draw_limit(p),
+        "ActivateAbilityAsIfHaste" => super::ep24_rules::ep24_as_though_haste(ctx, p),
         "CantDraw" => players(p, mode, "ValidPlayer").map(|who| json!({"CantDraw": who})),
         "CantSacrifice" if p.has("ValidCause") => super::ep24_rules::ep24_spared_sacrifice(p),
         "CantChangeLife" => {

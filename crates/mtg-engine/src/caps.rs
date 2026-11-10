@@ -367,6 +367,7 @@ const RUNS: &[&str] = &[
     "Rule.FlipTwoCoins",
     "Rule.KeepUnspentMana",
     "Rule.DrawLimit",
+    "Rule.AbilitiesAsThoughHaste",
     "Rule.PayLifeForMana",
     "Rule.OpponentsCantMakeSacrifice",
     "Rule.SpendManaAs",

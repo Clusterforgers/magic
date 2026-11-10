@@ -292,7 +292,7 @@ fn source_turns(state: &GameState, object: &GameObject, price: &Price) -> bool {
     let Some(permanent) = object.permanent() else {
         return false;
     };
-    let sick = keywords::summoning_sick(state, object.id())
+    let sick = keywords::sick_for_abilities(state, object.id())
         && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
     let ready = if price.untap {
         permanent.tapped() && !price.tap

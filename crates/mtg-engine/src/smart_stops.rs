@@ -82,7 +82,7 @@ fn timely(
             return false;
         };
         // Only creatures are subject to summoning sickness for {T} abilities (CR 302.6).
-        let sick = keywords::summoning_sick(state, object.id())
+        let sick = keywords::sick_for_abilities(state, object.id())
             && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
         return !permanent.tapped() && !sick;
     }

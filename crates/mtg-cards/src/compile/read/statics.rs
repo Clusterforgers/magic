@@ -1682,6 +1682,7 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::UnspentManaBecomes { .. }
             | GameRule::SpendManaAs { .. }
             | GameRule::DrawLimit { .. }
+            | GameRule::AbilitiesAsThoughHaste(_)
             | GameRule::PayLifeForMana { .. }
             | GameRule::OpponentsCantMakeSacrifice(_),
             ZoneKind::Battlefield,

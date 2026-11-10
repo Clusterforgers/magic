@@ -234,6 +234,7 @@ mod ep22_every_zone;
 mod ep22_granted_loyalty;
 mod ep24_change_targets;
 mod ep24_color_among;
+mod ep24_haste_abilities;
 mod ep24_limits;
 mod ep24_spend_as;
 mod ep24_unspent_mana;

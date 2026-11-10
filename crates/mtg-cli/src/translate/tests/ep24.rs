@@ -102,6 +102,10 @@ fn permanent(line: &str) -> String {
     "S:Mode$ Continuous | Affected$ You | AddKeyword$ PayLifeInsteadOf:B | Description$ x",
     json!({"PayLifeForMana": {"who": "You", "color": "Black"}})
 )]
+#[case::as_though_haste(
+    "S:Mode$ ActivateAbilityAsIfHaste | ValidCard$ Creature.YouCtrl+inZoneBattlefield | Description$ x",
+    json!({"AbilitiesAsThoughHaste": [{"Type": "Creature"}, {"ControlledBy": "You"}]})
+)]
 #[case::spared_sacrifice(
     "S:Mode$ CantSacrifice | ValidCard$ Card.YouCtrl | ValidCause$ SpellAbility.OppCtrl | ForCost$ False | Description$ x",
     json!({"OpponentsCantMakeSacrifice": "You"})
@@ -136,6 +140,9 @@ fn ep24_rules_translate(#[case] line: &str, #[case] rule: Value) {
 )]
 #[case::life_for_an_opponent_s_mana(
     "S:Mode$ Continuous | Affected$ Opponent | AddKeyword$ PayLifeInsteadOf:B | Description$ x"
+)]
+#[case::haste_for_artifacts(
+    "S:Mode$ ActivateAbilityAsIfHaste | ValidCard$ Artifact.YouCtrl | Description$ x"
 )]
 #[case::draw_limit_of_a_count(
     "S:Mode$ CantDraw | ValidPlayer$ Opponent | DrawLimit$ X | Description$ x"

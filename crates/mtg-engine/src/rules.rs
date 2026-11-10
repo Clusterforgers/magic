@@ -192,6 +192,8 @@ pub enum Rule {
     /// The legend rule does not apply to the permanents the selector picks, judged for the rule's controller (CR
     /// 704.5j).
     NoLegendRuleFor(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
+    /// The controller may activate abilities of the creatures the selector picks as though they had haste (CR 302.6).
+    AbilitiesAsThoughHaste(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// The permanents the selector picks that the rule's controller controls untap during the untap steps of the players
     /// (CR 502.3).
     UntapDuring {
@@ -600,6 +602,8 @@ pub(crate) struct RulesInForce {
     hand_change: BTreeMap<PlayerId, i64>,
     no_legend: BTreeSet<PlayerId>,
     no_legend_for: Vec<NoLegendFor>,
+    /// The creatures whose abilities may be activated as though they had haste, by rule.
+    haste_for_abilities: Vec<NoLegendFor>,
     untap_during: Vec<UntapDuring>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
@@ -814,6 +818,15 @@ impl RulesInForce {
                     });
                 }
             }
+            Rule::AbilitiesAsThoughHaste(what) => {
+                if let Some(source) = source {
+                    self.haste_for_abilities.push(NoLegendFor {
+                        controller,
+                        source,
+                        what: what.clone(),
+                    });
+                }
+            }
             Rule::NoLegendRuleFor(what) => {
                 if let Some(source) = source {
                     self.no_legend_for.push(NoLegendFor {
@@ -963,6 +976,7 @@ impl RulesInForce {
             | Rule::HandSizeChange(_)
             | Rule::NoLegendRule(_)
             | Rule::NoLegendRuleFor(_)
+            | Rule::AbilitiesAsThoughHaste(_)
             | Rule::UntapDuring { .. } => {
                 self.put_option(rule, controller, source);
             }
@@ -1302,6 +1316,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::HandSizeChange { .. }
         | GameRule::NoLegendRule(_)
         | GameRule::NoLegendRuleFor(_)
+        | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
         GameRule::LookAtExiled { who, what, only } => Rule::LookAtExiled {
@@ -1369,6 +1384,7 @@ fn lower_option(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveErr
         }
         GameRule::NoLegendRule(who) => Rule::NoLegendRule(scope.players(who)?),
         GameRule::NoLegendRuleFor(what) => Rule::NoLegendRuleFor(what.clone()),
+        GameRule::AbilitiesAsThoughHaste(what) => Rule::AbilitiesAsThoughHaste(what.clone()),
         GameRule::UntapDuring { what, whose } => Rule::UntapDuring {
             what: what.clone(),
             whose: scope.players(whose)?,
@@ -1450,7 +1466,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::Replaces { .. }
         | Rule::AttackLimit(_)
         | Rule::BlockLimit(_)
-        | Rule::NoLegendRuleFor(_) => false,
+        | Rule::NoLegendRuleFor(_)
+        | Rule::AbilitiesAsThoughHaste(_) => false,
         Rule::PreventDamage(shield) => {
             shield.to.as_ref().is_some_and(Vec::is_empty)
                 || shield.from.as_ref().is_some_and(Vec::is_empty)
@@ -1585,6 +1602,7 @@ static NONE: RulesInForce = RulesInForce {
     hand_change: BTreeMap::new(),
     no_legend: BTreeSet::new(),
     no_legend_for: Vec::new(),
+    haste_for_abilities: Vec::new(),
     untap_during: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
@@ -1900,6 +1918,19 @@ pub(crate) fn extra_land_plays(state: &GameState, player: PlayerId) -> u32 {
         .get(&player)
         .copied()
         .unwrap_or_default()
+}
+
+/// Whether a rule lets the controller of the creature `id` activate its abilities as though it had haste, judged for the
+/// rule's controller.
+pub(crate) fn ep24_abilities_as_though_haste(state: &GameState, id: ObjectId) -> bool {
+    let Some(object) = state.object(id) else {
+        return false;
+    };
+    state.rules().haste_for_abilities.iter().any(|rule| {
+        Scope::announcing(state, rule.controller, rule.source)
+            .selects(&rule.what, object.reference())
+            .unwrap_or(false)
+    })
 }
 
 /// The cost `player` pays for `mana` under the rules that let them pay 2 life rather than mana of a color: each symbol of

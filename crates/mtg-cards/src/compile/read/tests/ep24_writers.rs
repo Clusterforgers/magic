@@ -75,6 +75,8 @@ const NARSET: &str = "Each opponent can't draw more than one card each turn.";
 const SIGARDA: &str =
     "Spells and abilities your opponents control can't cause you to sacrifice permanents.";
 const KRRIK: &str = "For each {B} in a cost, you may pay 2 life rather than pay that mana.";
+const ELIXIR: &str =
+    "You may activate abilities of creatures you control as though those creatures had haste.";
 
 #[rstest]
 #[case::red_kept(r#"{"KeepUnspentMana":{"who":"You","mana":"Red"}}"#, ELECTRO, true)]
@@ -130,6 +132,21 @@ const KRRIK: &str = "For each {B} in a cost, you may pay 2 life rather than pay 
 #[case::narset_of_everyone(r#"{"DrawLimit":{"who":"EachPlayer","most":1}}"#, NARSET, false)]
 #[case::sigarda(r#"{"OpponentsCantMakeSacrifice":"You"}"#, SIGARDA, true)]
 #[case::krrik(r#"{"PayLifeForMana":{"who":"You","color":"Black"}}"#, KRRIK, true)]
+#[case::elixir(
+    r#"{"AbilitiesAsThoughHaste":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#,
+    ELIXIR,
+    true
+)]
+#[case::elixir_of_others(
+    r#"{"AbilitiesAsThoughHaste":[{"Type":"Creature"},"Other",{"ControlledBy":"You"}]}"#,
+    ELIXIR,
+    false
+)]
+#[case::elixir_of_artifacts(
+    r#"{"AbilitiesAsThoughHaste":[{"Type":"Artifact"},{"ControlledBy":"You"}]}"#,
+    ELIXIR,
+    false
+)]
 #[case::krrik_of_green(r#"{"PayLifeForMana":{"who":"You","color":"Green"}}"#, KRRIK, false)]
 #[case::sigarda_of_opponents(r#"{"OpponentsCantMakeSacrifice":"Opponents"}"#, SIGARDA, false)]
 fn ep24_rules_write_as_printed(#[case] json: &str, #[case] text: &str, #[case] reads: bool) {

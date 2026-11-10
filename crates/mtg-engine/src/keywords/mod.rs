@@ -635,6 +635,12 @@ pub(crate) fn forbids_attacking(state: &GameState, id: ObjectId) -> bool {
         .any(|keyword| rules(keyword).forbids_attacking(keyword))
 }
 
+/// Whether summoning sickness holds the permanent back from its `{T}` and `{Q}` abilities now: [`summoning_sick`] unless a
+/// rule lets its abilities be activated as though it had haste.
+pub fn sick_for_abilities(state: &GameState, id: ObjectId) -> bool {
+    summoning_sick(state, id) && !crate::rules::ep24_abilities_as_though_haste(state, id)
+}
+
 /// Whether summoning sickness holds the permanent back from attacking and from `{T}` abilities now.
 ///
 /// It has not been under its controller's control since their turn began and no keyword (haste) excuses it.
