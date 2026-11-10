@@ -1,4 +1,4 @@
-// Goal: the primary button says what passing does now, in plain words and never "pass priority": over a spell it resolves it, on the viewer's turn it names the next step (the last window ends the turn), on anybody else's it continues; the table covers every step and both turn owners, and the words of the yields and of the situation read off the table are fixed too, and Enter ends the turn exactly where an "End turn" button is drawn: never under Full Control and never in the last window of the turn.
+// Goal: the primary button passes once and says what that does now, in plain words and never "pass priority" or "End turn": over a spell it resolves it, on the viewer's turn it names the next step (the last window has no primary button, only "End turn"), on anybody else's it continues; the table covers every step and both turn owners, and the words of the yields and of the situation read off the table are fixed too, "End turn" is drawn wherever a yield can run and always in the last window, and Enter ends the turn except under Full Control.
 import { describe, expect, it } from 'vitest'
 import { initialPlayState } from '@/play/store'
 import type { PlayState } from '@/play/store'
@@ -8,11 +8,12 @@ import { buildFixture } from '../dev/fixture'
 import { fixtureState } from '../dev/devGame'
 import { STEP_LABEL } from '../turnText'
 import {
+  endTurnShown,
   enterYields,
   KEY_LEGEND,
+  lastWindow,
   passSituation,
   primaryDescription,
-  primaryEndsTurn,
   primaryLabel,
   YIELD_WORDS,
 } from './passWords'
@@ -21,7 +22,7 @@ import type { PassSituation } from './passWords'
 const STEPS = Object.keys(STEP_LABEL) as Step[]
 
 /** What the primary button says on the viewer's own turn with an empty stack, by the step it is pressed in. */
-const OWN_TURN: Record<Step, string> = {
+const OWN_TURN: Record<Step, string | null> = {
   Untap: 'Next: Upkeep',
   Upkeep: 'Next: Draw',
   Draw: 'Next: Precombat main',
@@ -33,8 +34,8 @@ const OWN_TURN: Record<Step, string> = {
   CombatDamage: 'Next: End of combat',
   EndCombat: 'Next: Postcombat main',
   Main2: 'Next: End step',
-  End: 'End turn',
-  Cleanup: 'End turn',
+  End: null,
+  Cleanup: null,
 }
 
 const situation = (step: Step, yourTurn: boolean, top: string | null = null): PassSituation => ({
@@ -42,6 +43,13 @@ const situation = (step: Step, yourTurn: boolean, top: string | null = null): Pa
   yourTurn,
   top,
 })
+
+/** Every step, for both turn owners, with an empty stack and with a spell on it. */
+const CASES = STEPS.flatMap((step) =>
+  [true, false].flatMap((yourTurn) =>
+    [null, 'Lightning Bolt'].map((top): [Step, boolean, string | null] => [step, yourTurn, top]),
+  ),
+)
 
 describe('the primary button', () => {
   it('has a row for every step of the turn', () => {
@@ -79,13 +87,17 @@ describe('the primary button', () => {
   it.each(STEPS)(
     'in %s the short form names what comes next in a word or two, and none is longer than the whole one',
     (step) => {
-      const whole = primaryLabel(situation(step, true), 'full')
+      const whole = primaryLabel(situation(step, true), 'full') ?? ''
       for (const form of ['short', 'compact'] as const) {
         const short = primaryLabel(situation(step, true), form)
+        if (short === null) {
+          expect(whole).toBe('')
+          continue
+        }
         expect(short.length).toBeLessThanOrEqual(whole.length)
         // The widest label of the short dock: "Next: End combat" and "Next: Attackers" set the width the hand dock is held to.
         expect(short.length).toBeLessThanOrEqual('Next: End combat'.length)
-        expect(short.startsWith('Next: ') || short === 'End turn').toBe(true)
+        expect(short.startsWith('Next: ')).toBe(true)
       }
     },
   )
@@ -93,7 +105,7 @@ describe('the primary button', () => {
   it('keeps every other label the same in every form', () => {
     for (const form of ['full', 'short', 'compact'] as const) {
       expect(primaryLabel(situation('Upkeep', false), form)).toBe('Continue')
-      expect(primaryLabel(situation('End', true), form)).toBe('End turn')
+      expect(primaryLabel(situation('End', true), form)).toBeNull()
       expect(primaryLabel(situation('Main1', true), form)).toBe('Next: Combat')
       expect(primaryLabel(situation('Draw', true), form)).toBe(
         form === 'full' ? 'Next: Precombat main' : 'Next: Main 1',
@@ -101,32 +113,52 @@ describe('the primary button', () => {
     }
   })
 
-  it('does not change what ends the turn: the end step of your own turn, in every form', () => {
-    expect(primaryEndsTurn(situation('End', true))).toBe(true)
-    expect(primaryLabel(situation('End', true), 'short')).toBe('End turn')
-  })
-
   it.each(STEPS.flatMap((step) => [true, false].map((yourTurn): [Step, boolean] => [step, yourTurn])))(
-    'in %s (your turn: %s) never says "pass priority", with or without a spell',
+    'in %s (your turn: %s) never says "pass priority" or "End turn", with or without a spell',
     (step, yourTurn) => {
       for (const top of [null, 'Giant Growth']) {
-        const label = primaryLabel(situation(step, yourTurn, top))
-        expect(label).not.toMatch(/pass/i)
-        expect(label.trim()).not.toBe('')
+        for (const form of ['full', 'short', 'compact'] as const) {
+          const label = primaryLabel(situation(step, yourTurn, top), form)
+          if (label === null) continue
+          expect(label).not.toMatch(/pass|end turn/i)
+          expect(label.trim()).not.toBe('')
+        }
       }
     },
   )
 
-  it('is the only one that ends the turn: the last window of your own turn', () => {
-    const ends = STEPS.flatMap((step) =>
-      [true, false].flatMap((yourTurn) =>
-        [null, 'Bolt'].map((top): [Step, boolean, string | null] => [step, yourTurn, top]),
-      ),
-    ).filter(([step, yourTurn, top]) => primaryEndsTurn(situation(step, yourTurn, top)))
-    expect(ends).toEqual([
+  it('is missing only in the last window of your own turn, over an empty stack', () => {
+    const missing = CASES.filter(
+      ([step, yourTurn, top]) => primaryLabel(situation(step, yourTurn, top)) === null,
+    )
+    expect(missing).toEqual([
       ['End', true, null],
       ['Cleanup', true, null],
     ])
+    expect(missing.every(([step, yourTurn, top]) => lastWindow(situation(step, yourTurn, top)))).toBe(true)
+    expect(CASES.filter(([step, yourTurn, top]) => lastWindow(situation(step, yourTurn, top)))).toEqual(
+      missing,
+    )
+  })
+})
+
+describe('the End turn button', () => {
+  it.each(CASES)('is drawn whenever Full Control is off: %s, your turn %s, top %s', (step, yourTurn, top) => {
+    expect(endTurnShown(situation(step, yourTurn, top), false)).toBe(true)
+  })
+
+  it.each(CASES)(
+    'under Full Control is drawn only in the last window, where it is the only way on: %s, your turn %s, top %s',
+    (step, yourTurn, top) => {
+      const here = situation(step, yourTurn, top)
+      expect(endTurnShown(here, true)).toBe(lastWindow(here))
+    },
+  )
+
+  it('stands beside "Resolve" over a stack in the end step of your own turn, as a button of its own', () => {
+    const here = situation('End', true, 'Lightning Bolt')
+    expect(primaryLabel(here)).toBe('Resolve Lightning Bolt')
+    expect(endTurnShown(here, false)).toBe(true)
   })
 })
 
@@ -194,28 +226,9 @@ describe('what the controls read off the table', () => {
 })
 
 describe('what Enter does', () => {
-  const CASES = STEPS.flatMap((step) =>
-    [true, false].flatMap((yourTurn) =>
-      [null, 'Lightning Bolt'].map((top): [Step, boolean, string | null] => [step, yourTurn, top]),
-    ),
-  )
-
-  it.each(CASES)(
-    'ends the turn, when Full Control is off, only where "End turn" is drawn: %s, your turn %s, top %s',
-    (step, yourTurn, top) => {
-      const here = situation(step, yourTurn, top)
-      expect(enterYields(here, false)).toBe(!primaryEndsTurn(here))
-    },
-  )
-
-  it.each(CASES)('passes once under Full Control: %s, your turn %s, top %s', (step, yourTurn, top) => {
-    expect(enterYields(situation(step, yourTurn, top), true)).toBe(false)
-  })
-
-  it('passes once in the last window of your own turn, where the primary button reads "End turn"', () => {
-    expect(enterYields(situation('End', true), false)).toBe(false)
-    expect(enterYields(situation('End', true, 'Lightning Bolt'), false)).toBe(true)
-    expect(enterYields(situation('End', false), false)).toBe(true)
+  it('asks for the end-of-turn yield unless Full Control is on, where it passes once', () => {
+    expect(enterYields(false)).toBe(true)
+    expect(enterYields(true)).toBe(false)
   })
 
   it('has a legend for the menu that names both keys and never says "pass priority"', () => {

@@ -166,7 +166,12 @@ export function fixtureReadsApi(options: ReadFixtureOptions = {}): ReadsApi {
       await wait()
       if (options.listFails === 'network') throw new DeckError('network', 0, 'Could not reach the server.')
       if (options.listFails === 'not_found') throw new DeckError('not_found', 404, 'not found')
-      const queue = target === null ? { ...READ_QUEUE, title: '' } : READ_QUEUE
+      const queue =
+        target === null
+          ? { ...READ_QUEUE, title: '' }
+          : 'mine' in target
+            ? { title: '', cards: READ_QUEUE.cards.filter((card) => card.in_decks) }
+            : READ_QUEUE
       return options.empty === true ? { ...queue, cards: [] } : structuredClone(queue)
     },
     async get(oracleId) {

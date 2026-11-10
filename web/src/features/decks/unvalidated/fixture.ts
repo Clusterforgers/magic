@@ -165,7 +165,7 @@ export function deckOf(
   id: string,
   name: string,
   cards: ReadonlyArray<ReportCard>,
-  state: 'verified' | 'manual_play' = 'manual_play',
+  state: 'verified' | 'read' | 'manual_play' = 'manual_play',
 ): FixtureDeck {
   const report = reportOf(cards)
   return {
@@ -206,6 +206,32 @@ export const FIXTURE_DECKS: readonly FixtureDeck[] = [
     reportLine('remora'),
     reportLine('rhystic'),
     filler(90),
+  ]),
+]
+
+/** Two decks whose drafts wait for a read, one card of them in both (three cards to read), and a deck on approved reads. */
+export const READ_FIXTURE_DECKS: readonly FixtureDeck[] = [
+  deckOf(
+    'deck-reads',
+    'Gruul Reads',
+    [
+      reportCard('Lightning Bolt', { count: 4, support: 'read', draft: 'approved' }),
+      reportCard('Llanowar Elves', { count: 4, support: 'forge' }),
+      filler(52),
+    ],
+    'read',
+  ),
+  deckOf('deck-atraxa', 'Atraxa Superfriends', [
+    reportLine('drain', 'main', 'pending'),
+    reportLine('season', 'main', 'pending'),
+    filler(95),
+    reportLine('rhystic', 'main', 'wrong'),
+  ]),
+  deckOf('deck-izzet', 'Izzet Spells', [
+    reportLine('delver', 'main', 'pending'),
+    reportLine('drain', 'main', 'pending'),
+    reportLine('remora'),
+    filler(80),
   ]),
 ]
 

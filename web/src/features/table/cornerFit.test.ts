@@ -47,6 +47,14 @@ describe('the room under the blocks of the pod', () => {
   ])('is %s: %s', (_name, column, above, room) => {
     expect(cornerHeight(column, above)).toBe(room)
   })
+
+  it.each<[string, number | null, number]>([
+    ['52 px of chips under the corner, and their gap', 52, 25],
+    ['no chips under it (hidden, 0 px)', 0, 85],
+    ['chips not measured', null, 85],
+  ])('leaves room for %s', (_name, below, room) => {
+    expect(cornerHeight(183, 74, below)).toBe(room)
+  })
 })
 
 describe('planning the corner', () => {

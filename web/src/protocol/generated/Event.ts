@@ -10,6 +10,7 @@ import type { Cause } from "./Cause";
 import type { Choice } from "./Choice";
 import type { Choices } from "./Choices";
 import type { Chosen } from "./Chosen";
+import type { CoinSide } from "./CoinSide";
 import type { ContinuousEffect } from "./ContinuousEffect";
 import type { CountersChanged } from "./CountersChanged";
 import type { DamageForm } from "./DamageForm";
@@ -767,9 +768,17 @@ result: number, } } | { "CoinFlipped": {
  */
 player: PlayerId, 
 /**
- * The flip was won.
+ * The flip was won: the call matched the side the coin came up (CR 705.1).
  */
-won: boolean, } } | { "Proliferated": { 
+won: boolean, 
+/**
+ * The side the player called.
+ */
+call: CoinSide, 
+/**
+ * The side the coin came up.
+ */
+side: CoinSide, } } | { "Proliferated": { 
 /**
  * Who proliferated.
  */

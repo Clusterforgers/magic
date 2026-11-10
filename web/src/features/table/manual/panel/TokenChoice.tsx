@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import type { CommonToken } from '@/protocol/generated'
 import { COMMON_TOKENS } from '../offers'
-import { CUSTOM, TOKEN_NAME_MAX, TOKEN_STAT_MAX } from './customToken'
+import { CUSTOM, TOKEN_COLORS, TOKEN_NAME_MAX, TOKEN_STAT_MAX, TOKEN_SUBTYPES_MAX } from './customToken'
 import type { TokenDraft } from './customToken'
 
 interface Props {
@@ -47,6 +47,24 @@ function Stat({
   )
 }
 
+/** A checkbox of the custom token's form, with its words beside it. */
+function Check({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string
+  checked: boolean
+  onChange: (on: boolean) => void
+}) {
+  return (
+    <label className="flex items-center gap-1.5 text-sm text-foreground pointer-coarse:min-h-11">
+      <input type="checkbox" checked={checked} onChange={(event) => onChange(event.currentTarget.checked)} />
+      {label}
+    </label>
+  )
+}
+
 /** The list of tokens, ending in "Custom creature…" which asks for the creature's name, power and toughness. */
 export function TokenChoice({ draft, set }: Props) {
   return (
@@ -79,6 +97,37 @@ export function TokenChoice({ draft, set }: Props) {
             <Stat label="Power" value={draft.power} onChange={(power) => set({ power })} />
             <Stat label="Toughness" value={draft.toughness} onChange={(toughness) => set({ toughness })} />
           </div>
+          <fieldset className="flex flex-wrap gap-x-3 gap-y-0.5">
+            <legend className="text-xs text-muted-foreground">Colors</legend>
+            {TOKEN_COLORS.map((color) => (
+              <Check
+                key={color}
+                label={color}
+                checked={draft.colors.includes(color)}
+                onChange={(on) =>
+                  set({
+                    colors: on ? [...draft.colors, color] : draft.colors.filter((each) => each !== color),
+                  })
+                }
+              />
+            ))}
+          </fieldset>
+          <fieldset className="flex flex-wrap gap-x-3 gap-y-0.5">
+            <legend className="text-xs text-muted-foreground">Also</legend>
+            <Check label="Artifact" checked={draft.artifact} onChange={(artifact) => set({ artifact })} />
+            <Check
+              label="Enchantment"
+              checked={draft.enchantment}
+              onChange={(enchantment) => set({ enchantment })}
+            />
+          </fieldset>
+          <Labelled label={`Subtypes (up to ${TOKEN_SUBTYPES_MAX}, empty: the name)`}>
+            <Input
+              value={draft.subtypes}
+              onChange={(event) => set({ subtypes: event.currentTarget.value })}
+              className={STAT_INPUT}
+            />
+          </Labelled>
         </div>
       ) : null}
     </>

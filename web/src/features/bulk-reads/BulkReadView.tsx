@@ -7,6 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { describeDeckError } from '@/features/decks/errors'
+import { forgetToReadCount } from '@/features/reads/useToReadCount'
 import type { BulkReadsApi } from '@/net/bulkReads'
 import type { BulkCard, BulkReads, BulkRule } from '@/protocol/generated'
 import { wordDiff } from './diff'
@@ -213,6 +214,7 @@ export function BulkReadView({ api }: { api: BulkReadsApi }) {
             text: `${wordingOnly(result.approved.length, 'approved')}.${stale === 0 ? '' : ` ${wordingOnly(stale, 'changed since the page loaded and left alone')}.`}`,
           })
           setAttempt((n) => n + 1)
+          forgetToReadCount()
         },
         (error: unknown) => setSaid({ ok: false, text: describeDeckError(error) }),
       )

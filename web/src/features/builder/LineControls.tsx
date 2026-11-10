@@ -1,4 +1,4 @@
-import { EllipsisVerticalIcon, MinusIcon, PlusIcon } from 'lucide-react'
+import { EllipsisVerticalIcon, HandIcon, MinusIcon, PlusIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { BY_HAND_TITLE } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { CardHit, DeckZone } from '@/protocol/generated'
 import type { Line } from './deckEdit'
@@ -20,6 +21,8 @@ export interface LineActions {
   decrement: (zone: DeckZone, oracleId: string) => void
   remove: (zone: DeckZone, oracleId: string) => void
   move: (zone: DeckZone, oracleId: string, to: DeckZone, count?: number) => void
+  /** Marks a card "play by hand" (`on`) in every zone, or gives it back to the rules. */
+  byHand: (oracleId: string, on: boolean) => void
   /** Opens the preview of a card; `opener` is the control focus returns to. */
   preview: (card: CardHit, opener: HTMLElement) => void
 }
@@ -68,6 +71,30 @@ export function Copies({
         <PlusIcon aria-hidden="true" />
       </Button>
     </div>
+  )
+}
+
+/**
+ * The toggle that has the table play a card by hand whatever its rules, for a card that misbehaves: pressed, the
+ * game hosts every copy of it as a manual card and the check counts it as played by hand.
+ */
+export function ByHandToggle({ line, actions }: { line: Line; actions: LineActions }) {
+  const { card } = line
+  const on = line.byHand === true
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon-sm"
+      aria-pressed={on}
+      aria-label={`Play ${card.name} by hand`}
+      title={on ? `${BY_HAND_TITLE} by your choice` : 'Play by hand'}
+      data-slot="line-by-hand"
+      className={cn(on && 'bg-support-manual/12 text-support-manual hover:text-support-manual')}
+      onClick={() => actions.byHand(card.oracle_id, !on)}
+    >
+      <HandIcon aria-hidden="true" />
+    </Button>
   )
 }
 

@@ -74,7 +74,7 @@ describe('the rows', () => {
   it('link the page header to the list of every deck', async () => {
     const { user, router } = await renderDecks({ decks: DECKS })
     await screen.findByRole('list', { name: 'Your decks' })
-    const link = screen.getByRole('link', { name: 'Not validated cards' })
+    const link = screen.getByRole('link', { name: 'Cards to check' })
     expect(link).toHaveAttribute('href', '/decks/unvalidated')
     await user.click(link)
     await waitFor(() => expect(router.state.location.pathname).toBe('/decks/unvalidated'))

@@ -1,4 +1,4 @@
-// Goal: /dev/read reads its view from the address (shrugging off nonsense), serves the real review screen over the fixture cards in each view (a deck, a precon, nothing left, a failed list, the table's dialog), and answers "not found" with no fixture in a production build.
+// Goal: /dev/read reads its view from the address (shrugging off nonsense), serves the real review screen over the fixture cards in each view (a deck, a precon, the account's decks, nothing left, a failed list, the table's dialog), and answers "not found" with no fixture in a production build.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -33,7 +33,17 @@ describe('parseDevReadSearch', () => {
   })
 
   it('knows every view the route draws', () => {
-    expect(DEV_READ_VIEWS).toEqual(['deck', 'precon', 'all', 'done', 'loading', 'error', 'stale', 'dialog'])
+    expect(DEV_READ_VIEWS).toEqual([
+      'deck',
+      'precon',
+      'all',
+      'mine',
+      'done',
+      'loading',
+      'error',
+      'stale',
+      'dialog',
+    ])
   })
 })
 
@@ -41,6 +51,7 @@ describe('/dev/read', () => {
   it.each([
     ['deck', 'Read the cards of Izzet Spellcraft'],
     ['precon', 'Read the cards of Izzet Spellcraft'],
+    ['mine', 'Cards in your decks'],
     ['done', 'No cards to read'],
     ['error', 'The cards could not be loaded'],
     ['dialog', 'Read the rules of Tidecaller of the Long Shoal'],

@@ -6,7 +6,7 @@ use std::sync::Arc;
 
 use axum::http::StatusCode;
 use mtg_cards::deck::{
-    CardFacts, DeckLine as CheckLine, DeckReport, DeckZone, SUPPORTED_FORMATS, deck_report,
+    CardFacts, DeckLine as CheckLine, DeckReport, DeckZone, SUPPORTED_FORMATS, deck_report_by_hand,
 };
 use mtg_db::{Card, DeckLine as StoredLine, DeckZone as StoredZone, Printing, PrintingImages};
 use mtg_import::ids::{OracleId, PrintingId};
@@ -32,6 +32,8 @@ pub(crate) struct Line {
     pub(crate) oracle_id: String,
     pub(crate) printing_id: Option<String>,
     pub(crate) count: u32,
+    /// The owner plays the card by hand.
+    pub(crate) by_hand: bool,
 }
 
 fn stored_zone(zone: DeckZone) -> StoredZone {
@@ -59,6 +61,7 @@ impl Line {
             oracle_id: line.oracle_id.to_string(),
             printing_id: line.printing_id.as_ref().map(ToString::to_string),
             count: line.count,
+            by_hand: line.by_hand,
         }
     }
 
@@ -68,6 +71,7 @@ impl Line {
             oracle_id: OracleId(self.oracle_id.clone()),
             printing_id: self.printing_id.clone().map(PrintingId),
             count: self.count,
+            by_hand: self.by_hand,
         }
     }
 
@@ -78,6 +82,15 @@ impl Line {
             count: self.count,
         }
     }
+}
+
+/// The oracle ids of the cards a line marks "play by hand": a card is played by hand when any of its lines says so.
+pub(crate) fn by_hand_ids(lines: &[Line]) -> BTreeSet<String> {
+    lines
+        .iter()
+        .filter(|line| line.by_hand)
+        .map(|line| line.oracle_id.clone())
+        .collect()
 }
 
 pub(crate) fn invalid_deck(message: impl Into<String>) -> ApiError {
@@ -145,6 +158,7 @@ pub(crate) fn check_lines(cards: &[DeckLineBody]) -> Result<Vec<Line>, ApiError>
             oracle_id,
             printing_id,
             count: card.count,
+            by_hand: card.by_hand,
         });
     }
     if copies > MAX_DECK_CARDS {
@@ -319,12 +333,14 @@ impl Loaded {
         Ok(())
     }
 
-    /// The deck checked: legality in `format` and the support of every card.
+    /// The deck checked: legality in `format` and the support of every card, the cards the owner plays by hand
+    /// counted as such.
     pub(crate) fn report(&self, format: &str, lines: &[Line]) -> DeckReport {
-        let lines: Vec<CheckLine> = lines.iter().map(Line::to_check).collect();
-        deck_report(
+        let checked: Vec<CheckLine> = lines.iter().map(Line::to_check).collect();
+        deck_report_by_hand(
             format,
-            &lines,
+            &checked,
+            &by_hand_ids(lines),
             &self.facts,
             self.rules.library(),
             self.rules.caps(),
@@ -365,6 +381,7 @@ impl Loaded {
             zone: line.zone,
             count: line.count,
             printing_id: line.printing_id.clone(),
+            by_hand: line.by_hand,
             card: hit(&self.rules, card, images),
         })
     }
@@ -387,6 +404,7 @@ mod tests {
             oracle_id: id.to_owned(),
             printing_id: printing.map(str::to_owned),
             count,
+            by_hand: false,
         }
     }
 
@@ -416,7 +434,10 @@ mod tests {
                 Some(&P.replace('-', "")),
                 4,
             ),
-            line(DeckZone::Sideboard, A, None, 200),
+            DeckLineBody {
+                by_hand: true,
+                ..line(DeckZone::Sideboard, A, None, 200)
+            },
         ];
         let checked = check_body(&deck).unwrap();
         assert_eq!(checked.name, "Burn");
@@ -429,13 +450,15 @@ mod tests {
                     zone: DeckZone::Main,
                     oracle_id: A.to_owned(),
                     printing_id: Some(P.to_owned()),
-                    count: 4
+                    count: 4,
+                    by_hand: false,
                 },
                 Line {
                     zone: DeckZone::Sideboard,
                     oracle_id: A.to_owned(),
                     printing_id: None,
-                    count: 200
+                    count: 200,
+                    by_hand: true,
                 }
             ]
         );
@@ -589,6 +612,7 @@ mod tests {
             oracle_id: A.to_owned(),
             printing_id: Some(P.to_owned()),
             count: 3,
+            by_hand: true,
         };
         assert_eq!(Line::from_stored(&line.to_stored()), line);
         let check = line.to_check();

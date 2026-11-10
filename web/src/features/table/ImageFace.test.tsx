@@ -1,4 +1,4 @@
-// Goal: a table card draws its picture with the state over it — a stat badge only where power/toughness or loyalty moved from the printed value, chips in the art box, a support mark for manual clauses, the back for a card the viewer may not see — and Text only draws exactly the text face.
+// Goal: a table card draws its picture with the state over it — a stat badge only where power/toughness, loyalty or defense moved from the printed value, a battle's protector, chips in the art box, a support mark for manual clauses, the back for a card the viewer may not see — and Text only draws exactly the text face.
 import { act, fireEvent, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { resetImageMemory } from '@/features/cards/CardImage'
@@ -11,6 +11,7 @@ import { indexById } from '@/play/view'
 import { Card } from './Card'
 import { statBadge } from './overlay'
 import type { Printed, StatBadge } from './overlay'
+import type { StatCounter } from './cardModel'
 import { setDetailFetcher } from './printed'
 import { TableMenu } from './TableMenu'
 
@@ -32,7 +33,16 @@ const stats = (power: string | null, toughness: string | null, loyalty: string |
 describe('statBadge', () => {
   const creature = (power: number, toughness: number): ObjectView => card({ power, toughness })
   const walker = card({ power: null, toughness: null, types: ['Planeswalker'] })
-  it.each<[string, ObjectView, Printed, number | null, StatBadge | null]>([
+  const battle = card({ power: null, toughness: null, types: ['Battle'] })
+  const fourDefense: Printed = { power: null, toughness: null, loyalty: null, defense: '4' }
+  const loyal = (count: number): StatCounter => ({ kind: 'loyalty', count })
+  const guard = (count: number): StatCounter => ({ kind: 'defense', count })
+  const defenseBadge = (text: string, modified: StatBadge['modified']): StatBadge => ({
+    kind: 'defense',
+    text,
+    modified,
+  })
+  it.each<[string, ObjectView, Printed, StatCounter | null, StatBadge | null]>([
     ['as printed', creature(2, 2), stats('2', '2'), null, null],
     ['pumped', creature(4, 4), stats('2', '2'), null, { kind: 'pt', text: '4/4', modified: 'up' }],
     ['shrunk', creature(1, 2), stats('2', '2'), null, { kind: 'pt', text: '1/2', modified: 'down' }],
@@ -83,12 +93,29 @@ describe('statBadge', () => {
       null,
       null,
     ],
-    ['loyalty as printed', walker, stats(null, null, '3'), 3, { kind: 'loyalty', text: '3', modified: null }],
-    ['loyalty up', walker, stats(null, null, '3'), 5, { kind: 'loyalty', text: '5', modified: 'up' }],
-    ['loyalty down', walker, stats(null, null, '3'), 1, { kind: 'loyalty', text: '1', modified: 'down' }],
+    [
+      'loyalty as printed',
+      walker,
+      stats(null, null, '3'),
+      loyal(3),
+      { kind: 'loyalty', text: '3', modified: null },
+    ],
+    ['loyalty up', walker, stats(null, null, '3'), loyal(5), { kind: 'loyalty', text: '5', modified: 'up' }],
+    [
+      'loyalty down',
+      walker,
+      stats(null, null, '3'),
+      loyal(1),
+      { kind: 'loyalty', text: '1', modified: 'down' },
+    ],
+    ['defense as printed', battle, fourDefense, guard(4), defenseBadge('4', null)],
+    ['defense down', battle, fourDefense, guard(2), defenseBadge('2', 'down')],
+    ['defense up', battle, fourDefense, guard(6), defenseBadge('6', 'up')],
+    ['defense with no printed record', battle, 'unavailable', guard(3), defenseBadge('3', null)],
+    ['defense on a record without it', battle, stats(null, null), guard(3), defenseBadge('3', null)],
     ['no stats', card({ power: null, toughness: null }), stats(null, null), null, null],
-  ])('%s', (_, object, printed, loyalty, badge) => {
-    expect(statBadge(object, printed, loyalty)).toEqual(badge)
+  ])('%s', (_, object, printed, stat, badge) => {
+    expect(statBadge(object, printed, stat)).toEqual(badge)
   })
 })
 
@@ -136,6 +163,38 @@ describe('a card picture on the table', () => {
     const badge = container.querySelector('[data-slot="card-pt"]')
     expect(badge?.getAttribute('data-modified') ?? null).toBe(modified)
     expect(badge === null).toBe(modified === null)
+  })
+
+  it.each<[string, number, string | null]>([
+    ['at its printed defense', 4, null],
+    ['after damage', 1, 'down'],
+  ])('a battle %s shows its defense and its protector over the picture', async (_, count, modified) => {
+    setDetailFetcher(() =>
+      Promise.resolve({
+        faces: [{ power: null, toughness: null, loyalty: null, defense: '4' }],
+      } as unknown as CardDetail),
+    )
+    const { container } = await loaded(
+      permanent(
+        {},
+        {
+          identity: IDENTITY,
+          types: ['Battle'],
+          subtypes: ['Siege'],
+          power: null,
+          toughness: null,
+          counters: [[{ Other: 'defense' }, count]],
+          protector: 1,
+        },
+      ),
+    )
+    const badge = must(container.querySelector('[data-slot="card-defense"]'))
+    expect(badge).toHaveTextContent(String(count))
+    expect(badge.getAttribute('data-modified')).toBe(modified)
+    expect(container.querySelector('[data-slot="card-counter"]')).toBeNull()
+    expect(must(container.querySelector('[data-slot="card-protector"]')).getAttribute('title')).toMatch(
+      /^Protected by \S/,
+    )
   })
 
   it('draws the state over a loaded picture, and a tapped one says Tapped by its turn alone', async () => {

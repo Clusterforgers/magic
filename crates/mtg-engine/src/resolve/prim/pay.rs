@@ -345,7 +345,7 @@ fn question(cx: &Cx<'_>, player: PlayerId, price: &Price) -> Decision {
 }
 
 /// Whether what a player can pay depends on a card in their hand: a discard, a reveal or an exile from the hand, in the
-/// cost or in a mana source they would tap.
+/// cost or in a mana source they would use, which may itself be a card of the hand (a Spirit Guide).
 fn needs_hand(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
     fn hand(part: &Part) -> bool {
         match part {
@@ -357,7 +357,7 @@ fn needs_hand(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
     price.parts.iter().any(hand)
         || mana_options(cx.state(), player)
             .iter()
-            .any(|option| option.takes.iter().any(|take| take.exile))
+            .any(|option| option.exile || option.takes.iter().any(|take| take.exile))
 }
 
 /// What the cost asks, part by part: "Pay {1}", "Pay 2 life", "Discard a card".
@@ -499,7 +499,7 @@ fn payment(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a payment asks the players it names in turn order "Pay {2}?" until one says yes and then for the payment itself (no way back), asks a player who cannot pay in the same words with No as the only answer (for every kind of mana cost: generic, coloured, hybrid, Phyrexian, floating, tapped and wrong-coloured sources), skips a player who left the game, enters the paid effects once a payment is logged and the unpaid ones when nobody paid, reads a player's answers back from the journal (paying spends what could pay), refuses answers it did not ask for, asks a player who pays a cost with {X} for X from 0 to the most they can pay and binds the X paid, and refuses by name a cost the effect cannot ask (discarding the source, tapping it, a part that counts X).
+    //! Goal: a payment asks the players it names in turn order "Pay {2}?" until one says yes and then for the payment itself (no way back), asks a player who cannot pay in the same words with No as the only answer (for every kind of mana cost: generic, coloured, hybrid, Phyrexian, floating, tapped and wrong-coloured sources, and a source in the hand, which keeps that No asked), skips a player who left the game, enters the paid effects once a payment is logged and the unpaid ones when nobody paid, reads a player's answers back from the journal (paying spends what could pay), refuses answers it did not ask for, asks a player who pays a cost with {X} for X from 0 to the most they can pay and binds the X paid, and refuses by name a cost the effect cannot ask (discarding the source, tapping it, a part that counts X).
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -824,6 +824,57 @@ mod tests {
             panic!("the player is asked");
         };
         assert_eq!(options.unseen, unseen);
+    }
+
+    /// Seat 0 controls the source and `lands` Forests and holds `guides` Spirit Guides.
+    fn guided(lands: usize, guides: usize) -> GameState {
+        let rules: mtg_cards::ability::Ability = serde_json::from_str(
+            r#"{"Activated":{"from":"Hand","cost":["ExileSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#,
+        )
+        .unwrap();
+        let guide = Arc::new(CardDefinition::new("Guide").with_rules(rules));
+        let mut battlefield = vec![forest(); lands];
+        battlefield.push(creature("Source", 1, 1));
+        state(
+            vec![vec![guide; guides], Vec::new()],
+            vec![battlefield, Vec::new()],
+        )
+    }
+
+    #[rstest]
+    #[case::hand_source(0, 1, r#""{R}""#, false, true)]
+    #[case::battlefield_source(1, 0, r#""{1}""#, false, false)]
+    #[case::both(1, 1, r#""{1}{R}""#, false, true)]
+    #[case::declined_with_a_guide(1, 1, r#""{3}""#, true, true)]
+    #[case::declined_without_one(1, 0, r#""{3}""#, true, false)]
+    fn a_mana_source_in_the_hand_counts_and_keeps_an_unpayable_no_asked(
+        #[case] lands: usize,
+        #[case] guides: usize,
+        #[case] cost: &str,
+        #[case] only_no: bool,
+        #[case] unseen: bool,
+    ) {
+        let game = guided(lands, guides);
+        let Ok(Run::Ask(Decision {
+            kind: DecisionKind::YesNo(options),
+            ..
+        })) = run_with(&game, &[], &pay(r#""You""#, cost))
+        else {
+            panic!("the player is asked");
+        };
+        assert_eq!((options.only_no, options.unseen), (only_no, unseen));
+        let sole = crate::choose::sole_answer(
+            &game,
+            &Decision {
+                player: ME,
+                kind: DecisionKind::YesNo(options),
+            },
+        );
+        assert_eq!(
+            sole.is_some(),
+            only_no && !unseen,
+            "declined without asking"
+        );
     }
 
     #[test]

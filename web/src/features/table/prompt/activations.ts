@@ -251,10 +251,11 @@ function manaPlay(option: ManaOption, all: readonly ManaOption[]): Play {
   const colour = madeWords(gives)
   const twins = all.filter((other) => other.produces === option.produces).length > 1
   const label = twins ? `${colour} (ability ${option.source.ability + 1})` : colour
+  const exiling = option.exile === true ? ', exiling it' : ''
   return {
     key: `mana-${option.source.ability}`,
-    label: `Add ${label} mana`,
-    words: `Add ${label} mana`,
+    label: `Add ${label} mana${exiling}`,
+    words: `Add ${label} mana${exiling}`,
     action: { ActivateMana: option.source },
   }
 }

@@ -12,6 +12,7 @@ import { ContinueGames } from './ContinueGames'
 import { GuestJoinDialog } from './GuestJoinDialog'
 import { JoinWithCode } from './JoinWithCode'
 import { OpenGamesPanel } from './OpenGamesPanel'
+import { ToReadNotice } from './ToReadNotice'
 import { useJoinGame } from './useJoinGame'
 import { useOpenGames } from './useOpenGames'
 
@@ -44,6 +45,7 @@ export function PlayPage({ api = sharedApi }: PlayPageProps) {
         </Link>
       </header>
       <ContinueGames />
+      <ToReadNotice />
       <JoinWithCode
         inputRef={code}
         onJoin={join.startCode}

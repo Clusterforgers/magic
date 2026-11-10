@@ -1,4 +1,4 @@
-import { memo, useCallback, useContext, useMemo, useState } from 'react'
+import { memo, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useFullBleed } from '@/components/appChrome'
@@ -27,9 +27,11 @@ import { Opponents, SeatArea } from './Seats'
 import { defaultFocusOf, seatCountOf, turnLeft } from './selectors'
 import { SharedStrip } from './SharedStrip'
 import { SideProvider } from './sideState'
+import { StopControlsProvider } from './stops/stopControls'
 import { SidePanelMount, SideSheet, SideTabs } from './SideTabs'
 import { TableGrid } from './TableGrid'
 import { useBoardSplit } from './useBoardSplit'
+import { useTheirHead } from './useTheirHead'
 import { sheetReserve } from './boardSplit'
 import { TableOptionsContext } from './tableOptions'
 import { TopBar } from './TopBar'
@@ -61,9 +63,15 @@ const Table = memo(function Table() {
     [viewport, seatCount, seat, mode, chosen, followed, active],
   )
   const { seats: plan } = table
+  // The overhang the sheet wants in steps of 8 px: the split reserves part of it, and a pod column keeps all of it free.
   const [overhang, setOverhang] = useState(0)
-  const onOverhang = useCallback((px: number) => setOverhang(sheetReserve(px)), [])
-  const regions = useBoardSplit(table.regions, plan, overhang)
+  const onOverhang = useCallback((px: number) => setOverhang(Math.ceil(Math.max(0, px) / 8) * 8), [])
+  const [head, setHead] = useState(0)
+  // Steps of 8 px, so a pod that grows by a pixel does not move the boards.
+  const onHead = useCallback((px: number) => setHead(Math.ceil(px / 8) * 8), [])
+  const section = useRef<HTMLElement>(null)
+  useTheirHead(section, onHead, `${ready}|${plan.shape}|${plan.boards.join(',')}`)
+  const regions = useBoardSplit(table.regions, plan, sheetReserve(overhang), head, overhang)
   const size: CardSize = plan.compact ? 'compact' : 'normal'
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
   const moments = useTableMoments(options.effects ?? EFFECTS_BY_DEFAULT)
@@ -74,69 +82,72 @@ const Table = memo(function Table() {
         <PreviewContext value={previews}>
           <MarksContext value={marks}>
             <ManualMenuProvider>
-              <ControlsSlotProvider form={table.dock}>
-                <section
-                  aria-label="Game table"
-                  data-mode={plan.mode}
-                  className="relative h-dvh w-full overflow-hidden bg-table"
-                  style={fx.slow === 1 ? undefined : ({ '--fx-slow': fx.slow } as CSSProperties)}
-                >
-                  <h1 className="sr-only">Game table</h1>
-                  {!ready || seat === null ? (
-                    <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
-                  ) : (
-                    <SideProvider kind={regions.side}>
-                      <TableGrid
-                        regions={regions}
-                        stopsRow={table.stopsRow}
-                        bar={
-                          <TopBar
-                            mode={plan.mode}
-                            onMode={setMode}
-                            pinnedFocus={chosen !== null}
-                            onFollow={() => setChosen(null)}
-                            stopsInMenu={false}
-                            compact={regions.landscape}
-                          />
-                        }
-                        opponents={
-                          <Opponents
-                            plan={plan}
-                            size={size}
-                            pod={table.opponentPod}
-                            onFocusSeat={setChosen}
-                          />
-                        }
-                        shared={
-                          <SharedStrip
-                            sheetMax={regions.sheet}
-                            onOverhang={onOverhang}
-                            inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
-                          />
-                        }
-                        own={<SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} />}
-                        hand={
-                          <HandDock
-                            seat={plan.viewer}
-                            growMost={handGrowMost(regions)}
-                            openingMost={openingGrowMost(regions)}
-                          />
-                        }
-                        controls={<ControlsDock stopsRow={table.stopsRow} />}
-                        side={<SideTabs />}
-                        sidePanel={
-                          <SidePanelMount rows={sidePanelRows(regions, lowered)} lowered={lowered} />
-                        }
-                        // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
-                        overlay={<CombatOverlay />}
-                      />
-                      <SideSheet />
-                    </SideProvider>
-                  )}
-                  <FxTravel />
-                  <FxStrikes />
-                </section>
-              </ControlsSlotProvider>
+              <StopControlsProvider inBar={table.ladderInBar}>
+                <ControlsSlotProvider form={table.dock}>
+                  <section
+                    ref={section}
+                    aria-label="Game table"
+                    data-mode={plan.mode}
+                    className="relative h-dvh w-full overflow-hidden bg-table"
+                    style={fx.slow === 1 ? undefined : ({ '--fx-slow': fx.slow } as CSSProperties)}
+                  >
+                    <h1 className="sr-only">Game table</h1>
+                    {!ready || seat === null ? (
+                      <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
+                    ) : (
+                      <SideProvider kind={regions.side}>
+                        <TableGrid
+                          regions={regions}
+                          stopsRow={table.stopsRow}
+                          bar={
+                            <TopBar
+                              mode={plan.mode}
+                              onMode={setMode}
+                              pinnedFocus={chosen !== null}
+                              onFollow={() => setChosen(null)}
+                              stopsInMenu={false}
+                              compact={regions.landscape}
+                            />
+                          }
+                          opponents={
+                            <Opponents
+                              plan={plan}
+                              size={size}
+                              pod={table.opponentPod}
+                              onFocusSeat={setChosen}
+                            />
+                          }
+                          shared={
+                            <SharedStrip
+                              sheetMax={regions.sheet}
+                              onOverhang={onOverhang}
+                              inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
+                            />
+                          }
+                          own={<SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} />}
+                          hand={
+                            <HandDock
+                              seat={plan.viewer}
+                              growMost={handGrowMost(regions)}
+                              openingMost={openingGrowMost(regions)}
+                            />
+                          }
+                          controls={<ControlsDock stopsRow={table.stopsRow} />}
+                          side={<SideTabs />}
+                          sidePanel={
+                            <SidePanelMount rows={sidePanelRows(regions, lowered)} lowered={lowered} />
+                          }
+                          // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
+                          overlay={<CombatOverlay />}
+                        />
+                        <SideSheet />
+                      </SideProvider>
+                    )}
+                    <FxTravel />
+                    <FxStrikes />
+                  </section>
+                </ControlsSlotProvider>
+              </StopControlsProvider>
               <CardPreview />
               <TableMoments />
             </ManualMenuProvider>

@@ -270,12 +270,14 @@ export const isPlayable = (card: Card): boolean => !/, not castable/.test(card.l
 const named = (card: Card): string => card.label.split(',')[0] ?? card.label
 const prompt = (page: Page): Locator => page.locator('[data-decision]')
 const button = (page: Page, name: string): Locator => prompt(page).getByRole('button', { name, exact: true })
+/** The prompt's Undo ("Undo the spell", "Undo the ability"): backs out of the spell or ability being announced. */
+const undo = (page: Page): Locator => prompt(page).locator('[data-slot="undo"]')
 /**
  * The Priority prompt's primary button: its words depend on the moment ("Next: Combat", "Continue"...), its slot does
  * not. The prompt draws it in the controls dock at the bottom right of the table, away from the prompt's own line.
  */
 const primary = (page: Page): Locator => page.locator('[data-region="controls"] [data-slot="primary-action"]')
-/** "End turn" beside the primary button, which is not drawn in the last window of one's own turn. */
+/** "End turn" beside the primary button; in the last window of one's own turn it is drawn alone. */
 const endTurn = (page: Page): Locator =>
   page.locator('[data-region="controls"] [data-slot="secondary-action"]')
 const card = (page: Page, id: string): Locator => page.locator(`button[data-object-id="${id}"]`)
@@ -285,7 +287,7 @@ const enabled = (seen: Seen, label: string): boolean =>
 /**
  * Presses one of the payment prompt's "pay for me" buttons. The server refuses a payment the seat's mana cannot make
  * ("That answer is not allowed") and the prompt stays, so a prompt that is still the same after two seconds is
- * backed out of with "Cancel casting".
+ * backed out of with Undo.
  */
 async function payFor(page: Page, label: string, id: string, done: string): Promise<string> {
   await button(page, label).click()
@@ -300,7 +302,7 @@ async function payFor(page: Page, label: string, id: string, done: string): Prom
       () => false,
     )
   if (moved) return done
-  await button(page, 'Cancel casting').click()
+  await undo(page).click()
   return 'cancels casting, the server refused the payment'
 }
 
@@ -413,6 +415,11 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
         run.yields.set(player.name, (run.yields.get(player.name) ?? 0) + 1)
         return `${recalled}ends the turn`
       }
+      // The last window of one's own turn has no primary button: "End turn" alone moves on.
+      if ((await primary(player.page).count()) === 0) {
+        await endTurn(player.page).click()
+        return `${recalled}ends the turn`
+      }
       await primary(player.page).click()
       return `${recalled}continues`
     }
@@ -460,7 +467,7 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     if (now !== null && enabled(now, rest)) {
       return payFor(page, rest, seen.id, 'pays automatically (nothing left to tap by hand)')
     }
-    await button(page, 'Cancel casting').click()
+    await undo(page).click()
     return 'cancels casting, the cost could not be met'
   },
 
@@ -517,19 +524,22 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
   // with the prompt's words, which is the finding.
   async ChooseTargets({ player }) {
     const { page } = player
-    const legal = prompt(page).locator('[data-slot="legal-targets"] button')
+    // Every legal target is offered in the "Legal targets" group: a player as a button, an object as its card picture.
+    const legal = prompt(page)
+      .getByRole('group', { name: 'Legal targets' })
+      .locator('button:not([disabled]):not([aria-disabled="true"])')
     const confirm = button(page, 'Confirm targets')
     const count = await legal.count()
     if (count === 0) {
-      await prompt(page)
-        .getByRole('button', { name: /^Cancel the (spell|ability)$/ })
-        .click()
+      await undo(page).click()
       return 'has no legal target and cancels'
     }
     const names: string[] = []
     for (let index = 0; index < count; index += 1) {
-      await legal.nth(index).click()
-      names.push(((await legal.nth(index).textContent()) ?? '').trim())
+      const target = legal.nth(index)
+      // A card picture is named by its label, a player's button by its words.
+      names.push(((await target.getAttribute('aria-label')) ?? (await target.textContent()) ?? '').trim())
+      await target.click()
       if (await confirm.isEnabled()) break
     }
     await confirm.click()
@@ -569,7 +579,7 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
         return `takes modes up to ${index + 1}`
       }
     }
-    await button(page, 'Cancel the spell').click()
+    await undo(page).click()
     return 'cancels the spell, too few modes can be taken'
   },
 
@@ -651,6 +661,8 @@ async function chooseCards({ player, seen }: Turn): Promise<string> {
 export interface Hooks {
   /** Called with the decision a seat is about to answer, before it is; screenshots and the end of the run go here. */
   before?(player: Player, seen: Seen, run: Run): Promise<void>
+  /** Answers the decision with the spec's own clicks and says what it did; undefined leaves it to the driver. */
+  answer?(player: Player, seen: Seen, run: Run): Promise<string | undefined>
 }
 
 /** Answers this seat's decisions until the game-over screen shows or a hook sets `run.done`. */
@@ -665,12 +677,13 @@ async function drive(player: Player, style: Style, run: Run, hooks: Hooks): Prom
       run.idle.set(player.name, (run.idle.get(player.name) ?? 0) + 1)
       run.idleAt.set(player.name, [...(run.idleAt.get(player.name) ?? []), seen.banner])
     }
+    const own = await hooks.answer?.(player, seen, run)
     const answer = ANSWERS[seen.kind]
-    if (answer === undefined)
+    if (own === undefined && answer === undefined)
       throw new Error(
         `${player.name} faces ${seen.kind} (${seen.text}; buttons: ${seen.buttons.map((b) => b.label).join(' | ')}), which the driver cannot answer`,
       )
-    const line = await answer({ player, style, seen, run })
+    const line = own ?? (await answer?.({ player, style, seen, run })) ?? ''
     const tried = run.lastPlay.get(player.name)
     if (/cancel/.test(line) && tried !== undefined) run.skip.add(tried)
     run.step(player.name, seen.kind, `#${seen.id} ${line}`)

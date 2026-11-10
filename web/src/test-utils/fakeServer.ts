@@ -40,6 +40,8 @@ export interface ServerScript {
   deckView?: (id: string, call: FetchCall) => Response | Promise<Response>
   /** Answers `GET /api/precons/{code}`, a precon with its cards; a 404 by default. */
   preconView?: (code: string, call: FetchCall) => Response | Promise<Response>
+  /** Answers `GET /api/reads`, every card waiting for a first read; none by default. */
+  reads?: (call: FetchCall) => Response | Promise<Response>
   /** Answers `GET /api/precons`; none by default. */
   precons?: (call: FetchCall) => Response | Promise<Response>
   /**
@@ -116,6 +118,9 @@ export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS
     if (path === '/api/lobbies') return script.lobbies?.(call) ?? jsonResponse(200, { games: [] })
     if (path === '/api/decks' && call.init?.method === undefined) {
       return script.myDecks?.(call) ?? jsonResponse(200, { decks: [] })
+    }
+    if (path === '/api/reads' && call.init?.method === undefined) {
+      return script.reads?.(call) ?? jsonResponse(200, { title: '', cards: [] })
     }
     if (path === '/api/precons') return script.precons?.(call) ?? jsonResponse(200, { precons: [] })
     const viewOf = /^\/api\/(decks|precons)\/([^/]+)$/.exec(path)

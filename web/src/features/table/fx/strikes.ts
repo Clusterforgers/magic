@@ -213,11 +213,22 @@ export function strikeKeyframes(from: Box, to: Box, mutual = false): Keyframe[] 
     const y = from.y + dy * step - (from.height * (scale - 1)) / 2
     return `translate(${Number(x.toFixed(1))}px, ${Number(y.toFixed(1))}px) scale(${scale})`
   }
+  // Opaque in every frame: the layer's `.fx-flier` starts hidden, and the striker stands in for its hidden card.
   return [
-    { offset: 0, transform: at(0, 1), easing: 'cubic-bezier(0.45, 0, 0.55, 1)' },
-    { offset: 0.22, transform: at(-STRIKE_WINDUP_PX, 1.1), easing: 'cubic-bezier(0.4, 0, 0.9, 0.5)' },
-    { offset: STRIKE_HIT, transform: at(travel, 1.12), easing: 'cubic-bezier(0.2, 0.7, 0.4, 1)' },
-    { offset: 0.6, transform: at(travel - recoil, 1.1), easing: 'cubic-bezier(0.45, 0, 0.55, 1)' },
-    { offset: 1, transform: at(0, 1) },
+    { offset: 0, transform: at(0, 1), opacity: 1, easing: 'cubic-bezier(0.45, 0, 0.55, 1)' },
+    {
+      offset: 0.22,
+      transform: at(-STRIKE_WINDUP_PX, 1.1),
+      opacity: 1,
+      easing: 'cubic-bezier(0.4, 0, 0.9, 0.5)',
+    },
+    { offset: STRIKE_HIT, transform: at(travel, 1.12), opacity: 1, easing: 'cubic-bezier(0.2, 0.7, 0.4, 1)' },
+    {
+      offset: 0.6,
+      transform: at(travel - recoil, 1.1),
+      opacity: 1,
+      easing: 'cubic-bezier(0.45, 0, 0.55, 1)',
+    },
+    { offset: 1, transform: at(0, 1), opacity: 1 },
   ]
 }

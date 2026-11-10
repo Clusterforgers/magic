@@ -4,6 +4,8 @@ import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
 import { cn } from '@/lib/utils'
 import type { FixMarksApi } from '@/net/fixMarks'
 import { DraftNote } from '../DraftNote'
+import { PlayByHand } from '../PlayByHand'
+import type { ByHandApi } from '../byHand'
 import { SupportMark, supportEdge } from '../SupportMark'
 import { ClauseList } from './ClauseList'
 import { DiffersList } from './DiffersList'
@@ -20,10 +22,12 @@ interface UnvalidatedCardProps {
   showDecks: boolean
   /** The fix-mark endpoints; with them the card gets a flag that marks it important to fix. */
   fixMarks?: FixMarksApi
+  /** The endpoints that mark the card "play by hand" in a deck; with them it offers that for each of its decks. */
+  byHand?: ByHandApi
 }
 
 /** One card the game does not run whole: its picture, name and state, the decks that hold it and each unread clause. */
-export function UnvalidatedCard({ card, faces, pending, showDecks, fixMarks }: UnvalidatedCardProps) {
+export function UnvalidatedCard({ card, faces, pending, showDecks, fixMarks, byHand }: UnvalidatedCardProps) {
   return (
     <li
       data-card={card.oracleId}
@@ -62,6 +66,14 @@ export function UnvalidatedCard({ card, faces, pending, showDecks, fixMarks }: U
             ))}
           </p>
         ) : null}
+        {byHand === undefined || card.support === 'unplayable' ? null : (
+          <PlayByHand
+            oracleId={card.oracleId}
+            name={card.name}
+            api={byHand}
+            decks={card.decks.map((deck) => ({ ...deck, byHand: card.byHandIn?.includes(deck.id) ?? false }))}
+          />
+        )}
         <DiffersList differs={card.differs ?? []} />
         <ClauseList lines={clauseLines(card, faces)} support={card.support} pending={pending} />
         <DraftNote draft={card.draft} />

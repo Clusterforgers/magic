@@ -1,15 +1,19 @@
-// Goal: the review screen's pure rules hold: each row state has one tone and the engine's words come from the writer or the differing wording, the counts read as a sentence, a wrong note is required and bounded, the address names one deck, the next card skips the judged ones and wraps, a verdict key is C or W outside a text field only, and the table offers a read for a card on a read or with clauses by hand.
+// Goal: the review screen's pure rules hold: each row state has one tone and the engine's words come from the writer or the differing wording, the counts read as a sentence, a wrong note is required and bounded, the address names one deck, a precon or the account's decks, each with its heading, the next card skips the judged ones and wraps, a verdict key is C or W outside a text field only, and the table offers a read for a card on a read or with clauses by hand.
 import { describe, expect, it } from 'vitest'
 import type { ReadRow } from '@/protocol/generated'
 import { READ_CARDS, READ_QUEUE } from './dev/fixture'
 import {
   MAX_READ_NOTE_CHARS,
+  allInDecks,
+  countLine,
   countsLine,
   differsCount,
   engineWords,
   nextToRead,
   noteProblem,
   parseReadSearch,
+  queueKey,
+  queueWords,
   targetOf,
   toneOf,
   verdictKey,
@@ -77,8 +81,30 @@ describe('the address', () => {
     [{ deck: 'd1', precon: 'c18' }, { deck: 'd1' }],
     [{ deck: '', precon: 'c18' }, { precon: 'c18' }],
     [{ deck: 3 }, null],
+    [{ mine: true }, { mine: true }],
+    [{ mine: 'true' }, { mine: true }],
+    [{ mine: 1 }, { mine: true }],
+    [{ mine: false }, null],
+    [{ mine: 'yes' }, null],
+    [{ deck: 'd1', mine: true }, { deck: 'd1' }],
   ])('reads %j', (search, target) => {
     expect(targetOf(parseReadSearch(search))).toEqual(target)
+  })
+
+  it.each([
+    [null, 'all', 'Read every card', false],
+    [{ mine: true } as const, 'mine', 'Cards in your decks', true],
+    [{ deck: 'd1' }, 'deck:d1', 'Read the cards of Izzet', true],
+    [{ precon: 'c18' }, 'precon:c18', 'Read the cards of Izzet', false],
+  ])('keeps %j as %s under the heading %s', (target, key, heading, inDecks) => {
+    expect(queueKey(target)).toBe(key)
+    expect(queueWords(target, 'Izzet').heading).toBe(heading)
+    expect(allInDecks(target)).toBe(inDecks)
+  })
+
+  it('counts the cards of the decks without naming how many are in a deck', () => {
+    expect(countLine(READ_QUEUE.cards, new Set(), { mine: true })).toBe(`${READ_QUEUE.cards.length} to read.`)
+    expect(countLine(READ_QUEUE.cards, new Set(), null)).toMatch(/of them in your decks\.$/)
   })
 })
 

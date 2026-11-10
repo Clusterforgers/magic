@@ -102,6 +102,11 @@ describe('the pictures', () => {
     const zone = deckPane().querySelector('[data-slot="picture-zone"]')
     expect(slot?.querySelector('[data-commander="oracle-krenko"]')).not.toBeNull()
     expect(slot?.compareDocumentPosition(zone as Node)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+    // The tiles pair up by the slot's own width, not the window's: a narrow deck column beside the stats rail stacks them.
+    expect(slot).toHaveClass('@container')
+    const tiles = slot?.querySelector('ul[aria-label="Commander cards"]')
+    expect(tiles).toHaveClass('@lg:grid-cols-2')
+    expect(tiles).not.toHaveClass('sm:grid-cols-2')
   })
 })
 

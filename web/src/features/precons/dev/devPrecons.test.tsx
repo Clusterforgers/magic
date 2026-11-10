@@ -1,4 +1,4 @@
-// Goal: /dev/precons reads its view from the address (shrugging off nonsense), serves the real page over a fixed list that holds a precon of every check state, newest release first, whose details agree with each deck's counts, and answers "not found" with no fixture in a production build.
+// Goal: /dev/precons reads its view from the address (shrugging off nonsense), serves the real page over a fixed list that holds a precon of every check state (one on reads and one with drafts waiting among them), newest release first, whose details agree with each deck's counts, and answers "not found" with no fixture in a production build.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -44,6 +44,11 @@ describe('parseDevPreconsSearch', () => {
 describe('the fixture list', () => {
   it('holds a precon of every check state', () => {
     expect(new Set(FIXTURE_PRECONS.map(statusOf))).toEqual(new Set(['whole', 'read', 'hand', 'blocked']))
+  })
+
+  it('holds a precon on reads with nothing to read and one with drafts waiting', () => {
+    const onReads = FIXTURE_PRECONS.filter((precon) => precon.state === 'read')
+    expect(onReads.map((precon) => precon.summary.to_read > 0).sort()).toEqual([false, true])
   })
 
   it('is sorted newest release first, a deck with no date last, as the server sorts it', () => {

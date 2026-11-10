@@ -1,13 +1,16 @@
-// Goal: the saved pace preferences (default stops, end turn by hand, auto choices) survive in storage, keep only pinned stops, and reach the server at Welcome: the default stops once per game and only to a seat with none, the end-turn choice whenever the server holds the other one.
+// Goal: the saved pace preferences (default stops, end turn by hand, auto choices, kept yields) survive in storage, start with the own declare attackers and postcombat main pinned, keep a cleared list cleared and only pinned stops, and reach the server at Welcome: the default stops once per game and only to a seat with none, the end-turn choice whenever the server holds the other one.
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Stop, StopSide } from '@/protocol/generated'
 import { startSession } from '@/test-utils/harness'
 import {
   APPLIED_LIMIT,
+  AUTO_YIELDS_KEY,
+  DEFAULT_STOPS,
   DEFAULT_STOPS_KEY,
   flowPrefs,
   resetDefaultStops,
   resetFlowPrefs,
+  saveAutoYields,
   saveDefaultStops,
   saveEndTurnByHand,
   welcomeRequests,
@@ -34,8 +37,23 @@ describe('default stops', () => {
     },
   )
 
-  it('starts with none, resets to none, and ignores stored junk', () => {
+  it('starts with the own declare attackers and postcombat main pinned, and keeps a cleared list cleared', () => {
+    expect(flowPrefs().defaultStops).toEqual([pinned('Own', 'DeclareAttackers'), pinned('Own', 'Main2')])
+    expect(flowPrefs().defaultStops).toEqual(DEFAULT_STOPS)
+    resetDefaultStops()
+    resetFlowPrefs()
     expect(flowPrefs().defaultStops).toEqual([])
+  })
+
+  it('a fresh table gets the pinned defaults at its first Welcome', () => {
+    const requests = welcomeRequests({ game: 'fresh', stops: [], endTurnByHand: false, autoChoices: OFF })
+    expect(requests).toEqual([
+      { type: 'SetStop', side: 'Own', step: 'DeclareAttackers', on: true, keep: true },
+      { type: 'SetStop', side: 'Own', step: 'Main2', on: true, keep: true },
+    ])
+  })
+
+  it('resets to none, and ignores stored junk', () => {
     saveDefaultStops([pinned('Own', 'End')])
     resetDefaultStops()
     resetFlowPrefs()
@@ -56,7 +74,7 @@ describe('default stops', () => {
 
 describe('welcome requests', () => {
   const stops = [pinned('Own', 'Main1'), pinned('Opponent', 'End')]
-  const prefs = { defaultStops: stops, endTurnByHand: false, autoChoices: OFF }
+  const prefs = { defaultStops: stops, endTurnByHand: false, autoChoices: OFF, autoYields: [] }
   const setStops = stops.map(({ side, step }) => ({ type: 'SetStop', side, step, on: true, keep: true }))
 
   it.each([
@@ -94,7 +112,7 @@ describe('welcome requests', () => {
     [true, true, []],
     [false, false, []],
   ])('with end turn by hand saved %s and held %s sends %j', (saved, held, expected) => {
-    const none = { defaultStops: [], endTurnByHand: saved, autoChoices: OFF }
+    const none = { defaultStops: [], endTurnByHand: saved, autoChoices: OFF, autoYields: [] }
     expect(welcomeRequests({ game: 'g1', stops: [], endTurnByHand: held, autoChoices: OFF }, none)).toEqual(
       expected,
     )
@@ -112,10 +130,49 @@ describe('welcome requests', () => {
     ],
     [{ ...OFF, smart_stops: true }, OFF, [{ type: 'AutoChoices', choices: { ...OFF, smart_stops: true } }]],
   ])('with auto choices saved %j and held %j sends %j', (saved, held, expected) => {
-    const prefs = { defaultStops: [], endTurnByHand: false, autoChoices: saved }
+    const prefs = { defaultStops: [], endTurnByHand: false, autoChoices: saved, autoYields: [] }
     expect(
       welcomeRequests({ game: 'g1', stops: [], endTurnByHand: false, autoChoices: held }, prefs),
     ).toEqual(expected)
+  })
+})
+
+describe('kept yields', () => {
+  const warden = { name: 'Soul Warden', text: 'gain 1' }
+  const ping = { name: 'Pinger', text: '' }
+  const prefs = (autoYields: { name: string; text: string }[]) => ({
+    defaultStops: [],
+    endTurnByHand: false,
+    autoChoices: OFF,
+    autoYields,
+  })
+  const welcome = (held: { name: string; text: string }[]) => ({
+    game: 'g1',
+    stops: [],
+    endTurnByHand: false,
+    autoChoices: OFF,
+    autoYields: held,
+  })
+
+  it.each([
+    [[warden], [], [{ type: 'LoadAutoYields', yields: [warden] }]],
+    [[warden, ping], [ping], [{ type: 'LoadAutoYields', yields: [warden, ping] }]],
+    [[warden], [warden], []],
+    [[], [warden], []],
+  ])('with %j saved and %j held sends %j', (saved, held, expected) => {
+    expect(welcomeRequests(welcome(held), prefs(saved))).toEqual(expected)
+  })
+
+  it('keeps the yields in this browser and drops a stored entry that is no ability', () => {
+    saveAutoYields([warden])
+    expect(flowPrefs().autoYields).toEqual([warden])
+    resetFlowPrefs()
+    expect(flowPrefs().autoYields).toEqual([warden])
+    window.localStorage.setItem(AUTO_YIELDS_KEY, JSON.stringify([warden, 3, { name: 'x' }]))
+    resetFlowPrefs()
+    expect(flowPrefs().autoYields).toEqual([warden])
+    saveAutoYields([])
+    expect(window.localStorage.getItem(AUTO_YIELDS_KEY)).toBeNull()
   })
 })
 

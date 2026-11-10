@@ -79,20 +79,63 @@ export function noteProblem(note: string): string | null {
   return null
 }
 
-/** The address parameters of `/read`, read leniently: a deck id or a precon code, the deck first. */
-export function parseReadSearch(search: Record<string, unknown>): { deck?: string; precon?: string } {
+/** The address parameters of `/read`. */
+export interface ReadSearch {
+  /** A stored deck of the account. */
+  deck?: string
+  /** A precon by code. */
+  precon?: string
+  /** The cards of the account's own decks. */
+  mine?: true
+}
+
+/** The address parameters of `/read`, read leniently: a deck id, a precon code or `mine=true`, in that order. */
+export function parseReadSearch(search: Record<string, unknown>): ReadSearch {
   const text = (value: unknown): string | undefined =>
     typeof value === 'string' && value.trim() !== '' ? value.trim() : undefined
   const deck = text(search.deck)
   const precon = deck === undefined ? text(search.precon) : undefined
-  return { deck, precon }
+  // The router reads `?mine=true` as a boolean; a hand-typed `?mine=1` is a number.
+  const flag = search.mine === true || search.mine === 'true' || search.mine === 1 || search.mine === '1'
+  const mine = deck === undefined && precon === undefined && flag ? true : undefined
+  return { deck, precon, mine }
 }
 
-/** The deck the review screen reads from its address, or null when it names none. */
-export function targetOf(search: { deck?: string; precon?: string }): ReadTarget | null {
+/** The cards the review screen reads from its address, or null for every card waiting for a first read. */
+export function targetOf(search: ReadSearch): ReadTarget | null {
   if (search.deck !== undefined) return { deck: search.deck }
   if (search.precon !== undefined) return { precon: search.precon }
+  if (search.mine === true) return { mine: true }
   return null
+}
+
+/** What the review screen says of its queue: the heading, the line when nothing waits and the empty state's words. */
+export function queueWords(
+  target: ReadTarget | null,
+  title: string,
+): { heading: string; nothing: string; empty: string } {
+  if (target === null)
+    return {
+      heading: 'Read every card',
+      nothing: 'Nothing waits for a first read.',
+      empty: 'Every draft has a read.',
+    }
+  if ('mine' in target)
+    return {
+      heading: 'Cards in your decks',
+      nothing: 'Nothing in your decks waits for a first read.',
+      empty: 'Every draft in your decks has a read.',
+    }
+  return {
+    heading: `Read the cards of ${title}`,
+    nothing: 'Nothing waits for your read in this deck.',
+    empty: 'Every draft in this deck has your read, or the deck has none.',
+  }
+}
+
+/** Whether every card of the queue is in the account's decks, so "in your decks" says nothing. */
+export function allInDecks(target: ReadTarget | null): boolean {
+  return target !== null && ('deck' in target || 'mine' in target)
 }
 
 /** The card after `current` in the list that the reader has not judged yet, wrapping around; null when none is left. */
@@ -126,15 +169,16 @@ export function verdictKey(
   return null
 }
 
-/** The name a queue is kept under: `all`, `deck:<id>` or `precon:<code>`. */
+/** The name a queue is kept under: `all`, `mine`, `deck:<id>` or `precon:<code>`. */
 export function queueKey(target: ReadTarget | null): string {
   if (target === null) return 'all'
+  if ('mine' in target) return 'mine'
   return 'deck' in target ? `deck:${target.deck}` : `precon:${target.precon}`
 }
 
 /**
  * "312 to read, 41 of them in your decks.": what is left of a queue, and how many of those the account's decks hold.
- * The second part is left out for a stored deck (all of it is in a deck) and when none is.
+ * The second part is left out for a stored deck and the account's decks (all of it is in a deck) and when none is.
  */
 export function countLine(
   cards: readonly ReadQueueCard[],
@@ -143,7 +187,7 @@ export function countLine(
 ): string {
   const left = cards.filter((card) => !done.has(card.oracle_id))
   const mine = left.filter((card) => card.in_decks).length
-  const own = target !== null && 'deck' in target
+  const own = allInDecks(target)
   return own || mine === 0
     ? `${left.length} ${TO_READ}.`
     : `${left.length} ${TO_READ}, ${mine} of them in your decks.`

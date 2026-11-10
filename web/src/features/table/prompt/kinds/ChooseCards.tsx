@@ -16,7 +16,7 @@ import {
 import { CardChoices } from '../CardChoices'
 import { askerWords } from '../choiceText'
 import { uniqueNames } from '../combatText'
-import { awayOf } from '../lookText'
+import { awayOf, inLibrary } from '../lookText'
 import { markCards, useCardMarks } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { usePrompt } from '../PromptContext'
@@ -34,9 +34,10 @@ const NONE: readonly ObjectId[] = []
  * views, in a grid that scrolls inside itself, and are chosen by a click, Enter or Space, or the number keys; the
  * cards of the table that are on offer are marked the way targets are. With room for one a press on another card
  * changes the choice, with room for several a full choice closes the rest, and Confirm waits until the number is
- * legal. A long list (a search) gets a filter box. The choice goes in the order it was made. The server's answer at
- * the deadline is the first `min` cards of the list, so focus starts on the first card. Cards picked for the cost of
- * a spell or ability being announced can be backed out of with Undo or Escape, which pays nothing.
+ * legal. A long list and a search of a library get a search box. The choice goes in the order it was made. The
+ * server's answer at the deadline is the first `min` cards of the list, so focus starts on the first card, or on the
+ * search box of a search of a library. Cards picked for the cost of a spell or ability being announced can be backed
+ * out of with Undo or Escape, which pays nothing.
  */
 const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
   const { answer, selection } = usePrompt()
@@ -55,6 +56,7 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
     [from, byId],
   )
 
+  const searching = from.length > 0 && from.every((id) => inLibrary(byId.get(id)?.zone))
   const fromSet = useMemo(() => new Set(from), [from])
   const chosen = useMemo(() => [...selection.ids].filter((id) => fromSet.has(id)), [selection.ids, fromSet])
   // What is chosen including presses the next render has not shown yet, so two quick presses cannot pass the most.
@@ -142,6 +144,7 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
         label="Cards to choose from"
         keys
         focusFirst={first}
+        search={searching}
       />
     </PromptLayout>
   )

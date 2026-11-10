@@ -5,7 +5,7 @@
 import { KIND_LABEL, KIND_ORDER, kindOf } from '@/features/decks/preview/model'
 import type { CardKind, DeckPreviewData, PreviewCard } from '@/features/decks/preview/model'
 import { byHandCopies, cardsByHand, runsWhole } from '@/lib/byHand'
-import type { CardHit, Counts, ReadState, Support } from '@/protocol/generated'
+import type { CardHit, Counts, Reason, ReadState, Support } from '@/protocol/generated'
 import type { Draft, Line } from './deckEdit'
 import { checkOf, reasonLines, SUPPORT_ORDER } from './report'
 import type { LineCheck, SortKey } from './report'
@@ -89,6 +89,8 @@ export interface HandCard {
   draft?: ReadState
   /** Why the game leaves the card to the table, as sentences; empty when the check has not seen the card yet. */
   reasons: readonly string[]
+  /** The clauses behind the reasons, with the span of the card's text each covers. */
+  clauses: readonly Reason[]
 }
 
 /** The cards that are not Verified, worst state first and then by name; a card in two zones is one entry. */
@@ -105,6 +107,7 @@ export function handCards(draft: Draft, checks: ReadonlyMap<string, LineCheck>):
         support: check.support,
         draft: check.draft,
         reasons: reasonLines(check.reasons).map((reason) => reason.text),
+        clauses: check.reasons,
       })
     } else {
       kept.count += line.count

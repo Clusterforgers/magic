@@ -12,7 +12,8 @@ interface LookQuestion {
   text?: string | undefined
 }
 
-const inLibrary = (zone: Zone | undefined): boolean => typeof zone === 'object' && 'Library' in zone
+/** Whether a zone is a library. */
+export const inLibrary = (zone: Zone | undefined): boolean => typeof zone === 'object' && 'Library' in zone
 
 /**
  * Whether a choice of cards is the split of a scry (the cards looked at go to the bottom) or a surveil (to the

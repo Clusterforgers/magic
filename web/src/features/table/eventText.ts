@@ -455,6 +455,10 @@ export function describeManual(
     const name = 'Common' in token ? token.Common : token.Custom.name
     return `${who} creates ${count} ${name} ${count === 1 ? 'token' : 'tokens'} (by hand)`
   }
+  if ('CopyToken' in action) {
+    const { object, count } = action.CopyToken
+    return `${who} creates ${count} ${count === 1 ? 'token that is a copy' : 'tokens that are copies'} of ${n.card(object)} (by hand)`
+  }
   if ('Tap' in action) return `${who} taps ${n.card(action.Tap.object)} (by hand)`
   if ('Untap' in action) return `${who} untaps ${n.card(action.Untap.object)} (by hand)`
   if ('Draw' in action) {
@@ -912,8 +916,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`${n.seat(player)} rolls a d${sides}: ${result}`)
   }
   if ('CoinFlipped' in event) {
-    const { player, won } = event.CoinFlipped
-    return line(`${n.seat(player)} ${won ? 'wins' : 'loses'} a coin flip`)
+    const { player, won, call, side } = event.CoinFlipped
+    const who = n.seat(player)
+    return line(
+      `${who} calls ${call.toLowerCase()}, the coin comes up ${side.toLowerCase()}: ${who} ${won ? 'wins' : 'loses'} the flip`,
+    )
   }
   if ('Clashed' in event) {
     const { player, opponent, won } = event.Clashed

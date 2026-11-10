@@ -6,10 +6,12 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useSeatNamer } from '../names'
 import { PreviewCard } from '../PreviewCard'
 import { useViewport } from '../useViewport'
+import { CoinFace } from './CoinFace'
 import { DieFace } from './DieFace'
 import { revealWidth } from './moments'
-import type { RevealMoment, RollMoment } from './moments'
+import type { CoinMoment, RevealMoment, RollMoment } from './moments'
 import { useMoments } from './store'
+import { useCoinLanded } from './useCoinLanded'
 
 /** The title line of a moment: who did it and, after a dot, which spell or ability made them. */
 function Heading({ words, why, onDismiss }: { words: string; why: string | null; onDismiss(): void }) {
@@ -85,10 +87,43 @@ function Roll({ moment, still, onDismiss }: { moment: RollMoment; still: boolean
   )
 }
 
+/** A coin a player flipped: it turns over and lands on its side, with the call and whether it won once it has landed. */
+function Coin({ moment, still, onDismiss }: { moment: CoinMoment; still: boolean; onDismiss(): void }) {
+  const seat = useSeatNamer()
+  const who = seat(moment.player)
+  const landed = useCoinLanded(still)
+  const call = moment.call
+  return (
+    <section
+      data-slot="moment"
+      data-kind="coin"
+      aria-label={`${who} flips a coin`}
+      className="pointer-events-auto w-fit max-w-full rounded-xl bg-popover p-3 text-popover-foreground shadow-lg ring-1 ring-foreground/15"
+    >
+      <Heading words={`${who} flips a coin`} why={moment.why} onDismiss={onDismiss} />
+      <div className="mt-1 grid place-items-center gap-1">
+        <CoinFace side={moment.side} still={still} landed={landed} />
+        {call === null ? null : (
+          <p data-slot="coin-call" className="text-sm text-muted-foreground">
+            Called {call.side.toLowerCase()}
+            {landed ? (
+              <>
+                {' · '}
+                <span className="font-semibold text-foreground">{call.won ? 'wins' : 'loses'}</span>
+              </>
+            ) : null}
+          </p>
+        )}
+      </div>
+    </section>
+  )
+}
+
 /**
- * What every seat is shown for a moment: the cards a player revealed, large, and a die a player rolled, landing on its
- * result. They stand at the top of the table for `momentMs`, never take the pointer outside their own panel (the table
- * stays playable under them), and go with a click on Dismiss or Escape. Under reduced motion nothing moves. The log
+ * What every seat is shown for a moment: the cards a player revealed, large, a die a player rolled, landing on its
+ * result, and a coin a player flipped, landing on its side. They stand at the top of the table for `momentMs`, never
+ * take the pointer outside their own panel (the table stays playable under them), and go with a click on Dismiss or
+ * Escape. Under reduced motion nothing moves. The log
  * says the same in words, so this is a way to see it, not the only one.
  */
 export function TableMoments() {
@@ -116,6 +151,13 @@ export function TableMoments() {
             key={moment.key}
             moment={moment}
             crowded={items.length > 1}
+            onDismiss={() => moments.dismiss(moment.key)}
+          />
+        ) : moment.kind === 'coin' ? (
+          <Coin
+            key={moment.key}
+            moment={moment}
+            still={reduced}
             onDismiss={() => moments.dismiss(moment.key)}
           />
         ) : (

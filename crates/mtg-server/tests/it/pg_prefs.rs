@@ -1,4 +1,4 @@
-//! Goal: account preferences work end to end over real HTTP on Postgres: only a signed-in account reaches them and only its own, a new account reads the defaults, a saved update reads back sorted and per account, bad stops are refused with 400, a server without a database says so, and deleting an account removes its row.
+//! Goal: account preferences work end to end over real HTTP on Postgres: only a signed-in account reaches them and only its own, a new account reads the defaults (its own declare attackers and postcombat main pinned), a saved update (an empty stop list too) reads back sorted and per account, bad stops are refused with 400, a server without a database says so, and deleting an account removes its row.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -32,7 +32,7 @@ fn stop(side: &str, step: &str, keep: bool) -> Value {
 }
 
 fn defaults() -> Value {
-    json!({"default_stops": [], "end_turn_by_hand": false, "auto_choices": {"order_triggers": false, "assign_damage": false, "smart_stops": false}})
+    json!({"default_stops": [stop("Own", "DeclareAttackers", true), stop("Own", "Main2", true)], "end_turn_by_hand": false, "auto_yields": [], "auto_choices": {"order_triggers": false, "assign_damage": false, "smart_stops": false}})
 }
 
 #[tokio::test]
@@ -74,6 +74,7 @@ async fn a_new_account_reads_the_defaults_and_a_save_reads_back_per_account(pool
     let expected = json!({
         "default_stops": [stop("Own", "Upkeep", true), stop("Opponent", "Upkeep", true)],
         "end_turn_by_hand": true,
+        "auto_yields": [],
         "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": true}
     });
     assert_eq!(saved.json(), expected);
@@ -82,6 +83,12 @@ async fn a_new_account_reads_the_defaults_and_a_save_reads_back_per_account(pool
 
     assert_eq!(save(&server, &ann, &defaults()).await.status, 200);
     assert_eq!(ann.get(server.addr, ROUTE).await.json(), defaults());
+
+    // An account that clears the pinned stops keeps them cleared.
+    let mut cleared = defaults();
+    cleared["default_stops"] = json!([]);
+    assert_eq!(save(&server, &ann, &cleared).await.status, 200);
+    assert_eq!(ann.get(server.addr, ROUTE).await.json(), cleared);
 }
 
 #[sqlx::test(migrations = false)]

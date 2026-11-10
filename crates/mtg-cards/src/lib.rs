@@ -41,7 +41,7 @@ pub mod vanilla;
 pub mod w11d_dungeon;
 pub mod wording;
 
-pub use assemble::{Assembled, assemble};
+pub use assemble::{Assembled, assemble, assemble_by_hand};
 pub use definition::{AbilityDef, CardDefinition, CardIdentity, ManaAbility, ManualClause, Shown};
 pub use draft::{Draft, DraftRules, ReadState};
 pub use identity::pairing_keywords;
