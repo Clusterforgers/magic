@@ -1,4 +1,4 @@
-//! Goal: on Postgres the deck check takes `precon:<code>` as its deck without an account and answers the report of the precon alone or its verdict at a table (a game, or described rules) that agrees with what a seat choosing the deck there is told, at two to four seats and under each deck rule a table can relax; an unknown or malformed code, a body of the wrong shape and a bad table are refused, the stored-deck check keeps asking for an account, and the check counts against the precon budget of the address.
+//! Goal: on Postgres the deck check takes `precon:<code>` as its deck without an account and answers the report of the precon alone or its verdict at a table (a game, or described rules) that agrees with what a seat choosing the deck there is told (a warning count; legality never refuses), at two to four seats and under each deck rule a table can relax; an unknown or malformed code, a body of the wrong shape and a bad table are refused, the stored-deck check keeps asking for an account, and the check counts against the precon budget of the address.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::time::Duration;
@@ -90,6 +90,17 @@ async fn verdict(server: &TestServer, body: Value) -> net::Reply {
 async fn as_account(server: &TestServer, who: &Browser, body: &Value) -> net::Reply {
     who.post(server.addr, "/api/decks/check", &body.to_string())
         .await
+}
+
+/// The state of a report: `blocked` stands for a deck that is not legal, which warns and keeps the state of its cards.
+fn assert_state(report: &Value, state: &str, what: &str) {
+    if state == "blocked" {
+        assert_ne!(report["summary"]["state"], "blocked", "{what}");
+        assert_eq!(report["summary"]["legal"], false, "{what}");
+    } else {
+        assert_eq!(report["summary"]["state"], state, "{what}");
+        assert_eq!(report["summary"]["legal"], true, "{what}");
+    }
 }
 
 /// The codes of the issues of a report, in order.
@@ -186,7 +197,7 @@ async fn a_precon_is_checked_alone_with_or_without_an_account_as_the_list_judges
         );
 
         assert_eq!(report["format"], case.format, "{}", case.code);
-        assert_eq!(report["summary"]["state"], case.state, "{}", case.code);
+        assert_state(&report, case.state, case.code);
         assert_eq!(codes(&report), case.issues, "{}", case.code);
         assert!(
             !report["cards"].as_array().unwrap().is_empty(),
@@ -252,17 +263,16 @@ async fn the_verdict_at_a_table_agrees_with_the_seat_choice_at_two_to_four_seats
     let seat_says = |code: &'static str, game: String| {
         let (server, ann) = (&server, &ann);
         async move {
+            // The seat takes the deck whatever its legality; the table hears the count, the check names them.
             let reply = choose(server, ann, &game, 0, &on(code)).await;
-            match reply.status {
-                200 => Vec::new(),
-                422 => reply.json()["issues"]
-                    .as_array()
-                    .unwrap()
-                    .iter()
-                    .map(|issue| issue["code"].as_str().unwrap().to_owned())
-                    .collect(),
-                other => panic!("{code}: {other}: {}", reply.text()),
-            }
+            assert_eq!(reply.status, 200, "{code}: {}", reply.text());
+            let warnings = reply.json()["warnings"].as_u64().unwrap();
+            let report = verdict(server, json!({"deck": on(code), "game": game}))
+                .await
+                .json();
+            let found = codes(&report);
+            assert_eq!(found.len() as u64, warnings, "{code}");
+            found
         }
     };
 
@@ -296,7 +306,7 @@ async fn the_verdict_at_a_table_agrees_with_the_seat_choice_at_two_to_four_seats
                 .await
                 .json();
             assert_eq!(codes(&refused), [case.issue], "{at}");
-            assert_eq!(refused["summary"]["state"], "blocked", "{at}");
+            assert_state(&refused, "blocked", &at);
             assert_eq!(refused["summary"]["issues"], 1, "{at}");
             assert_eq!(
                 seat_says(case.code, plain.clone()).await,
@@ -333,7 +343,7 @@ async fn the_verdict_at_a_table_agrees_with_the_seat_choice_at_two_to_four_seats
                 .await
                 .json();
             assert_eq!(codes(&report), issues, "{at}");
-            assert_eq!(report["summary"]["state"], state, "{at}");
+            assert_state(&report, state, &at);
             assert_eq!(seat_says(code, game.clone()).await, issues, "{at}");
             let table = verdict(
                 &server,
@@ -343,7 +353,7 @@ async fn the_verdict_at_a_table_agrees_with_the_seat_choice_at_two_to_four_seats
             assert_eq!(table.json(), report, "{at}: a described table is the same");
         }
 
-        // What no table relaxes still blocks the precon.
+        // What no table relaxes still warns for the precon.
         for (code, issue) in [(BEAR, "commander_eligibility"), (GHOST, "unknown_card")] {
             let at = format!("{code} at {seats} seats");
             let report = verdict(&server, json!({"deck": on(code), "game": lenient}))
@@ -353,7 +363,7 @@ async fn the_verdict_at_a_table_agrees_with_the_seat_choice_at_two_to_four_seats
                 codes(&report).iter().any(|code| code == issue),
                 "{at}: {report}"
             );
-            assert_eq!(report["summary"]["state"], "blocked", "{at}");
+            assert_state(&report, "blocked", &at);
             let held = seat_says(code, lenient.clone()).await;
             assert!(held.iter().any(|held| held == issue), "{at}: {held:?}");
         }

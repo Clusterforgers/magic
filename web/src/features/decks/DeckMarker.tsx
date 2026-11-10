@@ -37,7 +37,7 @@ interface DeckMarkerProps extends MarkerChange {
 
 /**
  * The marker beside a deck's name (docs/deck-check.md, "The deck state"): the badge for a clean saved check (Verified), for
- * a deck played by hand, for a blocked one and for one never checked, and "Unsaved draft" when the draft
+ * a deck played by hand and for one never checked, and "Unsaved draft" when the draft
  * differs from the saved deck.
  */
 export function DeckMarker({ state, dirty, className }: DeckMarkerProps) {

@@ -628,6 +628,9 @@ pub enum GameRule {
     VoteAgain(Ref),
     /// A player in the group who would begin an extra turn skips that turn instead (CR 500.7).
     SkipExtraTurns(Ref),
+    /// A player in the group who would flip a coin flips two instead and ignores one (CR 705.3, Krark's Thumb); each such
+    /// rule doubles the coins again.
+    FlipTwoCoins(Ref),
     /// The players play with the top card of their library revealed to every seat.
     RevealTop(Ref),
     /// Players may cast cards the ordinary rules do not let them cast: from another zone, without paying their mana

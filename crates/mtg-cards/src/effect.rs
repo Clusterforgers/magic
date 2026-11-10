@@ -783,6 +783,10 @@ pub enum Effect {
         /// How many of each kind; as many as `of` holds of the kind when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         each: Option<Amount>,
+        /// The controller chooses one of the kinds `of` holds and only that kind is put ("choose a counter on target
+        /// permanent. Put an additional counter of that kind on that permanent").
+        #[serde(default, skip_serializing_if = "is_false")]
+        one_kind: bool,
     },
     /// Taps permanents.
     Tap {

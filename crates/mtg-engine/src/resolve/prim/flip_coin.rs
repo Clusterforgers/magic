@@ -10,10 +10,10 @@ use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::rng::GameRng;
 
 /// The sides a player calls between, in the order they are offered: an answer that takes the first calls heads.
-const SIDES: [CoinSide; 2] = [CoinSide::Heads, CoinSide::Tails];
+pub(super) const SIDES: [CoinSide; 2] = [CoinSide::Heads, CoinSide::Tails];
 
 /// The question the call is asked with.
-const CALL: &str = "Call heads or tails.";
+pub(super) const CALL: &str = "Call heads or tails.";
 
 /// The side a flip comes up from the next substream of the game's random stream: heads or tails at even odds.
 pub(crate) fn side(seed: u64, index: u64) -> CoinSide {
@@ -40,19 +40,27 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Ok(Run::events(Vec::new()));
     };
-    let chooser = OptionChooser {
-        player,
-        options: SIDES.map(ChoiceOption::Side).to_vec(),
-        text: CALL.to_owned(),
+    // Krark's Thumb: two coins or more for one flip, one kept (`ep22_two_coins`).
+    let (call, side) = if crate::rules::ep22_coins_per_flip(state, player) > 1 {
+        match super::ep22_two_coins::ep22_flip(cx, player)? {
+            Ok(found) => found,
+            Err(asked) => return Ok(asked),
+        }
+    } else {
+        let chooser = OptionChooser {
+            player,
+            options: SIDES.map(ChoiceOption::Side).to_vec(),
+            text: CALL.to_owned(),
+        };
+        let call = match pick_options(cx, &[chooser])? {
+            Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
+            Optioned::Done(taken) => taken
+                .first()
+                .and_then(|(_, index)| SIDES.get(*index).copied())
+                .unwrap_or_default(),
+        };
+        (call, side(state.seed(), state.rng_index()))
     };
-    let call = match pick_options(cx, &[chooser])? {
-        Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
-        Optioned::Done(taken) => taken
-            .first()
-            .and_then(|(_, index)| SIDES.get(*index).copied())
-            .unwrap_or_default(),
-    };
-    let side = side(state.seed(), state.rng_index());
     let won = call == side;
     Ok(Run::Done {
         events: vec![Event::CoinFlipped {

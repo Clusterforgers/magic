@@ -17,4 +17,9 @@ format: string,
  * Copies of the main deck's cards that are not verified, which the table resolves by hand in
  * part or in whole. Zero for a deck the game plays entirely.
  */
-manual_cards: number, };
+manual_cards: number, 
+/**
+ * How many rules of the table's format the deck breaks (`docs/deck-check.md`): a warning for everyone at the
+ * table, never a refusal. Zero for a deck that is legal here; the rules broken are told only to its owner.
+ */
+warnings: number, };

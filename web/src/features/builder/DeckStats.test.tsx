@@ -151,7 +151,7 @@ describe('the save bar', () => {
     })
     await user.click(screen.getByRole('button', { name: 'Add one Lightning Bolt' }))
     expect(deckPane().querySelector('[data-slot="save-bar"]')).toHaveTextContent(
-      'Unsaved changes. The deck has 2 issues in Modern; it can still be saved.',
+      /^Unsaved changes. Not legal in Modern: 2 cards not in the format; it can still be saved and played./,
     )
   })
 })

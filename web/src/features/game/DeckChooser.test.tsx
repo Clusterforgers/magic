@@ -62,7 +62,7 @@ async function open({
     <AuthContext value={auth}>
       <DeckChooser
         api={{ listDecks: async () => builtIn }}
-        decks={lobbyDecks(switches)}
+        decks={lobbyDecks(format === 'commander' ? { ...switches, format } : switches)}
         precons={lobbyPrecons(switches)}
         favouritesApi={favourites}
         game="g1"
@@ -87,7 +87,7 @@ const pane = (): HTMLElement => screen.getByText((_, node) => node?.getAttribute
 describe('the rows', () => {
   it.each([
     ['Burn', /Modern · 60 cards/, '3 played by hand'],
-    ['Pauper Affinity', /Pauper · 60 cards/, 'Cannot be taken'],
+    ['Pauper Affinity', /Pauper · 60 cards/, '2 played by hand'],
     ['Rakdos Midrange', /Standard · 60 cards/, 'Whole deck runs'],
   ])('summarises %s with its facts and a support chip', async (name, facts, chip) => {
     width(true)
@@ -111,7 +111,10 @@ describe('the rows', () => {
 
   it('marks the deck the seat plays', async () => {
     width(true)
-    await open({ format: 'normal', current: { name: 'Burn', format: 'modern', manual_cards: 1 } })
+    await open({
+      format: 'normal',
+      current: { name: 'Burn', format: 'modern', manual_cards: 1, warnings: 0 },
+    })
     const row = await screen.findByRole('option', { name: /^Burn/ })
     expect(row).toHaveAttribute('data-chosen', 'true')
     await waitFor(() => expect(row).toHaveAttribute('aria-selected', 'true'))
@@ -163,7 +166,7 @@ describe('search and filters', () => {
 
   it.each([
     ['Fully validated', ['Rakdos Midrange']],
-    ['Has hand-played cards', ['Burn']],
+    ['Has hand-played cards', ['Burn', 'Pauper Affinity']],
     ['All decks', ['Burn', 'Pauper Affinity', 'Rakdos Midrange']],
   ])('filters by support: %s', async (label, names) => {
     width(true)
@@ -233,19 +236,19 @@ describe('selecting and choosing', () => {
     expect(choose).toHaveBeenLastCalledWith({ id: 'stored-rakdos', name: 'Rakdos Midrange' })
   })
 
-  it('shows a deck the table cannot take with the reason and does not take it', async () => {
+  it('shows a deck that is not legal at the table with the reason as a warning, and still takes it', async () => {
     width(true)
     const { user, choose } = await open({ format: 'normal' })
     await user.click(await screen.findByRole('option', { name: /^Pauper Affinity/ }))
-    const why = await screen.findByText('Not legal in Normal')
+    const why = await screen.findByText(/^Not legal in Normal/)
     expect(why).toBeInTheDocument()
     const use = screen.getByRole('button', { name: 'Use this deck' })
-    await waitFor(() => expect(use).toHaveAttribute('aria-disabled', 'true'))
+    expect(use).not.toHaveAttribute('aria-disabled', 'true')
     await user.click(use)
-    expect(choose).not.toHaveBeenCalled()
+    expect(choose).toHaveBeenCalledWith({ id: 'stored-pauper', name: 'Pauper Affinity' })
     expect(document.querySelector('[data-slot="deck-blocked"]')).toBeNull()
     expect(screen.getByRole('list', { name: /Why the deck is not legal in Normal/ })).toHaveTextContent(
-      /not legal in this format/i,
+      /Atog is banned in Pauper/,
     )
   })
 
@@ -293,7 +296,7 @@ describe('sorting', () => {
 
   it.each([
     ['name', ['Arcane Wizar', 'Draconic Dom', 'Merciless Ra']],
-    ['hand', ['Draconic Dom', 'Merciless Ra', 'Arcane Wizar']],
+    ['hand', ['Arcane Wizar', 'Draconic Dom', 'Merciless Ra']],
   ])('orders the precons by %s and says the count by hand on each row', async (sort, expected) => {
     width(true)
     const { user } = await open({ signedIn: false })
@@ -392,7 +395,7 @@ describe('states', () => {
     await open({
       ready: true,
       format: 'normal',
-      current: { name: 'Burn', format: 'modern', manual_cards: 1 },
+      current: { name: 'Burn', format: 'modern', manual_cards: 1, warnings: 0 },
     })
     expect(
       screen.getByText('Your deck is locked while you are ready. Press Not ready to change it.'),

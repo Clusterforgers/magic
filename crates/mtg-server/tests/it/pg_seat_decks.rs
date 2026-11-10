@@ -1,4 +1,4 @@
-//! Goal: on Postgres an account plays one of its stored decks: it chooses it at creation, when joining and later by token or session, the table is told the deck's name, format and a count of manual cards and never a card, another account's deck is the 404 of a deck nobody has, a blocked deck is refused with its issues to its owner alone, a card its owner plays by hand makes the table one played by hand and the recipe names it, the recipe names the decks at the start with the fingerprint of their cards, a started game survives the deletion of its stored decks and resumes with the same decks and state, a start whose recipe cannot be stored is refused and tried again, and a table with a deck played by hand lists as one, stores that when it starts and resumes as one after a restart, and the printing a deck line chose is the printing of the cards in the game's views (a line with none leaves it out, a built-in deck has none) and in the recipe, and the same after a restart.
+//! Goal: on Postgres an account plays one of its stored decks: it chooses it at creation, when joining and later by token or session, the table is told the deck's name, format and a count of manual cards and never a card, another account's deck is the 404 of a deck nobody has, an illegal deck (banned, wrong size, a command zone at a Normal table, off identity) is taken with its warnings counted to every seat and listed to its owner and its game starts, a deck with no playable card is the one refused, a card its owner plays by hand makes the table one played by hand and the recipe names it, the recipe names the decks at the start with the fingerprint of their cards, a started game survives the deletion of its stored decks and resumes with the same decks and state, a start whose recipe cannot be stored is refused and tried again, and a table with a deck played by hand lists as one, stores that when it starts and resumes as one after a restart, and the printing a deck line chose is the printing of the cards in the game's views (a line with none leaves it out, a built-in deck has none) and in the recipe, and the same after a restart.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -111,6 +111,19 @@ fn banned() -> Value {
 
 fn short() -> Value {
     deck("Short", "freeform", &[line("main", "Forest", 20)])
+}
+
+/// A Commander deck with a card outside its commander's colour identity.
+fn off_identity() -> Value {
+    deck(
+        "Off identity",
+        "commander",
+        &[
+            line("commander", "Questing Beast", 1),
+            line("main", "Forest", 98),
+            line("main", "Lightning Bolt", 1),
+        ],
+    )
 }
 
 fn commander() -> Value {
@@ -235,7 +248,7 @@ async fn an_account_plays_its_stored_deck_and_the_table_hears_a_count_and_never_
     seen.push(changed.text());
     assert_eq!(
         changed.json(),
-        json!({"name": "Evergreen", "format": "modern", "manual_cards": 0})
+        json!({"name": "Evergreen", "format": "modern", "manual_cards": 0, "warnings": 0})
     );
     let table = roster(&mut socket).await;
     assert_eq!(
@@ -311,68 +324,96 @@ async fn an_account_plays_its_stored_deck_and_the_table_hears_a_count_and_never_
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_blocked_deck_is_refused_with_its_issues_for_its_owner_and_nobody_is_seated_by_it(
-    pool: PgPool,
-) {
+async fn an_illegal_deck_is_taken_with_its_warnings_and_its_game_starts(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
     let bo = register(server.addr, "bob", PASSWORD).await;
-    let game = create(&server, &ann, "mono-green").await;
 
-    for (stored, code, name) in [
-        (banned(), "not_legal", Some("Sol Ring")),
-        (short(), "deck_size", None),
-        (commander(), "no_commander_zone", None),
+    for (stored, code) in [
+        (banned(), "not_legal"),
+        (short(), "deck_size"),
+        (commander(), "no_commander_zone"),
+        (off_identity(), "color_identity"),
     ] {
         let id = store(&server, &ann, &stored).await;
-        let refused = choose(&server, &ann, &game, 0, &id).await;
-        assert_eq!(refused.status, 422, "{}", refused.text());
-        assert_eq!(refused.error_code(), "deck_blocked");
-        let issues = refused.json()["issues"].clone();
-        assert_eq!(issues[0]["code"], code, "{issues}");
-        if let Some(name) = name {
-            assert_eq!(issues[0]["name"], name);
-        }
-        // The same refusal when a game is made with the deck and when a joiner brings it.
-        let body = json!({"format": "normal", "seats": [{"name": "Ann", "deck": id}, {"name": "B", "deck": "mono-red"}]});
-        let at_creation = ann.post(server.addr, "/api/games", &body.to_string()).await;
+        // Made with the deck, a seat change to it and a joiner who brings it: each is taken.
+        let game = create(&server, &ann, &id).await;
         assert_eq!(
-            (at_creation.status, at_creation.error_code().as_str()),
-            (422, "deck_blocked")
+            choose(&server, &ann, &game, 0, "mono-red").await.status,
+            200
+        );
+        let chosen = choose(&server, &ann, &game, 0, &id).await;
+        assert_eq!(chosen.status, 200, "{code}: {}", chosen.text());
+        assert!(chosen.json()["warnings"].as_u64().unwrap() >= 1, "{code}");
+        let other = store(&server, &bo, &stored).await;
+        let join = bo
+            .post(
+                server.addr,
+                &format!("/api/games/{game}/join"),
+                &json!({ "deck": other }).to_string(),
+            )
+            .await;
+        assert_eq!(join.status, 200, "{code}: {}", join.text());
+
+        // Every seat sees that the decks have warnings; the owner reads them at the table.
+        let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+        let warnings = crate::common::seat_warnings(&handle, 0).await;
+        assert!(
+            warnings.iter().all(|count| *count >= 1),
+            "{code}: {warnings:?}"
+        );
+        let body = json!({ "deck": id, "game": game });
+        let checked = ann
+            .post(server.addr, "/api/decks/check", &body.to_string())
+            .await
+            .json();
+        assert_eq!(checked["summary"]["legal"], false, "{code}");
+        assert_ne!(checked["summary"]["state"], "blocked", "{code}");
+        assert!(
+            checked["legality"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|issue| issue["code"] == code),
+            "{code}: {checked}"
+        );
+
+        for seat in 0..2 {
+            handle
+                .send(PlayerId(seat), ClientMessage::Ready)
+                .await
+                .unwrap();
+        }
+        for _ in 0..200 {
+            if handle.status().await.unwrap().started {
+                break;
+            }
+            tokio::time::sleep(std::time::Duration::from_millis(10)).await;
+        }
+        assert!(
+            handle.status().await.unwrap().started,
+            "{code}: the game starts"
         );
     }
-    // A blocked deck of the joiner's own seats nobody.
-    let blocked = store(&server, &bo, &banned()).await;
-    let join = bo
-        .post(
-            server.addr,
-            &format!("/api/games/{game}/join"),
-            &json!({ "deck": blocked }).to_string(),
-        )
-        .await;
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_deck_with_no_card_a_game_can_play_is_the_one_refused(pool: PgPool) {
+    let server = start(&pool).await;
+    let ann = register(server.addr, "ann", PASSWORD).await;
+    let game = create(&server, &ann, "mono-green").await;
+    let sideboard = deck(
+        "Sideboard only",
+        "freeform",
+        &[line("sideboard", "Forest", 10)],
+    );
+    let id = store(&server, &ann, &sideboard).await;
+    let refused = choose(&server, &ann, &game, 0, &id).await;
     assert_eq!(
-        (join.status, join.error_code().as_str()),
+        (refused.status, refused.error_code().as_str()),
         (422, "deck_blocked")
     );
-    let listed = net::get(server.addr, &format!("/api/games/{game}"))
-        .await
-        .json();
-    assert_eq!(listed["seats"][1]["name"], "", "the seat is still open");
-    assert_eq!(
-        server.registry.len(),
-        1,
-        "no game was made by a refused deck"
-    );
-
-    // The deck stayed what it was.
-    let still = ann
-        .put(
-            server.addr,
-            &seat_path(&game, 0),
-            &json!({ "deck": "mono-red" }).to_string(),
-        )
-        .await;
-    assert_eq!(still.status, 200);
+    assert_eq!(refused.json()["issues"][0]["code"], "empty");
 }
 
 /// The recipe of a game as the database holds it.

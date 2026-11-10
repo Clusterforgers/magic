@@ -45,10 +45,10 @@ export type Found = Partial<
 }
 
 /**
- * `item` after a check that found `found`: the counts, the state and the flags that go with them. Unplayable cards
- * block the deck; a deck with `playable` false is blocked too, with or without them.
+ * `item` after a check that found `found`: the counts, the state and the flags that go with them. Unplayable cards are
+ * played by hand; `issues` legality issues make the deck not legal, a warning that leaves it playable.
  */
-export function checked(item: PreconListItem, found: Found = {}, playable?: boolean): PreconListItem {
+export function checked(item: PreconListItem, found: Found = {}, issues = 0): PreconListItem {
   const {
     partial = 0,
     manual = 0,
@@ -62,17 +62,17 @@ export function checked(item: PreconListItem, found: Found = {}, playable?: bool
   const runs = read + forge + unverified
   const total = item.card_count
   const rest = partial + manual + stale + unplayable
-  const open = playable ?? unplayable === 0
-  const state =
-    !open || unplayable > 0 ? 'blocked' : rest > 0 ? 'manual_play' : runs > 0 ? 'read' : 'verified'
+  const state = rest > 0 ? 'manual_play' : runs > 0 ? 'read' : 'verified'
   return {
     ...item,
     state,
     verified: state === 'verified',
-    playable: open,
+    playable: true,
     summary: summary({
       format: item.format,
       state,
+      legal: issues === 0,
+      issues,
       counts: counts({
         total,
         verified: total - rest - runs,

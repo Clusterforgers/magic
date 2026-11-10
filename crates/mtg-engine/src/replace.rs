@@ -2943,7 +2943,7 @@ impl Pass<'_> {
                     .unwrap_or("the commander");
                 Ok(Asked::Ask(Decision {
                     player: owner,
-                    kind: DecisionKind::YesNo(YesNoOptions::new(
+                    kind: DecisionKind::YesNo(YesNoOptions::commander_return(
                         candidate.object.id,
                         format!("Put {name} into the command zone instead of {to}?"),
                     )),

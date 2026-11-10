@@ -10,7 +10,6 @@
 
 use std::sync::Arc;
 
-use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 use mtg_protocol::SeatDeck;
@@ -78,9 +77,6 @@ pub enum ClaimError {
     /// The name is empty or longer than [`MAX_NAME_CHARS`] characters.
     #[error("the name must be 1 to {MAX_NAME_CHARS} characters")]
     BadName,
-    /// The deck the visitor brings breaks a rule of the game's format.
-    #[error("that deck cannot be played in this game")]
-    DeckBlocked(Vec<Issue>),
     /// The claim could not be saved.
     #[error(transparent)]
     Record(#[from] RecordError),
@@ -107,9 +103,6 @@ pub enum TableError {
     /// The seat pressed Ready; it takes that back before it changes its deck.
     #[error("the seat is ready")]
     Ready,
-    /// The deck breaks a rule of the game's format.
-    #[error("that deck cannot be played in this game")]
-    DeckBlocked(Vec<Issue>),
     /// The change could not be saved.
     #[error(transparent)]
     Record(#[from] RecordError),
@@ -170,13 +163,8 @@ impl Registry {
         if status.map_err(|_| ClaimError::NotFound)?.started {
             return Err(ClaimError::Started);
         }
-        // After the game is found, so a refusal tells only a visitor who may see the game its format.
-        if let Some(deck) = &deck {
-            let issues = deck.issues_in(table.format, &table.house_rules);
-            if !issues.is_empty() {
-                return Err(ClaimError::DeckBlocked(issues));
-            }
-        }
+        // The table's rules only warn: the seat is told how many it breaks.
+        let deck = deck.map(|deck| deck.for_table(table.format, &table.house_rules).0);
 
         let seat = {
             let games = self.games();
@@ -307,10 +295,7 @@ impl Registry {
         if by != seat {
             return Err(TableError::NotAllowed);
         }
-        let issues = deck.issues_in(table.format, &table.house_rules);
-        if !issues.is_empty() {
-            return Err(TableError::DeckBlocked(issues));
-        }
+        let (deck, _) = deck.for_table(table.format, &table.house_rules);
         match table.handle.choose_deck(seat, deck).await {
             Ok(Ok(note)) => Ok(note),
             Ok(Err(DeckRefusal::Started)) => Err(TableError::Started),

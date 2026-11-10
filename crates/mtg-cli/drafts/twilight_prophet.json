@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a3afd8b9-d499-40f7-be41-f8fee6636a1d",
+  "name": "Twilight Prophet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twilight Prophet",
+      "oracle_fingerprint": "eedc3a382d2e55fd046b4d8c40ff9bcb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Ascend" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "CitysBlessing": "You" },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": "Hand",
+                  "as": "moved4"
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

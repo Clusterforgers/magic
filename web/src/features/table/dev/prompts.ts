@@ -25,6 +25,7 @@ import { EFFECT_MOMENTS, EFFECT_PROMPTS } from './effectPrompts'
 import type { Fixture } from './fixture'
 import { LOOKED_MOMENTS, LOOKED_PROMPTS } from './lookedPrompts'
 import { lookTopMoment } from './lookTopScene'
+import { withTopCard, withTopCast } from './topCardScene'
 import { payMarks, payMarksTable, paySources, paySourcesTable } from './paySources'
 import { roomsTable, withRooms } from './roomsScene'
 import { companionTable, stackAbilityTable } from './previewScenes'
@@ -91,7 +92,7 @@ const commanderReturn: DevPrompt = ({ view }) => {
     id: 1,
     decision: {
       player: view.viewer,
-      kind: { YesNo: { source: id, text: `Put ${name} into the command zone?` } },
+      kind: { YesNo: { source: id, text: `Put ${name} into the command zone?`, commander_return: true } },
     },
   }
 }
@@ -468,6 +469,8 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-rooms': withRooms(priority),
   'priority-stack-ability': priority,
   'priority-companion': priority,
+  // The same with a creature on top of the viewer's library that it sees and may cast (`dev/topCardScene.ts`).
+  'priority-top': withTopCast(priority),
   attack,
   'attack-battle': attack,
   block,
@@ -558,6 +561,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'priority-rooms': roomsTable,
   'priority-stack-ability': stackAbilityTable,
   'priority-companion': companionTable,
+  'priority-top': (fixture) => withTopCard(quietMoment('Main1', true)(fixture)),
   yield: quietMoment('Upkeep', false, false),
   // Passing until the stack is empty is asked over a stack: the fixture's three spells, the active seat holding priority.
   'yield-resolve': (fixture) =>

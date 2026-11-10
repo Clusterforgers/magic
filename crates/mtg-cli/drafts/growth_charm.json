@@ -1,0 +1,60 @@
+{
+  "oracle_id": "8899224a-b9da-45a9-945a-a066912caa6b",
+  "name": "Growth Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Growth Charm",
+      "oracle_fingerprint": "fe96b1460dacd0599273d1f9528ceb45",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                            "as": "found"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "found" },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] } }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

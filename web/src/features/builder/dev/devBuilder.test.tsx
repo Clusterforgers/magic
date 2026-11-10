@@ -57,10 +57,10 @@ describe('the fixture decks', () => {
     expect(report.cards.some((card) => card.reasons.some((entry) => entry.face > 0))).toBe(true)
   })
 
-  it('has illegal lines in the mixed deck, which make it blocked', () => {
+  it('has illegal lines in the mixed deck, which warn and leave it played by hand', () => {
     const { report, state } = fixtureView('mixed')
     expect(report.legality.map((issue) => issue.code)).toEqual(['deck_size', 'copies', 'banned'])
-    expect(state).toBe('blocked')
+    expect(state).toBe('manual_play')
   })
 
   it.each(DEV_DECKS)('has a report that agrees with the lines of the %s deck', (deck) => {
@@ -80,7 +80,7 @@ describe('the fixture decks', () => {
     ['manual', 'manual_play', false, 0],
     ['reads', 'read', false, 0],
     ['drafts', 'read', false, 0],
-    ['mixed', 'blocked', false, 3],
+    ['mixed', 'manual_play', false, 3],
     ['changed', 'unchecked', true, 3],
     ['unchecked', 'unchecked', false, 3],
   ] as const)('the %s deck is %s, changed=%s, with %i legality issues', (deck, state, changed, issues) => {
@@ -192,7 +192,7 @@ describe('/dev/builder in development', () => {
       expect(deck.querySelector(`li[data-line] [data-support="${state}"]`), state).not.toBeNull()
     }
     expect(within(deck).getByRole('region', { name: /^Not legal in Commander/ })).toBeInTheDocument()
-    expect(within(deck).getByText('Blocked')).toBeInTheDocument()
+    expect(within(deck).getByText('It can still be taken to a game.')).toBeInTheDocument()
     expect(document.querySelector(`[data-fixture="${BUILDER_FIXTURE_MARKER}"]`)).not.toBeNull()
   }, 10_000)
 
@@ -219,9 +219,9 @@ describe('/dev/builder in development', () => {
     await waitFor(() => expect(counts()).toHaveTextContent(/^98 of 104 verified, 6 played by hand$/), {
       timeout: scaled(5000),
     })
-    expect(within(deck).getByRole('region', { name: /^Not legal in Commander/ })).toHaveTextContent(
-      '2 issues',
-    )
+    expect(
+      within(within(deck).getByRole('region', { name: /^Not legal in Commander/ })).getAllByRole('listitem'),
+    ).toHaveLength(2)
   }, 15_000)
 
   it.each([
@@ -229,7 +229,7 @@ describe('/dev/builder in development', () => {
     ['?deck=manual', 'manual_play'],
     ['?deck=changed', 'unchecked'],
     ['?deck=unchecked', 'unchecked'],
-    ['?deck=nonsense', 'blocked'],
+    ['?deck=nonsense', 'manual_play'],
   ])('reads %s', async (search, marker) => {
     await visit(`/dev/builder${search}`)
     const deck = await screen.findByRole('region', { name: 'Deck' })

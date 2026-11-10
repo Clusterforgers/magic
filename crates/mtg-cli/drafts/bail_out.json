@@ -1,0 +1,53 @@
+{
+  "oracle_id": "37e4b9fe-e90a-4c65-8ad7-8db603230a89",
+  "name": "Bail Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bail Out",
+      "oracle_fingerprint": "3cfc5ed7df1eaea87239869f2764968c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            {
+                              "Move": {
+                                "what": "This",
+                                "to": { "Battlefield": { "tapped": true } }
+                              }
+                            },
+                            { "DealDamage": { "to": "Opponents", "amount": 1 } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Overload": "{2}{B}{B}" } }
+      ]
+    }
+  ]
+}

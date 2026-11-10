@@ -1,39 +1,49 @@
 /** The precon browser as plain data: a deck's check in words, the filters, the dates and the copyable list. Pure, so tables test it. */
 import { cardsText } from '@/features/decks/format'
+import { notLegalText } from '@/features/decks/legality'
 import { BY_HAND, byHandCopies, cardsByHand, runsWhole } from '@/lib/byHand'
 import { runsBreakdown, WHOLE_DECK_RUNS } from '@/lib/toRead'
 import { copyText } from '@/features/decks/unvalidated/model'
 import type { FaceTexts, FlaggedCard } from '@/features/decks/unvalidated/model'
 import type { DeckZone, PreconCardView, PreconListItem, PreconView } from '@/protocol/generated'
 
-/** How a game treats a precon: it runs the whole deck (`read`: some of it not Verified), plays cards by hand, or cannot take the deck. */
-export type PreconStatus = 'whole' | 'read' | 'hand' | 'blocked'
+/** How a game runs a precon: the whole deck (`read`: some of it not Verified), or with cards played by hand. */
+export type PreconStatus = 'whole' | 'read' | 'hand'
 
-/** The statuses from the best to the worst, which the state filter lists in this order. */
-export const STATUSES: readonly PreconStatus[] = ['whole', 'read', 'hand', 'blocked']
+/** What the deck-check filter narrows to: a status, or the precons that are not legal in their format. */
+export type StatusFilter = PreconStatus | 'illegal'
 
-/** The status of a precon: `blocked` when the server's `playable` is false or the check blocks it. */
-export function statusOf(precon: Pick<PreconListItem, 'state' | 'playable'>): PreconStatus {
-  if (!precon.playable || precon.state === 'blocked') return 'blocked'
+/** The filter's choices: the statuses from the best to the worst, then the legality warning. */
+export const STATUSES: readonly StatusFilter[] = ['whole', 'read', 'hand', 'illegal']
+
+/** The status of a precon; an old `blocked` check is played by hand. Legality is apart (`summary.legal`). */
+export function statusOf(precon: Pick<PreconListItem, 'state'>): PreconStatus {
   if (precon.state === 'verified') return 'whole'
   return precon.state === 'read' ? 'read' : 'hand'
 }
 
-/** The words of a status for the state filter, which tells a deck of Verified cards from one with others that run. */
-export const STATUS_LABEL: Readonly<Record<PreconStatus, string>> = {
+/** The words of a filter choice, which tells a deck of Verified cards from one with others that run. */
+export const STATUS_LABEL: Readonly<Record<StatusFilter, string>> = {
   whole: `${WHOLE_DECK_RUNS}, all verified`,
   read: `${WHOLE_DECK_RUNS}, not all verified`,
   hand: `Some cards ${BY_HAND}`,
-  blocked: 'Cannot be taken',
+  illegal: 'Not legal in its format',
 }
 
-/** The badge's words: "Whole deck runs", "3 cards played by hand" or "Cannot be taken". */
+/** Copies of a precon played by hand, the ones the game cannot play among them. */
+const handCopies = (precon: PreconListItem): number =>
+  byHandCopies(precon.summary.counts) + precon.summary.counts.unplayable
+
+/** The badge's words: "Whole deck runs" or "3 cards played by hand". */
 export function statusWords(precon: PreconListItem): string {
   const status = statusOf(precon)
   if (status === 'whole' || status === 'read') return WHOLE_DECK_RUNS
-  if (status === 'blocked') return STATUS_LABEL.blocked
-  return cardsByHand(byHandCopies(precon.summary.counts))
+  return cardsByHand(handCopies(precon))
 }
+
+/** The warning of a precon that breaks its format's rules ("Not legal in Commander: 2 issues"); null for a legal one. */
+export const legalityWords = (precon: PreconListItem): string | null =>
+  precon.summary.legal ? null : notLegalText(precon.format, precon.summary.issues)
 
 /** The quiet line beside the badge of a deck that runs whole: "34 from Forge · 120 unverified · 2 read"; empty otherwise. */
 export const breakdownWords = (precon: PreconListItem): string =>
@@ -61,8 +71,8 @@ export interface Filters {
   text: string
   /** One set code, or null for every set. */
   set: string | null
-  /** One status, or null for every one. */
-  status: PreconStatus | null
+  /** One status or the legality warning, or null for every precon. */
+  status: StatusFilter | null
 }
 
 /** Nothing filtered. */
@@ -81,7 +91,9 @@ export function filterPrecons(items: readonly PreconListItem[], filters: Filters
     .filter((word) => word !== '')
   return items.filter((item) => {
     if (filters.set !== null && item.set !== filters.set) return false
-    if (filters.status !== null && statusOf(item) !== filters.status) return false
+    if (filters.status === 'illegal' && item.summary.legal) return false
+    if (filters.status !== null && filters.status !== 'illegal' && statusOf(item) !== filters.status)
+      return false
     const haystack = fold([item.name, item.set, ...item.commanders].join(' '))
     return words.every((word) => haystack.includes(word))
   })

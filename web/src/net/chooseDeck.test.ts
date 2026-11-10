@@ -14,7 +14,7 @@ import { parseFrame } from './parse'
 
 const GAME = '6f1e0c1a-3b1f-4d9e-8a3e-0d3c2d1b7a55'
 const TOKEN = 'a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90'
-const BURN = { name: 'Burn', format: 'modern', manual_cards: 3 }
+const BURN = { name: 'Burn', format: 'modern', manual_cards: 3, warnings: 1 }
 
 async function failureOf(promise: Promise<unknown>): Promise<LobbyError> {
   try {

@@ -6,3 +6,4 @@
 # everyone who runs the test benefits from these saved cases.
 cc e6cc7ee3665c5cbbdf20ca4dab2b222a28d87d4bcb84373fa2b5ce3fceee7148 # shrinks to kinds = [File], lines = [(0, 0, 1)]
 cc 971bbda18adc34cc3f7756e369b5b3bba696cea439d20b7c5ce011506474f295 # shrinks to kinds = [ReadBeforeAnEdit], lines = [(0, 0, 1)]
+cc 58b17d76773dec7a7cc5dc726c123159758cb67e6dadf55b3f377ec371b769b3 # shrinks to kinds = [Missing], lines = [(0, 0, 1)]

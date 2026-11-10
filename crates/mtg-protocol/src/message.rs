@@ -68,6 +68,10 @@ pub struct SeatDeck {
     /// Copies of the main deck's cards that are not verified, which the table resolves by hand in
     /// part or in whole. Zero for a deck the game plays entirely.
     pub manual_cards: u32,
+    /// How many rules of the table's format the deck breaks (`docs/deck-check.md`): a warning for everyone at the
+    /// table, never a refusal. Zero for a deck that is legal here; the rules broken are told only to its owner.
+    #[serde(default)]
+    pub warnings: u32,
 }
 
 /// Whether the table plays with manual cards: some seat's deck holds cards the game does not run whole, which their

@@ -1,4 +1,4 @@
-//! Goal: on Postgres a Commander game is made, listed, joined and started at 2, 3, 4 and 6 seats from stored decks and from precons, each seat starts with its commander in the command zone and every seat sees all of them, the recipe stores the commanders with the decks and a resumed lobby and game come back as they were, a deck that breaks a rule of the format (no commander, size, singleton, colour identity, an ineligible commander, a command zone in a Normal game, a demo deck) is refused with the reasons of the check at creation, on a join and on a deck change, the Commander precons are playable or blocked by the same report with the manual cards marked, house rules layer over the format, and bots that only pass play through several turns of a precon with manual cards.
+//! Goal: on Postgres a Commander game is made, listed, joined and started at 2, 3, 4 and 6 seats from stored decks and from precons, each seat starts with its commander in the command zone and every seat sees all of them, the recipe stores the commanders with the decks and a resumed lobby and game come back as they were, a deck that breaks a rule of the format (no commander, size, singleton, colour identity, an ineligible commander, a command zone in a Normal game, a demo deck) is taken at creation, on a join and on a deck change with the reasons of the check as warnings, the Commander precons are all playable and warn by the same report with the manual cards marked, house rules layer over the format, and bots that only pass play through several turns of a precon with manual cards.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::{common, net};
@@ -447,7 +447,7 @@ async fn a_precon_makes_a_commander_game_in_one_request_at_every_table_size(pool
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_joiner_brings_a_precon_to_a_commander_game_and_a_normal_game_refuses_it(pool: PgPool) {
+async fn a_joiner_brings_a_precon_to_a_commander_game_and_a_normal_game_warns_for_it(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
     let seat_list = [json!({"name": "Ann", "deck": on(BEAST)}), json!({})];
@@ -466,21 +466,29 @@ async fn a_joiner_brings_a_precon_to_a_commander_game_and_a_normal_game_refuses_
     // The same precon in a Normal game is a command zone the game does not have.
     let normal = json!({"format": "normal", "seats": [
         {"name": "Ann", "deck": on(BEAST)}, {"name": "B", "deck": "mono-red"}]});
-    let refused = ann
+    let made = ann
         .post(server.addr, "/api/games", &normal.to_string())
         .await;
-    assert_eq!(refused.status, 422, "{}", refused.text());
-    assert_eq!(refused.error_code(), "deck_blocked");
-    assert_eq!(refused.json()["issues"][0]["code"], "no_commander_zone");
+    assert_eq!(made.status, 201, "{}", made.text());
+    let game = made.json()["game"].as_str().unwrap().to_owned();
+    assert_eq!(
+        warnings_at(&server, &ann, &game, &on(BEAST)).await,
+        ["no_commander_zone"]
+    );
 
     // A Normal precon is no Commander deck.
     let plain = json!({"format": "commander", "seats": [
         {"name": "Ann", "deck": on(EVERGREEN)}, {"name": "B"}]});
-    let refused = ann
+    let made = ann
         .post(server.addr, "/api/games", &plain.to_string())
         .await;
-    assert_eq!(refused.status, 422, "{}", refused.text());
-    assert_eq!(refused.json()["issues"][0]["code"], "commander_count");
+    assert_eq!(made.status, 201, "{}", made.text());
+    let game = made.json()["game"].as_str().unwrap().to_owned();
+    assert!(
+        warnings_at(&server, &ann, &game, &on(EVERGREEN))
+            .await
+            .contains(&"commander_count".to_owned())
+    );
 }
 
 // ---- resume ----
@@ -637,16 +645,36 @@ fn refused_decks() -> Vec<(&'static str, Value, &'static str)> {
     ]
 }
 
+/// The codes of the warnings the table of `game` gives `deck` (`POST /api/decks/check` with the game).
+async fn warnings_at(server: &TestServer, who: &Browser, game: &str, deck: &str) -> Vec<String> {
+    let body = json!({"deck": deck, "game": game});
+    let reply = who
+        .post(server.addr, "/api/decks/check", &body.to_string())
+        .await;
+    assert_eq!(reply.status, 200, "{body}: {}", reply.text());
+    let report = reply.json();
+    assert_ne!(report["summary"]["state"], "blocked");
+    assert_eq!(
+        report["summary"]["legal"],
+        report["legality"].as_array().unwrap().is_empty()
+    );
+    report["legality"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|issue| issue["code"].as_str().unwrap().to_owned())
+        .collect()
+}
+
 #[sqlx::test(migrations = false)]
-async fn a_deck_that_breaks_the_format_is_refused_with_the_reasons_of_the_check(pool: PgPool) {
+async fn a_deck_that_breaks_the_format_is_taken_with_the_reasons_of_the_check_as_warnings(
+    pool: PgPool,
+) {
     let server = start(&pool).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
     let bob = register(server.addr, "bob", PASSWORD).await;
     let good = store(&server, &ann, &led_by("Questing Beast")).await;
     let seat_list = [json!({"name": "Ann", "deck": good}), json!({})];
-    let (game, _) = ann
-        .create_game(server.addr, &create_body(&seat_list, 1))
-        .await;
 
     for (why, bad, code) in refused_decks() {
         let id = store(&server, &ann, &bad).await;
@@ -655,36 +683,36 @@ async fn a_deck_that_breaks_the_format_is_refused_with_the_reasons_of_the_check(
         // At creation.
         let body = create_body(&[json!({"name": "Ann", "deck": id}), json!({})], 1);
         let made = ann.post(server.addr, "/api/games", &body.to_string()).await;
-        assert_eq!(made.status, 422, "{why}: {}", made.text());
-        assert_eq!(made.error_code(), "deck_blocked", "{why}");
-        assert_eq!(made.json()["issues"][0]["code"], code, "{why}");
+        assert_eq!(made.status, 201, "{why}: {}", made.text());
+        let made = made.json()["game"].as_str().unwrap().to_owned();
         assert!(
-            made.json()["issues"][0]["message"]
-                .as_str()
-                .is_some_and(|m| !m.is_empty()),
-            "{why}: the issue says what is wrong"
+            warnings_at(&server, &ann, &made, &id)
+                .await
+                .contains(&code.to_owned()),
+            "{why}"
         );
 
-        // On a deck change.
+        // On a deck change and on a join; every seat sees the count.
+        let (game, _) = ann
+            .create_game(server.addr, &create_body(&seat_list, 1))
+            .await;
         let changed = choose(&server, &ann, &game, 0, &id).await;
-        assert_eq!(changed.status, 422, "{why}: {}", changed.text());
-        assert_eq!(changed.json()["issues"][0]["code"], code, "{why}");
-
-        // On a join; nobody is seated by it.
+        assert_eq!(changed.status, 200, "{why}: {}", changed.text());
+        assert!(changed.json()["warnings"].as_u64().unwrap() >= 1, "{why}");
         let joined = join(&server, &bob, &game, &theirs).await;
-        assert_eq!(joined.status, 422, "{why}: {}", joined.text());
-        assert_eq!(joined.json()["issues"][0]["code"], code, "{why}");
+        assert_eq!(joined.status, 200, "{why}: {}", joined.text());
+        assert!(
+            warnings_at(&server, &bob, &game, &theirs)
+                .await
+                .contains(&code.to_owned()),
+            "{why}"
+        );
+        let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+        let warnings = crate::common::seat_warnings(&handle, 0).await;
+        assert!(warnings[1] >= 1, "{why}: {warnings:?}");
     }
-    let info = net::get(server.addr, &format!("/api/games/{game}"))
-        .await
-        .json();
-    assert_eq!(info["format"], "commander");
-    assert_eq!(
-        info["seats"][1]["name"], "",
-        "no refused deck took the open seat"
-    );
 
-    // A built-in deck has no commander.
+    // A built-in deck has no commander: it plays with a warning.
     let demo = ann
         .post(
             server.addr,
@@ -694,39 +722,27 @@ async fn a_deck_that_breaks_the_format_is_refused_with_the_reasons_of_the_check(
             .to_string(),
         )
         .await;
-    assert_eq!(demo.status, 422, "{}", demo.text());
-    assert_eq!(demo.json()["issues"][0]["code"], "commander_count");
-    let late = lobby::join(
-        server.addr,
-        &game,
-        &json!({"name": "G", "deck": "mono-red"}),
-        &[],
-    )
-    .await;
-    assert_eq!(late.status, 422, "{}", late.text());
-
-    // The seat that was left alone keeps what it had, and the good deck still plays.
-    assert_eq!(choose(&server, &ann, &game, 0, &good).await.status, 200);
-    let joined = join(
-        &server,
-        &bob,
-        &game,
-        &store(&server, &bob, &led_by("Rosheen Meanderer")).await,
-    )
-    .await;
-    assert_eq!(joined.status, 200, "{}", joined.text());
+    assert_eq!(demo.status, 201, "{}", demo.text());
+    let game = demo.json()["game"].as_str().unwrap().to_owned();
+    let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+    let warnings = crate::common::seat_warnings(&handle, 1).await;
+    assert!(warnings[0] >= 1, "{warnings:?}");
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_commander_deck_has_no_place_in_a_normal_game(pool: PgPool) {
+async fn a_commander_deck_in_a_normal_game_plays_its_commander_from_the_library(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
     let id = store(&server, &ann, &led_by("Questing Beast")).await;
     let body = json!({"format": "normal", "seats": [
         {"name": "Ann", "deck": id}, {"name": "B", "deck": "mono-red"}]});
     let made = ann.post(server.addr, "/api/games", &body.to_string()).await;
-    assert_eq!(made.status, 422, "{}", made.text());
-    assert_eq!(made.json()["issues"][0]["code"], "no_commander_zone");
+    assert_eq!(made.status, 201, "{}", made.text());
+    let game = made.json()["game"].as_str().unwrap().to_owned();
+    assert_eq!(
+        warnings_at(&server, &ann, &game, &id).await,
+        ["no_commander_zone"]
+    );
 }
 
 // ---- the format and the table size ----
@@ -829,10 +845,9 @@ fn item<'a>(list: &'a Value, code: &str) -> &'a Value {
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_commander_precon_is_playable_when_the_check_passes_and_blocked_with_its_reason_when_not(
-    pool: PgPool,
-) {
+async fn a_commander_precon_is_playable_and_an_illegal_one_warns_with_its_reason(pool: PgPool) {
     let server = start(&pool).await;
+    let ann = register(server.addr, "ann", PASSWORD).await;
     let list = net::get(server.addr, "/api/precons").await.json();
 
     let beast = item(&list, BEAST);
@@ -865,8 +880,9 @@ async fn a_commander_precon_is_playable_when_the_check_passes_and_blocked_with_i
         (GHOST, "unknown_card"),
     ] {
         let listed = item(&list, code);
-        assert_eq!(listed["state"], "blocked", "{code}");
-        assert_eq!(listed["playable"], false, "{code}");
+        assert_ne!(listed["state"], "blocked", "{code}");
+        assert_eq!(listed["summary"]["legal"], false, "{code}");
+        assert_eq!(listed["playable"], true, "{code}");
         let view = net::get(server.addr, &format!("/api/precons/{code}"))
             .await
             .json();
@@ -883,12 +899,13 @@ async fn a_commander_precon_is_playable_when_the_check_passes_and_blocked_with_i
             "{code}: {}",
             view["issues"]
         );
-        // A game refuses it with the same reasons.
+        // A game takes it and its table warns with the same reasons.
         let body = create_body(&[json!({"name": "Ann", "deck": on(code)}), json!({})], 1);
-        let made = net::post_json(server.addr, "/api/games", &body.to_string()).await;
-        assert_eq!(made.status, 422, "{code}: {}", made.text());
+        let made = ann.post(server.addr, "/api/games", &body.to_string()).await;
+        assert_eq!(made.status, 201, "{code}: {}", made.text());
+        let game = made.json()["game"].as_str().unwrap().to_owned();
         assert_eq!(
-            codes(&made.json()["issues"]),
+            warnings_at(&server, &ann, &game, &on(code)).await,
             codes(&view["issues"]),
             "{code}"
         );

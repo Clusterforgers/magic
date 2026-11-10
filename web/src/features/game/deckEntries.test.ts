@@ -101,7 +101,7 @@ describe('the support chip', () => {
       'manual_play',
       '6 played by hand',
     ],
-    ['blocked', counts({ total: 100, verified: 98, unplayable: 2 }), 'blocked', 'Cannot be taken'],
+    ['blocked', counts({ total: 100, verified: 98, unplayable: 2 }), 'manual_play', '2 played by hand'],
     ['unchecked', counts({}), 'unchecked', 'Not checked yet'],
   ] as const)('says %s in words', (state, tally, shown, label) => {
     const entry = entryOfDeck(deckIn(state, { summary: { ...deckIn(state).summary, counts: tally } }))
@@ -118,8 +118,10 @@ describe('the support chip', () => {
     },
   )
 
-  it('treats a precon the game cannot take as blocked whatever its state says', () => {
-    expect(entrySupport(entryOfPrecon(precon({ playable: false }))).label).toBe('Cannot be taken')
+  it('says how a precon that is not legal plays, and keeps its legality apart', () => {
+    const entry = entryOfPrecon(precon({ summary: { ...precon().summary, legal: false, issues: 2 } }))
+    expect(entrySupport(entry).label).toBe('Whole deck runs')
+    expect(entry.legal).toBe(false)
   })
 })
 
@@ -248,7 +250,7 @@ describe('sorting', () => {
   it.each<[SortKey, string[]]>([
     ['default', ['Cedar', 'alder', 'Birch', 'Dune', 'Ash']],
     ['name', ['alder', 'Ash', 'Birch', 'Cedar', 'Dune']],
-    ['hand', ['Birch', 'Ash', 'Cedar', 'alder', 'Dune']],
+    ['hand', ['Birch', 'Dune', 'Ash', 'Cedar', 'alder']],
     ['favorites', ['alder', 'Dune', 'Cedar', 'Birch', 'Ash']],
   ])('orders by %s', (sort, expected) => {
     expect(names(sort)).toEqual(expected)
@@ -261,9 +263,10 @@ describe('sorting', () => {
 
   it.each<[string, DeckEntry['state'], number, boolean, string | null]>([
     ['a row the chip already counts', 'manual_play', 4, true, null],
-    ['a blocked deck with cards by hand', 'blocked', 3, false, '3 cards played by hand'],
-    ['a blocked deck with none, unsorted', 'blocked', 0, false, null],
-    ['a blocked deck with none, sorted by hand', 'blocked', 0, true, 'no cards played by hand'],
+    ['an unchecked deck with cards by hand', 'unchecked', 3, false, '3 cards played by hand'],
+    ['an unchecked deck with none, unsorted', 'unchecked', 0, false, null],
+    ['an unchecked deck with none, sorted by hand', 'unchecked', 0, true, 'no cards played by hand'],
+    ['a check stored as blocked, whose chip counts', 'blocked', 3, true, null],
   ])('writes the count for %s', (_what, state, byHand, always, words) => {
     expect(handWords({ ...row('x', byHand, state) }, always)).toBe(words)
   })

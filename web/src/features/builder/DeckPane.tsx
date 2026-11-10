@@ -221,8 +221,8 @@ export function DeckPane({
     dirty,
     saving,
     name: draft.name,
-    issues: report.legality.length,
-    format: formatLabel(draft.format),
+    issues: report.legality,
+    format: draft.format,
   })
   const railOn = useMediaQuery(RAIL_QUERY, false)
   const statsSummary = `${lands} ${lands === 1 ? 'land' : 'lands'}, ${played - lands} ${played - lands === 1 ? 'spell' : 'spells'}`

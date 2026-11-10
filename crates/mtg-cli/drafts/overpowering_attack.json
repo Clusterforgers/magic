@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e31235f0-1f25-4158-b46e-cacde2f58b7e",
+  "name": "Overpowering Attack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overpowering Attack",
+      "oracle_fingerprint": "6672a62877c7516258fe1f587bc7b537",
+      "abilities": [
+        { "Keyword": { "Freerunning": "{2}{R}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Untap": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "AttackedThisTurn"]
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [{ "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }, "YourTurn"]
+                  },
+                  "then": [{ "AddPhase": { "phases": ["Combat", "Main"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

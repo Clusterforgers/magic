@@ -3,10 +3,10 @@
  * `null` for a body that does not have the documented shape, so a caller never holds a half-typed value; unknown extra
  * fields are dropped.
  */
-import type { GameInfo, GameSeat, Joined, LobbyGame, SeatDeck, Visibility } from '@/protocol/generated'
+import type { GameInfo, GameSeat, Joined, LobbyGame, Visibility } from '@/protocol/generated'
 import { isCount, isFlag, isListOf, isRecord, isText } from './check'
 import { readHouseRules } from './houseRules'
-import { isGameResult } from './parse'
+import { isGameResult, readSeatDeck } from './parse'
 
 const VISIBILITIES: Record<Visibility, true> = { public: true, invite: true }
 
@@ -71,14 +71,8 @@ export function readJoined(body: unknown): Joined | null {
   return { game: body.game, seat: body.seat, token }
 }
 
-/** True for the deck a seat shows the table: its name and format and how many cards are played by hand. */
-export const isSeatDeck = (value: unknown): value is SeatDeck =>
-  isRecord(value) && isText(value.name) && isText(value.format) && isCount(value.manual_cards)
-
-/** What `PUT /api/games/{id}/seats/{n}/deck` answers: the three facts the table now knows of the seat's deck. */
-export function readSeatDeck(body: unknown): SeatDeck | null {
-  return isSeatDeck(body) ? { name: body.name, format: body.format, manual_cards: body.manual_cards } : null
-}
+/** What `PUT /api/games/{id}/seats/{n}/deck` answers: the facts the table now knows of the seat's deck. */
+export { readSeatDeck }
 
 /** The visibility `PATCH /api/games/{id}` answers with. */
 export function readVisibility(body: unknown): Visibility | null {

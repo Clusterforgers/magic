@@ -260,9 +260,8 @@ fn counter_kinds_listed_with_commas_are_a_choice(#[case] kinds: &str, #[case] op
 }
 
 #[rstest]
-#[case::existing("ExistingCounter")]
 #[case::unknown("Wibble")]
-fn a_counter_rule_or_an_unknown_kind_is_a_gap(#[case] kind: &str) {
+fn an_unknown_counter_kind_is_a_gap(#[case] kind: &str) {
     let text = format!(
         "Name:T\nTypes:Sorcery\nA:SP$ PutCounter | ValidTgts$ Creature | CounterType$ {kind}\n"
     );

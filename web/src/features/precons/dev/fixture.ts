@@ -98,7 +98,7 @@ export const FIXTURE_PRECONS: readonly PreconListItem[] = [
       commanders: ['Saheeli, the Gifted'],
     }),
     { manual: 1 },
-    false,
+    2,
   ),
   checked(
     commander('c17-arcane-wizardry', 'Arcane Wizardry', {

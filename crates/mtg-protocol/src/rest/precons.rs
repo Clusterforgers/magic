@@ -40,14 +40,13 @@ pub struct PreconListItem {
     /// The format the deck check judged it in: `commander` for a deck with a commander, else
     /// `freeform`.
     pub format: String,
-    /// The deck check: `verified`, `read`, `manual_play` or `blocked`. It is derived from the cards' rules and
-    /// the engine's capabilities each time they change, so it is never `unchecked`.
+    /// The deck check: `verified`, `read` or `manual_play`. It is derived from the cards' rules and the engine's
+    /// capabilities each time they change, so it is never `unchecked` or `blocked`.
     pub state: DeckState,
     /// True exactly when `state` is `verified`.
     pub verified: bool,
-    /// Whether a game of this server takes the deck today: the deck check does not block it and the
-    /// rules of the game's format hold. A deck that is not playable is refused with `deck_blocked`
-    /// when it is chosen; `GET /api/precons/{code}` lists why.
+    /// Whether a game of this server takes the deck: false only for a deck with no card the database knows, which no
+    /// game can start with (refused with `deck_blocked`). Legality never decides it; `summary.legal` warns.
     pub playable: bool,
     /// The counts of the check: copies by support state, overall and per board.
     pub summary: Summary,
@@ -94,9 +93,8 @@ pub struct PreconBoard {
 pub struct PreconView {
     /// The precon as the list shows it.
     pub precon: PreconListItem,
-    /// What keeps the deck out of a game: the legality issues of the deck check and the rules of the
-    /// game's format. Empty exactly when the deck is `playable`, except for a deck blocked only
-    /// because it holds cards the game cannot play.
+    /// The warnings of the deck: the legality issues of the deck check and the rules of the game's format it breaks.
+    /// None of them keeps the deck from a game.
     pub issues: Vec<Issue>,
     /// The boards that hold cards, commander first, then main and sideboard.
     pub boards: Vec<PreconBoard>,

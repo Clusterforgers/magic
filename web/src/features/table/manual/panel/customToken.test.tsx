@@ -1,4 +1,4 @@
-// Goal: the Tokens row of the Commands panel also makes a custom creature: "Custom creature…" asks for a name, a power and a toughness, builds the same CreateToken action the card menu's form built (a creature, the name as its one subtype when it is letters only and no subtypes are typed), also takes colors, artifact and enchantment types and typed subtypes, says what is wrong before Apply, and leaves the common tokens as they were.
+// Goal: the Tokens row of the Commands panel also makes a custom creature: "Custom creature…" asks for a name, a power and a toughness, builds the same CreateToken action the card menu's form built (a creature, the name as its one subtype when it is letters only and no subtypes are typed), also takes colors, artifact and enchantment types, keyword abilities and typed subtypes, says what is wrong before Apply, and leaves the common tokens as they were.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { ManualAction } from '@/protocol/generated'
@@ -68,6 +68,14 @@ describe('the preview of a custom creature', () => {
           toughness: 3,
         },
       },
+    ],
+    [
+      'keyword abilities, each once and in the order of the list',
+      custom({ name: 'Angel', power: 4, toughness: 4, keywords: ['Vigilance', 'Flying'] }),
+      1,
+      '1 Angel 4/4 creature token with flying and vigilance enters under your control',
+      'Create 1 Angel 4/4 token',
+      { Custom: { ...creature('Angel', 4, 4, ['Angel']).Custom, keywords: ['Flying', 'Vigilance'] } },
     ],
   ])('says and builds %s', (_name, draft, amount, preview, apply, token) => {
     expect(tokenPreview(draft, amount)).toEqual({
@@ -158,6 +166,7 @@ describe('the Tokens row', () => {
     await user.type(form.getByLabelText('Name of the token'), 'Gearhulk')
     await user.click(form.getByRole('checkbox', { name: 'Red' }))
     await user.click(form.getByRole('checkbox', { name: 'Artifact' }))
+    await user.click(form.getByRole('checkbox', { name: 'Vigilance' }))
     await user.type(form.getByLabelText(/^Subtypes/), 'Construct')
     await user.click(form.getByRole('button', { name: /^Create 1 Gearhulk/ }))
     expect(manual).toHaveBeenCalledWith({
@@ -170,6 +179,7 @@ describe('the Tokens row', () => {
             subtypes: ['Construct'],
             power: 1,
             toughness: 1,
+            keywords: ['Vigilance'],
           },
         },
         count: 1,

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "17abf8c6-70b6-4877-a0f2-a87b22fb2828",
+  "name": "Wormfang Manta",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wormfang Manta",
+      "oracle_fingerprint": "ca1311bfa94eaa122d2c7bb5f5c9f214",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "SkipTurn" } },
+                  "duration": "UntilTurnSkipped"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "ExtraTurn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

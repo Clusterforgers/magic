@@ -708,6 +708,29 @@ pub(crate) fn zone_named(selector: &Named) -> ZoneKind {
         })
 }
 
+/// The zones a selector looks in: [`zone_named`], or each zone of an `AnyOf` of zones ("creatures you control ... The same
+/// is true for creature spells you control and creature cards you own that aren't on the battlefield").
+pub(crate) fn ep22_zones_named(selector: &Named) -> Vec<ZoneKind> {
+    let listed = selector.0.iter().find_map(|pred| match pred {
+        Pred::AnyOf(list) => list
+            .iter()
+            .map(|each| match each {
+                Pred::In(kind) => Some(*kind),
+                _ => None,
+            })
+            .collect::<Option<Vec<ZoneKind>>>(),
+        _ => None,
+    });
+    match listed {
+        Some(zones)
+            if !zones.is_empty() && !selector.0.iter().any(|p| matches!(p, Pred::In(_))) =>
+        {
+            zones
+        }
+        _ => vec![zone_named(selector)],
+    }
+}
+
 /// The zones other than the battlefield that a static ability of the game names in the selector of what it affects:
 /// the cards there are held by the pass like permanents ("Each creature card in your hand has cycling {1}{U}").
 fn outside_zones(state: &GameState) -> Vec<ZoneKind> {
@@ -731,9 +754,10 @@ fn outside_zones(state: &GameState) -> Vec<ZoneKind> {
                 ..
             } = &**rules
             {
-                let zone = zone_named(selector);
-                if zone != ZoneKind::Battlefield && !zones.contains(&zone) {
-                    zones.push(zone);
+                for zone in ep22_zones_named(selector) {
+                    if zone != ZoneKind::Battlefield && !zones.contains(&zone) {
+                        zones.push(zone);
+                    }
                 }
             }
         }
@@ -1266,11 +1290,11 @@ impl<'a> Pass<'a> {
                     BTreeSet::from([host])
                 }
                 Ref::Each(selector) => {
-                    let zone = zone_named(selector);
+                    let zones = ep22_zones_named(selector);
                     view.iter()
                         .filter(|(id, held)| {
                             self.state.object(*id).is_some_and(|object| {
-                                zone_kind(object.zone()) == zone
+                                zones.contains(&zone_kind(object.zone()))
                                     && scope.selects_with(selector, object, held).unwrap_or(false)
                             })
                         })

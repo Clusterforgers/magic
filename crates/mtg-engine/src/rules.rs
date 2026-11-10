@@ -152,6 +152,8 @@ pub enum Rule {
     VoteAgain(Vec<PlayerId>),
     /// The players skip each extra turn they would begin (CR 500.7).
     SkipExtraTurns(Vec<PlayerId>),
+    /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
+    FlipTwoCoins(Vec<PlayerId>),
     /// The players play with the top card of their library revealed.
     RevealTop(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
@@ -549,6 +551,8 @@ pub(crate) struct RulesInForce {
     pub(crate) mana: Vec<ManaRule>,
     vote_again: BTreeSet<PlayerId>,
     skip_extra_turns: BTreeSet<PlayerId>,
+    /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
+    flip_two: Vec<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
     no_hand_limit: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
@@ -892,6 +896,7 @@ impl RulesInForce {
             }
             Rule::VoteAgain(players) => self.vote_again.extend(players),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
+            Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::MaxHandSize(_)
@@ -1176,6 +1181,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
+        GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
         GameRule::MayCast(permission) => Rule::MayCast {
             who: scope.players(&permission.who)?,
@@ -1329,6 +1335,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::CantSearch(players)
         | Rule::VoteAgain(players)
         | Rule::SkipExtraTurns(players)
+        | Rule::FlipTwoCoins(players)
         | Rule::RevealTop(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
@@ -1473,6 +1480,7 @@ static NONE: RulesInForce = RulesInForce {
     mana: Vec::new(),
     vote_again: BTreeSet::new(),
     skip_extra_turns: BTreeSet::new(),
+    flip_two: Vec::new(),
     reveal_top: BTreeSet::new(),
     no_hand_limit: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
@@ -1798,6 +1806,18 @@ pub(crate) fn extra_land_plays(state: &GameState, player: PlayerId) -> u32 {
         .get(&player)
         .copied()
         .unwrap_or_default()
+}
+
+/// How many coins `player` flips for one coin they would flip: two for each rule that doubles them, at most 32.
+pub fn ep22_coins_per_flip(state: &GameState, player: PlayerId) -> u32 {
+    let doublings = state
+        .rules()
+        .flip_two
+        .iter()
+        .filter(|who| **who == player)
+        .count()
+        .min(5);
+    1 << doublings
 }
 
 /// Whether `player` may vote an additional time while voting (CR 701.38d).

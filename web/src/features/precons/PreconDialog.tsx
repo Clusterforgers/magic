@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
 import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { legalityLines } from '@/features/builder/report'
+import { LegalityWarning } from '@/features/decks/LegalityWarning'
 import { ClauseList } from '@/features/decks/unvalidated/ClauseList'
 import { clauseLines } from '@/features/decks/unvalidated/model'
 import type { FaceTexts } from '@/features/decks/unvalidated/model'
@@ -30,7 +31,6 @@ import {
   flaggedLine,
   notVerified,
   releaseText,
-  statusOf,
 } from './format'
 import type { DetailState } from './usePreconDetail'
 
@@ -70,27 +70,15 @@ function CardsSkeleton() {
   )
 }
 
-/** Why a game will not take the deck: the server's issues, or the cards it cannot play. */
-function Blocked({ view }: { view: PreconView | null }) {
-  const lines = view === null ? [] : legalityLines(view.issues)
+/** The rules of its format the deck breaks, as a warning: the issues once the cards are read, else their count. */
+function Warnings({ precon, view }: { precon: PreconListItem; view: PreconView | null }) {
   return (
-    <Alert variant="destructive" data-slot="precon-issues">
-      <CircleAlertIcon aria-hidden="true" />
-      <AlertTitle>Cannot be taken</AlertTitle>
-      <AlertDescription className="text-foreground">
-        {lines.length > 0 ? (
-          <ul className="grid list-disc gap-1 pl-5">
-            {lines.map((line) => (
-              <li key={line.key}>{line.text}</li>
-            ))}
-          </ul>
-        ) : view === null ? (
-          'The game will not take this deck.'
-        ) : (
-          'The deck holds cards the game cannot play. They are marked Unplayable below.'
-        )}
-      </AlertDescription>
-    </Alert>
+    <LegalityWarning
+      slot="precon-issues"
+      format={precon.format}
+      issues={view === null ? precon.summary.issues : view.issues}
+      lines={view === null ? undefined : legalityLines(view.issues)}
+    />
   )
 }
 
@@ -244,7 +232,8 @@ export function PreconDialog({
   busy,
 }: Props) {
   const view = detail.status === 'ready' ? detail.view : null
-  const blocked = statusOf(precon) === 'blocked'
+  // The view's issues are the ones of the server's check; the list item's flag says so before they arrive.
+  const warned = view === null ? !precon.summary.legal : view.issues.length > 0
   return (
     <Dialog
       open={open}
@@ -276,7 +265,7 @@ export function PreconDialog({
             <p className="text-sm text-muted-foreground">{checkLine(precon)}</p>
             <ToRead count={precon.summary.to_read} target={{ precon: precon.code }} className="text-sm" />
           </div>
-          {blocked && detail.status !== 'loading' ? <Blocked view={view} /> : null}
+          {warned ? <Warnings precon={precon} view={view} /> : null}
           {detail.status === 'loading' ? (
             <Loading label="Loading the cards…">
               <CardsSkeleton />
@@ -303,7 +292,7 @@ export function PreconDialog({
           <Button
             type="button"
             aria-label={`Play ${precon.name}`}
-            disabled={blocked || busy}
+            disabled={busy}
             loading={playing}
             focusableWhenDisabled
             onClick={onPlay}

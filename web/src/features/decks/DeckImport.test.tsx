@@ -384,7 +384,7 @@ describe('the check of the list in the review', () => {
     })
   })
 
-  it('names what the list breaks in its format and what blocked means, and still lets it be saved', async () => {
+  it('names what the list breaks in its format as a warning, and still lets it be saved and played', async () => {
     const issue = legalityIssue(
       'A Commander deck has exactly 100 cards with its commanders, this one has 20.',
     )
@@ -393,17 +393,13 @@ describe('the check of the list in the review', () => {
       report: reportOf([reportCard('Mountain', { count: 20 })], [issue]),
     })
     const form = await review(app)
-    expect(check()).toHaveAttribute('data-state', 'blocked')
-    expect(within(check()).getByText('Not legal in Commander')).toBeInTheDocument()
+    expect(check()).toHaveAttribute('data-state', 'verified')
+    expect(within(check()).getByText(/^Not legal in Commander/)).toBeInTheDocument()
     expect(
       within(check()).getByText(/exactly 100 cards with its commanders, this one has 20/),
     ).toBeInTheDocument()
     expect(within(check()).getByText('20 of 20 verified')).toBeInTheDocument()
-    expect(
-      within(check()).getByText(
-        'You can still save it. Cannot be taken to a game until its issues are fixed.',
-      ),
-    ).toBeInTheDocument()
+    expect(within(check()).getByText('It can still be taken to a game.')).toBeInTheDocument()
     expect(within(form).getByRole('button', { name: 'Save deck' })).toBeEnabled()
   })
 

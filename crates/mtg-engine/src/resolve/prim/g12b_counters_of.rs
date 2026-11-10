@@ -14,7 +14,13 @@ use crate::resolve::{Cx, ResolveError, Run};
 /// The kinds `of` names hold, read before any counter moves: for each kind, its number added up over what `of` names.
 /// Each holder `on` names then gets `each` of every kind, or as many as were read. Nothing is put for a kind of none.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::PutCountersOf { on, of, each } = effect else {
+    let Effect::PutCountersOf {
+        on,
+        of,
+        each,
+        one_kind,
+    } = effect
+    else {
         return Err(wrong_effect("PutCountersOf"));
     };
     let mut kinds: Vec<(CounterKind, u32)> = Vec::new();
@@ -39,6 +45,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
     }
     kinds.retain(|(_, n)| *n > 0);
+    if *one_kind {
+        match super::ep22_one_kind::ep22_pick(cx, &kinds)? {
+            Ok(picked) => kinds = picked,
+            Err(asked) => return Ok(asked),
+        }
+    }
     let each = match each {
         Some(amount) => Some(whole(cx.scope.amount(amount)?)),
         None => None,
