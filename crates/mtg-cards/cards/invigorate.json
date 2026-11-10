@@ -1,0 +1,33 @@
+{
+  "oracle_id": "9264c198-76c7-4ac0-9334-37c691de1b54",
+  "name": "Invigorate",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Invigorate",
+      "oracle_fingerprint": "6ec3de510fbc0e17e054373a6be1b0fb",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 102 }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

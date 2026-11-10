@@ -1,0 +1,47 @@
+{
+  "oracle_id": "fb81e4d3-1d8c-4779-be62-87cf49277e51",
+  "name": "Birgi, God of Storytelling // Harnfel, Horn of Bounty",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Birgi, God of Storytelling",
+      "oracle_fingerprint": "a5171e6958f205a27ed19798679d8e74",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] }, "lasts": "Turn" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 105, "end": 186 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Harnfel, Horn of Bounty",
+      "oracle_fingerprint": "a0d3d3634356fe2983fb22afb732dbc6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

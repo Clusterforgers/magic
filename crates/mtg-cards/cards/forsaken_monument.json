@@ -1,0 +1,31 @@
+{
+  "oracle_id": "7777fab1-df3f-467f-b9e2-46dd2bd2166e",
+  "name": "Forsaken Monument",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Forsaken Monument",
+      "oracle_fingerprint": "d69e11187af62e1a5748b9f084c188a3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Colorless", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 43, "end": 103 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Colorless"], "by": "You" } },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

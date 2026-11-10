@@ -1,0 +1,23 @@
+{
+  "oracle_id": "4dc5726e-2f7e-4c2b-9616-c3301d212f78",
+  "name": "Thousand-Year Elixir",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thousand-Year Elixir",
+      "oracle_fingerprint": "c52ad16fc1d9cdf58e574b1bec47e06e",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 88 } }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

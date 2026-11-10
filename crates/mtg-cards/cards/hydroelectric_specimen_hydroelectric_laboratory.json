@@ -1,0 +1,38 @@
+{
+  "oracle_id": "573151f0-00d4-4a8a-8a09-745c5f376532",
+  "name": "Hydroelectric Specimen // Hydroelectric Laboratory",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hydroelectric Specimen",
+      "oracle_fingerprint": "2fefbe196980cae6e9a7b6e7689043bf",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 132 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hydroelectric Laboratory",
+      "oracle_fingerprint": "ba6da0c6d97016cc03258ceb7d954593",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "PayLifeOrTapped": 3 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

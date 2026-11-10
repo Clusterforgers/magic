@@ -1,0 +1,28 @@
+{
+  "oracle_id": "5b9a2b81-a645-43be-8001-03817ac210ca",
+  "name": "Throne of Eldraine",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Throne of Eldraine",
+      "oracle_fingerprint": "1a589734a262cd6c4edf2bb6e376455a",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 46, "end": 148 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 149, "end": 236 }
+          }
+        }
+      ]
+    }
+  ]
+}
