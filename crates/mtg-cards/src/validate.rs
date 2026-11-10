@@ -221,7 +221,6 @@ fn kind_of_targetable(what: &Targetable) -> Kind {
     }
 }
 
-/// Whether a step asks its controller or another player something as it runs.
 /// Whether a token's card alone decides the predicate: a type, subtype, supertype or colour, or the negation of one.
 fn w9c_token_pred(pred: &Pred) -> bool {
     match pred {
@@ -232,19 +231,37 @@ fn w9c_token_pred(pred: &Pred) -> bool {
     }
 }
 
-fn w5d_asks(effect: &Effect) -> bool {
-    matches!(
-        effect,
-        Effect::May { .. }
-            | Effect::Modal { .. }
-            | Effect::Choose { .. }
-            | Effect::Pay { .. }
-            | Effect::Search { .. }
-            | Effect::Sacrifice { .. }
-            | Effect::SacrificeUpTo { .. }
-            | Effect::Discard { .. }
-            | Effect::TapOrUntap { .. }
-    )
+/// The shapes of steps the engine cannot run in the middle of an event, at any depth, named as the primitive each one
+/// is (`ReplaceBy.Instead.<shape>`): modes chosen as a spell is put on the stack (`Modal`), a step that waits for its
+/// own events to be applied (`Amass`, `Incubate`, a flip or clash until a loss: `Waits`), a spell cast (`Casts`) and a
+/// payment (`Pays`). A question ("may", a choice of one way, a pick) is asked as the replacement applies.
+fn w5d_skipped(effects: &[Effect]) -> BTreeSet<&'static str> {
+    fn walk(value: &serde_json::Value, found: &mut BTreeSet<&'static str>) {
+        match value {
+            serde_json::Value::Object(fields) => {
+                for (key, inner) in fields {
+                    let until = inner.get("until") == Some(&serde_json::Value::Bool(true));
+                    let shape = match key.as_str() {
+                        "Modal" => Some("Instead.Modal"),
+                        "Amass" | "Incubate" => Some("Instead.Waits"),
+                        "FlipCoin" | "Clash" if until => Some("Instead.Waits"),
+                        "CastFromZone" => Some("Instead.Casts"),
+                        "Pay" => Some("Instead.Pays"),
+                        _ => None,
+                    };
+                    found.extend(shape);
+                    walk(inner, found);
+                }
+            }
+            serde_json::Value::Array(items) => items.iter().for_each(|item| walk(item, found)),
+            _ => {}
+        }
+    }
+    let mut found = BTreeSet::new();
+    if let Ok(value) = serde_json::to_value(effects) {
+        walk(&value, &mut found);
+    }
+    found
 }
 
 /// The target specifications and bound names an ability body can see.
@@ -4649,14 +4666,14 @@ impl Walker<'_> {
     }
 
     /// What happens instead reads the event it replaces as a trigger reads its event: `Triggering` is the player or object
-    /// the event is about, `Amount::Triggering` its amount and `Dealer` the source of damage. A step that asks a question
-    /// is named apart (`ReplaceBy.Instead.Asks`): a replacement asks nothing in the middle of an event.
+    /// the event is about, `Amount::Triggering` its amount and `Dealer` the source of damage. A step the engine cannot run
+    /// in the middle of an event is named apart (`w5d_skipped`), so the rules are never offered as played.
     fn w5d_instead(&mut self, when: &ReplaceWhen, effects: &[Effect]) {
         if effects.is_empty() {
             self.problem("needs at least one effect");
         }
-        if effects.iter().any(w5d_asks) {
-            self.uses("ReplaceBy", "Instead.Asks");
+        for shape in w5d_skipped(effects) {
+            self.uses("ReplaceBy", shape);
         }
         let saved = (self.scope.in_trigger, self.scope.dealer);
         self.scope.in_trigger = true;
@@ -6822,18 +6839,28 @@ mod tests {
     }
 
     #[rstest]
-    #[case::a_draw(r#"[{"Draw":{}}]"#, false)]
-    #[case::a_choice(r#"[{"May":{"effects":[{"Draw":{}}]}}]"#, true)]
-    #[case::tap_or_untap(r#"[{"TapOrUntap":{"what":"Triggering"}}]"#, true)]
-    fn w5d_steps_that_ask_are_named_apart(#[case] steps: &str, #[case] asks: bool) {
+    #[case::a_draw(r#"[{"Draw":{}}]"#, &[])]
+    #[case::a_may(r#"[{"May":{"effects":[{"Draw":{}}]}}]"#, &[])]
+    #[case::one_way_of_two(r#"[{"OneOf":{"options":[[{"Draw":{}}],[{"GainLife":{"amount":1}}]]}}]"#, &[])]
+    #[case::tap_or_untap(r#"[{"TapOrUntap":{"what":"Triggering"}}]"#, &[])]
+    #[case::modes(r#"[{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]"#, &["ReplaceBy.Instead.Modal"])]
+    #[case::a_payment_inside_a_may(r#"[{"May":{"effects":[{"Pay":{"cost":"{1}","paid":[{"Draw":{}}]}}]}}]"#, &["ReplaceBy.Instead.Pays"])]
+    #[case::amass_inside_an_if(r#"[{"If":{"condition":"YourTurn","then":[{"Amass":{"subtype":"Orc","count":1}}]}}]"#, &["ReplaceBy.Instead.Waits"])]
+    #[case::flips_until_a_loss(r#"[{"FlipCoin":{"until":true,"win":[{"Draw":{}}]}}]"#, &["ReplaceBy.Instead.Waits"])]
+    #[case::a_single_flip(r#"[{"FlipCoin":{"win":[{"Draw":{}}]}}]"#, &[])]
+    fn w5d_steps_the_engine_cannot_run_in_an_event_are_named_apart(
+        #[case] steps: &str,
+        #[case] skipped: &[&str],
+    ) {
         let json = format!(
             r#"{{"Replacement":{{"when":{{"LifeGain":{{}}}},"by":{{"Instead":{steps}}}}}}}"#
         );
         let ability: Ability = serde_json::from_str(&json).unwrap();
-        assert_eq!(
-            used_primitives(&ability).contains("ReplaceBy.Instead.Asks"),
-            asks
-        );
+        let named: Vec<String> = used_primitives(&ability)
+            .into_iter()
+            .filter(|name| name.starts_with("ReplaceBy.Instead."))
+            .collect();
+        assert_eq!(named, skipped, "{json}");
     }
 
     #[test]

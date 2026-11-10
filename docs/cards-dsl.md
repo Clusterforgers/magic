@@ -251,7 +251,7 @@ A proposal is a rules file for a card from outside the corpus: the Forge transla
 | Reads back | The clauses of the printed text (`compile::compile`) are paired with the abilities by kind; a wording of `written_variants` equal to the clause accepts it | The pairing, with the clauses that differ or lack an ability |
 | Support | `support` with `mtg_engine::caps()` | `Verified`, `Partial` or `Manual`, with the blockers |
 
-The verdict is `Invalid` (a problem of the first check), `Mismatch` (a clause differs or an ability has no clause), `Unchecked` (valid and nothing contradicts the text, but a construct has no writer) or `Accepted`.
+The verdict is `Invalid` (a problem of the first check, or an ability no writer reads back that uses a primitive the engine lacks, so a draft never does nothing), `Mismatch` (a clause differs or an ability has no clause), `Unchecked` (valid and nothing contradicts the text, but a construct has no writer) or `Accepted`.
 
 - `mtg_cards::proposal::check(json, &PrintedCard, &Library, &names, &Caps) -> Report`; `mtg-cli check-rules [--card NAME] [--bundle] [--verbose] [--write DIR] [--gaps FILE [--marks]] FILE...` runs it over files.
 - A proposal may leave out the oracle id, the names, the status and the fingerprints: they come from the card, and the status is derived from what is modelled.
