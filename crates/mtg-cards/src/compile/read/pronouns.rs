@@ -94,6 +94,11 @@ pub(super) fn of_the_card(ability: &Ability, texts: &mut Vec<String>) {
             let mut found = text.clone();
             let own = if itself { &OF_THE_EVENT[..] } else { &[] };
             for (named, pronoun) in SENTENCE.iter().chain(own) {
+                // After a target is named, "it" is that target: "tap target creature and put a stun counter on it".
+                let before = found.find(named).map_or("", |at| &found[..at]);
+                if named.starts_with(" counter") && before.contains("target ") {
+                    continue;
+                }
                 found = found.replace(named, pronoun);
             }
             (found != *text).then_some(found)

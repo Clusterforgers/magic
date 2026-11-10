@@ -518,7 +518,8 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     if matches!(ability, Ability::Static { mods, .. } if statics::repeated_keyword(mods)) {
         return Vec::new();
     }
-    let mut texts = super::written_memo::written(ability, written_anew);
+    let texts = super::written_memo::written(ability, written_anew);
+    let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     texts
@@ -586,6 +587,15 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     // Numbered bookkeeping names read as the plain ones; the twin has none left, so this recurses once.
     if let Some(plain) = super::t18_binds::t18_unnumbered(ability) {
         for text in written_variants(&plain) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    // Created tokens bound by the translator's name read as the writers' name; the twin has none left, so this recurses
+    // once.
+    if let Some(renamed) = super::wf24_token_bind::wf24_tokens_renamed(ability) {
+        for text in written_variants(&renamed) {
             if !texts.contains(&text) {
                 texts.push(text);
             }
@@ -708,6 +718,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     w22_moves::w22_graved_wordings(&mut texts);
     w22_moves::w22_library_wordings(ability, &mut texts);
     super::r7e_events::wf24_activated_wordings(&mut texts);
+    super::wf24_token_bind::wf24_and_attach(&mut texts);
     super::w19d_suffixes::add(&mut texts);
     super::r6b_wordings::add(ability, &mut texts);
     super::r7a_wordings::add(ability, &mut texts);
@@ -1532,6 +1543,9 @@ fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<
     {
         return Some(vec![format!("{} while saddled,", pattern_text(when)?)]);
     }
+    if let Some(head) = super::wf24_token_bind::wf24_head(when, condition) {
+        return Some(vec![head]);
+    }
     let event = player_events::text(when).or_else(|| pattern_text(when))?;
     let mut parts = vec![format!("{event},")];
     if let Some(condition) = condition {
@@ -2162,6 +2176,22 @@ impl Writer<'_> {
                 }
                 .to_owned(),
             ),
+            // The target an earlier step named: "tap target creature and put a stun counter on it".
+            Ref::Target(0)
+                if super::written_memo::last_resort()
+                    && self.named
+                    && self.targets.len() == 1
+                    && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
+            {
+                Some(
+                    if self.at_most_one(place) {
+                        "it"
+                    } else {
+                        "each of them"
+                    }
+                    .to_owned(),
+                )
+            }
             Ref::Target(0)
                 if self.at_most_one(place)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
@@ -3024,6 +3054,18 @@ impl Writer<'_> {
                 to: to @ Ref::Target(0),
                 bind: None,
             } => format!("attach ~ to {}", self.object(to)?),
+            // "Whenever a Ninja you control enters, you may attach ~ to it"; "create a 2/2 Robot token and attach ~ to
+            // it": the one object the event or the step before is about.
+            Effect::Attach {
+                what: Ref::This,
+                to: Ref::Triggering,
+                bind: None,
+            } if super::written_memo::last_resort() => "attach ~ to it".to_owned(),
+            Effect::Attach {
+                what: Ref::This,
+                to: Ref::Bound(name),
+                bind: None,
+            } if name == TOKENS && self.made == Some(true) => "attach ~ to it".to_owned(),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
             Effect::Flip { what } => format!("flip {}", self.object(what)?),
             Effect::TurnFaceUp { what } => format!("turn {} face up", self.object(what)?),

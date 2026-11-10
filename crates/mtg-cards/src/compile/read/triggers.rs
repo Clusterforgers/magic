@@ -44,6 +44,7 @@ pub fn graveyard_itself(pattern: &TriggerPattern) -> bool {
 pub fn itself_acts(pattern: &TriggerPattern) -> bool {
     match pattern {
         TriggerPattern::Attacks { what }
+        | TriggerPattern::AttacksAlone { what }
         | TriggerPattern::Exerted { what }
         | TriggerPattern::ZoneChange {
             what,
@@ -70,6 +71,7 @@ pub fn itself_acts(pattern: &TriggerPattern) -> bool {
 pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
     let (what, named_by_the_cause) = match pattern {
         TriggerPattern::Attacks { what }
+        | TriggerPattern::AttacksAlone { what }
         | TriggerPattern::BecomesBlocked { what, .. }
         | TriggerPattern::Unblocked { what }
         | TriggerPattern::Mutates { what }
@@ -1397,6 +1399,7 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             )
         }
         TriggerPattern::Attacks { what } => said(what, "attacks"),
+        TriggerPattern::AttacksAlone { what } => said(what, "attacks alone"),
         TriggerPattern::AttacksPlayer { what, at } => {
             said(what, super::e16c_attacks::e16c_attacks_player(at)?)
         }
@@ -1485,7 +1488,12 @@ fn step_text(step: Step, whose: &Ref) -> Option<String> {
         };
     }
     let (_, words) = STEPS.iter().find(|(named, _)| *named == step)?;
+    // "At the beginning of the upkeep of enchanted creature's controller".
+    if *whose == Ref::ControllerOf(Box::new(Ref::Attached)) {
+        return Some(format!("the {words} of enchanted creature's controller"));
+    }
     let owner = match whose {
+        Ref::AttachedPlayer => "enchanted player's",
         Ref::You => "your",
         Ref::Opponents => "each opponent's",
         Ref::EachPlayer => "each",
