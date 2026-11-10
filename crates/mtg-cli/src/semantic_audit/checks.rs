@@ -175,12 +175,26 @@ const CONDITIONAL: [&str; 9] = [
 ];
 
 /// Trigger filters that fold an intervening "if" into the event ("if you cast it", "if it was kicked").
-const FILTERED: [&str; 6] = [
-    "WasCast", "Kicked", "Test", "Compare", "CastWith", "Matches",
+const FILTERED: [&str; 15] = [
+    "WasCast",
+    "Kicked",
+    "Test",
+    "Compare",
+    "CastWith",
+    "Matches",
+    "Not",
+    "HasCounter",
+    "HasAnyCounter",
+    "from",
+    "Tapped",
+    "Untapped",
+    "DamagedBy",
+    "Attacking",
+    "Blocking",
 ];
 
 /// Amount and effect forms that count (anything but a fixed number).
-const COUNTED: [&str; 44] = [
+const COUNTED: [&str; 45] = [
     "Count",
     "Stat",
     "Life",
@@ -225,6 +239,7 @@ const COUNTED: [&str; 44] = [
     "Triggering",
     "EachColorAmong",
     "AttackTax",
+    "PerPlayer",
 ];
 
 /// A finding of a check: a note, or `None` when the rules hold what the clause asks.
@@ -272,7 +287,15 @@ fn may(text: &str, f: &Facts) -> Option<String> {
     .any(|p| has(text, p));
     let asks = has(text, "may") && !permission;
     let optional = f.any_part(&[
-        "May", "optional", "Optional", "Choose", "Pay", "Opening", "RevealOr",
+        "May",
+        "optional",
+        "Optional",
+        "Choose",
+        "Pay",
+        "Opening",
+        "RevealOr",
+        "AdditionalCost",
+        "Exert",
     ]) || f.min_zero;
     (asks && !optional).then(|| "may, rules ask nothing".into())
 }
@@ -284,7 +307,18 @@ fn target(text: &str, f: &Facts) -> Option<String> {
         *word == "target"
             && !matches!(
                 i.checked_sub(1).map(|j| w[j]),
-                Some("the" | "a" | "new" | "its" | "that" | "single")
+                Some(
+                    "the"
+                        | "a"
+                        | "new"
+                        | "its"
+                        | "that"
+                        | "single"
+                        | "each"
+                        | "could"
+                        | "can"
+                        | "for"
+                )
             )
     });
     (cued && !f.targets).then(|| "target, rules choose none".into())
@@ -292,7 +326,8 @@ fn target(text: &str, f: &Facts) -> Option<String> {
 
 /// "Up to N target" or "N target" where the rules' target bounds differ.
 fn target_count(text: &str, f: &Facts) -> Option<String> {
-    let w = words(text);
+    let plain = without_symbols(text);
+    let w = words(&plain);
     for (i, word) in w.iter().enumerate() {
         let Some(n) = number(word) else { continue };
         let next = w.get(i + 1).copied();
@@ -315,7 +350,10 @@ fn target_count(text: &str, f: &Facts) -> Option<String> {
 
 /// "Until end of turn" / "until your next turn" without the duration.
 fn duration(text: &str, f: &Facts) -> Option<String> {
-    if has(text, "until end of turn") && !f.any_part(&["EndOfTurn", "ThisTurn", "this_turn"]) {
+    if has(text, "until end of turn")
+        && !f.any_part(&["EndOfTurn", "ThisTurn", "this_turn", "until_end_of_turn"])
+        && !f.any(&["Turn"])
+    {
         return Some("until end of turn, rules last otherwise".into());
     }
     (has(text, "until your next turn") && !f.any_part(&["NextTurn"]))
@@ -333,34 +371,33 @@ fn each_opponent(text: &str, f: &Facts) -> Option<String> {
 /// "Another" / "other <type>" without `Other`.
 fn another(text: &str, f: &Facts) -> Option<String> {
     let w = words(text);
-    let other = w.windows(2).any(|p| {
-        p[0] == "other"
-            && matches!(
-                p[1],
-                "creature"
-                    | "creatures"
-                    | "permanent"
-                    | "permanents"
-                    | "artifact"
-                    | "artifacts"
-                    | "enchantment"
-                    | "enchantments"
-                    | "land"
-                    | "lands"
-                    | "nonland"
-                    | "noncreature"
-                    | "planeswalker"
-                    | "card"
-                    | "cards"
-            )
+    let object = |word: &str| {
+        matches!(
+            word,
+            "target"
+                | "creature"
+                | "creatures"
+                | "permanent"
+                | "permanents"
+                | "artifact"
+                | "artifacts"
+                | "enchantment"
+                | "enchantments"
+                | "planeswalker"
+                | "nonland"
+                | "noncreature"
+        )
+    };
+    // Only a selector that leaves the source out: "another target creature", "each other creature", "other creatures you
+    // control". A union ("~ or another Equipment", "enchanted creature and other creatures"), a count ("had another land
+    // enter") and a comparison ("as another creature") include or name the source otherwise.
+    let cued = (1..w.len()).any(|i| {
+        let before = i.checked_sub(2).map(|j| w[j]);
+        let leaves_out = matches!(w[i - 1], "another" | "other")
+            && object(w[i])
+            && !matches!(before, Some("or" | "and" | "as" | "had" | "its" | "their"));
+        leaves_out && !(w[i - 1] == "other" && matches!(before, Some("any" | "no")))
     });
-    // "its other land types" and "the same name as another creature" name no selector.
-    let another = w
-        .iter()
-        .enumerate()
-        .any(|(i, word)| *word == "another" && (i == 0 || w[i - 1] != "as"));
-    let other = other && !has(text, "its other") && !has(text, "their other");
-    let cued = another || other;
     let excluded = f.any(&["Not"]) && f.any(&["Is"]);
     (cued && !f.any_part(&["Other", "Another"]) && !f.any(&["rest_as"]) && !excluded)
         .then(|| "another, rules keep the source".into())
@@ -399,7 +436,12 @@ fn numbers(text: &str, f: &Facts) -> Option<String> {
                 before,
                 Some("draw" | "draws" | "mill" | "mills" | "scry" | "surveil")
             )
-            || w[i].starts_with('+')
+            || (w[i].starts_with('+')
+                && !w
+                    .iter()
+                    .skip(i + 1)
+                    .take(2)
+                    .any(|x| matches!(*x, "counter" | "counters")))
     };
     let missing: BTreeSet<i64> = (0..w.len())
         .filter(|&i| counted(i))

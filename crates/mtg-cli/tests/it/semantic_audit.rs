@@ -121,6 +121,36 @@ fn targets(max: i64, min: i64) -> Value {
     json!({"Spell": {"targets": targets(1, 1), "effects": [{"DealDamage": {"amount": 3}}]}}),
     &[]
 )]
+#[case::cost_before_a_target(
+    "{2}: Target creature gains wither until end of turn.",
+    json!({"Activated": {"targets": targets(1, 1), "effects": [{"Continuous": {"duration": "UntilEndOfTurn"}}]}}),
+    &[]
+)]
+#[case::each_target_beyond_the_first(
+    "This spell costs {2}{R} more to cast for each target beyond the first.",
+    json!({"CostModifier": {"per": {"TargetCount": 0}}}),
+    &[]
+)]
+#[case::mana_kept_this_turn(
+    "Add {R}. Until end of turn, you don't lose this mana as steps and phases end.",
+    json!({"AddMana": {"lasts": "Turn"}}),
+    &[]
+)]
+#[case::counter_kind_is_no_number(
+    "Put a +2/+2 counter on target creature.",
+    json!({"Spell": {"targets": targets(1, 1), "effects": [{"PutCounters": {"counter": {"Other": "+2/+2"}}}]}}),
+    &[]
+)]
+#[case::if_as_a_filter(
+    "When ~ dies, if it isn't a token, draw a card.",
+    json!({"Triggered": {"when": {"ZoneChange": {"what": ["This", {"Not": "Token"}]}}}}),
+    &[]
+)]
+#[case::union_with_another(
+    "Whenever ~ or another Equipment you control enters, draw a card.",
+    json!({"Triggered": {"when": {"ZoneChange": {"what": [{"Subtype": "Equipment"}]}}}}),
+    &[]
+)]
 #[case::number_draw("Draw two cards.", json!({"Draw": {"count": 3}}), &["number"])]
 #[case::number_draw_near("Draw two cards.", json!({"Draw": {"count": 2}}), &[])]
 #[case::number_mana_list("{T}: Add six {G}.", json!({"AddMana": {"mana": {"Fixed": ["Green"]}}}), &[])]
