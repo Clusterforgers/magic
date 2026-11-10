@@ -691,6 +691,7 @@ mod t20c_pay_cards;
 
 // dk1f
 mod alt_cast;
+mod big_mana_board;
 mod commander_questions;
 mod copy_left_spell;
 mod dk1f_cards;

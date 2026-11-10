@@ -355,8 +355,9 @@ pub(crate) struct Variant {
     pub used: Used,
 }
 
-/// The states the search tells apart: what is still to pay and which mana sources it spared by tapping their permanent.
-type Key = (Left, Vec<ObjectId>);
+/// The states the search tells apart: what is still to pay and which kinds of mana source it spared by tapping their
+/// permanent, as the sorted indices that [`kinds`] gives those permanents.
+type Key = (Left, Vec<usize>);
 
 /// A permanent that may be tapped to help pay: what it can pay besides {1}, and whether only improvise offers it.
 struct Tapper {
@@ -410,6 +411,34 @@ fn ways(left: &Left, tapper: &Tapper) -> Vec<(Option<Color>, Left)> {
     ways
 }
 
+/// The kind of mana source each tapper is, or `None` for one that adds no mana: the index of the first tapper that pays
+/// and adds mana the same way. Tapping either of two of a kind leaves the same mana, so the search tells apart how many
+/// of a kind it tapped, not which: forty mana creatures of a few kinds stay a few states, not every subset of forty.
+fn kinds(tappers: &[Tapper], sources: &[ManaOption]) -> Vec<Option<usize>> {
+    let made: Vec<Vec<&ManaOption>> = tappers
+        .iter()
+        .map(|tapper| {
+            sources
+                .iter()
+                .filter(|o| o.source.object == tapper.object)
+                .collect()
+        })
+        .collect();
+    let alike = |a: usize, b: usize| {
+        tappers[a].colors == tappers[b].colors
+            && tappers[a].improvise == tappers[b].improvise
+            && made[a].len() == made[b].len()
+            && made[a].iter().zip(&made[b]).all(|(x, y)| {
+                let mut y = (*y).clone();
+                y.source = x.source;
+                **x == y
+            })
+    };
+    (0..tappers.len())
+        .map(|at| (!made[at].is_empty()).then(|| (0..=at).find(|&b| alike(at, b)).unwrap_or(at)))
+        .collect()
+}
+
 /// The states `tappers` reach from `start`, each with the fewest permanents that reach it.
 fn reach(
     start: Left,
@@ -418,16 +447,15 @@ fn reach(
 ) -> BTreeMap<Key, (usize, Vec<Convoked>)> {
     let mut reached: BTreeMap<Key, (usize, Vec<Convoked>)> = BTreeMap::new();
     reached.insert((start, Vec::new()), (0, Vec::new()));
-    for tapper in tappers {
+    for (tapper, kind) in tappers.iter().zip(kinds(tappers, sources)) {
         let creature = tapper.object;
-        let dork = sources.iter().any(|o| o.source.object == creature);
         let mut next = reached.clone();
         for ((left, spared), (count, chosen)) in &reached {
             for (pays, after) in ways(left, tapper) {
                 let mut spared = spared.clone();
-                if dork {
-                    spared.push(creature);
-                    spared.sort();
+                if let Some(kind) = kind {
+                    spared.push(kind);
+                    spared.sort_unstable();
                 }
                 let mut chosen = chosen.clone();
                 chosen.push(Convoked { creature, pays });
@@ -610,6 +638,75 @@ mod tests {
         assert!(paid_two[0].used.taps(ObjectId(10)));
         let paid_one: Vec<&Variant> = found.iter().filter(|v| v.used.count() == 1).collect();
         assert_eq!(paid_one.len(), 2);
+    }
+
+    fn dork(id: u64, makes: ManaType) -> ManaOption {
+        ManaOption::new(
+            ManaSource {
+                object: ObjectId(id),
+                ability: 0,
+            },
+            makes,
+        )
+    }
+
+    // Forty green creatures that tap for mana: of one kind, a state per number tapped; of five kinds, a state per count
+    // of each. Every subset of forty is millions of states.
+    #[rstest]
+    #[case::one_kind("{4}{G}", 40, 1, 15)]
+    #[case::two_kinds("{4}{G}", 40, 2, 60)]
+    #[case::five_kinds("{6}{G}{G}", 40, 5, 5_000)]
+    fn mana_creatures_of_a_kind_are_told_apart_by_count_not_by_which(
+        #[case] text: &str,
+        #[case] creatures: u64,
+        #[case] kinds: u64,
+        #[case] most: usize,
+    ) {
+        const MAKES: [ManaType; 5] = [
+            ManaType::Green,
+            ManaType::Red,
+            ManaType::White,
+            ManaType::Blue,
+            ManaType::Black,
+        ];
+        let offer: Vec<ConvokeOption> = (0..creatures)
+            .map(|id| creature(id, &[Color::Green]))
+            .collect();
+        let sources: Vec<ManaOption> = (0..creatures)
+            .map(|id| dork(id, MAKES[usize::try_from(id % kinds).unwrap()]))
+            .collect();
+        let help = Help {
+            convoke: &offer,
+            improvise: &[],
+            delve: &[],
+        };
+        let found = variants(&cost(text), help, &Used::default(), &[], &sources);
+        assert!(found.len() <= most, "{} variants", found.len());
+        let whole = cost(text).mana_value() as usize;
+        assert!(
+            found
+                .iter()
+                .any(|v| v.used.count() == whole && v.cost.mana_value() == 0)
+        );
+    }
+
+    #[rstest]
+    #[case::same_kind(ManaType::Green, 1)]
+    #[case::other_kinds(ManaType::Red, 2)]
+    fn two_creatures_that_add_different_mana_stay_apart(
+        #[case] second: ManaType,
+        #[case] ways: usize,
+    ) {
+        let offer = [creature(10, &[Color::Green]), creature(11, &[Color::Green])];
+        let sources = [dork(10, ManaType::Green), dork(11, second)];
+        let help = Help {
+            convoke: &offer,
+            improvise: &[],
+            delve: &[],
+        };
+        let found = variants(&cost("{G}"), help, &Used::default(), &[], &sources);
+        // Convoking with the Llanowar Elves leaves the same mana whichever is tapped; with a red one it does not.
+        assert_eq!(found.iter().filter(|v| v.used.count() == 1).count(), ways);
     }
 
     #[rstest]
