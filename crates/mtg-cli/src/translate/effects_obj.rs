@@ -922,7 +922,7 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         pump_duration(p)?
     };
     let subject = subject(ctx, p, "Self", None)?;
-    if let Some(found) = player_keywords(p, &subject, duration) {
+    if let Some(found) = player_keywords(ctx, p, &subject, duration) {
         return found;
     }
     let affected = if p.get("Radiance") == Some("True") {
@@ -1000,7 +1000,12 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// "You gain hexproof until end of turn": a pump of players that only gives keywords a player can have (hexproof, shroud) is
 /// a rule for the duration; `None` for a pump of objects or one that changes more.
-fn player_keywords(p: &Params, subject: &Value, duration: &str) -> Option<Tr<Vec<Value>>> {
+fn player_keywords(
+    ctx: &Ctx,
+    p: &Params,
+    subject: &Value,
+    duration: &str,
+) -> Option<Tr<Vec<Value>>> {
     let player = match subject {
         Value::String(word) => matches!(
             word.as_str(),
@@ -1033,6 +1038,16 @@ fn player_keywords(p: &Params, subject: &Value, duration: &str) -> Option<Tr<Vec
             "Hexproof" | "Shroud" => json!(word),
             // CR 702.16j: protection from everything is the protection keyword with no quality.
             "Protection from everything" => json!({"Protection": []}),
+            // "You gain hexproof from blue and from black": hexproof from a colour.
+            _ if word.strip_prefix("Hexproof:").is_some_and(|color| {
+                matches!(color, "White" | "Blue" | "Black" | "Red" | "Green")
+            }) =>
+            {
+                match super::keyword::keyword_value(ctx, word) {
+                    Ok(keyword) => keyword,
+                    Err(gap) => return Some(Err(gap)),
+                }
+            }
             _ => return Some(unmapped(format!("key:Pump.player-keyword-{word}"))),
         };
         rules.push(json!({"Rule": {"rule": {"PlayersHave": {"who": subject, "keyword": keyword}}, "duration": duration}}));
@@ -1235,23 +1250,10 @@ const ANIMATE_KEYS: [&str; 30] = [
     "sVars",
 ];
 
-fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
-    only(p, "Animate", &ANIMATE_KEYS)?;
-    if spell_change_beyond_colors(p) {
-        return unmapped("key:Animate.TgtZone=Stack");
-    }
-    // `sVars$ XMustAttack` only hints the computer player to attack with the creature.
-    if let Some(names) = p.get("sVars")
-        && !names.split(',').map(str::trim).all(|name| {
-            ctx.svar(name)
-                .is_some_and(|text| text.trim() == "SVar:MustAttack:True")
-        })
-    {
-        return unmapped("key:Animate.sVars");
-    }
-    let duration = animate_duration(ctx, p)?;
-    // `AnimateAll` names the objects by a valid-string.
-    let affected = match p.get("ValidCards") {
+/// What an `Animate` changes: the card or the target, or for `AnimateAll` the objects of a valid-string, of a target
+/// player's if it names one.
+fn animated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    Ok(match p.get("ValidCards") {
         Some(valid) if p.get("ValidTgts") == Some("Player") => of_target_player(ctx, p, valid)?,
         // "Each creature target opponent controls": the group is read from the target unless the valid-string names it.
         Some(valid)
@@ -1272,7 +1274,25 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         Some(_) if p.has("ValidTgts") => return unmapped("key:AnimateAll.ValidTgts"),
         Some(valid) => json!({"Each": selector_any(ctx, valid)?}),
         None => objects(subject(ctx, p, "Self", None)?)?,
-    };
+    })
+}
+
+fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(p, "Animate", &ANIMATE_KEYS)?;
+    if spell_change_beyond_colors(p) {
+        return unmapped("key:Animate.TgtZone=Stack");
+    }
+    // `sVars$ XMustAttack` only hints the computer player to attack with the creature.
+    if let Some(names) = p.get("sVars")
+        && !names.split(',').map(str::trim).all(|name| {
+            ctx.svar(name)
+                .is_some_and(|text| text.trim() == "SVar:MustAttack:True")
+        })
+    {
+        return unmapped("key:Animate.sVars");
+    }
+    let duration = animate_duration(ctx, p)?;
+    let affected = animated(ctx, p)?;
     let mut mods = Vec::new();
     match (p.get("Power"), p.get("Toughness")) {
         (Some(power), Some(toughness)) => {

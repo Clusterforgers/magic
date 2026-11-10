@@ -17,6 +17,7 @@ export function tableOf(view: StateView): TableView {
     combat: view.combat,
     combat_forecast: view.combat_forecast,
     result: view.result,
+    ...(view.tokens === undefined ? {} : { tokens: view.tokens }),
   }
 }
 

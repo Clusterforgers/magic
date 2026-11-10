@@ -42,6 +42,7 @@ pub(super) fn record(out: &mut FaceOut, tag: &str, bodies: &[&String], before: &
     if abilities.is_empty() && gap.is_none() {
         return;
     }
+    out.lined += out.gaps.len() - before.gaps;
     for body in bodies {
         out.ledger.push(LedgerLine {
             face: 0,

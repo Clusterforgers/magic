@@ -452,8 +452,11 @@ export function describeManual(
   }
   if ('CreateToken' in action) {
     const { token, count } = action.CreateToken
+    const noun = count === 1 ? 'token' : 'tokens'
+    // The token of a card is named by the TokenCreated events after this line; the card says where it is from.
+    if ('Card' in token) return `${who} creates ${count} ${noun} ${token.Card.card} makes (by hand)`
     const name = 'Common' in token ? token.Common : token.Custom.name
-    return `${who} creates ${count} ${name} ${count === 1 ? 'token' : 'tokens'} (by hand)`
+    return `${who} creates ${count} ${name} ${noun} (by hand)`
   }
   if ('CopyToken' in action) {
     const { object, count } = action.CopyToken
@@ -763,7 +766,9 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     return line(`${targetName(on, n)} ${delta > 0 ? 'gets' : 'loses'} ${phrase}`)
   }
   if ('TokenCreated' in event) {
-    return line(`${n.seat(event.TokenCreated.controller)} creates a ${event.TokenCreated.name} token`)
+    const { controller, name, blocking } = event.TokenCreated
+    const blocks = blocking === undefined ? '' : ` blocking ${n.card(blocking)}`
+    return line(`${n.seat(controller)} creates a ${name} token${blocks}`)
   }
   if ('CardConjured' in event) {
     const { owner, name, zone } = event.CardConjured

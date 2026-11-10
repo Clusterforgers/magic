@@ -76,7 +76,7 @@ mod graft;
 mod gravestorm;
 mod haste;
 mod haunt;
-mod hexproof;
+pub(crate) mod hexproof;
 mod hideaway;
 mod horsemanship;
 mod improvise;

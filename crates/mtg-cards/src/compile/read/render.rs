@@ -518,10 +518,19 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     if matches!(ability, Ability::Static { mods, .. } if statics::repeated_keyword(mods)) {
         return Vec::new();
     }
-    let texts = super::written_memo::written(ability, written_anew);
+    let texts = super::written_memo::written(ability, ep23_written_anew);
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
+    texts
+}
+
+/// [`written_anew`] without the wordings that leave out a block the ability's tokens enter with.
+fn ep23_written_anew(ability: &Ability) -> Vec<String> {
+    let mut texts = written_anew(ability);
+    if texts.iter().any(|text| !text.contains(" blocking ")) {
+        texts.retain(|text| super::ep23_three::ep23_says_its_block(ability, text));
+    }
     texts
 }
 
@@ -2845,6 +2854,7 @@ impl Writer<'_> {
             .or_else(|| cast::text(effect))
             .or_else(|| self.c11b_cast(effect))
             .or_else(|| self.keyword_action(effect))
+            .or_else(|| super::wf24_token_bind::wf24_attach_to_event(effect))
             .or_else(|| self.controller_search(effect))
             .or_else(|| self.control_for_good(effect))
             .or_else(|| self.w6e_exchanged(effect))
@@ -3054,18 +3064,6 @@ impl Writer<'_> {
                 to: to @ Ref::Target(0),
                 bind: None,
             } => format!("attach ~ to {}", self.object(to)?),
-            // "Whenever a Ninja you control enters, you may attach ~ to it"; "create a 2/2 Robot token and attach ~ to
-            // it": the one object the event or the step before is about.
-            Effect::Attach {
-                what: Ref::This,
-                to: Ref::Triggering,
-                bind: None,
-            } if super::written_memo::last_resort() => "attach ~ to it".to_owned(),
-            Effect::Attach {
-                what: Ref::This,
-                to: Ref::Bound(name),
-                bind: None,
-            } if name == TOKENS && self.made == Some(true) => "attach ~ to it".to_owned(),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
             Effect::Flip { what } => format!("flip {}", self.object(what)?),
             Effect::TurnFaceUp { what } => format!("turn {} face up", self.object(what)?),

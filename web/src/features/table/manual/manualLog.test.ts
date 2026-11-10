@@ -102,6 +102,11 @@ describe('the sentence of each manual action', () => {
       'Bo creates 1 Knight token (by hand)',
     ],
     [
+      'a token of a card',
+      { CreateToken: { token: { Card: { card: 'Abstruse Interference', index: 0 } }, count: 2 } },
+      'Bo creates 2 tokens Abstruse Interference makes (by hand)',
+    ],
+    [
       'a token copy',
       { CopyToken: { object: 4, count: 2 } },
       'Bo creates 2 tokens that are copies of Forest (by hand)',

@@ -190,12 +190,7 @@ pub async fn translate_forge(
             ))
         });
         let written = funnel.add(&card, !today.ends_with("verified"), weight, &today);
-        let state = match (card.lines(), card.translated(), card.gaps().next()) {
-            (0, _, _) => "plain",
-            (_, 0, _) => "skipped",
-            (_, _, None) => "whole",
-            _ => "partial",
-        };
+        let state = card.state();
         let behind = allgaps::others(&world, script);
         let gaps: BTreeSet<&str> = card
             .gaps()

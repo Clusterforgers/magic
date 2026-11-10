@@ -310,6 +310,7 @@ A Forge translation with gaps runs the lines it proves and leaves the others to 
 
 - `mtg_cards::proposal::partial::prove(&Report, &[LedgerLine])` is pure and gives each printed clause one row, `Auto` or `ByHand`, or refuses the card by name (`InvalidRules`, `OracleDiffers`, `Stray`, `GapInsideLine`, `UncoveredLine`, and others in the promote report).
 - The ledger: `translate-forge` writes `lines` in the meta, one `LedgerLine {face, tag, text, abilities, gap}` for each `K:`, `A:`, `T:`, `S:` and `R:` line of the script.
+- A card with no line proven is still `partial` (an empty proposal and its ledger, for line fill) when every gap stops one script line; a gap of the whole card (`keyword:<word>-unused`) keeps it `skipped`, with no proposal. A card whose every clause is by hand compiles `Manual` and is never drafted.
 - Totality: a property over every stored card says the spans of `compile(printed).clauses` and the reminder text cover the whole oracle text, so a clause cannot fall between rows.
 - `ByHand`: a `Manual` ability whose span equals the clause's span. `Auto`: the clause is `Reads` (the renderer writes it back whole), or `Unwritten` or `Differs` with a witness: `oracle_matches` and every content word of the clause in the text of the translated line.
 - `promote --draft` takes a proposal with gaps only with `oracle_matches`, a proof and the smoke gate, and stores the proof and ledger in `drafts/meta/<slug>.json`.

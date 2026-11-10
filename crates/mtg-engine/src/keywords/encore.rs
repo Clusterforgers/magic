@@ -87,6 +87,7 @@ fn one_copy_for_each_opponent() -> Effect {
         tapped: false,
         attacking: false,
         against: None,
+        blocking: None,
         bind: Some(ENCORED.to_owned()),
     }
 }

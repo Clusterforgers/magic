@@ -268,6 +268,7 @@ fn attached_tapped_for_mana(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     Some(TriggerPattern::TappedForMana {
         what: Selector(what),
         by: Ref::EachPlayer,
+        produced: None,
     })
 }
 
@@ -717,7 +718,11 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "taps" } else { "tap" } {
         let what = subject(r)?;
         r.need("for mana")?;
-        Some(TriggerPattern::TappedForMana { what, by })
+        Some(TriggerPattern::TappedForMana {
+            what,
+            by,
+            produced: None,
+        })
     } else {
         None
     }
@@ -1507,7 +1512,19 @@ fn step_text(step: Step, whose: &Ref) -> Option<String> {
 }
 
 /// A permanent tapped for mana: "Whenever you tap a land for mana", "Whenever enchanted land is tapped for mana".
-fn tapped_for_mana_text(what: &Selector, by: &Ref) -> Option<String> {
+fn tapped_for_mana_text(pattern: &TriggerPattern) -> Option<String> {
+    let TriggerPattern::TappedForMana { what, by, produced } = pattern else {
+        return None;
+    };
+    // "Whenever you tap a permanent for {C}": a tap that makes mana of one type.
+    if let Some(produced) = produced {
+        return Some(format!(
+            "Whenever {} {} for {{{}}}",
+            player_verb(by, "tap")?,
+            subject_text(what)?,
+            produced.symbol()
+        ));
+    }
     if *by == Ref::EachPlayer
         && what.0.len() > 1
         && what.0.first() == Some(&Pred::Is(Ref::Attached))
@@ -1638,7 +1655,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::PlayerAttacked { .. } | TriggerPattern::PlayerAttacks { .. } => {
             player_attack_text(pattern)
         }
-        TriggerPattern::TappedForMana { what, by } => tapped_for_mana_text(what, by),
+        TriggerPattern::TappedForMana { .. } => tapped_for_mana_text(pattern),
         TriggerPattern::CountersPut { what, counter, .. } => {
             counter_text(what, counter.as_ref(), "put on")
         }

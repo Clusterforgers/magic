@@ -124,6 +124,7 @@ pub mod manual_grant;
 mod manual_library;
 mod manual_roll;
 mod manual_show;
+pub mod manual_tokens;
 pub mod memory;
 pub mod merged;
 pub mod monarch;

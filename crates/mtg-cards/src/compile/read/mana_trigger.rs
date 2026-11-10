@@ -45,7 +45,7 @@ fn produced(r: &mut Reader<'_>) -> Option<Produce> {
 /// The effect of a triggered mana ability: who adds mana ("add" for you, "its controller adds" for the Aura's land,
 /// "that player adds" for any player) and the mana. `None` for any other sentence.
 pub fn effects(r: &mut Reader<'_>, when: &TriggerPattern) -> Option<Vec<Effect>> {
-    let TriggerPattern::TappedForMana { what, by } = when else {
+    let TriggerPattern::TappedForMana { what, by, .. } = when else {
         return None;
     };
     let controller = attached(what) && r.words("its controller adds");

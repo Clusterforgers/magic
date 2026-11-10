@@ -79,6 +79,7 @@ fn servos(cx: &Cx<'_>, count: &Amount) -> Result<Run, ResolveError> {
         tapped: false,
         attacking: false,
         against: None,
+        blocking: None,
         bind: None,
     };
     super::create_token::run(cx, &make)

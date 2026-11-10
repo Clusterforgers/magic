@@ -142,6 +142,7 @@ fn w9c_create(token: crate::effect::TokenRef) -> Effect {
         tapped: false,
         attacking: false,
         against: None,
+        blocking: None,
         bind: None,
     }
 }

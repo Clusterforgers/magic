@@ -70,6 +70,15 @@ pub(super) fn written(ability: &Ability, write: fn(&Ability) -> Vec<String>) -> 
     texts
 }
 
+/// Ends the last-resort pass, also when the writer panics.
+struct EndLastResort;
+
+impl Drop for EndLastResort {
+    fn drop(&mut self) {
+        LAST_RESORT.set(false);
+    }
+}
+
 thread_local! {
     static LAST_RESORT: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
 }
@@ -96,13 +105,7 @@ pub(super) fn or_last_resort(
         return texts;
     }
     LAST_RESORT.set(true);
-    struct Reset;
-    impl Drop for Reset {
-        fn drop(&mut self) {
-            LAST_RESORT.set(false);
-        }
-    }
-    let _reset = Reset;
+    let _reset = EndLastResort;
     write(ability)
 }
 

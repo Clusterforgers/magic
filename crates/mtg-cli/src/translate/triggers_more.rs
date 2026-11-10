@@ -165,7 +165,11 @@ fn life_lost(p: &Params) -> Tr<Value> {
 }
 
 fn taps_for_mana(ctx: &Ctx, p: &Params) -> Tr<Value> {
-    keys(p, "TapsForMana", &["ValidCard", "Activator", "Static"])?;
+    keys(
+        p,
+        "TapsForMana",
+        &["ValidCard", "Activator", "Static", "Produced"],
+    )?;
     let what = selector_any(ctx, p.get("ValidCard").unwrap_or("Permanent"))?;
     let by = match p.get("Activator") {
         None => "EachPlayer",
@@ -173,7 +177,18 @@ fn taps_for_mana(ctx: &Ctx, p: &Params) -> Tr<Value> {
         Some("Opponent" | "Player.Opponent") => "Opponents",
         Some(other) => return unmapped(format!("key:Trigger.TapsForMana.Activator={other}")),
     };
-    Ok(json!({"TappedForMana": {"what": what, "by": by}}))
+    // "Whenever you tap a permanent for {C}": a tap that makes mana of one type.
+    let produced = match p.get("Produced") {
+        None => return Ok(json!({"TappedForMana": {"what": what, "by": by}})),
+        Some("W") => "White",
+        Some("U") => "Blue",
+        Some("B") => "Black",
+        Some("R") => "Red",
+        Some("G") => "Green",
+        Some("C") => "Colorless",
+        Some(other) => return unmapped(format!("key:Trigger.TapsForMana.Produced={other}")),
+    };
+    Ok(json!({"TappedForMana": {"what": what, "by": by, "produced": produced}}))
 }
 
 fn becomes_target(ctx: &Ctx, p: &Params) -> Tr<Value> {

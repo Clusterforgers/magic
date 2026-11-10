@@ -5,12 +5,16 @@ use serde_json::Value;
 
 use super::token_binds::TOKENS;
 use crate::ability::Ability;
-use crate::refs::Pred;
+use crate::effect::Effect;
+use crate::refs::{Pred, Ref};
 use crate::trigger::TriggerPattern;
 use crate::value::Condition;
 
 /// The translator's name of the tokens a creation makes.
 const TOKEN: &str = "token";
+
+/// The head of a trigger at the upkeep of the controller of the enchanted creature.
+const UPKEEP: &str = "At the beginning of the upkeep of enchanted creature's controller, ";
 
 /// Whether the value uses a string anywhere.
 fn uses(value: &Value, wanted: &str) -> bool {
@@ -25,9 +29,13 @@ fn uses(value: &Value, wanted: &str) -> bool {
 /// Renames the binding of a creation and the references to it; true when a creation was renamed.
 fn rename(value: &mut Value) -> bool {
     match value {
-        Value::Array(items) => items
-            .iter_mut()
-            .fold(false, |found, item| rename(item) || found),
+        Value::Array(items) => {
+            let mut found = false;
+            for item in items {
+                found |= rename(item);
+            }
+            found
+        }
         Value::Object(map) => {
             let mut found = false;
             if map.contains_key("token") && map.get("as").and_then(Value::as_str) == Some(TOKEN) {
@@ -37,8 +45,10 @@ fn rename(value: &mut Value) -> bool {
             if map.len() == 1 && map.get("Bound").and_then(Value::as_str) == Some(TOKEN) {
                 map.insert("Bound".to_owned(), Value::String(TOKENS.to_owned()));
             }
-            map.values_mut()
-                .fold(found, |found, item| rename(item) || found)
+            for item in map.values_mut() {
+                found |= rename(item);
+            }
+            found
         }
         _ => false,
     }
@@ -67,6 +77,20 @@ pub(super) fn wf24_tokens_renamed(ability: &Ability) -> Option<Ability> {
         return None;
     }
     serde_json::from_value(value).ok()
+}
+
+/// "Whenever a Ninja you control enters, you may attach ~ to it": the card attached to the one object the event is about,
+/// in the last-resort pass.
+pub(super) fn wf24_attach_to_event(effect: &Effect) -> Option<String> {
+    let Effect::Attach {
+        what: Ref::This,
+        to: Ref::Triggering,
+        bind: None,
+    } = effect
+    else {
+        return None;
+    };
+    super::written_memo::last_resort().then(|| "attach ~ to it".to_owned())
 }
 
 /// Whether the last-resort pass may write the ability: a target tapped and given counters ("tap target creature an
@@ -232,7 +256,6 @@ pub(super) fn wf24_and_attach(texts: &mut Vec<String>) {
             .map(|text| text.replacen(", double ~'s ", ", double its ", 1)),
     );
     // "At the beginning of the upkeep of enchanted creature's controller, put a -1/-1 counter on that creature."
-    const UPKEEP: &str = "At the beginning of the upkeep of enchanted creature's controller, ";
     joined.extend(texts.iter().filter_map(|text| {
         let rest = text.strip_prefix(UPKEEP)?;
         rest.contains(" on enchanted creature").then(|| {
