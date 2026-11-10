@@ -151,6 +151,16 @@ fn targets(max: i64, min: i64) -> Value {
     json!({"Triggered": {"when": {"ZoneChange": {"what": [{"Subtype": "Equipment"}]}}}}),
     &[]
 )]
+#[case::loyalty_before_a_target(
+    "+2: Target creature can't be blocked this turn.",
+    json!({"Loyalty": {"cost": {"Plus": 2}, "targets": targets(1, 1)}}),
+    &[]
+)]
+#[case::another_target_of_one_spec(
+    "Prevent all damage target creature would deal. If kicked, another target creature too.",
+    json!({"Spell": {"targets": [{"bounds": {"min": 1, "max": {"When": {}}}}]}}),
+    &[]
+)]
 #[case::number_draw("Draw two cards.", json!({"Draw": {"count": 3}}), &["number"])]
 #[case::number_draw_near("Draw two cards.", json!({"Draw": {"count": 2}}), &[])]
 #[case::number_mana_list("{T}: Add six {G}.", json!({"AddMana": {"mana": {"Fixed": ["Green"]}}}), &[])]

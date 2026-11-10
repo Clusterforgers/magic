@@ -293,6 +293,10 @@ pub struct SemanticAuditArgs {
     /// Only these cards, by slug.
     #[arg(long, value_name = "SLUG", num_args = 1..)]
     pub cards: Vec<String>,
+
+    /// Only the checks whose measured precision (`checks.rs`) is at least this many percent.
+    #[arg(long, value_name = "PERCENT", default_value_t = 0)]
+    pub min_precision: u8,
 }
 
 /// Options of `mutation-score`.

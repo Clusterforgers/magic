@@ -253,6 +253,8 @@ pub struct Check {
     pub what: &'static str,
     /// The check.
     pub run: Run,
+    /// The share of a hand-judged sample of findings that were real faults, in percent (100 when it found none).
+    pub precision: u8,
 }
 
 /// The intervening "if" of a trigger ("When ~ enters, if ..., ...").
@@ -329,7 +331,9 @@ fn target_count(text: &str, f: &Facts) -> Option<String> {
     let plain = without_symbols(text);
     let w = words(&plain);
     for (i, word) in w.iter().enumerate() {
-        let Some(n) = number(word) else { continue };
+        let Some(n) = number(word).filter(|_| word.chars().all(char::is_alphabetic)) else {
+            continue;
+        };
         let next = w.get(i + 1).copied();
         let targeted = next == Some("target")
             || (next.is_some() && w.get(i + 2) == Some(&"target") && next == Some("other"));
@@ -398,7 +402,9 @@ fn another(text: &str, f: &Facts) -> Option<String> {
             && !matches!(before, Some("or" | "and" | "as" | "had" | "its" | "their"));
         leaves_out && !(w[i - 1] == "other" && matches!(before, Some("any" | "no")))
     });
-    let excluded = f.any(&["Not"]) && f.any(&["Is"]);
+    // "Not Is X" and "X or shares ..." leave out or name the object otherwise; one spec of several targets picks distinct ones.
+    let excluded = (f.any(&["Not"]) || f.any(&["AnyOf"])) && f.any(&["Is"]);
+    let excluded = excluded || f.maxes.iter().any(|m| *m != Some(1));
     (cued && !f.any_part(&["Other", "Another"]) && !f.any(&["rest_as"]) && !excluded)
         .then(|| "another, rules keep the source".into())
 }
@@ -480,61 +486,73 @@ pub const CHECKS: &[Check] = &[
         name: "intervening-if",
         what: "a trigger's intervening if with no condition",
         run: intervening_if,
+        precision: 25,
     },
     Check {
         name: "for-each",
         what: "for each with no counted amount",
         run: for_each,
+        precision: 0,
     },
     Check {
         name: "may",
         what: "may with no optional step",
         run: may,
+        precision: 0,
     },
     Check {
         name: "target",
         what: "target with no targets",
         run: target,
+        precision: 25,
     },
     Check {
         name: "target-count",
         what: "a target count the bounds differ from",
         run: target_count,
+        precision: 0,
     },
     Check {
         name: "duration",
         what: "until end of turn / your next turn with no duration",
         run: duration,
+        precision: 25,
     },
     Check {
         name: "each-opponent",
         what: "each opponent with no opponent in the rules",
         run: each_opponent,
+        precision: 0,
     },
     Check {
         name: "another",
         what: "another / other with no Other",
         run: another,
+        precision: 25,
     },
     Check {
         name: "nontoken",
         what: "nontoken with no token filter",
         run: nontoken,
+        precision: 100,
     },
     Check {
         name: "non-filter",
         what: "a non- filter with no negation",
         run: non_filter,
+        precision: 0,
     },
     Check {
         name: "number",
         what: "a number of the text missing from the rules",
         run: numbers,
+        precision: 0,
     },
     Check {
         name: "instead",
         what: "instead with no replacement",
         run: instead,
+        precision: 0,
     },
 ];
 
@@ -547,4 +565,12 @@ pub fn run(text: &str, facts: &Facts) -> Vec<(&'static str, String)> {
         .iter()
         .filter_map(|check| (check.run)(text, facts).map(|note| (check.name, note)))
         .collect()
+}
+
+/// The measured precision of a check by name; `unclaused` and unknown names count as 100.
+pub fn precision(name: &str) -> u8 {
+    CHECKS
+        .iter()
+        .find(|check| check.name == name)
+        .map_or(100, |check| check.precision)
 }

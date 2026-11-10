@@ -303,15 +303,16 @@ pub fn summary(entries: &[Entry], rows: &[(&Entry, Finding)]) -> String {
     for s in sources {
         let _ = writeln!(text, "{s}\t{}\t{}", cards(s), flagged(s));
     }
-    text.push_str("check\tcorpus\tdraft\tforge\n");
+    text.push_str("check\tcorpus\tdraft\tforge\tprecision\n");
     for check in checks_seen {
         let n = |s| per.get(&(check, s)).copied().unwrap_or(0);
         let _ = writeln!(
             text,
-            "{check}\t{}\t{}\t{}",
+            "{check}\t{}\t{}\t{}\t{}%",
             n("corpus"),
             n("draft"),
-            n("forge")
+            n("forge"),
+            checks::precision(check)
         );
     }
     text
@@ -338,6 +339,7 @@ pub fn semantic_audit(cache: &Cache, args: &SemanticAuditArgs) -> Result<String,
         .iter()
         .zip(found)
         .flat_map(|(entry, found)| found.into_iter().map(move |f| (entry, f)))
+        .filter(|(_, f)| checks::precision(f.check) >= args.min_precision)
         .collect();
     let table = tsv(&rows, popularity.as_ref());
     let sum = summary(&entries, &rows);
