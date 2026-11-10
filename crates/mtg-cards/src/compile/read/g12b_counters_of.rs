@@ -22,5 +22,10 @@ pub fn g12b_put_of(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     };
     r.need("counters on")?;
     let on = super::counters::place(r)?;
-    Some(vec![Effect::PutCountersOf { on, of, each: None }])
+    Some(vec![Effect::PutCountersOf {
+        on,
+        of,
+        each: None,
+        one_kind: false,
+    }])
 }

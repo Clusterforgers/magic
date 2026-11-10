@@ -474,4 +474,55 @@ mod tests {
     fn an_increase_adds_its_mana(#[case] before: &str, #[case] more: &str, #[case] after: &str) {
         assert_eq!(joined(cost(before), &cost(more)), cost(after));
     }
+
+    /// Seat 0 holds the Viper, "{5}{B}: this spell costs {1} less for each permanent sacrificed this way (X)", and
+    /// seat 1 controls a Bystander with "creature spells cost {1} less for each X".
+    fn ep22_game() -> (GameState, ObjectId) {
+        let own =
+            r#"{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{1}","per":"X"}}"#;
+        let others = r#"{"CostModifier":{"applies_to":[{"Type":"Creature"}],"change":"Reduce","mana":"{1}","per":"X"}}"#;
+        let viper = mtg_cards::CardDefinition::new("Viper")
+            .with_type(mtg_core::card::CardType::Creature)
+            .with_power_toughness(3, 3)
+            .with_rules(serde_json::from_str(own).unwrap());
+        let bystander = mtg_cards::CardDefinition::new("Bystander")
+            .with_type(mtg_core::card::CardType::Enchantment)
+            .with_rules(serde_json::from_str(others).unwrap());
+        let game = crate::fixtures::state(
+            vec![vec![std::sync::Arc::new(viper)], vec![]],
+            vec![vec![], vec![std::sync::Arc::new(bystander)]],
+        );
+        let spell = game
+            .objects()
+            .find(|o| o.card().name == "Viper")
+            .unwrap()
+            .id();
+        (game, spell)
+    }
+
+    #[rstest]
+    #[case::none_sacrificed(None, "{5}{B}")]
+    #[case::x_of_zero(Some(0), "{5}{B}")]
+    #[case::two_sacrificed(Some(2), "{3}{B}")]
+    #[case::more_than_the_generic(Some(9), "{B}")]
+    fn ep22_a_spell_s_own_modifier_reads_the_x_it_announces(
+        #[case] x: Option<u32>,
+        #[case] expected: &str,
+    ) {
+        let (game, spell) = ep22_game();
+        let choices = Choices {
+            x,
+            ..Choices::default()
+        };
+        let found = modified(
+            &game,
+            PlayerId(0),
+            spell,
+            &[],
+            &choices,
+            Some(cost("{5}{B}")),
+            None,
+        );
+        assert_eq!(found, Some(cost(expected)));
+    }
 }

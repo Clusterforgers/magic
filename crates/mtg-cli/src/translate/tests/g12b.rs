@@ -33,6 +33,10 @@ const TO_MINE: &str = "ValidTgts$ Creature.YouCtrl | TgtPrompt$ Select target cr
     "PutCounter | ValidTgts$ Permanent,Player | CounterType$ ExistingCounter | EachExistingCounter$ True | CounterNum$ 1".to_owned(),
     json!([{"PutCountersOf": {"on": {"Target": 0}, "of": {"Target": 0}, "each": 1}}])
 )]
+#[case::another_of_one_kind_chosen(
+    "PutCounter | ValidTgts$ Permanent | CounterType$ ExistingCounter | CounterNum$ 1".to_owned(),
+    json!([{"PutCountersOf": {"on": {"Target": 0}, "of": {"Target": 0}, "each": 1, "one_kind": true}}])
+)]
 #[case::a_second_kind_with_the_first_number(
     "PutCounterAll | ValidCards$ Creature.YouCtrl | CounterType$ P1P1 | CounterNum$ 5 | ValidCards2$ Planeswalker.YouCtrl | CounterType2$ LOYALTY".to_owned(),
     json!([
@@ -72,9 +76,13 @@ fn g12b_counter_shapes_translate(#[case] line: String, #[case] expected: Value) 
     "PutCounter | ValidTgts$ Permanent | CounterType$ ExistingCounter | EachExistingCounter$ True | CounterNum$ 2",
     "key:PutCounter.EachExistingCounter"
 )]
-#[case::one_kind_of_choice(
-    "PutCounter | ValidTgts$ Permanent | CounterType$ ExistingCounter | CounterNum$ 1",
-    "key:PutCounter.CounterType"
+#[case::two_of_one_kind_of_choice(
+    "PutCounter | ValidTgts$ Permanent | CounterType$ ExistingCounter | CounterNum$ 2",
+    "key:PutCounter.ExistingCounter"
+)]
+#[case::one_kind_of_choice_with_no_target(
+    "PutCounter | Defined$ Self | CounterType$ ExistingCounter | CounterNum$ 1",
+    "key:PutCounter.ExistingCounter"
 )]
 #[case::a_divided_pick(
     "PutCounter | Choices$ Creature.YouCtrl | CounterType$ P1P1 | CounterNum$ X | ChoiceAmount$ X | MinChoiceAmount$ 0 | DividedAsYouChoose$ X",

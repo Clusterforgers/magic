@@ -86,7 +86,7 @@ fn a_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
 )]
 #[case::flip_other(
     "FlipCoin | NoCall$ True | Flipper$ Remembered",
-    "key:FlipCoin.Flipper"
+    "key:FlipCoin.Flipper=Remembered"
 )]
 fn a_form_beyond_the_node_stays_a_gap(#[case] line: &str, #[case] gap: &str) {
     let script = spell(line);

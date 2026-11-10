@@ -629,6 +629,31 @@ impl<'a> Pairer<'a> {
                 self.places[at] = self.places[at - 1];
             }
         }
+        // An additional cost and the spell's reduction for what it pays are one clause wherever the script lists them.
+        for first in 0..abilities.len() {
+            if self.taken[first] || !matches!(abilities[first], Ability::AdditionalCost { .. }) {
+                continue;
+            }
+            for second in 0..abilities.len() {
+                if self.taken[second]
+                    || second == first
+                    || !matches!(abilities[second], Ability::CostModifier { .. })
+                {
+                    continue;
+                }
+                let written = static_pair_texts(&abilities[first], &abilities[second]);
+                if written.is_empty() {
+                    continue;
+                }
+                if let Some(slot) = self.find_text(&[ClauseKind::Static], &written, false) {
+                    self.settle(first, slot, ClauseState::Reads { ability: first });
+                    self.taken[second] = true;
+                    self.slot_of[second] = Some(slot);
+                    self.places[second] = self.places[first];
+                    break;
+                }
+            }
+        }
     }
 
     /// The abilities a renderer writes as a clause, in the clauses of their kind. A line of Saga chapters is read by

@@ -781,6 +781,7 @@ mod en4_counter;
 mod en4_cumulative;
 mod en4_look;
 mod en4_static_trigger;
+mod ep22;
 mod ev1;
 mod f1;
 mod f2;

@@ -8,9 +8,43 @@ use crate::refs::Ref;
 use crate::value::Condition;
 
 impl Writer<'_> {
+    /// "flip five coins. Take an extra turn after this one for each coin that comes up heads": two or more flips of yours
+    /// in a row, each with the same `win` list and nothing on a loss, and the number of effects they cover.
+    fn ep22_flips(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
+        let first @ Effect::FlipCoin {
+            who: Ref::You,
+            win,
+            lose,
+            until: false,
+            ..
+        } = effects.first()?
+        else {
+            return None;
+        };
+        if win.is_empty() || !lose.is_empty() {
+            return None;
+        }
+        let times = effects.iter().take_while(|effect| *effect == first).count();
+        if times < 2 {
+            return None;
+        }
+        let count = super::super::amounts::count_word(u32::try_from(times).ok()?)?;
+        let steps = self.consequence(&Condition::All(Vec::new()), win)?;
+        Some((
+            vec![
+                format!("flip {count} coins"),
+                format!("{steps} for each coin that comes up heads"),
+            ],
+            times,
+        ))
+    }
+
     /// "flip a coin", "if you win the flip, S" and "if you lose the flip, S" as sentences, or "roll a d20", and the number
     /// of effects they cover.
     pub(super) fn chance(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
+        if let Some(found) = self.ep22_flips(effects) {
+            return Some(found);
+        }
         match effects.first()? {
             Effect::FlipCoin {
                 who,
