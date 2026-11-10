@@ -1501,11 +1501,10 @@ fn step_text(step: Step, whose: &Ref) -> Option<String> {
 }
 
 /// A permanent tapped for mana: "Whenever you tap a land for mana", "Whenever enchanted land is tapped for mana".
-fn tapped_for_mana_text(
-    what: &Selector,
-    by: &Ref,
-    produced: Option<mtg_core::mana::ManaType>,
-) -> Option<String> {
+fn tapped_for_mana_text(pattern: &TriggerPattern) -> Option<String> {
+    let TriggerPattern::TappedForMana { what, by, produced } = pattern else {
+        return None;
+    };
     // "Whenever you tap a permanent for {C}": a tap that makes mana of one type.
     if let Some(produced) = produced {
         return Some(format!(
@@ -1645,9 +1644,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::PlayerAttacked { .. } | TriggerPattern::PlayerAttacks { .. } => {
             player_attack_text(pattern)
         }
-        TriggerPattern::TappedForMana { what, by, produced } => {
-            tapped_for_mana_text(what, by, *produced)
-        }
+        TriggerPattern::TappedForMana { .. } => tapped_for_mana_text(pattern),
         TriggerPattern::CountersPut { what, counter, .. } => {
             counter_text(what, counter.as_ref(), "put on")
         }
