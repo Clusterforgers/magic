@@ -30,7 +30,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
 
-pub(crate) use inline::{run_inline, w5d_run_instead};
+pub(crate) use inline::{Inline, run_inline, w5d_run_instead};
 pub use left::LeftToTable;
 pub(crate) use prim::{first_step_done, lower};
 pub use value::{Bindings, ResolveError, Scope};
@@ -348,6 +348,7 @@ fn scope_of<'a>(
         caused: None,
         granter: ability.and_then(|a| a.origin().granter()),
         as_was: false,
+        inline: None,
     }
 }
 

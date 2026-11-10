@@ -15,6 +15,7 @@ pub mod partial;
 mod r6c_bare;
 mod render;
 mod repair;
+mod ri23_skipped;
 
 pub use merge::{MergeRefusal, merge, refusal};
 pub(crate) use pairing::pair_card;
@@ -248,8 +249,13 @@ fn judge(
     (hand_written, names, caps): (&Library, &BTreeSet<String>, &Caps),
 ) -> Report {
     let paired = pairing::pair_card(&proposed, clauses, printed);
+    let file = format!("cards/{}.json", slug(&printed.name));
+    let skipped = ri23_skipped::ri23_skipped(&proposed, &paired.clauses, caps, &file);
     let card = complete::finish(proposed, &paired, printed);
     report.problems = hand_written.check_generated(&card, printed, names);
+    if report.problems.is_empty() {
+        report.problems = skipped;
+    }
     if report.problems.is_empty() {
         report.support = Some(support(Some(&card), printed, caps));
     }

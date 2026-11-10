@@ -71,53 +71,61 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             snapshots,
         } => {
             spend_when_done(state, bound);
-            let resolving = resolving_mut(state)?;
-            resolving.position.clone_from(position);
-            for (name, targets) in bound {
-                // A repeat frees the names its body bound before its next pass, so they may be bound again.
-                if let Some(cleared) = name.strip_prefix(crate::resolve::CLEAR) {
-                    resolving.bindings.remove(cleared);
-                    continue;
-                }
-                if let Some(kept) = name.strip_prefix(crate::resolve::LET) {
-                    let (value, kept) = kept
-                        .split_once(':')
-                        .and_then(|(value, kept)| Some((value.parse::<i64>().ok()?, kept)))
-                        .ok_or_else(|| invalid(format!("`{name}` names no kept number")))?;
-                    resolving.lets.retain(|(old, _)| old != kept);
-                    resolving.lets.push((kept.to_owned(), value));
-                    continue;
-                }
-                if let Some(value) = name.strip_prefix(crate::resolve::CHOSEN_VALUE) {
-                    let (key, json) = value
-                        .split_once('\t')
-                        .ok_or_else(|| invalid(format!("`{name}` names no chosen value")))?;
-                    let chosen = serde_json::from_str(json)
-                        .map_err(|_| invalid(format!("`{name}` names no chosen value")))?;
-                    resolving.chosen.insert(key.to_owned(), chosen);
-                    continue;
-                }
-                if let Some(x) = name.strip_prefix(crate::resolve::W6C_PAID_X) {
-                    let x = x
-                        .parse()
-                        .map_err(|_| invalid(format!("`{name}` names no paid X")))?;
-                    resolving.w6c_paid_x = Some(x);
-                    continue;
-                }
-                if let Some(old) = resolving.bindings.insert(name.clone(), targets.clone())
-                    && !renews(&old, targets)
-                    && !grows(&old, targets)
-                {
-                    return Err(invalid(format!("`{name}` was bound twice")));
-                }
-            }
-            resolving.snapshots.extend(snapshots.iter().cloned());
-            resolving.journal.clear();
-            Ok(())
+            step_done(resolving_mut(state)?, position, bound, snapshots).map_err(invalid)
         }
         Event::ResolutionEnded { object, outcome } => end(state, *object, *outcome),
         other => Err(invalid(format!("not a resolution event: {other:?}"))),
     }
+}
+
+/// Folds a finished step into `resolving`: the next position, the names it bound and the objects it moved away; the
+/// journal of the step is cleared. The inline runner of replacement effects folds its steps the same way.
+pub(crate) fn step_done(
+    resolving: &mut Resolving,
+    position: &[usize],
+    bound: &[(String, Vec<Target>)],
+    snapshots: &[crate::snapshot::Snapshot],
+) -> Result<(), String> {
+    resolving.position = position.to_vec();
+    for (name, targets) in bound {
+        // A repeat frees the names its body bound before its next pass, so they may be bound again.
+        if let Some(cleared) = name.strip_prefix(crate::resolve::CLEAR) {
+            resolving.bindings.remove(cleared);
+            continue;
+        }
+        if let Some(kept) = name.strip_prefix(crate::resolve::LET) {
+            let (value, kept) = kept
+                .split_once(':')
+                .and_then(|(value, kept)| Some((value.parse::<i64>().ok()?, kept)))
+                .ok_or_else(|| format!("`{name}` names no kept number"))?;
+            resolving.lets.retain(|(old, _)| old != kept);
+            resolving.lets.push((kept.to_owned(), value));
+            continue;
+        }
+        if let Some(value) = name.strip_prefix(crate::resolve::CHOSEN_VALUE) {
+            let (key, json) = value
+                .split_once('\t')
+                .ok_or_else(|| format!("`{name}` names no chosen value"))?;
+            let chosen = serde_json::from_str(json)
+                .map_err(|_| format!("`{name}` names no chosen value"))?;
+            resolving.chosen.insert(key.to_owned(), chosen);
+            continue;
+        }
+        if let Some(x) = name.strip_prefix(crate::resolve::W6C_PAID_X) {
+            let x = x.parse().map_err(|_| format!("`{name}` names no paid X"))?;
+            resolving.w6c_paid_x = Some(x);
+            continue;
+        }
+        if let Some(old) = resolving.bindings.insert(name.clone(), targets.clone())
+            && !renews(&old, targets)
+            && !grows(&old, targets)
+        {
+            return Err(format!("`{name}` was bound twice"));
+        }
+    }
+    resolving.snapshots.extend(snapshots.iter().cloned());
+    resolving.journal.clear();
+    Ok(())
 }
 
 /// Whether `new` is `old` with more after it: an adding bind (`Effect::Bind` with `adds`) grows its name.
