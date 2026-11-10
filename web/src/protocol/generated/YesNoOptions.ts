@@ -17,4 +17,9 @@ text?: string,
  * Whether No is the only answer: the payment asked for cannot be made. The question, its words and its clock are
  * those of a player who could pay, so nothing but this seat's own view tells the two apart.
  */
-only_no?: boolean, };
+only_no?: boolean, 
+/**
+ * Whether the question is the return of a commander to the command zone (CR 903.9): the table words it as that
+ * choice. Any other question of a commander's ability ("you may draw a card") is a plain yes or no.
+ */
+commander_return?: boolean, };

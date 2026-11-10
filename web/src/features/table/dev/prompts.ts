@@ -91,7 +91,7 @@ const commanderReturn: DevPrompt = ({ view }) => {
     id: 1,
     decision: {
       player: view.viewer,
-      kind: { YesNo: { source: id, text: `Put ${name} into the command zone?` } },
+      kind: { YesNo: { source: id, text: `Put ${name} into the command zone?`, commander_return: true } },
     },
   }
 }

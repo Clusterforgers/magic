@@ -220,7 +220,7 @@ pub(crate) fn decision(state: &GameState) -> Option<Decision> {
     let card = state.object(id)?;
     Some(Decision {
         player: card.owner(),
-        kind: DecisionKind::YesNo(YesNoOptions::new(
+        kind: DecisionKind::YesNo(YesNoOptions::commander_return(
             id,
             format!("Put {} into the command zone?", card.card().name),
         )),

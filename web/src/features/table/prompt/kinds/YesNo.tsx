@@ -1,9 +1,7 @@
 import { useMemo, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { usePlay } from '@/features/game/gameContext'
 import type { ObjectView } from '@/protocol/generated'
 import { commanderDestination, returnDetail, returnNoLabel, returnQuestion } from '../../commander'
-import { playerOf } from '../../selectors'
 import { askerWords, NO_KEY, YES_NO_KEYS, yesNoSentence } from '../choiceText'
 import { KeyHint } from '../KeyHint'
 import { usePrompt } from '../PromptContext'
@@ -16,16 +14,12 @@ import { useDefaultFocus, usePromptKeys } from '../usePromptKeys'
  * YesNo: a "may" or a "pay or not", in the words of the card. Yes and No are big buttons, Y and N answer from the
  * keyboard, and focus starts on No, the answer the response clock gives, so a press made without looking is the same
  * as running out of time. The question reads aloud with the keys; the table's cards are left as they are. The
- * question about one of the asker's own commanders is the return choice (`CommanderReturn`).
+ * question the engine marks as a commander's return is the return choice (`CommanderReturn`); any other question
+ * about a commander (its own "you may") is a plain one.
  */
 export const YesNoPrompt: PromptComponent<'YesNo'> = ({ options }) => {
-  const { decision } = usePrompt()
   const [source] = useObjects(useMemo(() => [options.source], [options.source]))
-  const commander = usePlay(
-    (state) =>
-      playerOf(state, decision.player)?.commanders?.some((entry) => entry.object === options.source) === true,
-  )
-  return commander && source !== undefined ? (
+  return options.commander_return === true && source !== undefined ? (
     <CommanderReturn source={source} text={options.text ?? ''} />
   ) : (
     <PlainYesNo name={source?.name} text={options.text ?? ''} onlyNo={options.only_no === true} />

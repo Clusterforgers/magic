@@ -33,6 +33,11 @@ pub struct YesNoOptions {
     #[serde(skip)]
     #[cfg_attr(feature = "ts", ts(skip))]
     pub unseen: bool,
+    /// Whether the question is the return of a commander to the command zone (CR 903.9): the table words it as that
+    /// choice. Any other question of a commander's ability ("you may draw a card") is a plain yes or no.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub commander_return: bool,
 }
 
 impl YesNoOptions {
@@ -43,6 +48,15 @@ impl YesNoOptions {
             text: text.into(),
             only_no: false,
             unseen: false,
+            commander_return: false,
+        }
+    }
+
+    /// The question whether a commander goes to the command zone (CR 903.9).
+    pub fn commander_return(source: ObjectId, text: impl Into<String>) -> Self {
+        YesNoOptions {
+            commander_return: true,
+            ..YesNoOptions::new(source, text)
         }
     }
 }
