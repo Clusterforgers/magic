@@ -3612,6 +3612,7 @@ impl Walker<'_> {
                 token,
                 count,
                 against,
+                blocking,
                 bind,
                 ..
             } => {
@@ -3620,6 +3621,9 @@ impl Walker<'_> {
                 w.at("count", |w| w.amount(count));
                 if let Some(against) = against {
                     w.at("against", |w| w.reference(against, Kind::Either));
+                }
+                if let Some(blocking) = blocking {
+                    w.at("blocking", |w| w.reference(blocking, Kind::Object));
                 }
                 if let Some(name) = bind {
                     w.at("as", |w| w.bind(name, Kind::Object));

@@ -72,6 +72,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             name: definition.name.clone(),
             tapped: false,
             attacking: None,
+            blocking: None,
             definition: Arc::clone(&definition),
         }));
         // A token is a new object: its zone-change counter starts at 0.

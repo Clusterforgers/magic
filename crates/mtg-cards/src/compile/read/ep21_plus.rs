@@ -70,6 +70,7 @@ fn create(token: TokenRef, count: Amount) -> Effect {
         tapped: false,
         attacking: false,
         against: None,
+        blocking: None,
         bind: None,
     }
 }
@@ -147,6 +148,7 @@ pub(super) fn ep21_each_sentence(when: &ReplaceWhen, by: &ReplaceBy) -> Option<S
             tapped: false,
             attacking: false,
             against: None,
+            blocking: None,
             bind: None,
         } = effect
         else {

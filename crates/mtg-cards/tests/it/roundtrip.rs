@@ -669,7 +669,11 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
         ),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::Discarded { what, by }),
         selector().prop_map(|what| TriggerPattern::Tapped { what }),
-        (selector(), reference()).prop_map(|(what, by)| TriggerPattern::TappedForMana { what, by, produced: None }),
+        (selector(), reference()).prop_map(|(what, by)| TriggerPattern::TappedForMana {
+            what,
+            by,
+            produced: None
+        }),
         selector().prop_map(|what| TriggerPattern::Blocks {
             what,
             blocking: Selector::default()
@@ -1127,6 +1131,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 tapped,
                 attacking,
                 against: None,
+                blocking: None,
                 bind: None
             }
         ),

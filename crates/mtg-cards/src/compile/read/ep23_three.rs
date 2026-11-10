@@ -24,6 +24,23 @@ pub fn ep23_texts(first: &Ability, second: &Ability, third: &Ability) -> Vec<Str
         .collect()
 }
 
+/// Whether a wording may stand for the ability: one that creates tokens blocking a creature says "blocking", so a writer
+/// that leaves the block out never reads as the card.
+pub(super) fn ep23_says_its_block(ability: &Ability, text: &str) -> bool {
+    fn blocks(value: &serde_json::Value) -> bool {
+        match value {
+            serde_json::Value::Object(map) => {
+                map.get("CreateToken")
+                    .is_some_and(|create| create.get("blocking").is_some())
+                    || map.values().any(blocks)
+            }
+            serde_json::Value::Array(list) => list.iter().any(blocks),
+            _ => false,
+        }
+    }
+    text.contains(" blocking ") || !serde_json::to_value(ability).is_ok_and(|value| blocks(&value))
+}
+
 /// The generic mana a reduction of the spell itself takes off for each permanent of a kind its controller sacrificed
 /// this turn, and the kind.
 fn sacrificed_before(ability: &Ability) -> Option<(u32, String)> {

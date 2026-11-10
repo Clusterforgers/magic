@@ -308,6 +308,7 @@ mod tests {
             name: "Thing".into(),
             tapped: false,
             attacking: None,
+            blocking: None,
             definition: Arc::new(definition),
             copy_of: None,
         })

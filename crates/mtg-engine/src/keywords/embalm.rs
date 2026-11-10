@@ -59,6 +59,7 @@ pub(super) fn zombie_copy(cost: &Cost, more: Vec<Modification>, color: Color) ->
             tapped: false,
             attacking: false,
             against: None,
+            blocking: None,
             bind: None,
         }],
     }

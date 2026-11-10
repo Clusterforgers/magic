@@ -1347,6 +1347,7 @@ mod tests {
                 name: "Treasure".into(),
                 tapped: false,
                 attacking: None,
+                blocking: None,
                 definition: std::sync::Arc::new(mtg_cards::CardDefinition::new("Treasure")),
             }),
             Event::Revealed(Revealed {

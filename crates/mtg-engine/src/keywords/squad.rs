@@ -55,6 +55,7 @@ impl KeywordRules for Squad {
                 tapped: false,
                 attacking: false,
                 against: None,
+                blocking: None,
                 bind: None,
             }],
         }]

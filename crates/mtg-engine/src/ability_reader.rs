@@ -820,6 +820,7 @@ mod tests {
             name: "Gem".into(),
             tapped: false,
             attacking: None,
+            blocking: None,
             definition: Arc::new(
                 CardDefinition::new("Gem")
                     .with_type(CardType::Artifact)

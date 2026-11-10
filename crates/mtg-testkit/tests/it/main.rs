@@ -233,6 +233,7 @@ mod enters;
 mod ep22_every_zone;
 mod ep22_granted_loyalty;
 mod ep23_saw_in_half;
+mod ep23_token_blocking;
 mod equip_to;
 mod equipment;
 mod equipment_creature;

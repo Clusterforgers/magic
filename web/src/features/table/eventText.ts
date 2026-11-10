@@ -763,7 +763,9 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     return line(`${targetName(on, n)} ${delta > 0 ? 'gets' : 'loses'} ${phrase}`)
   }
   if ('TokenCreated' in event) {
-    return line(`${n.seat(event.TokenCreated.controller)} creates a ${event.TokenCreated.name} token`)
+    const { controller, name, blocking } = event.TokenCreated
+    const blocks = blocking === undefined ? '' : ` blocking ${n.card(blocking)}`
+    return line(`${n.seat(controller)} creates a ${name} token${blocks}`)
   }
   if ('CardConjured' in event) {
     const { owner, name, zone } = event.CardConjured

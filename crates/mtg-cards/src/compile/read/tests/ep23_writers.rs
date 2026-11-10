@@ -1,4 +1,4 @@
-//! Goal: the writers of ep23 write the card's words and nothing near them: a tap for one type of mana ("Whenever you tap a permanent for {C}, add an additional {C}."), a counter moved "onto a second target permanent" (other than the first target or not, as the reader reads it), lands of every zone ("Lands you control and land cards you own that aren't on the battlefield are Deserts in addition to their other types.") and a required cost with two reductions in one clause ("... {2} less to cast for each permanent sacrificed this way and {2} less to cast for each other artifact or creature you've sacrificed this turn."); creatures in that wording, fewer zones, another player's sacrifices, another amount or another kind do not read back.
+//! Goal: the writers of ep23 write the card's words and nothing near them: a token "that's blocking that creature" (never without the block), a tap for one type of mana ("Whenever you tap a permanent for {C}, add an additional {C}."), a counter moved "onto a second target permanent" (other than the first target or not, as the reader reads it), lands of every zone ("Lands you control and land cards you own that aren't on the battlefield are Deserts in addition to their other types.") and a required cost with two reductions in one clause ("... {2} less to cast for each permanent sacrificed this way and {2} less to cast for each other artifact or creature you've sacrificed this turn."); creatures in that wording, fewer zones, another player's sacrifices, another amount or another kind do not read back.
 use super::*;
 
 const ALL_ZONES: &str = r#"{"AnyOf":[{"In":"Battlefield"},{"In":"Stack"},{"In":"Hand"},{"In":"Library"},{"In":"Graveyard"},{"In":"Exile"},{"In":"Command"}]}"#;
@@ -106,4 +106,33 @@ fn ep23_a_tap_for_one_type_writes_as_printed(#[case] json: String, #[case] reads
         reads,
         "{found:?}"
     );
+}
+
+const BRIMAZ: &str = "Whenever ~ blocks a creature, create a 1/1 white Cat Soldier creature token with vigilance that's blocking that creature.";
+const BRIMAZ_PLAIN: &str =
+    "Whenever ~ blocks a creature, create a 1/1 white Cat Soldier creature token with vigilance.";
+
+fn blocking_cat(fields: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"effects":[{{"CreateToken":{{{fields}"token":{{"Custom":{{"abilities":[{{"Keyword":"Vigilance"}}],"colors":["White"],"name":"Cat Soldier","power":1,"subtypes":["Cat","Soldier"],"toughness":1,"types":["Creature"]}}}}}}}}],"when":{{"BecomesBlocked":{{"by":["This"],"what":[{{"Type":"Creature"}}]}}}}}}}}"#
+    )
+}
+
+#[rstest]
+#[case::blocking_that_creature(blocking_cat(r#""blocking":"Triggering","#), BRIMAZ, true)]
+#[case::the_block_is_not_left_out(blocking_cat(r#""blocking":"Triggering","#), BRIMAZ_PLAIN, false)]
+#[case::no_block(blocking_cat(""), BRIMAZ, false)]
+#[case::blocking_another(blocking_cat(r#""blocking":"This","#), BRIMAZ, false)]
+#[case::tapped_and_blocking(
+    blocking_cat(r#""blocking":"Triggering","tapped":true,"#),
+    BRIMAZ,
+    false
+)]
+fn ep23_a_token_blocking_that_creature_writes_as_printed(
+    #[case] json: String,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let found = written_variants(&ability(&json));
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
 }

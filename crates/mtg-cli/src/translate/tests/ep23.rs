@@ -1,4 +1,4 @@
-//! Goal: the pieces of ep23 translate as the card prints them: lands of every zone ("Lands you control and land cards you own that aren't on the battlefield are Islands") list every zone, a player gains hexproof from colours, and a tap for one type of mana names the type; creatures in that wording, lands of every player, a player's hexproof from another quality and a tap for a type Forge words otherwise stay gaps.
+//! Goal: the pieces of ep23 translate as the card prints them: lands of every zone ("Lands you control and land cards you own that aren't on the battlefield are Islands") list every zone, a player gains hexproof from colours, and a tap for one type of mana names the type, and a token enters blocking the attacker of a block trigger; creatures in that wording, lands of every player, a player's hexproof from another quality a tap for a type Forge words otherwise and a token blocking another creature stay gaps.
 use rstest::rstest;
 use serde_json::json;
 
@@ -103,6 +103,31 @@ fn every_zone_gap(line: &str) {
         found
             .iter()
             .any(|gap| gap == "key:Static.Continuous.AffectedZone=All"),
+        "{found:?}"
+    );
+}
+
+fn block_trigger(blocking: &str) -> String {
+    format!(
+        "Name:T\nTypes:Creature\nPT:3/4\nT:Mode$ AttackerBlocked | ValidCard$ Creature | ValidBlocker$ Card.Self | Execute$ Make | TriggerDescription$ Whenever CARDNAME blocks a creature, create a 1/1 white Soldier creature token that's blocking that creature.\nSVar:Make:DB$ Token | TokenScript$ w_1_1_soldier | TokenOwner$ You | TokenBlocking$ {blocking}\n"
+    )
+}
+
+#[test]
+fn ep23_a_token_enters_blocking_the_attacker() {
+    let script = block_trigger("TriggeredAttacker");
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let create = &abilities(&script)[0]["Triggered"]["effects"][0]["CreateToken"];
+    assert_eq!(create["blocking"], json!("Triggering"), "{create}");
+}
+
+#[test]
+fn ep23_a_token_blocking_another_creature_stays_a_gap() {
+    let found = gaps(&block_trigger("TriggeredBlocker"));
+    assert!(
+        found
+            .iter()
+            .any(|gap| gap == "key:TokenBlocking=TriggeredBlocker"),
         "{found:?}"
     );
 }
