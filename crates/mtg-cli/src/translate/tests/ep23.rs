@@ -30,7 +30,42 @@ fn ep23_lands_of_every_zone_list_the_zones() {
 #[case::every_player_s(&format!(
     "Mode$ Continuous | Affected$ Land | AffectedZone$ All | AddType$ Island | {LANDS}"
 ))]
-fn ep23_other_lands_of_every_zone_stay_gaps(#[case] line: &str) {
+fn ep23_other_lands_of_every_zone_stay_gaps_x(#[case] line: &str) {
+    ep23_other_lands_of_every_zone_stay_gaps(line);
+}
+
+fn spell(line: &str) -> String {
+    format!("Name:T\nTypes:Instant\nA:SP$ {line}\n")
+}
+
+#[rstest]
+#[case::two_colours("Hexproof:Black & Hexproof:Blue", &["Black", "Blue"])]
+#[case::one_colour("Hexproof:Green", &["Green"])]
+fn ep23_a_player_gains_hexproof_from_colours(#[case] keywords: &str, #[case] colours: &[&str]) {
+    let script = spell(&format!("Pump | Defined$ You | KW$ {keywords}"));
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let expected: Vec<_> = colours
+        .iter()
+        .map(|colour| {
+            json!({"Rule": {"duration": "UntilEndOfTurn", "rule": {"PlayersHave": {
+                "keyword": {"HexproofFrom": [{"Color": colour}]}, "who": "You"}}}})
+        })
+        .collect();
+    assert_eq!(abilities(&script)[0]["Spell"]["effects"], json!(expected));
+}
+
+#[rstest]
+#[case::a_card_type("Hexproof:Artifact", "key:Pump.player-keyword-Hexproof:Artifact")]
+#[case::a_chosen_colour("Hexproof:ChosenColor", "key:Pump.player-keyword-Hexproof:ChosenColor")]
+fn ep23_a_player_s_hexproof_from_other_qualities_stays_a_gap(
+    #[case] keyword: &str,
+    #[case] gap: &str,
+) {
+    let found = gaps(&spell(&format!("Pump | Defined$ You | KW$ {keyword}")));
+    assert!(found.iter().any(|found| found == gap), "{found:?}");
+}
+
+fn ep23_other_lands_of_every_zone_stay_gaps(line: &str) {
     let found = gaps(&static_line(line));
     assert!(
         found

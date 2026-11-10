@@ -922,7 +922,7 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         pump_duration(p)?
     };
     let subject = subject(ctx, p, "Self", None)?;
-    if let Some(found) = player_keywords(p, &subject, duration) {
+    if let Some(found) = player_keywords(ctx, p, &subject, duration) {
         return found;
     }
     let affected = if p.get("Radiance") == Some("True") {
@@ -1000,7 +1000,12 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// "You gain hexproof until end of turn": a pump of players that only gives keywords a player can have (hexproof, shroud) is
 /// a rule for the duration; `None` for a pump of objects or one that changes more.
-fn player_keywords(p: &Params, subject: &Value, duration: &str) -> Option<Tr<Vec<Value>>> {
+fn player_keywords(
+    ctx: &Ctx,
+    p: &Params,
+    subject: &Value,
+    duration: &str,
+) -> Option<Tr<Vec<Value>>> {
     let player = match subject {
         Value::String(word) => matches!(
             word.as_str(),
@@ -1033,6 +1038,16 @@ fn player_keywords(p: &Params, subject: &Value, duration: &str) -> Option<Tr<Vec
             "Hexproof" | "Shroud" => json!(word),
             // CR 702.16j: protection from everything is the protection keyword with no quality.
             "Protection from everything" => json!({"Protection": []}),
+            // "You gain hexproof from blue and from black": hexproof from a colour.
+            _ if word.strip_prefix("Hexproof:").is_some_and(|color| {
+                matches!(color, "White" | "Blue" | "Black" | "Red" | "Green")
+            }) =>
+            {
+                match super::keyword::keyword_value(ctx, word) {
+                    Ok(keyword) => keyword,
+                    Err(gap) => return Some(Err(gap)),
+                }
+            }
             _ => return Some(unmapped(format!("key:Pump.player-keyword-{word}"))),
         };
         rules.push(json!({"Rule": {"rule": {"PlayersHave": {"who": subject, "keyword": keyword}}, "duration": duration}}));

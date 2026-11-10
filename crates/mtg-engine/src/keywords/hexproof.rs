@@ -38,6 +38,32 @@ impl KeywordRules for Hexproof {
     }
 }
 
+/// Whether a player's hexproof from a quality keeps `controller`'s `source` from targeting them (CR 702.11d): "you gain
+/// hexproof from blue and from black" stops the blue and black spells and abilities of the player's opponents.
+pub(crate) fn ep23_player_hexproof_from(
+    state: &GameState,
+    holder: PlayerId,
+    source: ObjectId,
+    controller: PlayerId,
+) -> bool {
+    if holder == controller {
+        return false;
+    }
+    let Some(from) = state.object(source) else {
+        return false;
+    };
+    super::player_keywords(state, holder)
+        .into_iter()
+        .any(|keyword| match keyword {
+            Keyword::HexproofFrom(quality) => {
+                crate::resolve::Scope::announcing(state, holder, from.reference())
+                    .selects(quality, from.reference())
+                    .unwrap_or(false)
+            }
+            _ => false,
+        })
+}
+
 /// The rules of hexproof from a quality.
 #[derive(Debug)]
 pub(super) struct HexproofFrom;
@@ -74,7 +100,7 @@ impl KeywordRules for HexproofFrom {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: hexproof keeps the spells and abilities of the holder's opponents from targeting it and no one else's, for a permanent and for a player, at tables of two to four seats and on the battlefield only, and the recheck on resolution (CR 608.2b) drops a target that has become protected.
+    //! Goal: hexproof keeps the spells and abilities of the holder's opponents from targeting it and no one else's, for a permanent and for a player, hexproof from a quality of a permanent or a player stops only the opponents' sources with that quality, at tables of two to four seats and on the battlefield only, and the recheck on resolution (CR 608.2b) drops a target that has become protected.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -344,5 +370,31 @@ mod tests {
         game.players[1].keywords.push(Keyword::Hexproof);
         assert!(!is_legal(&game, &any_player, target, source, PlayerId(0)));
         assert!(is_legal(&game, &any_player, target, source, PlayerId(1)));
+    }
+
+    #[rstest]
+    #[case::creature_source_from_an_opponent(Pred::Type(CardType::Creature), 2, 0, false)]
+    #[case::creature_source_from_the_holder(Pred::Type(CardType::Creature), 2, 1, true)]
+    #[case::other_quality_from_an_opponent(Pred::Type(CardType::Artifact), 2, 0, true)]
+    #[case::another_opponent_at_three_seats(Pred::Type(CardType::Creature), 3, 2, false)]
+    #[case::the_holder_at_four_seats(Pred::Type(CardType::Creature), 4, 1, true)]
+    fn ep23_a_player_s_hexproof_from_a_quality_stops_only_opponents_sources_with_it(
+        #[case] quality: Pred,
+        #[case] seats: usize,
+        #[case] caster: usize,
+        #[case] legal: bool,
+    ) {
+        let mut setup = table(seats);
+        setup.players[1].keywords = vec![Keyword::HexproofFrom(mtg_cards::refs::Selector(vec![
+            quality,
+        ]))];
+        let game = game(&setup);
+        let found = legal_targets(
+            &game,
+            &spec(r#"{"what":"Player"}"#),
+            spell_of(&game, caster),
+            PlayerId::from_index(caster),
+        );
+        assert_eq!(names(&game, &found).contains(&"player 1".to_owned()), legal);
     }
 }

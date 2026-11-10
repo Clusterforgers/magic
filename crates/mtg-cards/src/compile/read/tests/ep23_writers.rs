@@ -70,9 +70,19 @@ fn moved(first: &str, second: &str) -> String {
 #[rstest]
 #[case::another_target(moved(MINE, OTHER), true)]
 #[case::the_reader_s_second_target(moved(MINE, r#"{"what":{"Object":[]}}"#), true)]
-#[case::onto_a_creature(moved(MINE, r#"{"what":{"Object":[{"Type":"Creature"},{"Not":{"Is":{"Target":0}}}]}}"#), false)]
+#[case::onto_a_creature(
+    moved(
+        MINE,
+        r#"{"what":{"Object":[{"Type":"Creature"},{"Not":{"Is":{"Target":0}}}]}}"#
+    ),
+    false
+)]
 #[case::from_any_permanent(moved(r#"{"what":{"Object":[]}}"#, OTHER), false)]
 fn ep23_a_counter_moves_onto_another_target(#[case] json: String, #[case] reads: bool) {
     let found = written_variants(&ability(&json));
-    assert_eq!(found.iter().any(|w| same_text(w, NESTING)), reads, "{found:?}");
+    assert_eq!(
+        found.iter().any(|w| same_text(w, NESTING)),
+        reads,
+        "{found:?}"
+    );
 }
