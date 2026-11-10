@@ -83,14 +83,21 @@ pub(super) fn wf24_last_resort_shape(ability: &Ability) -> bool {
         return false;
     };
     let attach = serde_json::json!({"Attach": {"what": "This", "to": "Triggering"}});
-    let stunned = effects.as_array().is_some_and(|list| {
-        list.len() == 2
-            && list[0] == serde_json::json!({"Tap": {"what": {"Target": 0}}})
-            && list[1]
-                .get("PutCounters")
-                .and_then(|put| put.get("on"))
-                .is_some_and(|on| *on == serde_json::json!({"Target": 0}))
-    });
+    // Targets chosen for each player are "each of those creatures", which this pass does not write.
+    let objects = value
+        .as_object()
+        .and_then(|map| map.values().next())
+        .and_then(|body| body.pointer("/targets/0/what/Object"))
+        .is_some();
+    let stunned = objects
+        && effects.as_array().is_some_and(|list| {
+            list.len() == 2
+                && list[0] == serde_json::json!({"Tap": {"what": {"Target": 0}}})
+                && list[1]
+                    .get("PutCounters")
+                    .and_then(|put| put.get("on"))
+                    .is_some_and(|on| *on == serde_json::json!({"Target": 0}))
+        });
     let attached = *effects == serde_json::json!([attach])
         || *effects == serde_json::json!([{"May": {"effects": [attach]}}]);
     stunned || attached
@@ -198,11 +205,24 @@ pub(super) fn wf24_and_attach(texts: &mut Vec<String>) {
         texts
             .iter()
             .filter(|text| {
-                text.split_once(", ")
-                    .is_some_and(|(head, _)| head.contains(" enters") && !head.contains('~'))
+                text.split_once(" enters, ")
+                    .is_some_and(|(head, _)| !head.contains('~'))
                     && text.ends_with(" attach ~ to it.")
             })
             .map(|text| text.replacen(" attach ~ to it.", " attach ~ to that creature.", 1)),
+    );
+    // "You may have each opponent lose 1 life": a choice of yours about what other players do.
+    joined.extend(
+        texts
+            .iter()
+            .filter(|text| text.contains(", you may each other player loses "))
+            .map(|text| {
+                text.replacen(
+                    ", you may each other player loses ",
+                    ", you may have each opponent lose ",
+                    1,
+                )
+            }),
     );
     // "Whenever ~ attacks alone, double its power and toughness until end of turn."
     joined.extend(
