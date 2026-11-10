@@ -312,6 +312,7 @@ mod tests {
                 caused: None,
                 granter: None,
                 as_was: false,
+                inline: None,
             };
             (
                 scope.all_targets_illegal(),

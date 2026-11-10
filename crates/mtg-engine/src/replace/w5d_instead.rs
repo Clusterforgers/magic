@@ -1,5 +1,7 @@
 //! `ReplaceBy::Instead` (CR 614.1a): effects that happen in place of the event. They read the event as a trigger reads
-//! its cause: the player or object it is about (`Triggering`), its amount and the source of its damage (`Dealer`).
+//! its cause: the player or object it is about (`Triggering`), its amount and the source of its damage (`Dealer`). A
+//! question of the effects ("you may ... instead", a choice of one way) is asked of the player the effect names as
+//! the step's own decision (CR 614.1, 616); a single "may" declined leaves the event as it is.
 
 use mtg_cards::effect::Effect;
 use mtg_cards::trigger::ReplaceBy;
@@ -9,8 +11,19 @@ use crate::abilities::Cause;
 use crate::choose::Target;
 use crate::combat::DamageTarget;
 use crate::counters::CountersChanged;
+use crate::decision::Decision;
 use crate::events::Event;
-use crate::resolve::w5d_run_instead;
+use crate::resolve::{Inline, w5d_run_instead};
+
+/// What running the effects of a replacement came to for the pass.
+pub(super) enum Ran {
+    /// The events of the effects.
+    Events(Vec<Event>),
+    /// The event stays as it is: the effects were declined or cannot run.
+    Kept,
+    /// A player has to answer first.
+    Ask(Decision),
+}
 
 impl Pass<'_> {
     /// What the effects of a replacement read of the event at `at`: who or what it is about, how much and its source.
@@ -50,9 +63,35 @@ impl Pass<'_> {
         }
     }
 
+    /// Runs the effects of `candidate` in place of the event at `at`, taking the answers of the batch's journal in
+    /// order for the questions they ask.
+    pub(super) fn w5d_run(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        effects: &[Effect],
+        unit: &Unit,
+    ) -> Ran {
+        let cause = self.w5d_cause(at, unit);
+        let state = self.state;
+        let answers = &mut self.answers;
+        match w5d_run_instead(
+            state,
+            candidate.controller,
+            candidate.object,
+            &cause,
+            effects,
+            &mut || answers.next().cloned(),
+        ) {
+            Ok(Inline::Events(events)) => Ran::Events(events),
+            Ok(Inline::Ask(decision)) => Ran::Ask(decision),
+            Ok(Inline::Declined) | Err(_) => Ran::Kept,
+        }
+    }
+
     /// The effects run in place of the event at `at`: their events take its place and carry the effects already applied
-    /// to it, this one included, so it does not apply to them again (CR 614.5). Effects that cannot run without a
-    /// question leave the event as it is. `Plus` keeps the event and adds the tokens (`ep21_plus`).
+    /// to it, this one included, so it does not apply to them again (CR 614.5). Effects that are declined or cannot run
+    /// leave the event as it is. `Plus` keeps the event and adds the tokens (`ep21_plus`).
     pub(super) fn w5d_instead(
         &mut self,
         at: usize,
@@ -61,21 +100,17 @@ impl Pass<'_> {
         effects: &[Effect],
         unit: &Unit,
         applied: Vec<Origin>,
-    ) {
+    ) -> Option<Decision> {
         if matches!(by, ReplaceBy::Plus(_)) {
-            self.ep21_plus(at, candidate, effects, unit, applied);
-            return;
+            return self.ep21_plus(at, candidate, effects, unit, applied);
         }
-        let cause = self.w5d_cause(at, unit);
-        let Ok(events) = w5d_run_instead(
-            self.state,
-            candidate.controller,
-            candidate.object,
-            &cause,
-            effects,
-        ) else {
-            self.slots[at].applied = applied;
-            return;
+        let events = match self.w5d_run(at, candidate, effects, unit) {
+            Ran::Events(events) => events,
+            Ran::Ask(decision) => return Some(decision),
+            Ran::Kept => {
+                self.slots[at].applied = applied;
+                return None;
+            }
         };
         // Damage redirected to a recipient that is gone is dealt as it was.
         if events.is_empty()
@@ -85,7 +120,7 @@ impl Pass<'_> {
                 .any(|effect| matches!(effect, Effect::DealDamage { .. }))
         {
             self.slots[at].applied = applied;
-            return;
+            return None;
         }
         self.end_once_shield(candidate);
         if matches!(unit, Unit::Draw { .. }) {
@@ -100,11 +135,12 @@ impl Pass<'_> {
             })
             .collect();
         self.slots.splice(at..=at, slots);
+        None
     }
 
     /// The tokens of the event at `at` are created and the tokens the effects make join them: one event, so the
     /// replacements still to apply see them all (CR 614.5: this one does not apply again). Effects that cannot run
-    /// without a question leave the event as it is.
+    /// leave the event as it is.
     pub(super) fn ep21_plus(
         &mut self,
         at: usize,
@@ -112,21 +148,18 @@ impl Pass<'_> {
         effects: &[Effect],
         unit: &Unit,
         applied: Vec<Origin>,
-    ) {
+    ) -> Option<Decision> {
         let Item::Tokens(run) = self.slots[at].item.clone() else {
             self.slots[at].applied = applied;
-            return;
+            return None;
         };
-        let cause = self.w5d_cause(at, unit);
-        let Ok(events) = w5d_run_instead(
-            self.state,
-            candidate.controller,
-            candidate.object,
-            &cause,
-            effects,
-        ) else {
-            self.slots[at].applied = applied;
-            return;
+        let events = match self.w5d_run(at, candidate, effects, unit) {
+            Ran::Events(events) => events,
+            Ran::Ask(decision) => return Some(decision),
+            Ran::Kept => {
+                self.slots[at].applied = applied;
+                return None;
+            }
         };
         let controller = run[0].controller;
         let mut made = run;
@@ -147,6 +180,7 @@ impl Pass<'_> {
             slot
         }));
         self.slots.splice(at..=at, slots);
+        None
     }
 }
 
@@ -154,8 +188,8 @@ impl Pass<'_> {
 mod tests {
     //! Goal: an effect that happens instead takes the place of the event and reads its player, its amount and the
     //! source of its damage (life gained becomes life lost, damage to a player is dealt to a creature by the same source,
-    //! tokens become as many other tokens, a death becomes an exile), applies once to what replaces it, and leaves the
-    //! event as it is when its steps would ask a question.
+    //! tokens become as many other tokens, a death becomes an exile), applies once to what replaces it, and asks its
+    //! controller when its steps ask a question, a no leaving the event as it is.
     use mtg_cards::CardDefinition;
     use mtg_cards::ability::Ability;
     use mtg_core::card::CardType;
@@ -268,13 +302,34 @@ mod tests {
         );
     }
 
-    #[test]
-    fn steps_that_would_ask_leave_the_event_as_it_is() {
+    #[rstest]
+    #[case::no_question_yet(&[], None)]
+    #[case::declined(&[false], Some(false))]
+    #[case::accepted(&[true], Some(true))]
+    fn steps_that_ask_ask_the_controller_and_a_no_keeps_the_event(
+        #[case] said: &[bool],
+        #[case] replaced: Option<bool>,
+    ) {
         let game = game(ASKS);
         let gained = Event::LifeGained {
             player: PlayerId(1),
             amount: 2,
         };
-        assert_eq!(events(&game, vec![gained.clone()]), [gained]);
+        let journal: Vec<_> = said
+            .iter()
+            .map(|yes| (PlayerId(0), crate::choose::Choice::YesNo(*yes)))
+            .collect();
+        match (
+            process(&game, vec![gained.clone()], &journal).unwrap(),
+            replaced,
+        ) {
+            (Processed::Ask { decision, .. }, None) => assert_eq!(decision.player, PlayerId(0)),
+            (Processed::Events(events), Some(false)) => assert_eq!(events, [gained]),
+            (Processed::Events(events), Some(true)) => assert!(
+                matches!(&events[..], [Event::CardDrawn { player, .. }] if *player == PlayerId(0)),
+                "{events:?}"
+            ),
+            (other, _) => panic!("{other:?}"),
+        }
     }
 }

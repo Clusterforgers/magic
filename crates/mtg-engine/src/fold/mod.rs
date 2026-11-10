@@ -27,6 +27,7 @@ mod p12_arrived;
 #[cfg(test)]
 mod r3d_atoms;
 mod resolution;
+pub(crate) use resolution::step_done;
 #[cfg(test)]
 mod tests;
 #[cfg(test)]
