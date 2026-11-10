@@ -60,6 +60,23 @@ pub(super) fn copy_of_object(
         return Ok(None);
     };
     for modification in except {
+        // Base power and toughness set by amounts are worked out now ("half that creature's power, rounded up").
+        let fixed;
+        let modification = match modification {
+            Modification::SetPT { power, toughness } => {
+                let worked = |amount: &Amount| -> Result<Amount, ResolveError> {
+                    Ok(Amount::Fixed(
+                        i32::try_from(cx.scope.amount(amount)?).unwrap_or(i32::MAX),
+                    ))
+                };
+                fixed = Modification::SetPT {
+                    power: worked(power)?,
+                    toughness: worked(toughness)?,
+                };
+                &fixed
+            }
+            other => other,
+        };
         if !values.except(modification) {
             return Err(ResolveError::Unsupported("Effect.CreateToken.Copy.Except"));
         }

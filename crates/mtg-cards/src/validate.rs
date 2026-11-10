@@ -2541,7 +2541,7 @@ impl Walker<'_> {
             }
             TokenRef::CopyOf { of, except, .. } => {
                 self.at("of", |w| w.reference(of, Kind::Object));
-                self.copy_exceptions_new_object(except);
+                self.ep23_token_copy_exceptions(except);
             }
         }
     }
@@ -2570,6 +2570,26 @@ impl Walker<'_> {
             self.problem(THIS_ABILITY_BECOMES_ONLY);
         }
         self.copy_exceptions(except);
+    }
+
+    /// The exceptions of a token that is a copy: base power and toughness set by amounts ("half that creature's power")
+    /// are worked out as the token is made, a capability of their own.
+    fn ep23_token_copy_exceptions(&mut self, except: &[Modification]) {
+        if except.contains(&Modification::ThisAbility) {
+            self.problem(THIS_ABILITY_BECOMES_ONLY);
+        }
+        for (i, modification) in except.iter().enumerate() {
+            self.at(format!("except[{i}]"), |w| {
+                w.modification(modification);
+                if matches!(modification, Modification::SetPT { power, toughness }
+                    if !matches!((power, toughness), (Amount::Fixed(_), Amount::Fixed(_))))
+                {
+                    w.uses("Copy", "Except.SetPT.Amount");
+                } else if !crate::CardDefinition::new("").except(modification) {
+                    w.uses("Copy", &format!("Except.{}", tag_of(modification)));
+                }
+            });
+        }
     }
 
     fn copy_exceptions(&mut self, except: &[Modification]) {
@@ -5753,6 +5773,8 @@ mod tests {
     #[case::storm_is_a_keyword(r#"{"Keyword":"Storm"}"#, &["Keyword.Storm"])]
     #[case::a_copy_with_the_exceptions_the_values_keep(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":[{"AddKeyword":"Haste"},{"AddSubtype":"Zombie"},{"SetColors":["Blue"]},{"SetPT":{"power":1,"toughness":1}}]}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy", "Keyword.Haste", "Mod.AddKeyword", "Mod.AddSubtype", "Mod.SetColors", "Mod.SetPT"])]
     #[case::a_copy_with_an_exception_that_waits(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":["SwitchPT"]}}}}]}}"#, &["Ability.Spell", "Copy.Except.SwitchPT", "Effect.CreateToken", "Effect.CreateToken.Copy", "Mod.SwitchPT"])]
+    #[case::ep23_a_token_copy_sized_by_amounts(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":[{"SetPT":{"power":{"Half":{"of":{"Stat":{"of":"This","stat":"Power"}},"up":true}},"toughness":1}}]}}}}]}}"#, &["Ability.Spell", "Copy.Except.SetPT.Amount", "Effect.CreateToken", "Effect.CreateToken.Copy", "Mod.SetPT"])]
+    #[case::ep23_a_token_copy_of_fixed_size(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This","except":[{"SetPT":{"power":1,"toughness":1}}]}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy", "Mod.SetPT"])]
     #[case::a_chosen_value(r#"{"Spell":{"effects":[{"ChooseValue":{"kind":"Color","as":"it"}},{"GainLife":{"amount":{"Count":[{"ChosenAs":"it"}]}}}]}}"#, &["Ability.Spell", "Effect.ChooseValue", "Effect.GainLife"])]
     #[case::a_chosen_word(r#"{"Spell":{"effects":[{"ChooseValue":{"kind":{"Options":["a","b"]},"as":"it"}},{"If":{"condition":{"ChosenWord":{"name":"it","word":"a"}},"then":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Condition.ChosenWord", "Effect.ChooseValue", "Effect.Draw", "Effect.If"])]
     #[case::a_search_of_another_library(r#"{"Spell":{"effects":[{"Search":{"of":{"Target":0},"filter":[],"as":"it"}}],"targets":[{"what":"Opponent"}]}}"#, &["Ability.Spell", "Effect.Search", "Search.Of"])]
