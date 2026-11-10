@@ -61,6 +61,7 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
         SpendAs::AnyColor => mana.map(|mana| mana.paid_by_any_color()),
         SpendAs::Normal => mana,
     };
+    let mana = mana.map(|mana| crate::rules::ep24_life_for_mana(ctx.state, ctx.player, mana));
     let help = match ctx.what {
         What::Spell(spell) => help::offered(ctx.state, ctx.player, *spell, &printed.taken),
         What::Ability(_) if printed.waterbend => {

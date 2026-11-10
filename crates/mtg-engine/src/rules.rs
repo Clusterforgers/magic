@@ -158,6 +158,15 @@ pub enum Rule {
     KeepUnspentMana(Vec<PlayerId>, Option<ManaType>),
     /// Unspent mana the players would lose becomes mana of the type instead.
     UnspentManaBecomes(Vec<PlayerId>, ManaType),
+    /// The players draw no more than this many cards each turn.
+    DrawLimit(Vec<PlayerId>, u32),
+    /// The players may pay 2 life rather than each mana symbol of the color in a cost.
+    PayLifeForMana(
+        Vec<PlayerId>,
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))] mtg_core::color::Color,
+    ),
+    /// Spells and abilities of the players' opponents can't make them sacrifice permanents.
+    OpponentsCantMakeSacrifice(Vec<PlayerId>),
     /// The players may spend mana as though it were mana of any color or type (CR 609.4b), to cast the spells the selector
     /// picks or for everything when there is none.
     SpendManaAs {
@@ -573,6 +582,12 @@ pub(crate) struct RulesInForce {
     keep_mana: Vec<(PlayerId, Option<ManaType>)>,
     /// The players whose lost mana becomes another type, in timestamp order.
     mana_becomes: Vec<(PlayerId, ManaType)>,
+    /// The most cards each listed player may draw in a turn.
+    draw_limit: Vec<(PlayerId, u32)>,
+    /// The players who may pay 2 life rather than mana of a color.
+    life_for_mana: Vec<(PlayerId, mtg_core::color::Color)>,
+    /// The players whose opponents' spells and abilities can't make them sacrifice.
+    spared_sacrifice: BTreeSet<PlayerId>,
     /// The players who may spend mana as though it were of any color or type, with the spells it is for.
     spend_mana_as: Vec<(PlayerId, mtg_cards::modify::SpendAs, Option<Selector>)>,
     reveal_top: BTreeSet<PlayerId>,
@@ -930,6 +945,14 @@ impl RulesInForce {
                 self.spend_mana_as
                     .extend(players.iter().map(|p| (*p, *spend_as, spells.clone())));
             }
+            Rule::DrawLimit(players, most) => {
+                self.draw_limit.extend(players.iter().map(|p| (*p, *most)));
+            }
+            Rule::OpponentsCantMakeSacrifice(players) => self.spared_sacrifice.extend(players),
+            Rule::PayLifeForMana(players, color) => {
+                self.life_for_mana
+                    .extend(players.iter().map(|p| (*p, *color)));
+            }
             Rule::UnspentManaBecomes(players, into) => {
                 self.mana_becomes
                     .extend(players.iter().map(|p| (*p, *into)));
@@ -1231,6 +1254,13 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             spend_as: *spend_as,
             spells: spells.clone(),
         },
+        GameRule::DrawLimit { who, most } => Rule::DrawLimit(scope.players(who)?, *most),
+        GameRule::PayLifeForMana { who, color } => {
+            Rule::PayLifeForMana(scope.players(who)?, *color)
+        }
+        GameRule::OpponentsCantMakeSacrifice(who) => {
+            Rule::OpponentsCantMakeSacrifice(scope.players(who)?)
+        }
         GameRule::UnspentManaBecomes { who, into } => {
             Rule::UnspentManaBecomes(scope.players(who)?, *into)
         }
@@ -1390,6 +1420,9 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::FlipTwoCoins(players)
         | Rule::KeepUnspentMana(players, _)
         | Rule::UnspentManaBecomes(players, _)
+        | Rule::DrawLimit(players, _)
+        | Rule::PayLifeForMana(players, _)
+        | Rule::OpponentsCantMakeSacrifice(players)
         | Rule::SpendManaAs { players, .. }
         | Rule::RevealTop(players)
         | Rule::LookAtTop(players)
@@ -1538,6 +1571,9 @@ static NONE: RulesInForce = RulesInForce {
     flip_two: Vec::new(),
     keep_mana: Vec::new(),
     mana_becomes: Vec::new(),
+    draw_limit: Vec::new(),
+    life_for_mana: Vec::new(),
+    spared_sacrifice: BTreeSet::new(),
     spend_mana_as: Vec::new(),
     reveal_top: BTreeSet::new(),
     no_hand_limit: BTreeSet::new(),
@@ -1864,6 +1900,36 @@ pub(crate) fn extra_land_plays(state: &GameState, player: PlayerId) -> u32 {
         .get(&player)
         .copied()
         .unwrap_or_default()
+}
+
+/// The cost `player` pays for `mana` under the rules that let them pay 2 life rather than mana of a color: each symbol of
+/// such a color is Phyrexian.
+pub(crate) fn ep24_life_for_mana(state: &GameState, player: PlayerId, mana: ManaCost) -> ManaCost {
+    state
+        .rules()
+        .life_for_mana
+        .iter()
+        .filter(|(who, _)| *who == player)
+        .fold(mana, |mana, (_, color)| mana.with_phyrexian(*color))
+}
+
+/// How many more cards `player` may draw this turn under the draw limits in force; `None` when no limit holds.
+pub(crate) fn ep24_draws_left(state: &GameState, player: PlayerId) -> Option<usize> {
+    let most = state
+        .rules()
+        .draw_limit
+        .iter()
+        .filter(|(who, _)| *who == player)
+        .map(|(_, most)| *most)
+        .min()?;
+    let drawn = state.tallied(player, crate::state::Tally::Drawn);
+    usize::try_from(most.saturating_sub(drawn)).ok()
+}
+
+/// Whether a spell or ability `by` controls can't make `player` sacrifice permanents: a rule spares `player` from their
+/// opponents' effects.
+pub(crate) fn ep24_spared_sacrifice(state: &GameState, player: PlayerId, by: PlayerId) -> bool {
+    by != player && state.rules().spared_sacrifice.contains(&player)
 }
 
 /// How `player` may spend mana on the spell `spell` (an ability when `None`) under the rules in force: any type over any

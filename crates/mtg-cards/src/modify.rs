@@ -786,6 +786,25 @@ pub enum GameRule {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         mana: Option<ManaType>,
     },
+    /// For each mana symbol of the color in a cost, the players may pay 2 life rather than pay that mana: "For each {B} in a
+    /// cost, you may pay 2 life rather than pay that mana."
+    PayLifeForMana {
+        /// The players.
+        who: Ref,
+        /// The color of the symbols.
+        color: Color,
+    },
+    /// The players draw no more than `most` cards each turn; the draws past it don't happen: "Each opponent can't draw more
+    /// than one card each turn."
+    DrawLimit {
+        /// The players.
+        who: Ref,
+        /// The cards each may draw in a turn.
+        most: u32,
+    },
+    /// Spells and abilities the opponents of the players control can't cause them to sacrifice permanents; costs they pay
+    /// themselves still can.
+    OpponentsCantMakeSacrifice(Ref),
     /// The players may spend mana as though it were mana of any color or of any type (CR 609.4b): "You may spend mana as
     /// though it were mana of any color", "... to cast creature spells".
     SpendManaAs {

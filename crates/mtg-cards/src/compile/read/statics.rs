@@ -1680,7 +1680,10 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         (
             GameRule::KeepUnspentMana { .. }
             | GameRule::UnspentManaBecomes { .. }
-            | GameRule::SpendManaAs { .. },
+            | GameRule::SpendManaAs { .. }
+            | GameRule::DrawLimit { .. }
+            | GameRule::PayLifeForMana { .. }
+            | GameRule::OpponentsCantMakeSacrifice(_),
             ZoneKind::Battlefield,
         ) => super::ep24_rules::ep24_rule_texts(rule),
         (GameRule::VoteAgain(Ref::You), ZoneKind::Battlefield) => {

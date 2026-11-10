@@ -187,6 +187,8 @@ pub(crate) fn draw(state: &GameState, player: PlayerId, count: usize) -> Vec<Eve
     if cant_draw(state, player) {
         return Vec::new();
     }
+    // "Can't draw more than one card each turn": the draws past the limit don't happen.
+    let count = crate::rules::ep24_draws_left(state, player).map_or(count, |left| count.min(left));
     let library = state.zone(Zone::Library(player));
     (0..count)
         .map(|i| match library.iter().rev().nth(i) {

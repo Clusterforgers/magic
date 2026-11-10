@@ -112,6 +112,27 @@ pub(super) fn ep24_rule_texts(rule: &GameRule) -> Vec<String> {
                 kind.unwrap_or_default()
             )]
         }
+        GameRule::DrawLimit { who, most: 1 } => {
+            let subject = match who {
+                Ref::Opponents => "Each opponent",
+                Ref::EachPlayer => "Each player",
+                _ => return Vec::new(),
+            };
+            vec![format!("{subject} can't draw more than one card each turn")]
+        }
+        GameRule::PayLifeForMana {
+            who: Ref::You,
+            color,
+        } => {
+            let symbol = ManaType::from(*color).symbol();
+            vec![format!(
+                "For each {{{symbol}}} in a cost, you may pay 2 life rather than pay that mana"
+            )]
+        }
+        GameRule::OpponentsCantMakeSacrifice(Ref::You) => vec![
+            "Spells and abilities your opponents control can't cause you to sacrifice permanents"
+                .to_owned(),
+        ],
         GameRule::SpendManaAs {
             who: Ref::You,
             spend_as,

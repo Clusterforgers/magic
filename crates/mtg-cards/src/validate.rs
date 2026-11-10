@@ -4466,6 +4466,9 @@ impl Walker<'_> {
             | GameRule::FlipTwoCoins(who)
             | GameRule::KeepUnspentMana { who, .. }
             | GameRule::UnspentManaBecomes { who, .. }
+            | GameRule::DrawLimit { who, .. }
+            | GameRule::PayLifeForMana { who, .. }
+            | GameRule::OpponentsCantMakeSacrifice(who)
             | GameRule::SpendManaAs {
                 who, spells: None, ..
             }

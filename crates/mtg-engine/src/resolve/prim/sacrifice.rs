@@ -39,6 +39,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .players(who)?
         .into_iter()
         .filter(|player| state.is_alive(*player))
+        .filter(|player| !crate::rules::ep24_spared_sacrifice(state, *player, cx.controller()))
         .map(|player| Selection {
             one_per_name: false,
             player,

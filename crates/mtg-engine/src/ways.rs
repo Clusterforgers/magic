@@ -325,14 +325,18 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     if !own {
         spend_as_any(&permissions, &mut ways, printed);
     }
-    // "You may spend mana as though it were mana of any color": the rule reaches every way of the cast.
+    // "You may spend mana as though it were mana of any color" and "you may pay 2 life rather than {B}": the rules reach
+    // every way of the cast.
     let spend_as = crate::rules::ep24_spend_as(state, player, Some(id));
-    if spend_as != SpendAs::Normal {
-        for way in &mut ways {
-            way.mana = way.cost(printed).map(|cost| match spend_as {
-                SpendAs::AnyType => cost.paid_by_any_mana(),
-                _ => cost.paid_by_any_color(),
-            });
+    for way in &mut ways {
+        let cost = way.cost(printed).map(|cost| match spend_as {
+            SpendAs::AnyType => cost.paid_by_any_mana(),
+            SpendAs::AnyColor => cost.paid_by_any_color(),
+            SpendAs::Normal => cost,
+        });
+        let cost = cost.map(|cost| crate::rules::ep24_life_for_mana(state, player, cost));
+        if cost != way.cost(printed) {
+            way.mana = cost;
         }
     }
     ways

@@ -19,7 +19,9 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
     let mode = p.get("Mode").unwrap_or_default();
     let found = match mode {
         "CantGainLife" => players(p, mode, "ValidPlayer").map(|who| json!({"CantGainLife": who})),
+        "CantDraw" if p.has("DrawLimit") => super::ep24_rules::ep24_draw_limit(p),
         "CantDraw" => players(p, mode, "ValidPlayer").map(|who| json!({"CantDraw": who})),
+        "CantSacrifice" if p.has("ValidCause") => super::ep24_rules::ep24_spared_sacrifice(p),
         "CantChangeLife" => {
             players(p, mode, "ValidPlayer").map(|who| json!({"LifeTotalCantChange": who}))
         }
@@ -54,6 +56,12 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
         "IgnoreLegendRule" => ignore_legend_rule(ctx, p, mode),
         "CountersRemain" => counters_remain(p),
         "UntapOtherPlayer" => untap_other_players(ctx, p),
+        "Continuous"
+            if p.get("AddKeyword")
+                .is_some_and(|k| k.starts_with("PayLifeInsteadOf:")) =>
+        {
+            super::ep24_rules::ep24_life_for_mana(p)
+        }
         "Continuous" if p.has("SetMaxHandSize") => hand_size(ctx, p),
         "Continuous" if p.has("RaiseMaxHandSize") => hand_size_change(ctx, p),
         "Continuous" if p.has("AdjustLandPlays") => land_plays(ctx, p),

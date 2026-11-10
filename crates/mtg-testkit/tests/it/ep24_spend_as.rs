@@ -1,4 +1,4 @@
-//! Goal: "You may spend mana as though it were mana of any color" (CR 609.4b) lets red mana pay green symbols, for every spell or only the spells the rule names, never pays `{C}` unless the rule says any type, reaches only its controller, and the cast replays to the live state.
+//! Goal: "You may spend mana as though it were mana of any color" (CR 609.4b) lets red mana pay green symbols, for every spell or only the spells the rule names, never pays `{C}` unless the rule says any type, reaches only its controller, 2 life pays for each {B} where a rule allows it, and the cast replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -99,6 +99,56 @@ fn mana_of_another_color_pays_where_the_rule_says(
         assert_eq!(zone, Zone::Battlefield);
         assert_eq!(driver.state().player(pid(0)).unwrap().mana().total(), 0);
     }
+    replays(&driver, &setup);
+    Ok(())
+}
+
+/// An artifact with "For each {B} in a cost, you may pay 2 life rather than pay that mana."
+fn krrik() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Krrik")
+            .with_type(CardType::Artifact)
+            .with_rules(Ability::Rule {
+                rule: GameRule::PayLifeForMana {
+                    who: Ref::You,
+                    color: mtg_core::color::Color::Black,
+                },
+                condition: None,
+                from: ZoneKind::Battlefield,
+            }),
+    )
+}
+
+#[rstest]
+#[case::black_paid_with_life("{B}{B}", 0, true, 16)]
+#[case::green_is_not_black("{G}{G}", 0, false, 20)]
+#[case::an_opponent_s_rule("{B}{B}", 1, false, 20)]
+fn life_pays_for_black_symbols_under_the_rule(
+    #[case] cost: &str,
+    #[case] owner: usize,
+    #[case] can: bool,
+    #[case] life: i32,
+) -> Result<(), ScriptError> {
+    let scenario = || {
+        let mut mine = Vec::new();
+        let mut theirs = Vec::new();
+        let held = if owner == 0 { &mut mine } else { &mut theirs };
+        held.push(ready(krrik()));
+        Scenario::new(2)
+            .at(1, 0, Step::Main1)
+            .hand(0, [spell(CardType::Creature, cost)])
+            .battlefield(0, mine)
+            .battlefield(1, theirs)
+    };
+    let setup = scenario().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario())?;
+    assert_eq!(castable(&driver), can);
+    if can {
+        driver.cast("Spell")?;
+        run(&mut driver, 2)?;
+        assert!(driver.id_of("Spell").is_ok(), "the creature resolved");
+    }
+    assert_eq!(driver.state().player(pid(0)).unwrap().life(), life);
     replays(&driver, &setup);
     Ok(())
 }

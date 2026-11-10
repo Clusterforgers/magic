@@ -1,4 +1,4 @@
-//! Goal: the pieces of ep24 translate as the card prints them: a change of one target to the source (`DefinedMagnet$ Self` with `ChangeSingleTarget$`) over spells and abilities or instant and sorcery spells with a single target; a magnet without a single change, another magnet or a magnet beside a chooser stays a gap. Unspent mana kept of one type or every type, and lost mana that becomes one type; another player, another type word or another replacement stays a gap. Mana spent as though of any color or type, for everything or for spells of one kind; white mana only, abilities or cards you do not own stay gaps. Mana of one color among objects on the battlefield, in your graveyard or of the card itself; an imprinted or exiled card and a count stay gaps.
+//! Goal: the pieces of ep24 translate as the card prints them: a change of one target to the source (`DefinedMagnet$ Self` with `ChangeSingleTarget$`) over spells and abilities or instant and sorcery spells with a single target; a magnet without a single change, another magnet or a magnet beside a chooser stays a gap. Unspent mana kept of one type or every type, and lost mana that becomes one type; another player, another type word or another replacement stays a gap. Mana spent as though of any color or type, for everything or for spells of one kind; white mana only, abilities or cards you do not own stay gaps. Mana of one color among objects on the battlefield, in your graveyard or of the card itself; an imprinted or exiled card and a count stay gaps. A draw limit of a number and opponents that can't make you sacrifice; a counted limit, costs or another kind of permanent stay gaps.
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -94,7 +94,19 @@ fn permanent(line: &str) -> String {
     "S:Mode$ ManaConvert | ValidPlayer$ You | ValidCard$ Creature.YouCtrl | ValidSA$ Spell | ManaConversion$ AnyType->AnyType | Description$ x",
     json!({"SpendManaAs": {"who": "You", "spend_as": "AnyType", "spells": [{"Type": "Creature"}]}})
 )]
-fn ep24_mana_rules_translate(#[case] line: &str, #[case] rule: Value) {
+#[case::draw_limit(
+    "S:Mode$ CantDraw | ValidPlayer$ Opponent | DrawLimit$ 1 | Description$ x",
+    json!({"DrawLimit": {"who": "Opponents", "most": 1}})
+)]
+#[case::life_for_black(
+    "S:Mode$ Continuous | Affected$ You | AddKeyword$ PayLifeInsteadOf:B | Description$ x",
+    json!({"PayLifeForMana": {"who": "You", "color": "Black"}})
+)]
+#[case::spared_sacrifice(
+    "S:Mode$ CantSacrifice | ValidCard$ Card.YouCtrl | ValidCause$ SpellAbility.OppCtrl | ForCost$ False | Description$ x",
+    json!({"OpponentsCantMakeSacrifice": "You"})
+)]
+fn ep24_rules_translate(#[case] line: &str, #[case] rule: Value) {
     let script = permanent(line);
     assert_eq!(gaps(&script), Vec::<String>::new(), "{line}");
     assert_eq!(abilities(&script), vec![json!({"Rule": {"rule": rule}})]);
@@ -122,7 +134,19 @@ fn ep24_mana_rules_translate(#[case] line: &str, #[case] rule: Value) {
 #[case::cards_you_dont_own(
     "S:Mode$ ManaConvert | ValidPlayer$ You | ValidCard$ Card.YouDontOwn+YouCtrl | ValidSA$ Spell | ManaConversion$ AnyType->AnyColor | Description$ x"
 )]
-fn ep24_other_mana_rules_stay_gaps(#[case] line: &str) {
+#[case::life_for_an_opponent_s_mana(
+    "S:Mode$ Continuous | Affected$ Opponent | AddKeyword$ PayLifeInsteadOf:B | Description$ x"
+)]
+#[case::draw_limit_of_a_count(
+    "S:Mode$ CantDraw | ValidPlayer$ Opponent | DrawLimit$ X | Description$ x"
+)]
+#[case::sacrifice_for_costs(
+    "S:Mode$ CantSacrifice | ValidCard$ Card.YouCtrl | ValidCause$ SpellAbility.OppCtrl | ForCost$ True | Description$ x"
+)]
+#[case::sacrifice_of_creatures(
+    "S:Mode$ CantSacrifice | ValidCard$ Creature.YouCtrl | ValidCause$ SpellAbility.OppCtrl | ForCost$ False | Description$ x"
+)]
+fn ep24_other_rules_stay_gaps(#[case] line: &str) {
     assert!(!gaps(&permanent(line)).is_empty(), "{line}");
 }
 

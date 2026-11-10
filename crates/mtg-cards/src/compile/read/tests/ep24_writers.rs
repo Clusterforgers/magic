@@ -1,4 +1,4 @@
-//! Goal: the writers of ep24 write the card's words and nothing near them: a change of targets ("Change a target of target spell or ability to ~.", "you may change the target of target instant or sorcery spell with a single target to ~", "Change the target of target spell or ability with a single target.", "You may choose new targets for target spell or ability."); another object to change to, another kind of spell or a missing "single target" do not read back. Unspent mana kept or turned into one type ("You don't lose unspent red mana as steps and phases end.", "If you would lose unspent mana, that mana becomes colorless instead."); another type, another player or another group do not read back. Mana spent as though of any color or type, for everything or one kind of spell; the other conversion or kind does not read back.
+//! Goal: the writers of ep24 write the card's words and nothing near them: a change of targets ("Change a target of target spell or ability to ~.", "you may change the target of target instant or sorcery spell with a single target to ~", "Change the target of target spell or ability with a single target.", "You may choose new targets for target spell or ability."); another object to change to, another kind of spell or a missing "single target" do not read back. Unspent mana kept or turned into one type ("You don't lose unspent red mana as steps and phases end.", "If you would lose unspent mana, that mana becomes colorless instead."); another type, another player or another group do not read back. Mana spent as though of any color or type, for everything or one kind of spell; the other conversion or kind does not read back. A draw limit of one card for opponents and opponents that can't make you sacrifice; another limit or group does not read back.
 use super::*;
 
 const SPELL_OR_ABILITY: &str =
@@ -71,6 +71,10 @@ const ORRERY: &str = "You may spend mana as though it were mana of any color.";
 const OATH: &str =
     "You may spend mana as though it were mana of any color to cast planeswalker spells.";
 const VIZIER: &str = "You can spend mana of any type to cast creature spells.";
+const NARSET: &str = "Each opponent can't draw more than one card each turn.";
+const SIGARDA: &str =
+    "Spells and abilities your opponents control can't cause you to sacrifice permanents.";
+const KRRIK: &str = "For each {B} in a cost, you may pay 2 life rather than pay that mana.";
 
 #[rstest]
 #[case::red_kept(r#"{"KeepUnspentMana":{"who":"You","mana":"Red"}}"#, ELECTRO, true)]
@@ -121,11 +125,14 @@ const VIZIER: &str = "You can spend mana of any type to cast creature spells.";
     VIZIER,
     false
 )]
-fn ep24_unspent_mana_rules_write_as_printed(
-    #[case] json: &str,
-    #[case] text: &str,
-    #[case] reads: bool,
-) {
+#[case::narset(r#"{"DrawLimit":{"who":"Opponents","most":1}}"#, NARSET, true)]
+#[case::narset_of_two(r#"{"DrawLimit":{"who":"Opponents","most":2}}"#, NARSET, false)]
+#[case::narset_of_everyone(r#"{"DrawLimit":{"who":"EachPlayer","most":1}}"#, NARSET, false)]
+#[case::sigarda(r#"{"OpponentsCantMakeSacrifice":"You"}"#, SIGARDA, true)]
+#[case::krrik(r#"{"PayLifeForMana":{"who":"You","color":"Black"}}"#, KRRIK, true)]
+#[case::krrik_of_green(r#"{"PayLifeForMana":{"who":"You","color":"Green"}}"#, KRRIK, false)]
+#[case::sigarda_of_opponents(r#"{"OpponentsCantMakeSacrifice":"Opponents"}"#, SIGARDA, false)]
+fn ep24_rules_write_as_printed(#[case] json: &str, #[case] text: &str, #[case] reads: bool) {
     let found = written_variants(&rule(json));
     assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
 }
