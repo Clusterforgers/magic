@@ -691,6 +691,8 @@ mod t20c_pay_cards;
 
 // dk1f
 mod alt_cast;
+mod commander_questions;
+mod copy_left_spell;
 mod dk1f_cards;
 mod dk1f_pippin;
 mod dk1f_suppression_ray;
