@@ -3,8 +3,8 @@
 mod auto_pass;
 mod auto_yields;
 mod by_hand_window;
-mod common;
 mod combat_flips;
+mod common;
 mod companion_recipe;
 mod companion_resume;
 mod companion_table;

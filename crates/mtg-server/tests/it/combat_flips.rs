@@ -1,12 +1,12 @@
-//! Goal: a beginning-of-combat trigger played through the actor under the default windows resolves in the beginning of combat step of its controller's turn, in the log every seat is sent.
+//! Goal: a beginning-of-combat trigger (Zndrsplt and Okaun) played through the actor under the default windows, its controller passing or yielding to the end of the turn or to its next turn, flips in the beginning of combat step of its controller's turns in the log every seat is sent.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
 
 use common::{Client, game_id, seat, windowed};
+use mtg_engine::DecisionKind;
 use mtg_engine::Event;
 use mtg_engine::turn::Step;
-use mtg_engine::DecisionKind;
 use mtg_protocol::{ClientMessage, EventView, ServerMessage, YieldUntil};
 use mtg_server::{MemoryStore, spawn_game_with};
 use mtg_testkit::cards::island;
@@ -33,9 +33,13 @@ async fn coin_flips_at_the_beginning_of_combat_land_in_that_step_of_the_log(
     for each in 0..seats {
         scenario = scenario.library(each, (0..40).map(|_| island()).collect::<Vec<_>>());
     }
-    let handle =
-        spawn_game_with(game_id(1), scenario.setup().unwrap(), MemoryStore::new(), windowed())
-            .unwrap();
+    let handle = spawn_game_with(
+        game_id(1),
+        scenario.setup().unwrap(),
+        MemoryStore::new(),
+        windowed(),
+    )
+    .unwrap();
     let mut clients = Vec::new();
     for n in 0..seats {
         clients.push(Client::join(&handle, n).await);
@@ -89,7 +93,13 @@ async fn coin_flips_at_the_beginning_of_combat_land_in_that_step_of_the_log(
         }
         let answer = Driver::passive_answer(&decision);
         clients[waiting.index()]
-            .say(&handle, ClientMessage::Answer { decision: id, answer })
+            .say(
+                &handle,
+                ClientMessage::Answer {
+                    decision: id,
+                    answer,
+                },
+            )
             .await;
     }
     let mut step = None;

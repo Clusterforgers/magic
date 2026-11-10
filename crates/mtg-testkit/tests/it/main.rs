@@ -386,6 +386,7 @@ mod manifest_fuzz;
 mod manlands;
 mod manual_actions;
 mod manual_anytime;
+mod manual_card_tokens;
 mod manual_cards;
 mod manual_control;
 mod manual_faces;

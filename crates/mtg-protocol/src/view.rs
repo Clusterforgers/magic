@@ -633,6 +633,11 @@ pub struct TableView {
     pub combat_forecast: Option<CombatForecast>,
     /// The result once the game is over.
     pub result: Option<GameResult>,
+    /// The tokens the viewer's own cards make, in any zone, by card name: the manual panel offers them. Left out for a
+    /// spectator and while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<TokenOfferView>>", optional)]
+    pub tokens: Vec<TokenOfferView>,
 }
 
 /// Everything one viewer may know about the game right now: the table plus every object they may identify.
@@ -645,4 +650,33 @@ pub struct StateView {
     pub table: TableView,
     /// Every object the viewer may identify, in id order.
     pub objects: Vec<ObjectView>,
+}
+
+/// A token one of the viewer's cards makes, which the viewer can make by hand with every ability
+/// (`ManualToken::Card`).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct TokenOfferView {
+    /// The name of the card that makes it; with `index`, what `ManualToken::Card` names.
+    pub card: String,
+    /// Its place among the tokens that card makes.
+    pub index: u32,
+    /// The token's name.
+    pub name: String,
+    /// Its colors; none is colorless.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub colors: Vec<Color>,
+    /// Its card types.
+    pub types: Vec<CardType>,
+    /// Its subtypes.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub subtypes: Vec<Subtype>,
+    /// Its power, for a creature.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub power: Option<i32>,
+    /// Its toughness, for a creature.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub toughness: Option<i32>,
+    /// The words of each of its abilities.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub rules: Vec<String>,
 }

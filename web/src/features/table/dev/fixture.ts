@@ -12,12 +12,35 @@ import type {
   PlayerId,
   PlayerView,
   StateView,
+  TokenOfferView,
   Zone,
   ZoneView,
 } from '@/protocol/generated'
 import { COMMANDERS, CREATURES, INSTANTS, LANDS, OTHERS, PARTNERS, PLANESWALKER } from './cards'
 import type { NonEmpty, Template } from './cards'
 import { buildLog } from './fixtureLog'
+
+/** The tokens the viewer's cards make, for the Tokens row of the Commands panel. */
+const DEV_TOKENS: TokenOfferView[] = [
+  {
+    card: 'Abstruse Interference',
+    index: 0,
+    name: 'Eldrazi Scion',
+    types: ['Creature'],
+    subtypes: ['Eldrazi', 'Scion'],
+    power: 1,
+    toughness: 1,
+    rules: ['Sacrifice this token: Add {C}.'],
+  },
+  {
+    card: 'Angelic Sleuth',
+    index: 0,
+    name: 'Clue',
+    types: ['Artifact'],
+    subtypes: ['Clue'],
+    rules: ['{2}, Sacrifice this token: Draw a card.'],
+  },
+]
 
 /** The text the dev page prints, so a production bundle can be searched for any trace of the fixture. */
 export const FIXTURE_MARKER = 'dev-table-fixture-8e1c'
@@ -315,6 +338,7 @@ export function buildFixture(options: FixtureOptions): Fixture {
     exile: zoneView(exile),
     combat,
     combat_forecast: null,
+    tokens: DEV_TOKENS,
     result: null,
   }
   const names = Array.from({ length: seats }, (_, seat) => nameOf(seat))
