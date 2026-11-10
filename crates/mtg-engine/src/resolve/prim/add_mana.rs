@@ -166,6 +166,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             (types, 1)
         }
         Produce::OneOf(types) => (types.clone(), 1),
+        Produce::AnyColorAmong(among) => (colors_among(&cx.scope, among), 1),
         Produce::OneOfLists(lists) => {
             let added = Added {
                 players: &players,
@@ -249,7 +250,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 })
                 .collect()
         }
-        Produce::CommanderIdentity(_) => kinds
+        Produce::CommanderIdentity(_) | Produce::AnyColorAmong(_) => kinds
             .iter()
             .filter_map(|kind| kind.color().map(ChoiceOption::Color))
             .collect(),

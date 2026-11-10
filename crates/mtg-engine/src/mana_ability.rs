@@ -333,6 +333,11 @@ fn rule_mana(
                 }
                 types.into_iter().map(|t| vec![t]).collect()
             }
+            // "Add one mana of any color among legendary permanents you control": one way for each colour.
+            ManaProduced::AnyColorAmong(among) => colors_among(counting, among)
+                .into_iter()
+                .map(|mana| vec![mana])
+                .collect(),
             // "For each color among permanents you control, add one mana of that color": one way, all the colours.
             ManaProduced::EachColorAmong(among) => {
                 let colors = colors_among(counting, among);

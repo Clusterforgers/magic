@@ -4,6 +4,7 @@ import type { AttackTax } from "./AttackTax";
 import type { BlockTax } from "./BlockTax";
 import type { DamageShield } from "./DamageShield";
 import type { ManaCost } from "./ManaCost";
+import type { ManaType } from "./ManaType";
 import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
 import type { Target } from "./Target";
@@ -104,7 +105,19 @@ who: Array<PlayerId>,
 /**
  * The change.
  */
-change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "UntapDuring": { 
+change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "SpendManaAs": { 
+/**
+ * The players.
+ */
+players: Array<PlayerId>, 
+/**
+ * Any color or any type.
+ */
+spend_as: unknown, 
+/**
+ * The spells it is for; everything when absent.
+ */
+spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "UntapDuring": { 
 /**
  * The permanents, judged when the step untaps.
  */

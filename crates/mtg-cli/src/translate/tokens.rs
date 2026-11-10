@@ -551,6 +551,14 @@ fn reflected(ctx: &Ctx, p: &Params) -> Tr<Value> {
     if p.has("Defined") {
         return unmapped("key:ManaReflected.Defined");
     }
+    // "Add one mana of any color among legendary permanents you control."
+    if p.get("ReflectProperty") == Some("Is")
+        && p.get("ColorOrType") == Some("Color")
+        && !p.has("Amount")
+    {
+        let among = super::ep24_mana::ep24_color_among(ctx, p.get("Valid").unwrap_or_default())?;
+        return Ok(json!({"AddMana": {"mana": {"AnyColorAmong": among}}}));
+    }
     if p.get("ReflectProperty") != Some("Produce") {
         return unmapped("effect:ManaReflected-property");
     }

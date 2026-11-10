@@ -119,6 +119,8 @@ fn the_lifetime_of_mana_is_on_the_wire_and_left_out_for_mana_of_the_step() {
     let emptied = Event::ManaPoolEmptied {
         player: PlayerId(0),
         through: ManaLasts::Combat,
+        kept: Vec::new(),
+        becomes: None,
     };
     let json = serde_json::to_string(&emptied).unwrap();
     assert_eq!(serde_json::from_str::<Event>(&json).unwrap(), emptied);
@@ -127,7 +129,9 @@ fn the_lifetime_of_mana_is_on_the_wire_and_left_out_for_mana_of_the_step() {
         serde_json::from_str::<Event>(old).unwrap(),
         Event::ManaPoolEmptied {
             player: PlayerId(0),
-            through: ManaLasts::Step
+            through: ManaLasts::Step,
+            kept: Vec::new(),
+            becomes: None,
         }
     );
 }

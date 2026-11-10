@@ -4,6 +4,7 @@ use mtg_cards::spend::ManaLasts;
 use std::collections::BTreeSet;
 
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaType;
 
 use crate::answers::Outcome;
 use crate::characteristics::controller_of;
@@ -344,9 +345,31 @@ fn pool_emptying(state: &GameState, through: ManaLasts) -> Vec<Event> {
         .iter()
         .filter(|p| p.mana().emptying(through) > 0)
         .flat_map(|p| {
-            let (player, amount) = (p.id(), p.mana().emptying(through));
+            let player = p.id();
+            let (keeps, becomes) = crate::rules::ep24_unspent_mana(state, player);
+            if keeps.contains(&None) {
+                return Vec::new();
+            }
+            let kept: Vec<_> = ManaType::ALL
+                .into_iter()
+                .filter(|mana| keeps.contains(&Some(*mana)))
+                .collect();
             let through = p.mana().least_through(through);
-            let mut events = vec![Event::ManaPoolEmptied { player, through }];
+            let mut after = p.mana().clone();
+            after.empty_keeping(through, &kept, becomes);
+            if after == *p.mana() {
+                return Vec::new();
+            }
+            let amount = p.mana().total().saturating_sub(after.total());
+            let mut events = vec![Event::ManaPoolEmptied {
+                player,
+                through,
+                kept,
+                becomes,
+            }];
+            if amount == 0 {
+                return events;
+            }
             if burn && p.is_in_game() && !crate::rules::life_total_cant_change(state, player) {
                 events.push(Event::ManaBurned { player, amount });
                 events.push(Event::LifeLost { player, amount });

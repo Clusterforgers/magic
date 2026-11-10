@@ -98,6 +98,7 @@ mod ep21_plus;
 mod ep22_everywhere;
 mod ep22_pairs;
 mod ep24_retarget;
+mod ep24_rules;
 mod equip_options;
 mod evasion;
 mod event_wordings;

@@ -1,4 +1,4 @@
-//! Goal: the pieces of ep24 translate as the card prints them: a change of one target to the source (`DefinedMagnet$ Self` with `ChangeSingleTarget$`) over spells and abilities or instant and sorcery spells with a single target; a magnet without a single change, another magnet or a magnet beside a chooser stays a gap.
+//! Goal: the pieces of ep24 translate as the card prints them: a change of one target to the source (`DefinedMagnet$ Self` with `ChangeSingleTarget$`) over spells and abilities or instant and sorcery spells with a single target; a magnet without a single change, another magnet or a magnet beside a chooser stays a gap. Unspent mana kept of one type or every type, and lost mana that becomes one type; another player, another type word or another replacement stays a gap. Mana spent as though of any color or type, for everything or for spells of one kind; white mana only, abilities or cards you do not own stay gaps. Mana of one color among objects on the battlefield, in your graveyard or of the card itself; an imprinted or exiled card and a count stay gaps.
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -61,4 +61,103 @@ fn ep24_other_magnets_stay_gaps(#[case] line: &str) {
         found.iter().any(|gap| gap.contains("ChangeTargets")),
         "{line}: {found:?}"
     );
+}
+
+fn permanent(line: &str) -> String {
+    format!(
+        "Name:T\nTypes:Artifact\n{line}\nSVar:ConvertMana:DB$ ReplaceMana | ReplaceType$ C\nSVar:Red:DB$ ReplaceMana | ReplaceType$ Red\nSVar:Twice:DB$ ReplaceMana | ReplaceAmount$ 2\n"
+    )
+}
+
+#[rstest]
+#[case::red_kept(
+    "S:Mode$ UnspentMana | ValidPlayer$ You | ManaType$ Red | Description$ x",
+    json!({"KeepUnspentMana": {"who": "You", "mana": "Red"}})
+)]
+#[case::every_player_keeps_all(
+    "S:Mode$ UnspentMana | Description$ x",
+    json!({"KeepUnspentMana": {"who": "EachPlayer"}})
+)]
+#[case::becomes_colorless(
+    "R:Event$ LoseMana | ValidPlayer$ You | ReplacementResult$ Replaced | ReplaceWith$ ConvertMana | ActiveZones$ Battlefield | Description$ x",
+    json!({"UnspentManaBecomes": {"who": "You", "into": "Colorless"}})
+)]
+#[case::becomes_red(
+    "R:Event$ LoseMana | ValidPlayer$ You | ReplacementResult$ Replaced | ReplaceWith$ Red | ActiveZones$ Battlefield | Description$ x",
+    json!({"UnspentManaBecomes": {"who": "You", "into": "Red"}})
+)]
+#[case::any_color(
+    "S:Mode$ ManaConvert | ValidPlayer$ You | ManaConversion$ AnyType->AnyColor | Description$ x",
+    json!({"SpendManaAs": {"who": "You", "spend_as": "AnyColor"}})
+)]
+#[case::any_type_for_creatures(
+    "S:Mode$ ManaConvert | ValidPlayer$ You | ValidCard$ Creature.YouCtrl | ValidSA$ Spell | ManaConversion$ AnyType->AnyType | Description$ x",
+    json!({"SpendManaAs": {"who": "You", "spend_as": "AnyType", "spells": [{"Type": "Creature"}]}})
+)]
+fn ep24_mana_rules_translate(#[case] line: &str, #[case] rule: Value) {
+    let script = permanent(line);
+    assert_eq!(gaps(&script), Vec::<String>::new(), "{line}");
+    assert_eq!(abilities(&script), vec![json!({"Rule": {"rule": rule}})]);
+}
+
+#[rstest]
+#[case::an_opponent_keeps(
+    "S:Mode$ UnspentMana | ValidPlayer$ Opponent | ManaType$ Red | Description$ x"
+)]
+#[case::another_type_word(
+    "S:Mode$ UnspentMana | ValidPlayer$ You | ManaType$ Chosen | Description$ x"
+)]
+#[case::an_opponent_s_lost_mana(
+    "R:Event$ LoseMana | ValidPlayer$ Opponent | ReplacementResult$ Replaced | ReplaceWith$ ConvertMana | ActiveZones$ Battlefield | Description$ x"
+)]
+#[case::another_replacement(
+    "R:Event$ LoseMana | ValidPlayer$ You | ReplacementResult$ Replaced | ReplaceWith$ Twice | ActiveZones$ Battlefield | Description$ x"
+)]
+#[case::white_only(
+    "S:Mode$ ManaConvert | ValidPlayer$ You | ManaConversion$ White->AnyColor | Description$ x"
+)]
+#[case::abilities_of_creatures(
+    "S:Mode$ ManaConvert | ValidPlayer$ You | ValidCard$ Creature.YouCtrl | ValidSA$ Activated | ManaConversion$ AnyType->AnyColor | Description$ x"
+)]
+#[case::cards_you_dont_own(
+    "S:Mode$ ManaConvert | ValidPlayer$ You | ValidCard$ Card.YouDontOwn+YouCtrl | ValidSA$ Spell | ManaConversion$ AnyType->AnyColor | Description$ x"
+)]
+fn ep24_other_mana_rules_stay_gaps(#[case] line: &str) {
+    assert!(!gaps(&permanent(line)).is_empty(), "{line}");
+}
+
+fn tapped(line: &str) -> String {
+    format!(
+        "Name:T\nTypes:Land\nA:AB$ ManaReflected | Cost$ T | ColorOrType$ Color | ReflectProperty$ Is | {line}\n"
+    )
+}
+
+#[rstest]
+#[case::legendary_permanents(
+    "Valid$ Permanent.Legendary+YouCtrl",
+    json!([{"Supertype": "Legendary"}, {"ControlledBy": "You"}])
+)]
+#[case::own_graveyard("Valid$ Defined.ValidGraveyard Card.YouOwn", json!([{"OwnedBy": "You"}, {"In": "Graveyard"}]))]
+#[case::itself("Valid$ Defined.Self", json!(["This"]))]
+fn ep24_mana_of_a_color_among_translates(#[case] line: &str, #[case] among: Value) {
+    let script = tapped(line);
+    assert_eq!(gaps(&script), Vec::<String>::new(), "{line}");
+    let found = abilities(&script);
+    let effects = found
+        .first()
+        .and_then(|a| a.get("Activated"))
+        .and_then(|a| a.get("effects"))
+        .cloned();
+    assert_eq!(
+        effects,
+        Some(json!([{"AddMana": {"mana": {"AnyColorAmong": among}}}]))
+    );
+}
+
+#[rstest]
+#[case::imprinted("Valid$ Defined.Imprinted")]
+#[case::exiled_with("Valid$ Defined.ExiledWith")]
+#[case::counted("Valid$ Permanent.YouCtrl | Amount$ 2")]
+fn ep24_other_reflected_colors_stay_gaps(#[case] line: &str) {
+    assert!(!gaps(&tapped(line)).is_empty(), "{line}");
 }

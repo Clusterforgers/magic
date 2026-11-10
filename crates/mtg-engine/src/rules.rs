@@ -19,7 +19,7 @@ use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use mtg_cards::value::Condition;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
-use mtg_core::mana::ManaCost;
+use mtg_core::mana::{ManaCost, ManaType};
 use serde::{Deserialize, Serialize};
 
 use crate::ability_reader::{abilities_of, definition_has_rule, is_rule, may_hold};
@@ -154,6 +154,22 @@ pub enum Rule {
     SkipExtraTurns(Vec<PlayerId>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
     FlipTwoCoins(Vec<PlayerId>),
+    /// The players keep unspent mana of the type (every type when absent) as steps and phases end (CR 500.4).
+    KeepUnspentMana(Vec<PlayerId>, Option<ManaType>),
+    /// Unspent mana the players would lose becomes mana of the type instead.
+    UnspentManaBecomes(Vec<PlayerId>, ManaType),
+    /// The players may spend mana as though it were mana of any color or type (CR 609.4b), to cast the spells the selector
+    /// picks or for everything when there is none.
+    SpendManaAs {
+        /// The players.
+        players: Vec<PlayerId>,
+        /// Any color or any type.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        spend_as: mtg_cards::modify::SpendAs,
+        /// The spells it is for; everything when absent.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        spells: Option<Selector>,
+    },
     /// The players play with the top card of their library revealed.
     RevealTop(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
@@ -553,6 +569,12 @@ pub(crate) struct RulesInForce {
     skip_extra_turns: BTreeSet<PlayerId>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
+    /// The players who keep unspent mana as steps end, with the type kept (every type when `None`).
+    keep_mana: Vec<(PlayerId, Option<ManaType>)>,
+    /// The players whose lost mana becomes another type, in timestamp order.
+    mana_becomes: Vec<(PlayerId, ManaType)>,
+    /// The players who may spend mana as though it were of any color or type, with the spells it is for.
+    spend_mana_as: Vec<(PlayerId, mtg_cards::modify::SpendAs, Option<Selector>)>,
     reveal_top: BTreeSet<PlayerId>,
     no_hand_limit: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
@@ -897,6 +919,21 @@ impl RulesInForce {
             Rule::VoteAgain(players) => self.vote_again.extend(players),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
+            Rule::KeepUnspentMana(players, mana) => {
+                self.keep_mana.extend(players.iter().map(|p| (*p, *mana)));
+            }
+            Rule::SpendManaAs {
+                players,
+                spend_as,
+                spells,
+            } => {
+                self.spend_mana_as
+                    .extend(players.iter().map(|p| (*p, *spend_as, spells.clone())));
+            }
+            Rule::UnspentManaBecomes(players, into) => {
+                self.mana_becomes
+                    .extend(players.iter().map(|p| (*p, *into)));
+            }
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::MaxHandSize(_)
@@ -1182,6 +1219,21 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
+        GameRule::KeepUnspentMana { who, mana } => {
+            Rule::KeepUnspentMana(scope.players(who)?, *mana)
+        }
+        GameRule::SpendManaAs {
+            who,
+            spend_as,
+            spells,
+        } => Rule::SpendManaAs {
+            players: scope.players(who)?,
+            spend_as: *spend_as,
+            spells: spells.clone(),
+        },
+        GameRule::UnspentManaBecomes { who, into } => {
+            Rule::UnspentManaBecomes(scope.players(who)?, *into)
+        }
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
         GameRule::MayCast(permission) => Rule::MayCast {
             who: scope.players(&permission.who)?,
@@ -1336,6 +1388,9 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::VoteAgain(players)
         | Rule::SkipExtraTurns(players)
         | Rule::FlipTwoCoins(players)
+        | Rule::KeepUnspentMana(players, _)
+        | Rule::UnspentManaBecomes(players, _)
+        | Rule::SpendManaAs { players, .. }
         | Rule::RevealTop(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
@@ -1481,6 +1536,9 @@ static NONE: RulesInForce = RulesInForce {
     vote_again: BTreeSet::new(),
     skip_extra_turns: BTreeSet::new(),
     flip_two: Vec::new(),
+    keep_mana: Vec::new(),
+    mana_becomes: Vec::new(),
+    spend_mana_as: Vec::new(),
     reveal_top: BTreeSet::new(),
     no_hand_limit: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
@@ -1806,6 +1864,60 @@ pub(crate) fn extra_land_plays(state: &GameState, player: PlayerId) -> u32 {
         .get(&player)
         .copied()
         .unwrap_or_default()
+}
+
+/// How `player` may spend mana on the spell `spell` (an ability when `None`) under the rules in force: any type over any
+/// color over the normal rule.
+pub(crate) fn ep24_spend_as(
+    state: &GameState,
+    player: PlayerId,
+    spell: Option<ObjectId>,
+) -> SpendAs {
+    let mut found = SpendAs::Normal;
+    for (who, spend_as, spells) in &state.rules().spend_mana_as {
+        if *who != player {
+            continue;
+        }
+        let applies = match (spells, spell.and_then(|id| state.object(id))) {
+            (None, _) => true,
+            (Some(spells), Some(object)) => {
+                let reference = object.reference();
+                Scope::announcing(state, player, reference)
+                    .selects(spells, reference)
+                    .unwrap_or(false)
+            }
+            (Some(_), None) => false,
+        };
+        if applies {
+            match spend_as {
+                SpendAs::AnyType => return SpendAs::AnyType,
+                SpendAs::AnyColor => found = SpendAs::AnyColor,
+                SpendAs::Normal => {}
+            }
+        }
+    }
+    found
+}
+
+/// What happens to the unspent mana `player` would lose as a step or phase ends: the types kept (every type when the
+/// list holds `None`), and the type the rest becomes instead of being lost (the earliest such rule).
+pub(crate) fn ep24_unspent_mana(
+    state: &GameState,
+    player: PlayerId,
+) -> (Vec<Option<ManaType>>, Option<ManaType>) {
+    let rules = state.rules();
+    let kept = rules
+        .keep_mana
+        .iter()
+        .filter(|(who, _)| *who == player)
+        .map(|(_, mana)| *mana)
+        .collect();
+    let becomes = rules
+        .mana_becomes
+        .iter()
+        .find(|(who, _)| *who == player)
+        .map(|(_, into)| *into);
+    (kept, becomes)
 }
 
 /// How many coins `player` flips for one coin they would flip: two for each rule that doubles them, at most 32.

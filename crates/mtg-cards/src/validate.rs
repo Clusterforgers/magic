@@ -2927,6 +2927,9 @@ impl Walker<'_> {
             Produce::ProducedBy { among, .. } => {
                 self.at("ProducedBy", |w| w.at("among", |w| w.selector(among)));
             }
+            Produce::AnyColorAmong(among) => {
+                self.at("AnyColorAmong", |w| w.selector(among));
+            }
             Produce::EachColorAmong(among) => {
                 self.at("EachColorAmong", |w| w.selector(among));
             }
@@ -4461,6 +4464,11 @@ impl Walker<'_> {
             | GameRule::VoteAgain(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
+            | GameRule::KeepUnspentMana { who, .. }
+            | GameRule::UnspentManaBecomes { who, .. }
+            | GameRule::SpendManaAs {
+                who, spells: None, ..
+            }
             | GameRule::RevealTop(who)
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
@@ -4498,6 +4506,9 @@ impl Walker<'_> {
             | GameRule::HandSizeChange { .. }
             | GameRule::NextSpell { .. }
             | GameRule::SpellCost { .. }
+            | GameRule::SpendManaAs {
+                spells: Some(_), ..
+            }
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
             | GameRule::UntapDuring { .. } => self.rule_option(&tag, rule),
@@ -4538,6 +4549,14 @@ impl Walker<'_> {
             GameRule::MayCastRather { only, .. } => {
                 self.at(tag, |w| w.reference(only, Kind::Object));
             }
+            GameRule::SpendManaAs {
+                who,
+                spells: Some(spells),
+                ..
+            } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("spells", |w| w.selector(spells));
+            }),
             GameRule::ManaProduced { what, who, change } => self.at(tag, |w| {
                 w.at("what", |w| w.selector(what));
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -5064,6 +5083,7 @@ fn fix19_per_player(mana: &Produce) -> Option<&'static str> {
         Produce::CommanderIdentity(_) => Some("CommanderIdentity"),
         Produce::ProducedBy { .. } => Some("ProducedBy"),
         Produce::EachColorAmong(_) => Some("EachColorAmong"),
+        Produce::AnyColorAmong(_) => Some("AnyColorAmong"),
         Produce::Devotion => Some("Devotion"),
         Produce::Instead { base, instead, .. } => {
             fix19_per_player(base).or_else(|| fix19_per_player(instead))

@@ -434,6 +434,8 @@ pub enum ManaProduced<'a> {
     },
     /// One mana of each colour among the objects `among` picks, counted when it is offered.
     EachColorAmong(&'a Selector),
+    /// One mana of one colour among the objects `among` picks, picked when activated.
+    AnyColorAmong(&'a Selector),
     /// Mana of one colour picked when activated, as many as the controller's devotion to it, counted when it is offered.
     Devotion,
 }
@@ -481,6 +483,7 @@ impl<'a> ManaProduced<'a> {
                 ManaProduced::AnyCombination { count, among }
             }
             Produce::EachColorAmong(among) => ManaProduced::EachColorAmong(among),
+            Produce::AnyColorAmong(among) => ManaProduced::AnyColorAmong(among),
             Produce::Devotion => ManaProduced::Devotion,
             Produce::OfTapped => return None,
         })
@@ -510,6 +513,7 @@ impl ManaProduced<'_> {
             ManaProduced::OneOf(_)
             | ManaProduced::OrChosenColor(_)
             | ManaProduced::EachColorAmong(_)
+            | ManaProduced::AnyColorAmong(_)
             | ManaProduced::Devotion => 1,
             ManaProduced::OneOfLists(lists) => lists
                 .iter()

@@ -537,6 +537,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
         .collect();
     texts.extend(another);
     super::ep22_everywhere::ep22_variants(ability, &mut texts);
+    super::ep24_rules::ep24_variants(ability, &mut texts);
     // A batch reads as its steps; the plain ability has no batch left, so this recurses once.
     if let Some(plain) = r11w_batch::flat_ability(ability) {
         for text in written_variants(&plain) {
@@ -1899,6 +1900,7 @@ fn mana_text(mana: &Produce) -> Option<String> {
         Produce::CommanderIdentity(1) => {
             "one mana of any color in your commander's color identity".to_owned()
         }
+        Produce::AnyColorAmong(among) => super::ep24_rules::ep24_color_among_text(among)?,
         Produce::ProducedBy {
             among,
             count: 1,

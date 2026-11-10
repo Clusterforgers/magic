@@ -4,6 +4,7 @@
 //! The mana of the total is what the payment step asks for, from the sources that may pay it.
 
 use mtg_cards::ability::Ability;
+use mtg_cards::modify::SpendAs;
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::ManaCost;
 
@@ -51,6 +52,15 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
     let mana = x::add(ctx, choices, mana);
     let mana = modifiers::apply(ctx, choices, mana);
     let mana = c9_emerge_reduce::c9_emerge_reduce(ctx, choices, mana);
+    let spell = match ctx.what {
+        What::Spell(spell) => Some(*spell),
+        _ => None,
+    };
+    let mana = match crate::rules::ep24_spend_as(ctx.state, ctx.player, spell) {
+        SpendAs::AnyType => mana.map(|mana| mana.paid_by_any_mana()),
+        SpendAs::AnyColor => mana.map(|mana| mana.paid_by_any_color()),
+        SpendAs::Normal => mana,
+    };
     let help = match ctx.what {
         What::Spell(spell) => help::offered(ctx.state, ctx.player, *spell, &printed.taken),
         What::Ability(_) if printed.waterbend => {

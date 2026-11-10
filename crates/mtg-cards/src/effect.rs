@@ -166,6 +166,9 @@ pub enum Produce {
     /// One mana of each color among the objects the selector picks ("For each color among permanents you control, add
     /// one mana of that color"); none while they have no color.
     EachColorAmong(Selector),
+    /// One mana of any one color among the objects the selector picks, chosen when added ("Add one mana of any color
+    /// among legendary permanents you control"); none while they have no color.
+    AnyColorAmong(Selector),
     /// Mana of one color chosen when added, as many as the controller's devotion to that color (CR 700.5): "Choose a
     /// color. Add an amount of mana of that color equal to your devotion to that color."
     Devotion,
