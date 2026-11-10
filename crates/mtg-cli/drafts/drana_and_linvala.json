@@ -1,0 +1,42 @@
+{
+  "oracle_id": "7abc2a1b-b758-480b-9415-f8f5369ab52f",
+  "name": "Drana and Linvala",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drana and Linvala",
+      "oracle_fingerprint": "4a8ad76f047799d5ce2b8eae71762074",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

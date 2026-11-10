@@ -1,0 +1,48 @@
+{
+  "oracle_id": "cbbe535b-12d6-4e6c-8b26-9220f06a1604",
+  "name": "Beseech the Mirror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beseech the Mirror",
+      "oracle_fingerprint": "d346abfbf2be22676009aa35f36d12f7",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "as": "card" } },
+              { "ExileHidden": { "what": { "Bound": "card" }, "as": "exiled" } },
+              { "Shuffle": {} },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      "AdditionalCostPaid",
+                      {
+                        "Matches": {
+                          "subject": { "Bound": "exiled" },
+                          "selector": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }]
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "exiled" },
+                        "free": true,
+                        "otherwise": [{ "Move": { "what": { "Bound": "exiled" }, "to": "Hand" } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "exiled" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

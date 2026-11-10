@@ -1,0 +1,53 @@
+{
+  "oracle_id": "5277a68e-1ceb-4b40-8e10-3d0564f5d7be",
+  "name": "Jace, Wielder of Mysteries",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace, Wielder of Mysteries",
+      "oracle_fingerprint": "2505d05d9bba5452885fcaaace54864a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": { "Instead": [{ "WinGame": {} }] },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 2 } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              { "Draw": { "count": 7 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "WinGame": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "48b1ac27-430f-4fd9-a71b-6ad125c57fe3",
+  "name": "Sphinx's Approach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx's Approach",
+      "oracle_fingerprint": "a44d7e1716efa72e68a3a29983bbea3d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Pay": {
+                  "cost": [
+                    "ExileSelf",
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [{ "Named": "Sphinx's Approach" }],
+                        "count": 4
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Subtype": "Sphinx" }, { "Type": "Creature" }],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

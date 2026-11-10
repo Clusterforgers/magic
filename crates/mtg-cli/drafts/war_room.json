@@ -1,0 +1,25 @@
+{
+  "oracle_id": "71c52bf5-2a5d-488e-8b15-7ef290e4b77d",
+  "name": "War Room",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "War Room",
+      "oracle_fingerprint": "011ee5051fc48d6fb5e92644ece4c7cf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", { "PayLife": { "CommanderColors": "You" } }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

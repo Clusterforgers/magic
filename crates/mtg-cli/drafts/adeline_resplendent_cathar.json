@@ -1,0 +1,56 @@
+{
+  "oracle_id": "38515f89-348b-4cf3-b7bd-1f6fe4ce2fba",
+  "name": "Adeline, Resplendent Cathar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adeline, Resplendent Cathar",
+      "oracle_fingerprint": "e5f138a7b82f63ee5e2caeac0dfe6147",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "SetPower": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Human",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Human"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "tapped": true,
+                        "attacking": true,
+                        "against": { "Bound": "opponent" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

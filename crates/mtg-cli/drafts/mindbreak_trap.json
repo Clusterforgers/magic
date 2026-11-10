@@ -1,0 +1,35 @@
+{
+  "oracle_id": "48712d36-5c13-4ded-87a4-68106da4a5cd",
+  "name": "Mindbreak Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindbreak Trap",
+      "oracle_fingerprint": "19ab3656edd365de88d9bad86a360775",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": ["Spell"] },
+                "bounds": { "min": 0, "max": { "Count": ["Spell"] } }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

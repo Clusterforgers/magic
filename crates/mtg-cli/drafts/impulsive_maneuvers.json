@@ -1,0 +1,42 @@
+{
+  "oracle_id": "39a9323d-dddc-42ac-929d-3f4fa7c87567",
+  "name": "Impulsive Maneuvers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impulsive Maneuvers",
+      "oracle_fingerprint": "1181cfca36f3f2d55e30613cd47a931d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "source": [{ "Is": "Triggering" }], "combat": true } },
+                        "by": { "Multiply": 2 },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "lose": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "source": [{ "Is": "Triggering" }], "combat": true } },
+                        "by": "PreventNext",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

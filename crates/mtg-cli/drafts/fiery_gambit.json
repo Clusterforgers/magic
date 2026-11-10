@@ -1,0 +1,94 @@
+{
+  "oracle_id": "78497c54-7179-41b7-9454-7b915fd96cd5",
+  "name": "Fiery Gambit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiery Gambit",
+      "oracle_fingerprint": "43630ff84a2cef984bfd1f80544555e7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "Either": {
+                        "first": [
+                          { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 3 } }
+                        ],
+                        "second": [
+                          {
+                            "FlipCoin": {
+                              "win": [
+                                {
+                                  "Either": {
+                                    "first": [
+                                      {
+                                        "DealDamage": {
+                                          "source": "This",
+                                          "to": { "Target": 0 },
+                                          "amount": 3
+                                        }
+                                      },
+                                      {
+                                        "DealDamage": {
+                                          "source": "This",
+                                          "to": "Opponents",
+                                          "amount": 6
+                                        }
+                                      }
+                                    ],
+                                    "second": [
+                                      {
+                                        "FlipCoin": {
+                                          "win": [
+                                            {
+                                              "DealDamage": {
+                                                "source": "This",
+                                                "to": { "Target": 0 },
+                                                "amount": 3
+                                              }
+                                            },
+                                            {
+                                              "DealDamage": {
+                                                "source": "This",
+                                                "to": "Opponents",
+                                                "amount": 6
+                                              }
+                                            },
+                                            { "Draw": { "count": 9 } },
+                                            {
+                                              "Untap": {
+                                                "what": {
+                                                  "Each": [
+                                                    { "Type": "Land" },
+                                                    { "ControlledBy": "You" }
+                                                  ]
+                                                }
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

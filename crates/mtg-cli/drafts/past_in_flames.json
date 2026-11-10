@@ -1,0 +1,33 @@
+{
+  "oracle_id": "37a18736-5fe2-4897-809b-013497bdd890",
+  "name": "Past in Flames",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Past in Flames",
+      "oracle_fingerprint": "0b1663e36830961148abf0d45378c512",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{R}" } }
+      ]
+    }
+  ]
+}

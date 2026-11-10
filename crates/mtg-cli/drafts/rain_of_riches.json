@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ef1e2d3d-e977-4729-9430-eba6242e5dfe",
+  "name": "Rain of Riches",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rain of Riches",
+      "oracle_fingerprint": "332bb9ed76bbcf39e2b59c083b1f46c4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "count": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "ControlledBy": "You" },
+                { "SpentFrom": { "from": { "subtypes": ["Treasure"] }, "least": 1 } },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Cascade" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "ControlledBy": "You" },
+                      { "SpentFrom": { "from": { "subtypes": ["Treasure"] }, "least": 1 } },
+                      { "Not": { "Is": "Affected" } }
+                    ]
+                  }
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

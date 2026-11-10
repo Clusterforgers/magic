@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a1a9695e-073b-4a65-b3ec-2cfddc23202a",
+  "name": "The Grey Havens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Grey Havens",
+      "oracle_fingerprint": "3514b59c652d3ccbba33ee78cde57176",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "EachColorAmong": [] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

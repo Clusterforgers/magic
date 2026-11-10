@@ -1,0 +1,57 @@
+{
+  "oracle_id": "f1c2dbe2-fbe0-4058-bdf1-91d1b1832786",
+  "name": "Dauthi Voidwalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dauthi Voidwalker",
+      "oracle_fingerprint": "4b06872ea50b96e3ccb086b7d3ea8ef7",
+      "abilities": [
+        { "Keyword": "Shadow" },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": [{ "OwnedBy": "Opponents" }], "to": "Graveyard" } },
+            "by": {
+              "Instead": [
+                { "Exile": { "what": "Triggering", "as": "exiled" } },
+                { "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "void" } } }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "OwnedBy": "Opponents" },
+                      { "HasCounter": { "Other": "void" } }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Is": { "Bound": "card" } }],
+                      "from": "Exile",
+                      "free": true,
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

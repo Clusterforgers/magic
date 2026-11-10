@@ -1,0 +1,82 @@
+{
+  "oracle_id": "8a3ad2ef-8bcb-40c0-85de-f03328c2b644",
+  "name": "Springheart Nantuko",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Springheart Nantuko",
+      "oracle_fingerprint": "7d4c1655447a74ab1f2871dacc281b7d",
+      "abilities": [
+        { "Keyword": { "Bestow": "{1}{G}" } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "Attached",
+                      "selector": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Pay": {
+                        "cost": "{1}{G}",
+                        "paid": [{ "CreateToken": { "token": { "CopyOf": { "of": "Attached" } } } }],
+                        "unpaid": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Insect",
+                                  "colors": ["Green"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Insect"],
+                                  "power": 1,
+                                  "toughness": 1
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Insect",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Insect"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

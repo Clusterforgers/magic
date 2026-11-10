@@ -1,0 +1,48 @@
+{
+  "oracle_id": "7d79fb4e-2ca0-404a-9663-1f5abce6e733",
+  "name": "Ancient Brass Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Brass Dragon",
+      "oracle_fingerprint": "5ec85b5e24a8260a1b060960ce5b6728",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "RollDice": { "sides": 20, "results": [] } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Together": {
+                          "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                          "rule": { "TotalManaValueAtMost": { "DieResult": "Only" } }
+                        }
+                      },
+                      "bounds": {
+                        "min": 0,
+                        "max": { "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }] }
+                      }
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "3adc3af3-5086-4d61-b38c-c1dddeaeebe6",
+  "name": "Stubborn Denial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stubborn Denial",
+      "oracle_fingerprint": "7af296498a78c58c62d0d372383c22a0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }],
+                  "otherwise": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "cost": "{1}",
+                        "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

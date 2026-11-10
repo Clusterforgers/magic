@@ -1,0 +1,73 @@
+{
+  "oracle_id": "8f1123dd-19b7-402b-8ecd-ab62494c9fd5",
+  "name": "Wand of Wonder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wand of Wonder",
+      "oracle_fingerprint": "762be1ab58e88f994c882d5d5e00005f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    { "from": 1, "to": 9, "effects": [{ "Let": { "as": "x", "amount": 1 } }] },
+                    { "from": 10, "to": 19, "effects": [{ "Let": { "as": "x", "amount": 2 } }] },
+                    { "from": 20, "to": 20, "effects": [{ "Let": { "as": "x", "amount": 3 } }] }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "ExileUntil": {
+                        "who": { "Bound": "opponent" },
+                        "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                        "as": "found",
+                        "exiled_as": "exiled"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "found" }, "as": "all_found", "adds": true } },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Is": { "Bound": "exiled" } },
+                            { "Not": { "Is": { "Bound": "found" } } },
+                            { "In": "Exile" }
+                          ]
+                        },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Bound": "all_found" },
+                  "count": { "min": 0, "max": { "Bound": "x" } },
+                  "as": "chosen"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "chosen" },
+                  "as": "card",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "bfab9e33-0d07-46e6-be06-1eaffe26cbfd",
+  "oracle_id": "2c0a0a7d-b12f-47c8-a6a6-d046f999ec6b",
+  "multiverse_ids": [
+    522294
+  ],
+  "mtgo_id": 90817,
+  "tcgplayer_id": 239394,
+  "cardmarket_id": 565739,
+  "name": "Yusri, Fortune's Flame",
+  "lang": "en",
+  "released_at": "2021-06-18",
+  "uri": "https://api.scryfall.com/cards/bfab9e33-0d07-46e6-be06-1eaffe26cbfd",
+  "scryfall_uri": "https://scryfall.com/card/mh2/218/yusri-fortunes-flame?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:13:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/f/bfab9e33-0d07-46e6-be06-1eaffe26cbfd.jpg?1783926808",
+    "normal": "https://cards.scryfall.io/normal/front/b/f/bfab9e33-0d07-46e6-be06-1eaffe26cbfd.jpg?1783926808",
+    "large": "https://cards.scryfall.io/large/front/b/f/bfab9e33-0d07-46e6-be06-1eaffe26cbfd.jpg?1783926808",
+    "png": "https://cards.scryfall.io/png/front/b/f/bfab9e33-0d07-46e6-be06-1eaffe26cbfd.png?1783926808",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/f/bfab9e33-0d07-46e6-be06-1eaffe26cbfd.jpg?1783926808",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/f/bfab9e33-0d07-46e6-be06-1eaffe26cbfd.jpg?1783926808",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/f/bfab9e33-0d07-46e6-be06-1eaffe26cbfd.webp?1783926808",
+    "grid": "https://cards.scryfall.io/grid/front/b/f/bfab9e33-0d07-46e6-be06-1eaffe26cbfd.webp?1783926808",
+    "display": "https://cards.scryfall.io/display/front/b/f/bfab9e33-0d07-46e6-be06-1eaffe26cbfd.webp?1783926808",
+    "art": "https://cards.scryfall.io/art/front/b/f/bfab9e33-0d07-46e6-be06-1eaffe26cbfd.webp?1783926808",
+    "crop": "https://cards.scryfall.io/crop/front/b/f/bfab9e33-0d07-46e6-be06-1eaffe26cbfd.webp?1783926808",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/f/bfab9e33-0d07-46e6-be06-1eaffe26cbfd.jpg?1783926808"
+  },
+  "mana_cost": "{1}{U}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Efreet",
+  "oracle_text": "Flying\nWhenever Yusri attacks, choose a number between 1 and 5. Flip that many coins. For each flip you win, draw a card. For each flip you lose, Yusri deals 2 damage to you. If you won five flips this way, you may cast spells from your hand this turn without paying their mana costs.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c1c7eb8c-f205-40ab-a609-767cb296544e",
+  "set": "mh2",
+  "set_name": "Modern Horizons 2",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/c1c7eb8c-f205-40ab-a609-767cb296544e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bfab9e33-0d07-46e6-be06-1eaffe26cbfd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2c0a0a7d-b12f-47c8-a6a6-d046f999ec6b&unique=prints",
+  "collector_number": "218",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Steven Belledin",
+  "artist_ids": [
+    "f07d73b9-52a0-4fe5-858b-61f7b42174a5"
+  ],
+  "illustration_id": "78ebd08d-b63e-4a9f-aac0-545265db5bec",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6671,
+  "penny_rank": 4734,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1029499176",
+    "previewed_at": "2021-05-20"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.37",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.23",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=522294&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DYusri%252C%2BFortune%2527s%2BFlame",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DYusri%252C%2BFortune%2527s%2BFlame",
+    "edhrec": "https://edhrec.com/route/?cc=Yusri%2C+Fortune%27s+Flame"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F239394%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=565739&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/90817?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

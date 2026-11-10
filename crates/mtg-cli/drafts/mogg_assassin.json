@@ -1,0 +1,37 @@
+{
+  "oracle_id": "36a6925a-621e-47d6-8cb3-1b2886e1986e",
+  "name": "Mogg Assassin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mogg Assassin",
+      "oracle_fingerprint": "0249dd6c6197cd6a73abe61a0ba3493a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } },
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": { "ControllerOf": { "Target": 0 } },
+                    "what": { "Object": [{ "Type": "Creature" }] }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [{ "Destroy": { "what": { "Target": 0 } } }],
+                  "lose": [{ "Destroy": { "what": { "Target": 1 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

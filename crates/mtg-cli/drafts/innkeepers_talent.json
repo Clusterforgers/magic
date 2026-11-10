@@ -1,0 +1,52 @@
+{
+  "oracle_id": "915b75d1-b5e3-4aca-a54c-beaccef0a2e4",
+  "name": "Innkeeper's Talent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Innkeeper's Talent",
+      "oracle_fingerprint": "5d9748f11a30e6cd3b195a282734179d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{G}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "ControlledBy": "You" }, "HasAnyCounter"] },
+            "mods": [{ "AddKeyword": { "Ward": "{1}" } }],
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 2 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "CountersPut": {} },
+            "by": { "Multiply": 2 },
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 3 } }
+          }
+        }
+      ]
+    }
+  ]
+}

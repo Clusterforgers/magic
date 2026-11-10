@@ -1,0 +1,99 @@
+{
+  "oracle_id": "7f32344f-06d8-4862-bfeb-f90a3e1d7fc2",
+  "name": "The Creation of Avacyn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Creation of Avacyn",
+      "oracle_fingerprint": "307ce0c1bcf34ce860c4c7dec5dd59d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Search": { "filter": [], "as": "card" } },
+              { "ExileHidden": { "what": { "Bound": "card" } } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "LoseLife": {
+                        "amount": {
+                          "Stat": {
+                            "of": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                            "stat": "ManaValue"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Move": {
+                              "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                              "to": { "Battlefield": {} }
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "Move": {
+                              "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                              "to": "Hand"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

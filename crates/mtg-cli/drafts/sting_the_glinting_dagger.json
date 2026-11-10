@@ -1,0 +1,53 @@
+{
+  "oracle_id": "973c49a1-8425-40b9-8bdc-2c2434222314",
+  "name": "Sting, the Glinting Dagger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sting, the Glinting Dagger",
+      "oracle_fingerprint": "8195946f22c2d9291bfe7a6591077a4e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [{ "Untap": { "what": "Attached" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [
+                  {
+                    "AnyOf": [
+                      {
+                        "Blocks": {
+                          "Each": [{ "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Orc" }] }]
+                        }
+                      },
+                      {
+                        "BlockedBy": {
+                          "Each": [{ "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Orc" }] }]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

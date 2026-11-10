@@ -1,0 +1,53 @@
+{
+  "oracle_id": "2167ac25-d042-4b48-b770-8b94acc1a965",
+  "name": "Chain of Vapor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chain of Vapor",
+      "oracle_fingerprint": "0e6c14d51159f32044d702990a4b95da",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Bind": { "what": { "ControllerOf": { "Target": 0 } }, "as": "player" } },
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "May": {
+                  "who": { "Bound": "player" },
+                  "effects": [
+                    {
+                      "Sacrifice": { "who": { "Bound": "player" }, "filter": [{ "Type": "Land" }] }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "May": {
+                              "who": { "Bound": "player" },
+                              "effects": [
+                                {
+                                  "CopySpell": {
+                                    "what": "This",
+                                    "who": { "Bound": "player" },
+                                    "new_targets": true
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

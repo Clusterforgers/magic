@@ -1,0 +1,173 @@
+{
+  "object": "card",
+  "id": "54a3ea87-005e-4985-b2a5-21711d0b71c0",
+  "oracle_id": "8a3ad2ef-8bcb-40c0-85de-f03328c2b644",
+  "multiverse_ids": [
+    662323
+  ],
+  "mtgo_id": 126359,
+  "arena_id": 91021,
+  "tcgplayer_id": 552859,
+  "cardmarket_id": 772226,
+  "name": "Springheart Nantuko",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/54a3ea87-005e-4985-b2a5-21711d0b71c0",
+  "scryfall_uri": "https://scryfall.com/card/mh3/171/springheart-nantuko?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:54:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/4/54a3ea87-005e-4985-b2a5-21711d0b71c0.jpg?1783911255",
+    "normal": "https://cards.scryfall.io/normal/front/5/4/54a3ea87-005e-4985-b2a5-21711d0b71c0.jpg?1783911255",
+    "large": "https://cards.scryfall.io/large/front/5/4/54a3ea87-005e-4985-b2a5-21711d0b71c0.jpg?1783911255",
+    "png": "https://cards.scryfall.io/png/front/5/4/54a3ea87-005e-4985-b2a5-21711d0b71c0.png?1783911255",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/4/54a3ea87-005e-4985-b2a5-21711d0b71c0.jpg?1783911255",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/4/54a3ea87-005e-4985-b2a5-21711d0b71c0.jpg?1783911255",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/4/54a3ea87-005e-4985-b2a5-21711d0b71c0.webp?1783911255",
+    "grid": "https://cards.scryfall.io/grid/front/5/4/54a3ea87-005e-4985-b2a5-21711d0b71c0.webp?1783911255",
+    "display": "https://cards.scryfall.io/display/front/5/4/54a3ea87-005e-4985-b2a5-21711d0b71c0.webp?1783911255",
+    "art": "https://cards.scryfall.io/art/front/5/4/54a3ea87-005e-4985-b2a5-21711d0b71c0.webp?1783911255",
+    "crop": "https://cards.scryfall.io/crop/front/5/4/54a3ea87-005e-4985-b2a5-21711d0b71c0.webp?1783911255",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/4/54a3ea87-005e-4985-b2a5-21711d0b71c0.jpg?1783911255"
+  },
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment Creature — Insect Monk",
+  "oracle_text": "Bestow {1}{G}\nEnchanted creature gets +1/+1.\nLandfall — Whenever a land you control enters, you may pay {1}{G} if this permanent is attached to a creature you control. If you do, create a token that's a copy of that creature. If you didn't create a token this way, create a 1/1 green Insect creature token.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Bestow",
+    "Landfall"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "8a016157-6f3f-4fb2-b962-1f548d378545",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/8a016157-6f3f-4fb2-b962-1f548d378545"
+    },
+    {
+      "object": "related_card",
+      "id": "cf723c91-e3ae-4a71-93b2-65d05bfa9b60",
+      "component": "combo_piece",
+      "name": "Springheart Nantuko",
+      "type_line": "Enchantment Creature — Insect Monk",
+      "uri": "https://api.scryfall.com/cards/cf723c91-e3ae-4a71-93b2-65d05bfa9b60"
+    },
+    {
+      "object": "related_card",
+      "id": "059e9d51-c7bf-41c0-a6f0-c0bbc6d3b434",
+      "component": "token",
+      "name": "Insect",
+      "type_line": "Token Creature — Insect",
+      "uri": "https://api.scryfall.com/cards/059e9d51-c7bf-41c0-a6f0-c0bbc6d3b434"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set": "mh3",
+  "set_name": "Modern Horizons 3",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh3&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh3?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/54a3ea87-005e-4985-b2a5-21711d0b71c0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8a3ad2ef-8bcb-40c0-85de-f03328c2b644&unique=prints",
+  "collector_number": "171",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Valera Lutfullina",
+  "artist_ids": [
+    "76bc57c7-47c6-40c5-8797-8ffcce430ac7"
+  ],
+  "illustration_id": "12a84ea9-c11a-4a8a-8a9c-ab3e62443e19",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 705,
+  "penny_rank": 307,
+  "preview": {
+    "source": "AfterOfficeTTV",
+    "source_uri": "https://x.com/AfterTtv/status/1795221106913132646",
+    "previewed_at": "2024-05-27"
+  },
+  "prices": {
+    "usd": "6.46",
+    "usd_foil": "6.58",
+    "usd_etched": null,
+    "eur": "4.55",
+    "eur_foil": "5.61",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=662323&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSpringheart%2BNantuko",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSpringheart%2BNantuko",
+    "edhrec": "https://edhrec.com/route/?cc=Springheart+Nantuko"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F552859%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=772226&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/126359?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

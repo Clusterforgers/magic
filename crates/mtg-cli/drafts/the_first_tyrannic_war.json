@@ -1,0 +1,70 @@
+{
+  "oracle_id": "85fd2f65-957e-446b-990a-8711a1e1c4f6",
+  "name": "The First Tyrannic War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The First Tyrannic War",
+      "oracle_fingerprint": "0e68a073a1ea926cd4ec7f6effc65971",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "card" },
+                  "to": { "Battlefield": {} },
+                  "as": "entered"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Bound": "entered" }, "selector": ["XInCost"] }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "entered" },
+                        "counter": "+1/+1",
+                        "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "MultiplyCounters": { "on": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "MultiplyCounters": { "on": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

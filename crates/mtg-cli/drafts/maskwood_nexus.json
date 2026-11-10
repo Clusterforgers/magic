@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9b2cdbed-c733-409b-b0e4-2c8960c25111",
+  "name": "Maskwood Nexus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maskwood Nexus",
+      "oracle_fingerprint": "e2d44bf1755e78768bb1ee15be79cf11",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": ["AddAllCreatureTypes"]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Shapeshifter",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Shapeshifter"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Changeling" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

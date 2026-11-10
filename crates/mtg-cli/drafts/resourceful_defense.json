@@ -1,0 +1,49 @@
+{
+  "oracle_id": "83e78565-e61f-4bbc-b834-f47941f7e3ec",
+  "name": "Resourceful Defense",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Resourceful Defense",
+      "oracle_fingerprint": "9607190494b25851f4e762db64529cf3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "ControlledBy": "You" }], "from": "Battlefield" } },
+            "if": { "Compare": { "left": { "AnyCounters": "Triggering" }, "op": "Ge", "right": 1 } },
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [{ "PutCountersOf": { "on": { "Target": 0 }, "of": "Triggering" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{W}",
+            "targets": [
+              { "what": { "Object": [{ "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Another": { "what": { "Object": [{ "ControlledBy": "You" }] }, "earlier": [0] }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": { "Number": [0, { "AnyCounters": { "Target": 0 } }] },
+                  "as": "n"
+                }
+              },
+              {
+                "MoveCounters": {
+                  "from": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "count": { "ChosenAs": "n" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

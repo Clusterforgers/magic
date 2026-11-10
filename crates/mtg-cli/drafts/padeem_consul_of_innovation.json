@@ -17,14 +17,11 @@
           "Triggered": {
             "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
             "if": {
-              "Compare": {
-                "left": {
-                  "Count": [
-                    { "Type": "Artifact" },
-                    { "GreatestAmong": { "stat": "ManaValue", "group": [{ "Type": "Artifact" }] } },
-                    { "ControlledBy": "You" }
-                  ]
-                },
+              "CountOf": {
+                "subject": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "selector": [
+                  { "GreatestAmong": { "stat": "ManaValue", "group": [{ "Type": "Artifact" }] } }
+                ],
                 "op": "Ge",
                 "right": 1
               }

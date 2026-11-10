@@ -1,0 +1,60 @@
+{
+  "oracle_id": "12cc800c-c7be-4811-8207-fd01a99cc892",
+  "name": "Chandra, Torch of Defiance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra, Torch of Defiance",
+      "oracle_fingerprint": "5650b4974341d8ad20359f78402a86df",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "exiled" },
+                  "otherwise": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red"] } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "SpellCast": { "by": "You" } },
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

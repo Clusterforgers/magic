@@ -1,0 +1,76 @@
+{
+  "oracle_id": "c53ba31a-ba27-4e17-9a92-311acb1cab29",
+  "name": "Myr Battlesphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myr Battlesphere",
+      "oracle_fingerprint": "d16466a0473a8edd2ed7dea11c0852d1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Myr",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Myr"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 4
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Subtype": "Myr" }, "Untapped", { "ControlledBy": "You" }]
+                        },
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [{ "Subtype": "Myr" }, "Untapped", { "ControlledBy": "You" }]
+                          }
+                        },
+                        "as": "myr"
+                      }
+                    },
+                    { "Tap": { "what": { "Bound": "myr" } } },
+                    {
+                      "Let": {
+                        "as": "x",
+                        "amount": { "CountOf": { "of": { "Bound": "myr" }, "filter": [] } }
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": { "Bound": "x" }, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    { "DealDamage": { "to": "Against", "amount": { "Bound": "x" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

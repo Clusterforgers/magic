@@ -1,0 +1,57 @@
+{
+  "oracle_id": "2c0a0a7d-b12f-47c8-a6a6-d046f999ec6b",
+  "name": "Yusri, Fortune's Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yusri, Fortune's Flame",
+      "oracle_fingerprint": "ce442052b0d96d915cbd0562890dee38",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ChooseValue": { "kind": { "Number": [1, 5] }, "as": "n" } },
+              { "Forget": { "slot": "wins" } },
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 1, "op": "Eq", "right": 1 } },
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "win": [{ "Draw": {} }, { "RememberValue": { "value": 1, "slot": "wins" } }],
+                        "lose": [{ "DealDamage": { "to": "You", "amount": 2 } }]
+                      }
+                    }
+                  ],
+                  "most": 5,
+                  "times": { "ChosenAs": "n" }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Remembered": { "on": "This", "slot": "wins" } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": { "MayCast": { "from": "Hand", "free": true } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

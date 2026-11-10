@@ -1,0 +1,86 @@
+{
+  "oracle_id": "8d57dadb-c689-4691-b331-aba15daf46ff",
+  "name": "Delina, Wild Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Delina, Wild Mage",
+      "oracle_fingerprint": "baee0a5e03f9d97361eca21822ea91a7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 14,
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "CopyOf": {
+                                "of": { "Target": 0 },
+                                "except": [
+                                  { "RemoveSupertype": "Legendary" },
+                                  {
+                                    "GrantAbility": {
+                                      "Triggered": {
+                                        "when": { "StepBegins": { "step": "EndCombat" } },
+                                        "effects": [{ "Exile": { "what": "This" } }]
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "tapped": true,
+                            "attacking": true
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 15,
+                      "to": 20,
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "CopyOf": {
+                                "of": { "Target": 0 },
+                                "except": [
+                                  { "RemoveSupertype": "Legendary" },
+                                  {
+                                    "GrantAbility": {
+                                      "Triggered": {
+                                        "when": { "StepBegins": { "step": "EndCombat" } },
+                                        "effects": [{ "Exile": { "what": "This" } }]
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            "tapped": true,
+                            "attacking": true
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

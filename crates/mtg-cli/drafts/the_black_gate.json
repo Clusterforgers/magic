@@ -1,0 +1,48 @@
+{
+  "oracle_id": "40eb9904-dea3-47cf-963a-04821f98ba64",
+  "name": "The Black Gate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Black Gate",
+      "oracle_fingerprint": "9eda4e05644b857d84faf5ff0c6ebe8d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "PayLifeOrTapped": 3 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Choose": { "from": "MostLife", "as": "player" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        { "ControlledBy": { "Bound": "player" } }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

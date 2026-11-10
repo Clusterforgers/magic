@@ -1,0 +1,56 @@
+{
+  "oracle_id": "5958e9e3-9457-48e1-afc1-a5c89e3b0ed0",
+  "name": "Struggle for Project Purity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Struggle for Project Purity",
+      "oracle_fingerprint": "6fd8bae11d8a57affadefecea314597c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["Brotherhood", "Enclave"] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "EnteredAs": "Brotherhood" },
+            "effects": [
+              { "Draw": { "who": "Opponents", "as": "d" } },
+              { "Draw": { "count": { "Count": [{ "Is": { "Bound": "d" } }] } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "at": "You" } },
+            "if": { "EnteredAs": "Enclave" },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "Triggering",
+                  "counter": { "Other": "rad" },
+                  "count": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          "Attacking",
+                          { "ControlledBy": "Triggering" },
+                          { "AttackingPlayer": "You" }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

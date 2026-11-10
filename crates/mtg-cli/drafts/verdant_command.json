@@ -1,0 +1,66 @@
+{
+  "oracle_id": "5a5d426b-e5eb-44f0-b5fe-c258bec6d59e",
+  "name": "Verdant Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verdant Command",
+      "oracle_fingerprint": "ef4d6019781625318a641d582a92cd4d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "who": { "Target": 0 },
+                            "token": {
+                              "Custom": {
+                                "name": "Squirrel",
+                                "colors": ["Green"],
+                                "types": ["Creature"],
+                                "subtypes": ["Squirrel"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            },
+                            "count": 2,
+                            "tapped": true
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Ability": "Activated" }, { "Type": "Planeswalker" }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "GainLife": { "who": { "Target": 0 }, "amount": 3 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

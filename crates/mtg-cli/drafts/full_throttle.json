@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3c2f87eb-b0f4-4578-b143-6fba313a82ec",
+  "name": "Full Throttle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Full Throttle",
+      "oracle_fingerprint": "77697201b9333aae4764e20cc6001777",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "AddPhase": { "phases": ["Combat", "Combat"] } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "BeginCombat" } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Untap": { "what": { "Each": [{ "Type": "Creature" }, "AttackedThisTurn"] } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
