@@ -91,7 +91,8 @@ impl Pass<'_> {
 
     /// The effects run in place of the event at `at`: their events take its place and carry the effects already applied
     /// to it, this one included, so it does not apply to them again (CR 614.5). Effects that are declined or cannot run
-    /// leave the event as it is. `Plus` keeps the event and adds the tokens (`ep21_plus`).
+    /// leave the event as it is. `Plus` keeps the event and adds the tokens (`ep21_plus`); `PreventAnd` prevents the
+    /// damage and adds the events (`w9c_prevent_and`).
     pub(super) fn w5d_instead(
         &mut self,
         at: usize,
@@ -103,6 +104,9 @@ impl Pass<'_> {
     ) -> Option<Decision> {
         if matches!(by, ReplaceBy::Plus(_)) {
             return self.ep21_plus(at, candidate, effects, unit, applied);
+        }
+        if matches!(by, ReplaceBy::PreventAnd(_)) {
+            return self.w9c_prevent_and(at, candidate, effects, unit, &applied);
         }
         let events = match self.w5d_run(at, candidate, effects, unit) {
             Ran::Events(events) => events,

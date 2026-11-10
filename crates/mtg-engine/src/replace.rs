@@ -1956,21 +1956,13 @@ impl Pass<'_> {
                 }
                 self.slots.remove(at);
             }
-            (ReplaceBy::PreventAnd(effects), Unit::Damage { .. }) => {
-                if let Some(decision) =
-                    self.w9c_prevent_and(at, candidate, effects, &unit, &applied)
-                {
-                    return Ok(Applied::Ask(decision));
-                }
-            }
             (ReplaceBy::PreventAllBut(kept), Unit::Damage { .. }) => {
                 self.w9c_prevent_all_but(at, candidate, *kept, applied);
             }
-            (ReplaceBy::Instead(effects) | ReplaceBy::Plus(effects), _) => {
-                if let Some(decision) = self.w5d_instead(at, candidate, by, effects, &unit, applied)
-                {
-                    return Ok(Applied::Ask(decision));
-                }
+            (ReplaceBy::Instead(effects) | ReplaceBy::Plus(effects), _)
+            | (ReplaceBy::PreventAnd(effects), Unit::Damage { .. }) => {
+                let asked = self.w5d_instead(at, candidate, by, effects, &unit, applied);
+                return Ok(asked.map_or(Applied::Done, Applied::Ask));
             }
             (ReplaceBy::RedirectUpTo { most, .. }, Unit::Damage { .. }) => {
                 self.r6f_redirect_up_to(at, candidate, *most, applied);
