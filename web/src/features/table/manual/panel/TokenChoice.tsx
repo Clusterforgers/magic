@@ -1,14 +1,25 @@
 import type { ReactNode } from 'react'
 import { Input } from '@/components/ui/input'
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
-import type { CommonToken } from '@/protocol/generated'
+import { NativeSelect, NativeSelectOptGroup, NativeSelectOption } from '@/components/ui/native-select'
+import type { TokenOfferView } from '@/protocol/generated'
 import { COMMON_TOKENS, GRANT_KEYWORDS } from '../offers'
-import { CUSTOM, TOKEN_COLORS, TOKEN_NAME_MAX, TOKEN_STAT_MAX, TOKEN_SUBTYPES_MAX } from './customToken'
-import type { TokenDraft } from './customToken'
+import {
+  CUSTOM,
+  cardChoice,
+  cardTokenOf,
+  offerLabel,
+  TOKEN_COLORS,
+  TOKEN_NAME_MAX,
+  TOKEN_STAT_MAX,
+  TOKEN_SUBTYPES_MAX,
+} from './customToken'
+import type { TokenChoice as TokenChoiceValue, TokenDraft } from './customToken'
 
 interface Props {
   draft: TokenDraft
   set: (next: Partial<TokenDraft>) => void
+  /** The tokens the seat's cards make. */
+  offers: readonly TokenOfferView[]
 }
 
 function Labelled({ label, children }: { label: string; children: ReactNode }) {
@@ -65,22 +76,59 @@ function Check({
   )
 }
 
-/** The list of tokens, ending in "Custom creature…" which asks for the creature's name, power, toughness, colors, types, keywords and subtypes. */
-export function TokenChoice({ draft, set }: Props) {
+/** What a token of the seat's cards does, in its own words, under the list once it is chosen. */
+function OfferRules({ offer }: { offer: TokenOfferView }) {
+  return (
+    <div data-slot="card-token" className="grid gap-0.5 rounded-md border border-border px-2 py-1.5 text-xs">
+      <p className="text-muted-foreground">{`Made by ${offer.card}`}</p>
+      {(offer.rules ?? []).length === 0 ? (
+        <p className="text-muted-foreground">No abilities.</p>
+      ) : (
+        <ul className="grid gap-0.5 text-foreground">
+          {(offer.rules ?? []).map((rule, at) => (
+            <li key={at}>{rule}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
+/**
+ * The list of tokens: the common ones, those the seat's cards make (with every ability; the card is named under the
+ * list, and in the option too when two cards make tokens of the same name and size) and, last, "Custom creature…"
+ * which asks for the creature's name, power, toughness, colors, types, keywords and subtypes.
+ */
+export function TokenChoice({ draft, set, offers }: Props) {
+  const offer = cardTokenOf(draft.token, offers)
   return (
     <>
       <NativeSelect
         aria-label="Token"
         value={draft.token}
-        onChange={(event) => set({ token: event.currentTarget.value as CommonToken | typeof CUSTOM })}
+        onChange={(event) => set({ token: event.currentTarget.value as TokenChoiceValue })}
       >
-        {COMMON_TOKENS.map((token) => (
-          <NativeSelectOption key={token} value={token}>
-            {token}
-          </NativeSelectOption>
-        ))}
+        <NativeSelectOptGroup label="Common tokens">
+          {COMMON_TOKENS.map((token) => (
+            <NativeSelectOption key={token} value={token}>
+              {token}
+            </NativeSelectOption>
+          ))}
+        </NativeSelectOptGroup>
+        {offers.length === 0 ? null : (
+          <NativeSelectOptGroup label="Your cards make">
+            {offers.map((each, at) => (
+              <NativeSelectOption key={`${each.card}:${each.index}`} value={cardChoice(at)}>
+                {offers.filter((other) => offerLabel(other) === offerLabel(each)).length > 1
+                  ? `${offerLabel(each)} (${each.card})`
+                  : offerLabel(each)}
+              </NativeSelectOption>
+            ))}
+          </NativeSelectOptGroup>
+        )}
         <NativeSelectOption value={CUSTOM}>Custom creature…</NativeSelectOption>
       </NativeSelect>
+      {offer === undefined ? null : <OfferRules offer={offer} />}
       {draft.token === CUSTOM ? (
         <div data-slot="custom-token" className="grid gap-2">
           <Labelled label="Name of the token">

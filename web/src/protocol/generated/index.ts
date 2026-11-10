@@ -293,6 +293,7 @@ export type { TargetOptions } from "./TargetOptions";
 export type { TargetsChanged } from "./TargetsChanged";
 export type { Together } from "./Together";
 export type { TokenCreated } from "./TokenCreated";
+export type { TokenOfferView } from "./TokenOfferView";
 export type { Total } from "./Total";
 export type { TriggerEntry } from "./TriggerEntry";
 export type { Triggered } from "./Triggered";

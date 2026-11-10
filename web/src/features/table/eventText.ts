@@ -452,8 +452,11 @@ export function describeManual(
   }
   if ('CreateToken' in action) {
     const { token, count } = action.CreateToken
+    const noun = count === 1 ? 'token' : 'tokens'
+    // The token of a card is named by the TokenCreated events after this line; the card says where it is from.
+    if ('Card' in token) return `${who} creates ${count} ${noun} ${token.Card.card} makes (by hand)`
     const name = 'Common' in token ? token.Common : token.Custom.name
-    return `${who} creates ${count} ${name} ${count === 1 ? 'token' : 'tokens'} (by hand)`
+    return `${who} creates ${count} ${name} ${noun} (by hand)`
   }
   if ('CopyToken' in action) {
     const { object, count } = action.CopyToken
