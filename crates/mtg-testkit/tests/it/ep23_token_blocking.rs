@@ -69,7 +69,7 @@ fn fight(seats: usize) -> Result<Driver, ScriptError> {
             _ => {
                 driver.answer_passively()?;
             }
-        };
+        }
     }
     panic!("the token never blocked");
 }

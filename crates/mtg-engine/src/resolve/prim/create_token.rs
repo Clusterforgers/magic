@@ -171,7 +171,7 @@ fn ep23_blocked(
         .attackers()
         .iter()
         .find(|attack| attack.object() == named.id && attack.defender(state) == Some(player))
-        .map(|attack| attack.object()))
+        .map(crate::combat::Attacker::object))
 }
 
 /// What each player's tokens attack when the effect names nothing: their controller chooses, once for all of them;

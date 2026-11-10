@@ -64,7 +64,7 @@ fn ep23_the_copies_take_half_the_creature_s_power_and_toughness(
     driver.cast_at("Saw", &[target])?;
     resolve_the_stack(&mut driver)?;
     assert_eq!(oxen(&driver, 1), expected);
-    assert!(oxen(&driver, 0).is_empty());
+    assert_eq!(oxen(&driver, 0), []);
     Ok(())
 }
 
