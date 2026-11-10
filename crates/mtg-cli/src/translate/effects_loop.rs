@@ -760,7 +760,8 @@ pub fn two_piles(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// `Repeat` with a fixed number of passes (`MaxRepeat`): the body again and again, at most that many times. With a check
 /// (`RepeatCheckSVar$`, `RepeatPresent$`) the body is done once and then again while the check holds, as Forge's
-/// do-while does, still never more than [`MOST_PASSES`] times; a player's choice to go on is a gap.
+/// do-while does, still never more than [`MOST_PASSES`] times. `RepeatOptional$` asks the caster before each pass after
+/// the first (`ep25_repeat`); `ValidTgts$` is the target the body names.
 pub fn repeat(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(
         p,
@@ -773,11 +774,21 @@ pub fn repeat(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "RepeatPresent",
             "RepeatDefined",
             "RepeatCompare",
+            "RepeatOptional",
+            "ValidTgts",
         ],
     )?;
     let Some(sub) = p.get("RepeatSubAbility") else {
         return unmapped("key:Repeat.no-RepeatSubAbility");
     };
+    let ask = super::ep25_repeat::asker(p)?;
+    super::ep25_repeat::target(ctx, p)?;
+    let built = repeat_built(ctx, p, sub)?;
+    Ok(super::ep25_repeat::asking(built, ask))
+}
+
+/// The `RepeatWhile` of a `Repeat` line whose body is `sub`, before any question to go on.
+fn repeat_built(ctx: &mut Ctx, p: &Params, sub: &str) -> Tr<Vec<Value>> {
     let outer = ctx.remembered.clone();
     let part = ctx.sub(sub)?;
     let effects = chain_at(ctx, &part, false);
@@ -795,6 +806,9 @@ pub fn repeat(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return repeat_checked(p, &effects, &check);
     }
     let Some(max) = p.get("MaxRepeat") else {
+        if p.has("RepeatOptional") {
+            return Ok(vec![super::ep25_repeat::until_stopped(effects)]);
+        }
         return unmapped("key:Repeat.no-MaxRepeat");
     };
     let mut repeat =

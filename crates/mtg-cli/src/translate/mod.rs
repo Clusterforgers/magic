@@ -47,6 +47,7 @@ mod effects_verbs5;
 pub mod effects_vote;
 pub mod effects_zone;
 mod enters_with;
+mod ep25_repeat;
 pub mod filter;
 mod fix26_printed;
 pub mod forget;

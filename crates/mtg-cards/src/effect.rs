@@ -1249,6 +1249,11 @@ pub enum Effect {
         /// The first pass begins without reading `condition`: the body is done at least once (a do-while).
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         at_least_once: bool,
+        /// The players this names are asked in turn whether a pass begins, once `condition` holds, until one says yes; with
+        /// no yes the repeat ends ("You may repeat this process any number of times", "As many times as you choose").
+        /// The first pass of an `at_least_once` repeat is not asked.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        ask: Option<Ref>,
     },
     /// `who` separates the objects `what` names into two piles (CR 700.3), then `chooser` chooses one pile: that pile is
     /// bound as `chosen_as`, the other as `rest_as`.
@@ -1975,7 +1980,7 @@ mod tests {
     #[case::exchange_life(Effect::ExchangeLife { who: Ref::You, with: Ref::Opponents }, r#"{"ExchangeLife":{"with":"Opponents"}}"#)]
     #[case::remove_damage(Effect::RemoveDamage { what: Ref::This }, r#"{"RemoveDamage":{"what":"This"}}"#)]
     #[case::repeat_while(
-        Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], most: 3, times: None, at_least_once: false },
+        Effect::RepeatWhile { condition: Condition::YourTurn, effects: vec![Effect::Draw { bind: None, who: Ref::You, count: Amount::one() }], most: 3, times: None, at_least_once: false, ask: None },
         r#"{"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}"#
     )]
     #[case::separate_piles(

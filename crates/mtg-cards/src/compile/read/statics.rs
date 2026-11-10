@@ -1089,6 +1089,7 @@ fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
         condition,
         activating: None,
         least: 0,
+        life: 0,
     })
 }
 
@@ -1342,6 +1343,7 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             condition,
             activating,
             least: 0,
+            life: 0,
         } => match (activating, condition) {
             (None, _) => cost_modifier_texts(applies_to, *change, mana, per, condition.as_ref()),
             (Some(kind), None) => super::g13g_activation_costs::g13g_activation_texts(

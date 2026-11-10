@@ -290,6 +290,8 @@ pub(crate) struct Done {
     /// The kind of counter the player picked for the next permanent of a cost that removes a counter of any kind, by
     /// position in the options.
     pub(crate) w2f_kind_picked: Option<u8>,
+    /// The life the cost modifiers add to the spell's cost, worked out with its total cost and paid with its other parts.
+    pub(crate) modifier_life: u32,
     /// The step whose decision the player has been asked.
     asked: Option<Phase>,
     /// Why the announcement was taken back: the step that could not be met.
@@ -401,16 +403,21 @@ impl Pending {
     }
 
     /// The parts a spell pays besides its mana for what has been announced (`Needs::cost_parts`), a counted one for the
-    /// X announced.
+    /// X announced, and the life the cost modifiers add.
     pub(crate) fn cost_parts(&self) -> Vec<Part> {
         let x = self.choices.x.unwrap_or(0);
-        self.needs
+        let mut parts: Vec<Part> = self
+            .needs
             .as_ref()
             .map(|needs| needs.cost_parts(&self.choices))
             .unwrap_or_default()
             .iter()
             .map(|part| part.at(x))
-            .collect()
+            .collect();
+        if self.done.modifier_life > 0 {
+            parts.push(Part::Life(self.done.modifier_life));
+        }
+        parts
     }
 
     /// Whether the cards picked for the next part of the cost are too weak for it: the part taps creatures for their

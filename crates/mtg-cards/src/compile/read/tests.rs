@@ -284,6 +284,7 @@ mod ep21_move_any;
 mod ep21_plus;
 mod ep22_writers;
 mod ep23_writers;
+mod ep25_life_cost;
 mod evasion;
 mod event_batches;
 mod events;
