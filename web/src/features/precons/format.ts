@@ -92,7 +92,8 @@ export function filterPrecons(items: readonly PreconListItem[], filters: Filters
   return items.filter((item) => {
     if (filters.set !== null && item.set !== filters.set) return false
     if (filters.status === 'illegal' && item.summary.legal) return false
-    if (filters.status !== null && filters.status !== 'illegal' && statusOf(item) !== filters.status) return false
+    if (filters.status !== null && filters.status !== 'illegal' && statusOf(item) !== filters.status)
+      return false
     const haystack = fold([item.name, item.set, ...item.commanders].join(' '))
     return words.every((word) => haystack.includes(word))
   })

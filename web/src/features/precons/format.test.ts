@@ -46,7 +46,12 @@ describe('statusOf and statusWords', () => {
       'hand',
       '6 cards played by hand',
     ],
-    ['an unplayable card is played by hand', checked(preconItem(), { unplayable: 1 }), 'hand', '1 card played by hand'],
+    [
+      'an unplayable card is played by hand',
+      checked(preconItem(), { unplayable: 1 }),
+      'hand',
+      '1 card played by hand',
+    ],
     [
       'a deck that is not legal plays as its cards say',
       checked(preconItem(), { manual: 2 }, 3),

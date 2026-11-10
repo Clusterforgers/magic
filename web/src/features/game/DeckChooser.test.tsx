@@ -111,7 +111,10 @@ describe('the rows', () => {
 
   it('marks the deck the seat plays', async () => {
     width(true)
-    await open({ format: 'normal', current: { name: 'Burn', format: 'modern', manual_cards: 1, warnings: 0 } })
+    await open({
+      format: 'normal',
+      current: { name: 'Burn', format: 'modern', manual_cards: 1, warnings: 0 },
+    })
     const row = await screen.findByRole('option', { name: /^Burn/ })
     expect(row).toHaveAttribute('data-chosen', 'true')
     await waitFor(() => expect(row).toHaveAttribute('aria-selected', 'true'))

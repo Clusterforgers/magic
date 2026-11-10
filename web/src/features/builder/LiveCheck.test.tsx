@@ -95,7 +95,9 @@ describe('the live check in the builder', () => {
     await waitFor(
       () =>
         expect(
-          within(within(deckPane()).getByRole('region', { name: /^Not legal in Modern/ })).getAllByRole('listitem'),
+          within(within(deckPane()).getByRole('region', { name: /^Not legal in Modern/ })).getAllByRole(
+            'listitem',
+          ),
         ).toHaveLength(2),
       WAIT,
     )

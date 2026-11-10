@@ -37,7 +37,10 @@ describe('saveStatus', () => {
   })
 
   it.each([
-    [[{ code: 'banned' }], 'Unsaved changes. Not legal in Modern: 1 banned card; it can still be saved and played.'],
+    [
+      [{ code: 'banned' }],
+      'Unsaved changes. Not legal in Modern: 1 banned card; it can still be saved and played.',
+    ],
     [
       [{ code: 'banned' }, { code: 'banned' }, { code: 'deck_size' }],
       'Unsaved changes. Not legal in Modern: 2 banned cards, deck size; it can still be saved and played.',

@@ -110,7 +110,8 @@ export function deckFacts(id: string, switches: DevDeckSwitches = {}): SeatDeck 
     name: deck.name,
     format: deck.format === 'freeform' ? 'freeform' : deck.format,
     manual_cards: (deck.hand ?? []).length,
-    warnings: tableIssues(precon === undefined ? deck.id : `precon:${deck.id}`, switches.format ?? 'normal').length,
+    warnings: tableIssues(precon === undefined ? deck.id : `precon:${deck.id}`, switches.format ?? 'normal')
+      .length,
   }
 }
 
@@ -127,7 +128,9 @@ export function lobbyDecks(switches: DevDeckSwitches = {}): DecksApi {
             candidate.id === asked.deck && (candidate.reads !== undefined || candidate.drafts !== undefined),
         )
         return answer(
-          own === undefined ? tableReport(asked.deck, switches.format ?? 'normal') : fixtureDeckView(own).report,
+          own === undefined
+            ? tableReport(asked.deck, switches.format ?? 'normal')
+            : fixtureDeckView(own).report,
         )
       }
       if (url.endsWith('/api/decks')) {

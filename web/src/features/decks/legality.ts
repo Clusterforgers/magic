@@ -46,7 +46,9 @@ export function issueSummary(issues: readonly Pick<Issue, 'code'>[]): string {
     counts.set(key, { count: (found?.count ?? 0) + 1, nouns })
   }
   return [...counts]
-    .map(([key, { count, nouns }]) => (nouns === undefined ? key : `${count} ${count === 1 ? nouns[0] : nouns[1]}`))
+    .map(([key, { count, nouns }]) =>
+      nouns === undefined ? key : `${count} ${count === 1 ? nouns[0] : nouns[1]}`,
+    )
     .join(', ')
 }
 
@@ -58,7 +60,8 @@ export const notLegalIn = (format: string): string => `Not legal in ${formatLabe
  * Commander: 2 issues" where only their count is known.
  */
 export function notLegalText(format: string, issues: readonly Pick<Issue, 'code'>[] | number): string {
-  const detail = typeof issues === 'number' ? (issues > 0 ? plural(issues, 'issue') : '') : issueSummary(issues)
+  const detail =
+    typeof issues === 'number' ? (issues > 0 ? plural(issues, 'issue') : '') : issueSummary(issues)
   return detail === '' ? notLegalIn(format) : `${notLegalIn(format)}: ${detail}`
 }
 

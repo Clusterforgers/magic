@@ -202,7 +202,12 @@ describe('the check state of a deck', () => {
     const deck = deckIn('manual_play', {
       name: 'Probe',
       format: 'commander',
-      summary: summary({ state: 'manual_play', legal: false, issues: 2, counts: counts({ verified: 99, manual: 1 }) }),
+      summary: summary({
+        state: 'manual_play',
+        legal: false,
+        issues: 2,
+        counts: counts({ verified: 99, manual: 1 }),
+      }),
     })
     await renderDecks({ decks: [deck] })
     await screen.findByRole('list', { name: 'Your decks' })

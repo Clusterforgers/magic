@@ -1,7 +1,12 @@
 import type { LobbySeat, SeatDeck, ServerMessage } from '@/protocol/generated'
 
 /** The deck every named seat of a test roster plays unless the test says otherwise. */
-export const SEAT_DECK: SeatDeck = { name: 'Mono Green Stompers', format: 'normal', manual_cards: 0, warnings: 0 }
+export const SEAT_DECK: SeatDeck = {
+  name: 'Mono Green Stompers',
+  format: 'normal',
+  manual_cards: 0,
+  warnings: 0,
+}
 
 /**
  * One seat of a roster in a test: its name, whether a client is connected to it, whether it is ready and, last, its

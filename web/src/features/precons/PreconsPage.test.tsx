@@ -115,7 +115,9 @@ describe('the list', () => {
     ).toHaveAttribute('data-precon-status', 'hand')
     expect(within(rowOf('Adaptive Enchantment')).getByText('Whole deck runs')).toBeInTheDocument()
     expect(within(rowOf('Arcane Maelstrom')).getByText('1 card played by hand')).toBeInTheDocument()
-    expect(within(rowOf('Arcane Maelstrom')).getByText('Not legal in Commander: 2 issues')).toBeInTheDocument()
+    expect(
+      within(rowOf('Arcane Maelstrom')).getByText('Not legal in Commander: 2 issues'),
+    ).toBeInTheDocument()
     expect(within(rowOf('Izzet Challenger')).getByText('No commander')).toBeInTheDocument()
     // The state is words and an icon, not a colour alone.
     for (const badge of document.querySelectorAll('[data-precon-status]')) {

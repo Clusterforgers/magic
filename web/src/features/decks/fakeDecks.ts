@@ -293,7 +293,13 @@ export function startDecks(script: DecksScript = {}): DecksServer {
       held = [saved, ...held]
       return jsonResponse(
         201,
-        deckView({ id: saved.id, name: saved.name, format: saved.format, state: saved.state, verified: saved.verified }),
+        deckView({
+          id: saved.id,
+          name: saved.name,
+          format: saved.format,
+          state: saved.state,
+          verified: saved.verified,
+        }),
       )
     }
     if (path === '/api/decks/import' && method === 'POST') {

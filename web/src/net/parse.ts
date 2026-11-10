@@ -359,7 +359,8 @@ export function isStateView(value: unknown): value is StateView {
  * format it breaks (a server from before that warning sends none, read as zero). Null when a fact is missing.
  */
 export function readSeatDeck(value: unknown): SeatDeck | null {
-  if (!isRecord(value) || !isText(value.name) || !isText(value.format) || !isCount(value.manual_cards)) return null
+  if (!isRecord(value) || !isText(value.name) || !isText(value.format) || !isCount(value.manual_cards))
+    return null
   const warnings = value.warnings === undefined ? 0 : value.warnings
   if (!isCount(warnings)) return null
   return { name: value.name, format: value.format, manual_cards: value.manual_cards, warnings }

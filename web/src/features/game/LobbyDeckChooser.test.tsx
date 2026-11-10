@@ -155,9 +155,7 @@ describe('the decks on offer', () => {
       within(stored).getByRole('option', { name: /Rakdos Midrange.*Whole deck runs/ }),
     ).toBeInTheDocument()
     expect(within(stored).getByRole('option', { name: /Burn.*3 played by hand/ })).toBeInTheDocument()
-    expect(
-      within(stored).getByRole('option', { name: /Pauper Affinity.*Not legal/ }),
-    ).toBeInTheDocument()
+    expect(within(stored).getByRole('option', { name: /Pauper Affinity.*Not legal/ })).toBeInTheDocument()
     await waitFor(() => expect(checked(h).map((body) => body.deck)).toEqual(['rakdos']))
     expect(checked(h).every((body) => body.game === GAME_ID)).toBe(true)
   })
@@ -270,7 +268,8 @@ describe('a choice that goes through', () => {
       'Your deck is now Burn, Modern, 3 cards played by hand.',
     ],
   ])('sends %s with the seat token and says the result', async (_what, name, id, signedIn, words) => {
-    const answer = id === 'burn' ? { name: 'Burn', format: 'modern', manual_cards: 3, warnings: 0 } : undefined
+    const answer =
+      id === 'burn' ? { name: 'Burn', format: 'modern', manual_cards: 3, warnings: 0 } : undefined
     const h = await openChooser({
       signedIn,
       script: answer === undefined ? {} : { chooseDeck: () => jsonResponse(200, answer) },
@@ -306,7 +305,9 @@ describe('a choice that goes through', () => {
     expect(ready()).toBeDisabled()
     // The old deck is still the seat's until the answer: the roster says so.
     expect(current()).toBe('Mono Green Stompers, Normal, no cards played by hand')
-    gate.release(jsonResponse(200, { name: 'Mono Red Giants', format: 'normal', manual_cards: 0, warnings: 0 }))
+    gate.release(
+      jsonResponse(200, { name: 'Mono Red Giants', format: 'normal', manual_cards: 0, warnings: 0 }),
+    )
     await h.settle()
     expect(within(pressed).queryByLabelText('Choosing this deck')).toBeNull()
     expect(ready()).toBeEnabled()
@@ -315,7 +316,9 @@ describe('a choice that goes through', () => {
 
   it('marks the deck the roster shows, and follows the roster when it moves to another', async () => {
     const h = await openChooser({
-      table: withDecks(WITH_DECK, { 0: { name: 'Mono Red Giants', format: 'normal', manual_cards: 0, warnings: 0 } }),
+      table: withDecks(WITH_DECK, {
+        0: { name: 'Mono Red Giants', format: 'normal', manual_cards: 0, warnings: 0 },
+      }),
     })
     await screen.findByRole('listbox', { name: 'Built-in decks' })
     expect(tile('Mono Red Giants')).toHaveAttribute('data-chosen', 'true')

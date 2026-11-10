@@ -34,7 +34,12 @@ const SEAT_DECKS: readonly SeatDeck[] = [
   { name: 'Mono Green Stompers', format: 'normal', manual_cards: 0, warnings: 0 },
   { name: 'Burn', format: 'modern', manual_cards: 3, warnings: 2 },
   { name: 'Mono White Weenies', format: 'normal', manual_cards: 0, warnings: 0 },
-  { name: 'Graveyard Pauper with a Very Long Deck Name That Wraps', format: 'pauper', manual_cards: 1, warnings: 0 },
+  {
+    name: 'Graveyard Pauper with a Very Long Deck Name That Wraps',
+    format: 'pauper',
+    manual_cards: 1,
+    warnings: 0,
+  },
 ]
 
 /** The built-in decks the chooser lists. */

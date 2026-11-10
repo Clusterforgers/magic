@@ -50,7 +50,6 @@ export const STATE_LABEL: Readonly<Record<DeckState, string>> = {
   unchecked: 'Unchecked',
 }
 
-
 /** The word of each support state; a mark shows it beside an icon so colour never carries the meaning alone. */
 export const SUPPORT_LABEL: Readonly<Record<Support, string>> = {
   verified: 'Verified',

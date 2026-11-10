@@ -61,7 +61,13 @@ describe('verdictOf', () => {
 
   it('plays an unplayable card by hand, with no warning', () => {
     const unplayable = reportOf([card('Forest', { count: 59 }), card('Odd', { support: 'unplayable' })])
-    expect(verdictOf(unplayable)).toEqual({ kind: 'hand', cards: 1, names: ['Odd'], toRead: 0, warning: null })
+    expect(verdictOf(unplayable)).toEqual({
+      kind: 'hand',
+      cards: 1,
+      names: ['Odd'],
+      toRead: 0,
+      warning: null,
+    })
   })
 })
 

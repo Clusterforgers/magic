@@ -193,7 +193,9 @@ describe('the words for a deck', () => {
     [2, '2 cards played by hand'],
     [60, '60 cards played by hand'],
   ])('says %i cards as "%s"', (count, words) => {
-    expect(deckWords({ name: 'Burn', format: 'modern', manual_cards: count, warnings: 0 })).toBe(`Burn, Modern, ${words}`)
+    expect(deckWords({ name: 'Burn', format: 'modern', manual_cards: count, warnings: 0 })).toBe(
+      `Burn, Modern, ${words}`,
+    )
   })
 
   it.each<[string, string]>([

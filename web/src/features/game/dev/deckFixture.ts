@@ -1,12 +1,5 @@
 /** Decks with cards for `/dev/lobby`: stored decks and precons the deck chooser lists and previews, with no server. */
-import {
-  cardHit,
-  deckItem,
-  deckView,
-  lineOf,
-  reportCard,
-  reportOf,
-} from '@/features/decks/fakeDecks'
+import { cardHit, deckItem, deckView, lineOf, reportCard, reportOf } from '@/features/decks/fakeDecks'
 import type { Counts, DeckListItem, DeckView, PreconListItem, PreconView, Reason } from '@/protocol/generated'
 import type { CardHit, DeckPicture, DeckState, Issue, Summary, Support } from '@/protocol/generated'
 
