@@ -549,11 +549,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     if !silenced {
         faces.extend(prepared::options(state, player, &pool, &all_mana, life));
     }
-    // A mana ability that costs mana is used inside a payment, from the mana the payment's other sources make.
-    let mana_abilities = all_mana
-        .into_iter()
-        .filter(|option| !option.is_costly() && option.takes.is_empty())
-        .collect();
+    let mana_abilities = crate::costly_mana::at_priority(state, &all_mana, &pool, life);
     let offered = unplayable::Offered {
         lands: &playable_lands,
         castable: &castable,
@@ -687,12 +683,19 @@ pub(crate) fn answer(
                 .iter()
                 .find(|o| o.source == source)
                 .ok_or(IllegalAnswer::NotOffered("mana ability"))?;
-            Ok(Outcome::Events(mana_ability::activation(
-                state,
-                player,
-                option,
-                &[],
-            )?))
+            if !option.is_costly() {
+                return Ok(Outcome::Events(mana_ability::activation(
+                    state,
+                    player,
+                    option,
+                    &[],
+                )?));
+            }
+            let all = mana_options(state, player);
+            let mut events = crate::costly_mana::cost_events(state, player, option, &all)?;
+            events.extend(mana_ability::activation(state, player, option, &[])?);
+            mana_ability::r5g_distinct(state, &mut events);
+            Ok(Outcome::Events(events))
         }
     }
 }
