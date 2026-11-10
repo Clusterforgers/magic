@@ -25,6 +25,7 @@ import { exileOf, holdsPriority, isActiveSeat, isYourTurn, NO_IDS, playerOf } fr
 import { describeMulligan } from './turnText'
 import { useBoxHeight } from './useBoxHeight'
 import { SeatCorner } from './SeatCorner'
+import { LibraryTopChip } from './LibraryTopChip'
 import { RevealedChip } from './RevealedChip'
 import { RingChip } from './RingChip'
 import { SpeedChip } from './SpeedChip'
@@ -202,6 +203,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
           >
             <CountChip zone="hand" count={counts.hand} density="line" />
             <CountChip zone="library" count={counts.library} density="line" />
+            {flags.you ? <LibraryTopChip player={player} /> : null}
             <RevealedChip owner={owner} player={player} density="line" />
             <RingChip owner={owner} player={player} density="line" />
             <SpeedChip owner={owner} player={player} density="line" />
@@ -243,6 +245,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   )
   const extraChips = (
     <>
+      {flags.you ? <LibraryTopChip player={player} /> : null}
       <RevealedChip owner={owner} player={player} density="line" />
       <RingChip owner={owner} player={player} density="line" />
       <SpeedChip owner={owner} player={player} density="line" />
