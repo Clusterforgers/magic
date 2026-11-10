@@ -78,7 +78,12 @@ describe('a card that flies', () => {
     expect(started?.keyframes).toEqual(
       keyframesOf(flight, flight.size, { width: window.innerWidth, height: window.innerHeight }),
     )
-    expect(started?.timing).toEqual({ duration: MOVE_MS.travel, delay: 0, easing: EASE_OUT, fill: 'both' })
+    expect(started?.timing).toEqual({
+      duration: MOVE_MS.travel,
+      delay: 0,
+      easing: EASE_OUT,
+      fill: 'forwards',
+    })
     expect(started?.element).toBe(fliers()[0])
   })
 

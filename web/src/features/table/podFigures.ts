@@ -124,6 +124,8 @@ export interface TileFacts {
   commander?: readonly string[]
   /** The Auras and Curses attached to the player, in words; none by default. */
   enchanted?: readonly string[]
+  /** The counters on the player in words ("3 rad counters"); none by default. */
+  counters?: readonly string[]
   /** What the seat shows to every seat, in words ("revealed 2 cards"); left out while it shows nothing. */
   revealed?: string | undefined
 }
@@ -133,6 +135,7 @@ export function tileName(facts: TileFacts): string {
   const { counts } = facts
   const figures = [
     `Life ${facts.life}`,
+    ...(facts.counters ?? []),
     `${cardCount(counts.hand)} in hand`,
     `${counts.library} in library`,
     `${counts.graveyard} in graveyard`,

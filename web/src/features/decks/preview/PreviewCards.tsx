@@ -1,7 +1,9 @@
 import { BookDashedIcon, BookOpenCheckIcon, HammerIcon, HandIcon, ShieldHalfIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
+import { FixMarksApiContext } from '@/features/fixmarks/apiContext'
+import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
 import { SupportMark } from '@/features/decks/SupportMark'
 import { BY_HAND, BY_HAND_TITLE, ON_A_READ, PARTLY_BY_HAND, runsWhole } from '@/lib/byHand'
 import { cardWords } from '@/lib/lineMarks'
@@ -31,6 +33,7 @@ export function cardLabel(card: PreviewCard): string {
 
 /** The large picture of one card with its type, its support and why it is not Verified. */
 export function CardZoom({ card, onClose }: { card: PreviewCard | null; onClose: () => void }) {
+  const fixMarks = useContext(FixMarksApiContext)
   return (
     <Dialog open={card !== null} onOpenChange={(open) => (open ? undefined : onClose())}>
       <DialogContent className="max-w-lg justify-items-center" data-slot="card-zoom">
@@ -56,6 +59,15 @@ export function CardZoom({ card, onClose }: { card: PreviewCard | null; onClose:
                 {cardWords(card.support)}
               </p>
               {card.support === 'partial' ? <LineMarks card={card} /> : null}
+              {card.support === 'verified' ? null : (
+                <FixMarkButton
+                  oracleId={card.oracleId}
+                  name={card.name}
+                  api={fixMarks}
+                  emphasis="prominent"
+                  support={card.support}
+                />
+              )}
               {card.reasons.length === 0 ? null : (
                 <ul aria-label={BY_HAND_TITLE} className="grid gap-1 text-left text-xs text-muted-foreground">
                   {[...new Set(card.reasons)].map((reason) => (

@@ -5,7 +5,7 @@ import { FixMarkButton } from '@/features/fixmarks/FixMarkButton'
 import { cn } from '@/lib/utils'
 import type { FixMarksApi } from '@/net/fixMarks'
 import type { Line } from './deckEdit'
-import { Copies, MoveMenu } from './LineControls'
+import { ByHandToggle, Copies, MoveMenu } from './LineControls'
 import type { LineActions } from './LineControls'
 import { isIssue } from './report'
 import type { LineCheck } from './report'
@@ -99,7 +99,10 @@ export function CardTile({ line, format, room, check, outside = null, actions, f
       )}
       <div className="flex items-center justify-between gap-1">
         <Copies line={line} room={room} actions={actions} />
-        <MoveMenu line={line} format={format} actions={actions} withRemove />
+        <span className="flex items-center">
+          <ByHandToggle line={line} actions={actions} />
+          <MoveMenu line={line} format={format} actions={actions} withRemove />
+        </span>
       </div>
     </li>
   )

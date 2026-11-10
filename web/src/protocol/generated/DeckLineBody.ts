@@ -20,4 +20,9 @@ printing_id: string | null,
 /**
  * How many copies, 1 to 999 (at most `MAX_DECK_CARDS` in the deck).
  */
-count: number, };
+count: number, 
+/**
+ * Whether the owner plays the card by hand: the game hosts it as a manual card and the check counts it as played
+ * by hand, whatever its rules. Absent for false.
+ */
+by_hand?: boolean, };

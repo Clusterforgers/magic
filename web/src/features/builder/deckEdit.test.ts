@@ -1,4 +1,4 @@
-// Goal: editing a draft keeps one line per card and zone, a line never drops below one copy (the last copy removes it) or pushes the deck over its card limit, a move between zones merges into the line already there, a draft built from a stored deck merges duplicate lines, a phone opens on the deck pane unless the deck is empty, the dirty check ignores the order of lines but sees every other difference, and the check key ignores the order of lines, the name and the notes but sees every other difference.
+// Goal: editing a draft keeps one line per card and zone, a line never drops below one copy (the last copy removes it) or pushes the deck over its card limit, a move between zones merges into the line already there, a draft built from a stored deck merges duplicate lines, a phone opens on the deck pane unless the deck is empty, the dirty check ignores the order of lines but sees every other difference, the check key ignores the order of lines, the name and the notes but sees every other difference, and a card marked "play by hand" carries the mark on each of its lines into the save and the check.
 import { describe, expect, it } from 'vitest'
 import { cardHit, deckView, lineOf } from '@/features/decks/fakeDecks'
 import {
@@ -10,6 +10,7 @@ import {
   decrement,
   draftOf,
   hasRoom,
+  isByHand,
   increment,
   lineIn,
   linesIn,
@@ -17,6 +18,7 @@ import {
   moveLine,
   openingPane,
   removeLine,
+  setByHand,
   sameDeck,
   setCount,
   totalOf,
@@ -337,5 +339,59 @@ describe('what the deck check sees of a draft', () => {
       ],
     })
     expect(checkRequestOf(a).cards).toEqual(bodyOf(a).cards)
+  })
+})
+
+describe('play by hand', () => {
+  const marked = (draft: Draft): string[] =>
+    draft.lines.filter((item) => item.byHand === true).map((item) => `${item.zone}:${item.card.name}`)
+  const deck: Draft = {
+    ...empty,
+    lines: [line(bolt, 'main', 4), line(bolt, 'sideboard', 1), line(forest, 'main', 20)],
+  }
+
+  it.each([
+    ['marks every line of the card', deck, true, ['main:Lightning Bolt', 'sideboard:Lightning Bolt']],
+    ['clears every line of the card', setByHand(deck, bolt.oracle_id, true), false, []],
+  ])('%s', (_, draft, on, expected) => {
+    const next = setByHand(draft, bolt.oracle_id, on)
+    expect(marked(next)).toEqual(expected)
+    expect(isByHand(next, bolt.oracle_id)).toBe(on)
+    expect(isByHand(next, forest.oracle_id)).toBe(false)
+  })
+
+  it.each([
+    ['a card already by hand', setByHand(deck, bolt.oracle_id, true), bolt.oracle_id, true],
+    ['a card by the rules', deck, bolt.oracle_id, false],
+    ['a card the deck lacks', deck, ring.oracle_id, true],
+  ])('returns the same draft for %s', (_, draft, id, on) => {
+    expect(setByHand(draft, id, on)).toBe(draft)
+  })
+
+  it('sends the mark with the lines it sits on and leaves it out of the others', () => {
+    const next = setByHand(deck, bolt.oracle_id, true)
+    expect(bodyOf(next).cards.map((card) => card.by_hand)).toEqual([true, true, undefined])
+    expect(checkRequestOf(next).cards?.[0]).toMatchObject({ by_hand: true })
+    expect(bodyOf(deck).cards.every((card) => !('by_hand' in card))).toBe(true)
+  })
+
+  it('is a change the save and the check both see', () => {
+    const next = setByHand(deck, bolt.oracle_id, true)
+    expect(sameDeck(deck, next)).toBe(false)
+    expect(checkKey(next)).not.toBe(checkKey(deck))
+  })
+
+  it('reads back from a stored deck, on the merged line when any of its lines says so', () => {
+    const view = deckView({
+      cards: [
+        lineOf('Lightning Bolt', 2),
+        lineOf('Lightning Bolt', 2, { by_hand: true }),
+        lineOf('Mountain', 20),
+      ],
+    })
+    expect(draftOf(view).lines.map((item) => [item.card.name, item.count, item.byHand === true])).toEqual([
+      ['Lightning Bolt', 4, true],
+      ['Mountain', 20, false],
+    ])
   })
 })

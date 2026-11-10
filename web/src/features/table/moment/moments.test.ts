@@ -46,6 +46,30 @@ describe('momentsOf', () => {
     expect(momentsOf({ entries: [logged], nameOf })).toEqual([])
   })
 
+  it.each([
+    ['Heads', 'Heads', true],
+    ['Heads', 'Tails', false],
+    ['Tails', 'Heads', false],
+    ['Tails', 'Tails', true],
+  ] as const)('a flip called %s that comes up %s keeps the call and the result', (call, side, won) => {
+    const [moment] = momentsOf({
+      entries: [entry(6, { Public: { CoinFlipped: { player: 1, won, call, side } } })],
+      nameOf,
+    })
+    expect(moment).toEqual({ kind: 'coin', key: '6', player: 1, side, call: { side: call, won }, why: null })
+  })
+
+  it.each([
+    [1, 'Heads'],
+    [2, 'Tails'],
+  ] as const)('a coin flipped by hand to %i comes up %s with no call', (result, side) => {
+    const [moment] = momentsOf({
+      entries: [entry(7, { Public: { ManualRolled: { player: 0, kind: { Coin: {} }, result } } })],
+      nameOf,
+    })
+    expect(moment).toMatchObject({ kind: 'coin', player: 0, side, call: null })
+  })
+
   it('keeps who rolled and the result', () => {
     const [moment] = momentsOf({
       entries: [entry(5, { Public: { DieRolled: { player: 1, sides: 20, result: 13 } } })],

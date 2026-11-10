@@ -10,6 +10,7 @@ import type { CardsApi } from '@/net/cards'
 import { decksApi } from '@/net/decks'
 import type { DecksApi } from '@/net/decks'
 import type { FixMarksApi } from '@/net/fixMarks'
+import type { ByHandApi } from '../byHand'
 import { UnvalidatedView } from './UnvalidatedView'
 
 interface UnvalidatedPageProps {
@@ -21,6 +22,8 @@ interface UnvalidatedPageProps {
   cards?: Pick<CardsApi, 'get'>
   /** The fix-mark endpoints; with them each card gets a flag that marks it important to fix. */
   fixMarks?: FixMarksApi
+  /** The endpoints that mark a card "play by hand" in a deck; with them each card offers it for its decks. */
+  byHand?: ByHandApi
 }
 
 /**
@@ -33,8 +36,9 @@ export function UnvalidatedPage({
   api = decksApi,
   cards = cardsApi,
   fixMarks,
+  byHand = decksApi,
 }: UnvalidatedPageProps) {
-  usePageTitle('Not validated cards')
+  usePageTitle('Cards to check')
   const status = useAuth((state) => state.status)
   const path = deckId === undefined ? '/decks/unvalidated' : `/decks/${deckId}/unvalidated`
 
@@ -62,7 +66,7 @@ export function UnvalidatedPage({
       <PageShell width="wide">
         <section aria-labelledby="unvalidated-title" className="grid justify-items-start gap-3">
           <h1 id="unvalidated-title" className="text-2xl font-semibold tracking-tight">
-            Not validated cards
+            Cards to check
           </h1>
           <p className="text-base text-muted-foreground">
             This server has no accounts, so it keeps no decks to check. Pick one of its built-in decks when
@@ -82,6 +86,7 @@ export function UnvalidatedPage({
         api={api}
         cards={cards}
         fixMarks={fixMarks}
+        byHand={byHand}
         scope={deckId === undefined ? { kind: 'all' } : { kind: 'deck', id: deckId }}
       />
     </PageShell>

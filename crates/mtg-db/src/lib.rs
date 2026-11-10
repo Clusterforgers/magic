@@ -43,7 +43,7 @@ pub use precons::{
     DeckBoard, PreconDeckDetail, PreconDeckId, PreconDeckSummary, PreconEntry, PreconRepo,
     PreconVersion,
 };
-pub use prefs::{PrefsRepo, StoredPrefs};
+pub use prefs::{PrefsRepo, StoredPrefs, default_stops};
 pub use ranks::{RankRepo, by_rank};
 pub use reads::{AccountRead, DraftRead, ReadRepo, ReadState, StoredRead, Verdict};
 pub use runs::{ImportRun, ImportRuns, ImportSource, RunId, RunStatus, STALE_AFTER};

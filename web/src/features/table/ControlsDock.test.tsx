@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 import { ControlsDock, ControlsSlotProvider, InControlsDock } from './ControlsDock'
+import { StopControlsProvider } from './stops/stopControls'
 
 /** A button that counts its own presses, so a test can see that the same component, with its state, moved. */
 function Counter() {
@@ -43,14 +44,16 @@ describe('InControlsDock', () => {
     renderTable({
       seats: 2,
       ui: (
-        <ControlsSlotProvider>
-          <div data-testid="origin">
-            <InControlsDock>
-              <Counter />
-            </InControlsDock>
-          </div>
-          <ControlsDock stopsRow={false} />
-        </ControlsSlotProvider>
+        <StopControlsProvider inBar>
+          <ControlsSlotProvider>
+            <div data-testid="origin">
+              <InControlsDock>
+                <Counter />
+              </InControlsDock>
+            </div>
+            <ControlsDock stopsRow={false} />
+          </ControlsSlotProvider>
+        </StopControlsProvider>
       ),
     })
     expect(within(screen.getByTestId('origin')).queryByRole('button')).toBeNull()
@@ -62,12 +65,14 @@ describe('InControlsDock', () => {
     const { user } = renderTable({
       seats: 2,
       ui: (
-        <ControlsSlotProvider>
-          <InControlsDock>
-            <Counter />
-          </InControlsDock>
-          <ControlsDock stopsRow={false} />
-        </ControlsSlotProvider>
+        <StopControlsProvider inBar>
+          <ControlsSlotProvider>
+            <InControlsDock>
+              <Counter />
+            </InControlsDock>
+            <ControlsDock stopsRow={false} />
+          </ControlsSlotProvider>
+        </StopControlsProvider>
       ),
     })
     await user.click(within(slot()).getByRole('button', { name: 'Pressed 0' }))
@@ -78,13 +83,15 @@ describe('InControlsDock', () => {
     renderTable({
       seats: 2,
       ui: (
-        <ControlsSlotProvider>
-          <div data-testid="origin">
-            <InControlsDock>
-              <Counter />
-            </InControlsDock>
-          </div>
-        </ControlsSlotProvider>
+        <StopControlsProvider inBar>
+          <ControlsSlotProvider>
+            <div data-testid="origin">
+              <InControlsDock>
+                <Counter />
+              </InControlsDock>
+            </div>
+          </ControlsSlotProvider>
+        </StopControlsProvider>
       ),
     })
     expect(screen.queryByRole('button')).toBeNull()
@@ -134,9 +141,11 @@ describe('the dock of the table', () => {
     const { unmount } = renderTable({
       seats: 2,
       ui: (
-        <ControlsSlotProvider>
-          <ControlsDock stopsRow />
-        </ControlsSlotProvider>
+        <StopControlsProvider inBar>
+          <ControlsSlotProvider>
+            <ControlsDock stopsRow />
+          </ControlsSlotProvider>
+        </StopControlsProvider>
       ),
     })
     expect(document.querySelector('[data-region="controls"] [data-slot="stop-ladder"]')).not.toBeNull()
@@ -145,9 +154,11 @@ describe('the dock of the table', () => {
     renderTable({
       seats: 2,
       ui: (
-        <ControlsSlotProvider>
-          <ControlsDock stopsRow={false} />
-        </ControlsSlotProvider>
+        <StopControlsProvider inBar>
+          <ControlsSlotProvider>
+            <ControlsDock stopsRow={false} />
+          </ControlsSlotProvider>
+        </StopControlsProvider>
       ),
     })
     expect(document.querySelector('[data-region="controls"] [data-slot="stop-ladder"]')).toBeNull()

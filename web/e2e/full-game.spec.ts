@@ -7,6 +7,10 @@ import { createAndJoin, everyoneReady } from './lobby'
 const MAX_DECISIONS = 2_500
 /** Time with no decision answered by either seat before the run is called stuck. */
 const STALL_MS = 30_000
+/** The stops the server sets for every seat: its own declare attackers and postcombat main, as the banner names them. */
+const DEFAULT_STOP = /^Your turn · \d+ · (Declare attackers|Postcombat main)$/
+/** The stop Bo sets: the end step of Ada's turns. */
+const BO_STOP = /^Ada's turn · \d+ · End step$/
 
 const standings = (page: Page) => page.getByRole('list', { name: 'How each seat finished' })
 
@@ -32,9 +36,13 @@ test('two seats play a vanilla game to the end in the browser', async ({ browser
   const run = new Run(MAX_DECISIONS, STALL_MS)
   try {
     await everyoneReady(players)
-    // Both seats start with the server's defaults: Full Control is off.
-    for (const { page } of players)
+    // Both seats start with the server's defaults: Full Control is off and their own declare attackers and postcombat
+    // main are pinned, already pressable during the opening hands.
+    for (const { page } of players) {
       await expect(fullControl(page, 'off')).toHaveAttribute('aria-pressed', 'false')
+      for (const step of ['declare attackers', 'postcombat main'])
+        await expect(stop(page, `Your ${step} stop: on every turn`)).toHaveAttribute('data-keep', 'lasting')
+    }
     // Bo holds Full Control and lets it go again; each press shows only once the server has said so, and Ada's page
     // hears nothing of it.
     await fullControl(bo.page, 'off').click()
@@ -58,11 +66,18 @@ test('two seats play a vanilla game to the end in the browser', async ({ browser
       ],
       run,
     )
-    // Ada set no stop and kept Full Control off, so she is never asked about a window there is nothing to do in.
-    expect(run.idle.get('Ada') ?? 0, 'Ada was asked about windows there was nothing to do in').toBe(0)
+    // Ada set no stop of her own and kept Full Control off, so a window with nothing to do in asks her only at the
+    // default stops of her own turn.
+    for (const where of run.idleAt.get('Ada') ?? []) expect(where).toMatch(DEFAULT_STOP)
     expect(run.yields.get('Ada') ?? 0).toBe(0)
-    // Bo is asked about nothing but the stop he set, the end step of Ada's turn, and ends the turn in each of them.
-    for (const where of run.idleAt.get('Bo') ?? []) expect(where).toMatch(/^Ada's turn · \d+ · End step$/)
+    // Bo is asked about nothing but the stop he set, the end step of Ada's turn, and the defaults of his own, and ends
+    // the turn in each of them.
+    const boAt = run.idleAt.get('Bo') ?? []
+    for (const where of boAt) expect(where).toMatch(new RegExp(`${BO_STOP.source}|${DEFAULT_STOP.source}`))
+    expect(
+      boAt.some((where) => BO_STOP.test(where)),
+      'Bo was never asked at his stop',
+    ).toBe(true)
     expect(run.yields.get('Bo') ?? 0, 'Bo did not end the turn in every window he was asked about').toBe(
       run.idle.get('Bo') ?? 0,
     )

@@ -15,6 +15,7 @@ const COMMANDS: readonly CommandId[] = [
   'poison',
   'energy',
   'experience',
+  'rad',
   'draw',
   'look',
   'mill',

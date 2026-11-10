@@ -29,8 +29,8 @@ const elementOf = (id: ObjectId, from: HTMLElement | undefined): HTMLElement | n
 /**
  * Priority: lands you may play, spells you may cast, mana abilities you may use and abilities you may activate (on a
  * permanent, or on a card of your graveyard, exile or command zone) are legal, the rest of your hand and battlefield
- * is dimmed. A click plays, casts, taps or activates; a card with an ability and another play asks which first, and a
- * permanent with several mana abilities and nothing else asks which mana.
+ * is dimmed. A click plays, casts, taps or activates; a card with an ability (or a mana ability of the hand) and another
+ * play asks which first, and a permanent with several mana abilities and nothing else asks which mana.
  */
 export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
   const { decision, answer, selection } = usePrompt()
@@ -60,7 +60,9 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
   )
 
   const act = (id: ObjectId, from?: HTMLElement): void => {
-    if (abilities.has(id)) {
+    // A card of the hand that makes mana and can be cast (a Spirit Guide) asks which, as a card with an ability does.
+    const playable = options.castable.includes(id) || options.playable_lands.includes(id)
+    if (abilities.has(id) || (playable && mana.has(id))) {
       const all = playsFor(id)
       const [only] = all
       if (all.length === 1 && only !== undefined) answer({ Priority: only.action })

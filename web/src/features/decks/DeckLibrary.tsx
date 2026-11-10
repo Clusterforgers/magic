@@ -126,7 +126,7 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
               </Link>
               <Link to="/decks/unvalidated" className={buttonVariants({ variant: 'ghost' })}>
                 <ShieldHalfIcon aria-hidden="true" />
-                Not validated cards
+                Cards to check
               </Link>
               {newAction}
               {importAction}

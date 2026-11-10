@@ -38,6 +38,8 @@
   position: absolute;
   top: 0;
   left: 0;
+  /* Hidden until its leg starts: a staggered or second leg must not stand at its start before it leaves. */
+  opacity: 0;
   transform-origin: 0 0;
   will-change: transform, opacity;
 }

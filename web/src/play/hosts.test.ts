@@ -4,7 +4,7 @@ import type { Event, EventView, ObjectView } from '@/protocol/generated'
 import { card } from '@/test-utils/cards'
 import { hostOf, hostsBefore, isUnattached, sameHost } from './hosts'
 import type { HostRef } from './hosts'
-import { appendLog } from './store'
+import { appendLog, mergeHistory } from './store'
 
 const pub = (event: Event): EventView => ({ Public: event })
 const objectsOf = (...objects: ObjectView[]) => Object.fromEntries(objects.map((o) => [o.id, o]))
@@ -93,5 +93,27 @@ describe('where an attachment hung before an attach event', () => {
       { seq: 10, event: events[0] },
       { seq: 11, event: events[1] },
     ])
+  })
+})
+
+describe('the log a snapshot rebuilds', () => {
+  const events = [
+    pub({ Attached: { object: 7, to: 2 } }),
+    pub({ LifeLost: { player: 0, amount: 1 } }),
+    pub({ AttachedToPlayer: { object: 7, player: 1 } }),
+    pub({ Attached: { object: 8, to: 3 } }),
+  ]
+
+  it('keeps the old host the snapshot names on each attach event, and none without one', () => {
+    const rebuilt = mergeHistory([], 14, events, [{ at: 0, card: 1 }, { at: 2, card: 2 }, { at: 3 }])
+    expect(rebuilt.map((entry) => entry.hostBefore)).toEqual([{ card: 1 }, undefined, { card: 2 }, null])
+    expect(rebuilt.map((entry) => entry.seq)).toEqual([10, 11, 12, 13])
+  })
+
+  it('keeps the entries the page holds as they are', () => {
+    const held = { seq: 10, event: pub({ Attached: { object: 7, to: 2 } }), hostBefore: { player: 0 } }
+    const rebuilt = mergeHistory([held], 14, events, [{ at: 0, card: 1 }])
+    expect(rebuilt[0]).toBe(held)
+    expect(rebuilt[2]).toEqual({ seq: 12, event: events[2] })
   })
 })

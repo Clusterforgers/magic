@@ -74,6 +74,8 @@ pub struct DeckLine {
     pub printing_id: Option<PrintingId>,
     /// How many copies, 1 to 999.
     pub count: u32,
+    /// Whether the owner plays the card by hand.
+    pub by_hand: bool,
 }
 
 /// What a save writes: a deck as the owner sent it, and the check run on it.
@@ -156,6 +158,7 @@ struct LineRow {
     oracle_id: Uuid,
     printing_id: Option<Uuid>,
     count: i32,
+    by_hand: bool,
 }
 
 fn line_of(row: &LineRow) -> Result<DeckLine, DbError> {
@@ -172,6 +175,7 @@ fn line_of(row: &LineRow) -> Result<DeckLine, DbError> {
         oracle_id: OracleId(row.oracle_id.to_string()),
         printing_id: row.printing_id.map(|id| PrintingId(id.to_string())),
         count,
+        by_hand: row.by_hand,
     })
 }
 
@@ -183,7 +187,7 @@ async fn with_lines(
     let ids: Vec<Uuid> = rows.iter().map(|row| row.id).collect();
     let line_rows = sqlx::query_as!(
         LineRow,
-        r#"SELECT deck_id, zone, oracle_id, printing_id, count
+        r#"SELECT deck_id, zone, oracle_id, printing_id, count, by_hand
            FROM deck_cards WHERE deck_id = ANY($1) ORDER BY deck_id, position"#,
         &ids
     )
@@ -260,7 +264,7 @@ async fn write_lines(
         ids.push((oracle, printing));
     }
     let mut insert = QueryBuilder::<Postgres>::new(
-        "INSERT INTO deck_cards (deck_id, position, zone, oracle_id, printing_id, count) ",
+        "INSERT INTO deck_cards (deck_id, position, zone, oracle_id, printing_id, count, by_hand) ",
     );
     insert.push_values(
         lines.iter().zip(ids).enumerate(),
@@ -270,7 +274,8 @@ async fn write_lines(
                 .push_bind(line.zone.keyword())
                 .push_bind(oracle)
                 .push_bind(printing)
-                .push_bind(i32::try_from(line.count).unwrap_or(i32::MAX));
+                .push_bind(i32::try_from(line.count).unwrap_or(i32::MAX))
+                .push_bind(line.by_hand);
         },
     );
     insert.build().execute(&mut *conn).await?;
@@ -462,6 +467,19 @@ impl DeckRepo {
             .execute(&mut *tx)
             .await?;
         Ok(deleted.rows_affected())
+    }
+
+    /// The distinct cards of every deck of `owner`, in any zone, by oracle id.
+    pub async fn card_ids(&self, owner: Uuid) -> Result<Vec<OracleId>, DbError> {
+        let ids: Vec<Uuid> = sqlx::query_scalar(
+            "SELECT DISTINCT dc.oracle_id
+             FROM deck_cards dc JOIN decks d ON d.id = dc.deck_id
+             WHERE d.owner = $1 ORDER BY dc.oracle_id",
+        )
+        .bind(owner)
+        .fetch_all(&self.pool)
+        .await?;
+        Ok(ids.into_iter().map(|id| OracleId(id.to_string())).collect())
     }
 
     /// How many decks `owner` holds.

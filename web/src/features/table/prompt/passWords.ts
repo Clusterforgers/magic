@@ -27,7 +27,7 @@ const words = (full: string, short: string = full): StepWords => ({ full, short 
 
 /**
  * What the step after this one is called ("Next: Combat"), by the step a pass leaves; null in the last window of the
- * turn, where the button says "End turn". Untap and Cleanup never give priority, so their words are never seen.
+ * turn, where only "End turn" moves on. Untap and Cleanup never give priority, so their words are never seen.
  */
 const NEXT_STEP: Record<Step, StepWords | null> = {
   Untap: words('Upkeep'),
@@ -46,32 +46,43 @@ const NEXT_STEP: Record<Step, StepWords | null> = {
 }
 
 /**
- * The label of the primary button, which passes priority: "Resolve Lightning Bolt" over a spell, on the viewer's turn
- * "Next: Combat" (or "End turn" in the last window), and "Continue" on anybody else's turn. Never "pass priority".
+ * Whether this is the last window of the viewer's own turn with an empty stack, where a pass ends the turn. No primary
+ * button is drawn there: ending the turn is only ever the "End turn" button, so a Resolve pressed twice never ends it.
+ */
+export function lastWindow({ step, yourTurn, top }: PassSituation): boolean {
+  return top === null && yourTurn && NEXT_STEP[step] === null
+}
+
+/**
+ * The label of the primary button, which passes priority once: "Resolve Lightning Bolt" over a spell, on the viewer's
+ * turn "Next: Combat", and "Continue" on anybody else's turn; null in the last window of the viewer's turn
+ * (`lastWindow`), where no primary button is drawn. Never "pass priority" and never "End turn".
  * A dock without room for whole words (`short`, `compact`) leaves the spell's name to the stack strip, where it is
  * the top chip ("Resolve"), and names the next step in one or two short words ("Next: Attackers").
  */
-export function primaryLabel({ step, yourTurn, top }: PassSituation, form: DockForm = 'full'): string {
+export function primaryLabel({ step, yourTurn, top }: PassSituation, form: DockForm = 'full'): string | null {
   const whole = form === 'full'
   if (top !== null) return whole ? `Resolve ${top}` : 'Resolve'
   if (!yourTurn) return 'Continue'
   const next = NEXT_STEP[step]
-  if (next === null) return 'End turn'
+  if (next === null) return null
   return `Next: ${whole ? next.full : next.short}`
 }
 
-/** Whether the primary button already ends the turn, so a second "End turn" beside it would only repeat it. */
-export function primaryEndsTurn(situation: PassSituation): boolean {
-  return primaryLabel(situation) === 'End turn'
+/**
+ * Whether the "End turn" button is drawn: wherever a yield can run (never under Full Control, which the server does
+ * not let a yield run beside), and always in the last window of the viewer's turn, where it is the only way on.
+ */
+export function endTurnShown(situation: PassSituation, fullControl: boolean): boolean {
+  return !fullControl || lastWindow(situation)
 }
 
 /**
- * Whether Enter asks for the end-of-turn yield, as the "End turn" button beside the primary one does. It does not where
- * that button is not drawn: under Full Control, which the server does not let a yield run beside, and in the last
- * window of the turn, where the primary button already ends it. Enter then passes once, like Space.
+ * Whether Enter and "End turn" ask for the end-of-turn yield. Under Full Control there is no yield, so both pass once
+ * (in the last window that ends the turn as well).
  */
-export function enterYields(situation: PassSituation, fullControl: boolean): boolean {
-  return !fullControl && !primaryEndsTurn(situation)
+export function enterYields(fullControl: boolean): boolean {
+  return !fullControl
 }
 
 /** What the menu of ways to pass says about the two keys. */

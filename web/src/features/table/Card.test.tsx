@@ -215,13 +215,17 @@ describe('seams for the decision layer', () => {
   })
 
   it.each([
-    ['legal', 'false'],
-    ['dimmed', 'false'],
-    ['selected', 'true'],
-  ] as const)('marks a %s card for the decision layer', (highlight, pressed) => {
+    ['legal', 'false', 'ring-primary', false],
+    ['dimmed', 'false', null, false],
+    ['selected', 'true', 'ring-selected', true],
+  ] as const)('marks a %s card for the decision layer', (highlight, pressed, ring, checked) => {
     renderCard({ object: card(), props: { highlight } })
     expect(button()).toHaveAttribute('data-highlight', highlight)
     expect(button()).toHaveAttribute('aria-pressed', pressed)
+    // A chosen card changes colour as well as width, and carries a check so colour is never the only sign.
+    const rings = ['ring-primary', 'ring-selected'].filter((name) => button().classList.contains(name))
+    expect(rings).toEqual(ring === null ? [] : [ring])
+    expect(button().querySelector('[data-slot="chosen-mark"]') !== null).toBe(checked)
   })
 
   it('is not a toggle until something highlights it', () => {

@@ -451,6 +451,9 @@ impl<S: EventStore> GameActor<S> {
             ClientMessage::ClearAutoYield { ability } => {
                 return self.clear_auto_yield(seat, ability).await;
             }
+            ClientMessage::LoadAutoYields { yields } => {
+                return self.load_auto_yields(seat, yields).await;
+            }
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),
                 Phase::Lobby { .. } => self.refuse(seat, not_started()),

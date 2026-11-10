@@ -21,6 +21,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as DecksDeckIdRouteImport } from './routes/decks_.$deckId'
 import { Route as DecksUnvalidatedRouteImport } from './routes/decks_.unvalidated'
+import { Route as DevAccountsRouteImport } from './routes/dev.accounts'
 import { Route as DevBuilderRouteImport } from './routes/dev.builder'
 import { Route as DevLobbyRouteImport } from './routes/dev.lobby'
 import { Route as DevPreconsRouteImport } from './routes/dev.precons'
@@ -93,6 +94,11 @@ const DecksUnvalidatedRoute = DecksUnvalidatedRouteImport.update({
   path: '/decks/unvalidated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevAccountsRoute = DevAccountsRouteImport.update({
+  id: '/dev/accounts',
+  path: '/dev/accounts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevBuilderRoute = DevBuilderRouteImport.update({
   id: '/dev/builder',
   path: '/dev/builder',
@@ -162,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/decks/unvalidated': typeof DecksUnvalidatedRoute
+  '/dev/accounts': typeof DevAccountsRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
@@ -187,6 +194,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/decks/unvalidated': typeof DecksUnvalidatedRoute
+  '/dev/accounts': typeof DevAccountsRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
@@ -213,6 +221,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/decks_/$deckId': typeof DecksDeckIdRoute
   '/decks_/unvalidated': typeof DecksUnvalidatedRoute
+  '/dev/accounts': typeof DevAccountsRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
   '/dev/precons': typeof DevPreconsRoute
@@ -240,6 +249,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/decks/$deckId'
     | '/decks/unvalidated'
+    | '/dev/accounts'
     | '/dev/builder'
     | '/dev/lobby'
     | '/dev/precons'
@@ -265,6 +275,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/decks/$deckId'
     | '/decks/unvalidated'
+    | '/dev/accounts'
     | '/dev/builder'
     | '/dev/lobby'
     | '/dev/precons'
@@ -290,6 +301,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/decks_/$deckId'
     | '/decks_/unvalidated'
+    | '/dev/accounts'
     | '/dev/builder'
     | '/dev/lobby'
     | '/dev/precons'
@@ -316,6 +328,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   DecksDeckIdRoute: typeof DecksDeckIdRoute
   DecksUnvalidatedRoute: typeof DecksUnvalidatedRoute
+  DevAccountsRoute: typeof DevAccountsRoute
   DevBuilderRoute: typeof DevBuilderRoute
   DevLobbyRoute: typeof DevLobbyRoute
   DevPreconsRoute: typeof DevPreconsRoute
@@ -415,6 +428,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DecksUnvalidatedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dev/accounts': {
+      id: '/dev/accounts'
+      path: '/dev/accounts'
+      fullPath: '/dev/accounts'
+      preLoaderRoute: typeof DevAccountsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dev/builder': {
       id: '/dev/builder'
       path: '/dev/builder'
@@ -508,6 +528,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   DecksDeckIdRoute: DecksDeckIdRoute,
   DecksUnvalidatedRoute: DecksUnvalidatedRoute,
+  DevAccountsRoute: DevAccountsRoute,
   DevBuilderRoute: DevBuilderRoute,
   DevLobbyRoute: DevLobbyRoute,
   DevPreconsRoute: DevPreconsRoute,

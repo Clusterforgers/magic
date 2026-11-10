@@ -42,4 +42,9 @@ differs?: Array<ReadDiffers>,
 /**
  * The clauses left to the table, each with the span of oracle text it covers.
  */
-reasons: Array<Reason>, };
+reasons: Array<Reason>, 
+/**
+ * Whether the deck's owner marked the card "play by hand": it is then `manual` whatever its rules, with
+ * [`crate::support::OWNER_BY_HAND`] as its reason. Left out while false.
+ */
+by_hand?: boolean, };

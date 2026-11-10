@@ -1,5 +1,7 @@
+import { Check } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { CHOSEN_BUTTON } from '../../ChosenMark'
 import { usePlay } from '@/features/game/gameContext'
 import type { ObjectId, Target } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
@@ -169,11 +171,13 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
             <Button
               key={targetKey(target)}
               size="sm"
-              variant={picked ? 'default' : 'outline'}
+              variant="outline"
               aria-pressed={picked}
               disabled={(closed || !fits(target, chosen)) && !picked}
               onClick={() => pick(target)}
+              className={picked ? CHOSEN_BUTTON : undefined}
             >
+              {picked ? <Check aria-hidden="true" strokeWidth={3} /> : null}
               {labelOf(target)}
             </Button>
           )

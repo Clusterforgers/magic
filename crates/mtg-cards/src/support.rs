@@ -418,6 +418,34 @@ pub fn support(card: Option<&Card>, printed: &PrintedCard, caps: &Caps) -> Suppo
     }
 }
 
+/// Why a card that its deck's owner marked "play by hand" is left to the table.
+pub const OWNER_BY_HAND: &str = "the deck's owner chose to play it by hand";
+
+/// The `Manual` record of a card its deck's owner plays by hand, whatever `record` (the card's own support) says: one
+/// clause of no span with [`OWNER_BY_HAND`], and a fingerprint apart from that of the card's own record. A card the
+/// engine cannot host (`Unplayable`) stays as it is.
+pub fn by_owner_hand(record: &SupportRecord) -> SupportRecord {
+    if record.support == Support::Unplayable {
+        return record.clone();
+    }
+    let clauses = vec![Clause {
+        face: 0,
+        span: Span { start: 0, end: 0 },
+        reason: OWNER_BY_HAND.to_owned(),
+    }];
+    let parts = [
+        record.oracle_id.as_bytes(),
+        b"by-hand".as_slice(),
+        record.fingerprint.as_bytes(),
+    ];
+    SupportRecord {
+        oracle_id: record.oracle_id.clone(),
+        support: Support::Manual,
+        clauses,
+        fingerprint: digest(&parts),
+    }
+}
+
 /// The name of the reason a card plays by hand when its rules read back as other text than the card.
 pub const READBACK_DIFFERS: &str = "readback:Differs";
 

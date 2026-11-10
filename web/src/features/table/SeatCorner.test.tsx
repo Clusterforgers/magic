@@ -382,8 +382,9 @@ describe('a cramped column', () => {
     vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(height)
 
   it('keeps the name row and life over the corner and lays the pool, sources and other chips under it', () => {
-    above(34)
-    show({ room: { height: 124, card: 120 } })
+    // 20 px above and 20 under the corner leave a column of 150 px a room of 78 px: a picture.
+    above(20)
+    show({ room: { height: 150, card: 120 } })
     const bo = pod('Bo')
     expect(bo.querySelector('[data-slot="mana-slot"]')).toBeNull()
     expect(
@@ -393,9 +394,20 @@ describe('a cramped column', () => {
     expect(picture.nextElementSibling).toBe(bo.querySelector('[data-slot="pod-more"]'))
   })
 
+  it('draws chips where the chips under the corner leave less than the least picture, so the column does not scroll', () => {
+    // 20 px above and 60 under: a column of 150 px leaves the corner 38 px.
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.dataset['slot'] === 'pod-more' ? 60 : 20
+    })
+    show({ room: { height: 150, card: 120 } })
+    const bo = pod('Bo')
+    expect(bo.querySelector('[data-slot="seat-corner"]')).toBeNull()
+    expect(bo.querySelector('[data-slot="corner-chips"]')).not.toBeNull()
+  })
+
   it('leaves a column at the cramped limit with the full blocks', () => {
     show({ room: { height: POD_CRAMPED_PX, card: 120 } })
     expect(pod('Bo').querySelector('[data-slot="mana-slot"]')).not.toBeNull()
-    expect(pod('Bo').querySelector('[data-slot="pod-more"]')).toBeNull()
+    expect(pod('Bo').querySelector('[data-slot="pod-more"]')).toBeEmptyDOMElement()
   })
 })

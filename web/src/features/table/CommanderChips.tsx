@@ -103,12 +103,12 @@ export function TaxChips({ chips, density, className, compact = false }: ChipsPr
       className={cn(
         SHAPE[density],
         density !== 'tile' && 'bg-muted',
-        'min-w-0 text-muted-foreground',
+        'min-w-0 max-w-full text-muted-foreground',
         className,
       )}
     >
       <Crown aria-hidden="true" className="size-3.5 shrink-0" />
-      <span aria-hidden="true" className="truncate tabular-nums">
+      <span aria-hidden="true" className="min-w-0 truncate tabular-nums">
         {compact ? chip.figure : chip.text}
       </span>
     </span>
@@ -129,14 +129,14 @@ export function DamageChips({ chips, density, className, compact = false }: Chip
         data-level={level}
         className={cn(
           SHAPE[density],
-          'min-w-0',
+          'min-w-0 max-w-full',
           LEVEL_TONE[level],
           level !== 'plain' && 'font-semibold',
           className,
         )}
       >
         <Swords aria-hidden="true" className="size-3.5 shrink-0" />
-        <span aria-hidden="true" className="truncate tabular-nums">
+        <span aria-hidden="true" className="min-w-0 truncate tabular-nums">
           {compact ? chip.figure : chip.text}
         </span>
       </span>

@@ -286,9 +286,15 @@ fn payment_events(
         .filter_map(|tap| options.sources.iter().find(|o| o.source == *tap))
         .cloned()
         .collect();
-    // The permanents tapped for convoke or improvise are tapped first and are not there to take.
+    // The permanents tapped for convoke or improvise are tapped first and are not there to take, nor is a card of the
+    // hand that is a source of the same payment (a Spirit Guide).
     let helped = crate::help::Used::new(&payment.convoke, &payment.improvise, &[]);
-    let paying = without_taken(&paying, &|id| helped.taps(id));
+    let exiled: Vec<ObjectId> = paying
+        .iter()
+        .filter(|option| option.exile)
+        .map(|option| option.source.object)
+        .collect();
+    let paying = without_taken(&paying, &|id| helped.taps(id) || exiled.contains(&id));
     let mut taken = assignment(&paying.iter().collect::<Vec<_>>())
         .ok_or(IllegalAnswer::NotOffered("permanents to take"))?;
     let mut events = Vec::new();

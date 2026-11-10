@@ -46,6 +46,8 @@ export interface FlaggedCard {
   /** The clauses its draft words differently from the card, each beside the engine's words; none for most drafts. */
   differs?: readonly ReadDiffers[]
   decks: readonly DeckRef[]
+  /** The ids of the decks of `decks` whose owner already plays the card by hand; absent for none. */
+  byHandIn?: readonly string[]
 }
 
 /** One deck with its flagged cards. */
@@ -84,6 +86,7 @@ function flaggedIn(deck: CheckedDeck): FlaggedCard[] {
       draft: card.draft,
       differs: card.differs ?? [],
       decks: [{ id: deck.id, name: deck.name }],
+      ...(card.by_hand === true ? { byHandIn: [deck.id] } : {}),
     })
   }
   return [...found.values()].sort(byName)
@@ -106,9 +109,16 @@ export function mergeDecks(decks: readonly CheckedDeck[]): FlaggedCard[] {
   for (const group of groupByDeck(decks)) {
     for (const card of group.cards) {
       const before = merged.get(card.oracleId)
+      const byHandIn = [...(before?.byHandIn ?? []), ...(card.byHandIn ?? [])]
       merged.set(
         card.oracleId,
-        before === undefined ? card : { ...before, decks: [...before.decks, group.deck] },
+        before === undefined
+          ? card
+          : {
+              ...before,
+              decks: [...before.decks, group.deck],
+              ...(byHandIn.length === 0 ? {} : { byHandIn }),
+            },
       )
     }
   }

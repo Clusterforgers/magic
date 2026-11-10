@@ -1,4 +1,4 @@
-//! Goal: a deck's report counts the distinct cards that wait for a read (`summary.to_read`), says `read` when only reads, unverified drafts or Forge drafts stand beside Verified cards, stays `manual_play` while a card does not run whole, gives each card the state of the draft that decides it, and changes nothing for a deck without drafts.
+//! Goal: a deck's report counts the distinct cards that wait for a read (`summary.to_read`), says `read` when only reads, unverified drafts or Forge drafts stand beside Verified cards, stays `manual_play` while a card does not run whole, gives each card the state of the draft that decides it, changes nothing for a deck without drafts, and makes a card its owner plays by hand `manual` with the owner's reason whatever its rules.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -8,12 +8,13 @@ use mtg_cards::ability::Ability;
 use mtg_cards::card::Card;
 use mtg_cards::deck::{
     CardFacts, DeckLine, DeckReport, DeckState, DeckZone, Legality, deck_report,
+    deck_report_by_hand,
 };
 use mtg_cards::effect::Effect;
 use mtg_cards::load::{Library, Source, canonical, slug};
-use mtg_cards::support::{Caps, PrintedCard, PrintedFace, Support, read_hash};
+use mtg_cards::support::{Caps, OWNER_BY_HAND, PrintedCard, PrintedFace, Support, read_hash};
 use mtg_cards::value::Amount;
-use mtg_cards::{DraftRules, ReadState};
+use mtg_cards::{DraftRules, ReadState, assemble_by_hand};
 use mtg_core::color::ColorSet;
 use proptest::prelude::*;
 use rstest::rstest;
@@ -485,4 +486,118 @@ proptest! {
             runs_whole + counts.partial + counts.manual + counts.stale + counts.unplayable
         );
     }
+}
+
+/// The report of `entries` with the cards numbered in `by_hand` marked "play by hand" by the deck's owner.
+fn report_by_hand(entries: &[Entry], by_hand: &[u32]) -> DeckReport {
+    let library = library_of(entries);
+    let facts: BTreeMap<String, CardFacts> = printed_of(entries)
+        .values()
+        .map(|shown| (shown.oracle_id.clone(), facts_of(shown)))
+        .collect();
+    let lines: Vec<DeckLine> = entries
+        .iter()
+        .map(|&(_, id, zone, count)| DeckLine {
+            zone,
+            oracle_id: oracle_id(id),
+            count,
+        })
+        .collect();
+    let chosen: BTreeSet<String> = by_hand.iter().map(|&id| oracle_id(id)).collect();
+    deck_report_by_hand(
+        "freeform",
+        &lines,
+        &chosen,
+        &facts,
+        &library,
+        &Caps::everything(),
+    )
+}
+
+#[rstest]
+#[case::a_land(Kind::Land, Support::Manual, true)]
+#[case::a_verified_file(Kind::File, Support::Manual, true)]
+#[case::an_approved_draft(Kind::Approved, Support::Manual, true)]
+#[case::a_pending_draft(Kind::Pending, Support::Manual, true)]
+#[case::a_wrong_draft(Kind::Wrong, Support::Manual, true)]
+#[case::a_card_with_no_draft(Kind::Plain, Support::Manual, true)]
+#[case::an_unknown_card_stays_unplayable(Kind::Missing, Support::Unplayable, false)]
+fn a_card_its_owner_plays_by_hand_is_manual_with_the_owners_reason_whatever_its_rules(
+    #[case] kind: Kind,
+    #[case] support: Support,
+    #[case] marked: bool,
+) {
+    let entries = [(kind, 7, Main, 2), (kind, 7, Sideboard, 1)];
+    let report = report_by_hand(&entries, &[7]);
+    for card in &report.cards {
+        assert_eq!(
+            (card.support, card.by_hand, card.draft),
+            (support, marked, None)
+        );
+        let reasons: Vec<&str> = card.reasons.iter().map(|r| r.text.as_str()).collect();
+        if marked {
+            assert_eq!(reasons, vec![OWNER_BY_HAND]);
+        }
+    }
+    assert_eq!(
+        report.summary.to_read, 0,
+        "a card by hand waits for no read"
+    );
+    let expected = if marked {
+        DeckState::ManualPlay
+    } else {
+        DeckState::Blocked
+    };
+    assert_eq!(report.summary.state, expected);
+    assert_eq!(report.summary.counts.manual, if marked { 3 } else { 0 });
+}
+
+#[test]
+fn the_choice_moves_the_coverage_hash_and_leaves_the_other_cards_and_the_deck_hash() {
+    let entries = [(Kind::File, 1, Main, 4), (Kind::Pending, 2, Main, 4)];
+    let (plain, marked) = (
+        report_by_hand(&entries, &[]),
+        report_by_hand(&entries, &[1]),
+    );
+    assert_eq!(
+        plain,
+        report_of(&entries),
+        "no card by hand is the plain report"
+    );
+    assert_eq!(plain.deck_hash, marked.deck_hash);
+    assert_ne!(plain.coverage_hash, marked.coverage_hash);
+    assert_eq!(
+        plain.cards[1], marked.cards[1],
+        "the unmarked card keeps its state"
+    );
+    assert!(!plain.cards[0].by_hand);
+    let wire = serde_json::to_value(&plain.cards[0]).unwrap();
+    assert!(
+        wire.get("by_hand").is_none(),
+        "false is left out of the wire form"
+    );
+}
+
+#[test]
+fn a_card_by_hand_is_assembled_as_its_printed_side_with_the_owners_reason() {
+    let (card, shown) = bolt(3);
+    let library = library_of(&[(Kind::File, 3, Main, 1)]);
+    let caps = Caps::everything();
+    let full = library.assemble(&shown, &caps);
+    assert!(!full.definition.rules.is_empty(), "the file runs the bolt");
+    let by_hand = assemble_by_hand(&shown, &full.support, &caps);
+    assert_eq!(by_hand.support.support, Support::Manual);
+    assert!(by_hand.definition.rules.is_empty() && by_hand.definition.abilities.is_empty());
+    let clauses: Vec<(&str, &str)> = by_hand
+        .definition
+        .manual
+        .iter()
+        .map(|clause| (clause.text.as_str(), clause.reason.as_str()))
+        .collect();
+    assert_eq!(
+        clauses,
+        vec![(shown.faces[0].oracle_text.as_str(), OWNER_BY_HAND)]
+    );
+    assert_ne!(by_hand.support.fingerprint, full.support.fingerprint);
+    assert_eq!(card.oracle_id, by_hand.support.oracle_id);
 }

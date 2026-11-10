@@ -91,12 +91,15 @@ export const PIP_TO: Record<PipTone, string> = {
   generic: 'to-muted',
 }
 
-/** The mark of the card the Commands panel acts on: a dashed outline beside the solid rings of a prompt's marks. */
-export const PICKED = 'outline-3 outline-dashed outline-offset-4 outline-primary'
+/** The mark of the card the Commands panel acts on: a dashed outline in the chosen colour beside the solid rings of a prompt's marks. */
+export const PICKED = 'outline-3 outline-dashed outline-offset-4 outline-selected'
 
-/** How the decision layer's marks look on a card. */
+/** How the decision layer's marks look on a card: a chosen card turns from the primary ring to the wider crimson one. */
 export const HIGHLIGHT: Record<Highlight, string> = {
   legal: 'ring-2 ring-primary',
-  selected: 'ring-4 ring-primary',
+  selected: 'ring-4 ring-selected',
   dimmed: 'opacity-40 saturate-50',
 }
+
+/** A compact face narrower than this (px) has no room for a second line of name nor a wrapped row of marks. */
+export const NARROW_PX = 76

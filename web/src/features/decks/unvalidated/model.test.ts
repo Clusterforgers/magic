@@ -1,4 +1,4 @@
-// Goal: the not-validated list groups the cards of checked decks by deck and merges them by card (the cards held by most decks first, then by name), narrows them to a state, quotes each clause from the text of its face by spans counted in Unicode scalar values, and writes the copy text in exactly one format.
+// Goal: the not-validated list groups the cards of checked decks by deck and merges them by card (the cards held by most decks first, then by name), names the decks whose owner plays a card by hand, narrows them to a state, quotes each clause from the text of its face by spans counted in Unicode scalar values, and writes the copy text in exactly one format.
 import { describe, expect, it } from 'vitest'
 import { reportCard } from '../fakeDecks'
 import {
@@ -89,6 +89,22 @@ describe('mergeDecks', () => {
 
   it('keeps the reasons the report gave', () => {
     expect(mergeDecks([A])[0]?.reasons).toEqual([clause('half done')])
+  })
+})
+
+describe('the decks a card is played by hand in', () => {
+  const mine = (byHand: boolean) =>
+    reportCard('Zed', { support: 'manual', ...(byHand ? { by_hand: true } : {}) })
+  it.each([
+    ['in none', [false, false, false], undefined],
+    ['in one', [false, true, false], ['b']],
+    ['in two', [true, false, true], ['a', 'd']],
+  ])('are named %s of the decks that hold it', (_, marks, expected) => {
+    const decks = ['a', 'b', 'd'].map((id, at) => deck(id, id, [mine(marks[at] ?? false)]))
+    expect(mergeDecks(decks)[0]?.byHandIn).toEqual(expected)
+    expect(groupByDeck(decks).map((group) => group.cards[0]?.byHandIn)).toEqual(
+      marks.map((marked, at) => (marked ? [['a', 'b', 'd'][at]] : undefined)),
+    )
   })
 })
 
