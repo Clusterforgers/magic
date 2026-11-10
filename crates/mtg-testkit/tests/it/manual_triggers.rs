@@ -246,6 +246,7 @@ fn a_sacrificed_hand_made_egg_fires_whenever_an_egg_you_control_dies(#[case] typ
                 subtypes: vec![typed.into()],
                 power: Some(0),
                 toughness: Some(1),
+                keywords: Vec::new(),
             })),
             count: 1,
         })

@@ -146,7 +146,7 @@ describe('Save', () => {
   })
 
   it.each([
-    ['blocked', 'Blocked'],
+    ['blocked', 'Played by hand'],
     ['manual_play', 'Played by hand'],
     ['unchecked', 'Unchecked'],
   ] as const)('shows %s as the state a save came out with', async (state, word) => {

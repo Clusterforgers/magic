@@ -45,12 +45,10 @@ export const STATE_LABEL: Readonly<Record<DeckState, string>> = {
   verified: 'Verified',
   read: WHOLE_DECK_RUNS,
   manual_play: BY_HAND_TITLE,
-  blocked: 'Blocked',
+  // A check stored before legality became a warning; it is played by hand like `manual_play`.
+  blocked: BY_HAND_TITLE,
   unchecked: 'Unchecked',
 }
-
-/** What a blocked deck cannot do, in the lobby's words, for the badge's hover and the pages that say more. */
-export const BLOCKED_MEANING = 'Cannot be taken to a game until its issues are fixed'
 
 /** The word of each support state; a mark shows it beside an icon so colour never carries the meaning alone. */
 export const SUPPORT_LABEL: Readonly<Record<Support, string>> = {
@@ -103,24 +101,19 @@ export function unvalidatedLink(counts: Counts): string {
 }
 
 /**
- * The line under a deck's name that explains its check state: how many cards are played by hand, what blocks it. A verified deck needs no line: its marker says so.
+ * The line under a deck's name that explains its check state: how many cards are played by hand. A verified deck needs
+ * no line: its marker says so. Legality is a warning of its own (`notLegalText`).
  */
 export function checkNote(deck: DeckListItem): string | null {
-  const { counts, issues } = deck.summary
+  const { counts } = deck.summary
   switch (deck.state) {
     case 'verified':
       return null
     case 'read':
       return runsBreakdown(counts)
     case 'manual_play':
+    case 'blocked':
       return countsText(counts)
-    case 'blocked': {
-      const parts = [
-        issues > 0 ? plural(issues, 'legality issue') : null,
-        counts.unplayable > 0 ? plural(counts.unplayable, 'unplayable card') : null,
-      ].filter((part) => part !== null)
-      return `${parts.length > 0 ? `${parts.join(', ')}. ` : ''}${BLOCKED_MEANING}.`
-    }
     case 'unchecked':
       return 'Not checked yet'
   }

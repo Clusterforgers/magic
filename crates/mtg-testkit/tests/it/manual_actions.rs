@@ -4,15 +4,18 @@
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::ObjectId;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::error::IllegalAnswer;
+use mtg_engine::keywords::has_keyword;
 use mtg_engine::manual::{
     CommonToken, CustomToken, ManualAction, ManualRefusal, ManualToken, ManualZone,
 };
+use mtg_engine::manual_grant::ManualKeyword;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Engine, EngineError, Event, characteristics};
 use mtg_testkit::cards::{forest, free_creature};
@@ -261,6 +264,7 @@ fn take(driver: &mut Driver, action: ManualAction) {
             subtypes: vec!["Imp".into()],
             power: Some(2),
             toughness: Some(3),
+            keywords: vec![ManualKeyword::Vigilance, ManualKeyword::Flying, ManualKeyword::Flying],
         })),
         count: 1,
     },
@@ -270,6 +274,9 @@ fn take(driver: &mut Driver, action: ManualAction) {
         assert_eq!((chars.power, chars.toughness), (Some(2), Some(3)));
         assert!(chars.colors.contains(Color::Black));
         assert!(chars.is_creature());
+        for keyword in [Keyword::Flying, Keyword::Vigilance] {
+            assert!(has_keyword(d.state(), imp, &keyword), "{keyword:?}");
+        }
     })]
 #[case::copies_of_an_opponents_permanent(
     |i: &Ids| ManualAction::CopyToken { object: i.theirs, count: 2 },
@@ -388,6 +395,7 @@ fn custom(name: &str, types: Vec<CardType>, stats: Option<(i32, i32)>) -> Manual
             subtypes: Vec::new(),
             power: stats.map(|(power, _)| power),
             toughness: stats.map(|(_, toughness)| toughness),
+            keywords: Vec::new(),
         })),
         count: 1,
     }

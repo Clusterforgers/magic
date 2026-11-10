@@ -192,6 +192,7 @@ fn with_deck(index: u64, manual: Option<u32>) -> LobbySeat {
             name: "Deck".to_owned(),
             format: "normal".to_owned(),
             manual_cards,
+            warnings: 0,
         }),
         ..seat(index, "Ana", true, false)
     }

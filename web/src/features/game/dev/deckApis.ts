@@ -14,11 +14,11 @@ import {
   manyStoredDecks,
 } from './deckFixture'
 import type { FixtureDeck } from './deckFixture'
-import { STORED_DECKS, tableReport } from './lobbyGame'
+import { STORED_DECKS, tableIssues, tableReport } from './lobbyGame'
 import type { DevLobbySearch } from './lobbySearch'
 
 /** The switches of the fixture's deck calls. */
-export type DevDeckSwitches = Pick<DevLobbySearch, 'decks' | 'list' | 'detail'>
+export type DevDeckSwitches = Pick<DevLobbySearch, 'decks' | 'list' | 'detail' | 'format'>
 
 const answer = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
@@ -57,7 +57,7 @@ const BASE: readonly FixtureDeck[] = [
   },
 ]
 
-const PRECONS: readonly (FixtureDeck & { set: string; state?: 'verified' | 'manual_play' | 'blocked' })[] = [
+const PRECONS: readonly (FixtureDeck & { set: string; state?: 'verified' | 'manual_play' })[] = [
   {
     id: 'c19-merciless-rage',
     set: 'c19',
@@ -79,7 +79,8 @@ const PRECONS: readonly (FixtureDeck & { set: string; state?: 'verified' | 'manu
     name: 'Arcane Wizardry',
     format: 'commander',
     commanders: [['Inalla, Archmage Ritualist', ['U', 'B', 'R']]],
-    state: 'blocked',
+    state: 'manual_play',
+    issues: tableIssues('precon:c17-arcane-wizardry'),
   },
   {
     id: 'st-mono-white',
@@ -99,7 +100,7 @@ function preconFixtures(many: boolean) {
   return [...PRECONS, ...(many ? manyPrecons() : [])]
 }
 
-/** What the table is told of a deck chosen from the fixture's lists: its name, format and cards played by hand. */
+/** What the table is told of a deck chosen from the fixture's lists: its name, format, cards played by hand and warnings. */
 export function deckFacts(id: string, switches: DevDeckSwitches = {}): SeatDeck | undefined {
   const many = switches.decks === 'many'
   const precon = preconFixtures(many).find((candidate) => `precon:${candidate.id}` === id)
@@ -109,6 +110,8 @@ export function deckFacts(id: string, switches: DevDeckSwitches = {}): SeatDeck 
     name: deck.name,
     format: deck.format === 'freeform' ? 'freeform' : deck.format,
     manual_cards: (deck.hand ?? []).length,
+    warnings: tableIssues(precon === undefined ? deck.id : `precon:${deck.id}`, switches.format ?? 'normal')
+      .length,
   }
 }
 
@@ -124,7 +127,11 @@ export function lobbyDecks(switches: DevDeckSwitches = {}): DecksApi {
           (candidate) =>
             candidate.id === asked.deck && (candidate.reads !== undefined || candidate.drafts !== undefined),
         )
-        return answer(own === undefined ? tableReport(asked.deck) : fixtureDeckView(own).report)
+        return answer(
+          own === undefined
+            ? tableReport(asked.deck, switches.format ?? 'normal')
+            : fixtureDeckView(own).report,
+        )
       }
       if (url.endsWith('/api/decks')) {
         if (switches.list === 'loading') return never<Response>()

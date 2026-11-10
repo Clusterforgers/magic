@@ -1,6 +1,6 @@
 /** Pure: the token a Tokens row makes, a common one or a custom creature, with the words of its preview and the action it sends. */
-import type { CardType, Color, CommonToken, ManualToken } from '@/protocol/generated'
-import { COMMON_TOKENS } from '../offers'
+import type { CardType, Color, CommonToken, ManualKeyword, ManualToken } from '@/protocol/generated'
+import { COMMON_TOKENS, GRANT_KEYWORDS } from '../offers'
 import type { Preview } from './commands'
 
 /** The choice that makes a creature of the seat's own: name, power and toughness. */
@@ -29,6 +29,8 @@ export interface TokenDraft {
   enchantment: boolean
   /** The subtypes typed for a custom token, apart by spaces or commas; empty takes the name when it is letters only. */
   subtypes: string
+  /** The keyword abilities of a custom token, which it carries as a token a card makes does. */
+  keywords: readonly ManualKeyword[]
 }
 
 /** The first token of the list, which a row opens with. */
@@ -44,6 +46,7 @@ export const START_TOKEN: TokenDraft = {
   artifact: false,
   enchantment: false,
   subtypes: '',
+  keywords: [],
 }
 
 const plural = (n: number, one: string): string => `${n} ${one}${n === 1 ? '' : 's'}`
@@ -70,10 +73,18 @@ function subtypesOf(draft: TokenDraft, name: string): string[] | { problem: stri
   return [...new Set(words)]
 }
 
+/** " with flying and vigilance": the keywords of a custom token after its words, or nothing without one. */
+function abilityWords(words: readonly string[]): string {
+  const last = words.at(-1)
+  if (last === undefined) return ''
+  const rest = words.slice(0, -1)
+  return ` with ${rest.length === 0 ? last : `${rest.join(', ')} and ${last}`}`
+}
+
 /** The custom creature of a draft, or what is wrong with it. */
 function customOf(
   draft: TokenDraft,
-): { token: ManualToken; label: string; kind: string } | { problem: string } {
+): { token: ManualToken; label: string; kind: string; abilities: string } | { problem: string } {
   const name = draft.name.trim()
   if (name.length === 0 || name.length > TOKEN_NAME_MAX) {
     return { problem: `Name the token in 1 to ${TOKEN_NAME_MAX} characters.` }
@@ -88,11 +99,23 @@ function customOf(
   if (draft.artifact) types.push('Artifact')
   if (draft.enchantment) types.push('Enchantment')
   types.push('Creature')
+  const keywords = GRANT_KEYWORDS.filter(([keyword]) => draft.keywords.includes(keyword))
   const kind = [...colors.map((color) => color.toLowerCase()), ...types.map((type) => type.toLowerCase())]
   return {
     label: `${name} ${draft.power}/${draft.toughness}`,
     kind: kind.join(' '),
-    token: { Custom: { name, colors, types, subtypes, power: draft.power, toughness: draft.toughness } },
+    abilities: abilityWords(keywords.map(([, words]) => words.toLowerCase())),
+    token: {
+      Custom: {
+        name,
+        colors,
+        types,
+        subtypes,
+        power: draft.power,
+        toughness: draft.toughness,
+        ...(keywords.length === 0 ? {} : { keywords: keywords.map(([keyword]) => keyword) }),
+      },
+    },
   }
 }
 
@@ -108,7 +131,7 @@ export function tokenPreview(draft: TokenDraft, amount: number): Preview {
   const custom = customOf(draft)
   if ('problem' in custom) return custom
   return {
-    preview: `${plural(amount, `${custom.label} ${custom.kind} token`)} ${amount === 1 ? 'enters' : 'enter'} under your control`,
+    preview: `${plural(amount, `${custom.label} ${custom.kind} token`)}${custom.abilities} ${amount === 1 ? 'enters' : 'enter'} under your control`,
     apply: `Create ${plural(amount, `${custom.label} token`)}`,
     action: { CreateToken: { token: custom.token, count: amount } },
   }

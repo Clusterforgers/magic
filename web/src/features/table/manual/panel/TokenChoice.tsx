@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Input } from '@/components/ui/input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import type { CommonToken } from '@/protocol/generated'
-import { COMMON_TOKENS } from '../offers'
+import { COMMON_TOKENS, GRANT_KEYWORDS } from '../offers'
 import { CUSTOM, TOKEN_COLORS, TOKEN_NAME_MAX, TOKEN_STAT_MAX, TOKEN_SUBTYPES_MAX } from './customToken'
 import type { TokenDraft } from './customToken'
 
@@ -65,7 +65,7 @@ function Check({
   )
 }
 
-/** The list of tokens, ending in "Custom creature…" which asks for the creature's name, power and toughness. */
+/** The list of tokens, ending in "Custom creature…" which asks for the creature's name, power, toughness, colors, types, keywords and subtypes. */
 export function TokenChoice({ draft, set }: Props) {
   return (
     <>
@@ -120,6 +120,23 @@ export function TokenChoice({ draft, set }: Props) {
               checked={draft.enchantment}
               onChange={(enchantment) => set({ enchantment })}
             />
+          </fieldset>
+          <fieldset className="flex flex-wrap gap-x-3 gap-y-0.5">
+            <legend className="text-xs text-muted-foreground">Abilities</legend>
+            {GRANT_KEYWORDS.map(([keyword, words]) => (
+              <Check
+                key={keyword}
+                label={words}
+                checked={draft.keywords.includes(keyword)}
+                onChange={(on) =>
+                  set({
+                    keywords: on
+                      ? [...draft.keywords, keyword]
+                      : draft.keywords.filter((each) => each !== keyword),
+                  })
+                }
+              />
+            ))}
           </fieldset>
           <Labelled label={`Subtypes (up to ${TOKEN_SUBTYPES_MAX}, empty: the name)`}>
             <Input

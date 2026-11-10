@@ -1,4 +1,4 @@
-//! Goal: on Postgres the deck rules a table relaxed (singleton off, a copy limit, colour identity off, a deck size, two commanders per seat) let a stored deck and a precon in at creation, at join and on a deck change that the same deck is refused for without the rule, a rule a table did not relax and the rules no table relaxes (a commander that cannot lead, an unknown card) still refuse, and the lobby's deck check answers per table, by game or by described rules, with the issues a seat would be refused with.
+//! Goal: on Postgres the deck rules a table relaxed (singleton off, a copy limit, colour identity off, a deck size, two commanders per seat) make a stored deck and a precon legal there at creation, at join and on a deck change, while a table without the rule takes the same deck with that warning; a rule a table did not relax and the rules no table relaxes (a commander that cannot lead, an unknown card) still warn, and the lobby's deck check answers per table, by game or by described rules, with the warnings a seat gets.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net::{Browser, PASSWORD, TestServer, bot_config, register};
@@ -76,14 +76,24 @@ async fn open(server: &TestServer, ann: &Browser, rules: &Value) -> String {
     ann.create_game(server.addr, &table(rules)).await.0
 }
 
-/// The code of the first issue of a refusal.
-fn refused(reply: &crate::net::Reply, why: &str) -> String {
-    assert_eq!(reply.status, 422, "{why}: {}", reply.text());
-    assert_eq!(reply.error_code(), "deck_blocked", "{why}");
-    reply.json()["issues"][0]["code"]
-        .as_str()
-        .unwrap()
-        .to_owned()
+/// The code of the first warning of a deck a seat took (`reply`): the table of `game`, or of the game the reply names,
+/// lists it in its check of `deck`.
+async fn warned(
+    server: &TestServer,
+    who: &Browser,
+    reply: &crate::net::Reply,
+    game: Option<&str>,
+    deck: &str,
+    why: &str,
+) -> String {
+    assert!(matches!(reply.status, 200 | 201), "{why}: {}", reply.text());
+    let game = game.map_or_else(
+        || reply.json()["game"].as_str().unwrap().to_owned(),
+        str::to_owned,
+    );
+    let report = check(server, who, &json!({"deck": deck, "game": game})).await;
+    assert_eq!(report["summary"]["legal"], false, "{why}");
+    codes(&report).into_iter().next().unwrap()
 }
 
 /// A Commander deck of `commanders`, `copies` Auspicious Starrix and Forests to a hundred.
@@ -102,7 +112,7 @@ struct Relaxed {
     why: &'static str,
     deck: Value,
     rules: Value,
-    /// What the deck is refused for at a table without the rule.
+    /// What the deck is warned for at a table without the rule.
     code: &'static str,
 }
 
@@ -165,7 +175,7 @@ fn relaxed() -> Vec<Relaxed> {
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_relaxed_rule_lets_in_the_deck_the_format_refuses_at_creation_join_and_deck_change(
+async fn a_relaxed_rule_clears_the_warning_the_format_gives_at_creation_join_and_deck_change(
     pool: PgPool,
 ) {
     let server = start(&pool).await;
@@ -177,7 +187,7 @@ async fn a_relaxed_rule_lets_in_the_deck_the_format_refuses_at_creation_join_and
         let mine = store(&server, &ann, &case.deck).await;
         let theirs = store(&server, &bob, &case.deck).await;
 
-        // At creation: the table with the rule takes it, the one without refuses it.
+        // At creation: the table with the rule takes it legal, the one without with a warning.
         let seats = [json!({"name": "Ann", "deck": mine}), json!({})];
         let mut body = create_body(&seats, 1);
         body["house_rules"] = case.rules.clone();
@@ -185,27 +195,39 @@ async fn a_relaxed_rule_lets_in_the_deck_the_format_refuses_at_creation_join_and
         assert_eq!(made.status, 201, "{why}: {}", made.text());
         body.as_object_mut().unwrap().remove("house_rules");
         let plain = ann.post(server.addr, "/api/games", &body.to_string()).await;
-        assert_eq!(refused(&plain, why), case.code, "{why}");
+        assert_eq!(
+            warned(&server, &ann, &plain, None, &mine, why).await,
+            case.code,
+            "{why}"
+        );
 
-        // At join; nobody is seated by a refusal.
+        // At join.
         let with = open(&server, &ann, &case.rules).await;
         let without = open(&server, &ann, &none).await;
         let joined = join(&server, &bob, &with, &theirs).await;
         assert_eq!(joined.status, 200, "{why}: {}", joined.text());
         let late = join(&server, &bob, &without, &theirs).await;
-        assert_eq!(refused(&late, why), case.code, "{why}");
+        assert_eq!(
+            warned(&server, &bob, &late, Some(&without), &theirs, why).await,
+            case.code,
+            "{why}"
+        );
 
         // On a deck change.
         let with = open(&server, &ann, &case.rules).await;
         let changed = choose(&server, &ann, &with, 0, &mine).await;
         assert_eq!(changed.status, 200, "{why}: {}", changed.text());
         let changed = choose(&server, &ann, &without, 0, &mine).await;
-        assert_eq!(refused(&changed, why), case.code, "{why}");
+        assert_eq!(
+            warned(&server, &ann, &changed, Some(&without), &mine, why).await,
+            case.code,
+            "{why}"
+        );
     }
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_relaxed_table_still_refuses_what_it_did_not_relax(pool: PgPool) {
+async fn a_relaxed_table_still_warns_for_what_it_did_not_relax(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
     let singleton_off = json!({"deck": {"singleton": false}});
@@ -276,12 +298,16 @@ async fn a_relaxed_table_still_refuses_what_it_did_not_relax(pool: PgPool) {
         let mut body = create_body(&seats, 1);
         body["house_rules"] = rules.clone();
         let made = ann.post(server.addr, "/api/games", &body.to_string()).await;
-        assert_eq!(refused(&made, why), code, "{why}");
+        assert_eq!(
+            warned(&server, &ann, &made, None, &id, why).await,
+            code,
+            "{why}"
+        );
     }
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_precon_the_check_refuses_only_for_a_relaxed_rule_is_taken_at_that_table(pool: PgPool) {
+async fn a_precon_the_check_warns_only_for_a_relaxed_rule_is_legal_at_that_table(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
     let bob = register(server.addr, "bob", PASSWORD).await;
@@ -307,33 +333,45 @@ async fn a_precon_the_check_refuses_only_for_a_relaxed_rule_is_taken_at_that_tab
         assert_eq!(made.status, 201, "{code}: {}", made.text());
         body.as_object_mut().unwrap().remove("house_rules");
         let plain = ann.post(server.addr, "/api/games", &body.to_string()).await;
-        assert_eq!(refused(&plain, code), issue, "{code}");
+        assert_eq!(
+            warned(&server, &ann, &plain, None, &precon, code).await,
+            issue,
+            "{code}"
+        );
 
         // At join and on a deck change.
         let with = open(&server, &ann, &rules).await;
         let without = open(&server, &ann, &none).await;
         let joined = join(&server, &bob, &with, &precon).await;
         assert_eq!(joined.status, 200, "{code}: {}", joined.text());
+        let late = join(&server, &bob, &without, &precon).await;
         assert_eq!(
-            refused(&join(&server, &bob, &without, &precon).await, code),
+            warned(&server, &bob, &late, Some(&without), &precon, code).await,
             issue
         );
         let with = open(&server, &ann, &rules).await;
         let changed = choose(&server, &ann, &with, 0, &precon).await;
         assert_eq!(changed.status, 200, "{code}: {}", changed.text());
         let changed = choose(&server, &ann, &without, 0, &precon).await;
-        assert_eq!(refused(&changed, code), issue, "{code}");
+        assert_eq!(
+            warned(&server, &ann, &changed, Some(&without), &precon, code).await,
+            issue,
+            "{code}"
+        );
     }
 
-    // What no table relaxes still refuses the precon, wherever it is brought.
+    // What no table relaxes still warns, wherever the precon is brought.
     let everything =
         json!({"deck": {"singleton": false, "colour_identity": false}, "commanders_per_seat": 2});
     for (code, issue) in [(BEAR, "commander_eligibility"), (GHOST, "unknown_card")] {
         let game = open(&server, &ann, &everything).await;
         let choice = choose(&server, &ann, &game, 0, &on(code)).await;
-        refused(&choice, code);
-        let issues = choice.json()["issues"].to_string();
-        assert!(issues.contains(issue), "{code}: {issues}");
+        warned(&server, &ann, &choice, Some(&game), &on(code), code).await;
+        let report = check(&server, &ann, &json!({"deck": on(code), "game": game})).await;
+        assert!(
+            codes(&report).iter().any(|found| found == issue),
+            "{code}: {report}"
+        );
     }
 }
 
@@ -372,7 +410,11 @@ async fn the_lobby_check_answers_for_the_table_of_a_game_or_of_described_rules(p
     assert_eq!(report["summary"]["issues"], 0);
     let report = check(&server, &ann, &json!({"deck": twice, "game": plain_game})).await;
     assert_eq!(codes(&report), ["copies"]);
-    assert_eq!(report["summary"]["state"], "blocked");
+    assert_eq!(
+        report["summary"]["legal"], false,
+        "a warning: the state stays the one of the cards"
+    );
+    assert_ne!(report["summary"]["state"], "blocked");
     assert_eq!(report["summary"]["issues"], 1);
 
     // Rules that no game holds yet.

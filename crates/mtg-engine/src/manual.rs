@@ -29,6 +29,7 @@ use crate::counters::CountersChanged;
 use crate::events::{Event, ZoneCause};
 use crate::format::ExtraZone;
 use crate::loyalty;
+use crate::manual_grant::ManualKeyword;
 use crate::object::{GameObject, ObjectKind, PermanentState};
 use crate::rules::{cant_draw, cant_gain_life, life_total_cant_change};
 use crate::saga;
@@ -238,7 +239,7 @@ impl CommonToken {
     }
 }
 
-/// A token the acting seat describes: a name, colours, types, subtypes and, for a creature, power and toughness.
+/// A token the acting seat describes: a name, colours, types, subtypes, keywords and, for a creature, power and toughness.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct CustomToken {
@@ -258,6 +259,10 @@ pub struct CustomToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub toughness: Option<i32>,
+    /// Its keyword abilities, which the token carries the way a token a card makes does.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ManualKeyword>>", optional))]
+    pub keywords: Vec<ManualKeyword>,
 }
 
 impl CustomToken {
@@ -316,12 +321,21 @@ impl CustomToken {
             subtypes: self.typed_subtypes(),
             power: stats.map(|(power, _)| power),
             toughness: stats.map(|(_, toughness)| toughness),
-            abilities: Vec::new(),
+            abilities: self.abilities(),
         })
     }
 }
 
 impl CustomToken {
+    /// The keyword abilities in the order of the list, without repeats.
+    fn abilities(&self) -> Vec<Ability> {
+        ManualKeyword::ALL
+            .into_iter()
+            .filter(|keyword| self.keywords.contains(keyword))
+            .map(|keyword| Ability::Keyword(keyword.keyword()))
+            .collect()
+    }
+
     /// The typed subtypes as the engine spells them: split on whitespace, capitalised (also after a hyphen or
     /// apostrophe), without repeats.
     fn typed_subtypes(&self) -> Vec<Subtype> {
@@ -1129,6 +1143,7 @@ mod tests {
             subtypes: subtypes.iter().map(|s| (*s).to_owned()).collect(),
             power: size.map(|(power, _)| power),
             toughness: size.map(|(_, toughness)| toughness),
+            keywords: Vec::new(),
         }
     }
 
@@ -1169,6 +1184,17 @@ mod tests {
         assert_eq!(spec.colors, [Color::Blue, Color::Red]);
         assert_eq!(spec.types, [CardType::Creature]);
         assert_eq!(spec.subtypes, [Subtype("Imp".into())]);
+        let mut flier = custom("Imp", &[CardType::Creature], &[], Some((1, 1)));
+        flier.keywords = vec![
+            ManualKeyword::Vigilance,
+            ManualKeyword::Flying,
+            ManualKeyword::Vigilance,
+        ];
+        assert_eq!(
+            flier.spec().unwrap().abilities,
+            [Keyword::Flying, Keyword::Vigilance].map(Ability::Keyword),
+            "each keyword once, in the order of the list"
+        );
     }
 
     #[rstest]

@@ -27,6 +27,7 @@ fn deck(companion: bool) -> ChosenDeck {
         name: "Small Permanents".to_owned(),
         format: "normal".to_owned(),
         manual_cards: 0,
+        warnings: 0,
     };
     let chosen = ChosenDeck::stored(ids, cards, note).unwrap();
     if companion {

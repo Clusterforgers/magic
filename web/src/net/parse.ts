@@ -24,6 +24,7 @@ import type {
   ObjectView,
   PlayerForecast,
   PlayerView,
+  SeatDeck,
   ServerMessage,
   StateView,
   Step,
@@ -353,20 +354,38 @@ export function isStateView(value: unknown): value is StateView {
   return isRecord(value) && isListOf(value.objects, isObjectView) && isTableView(value)
 }
 
-function isLobbySeat(value: unknown): value is LobbySeat {
+/**
+ * The deck a seat shows the table: its name and format, how many cards are played by hand and how many rules of the
+ * format it breaks (a server from before that warning sends none, read as zero). Null when a fact is missing.
+ */
+export function readSeatDeck(value: unknown): SeatDeck | null {
+  if (!isRecord(value) || !isText(value.name) || !isText(value.format) || !isCount(value.manual_cards))
+    return null
+  const warnings = value.warnings === undefined ? 0 : value.warnings
+  if (!isCount(warnings)) return null
+  return { name: value.name, format: value.format, manual_cards: value.manual_cards, warnings }
+}
+
+/** A seat of the lobby as the wire may send it; the deck is read on its own. */
+type SentLobbySeat = Omit<LobbySeat, 'deck'> & { deck?: unknown }
+
+function isLobbySeat(value: unknown): value is SentLobbySeat {
   return (
     isRecord(value) &&
     isCount(value.seat) &&
     isText(value.name) &&
     isFlag(value.connected) &&
     isFlag(value.ready) &&
-    // The deck is left out while the seat has none; one that is there must be the three facts the table may know.
-    (value.deck === undefined ||
-      (isRecord(value.deck) &&
-        isText(value.deck.name) &&
-        isText(value.deck.format) &&
-        isCount(value.deck.manual_cards)))
+    // The deck is left out while the seat has none; one that is there must be the facts the table may know.
+    (value.deck === undefined || readSeatDeck(value.deck) !== null)
   )
+}
+
+/** A checked seat with its deck read whole. */
+function lobbySeat(sent: SentLobbySeat): LobbySeat {
+  const { deck, ...seat } = sent
+  const read = deck === undefined ? null : readSeatDeck(deck)
+  return read === null ? seat : { ...seat, deck: read }
 }
 
 function isEventView(value: unknown): value is EventView {
@@ -452,7 +471,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       // The lobby is drawn by seat number, so a roster that skips or repeats one is not one to draw.
       if (v.seats.some((seat, index) => seat.seat !== index)) return '"seats" must be listed in seat order'
       if (!isCount(v.needed)) return '"needed" must be a whole number'
-      return { type, seats: v.seats, needed: v.needed }
+      return { type, seats: v.seats.map(lobbySeat), needed: v.needed }
     case 'Decision':
       if (!isCount(v.id)) return '"id" must be a whole number'
       if (!isDecision(v.decision)) return '"decision" must name a player and exactly one decision kind'

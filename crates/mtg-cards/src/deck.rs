@@ -165,35 +165,35 @@ pub struct ZoneCounts {
     pub counts: Counts,
 }
 
-/// What a deck is, as far as the table is concerned.
+/// How the game runs a deck's cards. Legality is apart ([`Summary::legal`]): it warns and never keeps a deck from a
+/// game.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 #[serde(rename_all = "snake_case")]
 pub enum DeckState {
-    /// Legal, and every card of every zone is `verified`.
+    /// Every card of every zone is `verified`.
     Verified,
-    /// Legal, and every card of every zone is `verified`, `read`, `forge` or `unverified`, at least one not `verified`:
-    /// the game runs all of it, part of it on the reads of players, translated from Forge or not yet read.
+    /// Every card of every zone is `verified`, `read`, `forge` or `unverified`, at least one not `verified`: the game
+    /// runs all of it, part of it on the reads of players, translated from Forge or not yet read.
     Read,
-    /// Legal, with some cards the game does not run whole; the table resolves them by hand.
+    /// Some cards the game does not run whole (no rules, `partial`, `unplayable`, unknown); the table resolves them by
+    /// hand.
     ManualPlay,
-    /// Illegal in its format, or holds an `unplayable` card.
+    /// Kept for checks stored before legality became a warning: no report is in this state.
     Blocked,
     /// Kept for older clients: no report and no deck is in this state.
     Unchecked,
 }
 
 impl DeckState {
-    /// The state of a deck from whether it has legality issues and its copies by support state.
-    fn of(has_issues: bool, counts: &Counts) -> DeckState {
+    /// The state of a deck from its copies by support state.
+    pub fn of(counts: &Counts) -> DeckState {
         let runs_whole = counts
             .verified
             .saturating_add(counts.read)
             .saturating_add(counts.forge)
             .saturating_add(counts.unverified);
-        if has_issues || counts.unplayable > 0 {
-            DeckState::Blocked
-        } else if runs_whole < counts.total {
+        if runs_whole < counts.total {
             DeckState::ManualPlay
         } else if runs_whole > counts.verified {
             DeckState::Read
@@ -209,9 +209,13 @@ impl DeckState {
 pub struct Summary {
     /// The format the deck was checked in.
     pub format: String,
-    /// `blocked` if the deck is illegal or holds an unplayable card, `manual_play` if some card is
-    /// not run whole, `read` if some run whole without being verified, otherwise `verified`.
+    /// `manual_play` if some card is not run whole, `read` if some run whole without being verified, otherwise
+    /// `verified`; never `blocked`.
     pub state: DeckState,
+    /// Whether the deck has no legality issue in the format, or at the table, it was judged for. An illegal deck is a
+    /// warning and still goes to a game. A check stored before this field reads as legal.
+    #[serde(default = "legal_by_default")]
+    pub legal: bool,
     /// Copies by support state across all zones.
     pub counts: Counts,
     /// The same per zone, for the zones that hold cards.
@@ -293,17 +297,20 @@ pub struct DeckReport {
 impl DeckReport {
     /// Whether the deck is legal and every card of it is `verified`.
     pub fn is_clean(&self) -> bool {
-        self.summary.state == DeckState::Verified
+        self.summary.state == DeckState::Verified && self.summary.legal
     }
 
-    /// Replaces the legality, as a table's rules judge it, and the summary with it: `issues` counts them and the state
-    /// is `blocked` while one is left or a card is `unplayable`, else `manual_play` while a card does not run whole, else
-    /// `read` while one runs whole without being `verified`.
+    /// Replaces the legality, as a table's rules judge it, and the summary with it: `issues` counts them and `legal`
+    /// says whether none is left; the state does not depend on them.
     pub fn set_legality(&mut self, legality: Vec<Issue>) {
         self.summary.issues = u32::try_from(legality.len()).unwrap_or(u32::MAX);
-        self.summary.state = DeckState::of(!legality.is_empty(), &self.summary.counts);
+        self.summary.legal = legality.is_empty();
         self.legality = legality;
     }
+}
+
+const fn legal_by_default() -> bool {
+    true
 }
 
 /// Sums the copies of each `(zone, oracle id)`, in the case the ids are stored in.
@@ -514,7 +521,8 @@ pub fn deck_report_by_hand(
         format: format.to_owned(),
         summary: Summary {
             format: format.to_owned(),
-            state: DeckState::of(!legality.is_empty(), &counts),
+            state: DeckState::of(&counts),
+            legal: legality.is_empty(),
             counts,
             zones,
             issues: u32::try_from(legality.len()).unwrap_or(u32::MAX),
