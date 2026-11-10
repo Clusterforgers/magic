@@ -1,4 +1,4 @@
-//! Goal: the writers of ep23 write the card's words and nothing near them: lands of every zone ("Lands you control and land cards you own that aren't on the battlefield are Deserts in addition to their other types.") and a required cost with two reductions in one clause ("... {2} less to cast for each permanent sacrificed this way and {2} less to cast for each other artifact or creature you've sacrificed this turn."); creatures in that wording, fewer zones, another player's sacrifices, another amount or another kind do not read back.
+//! Goal: the writers of ep23 write the card's words and nothing near them: a counter moved "onto a second target permanent" (other than the first target or not, as the reader reads it), lands of every zone ("Lands you control and land cards you own that aren't on the battlefield are Deserts in addition to their other types.") and a required cost with two reductions in one clause ("... {2} less to cast for each permanent sacrificed this way and {2} less to cast for each other artifact or creature you've sacrificed this turn."); creatures in that wording, fewer zones, another player's sacrifices, another amount or another kind do not read back.
 use super::*;
 
 const ALL_ZONES: &str = r#"{"AnyOf":[{"In":"Battlefield"},{"In":"Stack"},{"In":"Hand"},{"In":"Library"},{"In":"Graveyard"},{"In":"Exile"},{"In":"Command"}]}"#;
@@ -55,4 +55,24 @@ fn ep23_a_cost_and_two_reductions_write_as_one_clause(#[case] third: String, #[c
 fn ep23_the_pair_alone_is_not_the_clause() {
     let found = static_pair_texts(&ability(PAID), &ability(BY_X));
     assert!(!found.iter().any(|w| same_text(w, DARGO)), "{found:?}");
+}
+
+const NESTING: &str = "{1}, {T}: Move a counter from target permanent you control onto a second target permanent. Activate only as a sorcery.";
+const MINE: &str = r#"{"what":{"Object":[{"ControlledBy":"You"}]}}"#;
+const OTHER: &str = r#"{"what":{"Object":[{"Not":{"Is":{"Target":0}}}]}}"#;
+
+fn moved(first: &str, second: &str) -> String {
+    format!(
+        r#"{{"Activated":{{"cost":[{{"Mana":"{{1}}"}},"Tap"],"effects":[{{"MoveCounters":{{"from":{{"Target":0}},"to":{{"Target":1}}}}}}],"targets":[{first},{second}],"timing":"Sorcery"}}}}"#
+    )
+}
+
+#[rstest]
+#[case::another_target(moved(MINE, OTHER), true)]
+#[case::the_reader_s_second_target(moved(MINE, r#"{"what":{"Object":[]}}"#), true)]
+#[case::onto_a_creature(moved(MINE, r#"{"what":{"Object":[{"Type":"Creature"},{"Not":{"Is":{"Target":0}}}]}}"#), false)]
+#[case::from_any_permanent(moved(r#"{"what":{"Object":[]}}"#, OTHER), false)]
+fn ep23_a_counter_moves_onto_another_target(#[case] json: String, #[case] reads: bool) {
+    let found = written_variants(&ability(&json));
+    assert_eq!(found.iter().any(|w| same_text(w, NESTING)), reads, "{found:?}");
 }
