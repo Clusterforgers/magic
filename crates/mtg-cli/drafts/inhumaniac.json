@@ -1,0 +1,48 @@
+{
+  "oracle_id": "dc65cf70-c3aa-4e3c-82c6-260cbdf5f522",
+  "name": "Inhumaniac",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inhumaniac",
+      "oracle_fingerprint": "c5c40f7a21c7b86ff48727db03a32c76",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 3,
+                      "to": 4,
+                      "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                    },
+                    {
+                      "from": 5,
+                      "to": 6,
+                      "effects": [
+                        { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }
+                      ]
+                    },
+                    {
+                      "from": 1,
+                      "to": 1,
+                      "effects": [
+                        {
+                          "RemoveAllCounters": { "from": { "Each": ["This"] }, "counter": "+1/+1" }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

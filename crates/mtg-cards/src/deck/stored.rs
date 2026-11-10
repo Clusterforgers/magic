@@ -47,6 +47,7 @@ mod tests {
             summary: Summary {
                 format: "commander".to_owned(),
                 state,
+                legal: true,
                 counts: Counts::default(),
                 zones: Vec::new(),
                 issues: 0,

@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, memo } from 'react'
 import { CARD_CORNER } from '@/features/cards/CardImage'
 import { useImageChoice } from '@/features/cards/imageSetting'
 import { imageSizeFor, imageSourceOf, showsBack } from '@/features/cards/images'
@@ -115,8 +115,9 @@ function artRoom(height: number, chips: number, links: Links | undefined): numbe
  * A card of the table: its picture with the state over it (`ImageFace`), the neutral back for a card the viewer may
  * not see, or the text face when pictures are off ("Card images": Text only) or the card has no picture source. The
  * text face stays under a picture while it loads and when it is missing.
+ * Memoised: a prompt that marks or unmarks the card redraws the button around the face, not the face.
  */
-export function CardFace(props: CardFaceProps) {
+export const CardFace = memo(function CardFace(props: CardFaceProps) {
   const { object, size, fit = false, upright = false, stacked = false } = props
   const choice = useImageChoice()
   const width = useDrawnWidth(size, fit)
@@ -160,7 +161,7 @@ export function CardFace(props: CardFaceProps) {
       )}
     </ImageFace>
   )
-}
+})
 
 const PLATE = 'rounded-sm border border-foreground/30 bg-background/80'
 // A text face is plain, or drawn as a card where a token's picture is missing: a rounded frame in the card's colour,

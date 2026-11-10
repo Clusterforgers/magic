@@ -225,6 +225,9 @@ pub(crate) struct Tallies {
     pub(crate) limit_uses: BTreeMap<(ObjectRef, AbilitySource, usize), u32>,
     /// The events of the logged kinds in the order they happened, each with the player it counts for and the object as it was.
     pub(crate) logged: Vec<(TallyEvent, PlayerId, crate::snapshot::Snapshot)>,
+    /// The spells that left the stack this turn, as they last were on it: "copy that spell" copies one by last known
+    /// information (CR 608.2h, 707.10).
+    pub(crate) left_spells: Vec<crate::copies::KeptSpell>,
     /// What was done this turn, as records of references (`turn_log`).
     pub(crate) records: Vec<crate::turn_log::Record>,
     /// Where in `records` the combat phase now going on, or the latest, began.
@@ -905,6 +908,9 @@ impl Hash for GameState {
         }
         if !self.tallies.logged.is_empty() {
             self.tallies.logged.hash(state);
+        }
+        if !self.tallies.left_spells.is_empty() {
+            self.tallies.left_spells.hash(state);
         }
         self.result.hash(state);
         // A game that has seen neither day nor night hashes as it did before they existed.

@@ -135,7 +135,12 @@ pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
         Ability::Static {
             affected: mtg_cards::refs::Ref::Each(selector),
             ..
-        } => elsewhere(rules) || !crate::layers::zone_named(selector).is_battlefield(),
+        } => {
+            elsewhere(rules)
+                || crate::layers::ep22_zones_named(selector)
+                    .iter()
+                    .any(|zone| !zone.is_battlefield())
+        }
         other => elsewhere(other),
     })
 }

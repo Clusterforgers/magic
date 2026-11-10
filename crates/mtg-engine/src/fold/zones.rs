@@ -29,6 +29,7 @@ pub(super) fn move_object(
         return Err(invalid(format!("zone {to:?} does not exist")));
     }
     let (was_creature, w14b_phyrexian) = w14b_dying_kind(state, id, to);
+    keep_left_spell(state, id);
     tally_nonland_leaving(state, id, to);
     log_death(state, id, to);
     // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
@@ -248,6 +249,26 @@ fn w14b_dying_kind(state: &GameState, id: ObjectId, to: Zone) -> (bool, bool) {
 }
 
 /// Counts a nonland permanent (void) and a creature about to leave the battlefield for `to` for the player who controls it.
+/// Keeps a spell that leaves the stack as it last was there, for "copy that spell" to copy by last known information
+/// (CR 608.2h, 707.10).
+fn keep_left_spell(state: &mut GameState, id: ObjectId) {
+    let Some(spell) = state
+        .object(id)
+        .filter(|object| object.zone() == Zone::Stack && object.kind() != ObjectKind::Ability)
+    else {
+        return;
+    };
+    let mut choices = spell.choices().clone();
+    choices.forget_cost_picks();
+    choices.face = None;
+    let kept = crate::copies::KeptSpell {
+        of: spell.reference(),
+        definition: std::sync::Arc::new(spell.card().copiable()),
+        choices,
+    };
+    state.tallies.left_spells.push(kept);
+}
+
 fn tally_nonland_leaving(state: &mut GameState, id: ObjectId, to: Zone) {
     let Some(controller) = state
         .object(id)

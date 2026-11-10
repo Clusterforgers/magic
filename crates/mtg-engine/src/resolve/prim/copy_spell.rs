@@ -54,8 +54,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .filter(|spell| spell.zone() == Zone::Stack && spell.kind() != ObjectKind::Ability)
         .collect();
     if spells.is_empty()
-        && *what == Ref::This
-        && let Some(kept) = kept_spell(cx)
+        && let Some(kept) = left_spell(cx, what)?
     {
         return copy_kept(cx, player, kept, copies, *new_targets, except);
     }
@@ -140,6 +139,23 @@ fn kept_spell<'a>(cx: &'a Cx<'_>) -> Option<&'a KeptSpell> {
         .iter()
         .find(|waiting| waiting.id() == id)?
         .kept()
+}
+
+/// The spell `what` names as it last was on the stack, when it has left it: the one a delayed ability kept of its source
+/// ("copy this spell", epic), else the one the turn kept ("copy that spell" after another effect returned it to its
+/// owner's hand). The copy is made by last known information (CR 608.2h, 707.10).
+fn left_spell<'a>(cx: &'a Cx<'_>, what: &Ref) -> Result<Option<&'a KeptSpell>, ResolveError> {
+    if *what == Ref::This
+        && let Some(kept) = kept_spell(cx)
+    {
+        return Ok(Some(kept));
+    }
+    let left = &cx.state().tallies.left_spells;
+    Ok(cx
+        .scope
+        .objects(what)?
+        .into_iter()
+        .find_map(|named| left.iter().rev().find(|kept| kept.of == named)))
 }
 
 /// Copies of the spell a delayed ability kept, `copies` of them, made the way copies of a spell on the stack are: with the

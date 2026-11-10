@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9fddede8-927c-4dbc-a0fe-d47194c55e1a",
+  "name": "Avacyn and Griselbrand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avacyn and Griselbrand",
+      "oracle_fingerprint": "969a406be05672c6a31dcd40cdd77c9a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 8 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

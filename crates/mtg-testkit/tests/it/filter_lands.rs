@@ -1,4 +1,4 @@
-//! Goal: a filter land ("{W/U}, {T}: Add {W}{W}, {W}{U}, or {U}{U}") is a source that costs mana: it pays for a spell from the mana another source makes, never from its own, is offered as one source for each list of mana, adds every mana of the list in one batch, is seen by the mana a land could produce, and whole bot games with the ten filter lands keep every invariant at two, three and four seats.
+//! Goal: a filter land ("{W/U}, {T}: Add {W}{W}, {W}{U}, or {U}{U}") is a source that costs mana: it pays for a spell from the mana another source makes, never from its own, is offered as one source for each list of mana, at priority only while another source pays it, adds every mana of the list in one batch, is seen by the mana a land could produce, and whole bot games with the ten filter lands keep every invariant at two, three and four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -133,13 +133,24 @@ fn a_filter_land_is_one_source_for_each_list_and_one_for_the_colorless_ability()
     assert_eq!(keys.len(), 4, "every list is its own source");
 }
 
-#[test]
-fn only_the_free_ability_of_a_filter_land_is_offered_at_priority() {
-    let driver = Driver::from_scenario(table("{W}", &["Plains", "Mystic Gate"])).unwrap();
+#[rstest]
+fn the_filter_of_a_filter_land_is_offered_at_priority_only_while_another_land_pays_it(
+    #[values(true, false)] plains: bool,
+) {
+    let lands: &[&str] = if plains {
+        &["Plains", "Mystic Gate"]
+    } else {
+        &["Mystic Gate"]
+    };
+    let driver = Driver::from_scenario(table("{W}", lands)).unwrap();
     let offered = &priority_of(&driver).mana_abilities;
     let gate = of_land(offered, &driver, "Mystic Gate");
-    assert_eq!(gate.len(), 1);
-    assert_eq!(gate[0].produces, ManaType::Colorless);
+    assert_eq!(gate.len(), if plains { 4 } else { 1 });
+    assert_eq!(gate.iter().filter(|o| !o.is_costly()).count(), 1);
+    assert!(
+        gate.iter()
+            .any(|o| o.produces == ManaType::Colorless && !o.is_costly())
+    );
 }
 
 #[test]

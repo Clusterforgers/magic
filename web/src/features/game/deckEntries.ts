@@ -33,12 +33,16 @@ export interface DeckEntry {
   identity: string[] | null
   /** Copies by support state; null for a built-in deck, which the game runs whole. */
   counts: Counts | null
-  /** Copies the game leaves to the players (partial, manual and stale): what "fewest played by hand" orders by. */
+  /** Copies the game leaves to the players (partial, manual, stale and unplayable): what "fewest played by hand" orders by. */
   byHand: number
   /** A precon the account starred. */
   favourite: boolean
-  /** The deck's own check state. */
+  /** The deck's own check state; an old `blocked` reads as played by hand. */
   state: DeckState
+  /** The deck breaks no rule of its own format; a deck that does still plays, with a warning. */
+  legal: boolean
+  /** How many rules of its format the deck breaks. */
+  issues: number
   /** Distinct cards whose draft waits for a read; none for a built-in deck. */
   toRead: number
   /** The set code of a precon. */
@@ -74,6 +78,9 @@ function identityOf(letters: readonly (readonly string[])[]): string[] {
   return WUBRG.filter((letter) => all.has(letter))
 }
 
+// A card the game cannot play is played by hand too: such a deck still goes to a game.
+const handCopies = (counts: Counts): number => byHandCopies(counts) + counts.unplayable
+
 const pictureOf = (picture: DeckPicture): { oracleId: string; name: string } => ({
   oracleId: picture.oracle_id,
   name: picture.name,
@@ -93,9 +100,11 @@ export function entryOfDeck(deck: DeckListItem): DeckEntry {
     identity:
       deck.commanders.length === 0 ? null : identityOf(deck.commanders.map((card) => card.color_identity)),
     counts: deck.summary.counts,
-    byHand: byHandCopies(deck.summary.counts),
+    byHand: handCopies(deck.summary.counts),
     favourite: false,
     state: deck.state,
+    legal: deck.summary.legal,
+    issues: deck.summary.issues,
     toRead: deck.summary.to_read,
     set: null,
     extra: '',
@@ -117,9 +126,11 @@ export function entryOfPrecon(precon: PreconListItem, favourite = false): DeckEn
     pictures: precon.pictures.map(pictureOf),
     identity: commanded ? identityOf([precon.color_identity]) : null,
     counts: precon.summary.counts,
-    byHand: byHandCopies(precon.summary.counts),
+    byHand: handCopies(precon.summary.counts),
     favourite,
-    state: precon.playable ? precon.state : 'blocked',
+    state: precon.state,
+    legal: precon.summary.legal,
+    issues: precon.summary.issues,
     toRead: precon.summary.to_read,
     set: precon.set,
     extra: precon.deck_type ?? '',
@@ -158,6 +169,8 @@ export function entryOfBuiltIn(deck: DeckInfo): DeckEntry {
     byHand: 0,
     favourite: false,
     state: 'verified',
+    legal: true,
+    issues: 0,
     toRead: 0,
     set: null,
     extra: deck.color,
@@ -172,9 +185,8 @@ export function entryFacts(entry: DeckEntry): string {
     .join(' · ')
 }
 
-/** The chip of a row: "Whole deck runs" (Verified or not), "9 played by hand", "Cannot be taken" or "Not checked yet". */
+/** The chip of a row: "Whole deck runs" (Verified or not), "9 played by hand" or "Not checked yet". */
 export function entrySupport(entry: DeckEntry): { state: DeckState; label: string } {
-  if (entry.state === 'blocked') return { state: 'blocked', label: 'Cannot be taken' }
   if (entry.state === 'unchecked') return { state: 'unchecked', label: 'Not checked yet' }
   if (entry.state === 'read') return { state: 'read', label: WHOLE_DECK_RUNS }
   if (entry.state === 'verified' && entry.byHand === 0) return { state: 'verified', label: 'Whole deck runs' }
@@ -239,25 +251,22 @@ export const isSortKey = (value: unknown): value is SortKey => SORT_CHOICES.some
 const byName = (a: DeckEntry, b: DeckEntry): number =>
   a.name.localeCompare(b.name, undefined, { sensitivity: 'base', numeric: true }) || a.id.localeCompare(b.id)
 
-/**
- * The entries in the order asked for, without changing the list. Fewest played by hand puts the decks the table cannot
- * take last, since a blocked deck with few cards by hand is of no use, then orders by that count and by name.
- */
+/** The entries in the order asked for, without changing the list: fewest played by hand orders by that count and by name. */
 export function sortEntries(entries: readonly DeckEntry[], sort: SortKey): DeckEntry[] {
   if (sort === 'default') return [...entries]
   if (sort === 'name') return [...entries].sort(byName)
   if (sort === 'favorites') return [...entries].sort((a, b) => Number(b.favourite) - Number(a.favourite))
-  const blocked = (entry: DeckEntry): number => (entry.state === 'blocked' ? 1 : 0)
-  return [...entries].sort((a, b) => blocked(a) - blocked(b) || a.byHand - b.byHand || byName(a, b))
+  return [...entries].sort((a, b) => a.byHand - b.byHand || byName(a, b))
 }
 
 /**
  * The quiet line beside a row's chip: for a deck that runs whole without being all Verified, its other copies by tier
- * ("34 from Forge · 120 unverified · 2 read"); for a row whose chip does not count them ("Cannot be taken", "Not checked
- * yet"), the cards played by hand; null where the chip already says it all.
+ * ("34 from Forge · 120 unverified · 2 read"); for a row whose chip does not count them ("Not checked yet"), the cards
+ * played by hand; null where the chip already says it all.
  */
 export function handWords(entry: DeckEntry, always: boolean): string | null {
-  if (entry.counts === null || entry.state === 'verified' || entry.state === 'manual_play') return null
+  if (entry.counts === null || entry.state === 'verified') return null
+  if (entry.state === 'manual_play' || entry.state === 'blocked') return null
   if (entry.state === 'read') return runsBreakdown(entry.counts) || null
   return entry.byHand > 0 || always ? cardsByHand(entry.byHand) : null
 }

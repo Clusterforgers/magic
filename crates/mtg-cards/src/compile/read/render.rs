@@ -536,6 +536,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
         .map(|text| text.replacen(" onto a second target ", " onto another target ", 1))
         .collect();
     texts.extend(another);
+    super::ep22_everywhere::ep22_variants(ability, &mut texts);
     // A batch reads as its steps; the plain ability has no batch left, so this recurses once.
     if let Some(plain) = r11w_batch::flat_ability(ability) {
         for text in written_variants(&plain) {
@@ -2179,8 +2180,29 @@ impl Writer<'_> {
     }
 
     /// "put its counters on target creature you control"; "for each kind of counter on target permanent or player, give
-    /// that permanent or player another counter of that kind".
-    fn g12b_counters_of(&mut self, on: &Ref, of: &Ref, each: Option<&Amount>) -> Option<String> {
+    /// that permanent or player another counter of that kind"; with `one_kind`, "choose a counter on target permanent.
+    /// Give that permanent another counter of that kind".
+    fn g12b_counters_of(
+        &mut self,
+        on: &Ref,
+        of: &Ref,
+        each: Option<&Amount>,
+        one_kind: bool,
+    ) -> Option<String> {
+        if one_kind {
+            if !(each == Some(&Amount::Fixed(1))
+                && *on == Ref::Target(0)
+                && *of == Ref::Target(0)
+                && self.single(on))
+            {
+                return None;
+            }
+            let target = self.name_target()?;
+            let noun = target.strip_prefix("target ")?.to_owned();
+            return Some(format!(
+                "choose a counter on {target}. Give that {noun} another counter of that kind"
+            ));
+        }
         match (each, on, of) {
             (None, on, of) => {
                 let whose = match of {
@@ -2277,9 +2299,12 @@ impl Writer<'_> {
                     }
                 }
             }
-            Effect::PutCountersOf { on, of, each } => {
-                self.g12b_counters_of(on, of, each.as_ref())?
-            }
+            Effect::PutCountersOf {
+                on,
+                of,
+                each,
+                one_kind,
+            } => self.g12b_counters_of(on, of, each.as_ref(), *one_kind)?,
             Effect::MoveCounters {
                 from,
                 to,

@@ -1,4 +1,4 @@
-/** Goal: a yes-or-no question about one of the asker's own commanders is the return choice: it asks "Return <name> to the command zone?", names where a no leaves the commander for each destination, makes Return the focused primary answer, answers from a click or Y and N, and leaves any other question as the plain Yes and No. */
+/** Goal: a yes-or-no question the engine marks as a commander's return is the return choice: it asks "Return <name> to the command zone?", names where a no leaves the commander for each destination, makes Return the focused primary answer, answers from a click or Y and N, and leaves any other question as the plain Yes and No, a may of the asker's own commander included. */
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -17,7 +17,7 @@ const partner = (fixture: Fixture): number => must(fixture.view.players[0]?.comm
 const nameOf = (fixture: Fixture, id: number): string =>
   must(fixture.view.objects.find((object) => object.id === id)).name
 
-function mount(fixture: Fixture, source: number, text: string) {
+function mount(fixture: Fixture, source: number, text: string, commanderReturn = true) {
   const answer = vi.fn((_answer: Answer) => true)
   const user = userEvent.setup()
   const table = renderTable({
@@ -25,7 +25,10 @@ function mount(fixture: Fixture, source: number, text: string) {
     session: { answer },
     state: (state) => ({
       ...state,
-      pending: { id: 3, decision: { player: 0, kind: { YesNo: { source, text } } } },
+      pending: {
+        id: 3,
+        decision: { player: 0, kind: { YesNo: { source, text, commander_return: commanderReturn } } },
+      },
     }),
   })
   const said = (): string =>
@@ -89,9 +92,12 @@ describe('the return choice', () => {
     expect(table.answer.mock.calls[0]?.[0]).toEqual({ YesNo: yes })
   })
 
-  it("asks another seat's commander or any other card as a plain question", () => {
-    const other = must(PLAIN.view.players[1]?.commanders?.[0]).object
-    mount(PLAIN, other, 'Draw a card?')
+  it.each([
+    ['another seat', (fixture: Fixture) => must(fixture.view.players[1]?.commanders?.[0]).object],
+    ["the asker's own", partner],
+  ])("asks a may of %s commander as a plain question in the card's words", (_, source) => {
+    const { said } = mount(RETURN, source(RETURN), 'Draw a card?', false)
+    expect(said()).not.toContain('command zone')
     expect(screen.getByRole('button', { name: 'Yes' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'No' })).toHaveFocus()
   })

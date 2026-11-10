@@ -277,6 +277,9 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "ValidTgts",
             "Amount",
             "RememberNumber",
+            "HeadsSubAbility",
+            "TailsSubAbility",
+            "Flipper",
         ],
     )?;
     // `RememberNumber$ Wins` keeps the wins for a part that reads `Wins`; the win part runs once per win, where it is one.
@@ -286,6 +289,12 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if !matches!(p.get("Defined"), None | Some("You")) {
         return unmapped("key:FlipCoin.Defined");
     }
+    // "That player flips a coin": the player of the event (`Flipper$ TriggeredActivator`).
+    let flipper = match p.get("Flipper") {
+        None | Some("You") => None,
+        Some(word @ ("TriggeredActivator" | "TriggeredPlayer")) => Some(defined(ctx, word)?),
+        Some(other) => return unmapped(format!("key:FlipCoin.Flipper={other}")),
+    };
     // The flip names a target that the win and lose parts read as `Targeted`.
     if p.has("ValidTgts") {
         subject(ctx, p, "You", None)?;
@@ -293,15 +302,29 @@ fn flip_coin(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     // With or without a call the flip is won with even odds, as the node says.
     let _ = p.get("NoCall");
     let mut node = json!({"FlipCoin": {}});
+    if let Some(who) = flipper {
+        node["FlipCoin"]["who"] = who;
+    }
     match p.get("FlipUntilYouLose") {
         None => {}
         Some("True") => node["FlipCoin"]["until"] = json!(true),
         Some(_) => return unmapped("key:FlipCoin.FlipUntilYouLose"),
     }
-    for (key, field) in [("WinSubAbility", "win"), ("LoseSubAbility", "lose")] {
+    // A flip with no call comes up heads or tails with the even odds of a win or a loss ("for each coin that comes up
+    // heads"); a call and heads together stay a gap.
+    let no_call = p.get("NoCall") == Some("True");
+    if !no_call && (p.has("HeadsSubAbility") || p.has("TailsSubAbility")) {
+        return unmapped("key:FlipCoin.HeadsSubAbility");
+    }
+    for (key, field) in [
+        ("WinSubAbility", "win"),
+        ("LoseSubAbility", "lose"),
+        ("HeadsSubAbility", "win"),
+        ("TailsSubAbility", "lose"),
+    ] {
         if let Some(name) = p.get(key) {
             let part = ctx.sub(name)?;
-            ctx.flip_win = key == "WinSubAbility";
+            ctx.flip_win = matches!(key, "WinSubAbility" | "HeadsSubAbility");
             let chain = chain_at(ctx, &part, false);
             ctx.flip_win = false;
             node["FlipCoin"][field] = Value::Array(chain?);
@@ -320,7 +343,11 @@ fn flip_coins(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             _ => return unmapped("key:FlipCoin.Amount"),
         },
     };
-    if times > 1 && (p.has("LoseSubAbility") || p.get("FlipUntilYouLose").is_some()) {
+    if times > 1
+        && (p.has("LoseSubAbility")
+            || p.has("TailsSubAbility")
+            || p.get("FlipUntilYouLose").is_some())
+    {
         return unmapped("key:FlipCoin.Amount-with-more");
     }
     let node = flip_coin(ctx, p)?;

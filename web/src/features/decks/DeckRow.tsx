@@ -7,6 +7,8 @@ import type { DecksApi } from '@/net/decks'
 import type { DeckListItem } from '@/protocol/generated'
 import { DeckMarker } from './DeckMarker'
 import { ExportMenu } from './ExportMenu'
+import { LegalityPill } from './LegalityPill'
+import { notLegalText } from './legality'
 import { cardsText, checkNote, formatLabel, hasUnvalidated, unvalidatedLink } from './format'
 import { ToRead } from './ToRead'
 
@@ -44,6 +46,9 @@ export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
             </Link>
           </p>
           <DeckMarker state={deck.state} />
+          {deck.summary.legal ? null : (
+            <LegalityPill label={notLegalText(deck.format, deck.summary.issues)} />
+          )}
         </div>
         {deck.commanders.length === 0 ? null : (
           <ul aria-label="Commanders" data-slot="commanders" className="flex flex-wrap gap-x-4 gap-y-2 py-1">

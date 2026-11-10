@@ -1,4 +1,4 @@
-//! Goal: a mana ability with a mana cost (a Signet, a two-colour land, a Prism, a land with a big cost) pays for a spell only inside a payment, from mana the payment's other sources make or the pool holds, never from its own mana and never in a cycle; it is never offered to activate by itself, its cost is spent from the pool just before it taps, and whole bot games with these sources keep every invariant at two, three and four seats.
+//! Goal: a mana ability with a mana cost (a Signet, a two-colour land, a Prism, a land with a big cost) pays for a spell only inside a payment, from mana the payment's other sources make or the pool holds, never from its own mana and never in a cycle; at priority it is offered only while the other sources pay its cost, its cost is spent from the pool just before it taps, and whole bot games with these sources keep every invariant at two, three and four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -87,12 +87,14 @@ fn a_source_that_costs_mana_pays_only_from_other_mana(
 }
 
 #[rstest]
-#[case::a_signet(&["Forest", "Azorius Signet"], 1)]
-#[case::a_prism(&["Forest", "Prismatic Lens"], 2)]
-#[case::a_quarry(&["Crystal Quarry"], 1)]
-fn only_the_abilities_that_cost_nothing_are_offered_at_priority(
+#[case::a_signet(&["Forest", "Azorius Signet"], 2, 1)]
+#[case::a_lone_signet(&["Azorius Signet"], 0, 0)]
+#[case::a_prism(&["Forest", "Prismatic Lens"], 7, 5)]
+#[case::a_quarry_too_dear(&["Crystal Quarry"], 1, 0)]
+fn the_abilities_with_a_cost_are_offered_at_priority_while_other_sources_pay_it(
     #[case] mine: &[&str],
     #[case] offered: usize,
+    #[case] costly: usize,
 ) {
     let driver = Driver::from_scenario(table("{W}", mine)).unwrap();
     assert_eq!(
@@ -101,12 +103,12 @@ fn only_the_abilities_that_cost_nothing_are_offered_at_priority(
         "{:?}",
         priority_of(&driver).mana_abilities
     );
-    assert!(
-        priority_of(&driver)
-            .mana_abilities
-            .iter()
-            .all(|o| !o.is_costly())
-    );
+    let dear = priority_of(&driver)
+        .mana_abilities
+        .iter()
+        .filter(|o| o.is_costly())
+        .count();
+    assert_eq!(dear, costly);
 }
 
 #[test]

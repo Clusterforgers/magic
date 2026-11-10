@@ -676,6 +676,20 @@ pub(super) fn lowered(text: &str) -> String {
 /// The sentences an additional cost is written as: the cost's own words, and "blight N" for a blight alone (CR 701.66).
 pub(super) fn additional_texts(cost: &Cost, required: bool) -> Vec<String> {
     let mut out: Vec<String> = additional_text(cost, required).into_iter().collect();
+    // A required cost of X things, where X may be 0, is "you may sacrifice any number of creatures".
+    if required && cost.0.len() == 1 && cost.has_x() {
+        let any: Vec<String> = out
+            .iter()
+            .filter_map(|text| {
+                let body = text.strip_prefix("As an additional cost to cast ~, ")?;
+                let (verb, rest) = body.split_once(" X ")?;
+                matches!(verb, "sacrifice" | "exile" | "discard" | "remove").then(|| {
+                    format!("As an additional cost to cast ~, you may {verb} any number of {rest}")
+                })
+            })
+            .collect();
+        out.extend(any);
+    }
     if let [CostItem::Blight(Amount::Fixed(count @ 1..))] = cost.0.as_slice() {
         let may = if required { "" } else { "you may " };
         out.push(format!(

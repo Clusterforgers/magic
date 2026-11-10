@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0f26be86-eab1-45fd-8b69-5ecff2565c60",
+  "name": "Soulhunter Rakshasa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulhunter Rakshasa",
+      "oracle_fingerprint": "54ceccc9c09d0519bf6462d4a342e872",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "WasCast": { "by": "You", "from": "Hand" } },
+                  { "OwnedBy": "You" },
+                  "This"
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

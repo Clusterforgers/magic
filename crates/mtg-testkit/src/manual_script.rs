@@ -374,6 +374,11 @@ impl ManualScript {
                 subtypes: vec!["Imp".to_owned()],
                 power: Some(power),
                 toughness: Some(power + 1),
+                keywords: if self.rng.below(2) == 0 {
+                    Vec::new()
+                } else {
+                    vec![ManualKeyword::Flying]
+                },
             }));
         }
         let all = CommonToken::ALL;

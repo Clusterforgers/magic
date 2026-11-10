@@ -13,7 +13,7 @@ use mtg_protocol::rest::{GameInfo, GameSeat};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
-use crate::deck_choice::{self, Refused};
+use crate::deck_choice;
 use crate::demo::{self, DemoDeck};
 use crate::game_id::GameId;
 use crate::origin::origin_allowed;
@@ -465,14 +465,8 @@ async fn starting_deck(
     } else {
         deck_choice::built_in(id)
     };
-    // The game's own rules judge the deck too: a demo deck has no commander, a Commander deck no
-    // place in a Normal game.
-    let found = found.and_then(
-        |deck| match deck.issues_in(options.format, &options.house_rules) {
-            issues if issues.is_empty() => Ok(deck),
-            issues => Err(Refused::Blocked(issues)),
-        },
-    );
+    // The game's own rules only warn: the table is told how many the deck breaks.
+    let found = found.map(|deck| deck.for_table(options.format, &options.house_rules).0);
     found.map_err(|refused| {
         refused.into_error_with(
             StatusCode::BAD_REQUEST,

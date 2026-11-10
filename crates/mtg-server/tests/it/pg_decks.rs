@@ -458,11 +458,12 @@ async fn a_deck_with_manual_cards_or_one_that_breaks_its_format_is_not_verified(
 
     let mut short = modern();
     short["cards"][0]["count"] = json!(35);
-    let blocked = create(&server, &ann, &short).await;
-    assert_eq!(blocked["state"], "blocked");
-    assert_eq!(blocked["verified"], false);
-    assert_eq!(blocked["report"]["legality"][0]["code"], "deck_size");
-    assert_eq!(blocked["check"]["summary"]["state"], "blocked");
+    // A short deck is a warning: the state is still the one of its cards.
+    let short = create(&server, &ann, &short).await;
+    assert_eq!(short["state"], "verified");
+    assert_eq!(short["report"]["legality"][0]["code"], "deck_size");
+    assert_eq!(short["report"]["summary"]["legal"], false);
+    assert_eq!(short["check"]["summary"]["legal"], false);
 
     let list = ann.get(server.addr, "/api/decks").await.json();
     let states: Vec<(&str, &str)> = list["decks"]
@@ -473,7 +474,7 @@ async fn a_deck_with_manual_cards_or_one_that_breaks_its_format_is_not_verified(
         .collect();
     assert_eq!(
         states,
-        [("Green Burn", "blocked"), ("Beast Mode", "manual_play")],
+        [("Green Burn", "verified"), ("Beast Mode", "manual_play")],
         "the most recently saved first"
     );
 }
@@ -513,9 +514,9 @@ async fn replacing_a_deck_runs_the_check_again_and_marks_it_at_once(pool: PgPool
     let mut short = modern();
     short["cards"][0]["count"] = json!(34);
     let worse = ann.put(server.addr, &path, &short.to_string()).await.json();
-    assert_eq!(worse["state"], "blocked");
+    assert_eq!(worse["state"], "verified");
     assert_eq!(
-        worse["check"]["summary"]["state"], "blocked",
+        worse["check"]["summary"]["legal"], false,
         "the stored check is the latest one"
     );
     assert_eq!(ann.get(server.addr, &path).await.json(), worse);
@@ -623,7 +624,7 @@ async fn the_state_is_the_check_of_the_moment_not_the_stored_one(pool: PgPool) {
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_ban_that_leaves_the_hashes_alone_still_blocks_the_deck(pool: PgPool) {
+async fn a_ban_that_leaves_the_hashes_alone_still_warns_at_once(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register_ann(&server).await;
     let view = create(&server, &ann, &modern()).await;
@@ -641,8 +642,11 @@ async fn a_ban_that_leaves_the_hashes_alone_still_blocks_the_deck(pool: PgPool) 
         after["changed"], false,
         "a rule or data change never reads as changed"
     );
-    assert_eq!(after["state"], "blocked");
-    assert_eq!(after["verified"], false);
+    assert_eq!(
+        after["state"], "verified",
+        "a ban is a warning, never a state"
+    );
+    assert_eq!(after["report"]["summary"]["legal"], false);
     assert_eq!(after["report"]["legality"][0]["code"], "banned");
     assert_eq!(after["report"]["legality"][0]["name"], "Lightning Bolt");
     assert_eq!(

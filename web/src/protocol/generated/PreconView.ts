@@ -12,9 +12,8 @@ export type PreconView = {
  */
 precon: PreconListItem, 
 /**
- * What keeps the deck out of a game: the legality issues of the deck check and the rules of the
- * game's format. Empty exactly when the deck is `playable`, except for a deck blocked only
- * because it holds cards the game cannot play.
+ * The warnings of the deck: the legality issues of the deck check and the rules of the game's format it breaks.
+ * None of them keeps the deck from a game.
  */
 issues: Array<Issue>, 
 /**

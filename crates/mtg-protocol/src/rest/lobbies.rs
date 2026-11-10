@@ -186,7 +186,8 @@ pub struct ChooseDeck {
 pub enum DeckChoiceErrorCode {
     /// 404 (400 when a game is created): the id is no built-in deck and no deck of the caller's.
     UnknownDeck,
-    /// 422: the deck check refuses the deck; the body also lists the `issues`.
+    /// 422: no game can start with the deck: it has no card the database knows. Legality never gives this code; the
+    /// body also lists the `issues`.
     DeckBlocked,
     /// 409: the seat pressed Ready; it takes that back before it changes its deck.
     SeatReady,
@@ -210,8 +211,8 @@ impl DeckChoiceErrorCode {
     }
 }
 
-/// The body of a refused deck (422 `deck_blocked`): why the deck check will not let it be played in
-/// this game. The issues name cards, and go only to the account whose deck it is.
+/// The body of a refused deck (422 `deck_blocked`): a deck no game can start with. The issues name cards, and go
+/// only to the account whose deck it is.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct DeckBlockedBody {
     /// Always `deck_blocked`.

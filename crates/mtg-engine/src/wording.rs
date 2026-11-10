@@ -4,7 +4,7 @@
 //!
 //! They are hints for a person choosing, not rules: a predicate with no short phrase is left out.
 
-use mtg_cards::effect::{Effect, Place};
+use mtg_cards::effect::{Destination, Effect, Place};
 use mtg_cards::refs::{
     AbilityKind, Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind,
 };
@@ -1243,6 +1243,25 @@ pub(crate) fn may(effects: &[Effect]) -> String {
     {
         return format!("Reveal the top {count} cards of your library?");
     }
+    // Partner with: the named card is put from the asked player's library into their hand.
+    if let [
+        Effect::Search {
+            zone: ZoneKind::Library,
+            filter,
+            bind,
+            ..
+        },
+        Effect::Move {
+            what: Ref::Bound(moved),
+            to: Destination::Hand,
+            ..
+        },
+    ] = effects
+        && moved == bind
+        && let [Pred::Named(name)] = filter.0.as_slice()
+    {
+        return format!("Put {name} into your hand from your library?");
+    }
     let phrases: Option<Vec<String>> = effects.iter().map(verb_phrase).collect();
     let Some(mut phrases) = phrases.filter(|phrases| !phrases.is_empty()) else {
         return String::new();
@@ -1915,6 +1934,14 @@ mod tests {
     #[case::pairing_with_a_chosen_creature(
         r#"[{"Choose":{"from":"This","as":"partner"}},{"Pair":{"what":"This","with":{"Bound":"partner"}}}]"#,
         "Pair this creature with another creature?"
+    )]
+    #[case::partner_with_fetches_the_named_card(
+        r#"[{"Search":{"who":{"Target":0},"filter":[{"Named":"Okaun, Eye of Chaos"}],"as":"partner"}},{"Move":{"what":{"Bound":"partner"},"to":"Hand"}}]"#,
+        "Put Okaun, Eye of Chaos into your hand from your library?"
+    )]
+    #[case::a_search_for_a_type_is_not_named(
+        r#"[{"Search":{"filter":[{"Type":"Land"}],"as":"found"}},{"Move":{"what":{"Bound":"found"},"to":"Hand"}}]"#,
+        ""
     )]
     fn a_may_asks_what_its_effects_do_or_nothing(#[case] json: &str, #[case] expected: &str) {
         assert_eq!(may_words(json), expected);

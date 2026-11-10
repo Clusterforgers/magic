@@ -1,6 +1,6 @@
 //! Goal: an increase to the cost of every activated ability ("activated abilities of enchanted creature cost {3} more
 //! to activate") taxes mana abilities too (CR 605.1a, 601.2f), at tables of two to four seats: the taxed mana creature
-//! pays inside a payment only with the tax paid from other mana, is never offered as free mana, and a modifier of the
+//! pays inside a payment only with the tax paid from other mana, is offered at priority only while other mana pays the tax and never as free mana, and a modifier of the
 //! non-mana abilities leaves it untaxed.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -55,11 +55,19 @@ fn a_tax_on_every_activated_ability_taxes_mana_abilities(
         return Err(ScriptError::Expectation("priority was expected".into()));
     };
     assert_eq!(!options.castable.is_empty(), castable, "{kind} {islands}");
-    let free = options
+    let elf_options: Vec<_> = options
         .mana_abilities
         .iter()
-        .any(|option| option.source.object == elf_id);
-    assert_eq!(free, kind == "Any", "{kind}");
+        .filter(|option| option.source.object == elf_id)
+        .collect();
+    let payable = kind == "Any" || (kind == "Every" && islands >= 3);
+    assert_eq!(!elf_options.is_empty(), payable, "{kind} {islands}");
+    assert!(
+        elf_options
+            .iter()
+            .all(|option| option.is_costly() == (kind != "Any")),
+        "{kind}"
+    );
     Ok(())
 }
 

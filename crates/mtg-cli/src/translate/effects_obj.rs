@@ -1640,6 +1640,19 @@ fn g12b_counters_of(ctx: &mut Ctx, p: &Params) -> Option<Tr<Vec<Value>>> {
                 json!({"PutCountersOf": {"on": on, "of": on, "each": 1}}),
             ])
         })(),
+        // "Choose a counter on target permanent. Give that permanent another counter of that kind."
+        "ExistingCounter" if !p.has("EachExistingCounter") => (|| {
+            let mut keys = vec!["CounterType", "CounterNum"];
+            keys.extend(PLACES);
+            only(p, "PutCounter", &keys)?;
+            if p.get("CounterNum").unwrap_or("1") != "1" || !p.has("ValidTgts") {
+                return unmapped("key:PutCounter.ExistingCounter");
+            }
+            let on = g12b_place(ctx, p)?;
+            Ok(vec![
+                json!({"PutCountersOf": {"on": on, "of": on, "each": 1, "one_kind": true}}),
+            ])
+        })(),
         _ => return None,
     };
     Some(done)

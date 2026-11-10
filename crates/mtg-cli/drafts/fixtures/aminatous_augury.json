@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "503448da-d14f-4759-85b6-0db2e90e0241",
+  "oracle_id": "c9160997-0305-47f5-9a2f-77588d167da0",
+  "multiverse_ids": [
+    675799
+  ],
+  "mtgo_id": 131287,
+  "tcgplayer_id": 578949,
+  "cardmarket_id": 787928,
+  "name": "Aminatou's Augury",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/503448da-d14f-4759-85b6-0db2e90e0241",
+  "scryfall_uri": "https://scryfall.com/card/dsc/71/aminatous-augury?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:27:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/0/503448da-d14f-4759-85b6-0db2e90e0241.jpg?1783909645",
+    "normal": "https://cards.scryfall.io/normal/front/5/0/503448da-d14f-4759-85b6-0db2e90e0241.jpg?1783909645",
+    "large": "https://cards.scryfall.io/large/front/5/0/503448da-d14f-4759-85b6-0db2e90e0241.jpg?1783909645",
+    "png": "https://cards.scryfall.io/png/front/5/0/503448da-d14f-4759-85b6-0db2e90e0241.png?1783909645",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/0/503448da-d14f-4759-85b6-0db2e90e0241.jpg?1783909645",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/0/503448da-d14f-4759-85b6-0db2e90e0241.jpg?1783909645",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/0/503448da-d14f-4759-85b6-0db2e90e0241.webp?1783909645",
+    "grid": "https://cards.scryfall.io/grid/front/5/0/503448da-d14f-4759-85b6-0db2e90e0241.webp?1783909645",
+    "display": "https://cards.scryfall.io/display/front/5/0/503448da-d14f-4759-85b6-0db2e90e0241.webp?1783909645",
+    "art": "https://cards.scryfall.io/art/front/5/0/503448da-d14f-4759-85b6-0db2e90e0241.webp?1783909645",
+    "crop": "https://cards.scryfall.io/crop/front/5/0/503448da-d14f-4759-85b6-0db2e90e0241.webp?1783909645",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/0/503448da-d14f-4759-85b6-0db2e90e0241.jpg?1783909645"
+  },
+  "mana_cost": "{6}{U}{U}",
+  "cmc": 8.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile the top eight cards of your library. You may put a land card from among them onto the battlefield. Until end of turn, for each nonland card type, you may cast a spell of that type from among the exiled cards without paying its mana cost.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/503448da-d14f-4759-85b6-0db2e90e0241/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac9160997-0305-47f5-9a2f-77588d167da0&unique=prints",
+  "collector_number": "71",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Loïc Canavaggia",
+  "artist_ids": [
+    "f1e2e10b-08be-4e92-8f50-95a72850a811"
+  ],
+  "illustration_id": "6f2b9667-cf64-4a0a-93bc-f986a95a9afa",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2498,
+  "prices": {
+    "usd": "0.40",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.49",
+    "eur_foil": null,
+    "tix": "0.97"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=675799&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAminatou%2527s%2BAugury",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAminatou%2527s%2BAugury",
+    "edhrec": "https://edhrec.com/route/?cc=Aminatou%27s+Augury"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F578949%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=787928&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/131287?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

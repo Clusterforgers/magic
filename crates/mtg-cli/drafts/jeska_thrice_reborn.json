@@ -1,0 +1,49 @@
+{
+  "oracle_id": "b1fbfcf3-6921-4417-a58e-0f5e5d34a105",
+  "name": "Jeska, Thrice Reborn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jeska, Thrice Reborn",
+      "oracle_fingerprint": "b50cb928756b906b4b9d878f6f5ebd10",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "loyalty", "count": { "CommanderCasts": "You" } } }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": "Opponents",
+                      "source": [{ "Is": { "Target": 0 } }],
+                      "combat": true
+                    }
+                  },
+                  "by": { "Multiply": 3 },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": 3 } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

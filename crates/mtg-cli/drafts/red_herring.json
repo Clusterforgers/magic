@@ -1,0 +1,18 @@
+{
+  "oracle_id": "0e99efaf-6402-44c5-ae8b-1f5bb1b68333",
+  "name": "Red Herring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Herring",
+      "oracle_fingerprint": "c7aa94dcfc9741ddbbe23eb6f91c13a8",
+      "abilities": [
+        {
+          "Activated": { "cost": [{ "Mana": "{2}" }, "SacrificeSelf"], "effects": [{ "Draw": {} }] }
+        },
+        { "Keyword": "Haste" },
+        { "Rule": { "rule": { "MustAttack": "This" } } }
+      ]
+    }
+  ]
+}

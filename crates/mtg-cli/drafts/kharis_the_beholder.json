@@ -1,0 +1,106 @@
+{
+  "oracle_id": "329f84dd-889c-4d03-a0bb-d96712ebcad8",
+  "name": "Kharis & The Beholder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kharis & The Beholder",
+      "oracle_fingerprint": "03b8a6e3d0a564bc7af4ae0b27a8d0dc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "StepBegins": { "step": "Upkeep", "whose": "You" } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "Compare": {
+                                "left": {
+                                  "Sum": [
+                                    { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                                    { "DieResult": "Only" }
+                                  ]
+                                },
+                                "op": "Gt",
+                                "right": 11
+                              }
+                            },
+                            "then": [
+                              {
+                                "PutCounters": {
+                                  "on": {
+                                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                  },
+                                  "counter": "+1/+1"
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": {
+                              "Compare": {
+                                "left": { "DieResult": "Only" },
+                                "op": "Eq",
+                                "right": 20
+                              }
+                            },
+                            "then": [
+                              {
+                                "CreateToken": {
+                                  "token": {
+                                    "CopyOf": {
+                                      "of": {
+                                        "Each": [
+                                          { "Type": "Creature" },
+                                          { "Not": { "Supertype": "Legendary" } },
+                                          { "ControlledBy": "You" }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

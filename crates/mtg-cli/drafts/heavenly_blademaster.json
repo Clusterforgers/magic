@@ -1,0 +1,44 @@
+{
+  "oracle_id": "56940b6c-90ab-491b-a88a-4cd4a8adfbdb",
+  "name": "Heavenly Blademaster",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Heavenly Blademaster",
+      "oracle_fingerprint": "202fad2ff384fe58617cea528699fb46",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "DoubleStrike" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 22, "end": 116 }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Aura" }] },
+                      { "AttachedTo": "This" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Aura" }] },
+                      { "AttachedTo": "This" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

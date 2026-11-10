@@ -1,0 +1,122 @@
+{
+  "object": "card",
+  "id": "0026d249-079a-4ead-a502-401ec792fb88",
+  "oracle_id": "539c5bb8-d5d0-4901-a45b-594514948be6",
+  "multiverse_ids": [],
+  "name": "The Great Juggernaut",
+  "lang": "en",
+  "released_at": "2024-06-29",
+  "uri": "https://api.scryfall.com/cards/0026d249-079a-4ead-a502-401ec792fb88",
+  "scryfall_uri": "https://scryfall.com/card/unk/RR04b/the-great-juggernaut?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T02:50:08Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/0/0026d249-079a-4ead-a502-401ec792fb88.jpg?1783911008",
+    "normal": "https://cards.scryfall.io/normal/front/0/0/0026d249-079a-4ead-a502-401ec792fb88.jpg?1783911008",
+    "large": "https://cards.scryfall.io/large/front/0/0/0026d249-079a-4ead-a502-401ec792fb88.jpg?1783911008",
+    "png": "https://cards.scryfall.io/png/front/0/0/0026d249-079a-4ead-a502-401ec792fb88.png?1783911008",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/0/0026d249-079a-4ead-a502-401ec792fb88.jpg?1783911008",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/0/0026d249-079a-4ead-a502-401ec792fb88.jpg?1783911008",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/0/0026d249-079a-4ead-a502-401ec792fb88.webp?1783911008",
+    "grid": "https://cards.scryfall.io/grid/front/0/0/0026d249-079a-4ead-a502-401ec792fb88.webp?1783911008",
+    "display": "https://cards.scryfall.io/display/front/0/0/0026d249-079a-4ead-a502-401ec792fb88.webp?1783911008",
+    "art": "https://cards.scryfall.io/art/front/0/0/0026d249-079a-4ead-a502-401ec792fb88.webp?1783911008",
+    "crop": "https://cards.scryfall.io/crop/front/0/0/0026d249-079a-4ead-a502-401ec792fb88.webp?1783911008",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/0/0026d249-079a-4ead-a502-401ec792fb88.jpg?1783911008"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Legendary Artifact Creature — Juggernaut",
+  "oracle_text": "At the beginning of your upkeep, sacrifice The Great Juggernaut unless you discard a card.\nWhenever The Great Juggernaut attacks, shuffle your library then exile the top card of your library. You may play that card without paying its mana cost this turn.",
+  "power": "5",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "not_legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d2703c4f-66b6-438d-9368-ebb55aa12e78",
+  "set": "unk",
+  "set_name": "Unknown Event",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/d2703c4f-66b6-438d-9368-ebb55aa12e78",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0026d249-079a-4ead-a502-401ec792fb88/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A539c5bb8-d5d0-4901-a45b-594514948be6&unique=prints",
+  "collector_number": "RR04b",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "playtest"
+  ],
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BGreat%2BJuggernaut",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BGreat%2BJuggernaut",
+    "edhrec": "https://edhrec.com/route/?cc=The+Great+Juggernaut"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DThe%2BGreat%2BJuggernaut%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=The+Great+Juggernaut&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=The+Great+Juggernaut&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

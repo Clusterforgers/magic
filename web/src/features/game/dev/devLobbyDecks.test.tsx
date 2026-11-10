@@ -52,7 +52,7 @@ describe('the address', () => {
     expect(roster.seats.map((seat) => seat.deck === undefined)).toEqual([false, true, false, false])
     for (const seat of roster.seats)
       expect(Object.keys(seat.deck ?? {})).toEqual(
-        seat.deck === undefined ? [] : ['name', 'format', 'manual_cards'],
+        seat.deck === undefined ? [] : ['name', 'format', 'manual_cards', 'warnings'],
       )
   })
 })
@@ -104,7 +104,7 @@ describe('/dev/lobby with decks', () => {
       await screen.findByRole('option', { name: /Draconic Domination.*Whole deck runs/ }),
     ).toBeInTheDocument()
     expect(screen.getByRole('option', { name: /Merciless Rage.*1 played by hand/ })).toBeInTheDocument()
-    expect(screen.getByRole('option', { name: /Arcane Wizardry.*Cannot be taken/ })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: /Arcane Wizardry.*Not legal/ })).toBeInTheDocument()
     expect(screen.queryByRole('option', { name: /Mono White Starter/ })).toBeNull()
     expect(await screen.findByText(/Starting life 30/)).toBeInTheDocument()
   }, 20_000)

@@ -27,6 +27,11 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<GameRule> {
         return Some(GameRule::CantSearch(who));
     }
     r.need("if")?;
+    if r.words("you would flip a coin") {
+        r.punct(',').then_some(())?;
+        r.need("instead flip two coins and ignore one")?;
+        return Some(GameRule::FlipTwoCoins(Ref::You));
+    }
     let who = group(r, "an opponent", "a player")?;
     r.need("would begin an extra turn")?;
     r.punct(',').then_some(())?;
@@ -37,6 +42,11 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<GameRule> {
 /// What `read` reads, written back.
 pub(super) fn texts(rule: &GameRule) -> Vec<String> {
     let (who, search) = match rule {
+        GameRule::FlipTwoCoins(Ref::You) => {
+            return vec![
+                "If you would flip a coin, instead flip two coins and ignore one".to_owned(),
+            ];
+        }
         GameRule::CantSearch(who) => (who, true),
         GameRule::SkipExtraTurns(who) => (who, false),
         _ => return Vec::new(),

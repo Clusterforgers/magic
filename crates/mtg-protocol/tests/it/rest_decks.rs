@@ -51,6 +51,7 @@ fn summary() -> Summary {
     Summary {
         format: "modern".into(),
         state: DeckState::ManualPlay,
+        legal: true,
         counts,
         zones: vec![ZoneCounts {
             zone: DeckZone::Main,

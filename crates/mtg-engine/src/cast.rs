@@ -748,6 +748,27 @@ fn pay_with(
     Ok(Outcome::Events(events))
 }
 
+/// The events of the automatic payment of `options` with nothing announced: the cost of a mana ability used at priority.
+pub(crate) fn auto_pay_events(
+    state: &GameState,
+    player: PlayerId,
+    options: &PayOptions,
+) -> Result<Vec<Event>, EngineError> {
+    let outcome = pay_with(
+        player,
+        options,
+        &unusable(state, player, options),
+        PayChoice::Auto,
+        Vec::new(),
+        &|option, taken| mana_ability::activation(state, player, option, taken),
+        &|id| state.object(id).map(crate::object::GameObject::reference),
+    )?;
+    match outcome {
+        Outcome::Events(events) => Ok(parts::mill::in_turn(state, player, events)),
+        _ => Err(IllegalAnswer::NotOffered("automatic payment").into()),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: each payment choice is validated as a whole before it produces events, life is paid in the same step and before the spell goes on the stack, and cancelling follows the options' flag.

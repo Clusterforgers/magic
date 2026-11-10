@@ -1,0 +1,66 @@
+{
+  "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+  "name": "Vihaan, Goldwaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vihaan, Goldwaker",
+      "oracle_fingerprint": "737281dd2b1ee24779e9ea946189fb7d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                {
+                  "AnyOf": [
+                    { "Subtype": "Assassin" },
+                    { "Subtype": "Mercenary" },
+                    { "Subtype": "Pirate" },
+                    { "Subtype": "Rogue" },
+                    { "Subtype": "Warlock" }
+                  ]
+                },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Haste" }, { "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [
+                            { "Type": "Artifact" },
+                            { "Subtype": "Treasure" },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "mods": [
+                          { "SetPT": { "power": 3, "toughness": 3 } },
+                          { "AddSubtype": "Construct" },
+                          { "AddSubtype": "Assassin" },
+                          { "AddType": "Artifact" },
+                          { "AddType": "Creature" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
