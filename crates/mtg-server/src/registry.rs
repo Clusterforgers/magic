@@ -542,7 +542,11 @@ impl Registry {
     ) -> Result<Created, CreateError> {
         let ids = recipe.oracle_ids();
         let (catalog, reads) = match &self.shared.cards {
-            Some(cards) if !ids.is_empty() => cards.catalog_pinned(&ids).await?,
+            Some(cards) if !ids.is_empty() => {
+                let (catalog, reads) = cards.catalog_pinned(&ids).await?;
+                let manual = cards.by_hand(&recipe.by_hand_ids()).await?;
+                (catalog.with_by_hand(manual), reads)
+            }
             _ => (Catalog::default(), Reads::new()),
         };
         let mut recipe = recipe.with_fingerprints_from(&catalog)?;

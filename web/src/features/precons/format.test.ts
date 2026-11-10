@@ -1,4 +1,4 @@
-// Goal: the precon browser's pure rules hold over tables: the status a deck gets from the server's state and `playable` flag and the words of its badge, the release date and commander lines, the search and the set and state filters (accents, several words, newest-first sets), the count line, and the copyable list, which holds one `Name: clause` line for each card that is not Verified and nothing else.
+// Goal: the precon browser's pure rules hold over tables: the status a deck gets from the server's state and the words of its badge, legality as a warning that never changes it, the release date and commander lines, the search and the set and state filters (accents, several words, newest-first sets), the count line, and the copyable list, which holds one `Name: clause` line for each card that is not Verified and nothing else.
 import { describe, expect, it } from 'vitest'
 import { playRequest } from './play'
 import { board, cardLine, checked, preconItem, preconView } from './fakePrecons'
@@ -10,6 +10,7 @@ import {
   countLine,
   filterPrecons,
   filtersActive,
+  legalityWords,
   NO_FILTERS,
   releaseText,
   setOptions,
@@ -45,12 +46,12 @@ describe('statusOf and statusWords', () => {
       'hand',
       '6 cards played by hand',
     ],
-    ['an unplayable card', checked(preconItem(), { unplayable: 1 }), 'blocked', 'Cannot be taken'],
+    ['an unplayable card is played by hand', checked(preconItem(), { unplayable: 1 }), 'hand', '1 card played by hand'],
     [
-      'a deck the engine refuses though its check is clean of unplayable cards',
-      checked(preconItem(), { manual: 2 }, false),
-      'blocked',
-      'Cannot be taken',
+      'a deck that is not legal plays as its cards say',
+      checked(preconItem(), { manual: 2 }, 3),
+      'hand',
+      '2 cards played by hand',
     ],
   ])('%s', (_, item, status, words) => {
     expect(statusOf(item)).toBe(status)
@@ -82,8 +83,17 @@ describe('statusOf and statusWords', () => {
     expect(breakdownWords(checked(preconItem(), { unverified: 4, manual: 1 }))).toBe('')
   })
 
+  it.each<[string, number, string | null]>([
+    ['a legal deck', 0, null],
+    ['two issues', 2, 'Not legal in Commander: 2 issues'],
+  ])('warns for %s and never blocks it', (_, issues, words) => {
+    const item = checked(preconItem(), {}, issues)
+    expect(legalityWords(item)).toBe(words)
+    expect(item.playable).toBe(true)
+  })
+
   it('lists the precons that run on reads under their own state, between whole and by hand', () => {
-    expect(STATUSES).toEqual(['whole', 'read', 'hand', 'blocked'])
+    expect(STATUSES).toEqual(['whole', 'read', 'hand', 'illegal'])
     const decks = [deck('Whole'), checked(deck('Reads'), { read: 3 }), checked(deck('Hand'), { manual: 3 })]
     expect(filterPrecons(decks, { ...NO_FILTERS, status: 'read' }).map((item) => item.name)).toEqual([
       'Reads',
@@ -125,9 +135,11 @@ describe('filterPrecons', () => {
   const list = [
     checked(deck('Eldrazi Unbound', { set: 'M3C', commanders: ['Ulalek, Fused Atrocity'] }), { manual: 1 }),
     deck('Tricky Terrain', { set: 'M3C', commanders: ['Satya, Aetherflux Genius'] }),
-    checked(deck('Arcane Maelstrom', { set: 'C20', commanders: ['Kalamax, the Stormsire'] }), {
-      unplayable: 1,
-    }),
+    checked(
+      deck('Arcane Maelstrom', { set: 'C20', commanders: ['Kalamax, the Stormsire'] }),
+      { unplayable: 1 },
+      2,
+    ),
     deck('Séance Spirits', { set: 'C18', commanders: ['Anje Falkenrath'] }),
   ]
   const names = (filters: Partial<Filters>): string[] =>
@@ -146,8 +158,8 @@ describe('filterPrecons', () => {
     ['accents are ignored', { text: 'seance' }, ['Séance Spirits']],
     ['spaces around the text are ignored', { text: '  terrain  ' }, ['Tricky Terrain']],
     ['a set', { set: 'M3C' }, ['Eldrazi Unbound', 'Tricky Terrain']],
-    ['a state', { status: 'hand' }, ['Eldrazi Unbound']],
-    ['the blocked state', { status: 'blocked' }, ['Arcane Maelstrom']],
+    ['a state', { status: 'hand' }, ['Eldrazi Unbound', 'Arcane Maelstrom']],
+    ['the decks that are not legal', { status: 'illegal' }, ['Arcane Maelstrom']],
     ['the whole state', { status: 'whole' }, ['Tricky Terrain', 'Séance Spirits']],
     ['a set and a state together', { set: 'M3C', status: 'whole' }, ['Tricky Terrain']],
     ['nothing matches', { text: 'zzz' }, []],

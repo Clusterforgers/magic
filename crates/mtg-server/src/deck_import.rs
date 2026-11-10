@@ -234,6 +234,7 @@ pub(crate) async fn import(
             oracle_id,
             printing_id,
             count: entry.count,
+            by_hand: false,
         });
     }
     let loaded = Loaded::load(cards, &lines).await?;

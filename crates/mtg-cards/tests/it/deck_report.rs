@@ -482,7 +482,10 @@ fn legality_warns_and_never_decides_the_state(
     let state = found.summary.state;
     found.set_legality(Vec::new());
     assert!(found.summary.legal);
-    assert_eq!(found.summary.state, state, "the state is about the cards alone");
+    assert_eq!(
+        found.summary.state, state,
+        "the state is about the cards alone"
+    );
 }
 
 #[rstest]

@@ -5,17 +5,24 @@ import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { filtersActive, NO_FILTERS, STATUS_LABEL, STATUSES } from './format'
 import type { Filters, SetOption, StatusFilter } from './format'
+import { isPreconSort, PRECON_SORTS } from './sort'
+import type { PreconSort } from './sort'
 
 interface Props {
   filters: Filters
   sets: readonly SetOption[]
   onChange(next: Filters): void
+  /** The order of the list as shown. */
+  sort: PreconSort
+  onSort(next: PreconSort): void
+  /** A signed-in player can put the favorites first; a guest sees the choice disabled. */
+  signedIn: boolean
 }
 
 const isStatus = (value: string): value is StatusFilter => STATUSES.some((status) => status === value)
 
-/** Search by name, set or commander, and the set and deck-check filters above the list. */
-export function PreconFilters({ filters, sets, onChange }: Props) {
+/** Search by name, set or commander, the set and deck-check filters and the order, above the list. */
+export function PreconFilters({ filters, sets, onChange, sort, onSort, signedIn }: Props) {
   // A set that was chosen stays in the menu if the list no longer holds it, so the menu never shows blank.
   const options =
     filters.set === null || sets.some((option) => option.set === filters.set)
@@ -81,6 +88,28 @@ export function PreconFilters({ filters, sets, onChange }: Props) {
               {STATUS_LABEL[status]}
             </NativeSelectOption>
           ))}
+        </NativeSelect>
+      </div>
+      <div className="grid gap-1">
+        <Label htmlFor="precon-sort" className="text-xs text-muted-foreground">
+          Sort by
+        </Label>
+        <NativeSelect
+          id="precon-sort"
+          size="sm"
+          value={sort}
+          onChange={(event) => {
+            if (isPreconSort(event.target.value)) onSort(event.target.value)
+          }}
+        >
+          {PRECON_SORTS.map((choice) => {
+            const locked = choice.account === true && !signedIn
+            return (
+              <NativeSelectOption key={choice.value} value={choice.value} disabled={locked}>
+                {locked ? `${choice.label} (sign in)` : choice.label}
+              </NativeSelectOption>
+            )
+          })}
         </NativeSelect>
       </div>
       {filtersActive(filters) ? (

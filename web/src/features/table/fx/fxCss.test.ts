@@ -90,6 +90,11 @@ describe('moves', () => {
     expect(chip?.body).toMatch(/width:\s*var\(--fx-chip-w\)/)
   })
 
+  it('hides a flier until its leg starts, so a delayed leg never stands at its start', () => {
+    const flier = rulesIn(outside).find((rule) => rule.selector === '.fx-flier')
+    expect(flier?.body).toMatch(/opacity:\s*0/)
+  })
+
   it('frames the viewer’s own spotlight with the plain border, the rival’s with the strong one', () => {
     const rules = rulesIn(outside)
     const caption = rules.find((rule) => rule.selector === '.fx-spotlight-caption')

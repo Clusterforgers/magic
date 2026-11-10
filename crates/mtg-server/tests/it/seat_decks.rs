@@ -114,7 +114,7 @@ async fn a_host_and_a_guest_choose_and_change_their_decks_and_the_table_hears_ea
     assert_eq!(changed.status, 200, "{}", changed.text());
     assert_eq!(
         changed.json(),
-        json!({ "name": "Mono Red Giants", "format": "normal", "manual_cards": 0 })
+        json!({ "name": "Mono Red Giants", "format": "normal", "manual_cards": 0, "warnings": 0 })
     );
     let after_guest = roster(&mut host).await;
     assert_eq!(

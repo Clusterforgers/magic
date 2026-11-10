@@ -11,6 +11,7 @@ import type {
   FullControlMode,
   GameResult,
   LobbySeat,
+  LogHost,
   ObjectId,
   ObjectView,
   PlayerId,
@@ -19,7 +20,7 @@ import type {
   YieldUntil,
 } from '@/protocol/generated'
 import type { AwayTimes } from './awayClocks'
-import { hostsBefore } from './hosts'
+import { hostFromWire, hostsBefore } from './hosts'
 import { namesToRemember, revealedViews } from './rememberNames'
 import type { HostRef } from './hosts'
 import type { PreviewState } from './preview'
@@ -246,20 +247,30 @@ export function appendLog(
 /**
  * `log` after a snapshot at `seq` that brought `history`, the latest events of the game as this seat saw them (the
  * event at index `i` is at `seq - history.length + i`): what the page already holds stays, since it knows names and
- * attachments the history cannot, and what it lacks (a reload, a gap) is filled in from the history.
+ * attachments the history cannot, and what it lacks (a reload, a gap) is filled in from the history, an attach event
+ * with the host `hosts` (by index into the history) says it replaced.
  */
 export function mergeHistory(
   log: readonly LogEntry[],
   seq: number,
   history: readonly EventView[] = [],
+  hosts: readonly LogHost[] = [],
 ): readonly LogEntry[] {
   const kept = dropLogFrom(log, seq)
   const start = seq - history.length
   if (history.length === 0 || start < 0) return kept
   const held = new Map(kept.map((entry) => [entry.seq, entry]))
-  const rebuilt = history.map(
-    (event, index): LogEntry => held.get(start + index) ?? { seq: start + index, event },
-  )
+  const before = new Map(hosts.map((host) => [host.at, hostFromWire(host)]))
+  const rebuilt = history.map((event, index): LogEntry => {
+    const was = before.get(index)
+    return (
+      held.get(start + index) ?? {
+        seq: start + index,
+        event,
+        ...(was === undefined ? {} : { hostBefore: was }),
+      }
+    )
+  })
   return [...kept.filter((entry) => entry.seq < start), ...rebuilt].slice(-LOG_LIMIT)
 }
 

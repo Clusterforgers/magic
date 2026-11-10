@@ -10,8 +10,8 @@ export const FIRST_MOVE_MS = 600
 
 /**
  * One button, "Effects", that opens a bar of buttons which play a move on the fixture table (an attack, a block, damage,
- * a death, a life change, an entry) so its effect can be looked at. Folded it covers a corner of the top bar only, so a
- * screenshot shows the table; `?bar=1` opens it. It also plays the move `?fx=` names once, shortly after the page has
+ * a death, a life change, an entry) so its effect can be looked at. Folded it covers a corner of the top bar (from lg the
+ * bottom left corner), so a screenshot shows the table; `data-dev-tool` lets the layout gate hide it; `?bar=1` opens it. It also plays the move `?fx=` names once, shortly after the page has
  * loaded.
  */
 export function DevFxControls({
@@ -34,8 +34,9 @@ export function DevFxControls({
     <div
       role="group"
       aria-label="Table effects (development)"
+      data-dev-tool=""
       data-open={open || undefined}
-      className="fixed top-1.5 right-14 z-50 flex max-w-[calc(100vw-4rem)] lg:right-[26rem] lg:max-w-[calc(100vw-27rem)] flex-wrap items-center justify-end gap-1 rounded-lg border bg-popover p-1 text-xs text-popover-foreground shadow-md"
+      className="fixed top-1.5 right-14 z-50 flex max-w-[calc(100vw-4rem)] lg:top-auto lg:right-auto lg:bottom-1.5 lg:left-1.5 lg:max-w-[calc(100vw-27rem)] flex-wrap items-center justify-end gap-1 rounded-lg border bg-popover p-1 text-xs text-popover-foreground shadow-md"
     >
       <Button
         type="button"

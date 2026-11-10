@@ -234,14 +234,15 @@ export function markedId(
   return same.length === 1 ? (same[0]?.id ?? null) : null
 }
 
-/** How the list is ordered: as the server sends it, by name, or the decks with the fewest cards played by hand first. */
-export type SortKey = 'default' | 'name' | 'hand'
+/** How the list is ordered: as sent, by name, the fewest cards played by hand first, or the starred precons first. */
+export type SortKey = 'default' | 'name' | 'hand' | 'favorites'
 
 /** The orders a list can take, in the order of the choice. */
 export const SORT_CHOICES: readonly { value: SortKey; label: string }[] = [
   { value: 'default', label: 'Default order' },
   { value: 'name', label: 'Name' },
   { value: 'hand', label: `Fewest ${BY_HAND}` },
+  { value: 'favorites', label: 'Favorites first' },
 ]
 
 /** Whether a stored sort key is one of the orders. */
@@ -254,6 +255,7 @@ const byName = (a: DeckEntry, b: DeckEntry): number =>
 export function sortEntries(entries: readonly DeckEntry[], sort: SortKey): DeckEntry[] {
   if (sort === 'default') return [...entries]
   if (sort === 'name') return [...entries].sort(byName)
+  if (sort === 'favorites') return [...entries].sort((a, b) => Number(b.favourite) - Number(a.favourite))
   return [...entries].sort((a, b) => a.byHand - b.byHand || byName(a, b))
 }
 

@@ -36,7 +36,7 @@ const draft = (amount: number, more: Partial<PanelDraft> = {}): PanelDraft => ({
 describe('panelGroups', () => {
   it('lists You, Library and Make in order with their commands', () => {
     expect(panelGroups(INPUT).map((group) => [group.label, group.commands.map((c) => c.id)])).toEqual([
-      ['You', ['life', 'poison', 'energy', 'experience']],
+      ['You', ['life', 'poison', 'energy', 'experience', 'rad']],
       ['Library', ['draw', 'look', 'tutor', 'mill', 'exileTop', 'bottomTop', 'shuffle', 'revealTop']],
       ['Make', ['token', 'mana', 'roll']],
     ])

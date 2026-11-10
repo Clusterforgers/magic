@@ -123,15 +123,16 @@ export function PreviewCard({
                   <Lock aria-hidden="true" className="size-3.5 shrink-0" />
                 )}
                 <span>{doorWord(door)}</span>
-                {usable.includes(unlockKey({ card: object.id, face: at, name: door.name, land: false })) ? (
-                  <span
-                    data-slot="preview-unlock-now"
-                    className="ml-1 rounded-md bg-muted px-2 py-0.5 text-xs font-medium"
-                  >
-                    Can unlock now
-                  </span>
-                ) : null}
               </p>
+              {/* Its own line: the door's state reads alone and the mark is announced apart from it. */}
+              {usable.includes(unlockKey({ card: object.id, face: at, name: door.name, land: false })) ? (
+                <p
+                  data-slot="preview-unlock-now"
+                  className="w-fit rounded-md bg-muted px-2 py-0.5 text-xs font-medium"
+                >
+                  Can unlock now
+                </p>
+              ) : null}
               {(faces[at]?.oracle_text ?? '') === '' ? null : (
                 <p data-slot="preview-oracle" className="whitespace-pre-line select-text">
                   {faces[at]?.oracle_text}

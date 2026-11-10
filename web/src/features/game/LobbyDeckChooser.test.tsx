@@ -35,15 +35,15 @@ const STORED = [
       counts: { ...deckIn('manual_play').summary.counts, manual: 3 },
     },
   }),
-  deckIn('blocked', {
+  deckIn('manual_play', {
     id: 'pauper',
     name: 'Pauper Affinity',
     format: 'pauper',
-    summary: { ...deckIn('blocked').summary, issues: 2 },
+    summary: { ...deckIn('manual_play').summary, legal: false, issues: 2 },
   }),
 ]
 
-// What the table says of each stored deck: it runs, three cards are played by hand, and it cannot be taken.
+// What the table says of each stored deck: it runs, three cards are played by hand, and it is not legal (a warning).
 const REPORTS: Record<string, ReturnType<typeof reportOf>> = {
   rakdos: reportOf([reportCard('Forest', { count: 60 })]),
   burn: reportOf([
@@ -156,24 +156,23 @@ describe('the decks on offer', () => {
     ).toBeInTheDocument()
     expect(within(stored).getByRole('option', { name: /Burn.*3 played by hand/ })).toBeInTheDocument()
     expect(
-      within(stored).getByRole('option', { name: /Pauper Affinity.*Cannot be taken/ }),
+      within(stored).getByRole('option', { name: /Pauper Affinity.*Not legal/ }),
     ).toBeInTheDocument()
     await waitFor(() => expect(checked(h).map((body) => body.deck)).toEqual(['rakdos']))
     expect(checked(h).every((body) => body.game === GAME_ID)).toBe(true)
   })
 
-  it('shows a deck the table cannot take with its reasons and sends nothing when it is used', async () => {
+  it('takes a deck that is not legal at the table, with its warning, and sends the choice', async () => {
     const h = await openChooser({ signedIn: true })
     await h.user.click(await screen.findByRole('option', { name: /Pauper Affinity/ }))
     const use = await screen.findByRole('button', { name: 'Use this deck' })
-    await waitFor(() => expect(use).toHaveAttribute('aria-disabled', 'true'))
-    expect(await screen.findByText('Not legal in Normal')).toBeInTheDocument()
-    expect(use).toHaveAccessibleDescription(/A Pauper deck holds no rares\./)
+    expect(await screen.findByText(/^Not legal in Normal/)).toBeInTheDocument()
+    expect(use).not.toHaveAttribute('aria-disabled', 'true')
     await h.user.click(use)
-    expect(deckCalls(h)).toEqual([])
+    await waitFor(() => expect(deckCalls(h)).toHaveLength(1))
   })
 
-  it('states the issue of a deck the table cannot take once: in its legality list, with the button and the Ready bar showing only state', async () => {
+  it('states the issue of a deck that is not legal at the table once, in its warning, and never calls it refused', async () => {
     const h = await openChooser({ signedIn: true })
     await h.user.click(await screen.findByRole('option', { name: /Pauper Affinity/ }))
     const list = await screen.findByRole('list', { name: /Why the deck is not legal in Normal/ })
@@ -181,16 +180,10 @@ describe('the decks on offer', () => {
       within(list)
         .getAllByRole('listitem')
         .map((item) => item.textContent),
-    ).toEqual(['A Pauper deck holds no rares.', '2 cards the game cannot play.'])
+    ).toEqual(['A Pauper deck holds no rares.'])
     expect(document.querySelector('[data-slot="deck-blocked"]')).toBeNull()
-    await waitFor(() =>
-      expect(document.querySelector('[data-slot="ready-hint"]')?.textContent).toBe(
-        'Ready needs a deck. Choose one under Your deck. Pauper Affinity cannot be taken at this table.',
-      ),
-    )
     expect(document.body.textContent?.match(/holds no rares/g)).toHaveLength(1)
-    expect(document.body.textContent?.match(/cannot play/g)).toHaveLength(1)
-    expect(screen.getByRole('button', { name: 'Use this deck' })).toHaveAttribute('aria-describedby', list.id)
+    expect(document.body.textContent).not.toMatch(/cannot be taken/i)
   })
 
   it('names the cards played by hand in the preview of a stored deck, with a link to its page', async () => {
@@ -277,7 +270,7 @@ describe('a choice that goes through', () => {
       'Your deck is now Burn, Modern, 3 cards played by hand.',
     ],
   ])('sends %s with the seat token and says the result', async (_what, name, id, signedIn, words) => {
-    const answer = id === 'burn' ? { name: 'Burn', format: 'modern', manual_cards: 3 } : undefined
+    const answer = id === 'burn' ? { name: 'Burn', format: 'modern', manual_cards: 3, warnings: 0 } : undefined
     const h = await openChooser({
       signedIn,
       script: answer === undefined ? {} : { chooseDeck: () => jsonResponse(200, answer) },
@@ -313,7 +306,7 @@ describe('a choice that goes through', () => {
     expect(ready()).toBeDisabled()
     // The old deck is still the seat's until the answer: the roster says so.
     expect(current()).toBe('Mono Green Stompers, Normal, no cards played by hand')
-    gate.release(jsonResponse(200, { name: 'Mono Red Giants', format: 'normal', manual_cards: 0 }))
+    gate.release(jsonResponse(200, { name: 'Mono Red Giants', format: 'normal', manual_cards: 0, warnings: 0 }))
     await h.settle()
     expect(within(pressed).queryByLabelText('Choosing this deck')).toBeNull()
     expect(ready()).toBeEnabled()
@@ -322,7 +315,7 @@ describe('a choice that goes through', () => {
 
   it('marks the deck the roster shows, and follows the roster when it moves to another', async () => {
     const h = await openChooser({
-      table: withDecks(WITH_DECK, { 0: { name: 'Mono Red Giants', format: 'normal', manual_cards: 0 } }),
+      table: withDecks(WITH_DECK, { 0: { name: 'Mono Red Giants', format: 'normal', manual_cards: 0, warnings: 0 } }),
     })
     await screen.findByRole('listbox', { name: 'Built-in decks' })
     expect(tile('Mono Red Giants')).toHaveAttribute('data-chosen', 'true')
@@ -344,14 +337,8 @@ describe('a choice that fails', () => {
   const BLOCKED = () =>
     jsonResponse(422, {
       error: 'deck_blocked',
-      message: 'the deck cannot be played in this game',
-      issues: [
-        issue(
-          'Lightning Bolt: 4 copies is the most a Normal deck may hold, and this deck has 5',
-          'Lightning Bolt',
-        ),
-        issue('the main deck has 58 cards, and a Normal deck needs 60', null),
-      ],
+      message: 'that deck has no cards a game can play',
+      issues: [issue('the deck has no card the game knows, so no game can start with it', null)],
     })
 
   it.each<[string, () => Response | Promise<Response>, RegExp]>([
@@ -389,25 +376,24 @@ describe('a choice that fails', () => {
     expect(ready()).toBeEnabled()
   })
 
-  it('lists the issues of a refused deck to its owner and says the old deck is still in force', async () => {
+  it('lists why a deck no game can start with was refused to its owner and says the old deck is still in force', async () => {
     const h = await openChooser({ table: WITH_DECK, signedIn: true, script: { chooseDeck: BLOCKED } })
     await pick(h, /Rakdos Midrange/)
     await h.settle()
     const alert = problem()
     expect(alert).toHaveAttribute('data-blocked', 'true')
-    expect(alert).toHaveTextContent('That deck cannot be played in this game.')
+    expect(alert).toHaveTextContent('That deck has no cards a game can play.')
     const items = within(
       within(alert as HTMLElement).getByRole('list', { name: 'What breaks the rules' }),
     ).getAllByRole('listitem')
     expect(items.map((item) => item.textContent)).toEqual([
-      'Lightning Bolt: 4 copies is the most a Normal deck may hold, and this deck has 5.',
-      'The main deck has 58 cards, and a Normal deck needs 60.',
+      'The deck has no card the game knows, so no game can start with it.',
     ])
     await h.user.click(screen.getByRole('tab', { name: 'Built-in' }))
     expect(tile('Mono Green Stompers')).toHaveAttribute('data-chosen', 'true')
   })
 
-  it('says a refused deck with no issue listed holds cards the game cannot play', async () => {
+  it('says a refused deck with no issue listed has no card the game knows', async () => {
     const h = await openChooser({
       table: WITH_DECK,
       script: {
@@ -417,7 +403,7 @@ describe('a choice that fails', () => {
     await screen.findByRole('listbox', { name: 'Built-in decks' })
     await pick(h, 'Mono Red Giants')
     await h.settle()
-    expect(problem()).toHaveTextContent('The deck holds cards that the game cannot play.')
+    expect(problem()).toHaveTextContent('The deck has no card the game knows.')
   })
 
   it('ends the lobby with the words that the game has started on 409 started', async () => {
@@ -439,7 +425,7 @@ describe('a choice that fails', () => {
         chooseDeck: () =>
           tries++ === 0
             ? FAILURES.server()
-            : jsonResponse(200, { name: 'Mono Red Giants', format: 'normal', manual_cards: 0 }),
+            : jsonResponse(200, { name: 'Mono Red Giants', format: 'normal', manual_cards: 0, warnings: 0 }),
       },
     })
     await screen.findByRole('listbox', { name: 'Built-in decks' })

@@ -55,13 +55,13 @@ function Legality({ legality }: { legality: PreviewLegality }) {
     >
       <p className={cn('flex items-start gap-2 font-medium', illegal && 'font-semibold text-warning')}>
         {verdict === 'legal' ? (
-          <CheckIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-support-verified" />
+          <CheckIcon aria-hidden="true" className="mt-1 size-4 shrink-0 text-support-verified" />
         ) : illegal ? (
-          <TriangleAlertIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+          <TriangleAlertIcon aria-hidden="true" className="mt-1 size-4 shrink-0" />
         ) : (
           <LoaderCircleIcon
             aria-hidden="true"
-            className="mt-0.5 size-4 shrink-0 animate-spin text-muted-foreground"
+            className="mt-1 size-4 shrink-0 animate-spin text-muted-foreground"
           />
         )}
         <span className="min-w-0">
@@ -74,7 +74,7 @@ function Legality({ legality }: { legality: PreviewLegality }) {
       </p>
       {illegal ? <p className="pl-6">{STILL_PLAYS}</p> : null}
       {reasons.length === 0 ? null : (
-        <ul aria-label={`Why the deck is not legal in ${format}`} className="list-disc pl-10 text-xs">
+        <ul aria-label={`Why the deck is not legal in ${format}`} className="list-disc pl-12 text-xs">
           {[...new Set(reasons)].map((reason) => (
             <li key={reason} className="[overflow-wrap:anywhere]">
               {reason}

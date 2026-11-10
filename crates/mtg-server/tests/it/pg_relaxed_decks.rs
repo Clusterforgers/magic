@@ -86,11 +86,7 @@ async fn warned(
     deck: &str,
     why: &str,
 ) -> String {
-    assert!(
-        matches!(reply.status, 200 | 201),
-        "{why}: {}",
-        reply.text()
-    );
+    assert!(matches!(reply.status, 200 | 201), "{why}: {}", reply.text());
     let game = game.map_or_else(
         || reply.json()["game"].as_str().unwrap().to_owned(),
         str::to_owned,
@@ -372,7 +368,10 @@ async fn a_precon_the_check_warns_only_for_a_relaxed_rule_is_legal_at_that_table
         let choice = choose(&server, &ann, &game, 0, &on(code)).await;
         warned(&server, &ann, &choice, Some(&game), &on(code), code).await;
         let report = check(&server, &ann, &json!({"deck": on(code), "game": game})).await;
-        assert!(codes(&report).iter().any(|found| found == issue), "{code}: {report}");
+        assert!(
+            codes(&report).iter().any(|found| found == issue),
+            "{code}: {report}"
+        );
     }
 }
 
@@ -411,7 +410,10 @@ async fn the_lobby_check_answers_for_the_table_of_a_game_or_of_described_rules(p
     assert_eq!(report["summary"]["issues"], 0);
     let report = check(&server, &ann, &json!({"deck": twice, "game": plain_game})).await;
     assert_eq!(codes(&report), ["copies"]);
-    assert_eq!(report["summary"]["legal"], false, "a warning: the state stays the one of the cards");
+    assert_eq!(
+        report["summary"]["legal"], false,
+        "a warning: the state stays the one of the cards"
+    );
     assert_ne!(report["summary"]["state"], "blocked");
     assert_eq!(report["summary"]["issues"], 1);
 

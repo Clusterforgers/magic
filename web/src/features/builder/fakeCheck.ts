@@ -5,8 +5,19 @@
  */
 import { reportCard, reportOf } from '@/features/decks/fakeDecks'
 import type { Fetch } from '@/net/api'
-import type { CardHit, CheckRequest, DeckReport, DeckZone, Issue, Reason } from '@/protocol/generated'
+import type {
+  CardHit,
+  CheckRequest,
+  DeckReport,
+  DeckZone,
+  Issue,
+  ReadState,
+  Reason,
+} from '@/protocol/generated'
 import { jsonResponse } from '@/test-utils/fakeFetch'
+
+/** The reason the server gives a card its deck's owner plays by hand (`OWNER_BY_HAND` in `mtg-cards`). */
+export const OWNER_BY_HAND = "the deck's owner chose to play it by hand"
 
 /** What the fake check knows and does beyond the usual; leave a field out for the usual good behaviour. */
 export interface CheckScript {
@@ -14,6 +25,8 @@ export interface CheckScript {
   cards?: readonly CardHit[]
   /** The clauses left to the table, by oracle id. */
   reasons?: Readonly<Record<string, readonly Reason[]>>
+  /** The read state of the draft that decides a card, by oracle id; a card left out has none. */
+  drafts?: Readonly<Record<string, ReadState>>
   /** The ways a list breaks the rules of its format; none by default. */
   legality?: (request: CheckRequest) => Issue[]
   /** Milliseconds every answer waits, so a page can be seen while it checks. */
@@ -40,15 +53,25 @@ const ZONE_ORDER: readonly DeckZone[] = ['main', 'sideboard', 'commander', 'comp
 /** The report of the cards of `request`, by zone and name as the server orders it. */
 export function reportFor(request: CheckRequest, script: CheckScript = {}): DeckReport {
   const known = new Map((script.cards ?? []).map((card) => [card.oracle_id, card]))
+  // As on the server, a card is played by hand when any of its lines says so.
+  const byHand = new Set(
+    (request.cards ?? []).filter((line) => line.by_hand === true).map((line) => line.oracle_id),
+  )
   const cards = (request.cards ?? [])
     .map((line) => {
       const card = known.get(line.oracle_id)
+      const support = card?.support ?? 'verified'
+      const chosen = byHand.has(line.oracle_id) && support !== 'unplayable'
       return reportCard(card?.name ?? line.oracle_id, {
         oracle_id: line.oracle_id,
         zone: line.zone,
         count: line.count,
-        support: card?.support ?? 'verified',
-        reasons: [...(script.reasons?.[line.oracle_id] ?? [])],
+        support: chosen ? 'manual' : support,
+        reasons: chosen
+          ? [{ face: 0, span: { start: 0, end: 0 }, text: OWNER_BY_HAND }]
+          : [...(script.reasons?.[line.oracle_id] ?? [])],
+        ...(chosen ? { by_hand: true } : {}),
+        ...(script.drafts?.[line.oracle_id] === undefined ? {} : { draft: script.drafts[line.oracle_id] }),
       })
     })
     .sort(

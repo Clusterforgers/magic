@@ -69,7 +69,7 @@ describe('the page in the app', () => {
       within(nav)
         .getAllByRole('link')
         .map((link) => link.textContent),
-    ).toEqual(['Play', 'Precons', 'Decks', 'My games', 'Create'])
+    ).toEqual(['Play', 'Precons', 'Decks', 'My games', 'Cards to check', 'Create'])
     expect(within(nav).getByRole('link', { name: 'Decks' })).toHaveAttribute('aria-current', 'page')
     expect(within(nav).getByRole('link', { name: 'My games' })).not.toHaveAttribute('aria-current')
     expect(app.router.state.location.pathname).toBe('/decks')
@@ -153,7 +153,6 @@ describe('the check state of a deck', () => {
     ['verified', 'Verified'],
     ['read', 'Whole deck runs'],
     ['manual_play', 'Played by hand'],
-    ['blocked', 'Blocked'],
     ['unchecked', 'Unchecked'],
   ]
 
@@ -186,17 +185,29 @@ describe('the check state of a deck', () => {
       '96 of 100 verified, 4 played by hand',
     ],
     [
-      'a blocked deck says what blocks it',
+      'a check stored as blocked counts its cards played by hand',
       deckIn('blocked', {
-        summary: summary({ state: 'blocked', issues: 2, counts: counts({ unplayable: 1 }) }),
+        summary: summary({ state: 'blocked', issues: 2, counts: counts({ verified: 99, unplayable: 1 }) }),
       }),
-      '2 legality issues, 1 unplayable card. Cannot be taken to a game until its issues are fixed.',
+      '99 of 100 verified, 1 unplayable',
     ],
     ['a deck of no check says so', deckIn('unchecked'), 'Not checked yet'],
   ])('%s', async (_what, deck, note) => {
     await renderDecks({ decks: [{ ...deck, name: 'Probe' }] })
     await screen.findByRole('list', { name: 'Your decks' })
     expect(within(rowOf('Probe')).getByText(note)).toBeInTheDocument()
+  })
+
+  it('warns that a deck is not legal in its format and never calls it refused', async () => {
+    const deck = deckIn('manual_play', {
+      name: 'Probe',
+      format: 'commander',
+      summary: summary({ state: 'manual_play', legal: false, issues: 2, counts: counts({ verified: 99, manual: 1 }) }),
+    })
+    await renderDecks({ decks: [deck] })
+    await screen.findByRole('list', { name: 'Your decks' })
+    expect(within(rowOf('Probe')).getByText('Not legal in Commander: 2 issues')).toBeInTheDocument()
+    expect(within(rowOf('Probe')).queryByText(/Cannot be taken/)).toBeNull()
   })
 
   it('says how many cards wait for a read, with the address of the deck, and nothing for a deck with none', async () => {

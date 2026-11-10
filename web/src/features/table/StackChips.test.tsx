@@ -1,4 +1,4 @@
-// Goal: the shared strip shows the spells on the stack as chips, the one that resolves first leading and ringed, as one tab stop moved with the arrow keys, each named with its caster for a screen reader, previewed on focus, and nothing at all while the stack is empty.
+// Goal: the shared strip shows the spells on the stack as chips, the one that resolves first leading and ringed, never wider than the strip, as one tab stop moved with the arrow keys, each named with its caster for a screen reader, previewed on focus, and nothing at all while the stack is empty.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { PlayState } from '@/play/store'
@@ -43,6 +43,14 @@ describe('the chips', () => {
     const [top, second] = within(chips()).getAllByRole('button')
     expect(top).toHaveClass('border-primary')
     expect(second).not.toHaveClass('border-primary')
+  })
+
+  it('never grows wider than the strip, so a long top chip ends in an ellipsis rather than being cut', () => {
+    renderTable({ seats: 4, ui: <StackChips /> })
+    for (const chip of within(chips()).getAllByRole('button')) {
+      expect(chip.closest('li')).toHaveClass('max-w-full')
+      expect(chip.className).toMatch(/max-w-\[min\(\d+rem,100%\)\]/)
+    }
   })
 
   it('is one tab stop that the arrow keys move along, in both directions', async () => {

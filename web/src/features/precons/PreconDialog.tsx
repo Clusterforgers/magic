@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Switch } from '@/components/ui/switch'
+import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { legalityLines } from '@/features/builder/report'
 import { LegalityWarning } from '@/features/decks/LegalityWarning'
 import { ClauseList } from '@/features/decks/unvalidated/ClauseList'
@@ -112,30 +113,48 @@ function Board({
               key={`${card.name}:${card.printing_id ?? ''}:${index}`}
               data-support={card.support}
               className={cn(
-                'grid gap-1 border-b border-l-4 px-3 py-2 last:border-b-0',
+                'flex items-start gap-3 border-b border-l-4 px-3 py-2 last:border-b-0',
                 card.support === 'verified' ? 'border-l-transparent' : supportEdge(card.support),
               )}
             >
-              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                <p className="min-w-0 text-sm break-words">
-                  <span className="tabular-nums text-muted-foreground">{`${card.count}× `}</span>
-                  <span className="font-medium">{card.name}</span>
-                  {card.card === null ? null : (
-                    <span className="text-muted-foreground">{` · ${card.card.type_line}`}</span>
-                  )}
-                </p>
-                <SupportMark support={card.support} />
-              </div>
-              {flagged === null ? null : (
-                <div className="grid gap-1">
-                  {card.reasons.length > 0 ? <p className="text-sm font-medium">{BY_HAND_TITLE}:</p> : null}
-                  <ClauseList
-                    lines={clauseLines(flagged, faces.get(flagged.oracleId))}
-                    support={card.support}
-                    pending={pending}
-                  />
-                </div>
+              {card.card === null ? null : (
+                <CardPicture
+                  oracleId={card.card.oracle_id}
+                  name={card.name}
+                  size="small"
+                  alt=""
+                  quiet
+                  className="w-12"
+                />
               )}
+              <div className="grid min-w-0 flex-1 gap-1">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                  <p className="min-w-0 text-sm break-words">
+                    <span className="tabular-nums text-muted-foreground">{`${card.count}× `}</span>
+                    {card.card === null ? (
+                      <span className="font-medium">{card.name}</span>
+                    ) : (
+                      <HoverPicture oracleId={card.card.oracle_id} name={card.name}>
+                        <span className="font-medium">{card.name}</span>
+                      </HoverPicture>
+                    )}
+                    {card.card === null ? null : (
+                      <span className="text-muted-foreground">{` · ${card.card.type_line}`}</span>
+                    )}
+                  </p>
+                  <SupportMark support={card.support} />
+                </div>
+                {flagged === null ? null : (
+                  <div className="grid gap-1">
+                    {card.reasons.length > 0 ? <p className="text-sm font-medium">{BY_HAND_TITLE}:</p> : null}
+                    <ClauseList
+                      lines={clauseLines(flagged, faces.get(flagged.oracleId))}
+                      support={card.support}
+                      pending={pending}
+                    />
+                  </div>
+                )}
+              </div>
             </li>
           )
         })}

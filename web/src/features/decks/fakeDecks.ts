@@ -123,7 +123,11 @@ export function reportOf(
   })
   // Legality never sets the state: an unplayable card is played by hand, and the issues are a warning (`legal`).
   const state: DeckState =
-    all.verified + all.read + all.forge < all.total ? 'manual_play' : all.read + all.forge > 0 ? 'read' : 'verified'
+    all.verified + all.read + all.forge + all.unverified < all.total
+      ? 'manual_play'
+      : all.read + all.forge + all.unverified > 0
+        ? 'read'
+        : 'verified'
   const toRead = new Set(cards.filter((card) => card.draft === 'pending').map((card) => card.oracle_id)).size
   return {
     deck_hash: 'a'.repeat(64),

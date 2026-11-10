@@ -356,9 +356,7 @@ async fn a_stored_deck_plays_its_companion_at_every_table_size_and_a_restart_kee
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_companion_that_breaks_its_condition_warns_wherever_the_deck_is_chosen(
-    pool: PgPool,
-) {
+async fn a_companion_that_breaks_its_condition_warns_wherever_the_deck_is_chosen(pool: PgPool) {
     let (server, _db) = start(&pool).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
     let ok = store(&server, &ann, &fitting()).await;

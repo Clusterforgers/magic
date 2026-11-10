@@ -10,14 +10,14 @@ mod hashes;
 mod legality;
 mod stored;
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use mtg_core::color::ColorSet;
 use serde::{Deserialize, Serialize};
 
 use crate::draft::ReadState;
 use crate::load::Library;
-use crate::support::{Caps, PrintedCard, Reason, Support, SupportRecord};
+use crate::support::{Caps, PrintedCard, Reason, Support, SupportRecord, by_owner_hand};
 
 pub use hashes::{coverage_hash, deck_hash};
 pub use legality::{Issue, IssueCode, SUPPORTED_FORMATS, can_pair, is_supported_format};
@@ -269,6 +269,11 @@ pub struct ReportCard {
     pub differs: Vec<ReadDiffers>,
     /// The clauses left to the table, each with the span of oracle text it covers.
     pub reasons: Vec<Reason>,
+    /// Whether the deck's owner marked the card "play by hand": it is then `manual` whatever its rules, with
+    /// [`crate::support::OWNER_BY_HAND`] as its reason. Left out while false.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub by_hand: bool,
 }
 
 /// The result of checking a deck.
@@ -332,9 +337,11 @@ type Judged = (
     BTreeMap<String, (ReadState, Vec<ReadDiffers>)>,
 );
 
-/// Decides every distinct card of `deck`: its support, and the state of its draft while it has one that matters.
+/// Decides every distinct card of `deck`: its support, and the state of its draft while it has one that matters. A
+/// card of `by_hand` is `manual` by its owner's choice ([`by_owner_hand`]), and its draft no longer matters.
 fn judge(
     deck: &BTreeMap<(DeckZone, String), u32>,
+    by_hand: &BTreeSet<String>,
     cards: &BTreeMap<String, CardFacts>,
     library: &Library,
     caps: &Caps,
@@ -346,11 +353,16 @@ fn judge(
             continue;
         }
         let facts = cards.get(id);
-        supports.insert(
-            id.clone(),
-            facts.map(|facts| library.support(&facts.printed, caps)),
-        );
-        if let Some(facts) = facts
+        let chosen = by_hand.contains(id);
+        let record = facts.map(|facts| library.support(&facts.printed, caps));
+        let record = if chosen {
+            record.as_ref().map(by_owner_hand)
+        } else {
+            record
+        };
+        supports.insert(id.clone(), record);
+        if !chosen
+            && let Some(facts) = facts
             && let Some(read) = library.draft_state(&facts.printed, caps)
         {
             drafts.insert(id.clone(), (read, differs_of(library, &facts.printed)));
@@ -385,6 +397,7 @@ pub fn differs_of(library: &Library, printed: &PrintedCard) -> Vec<ReadDiffers> 
 /// The cards of a deck as the report lists them: by zone, each zone by name.
 fn report_cards(
     deck: &BTreeMap<(DeckZone, String), u32>,
+    by_hand: &BTreeSet<String>,
     cards: &BTreeMap<String, CardFacts>,
     (supports, drafts): &Judged,
 ) -> Vec<ReportCard> {
@@ -421,6 +434,7 @@ fn report_cards(
                         .map(|(_, differs)| differs.clone())
                         .unwrap_or_default(),
                     reasons,
+                    by_hand: by_hand.contains(id) && support == Support::Manual,
                 }
             })
             .collect();
@@ -464,8 +478,23 @@ pub fn deck_report(
     library: &Library,
     caps: &Caps,
 ) -> DeckReport {
+    deck_report_by_hand(format, lines, &BTreeSet::new(), cards, library, caps)
+}
+
+/// [`deck_report`] for a deck whose owner plays the cards of `by_hand` (oracle ids) by hand: each is `manual` with
+/// [`crate::support::OWNER_BY_HAND`] as its reason and `by_hand` set, its draft is not counted to read, and the choice
+/// shows in `coverage_hash`. A card the database lacks, or one the engine cannot host, keeps its state.
+pub fn deck_report_by_hand(
+    format: &str,
+    lines: &[DeckLine],
+    by_hand: &BTreeSet<String>,
+    cards: &BTreeMap<String, CardFacts>,
+    library: &Library,
+    caps: &Caps,
+) -> DeckReport {
     let deck = merged(lines);
-    let judged = judge(&deck, cards, library, caps);
+    let by_hand: BTreeSet<String> = by_hand.iter().map(|id| id.to_ascii_lowercase()).collect();
+    let judged = judge(&deck, &by_hand, cards, library, caps);
     let coverage: Vec<(String, String)> = judged
         .0
         .iter()
@@ -476,7 +505,7 @@ pub fn deck_report(
             (id.clone(), fingerprint)
         })
         .collect();
-    let reported = report_cards(&deck, cards, &judged);
+    let reported = report_cards(&deck, &by_hand, cards, &judged);
     let to_read = judged
         .1
         .values()

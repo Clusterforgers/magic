@@ -1,4 +1,4 @@
-// Goal: on the whole table, Space passes once, Enter ends the turn (or passes once under Full Control and in the last window of the turn), a tap of Control asks for the next window and Control with Shift for Full Control held, each only when nothing has the keyboard and no modifier spoils it, with Full Control off, next window or held, and with a Priority decision, another decision or none pending.
+// Goal: on the whole table, Space passes once, Enter ends the turn (or passes once under Full Control), a tap of Control asks for the next window and Control with Shift for Full Control held, each only when nothing has the keyboard and no modifier spoils it, with Full Control off, next window or held, and with a Priority decision, another decision or none pending.
 import { act, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, DecisionKind, FullControlMode, Step, YieldUntil } from '@/protocol/generated'
@@ -106,12 +106,11 @@ describe('Enter', () => {
     ['Off', 'main'],
     ['Off', 'end'],
   ] satisfies [FullControlMode, Moment][])(
-    'ends the turn with Full Control %s at the %s of the turn, as far as it has a button for it',
+    'ends the turn with Full Control %s at the %s of the turn, as the "End turn" button does',
     async (mode, moment) => {
       const { user, asked } = mount({ mode, moment })
       await user.keyboard(ENTER)
-      // In the last window of the turn the primary button says "End turn" and no second one is drawn: Enter presses it.
-      expect(asked).toEqual([moment === 'end' ? 'pass' : 'yield EndOfTurn'])
+      expect(asked).toEqual(['yield EndOfTurn'])
     },
   )
 

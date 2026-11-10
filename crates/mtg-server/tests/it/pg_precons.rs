@@ -491,7 +491,11 @@ async fn the_list_follows_the_precons_and_the_cards_without_a_restart(pool: PgPo
     assert_eq!(after["precons"][0]["code"], "tst-bears-pack");
     assert_eq!(item(&after, "tst-bears-pack")["state"], "verified");
     assert_eq!(item(&after, EVERGREEN)["card_count"], 40);
-    assert_eq!(item(&after, EVERGREEN)["playable"], true, "short, and still taken");
+    assert_eq!(
+        item(&after, EVERGREEN)["playable"],
+        true,
+        "short, and still taken"
+    );
 
     // Rules text on a card that had none: the deck holding it needs the table now.
     database
@@ -568,7 +572,7 @@ async fn a_seat_takes_a_precon_as_its_deck_and_the_table_hears_a_count_and_never
     assert_eq!(chosen.status, 200, "{}", chosen.text());
     assert_eq!(
         chosen.json(),
-        json!({"name": "Quest Pack", "format": "freeform", "manual_cards": 4})
+        json!({"name": "Quest Pack", "format": "freeform", "manual_cards": 4, "warnings": 0})
     );
     seen.push(chosen.text());
     let table = roster(&mut socket).await;
@@ -593,7 +597,7 @@ async fn a_seat_takes_a_precon_as_its_deck_and_the_table_hears_a_count_and_never
     assert_eq!(guest.status, 200, "{}", guest.text());
     assert_eq!(
         guest.json(),
-        json!({"name": "Evergreen Pack", "format": "freeform", "manual_cards": 0})
+        json!({"name": "Evergreen Pack", "format": "freeform", "manual_cards": 0, "warnings": 0})
     );
     seen.push(guest.text());
 
@@ -695,12 +699,11 @@ async fn an_illegal_precon_is_taken_with_its_warnings_and_its_game_starts(pool: 
         )
         .await;
         assert_eq!(join.status, 200, "{code}: {}", join.text());
-        let listed = net::get(server.addr, &format!("/api/games/{game}"))
-            .await
-            .json();
+        let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+        let warnings = crate::common::seat_warnings(&handle, 0).await;
         assert!(
-            listed["seats"][1]["deck"]["warnings"].as_u64().unwrap() >= 1,
-            "{code}: every seat sees the warning"
+            warnings[1] >= 1,
+            "{code}: every seat sees the warning, {warnings:?}"
         );
         let check = json!({"deck": on(code), "game": game});
         let report = ann
@@ -708,12 +711,17 @@ async fn an_illegal_precon_is_taken_with_its_warnings_and_its_game_starts(pool: 
             .await
             .json();
         assert_eq!(report["summary"]["legal"], false, "{code}");
-        assert!(report["legality"].to_string().contains(issue), "{code}: {report}");
+        assert!(
+            report["legality"].to_string().contains(issue),
+            "{code}: {report}"
+        );
 
-        let handle = server.registry.handle(game.parse().unwrap()).unwrap();
         for seat in 0..2 {
             handle
-                .send(mtg_core::ids::PlayerId(seat), mtg_protocol::ClientMessage::Ready)
+                .send(
+                    mtg_core::ids::PlayerId(seat),
+                    mtg_protocol::ClientMessage::Ready,
+                )
                 .await
                 .unwrap();
         }
@@ -723,7 +731,10 @@ async fn an_illegal_precon_is_taken_with_its_warnings_and_its_game_starts(pool: 
             }
             tokio::time::sleep(Duration::from_millis(10)).await;
         }
-        assert!(handle.status().await.unwrap().started, "{code}: the game starts");
+        assert!(
+            handle.status().await.unwrap().started,
+            "{code}: the game starts"
+        );
     }
     let game = create(&server, &ann, &on(EVERGREEN)).await;
 

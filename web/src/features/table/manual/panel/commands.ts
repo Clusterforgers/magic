@@ -15,6 +15,7 @@ export type CommandId =
   | 'poison'
   | 'energy'
   | 'experience'
+  | 'rad'
   | 'draw'
   | 'look'
   | 'tutor'
@@ -115,6 +116,11 @@ const PLAYER_COUNTERS = [
   ['poison', 'Poison', 'Poison counters on you; ten of them and you lose.'],
   ['energy', 'Energy', 'Energy counters on you, to pay energy costs.'],
   ['experience', 'Experience', 'Experience counters on you.'],
+  [
+    'rad',
+    'Rad',
+    'Rad counters on you; each upkeep you mill that many and lose 1 life and a rad per nonland card milled.',
+  ],
 ] as const
 
 /** The groups and commands of the panel for `input`. */
@@ -306,6 +312,7 @@ export function previewOf(command: Command, draft: PanelDraft, input: PanelInput
     case 'poison':
     case 'energy':
     case 'experience':
+    case 'rad':
       return playerCounter(command, amount, input)
     case 'draw':
     case 'mill':

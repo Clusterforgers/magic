@@ -18,6 +18,7 @@ import type {
   DeckView,
   DeckZone,
   Issue,
+  ReadState,
   Reason,
   ReportCard,
   Support,
@@ -37,6 +38,8 @@ export const DEV_DECKS = [
   'unchecked',
   'partners',
   'refused',
+  'reads',
+  'drafts',
 ] as const
 
 /** One of the decks `/dev/builder` shows. */
@@ -71,7 +74,59 @@ interface Entry {
   identity?: CardColor[]
   faces?: FaceText[]
   clauses?: Clause[]
+  /** The read state of the draft that decides the card. */
+  draft?: ReadState
 }
+
+/** A card that runs whole on its rules: `support` says whether a player read them, Forge's translator wrote them, or they wait. */
+const onReads = (
+  name: string,
+  type: string,
+  cost: string,
+  text: string,
+  support: 'read' | 'forge' | 'unverified',
+  draft: ReadState,
+): Entry => ({ name, count: 1, support, type, cost, faces: [{ name, cost, type, text }], draft })
+
+// The cards of the `reads` deck: their rules run whole, read and approved or from Forge's translator.
+const ON_READS: Entry[] = [
+  onReads(
+    'Goblin Bombardment',
+    'Enchantment',
+    '{1}{R}',
+    'Sacrifice a creature: Goblin Bombardment deals 1 damage to any target.',
+    'read',
+    'approved',
+  ),
+  onReads(
+    'Legion Warboss',
+    'Creature — Goblin Soldier',
+    '{2}{R}',
+    'Mentor\nAt the beginning of combat on your turn, create a 1/1 red Goblin creature token. That token gains haste until end of turn and attacks this combat if able.',
+    'forge',
+    'approved',
+  ),
+]
+
+// The cards the `drafts` deck adds: drafts that run whole, unverified, while they wait for a player to read them.
+const WAITING: Entry[] = [
+  onReads(
+    'Goblin Matron',
+    'Creature — Goblin',
+    '{2}{R}',
+    'When Goblin Matron enters, you may search your library for a Goblin card, reveal it, put it into your hand, then shuffle.',
+    'unverified',
+    'pending',
+  ),
+  onReads(
+    'Siege-Gang Commander',
+    'Creature — Goblin',
+    '{3}{R}{R}',
+    'When Siege-Gang Commander enters, create three 1/1 red Goblin creature tokens.\n{1}{R}, Sacrifice a Goblin: Siege-Gang Commander deals 2 damage to any target.',
+    'unverified',
+    'pending',
+  ),
+]
 
 const WHOLE = 'no rules for this card yet; the table resolves the whole text'
 
@@ -360,7 +415,16 @@ const PARTNERS: Entry[] = (
   faces: [{ name, cost, type: 'Legendary Creature — Human', text, stats: ['1', '1'] as [string, string] }],
 }))
 
-const ALL: Entry[] = [...CLEAN, ...PARTNERS, ...BY_HAND, ...BLOCKING, ...ILLEGAL, ...SEARCH_ONLY]
+const ALL: Entry[] = [
+  ...CLEAN,
+  ...ON_READS,
+  ...WAITING,
+  ...PARTNERS,
+  ...BY_HAND,
+  ...BLOCKING,
+  ...ILLEGAL,
+  ...SEARCH_ONLY,
+]
 
 const hitOf = (entry: Entry): CardHit =>
   cardHit(entry.name, {
@@ -488,6 +552,9 @@ export function fixtureCheck(): CheckScript {
         reasonsOf(entry),
       ]),
     ),
+    drafts: Object.fromEntries(
+      ALL.flatMap((entry) => (entry.draft === undefined ? [] : [[oracleIdOf(entry.name), entry.draft]])),
+    ),
     legality: fixtureLegality,
     delayMs: 450,
   }
@@ -496,20 +563,25 @@ export function fixtureCheck(): CheckScript {
 /**
  * A Commander deck for `/dev/builder`. `mixed` holds a card of each support state, a card the game cannot host and
  * illegal lines (4 copies of a singleton card, a banned card, the wrong size); `manual` is legal with cards played by
- * hand; `verified` has only verified cards; `partners` leads with a Partner pair and `refused` has a commander that cannot lead; `changed` and `unchecked` are the mixed cards with no valid check.
+ * hand; `verified` has only verified cards; `reads` runs whole on approved reads; `drafts` adds drafts waiting for a
+ * read; `partners` leads with a Partner pair and `refused` has a commander that cannot lead; `changed` and `unchecked` are the mixed cards with no valid check.
  */
 export function fixtureView(deck: DevDeck): DeckView {
   const entries =
     deck === 'verified'
       ? CLEAN
-      : deck === 'manual'
-        ? [...CLEAN, ...BY_HAND]
-        : deck === 'partners'
-          ? [...CLEAN.filter((e) => e.zone !== 'commander'), ...PARTNERS]
-          : deck === 'refused'
-            ? CLEAN.map((e) => (e.name === 'Goblin Guide' ? { ...e, zone: 'commander' as const } : e))
-            : [...CLEAN, ...BY_HAND, ...BLOCKING, ...ILLEGAL]
-  const legal = deck === 'verified' || deck === 'manual'
+      : deck === 'reads'
+        ? [...CLEAN, ...ON_READS]
+        : deck === 'drafts'
+          ? [...CLEAN, ...ON_READS, ...WAITING]
+          : deck === 'manual'
+            ? [...CLEAN, ...BY_HAND]
+            : deck === 'partners'
+              ? [...CLEAN.filter((e) => e.zone !== 'commander'), ...PARTNERS]
+              : deck === 'refused'
+                ? CLEAN.map((e) => (e.name === 'Goblin Guide' ? { ...e, zone: 'commander' as const } : e))
+                : [...CLEAN, ...BY_HAND, ...BLOCKING, ...ILLEGAL]
+  const legal = deck === 'verified' || deck === 'manual' || deck === 'reads' || deck === 'drafts'
   const lands = legal
     ? 99 - entries.filter((e) => (e.zone ?? 'main') === 'main').reduce((n, e) => n + e.count, 0)
     : 30
@@ -526,6 +598,7 @@ export function fixtureView(deck: DevDeck): DeckView {
       count: entry.count,
       support: entry.support,
       reasons: reasonsOf(entry),
+      ...(entry.draft === undefined ? {} : { draft: entry.draft }),
     }),
   )
   const legality = fixtureLegality({
@@ -547,6 +620,8 @@ export function fixtureView(deck: DevDeck): DeckView {
     unchecked: 'unchecked',
     partners: report.summary.state,
     refused: report.summary.state,
+    reads: report.summary.state,
+    drafts: report.summary.state,
   }
   const state = stateOf[deck]
   return deckView({

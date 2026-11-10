@@ -8,16 +8,17 @@ import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
 import {
   costPips,
+  counterChips,
   counterLabels,
   frameOf,
   keywordLine,
-  loyaltyOf,
   powerToughness,
+  statCounterOf,
   statusChips,
   typeLine,
 } from './cardModel'
-import type { CombatRole, Frame, Links } from './cardModel'
-import { FRAME, SIZE } from './cardSize'
+import type { CombatRole, Frame, Links, StatusChip } from './cardModel'
+import { FRAME, NARROW_PX, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { isUnattached } from '@/play/hosts'
 import { BackFace, ImageFace, useDrawnWidth } from './ImageFace'
@@ -27,6 +28,7 @@ import { NoteMark, RevealedMark } from './HandMarks'
 import { ByHandMark } from './manual/ByHand'
 import { ReadMark } from './manual/ReadMark'
 import { ManaPips } from './ManaPips'
+import { GlyphMark, counterGlyph, linkGlyph, noteGlyph, statusGlyph, turnedMarks } from './narrowMarks'
 import { statBadge } from './overlay'
 import { usePrinted } from './printed'
 import { roomTitle } from './rooms'
@@ -57,13 +59,15 @@ interface CardFaceProps {
 }
 
 /** The lines of name a face can spare: a face on its side is low, and a compact one has no type line (nor a cost, unless asked). */
-function nameLinesOf(turned: boolean, full: boolean, size: CardSize): string {
+function nameLinesOf(turned: boolean, full: boolean, size: CardSize, narrow: boolean): string {
+  if (narrow) return 'line-clamp-1'
   if (turned) return size === 'compact' ? 'line-clamp-1' : 'line-clamp-2'
   return full ? 'line-clamp-2' : 'line-clamp-3'
 }
 
 // A name breaks between words, never inside one: a word wider than the face ends in an ellipsis.
-function Words({ text }: { text: string }) {
+function Words({ text, single }: { text: string; single: boolean }) {
+  if (single) return <span className="block truncate">{text}</span>
   const words = text.split(/\s+/).filter((word) => word !== '')
   if (words.length < 2) return <span className="block truncate">{text}</span>
   return words.map((word, at) => (
@@ -101,6 +105,7 @@ function artRoom(height: number, chips: number, links: Links | undefined): numbe
     rows -
     (chips > 0 ? 1 : 0) -
     (links?.host === undefined ? 0 : 1) -
+    (links?.protector === undefined ? 0 : 1) -
     (links?.partner === undefined ? 0 : 1) -
     (links?.doors === undefined ? 0 : 2)
   )
@@ -177,6 +182,53 @@ const PARTS = {
   },
 }
 
+interface TurnedMarksProps {
+  chips: readonly StatusChip[]
+  /** The stat box's number, drawn invisible to keep its room; none when the face has no stat box. */
+  statText: string | number | null
+  statClass: string
+}
+
+/**
+ * The stat row of a compact turned face whose art slot holds no row of marks: the most important marks as 12 px
+ * glyphs left of the stat box, as many as fit whole. A child of the art slot, so its container query shows the row
+ * exactly where the slot hides its own marks; positioned on the face, so the slot does not clip it. Drawn for the eye
+ * only: the card's name says the same words.
+ */
+function TurnedMarks({ chips, statText, statClass }: TurnedMarksProps) {
+  const marks = turnedMarks(chips)
+  if (marks.length === 0) return null
+  return (
+    <span
+      data-turned-marks
+      aria-hidden="true"
+      className="absolute inset-x-0 bottom-0.5 hidden items-center [@container(max-height:11.5px)]:flex"
+    >
+      {/* A first item of no width: a glyph wider than the room wraps onto the hidden second line, never cut. */}
+      <span className="flex h-3 min-w-0 flex-1 flex-wrap overflow-hidden pl-px">
+        <span className="h-3 w-0" />
+        {marks.map((chip) => (
+          <GlyphMark
+            key={chip.label}
+            glyph={statusGlyph(chip)}
+            slot="card-turned-mark"
+            tone={chip.tone}
+            quiet
+            className={cn(
+              'ml-0.5 h-3 px-px text-xs font-medium text-background',
+              chip.tone === 'danger' ? 'bg-destructive' : 'bg-foreground',
+            )}
+          />
+        ))}
+      </span>
+      {/* The stat box's room: its number drawn invisible, as generated content so the card's text holds it once. */}
+      {statText === null ? null : (
+        <span data-stat={statText} className={cn(statClass, 'invisible before:content-[attr(data-stat)]')} />
+      )}
+    </span>
+  )
+}
+
 interface TextFaceProps extends CardFaceProps {
   /** Draw it as a card: the face of a token whose picture the server has none of. */
   card?: boolean
@@ -212,14 +264,19 @@ export function TextFace({
   const keywords = keywordLine(object)
   const pt = powerToughness(object)
   const counters = counterLabels(object)
-  const loyalty = loyaltyOf(object)
-  const modified = statBadge(object, usePrinted(object), loyalty)?.modified ?? null
+  const stat = statCounterOf(object)
+  const modified = statBadge(object, usePrinted(object), stat)?.modified ?? null
   // A compact face that draws its cost keeps two lines of name, so the name and the cost fit the top a hand row shows.
-  const nameLines = nameLinesOf(turned, full || (cost && object.mana_cost !== null), size)
+  const narrow = size === 'compact' && width < NARROW_PX
+  const nameLines = nameLinesOf(turned, full || (cost && object.mana_cost !== null), size, narrow)
   // A token whose picture is missing still looks like a card: the card back's colours, its name, "Token" and its type.
   const token = object.kind === 'Token'
   // Only a token drawn as text is dark; one drawn as a card (its picture is missing) keeps its frame colour.
   const dark = token && !card
+  const statText = pt ?? stat?.count ?? null
+  const shortTurned = turned && size === 'compact'
+  // A compact turned face pads its stat box less, so a 50 px creature keeps room for one mark beside it.
+  const statClass = cn(classes.name, parts.stat, 'leading-snug font-bold tabular-nums', shortTurned && 'px-1')
   return (
     <span
       data-slot="card-face"
@@ -237,7 +294,7 @@ export function TextFace({
     >
       <span className={cn(classes.name, parts.name, 'leading-tight font-semibold')}>
         <span data-name className={cn('block', nameLines)}>
-          <Words text={roomTitle(object.name, links?.doors)} />
+          <Words text={roomTitle(object.name, links?.doors)} single={narrow} />
         </span>
       </span>
       {(full || (cost && !turned)) && object.mana_cost !== null ? (
@@ -253,13 +310,30 @@ export function TextFace({
         data-slot="card-art"
         className={cn(
           'mx-1 my-0.5 flex min-h-0 flex-1 flex-wrap content-start gap-0.5 overflow-hidden rounded-sm p-0.5',
-          turned && size === 'compact' && 'my-px p-px',
+          // A compact turned face has a few px of art: its marks are 12 px high, and where even that row does not fit
+          // they drop out rather than show cut in half; the most important move beside the stat box (`turnedMarks`).
+          shortTurned &&
+            'my-0 p-0 [container-type:size] [&>[data-glyph]]:h-3 [&>:not([data-turned-marks])]:[@container(max-height:11.5px)]:hidden',
+          // Glyph marks (`narrowMarks`) that never shrink: a word cut to a stub would not read.
+          narrow && 'items-start *:shrink-0',
           dark ? 'bg-black/25' : 'bg-foreground/5',
         )}
       >
         <ByHandMark object={object} spot="chip" compact={size === 'compact'} text={classes.text} />
         <ReadMark object={object} spot="chip" compact={size === 'compact'} text={classes.text} />
-        {chips.map(({ label, tone }) => {
+        {chips.map((chip) => {
+          const { label, tone } = chip
+          const back = tone === 'danger' ? 'bg-destructive' : 'bg-foreground'
+          if (narrow)
+            return (
+              <GlyphMark
+                key={label}
+                glyph={statusGlyph(chip)}
+                slot="card-status"
+                tone={tone}
+                className={cn('font-medium text-background', back, classes.text)}
+              />
+            )
           const compactIcon = size === 'compact' && label === 'Tapped'
           return (
             <span
@@ -268,7 +342,7 @@ export function TextFace({
               data-tone={tone}
               className={cn(
                 'h-fit rounded-sm px-1 leading-snug font-medium text-background',
-                tone === 'danger' ? 'bg-destructive' : 'bg-foreground',
+                back,
                 classes.text,
                 // A compact tapped land is too narrow for the word: an icon, the word kept for screen readers.
                 compactIcon && 'inline-flex items-center px-0.5 py-px leading-none',
@@ -279,19 +353,40 @@ export function TextFace({
             </span>
           )
         })}
-        {counters.map((label) => (
-          <span
-            key={`counter-${label}`}
-            data-slot="card-counter"
+        {narrow
+          ? counterChips(object).map((chip) => (
+              <GlyphMark
+                key={`counter-${chip.key}`}
+                glyph={counterGlyph(chip)}
+                slot="card-counter"
+                className={cn(
+                  'border border-foreground bg-background font-semibold text-foreground',
+                  classes.text,
+                )}
+              />
+            ))
+          : counters.map((label) => (
+              <span
+                key={`counter-${label}`}
+                data-slot="card-counter"
+                className={cn(
+                  'h-fit rounded-sm border border-foreground bg-background px-1 leading-snug font-semibold text-foreground',
+                  classes.text,
+                )}
+              >
+                {label}
+              </span>
+            ))}
+        {links?.host === undefined ? null : narrow ? (
+          <GlyphMark
+            glyph={linkGlyph('host', links.host)}
+            slot="card-attached-to"
             className={cn(
-              'h-fit rounded-sm border border-foreground bg-background px-1 leading-snug font-semibold text-foreground',
+              'border border-dashed border-foreground bg-background text-foreground',
               classes.text,
             )}
-          >
-            {label}
-          </span>
-        ))}
-        {links?.host === undefined ? null : (
+          />
+        ) : (
           <span
             data-slot="card-attached-to"
             className={cn(
@@ -300,6 +395,23 @@ export function TextFace({
             )}
           >
             On {links.host}
+          </span>
+        )}
+        {links?.protector === undefined ? null : narrow ? (
+          <GlyphMark
+            glyph={linkGlyph('protector', links.protector)}
+            slot="card-protector"
+            className={cn('border border-foreground bg-background text-foreground', classes.text)}
+          />
+        ) : (
+          <span
+            data-slot="card-protector"
+            className={cn(
+              'h-fit max-w-full rounded-sm border border-foreground bg-background px-1 leading-snug break-words text-foreground',
+              classes.text,
+            )}
+          >
+            Protected by {links.protector}
           </span>
         )}
         <GrantMarks
@@ -340,9 +452,19 @@ export function TextFace({
         {handNote === undefined ? null : (
           <NoteMark note={handNote} compact={size === 'compact'} text={classes.text} />
         )}
+        {shortTurned ? <TurnedMarks chips={chips} statText={statText} statClass={statClass} /> : null}
       </span>
       {/* A corner badge: the art slot shrinks to nothing on a small card, which would hide the label. */}
-      {note?.label === undefined ? null : (
+      {note?.label === undefined ? null : narrow ? (
+        <GlyphMark
+          glyph={noteGlyph(note.label)}
+          slot="card-note"
+          className={cn(
+            'absolute top-0.5 right-0.5 z-10 bg-primary font-medium text-primary-foreground shadow-sm',
+            classes.text,
+          )}
+        />
+      ) : (
         <span
           data-slot="card-note"
           className={cn(
@@ -369,22 +491,27 @@ export function TextFace({
           {keywords}
         </span>
       ) : null}
-      {pt === null && loyalty === null ? (
+      {pt === null && stat === null ? (
         // The mana strip lies over the bottom left of the face, so the type line moves up clear of it.
-        <span data-slot="card-foot" className="h-1 shrink-0 group-has-[[data-slot=mana-strip]]/card:h-5" />
+        <span
+          data-slot="card-foot"
+          className={cn(
+            'h-1 shrink-0 group-has-[[data-slot=mana-strip]]/card:h-5',
+            // Two px more for the marks row of a compact turned face, so a tapped land's mark fits whole.
+            turned && size === 'compact' && 'h-0.5',
+          )}
+        />
       ) : (
         <span
-          data-slot={pt === null ? 'card-loyalty' : undefined}
+          data-slot={pt === null && stat !== null ? `card-${stat.kind}` : undefined}
           data-modified={modified ?? undefined}
           className={cn(
-            classes.name,
-            parts.stat,
-            'leading-snug font-bold tabular-nums',
+            statClass,
             modified === 'up' && 'border-background bg-support-verified text-background',
             modified === 'down' && 'border-background bg-destructive text-background',
           )}
         >
-          {pt ?? loyalty}
+          {pt ?? stat?.count}
         </span>
       )}
     </span>

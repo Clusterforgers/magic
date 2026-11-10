@@ -1,4 +1,4 @@
-//! Goal: the read endpoints work end to end over real HTTP on Postgres: only a signed-in account within its budget reaches them, a deck lists what its reader has left to read, every card lists the pending drafts with rank and deck membership, a card shows its draft's sheet and the account's verdict, `correct` approves the draft and `wrong` needs a note and marks the card to fix, a hash that is no longer current is 409 `stale_read`, the card endpoint carries the draft, and deleting an account takes its verdicts.
+//! Goal: the read endpoints work end to end over real HTTP on Postgres: only a signed-in account within its budget reaches them, a deck lists what its reader has left to read, every card lists the pending drafts with rank and deck membership and `mine=true` only those of the account's decks, a card shows its draft's sheet and the account's verdict, `correct` approves the draft and `wrong` needs a note and marks the card to fix, a hash that is no longer current is 409 `stale_read`, the card endpoint carries the draft, and deleting an account takes its verdicts.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -345,6 +345,13 @@ async fn every_card(server: &TestServer, who: &Browser) -> Vec<Value> {
     reply.json()["cards"].as_array().unwrap().clone()
 }
 
+/// `GET /api/reads?mine=true`: the pending drafts of the account's decks.
+async fn mine(server: &TestServer, who: &Browser) -> Vec<Value> {
+    let reply = who.get(server.addr, "/api/reads?mine=true").await;
+    assert_eq!(reply.status, 200, "{}", reply.text());
+    reply.json()["cards"].as_array().unwrap().clone()
+}
+
 #[sqlx::test(migrations = false)]
 async fn every_card_lists_the_pending_drafts_with_rank_and_whether_a_deck_holds_them(pool: PgPool) {
     let (db, key, server) = start(&pool).await;
@@ -364,9 +371,15 @@ async fn every_card_lists_the_pending_drafts_with_rank_and_whether_a_deck_holds_
     );
     assert_eq!(cards[0]["in_decks"], false);
 
+    assert_eq!(mine(&server, &ann).await, Vec::<Value>::new());
+
     let deck = store(&server, &ann).await;
     assert_eq!(every_card(&server, &ann).await[0]["in_decks"], true);
     assert_eq!(queue(&server, &ann, &deck).await[0]["in_decks"], true);
+    let held = mine(&server, &ann).await;
+    assert_eq!(held, every_card(&server, &ann).await, "{held:?}");
+    let reply = ann.get(server.addr, "/api/reads?mine=false").await;
+    assert_eq!(reply.status, 400);
 
     // Approved by another player, the draft no longer waits for a first read: every card lists only pending ones.
     let bob = register(server.addr, "bob", PASSWORD).await;
@@ -378,6 +391,7 @@ async fn every_card_lists_the_pending_drafts_with_rank_and_whether_a_deck_holds_
     .await;
     assert_eq!(reply.status, 200);
     assert_eq!(every_card(&server, &ann).await, Vec::<Value>::new());
+    assert_eq!(mine(&server, &ann).await, Vec::<Value>::new());
     assert_eq!(queue(&server, &ann, &deck).await[0]["state"], "approved");
 
     // The list held from the verdict is not served once the verdict is gone: the draft waits again.

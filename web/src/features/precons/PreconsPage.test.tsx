@@ -1,5 +1,5 @@
 // Goal: the precon page lists every precon with its deck check as an icon and words, filters by search, set and state, shows the loading, empty, failed and no-card-data states, opens the details with each card's mark and clauses and a Copy list of the cards that are not Verified, and Play makes a game with `precon:<code>` (one click for an account, a name first for a guest) and opens its lobby, while a deck the game cannot take has a disabled Play and a 422 says so.
-import { screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AuthContext } from '@/features/auth/context'
@@ -35,6 +35,7 @@ const LIST = [
       commanders: ['Kalamax'],
     }),
     { unplayable: 1 },
+    2,
   ),
   checked(
     preconItem({
@@ -113,7 +114,8 @@ describe('the list', () => {
       within(eldrazi).getByText('3 cards played by hand').closest('[data-precon-status]'),
     ).toHaveAttribute('data-precon-status', 'hand')
     expect(within(rowOf('Adaptive Enchantment')).getByText('Whole deck runs')).toBeInTheDocument()
-    expect(within(rowOf('Arcane Maelstrom')).getByText('Cannot be taken')).toBeInTheDocument()
+    expect(within(rowOf('Arcane Maelstrom')).getByText('1 card played by hand')).toBeInTheDocument()
+    expect(within(rowOf('Arcane Maelstrom')).getByText('Not legal in Commander: 2 issues')).toBeInTheDocument()
     expect(within(rowOf('Izzet Challenger')).getByText('No commander')).toBeInTheDocument()
     // The state is words and an icon, not a colour alone.
     for (const badge of document.querySelectorAll('[data-precon-status]')) {
@@ -143,7 +145,7 @@ describe('the list', () => {
     await page.user.selectOptions(screen.getByLabelText('Set'), 'M3C')
     expect(rows()).toHaveLength(1)
     await page.user.selectOptions(screen.getByLabelText('Set'), '')
-    await page.user.selectOptions(screen.getByLabelText('Deck check'), 'Cannot be taken')
+    await page.user.selectOptions(screen.getByLabelText('Deck check'), 'Not legal in its format')
     expect(rows().map((row) => within(row).getByRole('rowheader').textContent)).toEqual([
       expect.stringContaining('Arcane Maelstrom'),
     ])
@@ -178,6 +180,45 @@ describe('favourites', () => {
     await listed()
     expect(screen.queryByRole('button', { name: /favourites/ })).toBeNull()
     expect(page.favourites.list).not.toHaveBeenCalled()
+  })
+})
+
+describe('the order', () => {
+  const names = () => rows().map((row) => within(row).getByRole('rowheader').textContent ?? '')
+  const sortBy = () => screen.getByRole('combobox', { name: 'Sort by' })
+
+  it.each([
+    ['newest', 'Precons, newest release first', 'Eldrazi Unbound'],
+    ['name', 'Precons by name', 'Adaptive Enchantment'],
+    ['favorites', 'Precons, your favorites first', 'Izzet Challenger'],
+  ] as const)('lists %s and keeps the choice', async (sort, caption, first) => {
+    const page = await open({ user: 'Ada_L', starred: ['chl-izzet-challenger'] })
+    await listed()
+    await page.user.selectOptions(sortBy(), sort)
+    expect(await screen.findByRole('table', { name: caption })).toBeInTheDocument()
+    expect(names()[0]).toContain(first)
+    expect(window.localStorage.getItem('magic.preconSort')).toBe(sort)
+  })
+
+  it('puts a precon starred on the page among the favorites', async () => {
+    const page = await open({ user: 'Ada_L', starred: ['chl-izzet-challenger'] })
+    await listed()
+    await page.user.selectOptions(sortBy(), 'favorites')
+    await page.user.click(
+      within(rowOf('Arcane Maelstrom')).getByRole('button', {
+        name: 'Add Arcane Maelstrom to your favourites',
+      }),
+    )
+    expect(names().slice(0, 2).join('|')).toMatch(/Arcane Maelstrom.*\|.*Izzet Challenger/)
+  })
+
+  it('offers a guest no favorites first and lists a kept one newest first', async () => {
+    window.localStorage.setItem('magic.preconSort', 'favorites')
+    await open()
+    expect(await listed()).toBeInTheDocument()
+    expect(sortBy()).toHaveValue('newest')
+    const option = within(sortBy()).getByRole('option', { name: 'Favorites first (sign in)' })
+    expect(option).toBeDisabled()
   })
 })
 
@@ -309,6 +350,18 @@ describe('the details', () => {
     expect(screen.queryByRole('region', { name: /Commander/ })).toBeNull()
   })
 
+  it('draws each card with its picture and shows the large picture on a mouse hover of its name', async () => {
+    const page = await open({ views: [view] })
+    await listed()
+    await page.user.click(screen.getByRole('button', { name: 'Details of Eldrazi Unbound' }))
+    const dialog = await screen.findByRole('dialog', { name: 'Eldrazi Unbound' })
+    const main = await within(dialog).findByRole('region', { name: /Main deck/ })
+    const row = within(main).getByText('Sol Ring').closest('li') as HTMLElement
+    expect(row.querySelector('img')).toHaveAttribute('src', '/api/images/oracle/oracle-sol-ring/0/small')
+    act(() => fireEvent.pointerEnter(within(row).getByText('Sol Ring'), { pointerType: 'mouse' }))
+    expect(document.querySelector('[data-slot="hover-picture"]')).not.toBeNull()
+  })
+
   it('copies the cards that are not Verified, a block each with its clauses quoted beside the reasons', async () => {
     const page = await open({ views: [view] })
     await listed()
@@ -362,16 +415,16 @@ describe('the details', () => {
     expect(document.querySelector('blockquote')).toBeNull()
   })
 
-  it('names what stops a deck the game cannot take, from the server’s issues', async () => {
-    const blocked = preconView(LIST[2]!, undefined, { issues: [issue('Sol Ring appears twice.')] })
-    const page = await open({ views: [blocked] })
+  it('warns with the server’s issues of a deck that is not legal, and keeps its Play', async () => {
+    const illegal = preconView(LIST[2]!, undefined, { issues: [issue('Sol Ring appears twice.')] })
+    const page = await open({ views: [illegal] })
     await listed()
     await page.user.click(screen.getByRole('button', { name: 'Details of Arcane Maelstrom' }))
     const dialog = await screen.findByRole('dialog', { name: 'Arcane Maelstrom' })
     expect(await within(dialog).findByText('Sol Ring appears twice.')).toBeInTheDocument()
     expect(within(dialog).getByRole('button', { name: 'Play Arcane Maelstrom' })).toHaveAttribute(
       'aria-disabled',
-      'true',
+      'false',
     )
   })
 
@@ -439,14 +492,14 @@ describe('Play', () => {
     expect(window.localStorage.getItem('magic.guestName')).toBe('Bo')
   })
 
-  it('has a Play that cannot be pressed for a deck the game cannot take, and sends nothing', async () => {
+  it('plays a deck that is not legal, its warning beside the button', async () => {
     const page = await open({ user: 'Ada_L' })
     await listed()
     const play = screen.getByRole('button', { name: 'Play Arcane Maelstrom' })
-    expect(play).toHaveAttribute('aria-disabled', 'true')
-    expect(play).toHaveAccessibleDescription('Cannot be taken')
+    expect(play).not.toHaveAttribute('aria-disabled', 'true')
+    expect(play).toHaveAccessibleDescription(/Not legal in Commander/)
     await page.user.click(play)
-    expect(page.games.createGame).not.toHaveBeenCalled()
+    await waitFor(() => expect(page.games.createGame).toHaveBeenCalled())
   })
 
   it('says so when the server refuses the deck, and offers the reasons', async () => {
@@ -459,7 +512,7 @@ describe('Play', () => {
     await page.user.click(screen.getByRole('button', { name: 'Play Eldrazi Unbound' }))
     const alert = await screen.findByRole('alert')
     expect(alert).toHaveTextContent('Could not start a game with Eldrazi Unbound')
-    expect(alert).toHaveTextContent('The game would not take Eldrazi Unbound')
+    expect(alert).toHaveTextContent('Eldrazi Unbound has no cards a game can play')
     expect(page.router.state.location.pathname).toBe('/')
     await page.user.click(within(alert).getByRole('button', { name: 'Show why' }))
     expect(await screen.findByRole('dialog', { name: 'Eldrazi Unbound' })).toBeInTheDocument()

@@ -18,6 +18,7 @@ import { LiveManaPool } from './LiveManaPool'
 import { UntappedSources } from './UntappedSources'
 import { usePodRoom } from './podRoom'
 import { useSeatNamer } from './names'
+import { BankMark } from './BankMark'
 import { ACTIVE_EDGE, AwayMark, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
 import { podCounts, podState, podStateWords, priorityName, showsPriorityDot } from './podFigures'
 import { exileOf, holdsPriority, isActiveSeat, isYourTurn, NO_IDS, playerOf } from './selectors'
@@ -27,6 +28,7 @@ import { SeatCorner } from './SeatCorner'
 import { RevealedChip } from './RevealedChip'
 import { RingChip } from './RingChip'
 import { SpeedChip } from './SpeedChip'
+import { PlayerCounterChips } from './PlayerCounterChips'
 import { CompanionChip } from './CompanionChip'
 import { ZoneButton } from './ZoneButton'
 
@@ -99,6 +101,9 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   // The blocks above the corner: its room is the column less these (the column is measured by `PodColumn`).
   const above = useRef<HTMLDivElement>(null)
   const aboveHeight = useBoxHeight(above)
+  // The chips a cramped column lays under the corner, which the corner leaves room for, so the column never scrolls.
+  const below = useRef<HTMLDivElement>(null)
+  const belowHeight = useBoxHeight(below)
   const room = usePodRoom()
   if (player === undefined) return null
   const graveyard = player.graveyard.cards ?? NO_IDS
@@ -161,6 +166,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         <PriorityDot label={priorityName(owner, flags.you)} />
       ) : null}
       {away ? <AwayMark /> : null}
+      <BankMark seat={seat} />
     </div>
   )
 
@@ -199,6 +205,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             <RevealedChip owner={owner} player={player} density="line" />
             <RingChip owner={owner} player={player} density="line" />
             <SpeedChip owner={owner} player={player} density="line" />
+            <PlayerCounterChips owner={owner} player={player} density="line" />
             <CompanionChip owner={owner} player={player} />
             <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" thumbs />
             <ZoneButton zone="exile" owner={owner} ids={exile} density="line" thumbs />
@@ -239,6 +246,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       <RevealedChip owner={owner} player={player} density="line" />
       <RingChip owner={owner} player={player} density="line" />
       <SpeedChip owner={owner} player={player} density="line" />
+      <PlayerCounterChips owner={owner} player={player} density="line" />
       <CompanionChip owner={owner} player={player} />
       {/* One damage chip is the figure alone; with several each keeps the name of its commander. */}
       <DamageChips
@@ -267,31 +275,17 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     >
       {/* Everything above the corner: its height does not depend on how the corner is drawn, so the corner can be sized by it. */}
       <div ref={above} data-slot="pod-top" className="grid grid-cols-[minmax(0,1fr)] content-start gap-2">
-        <header className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5">
-          <div className="grid min-w-24 flex-auto gap-0.5">
-            {tight ? (
-              <div data-slot="pod-name-row" className="flex min-w-0 flex-wrap items-center gap-1">
-                {name}
-                {handChips}
-              </div>
-            ) : (
-              name
-            )}
-            {cramped ? null : (
-              <>
-                {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
-                <div
-                  data-slot="mana-slot"
-                  className={cn('min-h-5', tight && 'flex flex-wrap items-center gap-1')}
-                >
-                  {mana}
-                  {tight ? extraChips : null}
-                </div>
-                <UntappedSources seat={seat} />
-              </>
-            )}
-          </div>
-          <div className="ml-auto flex shrink-0 items-center gap-1.5">
+        {/* The life stays on the name row, whose name truncates, so it is never pushed under the rows below. */}
+        <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-0.5">
+          {tight ? (
+            <div data-slot="pod-name-row" className="flex min-w-0 flex-wrap items-center gap-1">
+              {name}
+              {handChips}
+            </div>
+          ) : (
+            name
+          )}
+          <div className="flex items-center gap-1.5">
             <LifeForecast seat={seat} />
             <Life
               seat={seat}
@@ -300,6 +294,19 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
               className={cramped ? 'text-3xl font-semibold tabular-nums' : 'text-life'}
             />
           </div>
+          {cramped ? null : (
+            <div className="col-span-2 grid grid-cols-[minmax(0,1fr)] gap-0.5">
+              {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
+              <div
+                data-slot="mana-slot"
+                className={cn('min-h-5', tight && 'flex flex-wrap items-center gap-1')}
+              >
+                {mana}
+                {tight ? extraChips : null}
+              </div>
+              <UntappedSources seat={seat} />
+            </div>
+          )}
         </header>
         {words === '' ? null : <p className="sr-only">{words}</p>}
         <div data-slot="pod-status" className="grid content-start gap-1 empty:hidden">
@@ -320,16 +327,19 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
         inDock={flags.you}
         commandSlot={commanderGame && (player.commanders?.length ?? 0) > 0}
         tax={taxOnCards}
-        height={cornerHeight(room.height, aboveHeight)}
+        height={cornerHeight(room.height, aboveHeight, cramped ? belowHeight : null)}
         card={room.card}
       />
-      {cramped ? (
-        <div data-slot="pod-more" className="flex flex-wrap items-center gap-1 empty:hidden">
-          {mana}
-          <UntappedSources seat={seat} />
-          {extraChips}
-        </div>
-      ) : null}
+      {/* Always in the page, so it is measured from the start; empty (and hidden) unless the column is cramped. */}
+      <div ref={below} data-slot="pod-more" className="flex flex-wrap items-center gap-1 empty:hidden">
+        {cramped ? (
+          <>
+            {mana}
+            <UntappedSources seat={seat} />
+            {extraChips}
+          </>
+        ) : null}
+      </div>
     </section>
   )
 })

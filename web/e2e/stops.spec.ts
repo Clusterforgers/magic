@@ -3,9 +3,9 @@ import type { Page } from '@playwright/test'
 import { createAndJoin, everyoneReady } from './lobby'
 import type { Player } from './lobby'
 
-/** A stop button of the ladder by the start of its spoken name, such as "Your upkeep stop: off". */
+/** A stop button of the step ladder in the top bar by the start of its spoken name, such as "Your upkeep stop: off". */
 const stop = (page: Page, name: string) => page.getByRole('button', { name: new RegExp(`^${name}`) })
-/** Shows one side of the stops row: "Mine" for your own turns or "Theirs" for the opponents'. */
+/** Shows one side of the step ladder: "Mine" for your own turns or "Theirs" for the opponents'. */
 const side = (page: Page, name: 'Mine' | 'Theirs') =>
   page
     .getByRole('group', { name: 'Stops for' })
@@ -31,36 +31,45 @@ test('stops and Full Control are set in the browser, shown as the server holds t
   if (ada === undefined || bo === undefined) throw new Error('two players expected')
   try {
     await everyoneReady(players)
+    // A fresh table pins the own declare attackers and postcombat main, and nothing on the opponents' turns.
     for (const { page } of players) {
       await expect(page.getByRole('group', { name: 'Stops', exact: true })).toBeVisible()
-      await expect(lit(page)).toHaveCount(0)
+      const sides = page.getByRole('group', { name: 'Stops for' })
+      await expect(sides.getByRole('button', { name: 'Mine, 2 set' })).toBeVisible()
+      await expect(sides.getByRole('button', { name: 'Theirs, none set' })).toBeVisible()
       await expect(fullControl(page, 'off')).toHaveAttribute('aria-pressed', 'false')
     }
+    // The step ladder holds the stop buttons once the turns begin, after both opening hands are kept.
+    await Promise.all(
+      players.map(({ page }) => page.getByRole('button', { name: 'Keep', exact: true }).click()),
+    )
 
     // A press sets a one-turn stop, shift and press a lasting one with its pin; each shows once the server says so.
     await side(ada.page, 'Mine')
     await stop(ada.page, 'Your upkeep stop: off').click()
     await expect(stop(ada.page, 'Your upkeep stop: on for one turn')).toHaveAttribute('aria-pressed', 'true')
+    await expect(stop(ada.page, 'Your declare attackers stop: on every turn')).toBeVisible()
+    await expect(stop(ada.page, 'Your postcombat main stop: on every turn')).toBeVisible()
     await side(ada.page, 'Theirs')
     await stop(ada.page, "Opponents' end step stop: off").click({ modifiers: ['Shift'] })
     const pinned = stop(ada.page, "Opponents' end step stop: on every turn")
     await expect(pinned).toHaveAttribute('data-keep', 'lasting')
-    await expect(pinned.locator('.lucide-pin')).toBeVisible()
-    await expect(lit(ada.page)).toHaveCount(2)
+    // The pin is drawn under the mark, beside its button in the same step.
+    await expect(pinned.locator('xpath=..').locator('.lucide-pin')).toBeVisible()
+    // The ladder shows one side at a time: Theirs is on show with its one stop.
+    await expect(lit(ada.page)).toHaveCount(1)
 
     // The stops are Ada's alone.
+    await side(bo.page, 'Theirs')
     await expect(lit(bo.page)).toHaveCount(0)
 
     // Another press clears a stop; the Keep toggle makes a plain press set a lasting one.
     await side(ada.page, 'Mine')
     await stop(ada.page, 'Your upkeep stop: on for one turn').click()
-    await expect(lit(ada.page)).toHaveCount(1)
+    await expect(lit(ada.page)).toHaveCount(2)
     await ada.page.getByRole('button', { name: 'Keep stops' }).click()
-    await stop(ada.page, 'Your declare attackers stop: off').click()
-    await expect(stop(ada.page, 'Your declare attackers stop: on every turn')).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    )
+    await stop(ada.page, 'Your end step stop: off').click()
+    await expect(stop(ada.page, 'Your end step stop: on every turn')).toHaveAttribute('aria-pressed', 'true')
     await ada.page.getByRole('button', { name: 'Keep stops' }).click()
 
     // The keys: Control asks for the next window (and again takes it back), Control with Shift for Full Control held.
@@ -84,10 +93,12 @@ test('stops and Full Control are set in the browser, shown as the server holds t
     // The server keeps both for the seat: a reload joins again and the Welcome brings them back.
     await ada.page.reload()
     await expect(fullControl(ada.page, 'held')).toHaveAttribute('aria-pressed', 'true')
-    await expect(lit(ada.page)).toHaveCount(2)
     await side(ada.page, 'Theirs')
+    await expect(lit(ada.page)).toHaveCount(1)
     await expect(stop(ada.page, "Opponents' end step stop: on every turn")).toBeVisible()
     await side(ada.page, 'Mine')
+    await expect(lit(ada.page)).toHaveCount(3)
+    await expect(stop(ada.page, 'Your end step stop: on every turn')).toBeVisible()
     await expect(stop(ada.page, 'Your declare attackers stop: on every turn')).toBeVisible()
     await fullControl(ada.page, 'held').click()
     await expect(fullControl(ada.page, 'off')).toHaveAttribute('aria-pressed', 'false')

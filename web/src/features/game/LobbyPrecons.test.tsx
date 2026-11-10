@@ -157,7 +157,7 @@ describe('the precons on offer', () => {
     await waitFor(() => expect(asked()).toBe(2))
   })
 
-  it('shows the table’s verdict on the selected precon, and a precon the table cannot take cannot be used', async () => {
+  it('shows the table’s verdict on the selected precon, and a precon that is not legal there is taken with its warning', async () => {
     const h = await openPrecons()
     expect(
       await screen.findByRole('option', { name: /Draconic Domination.*Whole deck runs/ }),
@@ -166,12 +166,12 @@ describe('the precons on offer', () => {
     expect(await screen.findByText('Legal in Commander')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Use this deck' })).toBeEnabled()
     await h.user.click(screen.getByRole('option', { name: /Arcane Wizardry/ }))
-    expect(await screen.findByText('Not legal in Commander')).toBeInTheDocument()
-    const blocked = screen.getByRole('button', { name: 'Use this deck' })
-    await waitFor(() => expect(blocked).toHaveAttribute('aria-disabled', 'true'))
-    expect(blocked).toHaveAccessibleDescription(/The deck has 99 cards, and a Commander deck needs 100\./)
-    await h.user.click(blocked)
-    expect(changesOf(h.server).filter((call) => call.method === 'PUT')).toEqual([])
+    expect(await screen.findByText(/^Not legal in Commander/)).toBeInTheDocument()
+    expect(screen.getByText('The deck has 99 cards, and a Commander deck needs 100.')).toBeInTheDocument()
+    const use = screen.getByRole('button', { name: 'Use this deck' })
+    expect(use).not.toHaveAttribute('aria-disabled', 'true')
+    await h.user.click(use)
+    await waitFor(() => expect(changesOf(h.server).filter((call) => call.method === 'PUT')).toHaveLength(1))
   })
 
   it('chooses a precon with its code and says what the table now sees', async () => {

@@ -82,7 +82,7 @@ async fn the_roster_follows_the_welcome_and_every_change_in_the_documented_wire_
     );
     // The exact text on the wire: a flat tagged object, seats in seat order, names as given, and
     // the deck each seat was made with as three facts.
-    let deck = json!({"name": "Mono Green Stompers", "format": "normal", "manual_cards": 0});
+    let deck = json!({"name": "Mono Green Stompers", "format": "normal", "manual_cards": 0, "warnings": 0});
     assert_eq!(
         serde_json::from_str::<Value>(ada.texts.last().unwrap()).unwrap(),
         json!({

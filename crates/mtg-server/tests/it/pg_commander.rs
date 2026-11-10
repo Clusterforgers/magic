@@ -686,7 +686,9 @@ async fn a_deck_that_breaks_the_format_is_taken_with_the_reasons_of_the_check_as
         assert_eq!(made.status, 201, "{why}: {}", made.text());
         let made = made.json()["game"].as_str().unwrap().to_owned();
         assert!(
-            warnings_at(&server, &ann, &made, &id).await.contains(&code.to_owned()),
+            warnings_at(&server, &ann, &made, &id)
+                .await
+                .contains(&code.to_owned()),
             "{why}"
         );
 
@@ -700,14 +702,14 @@ async fn a_deck_that_breaks_the_format_is_taken_with_the_reasons_of_the_check_as
         let joined = join(&server, &bob, &game, &theirs).await;
         assert_eq!(joined.status, 200, "{why}: {}", joined.text());
         assert!(
-            warnings_at(&server, &bob, &game, &theirs).await.contains(&code.to_owned()),
+            warnings_at(&server, &bob, &game, &theirs)
+                .await
+                .contains(&code.to_owned()),
             "{why}"
         );
-        let info = net::get(server.addr, &format!("/api/games/{game}"))
-            .await
-            .json();
-        assert_eq!(info["format"], "commander");
-        assert!(info["seats"][1]["deck"]["warnings"].as_u64().unwrap() >= 1, "{why}");
+        let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+        let warnings = crate::common::seat_warnings(&handle, 0).await;
+        assert!(warnings[1] >= 1, "{why}: {warnings:?}");
     }
 
     // A built-in deck has no commander: it plays with a warning.
@@ -722,10 +724,9 @@ async fn a_deck_that_breaks_the_format_is_taken_with_the_reasons_of_the_check_as
         .await;
     assert_eq!(demo.status, 201, "{}", demo.text());
     let game = demo.json()["game"].as_str().unwrap().to_owned();
-    let info = net::get(server.addr, &format!("/api/games/{game}"))
-        .await
-        .json();
-    assert!(info["seats"][0]["deck"]["warnings"].as_u64().unwrap() >= 1, "{info}");
+    let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+    let warnings = crate::common::seat_warnings(&handle, 1).await;
+    assert!(warnings[0] >= 1, "{warnings:?}");
 }
 
 #[sqlx::test(migrations = false)]

@@ -414,6 +414,13 @@ pub enum ManualAction {
         /// How many, 1 to 10.
         count: u32,
     },
+    /// Create tokens under the seat's control that are copies of a permanent on the battlefield (CR 707.2).
+    CopyToken {
+        /// The permanent copied, of any seat.
+        object: ObjectId,
+        /// How many, 1 to 10.
+        count: u32,
+    },
     /// Tap an untapped permanent.
     Tap {
         /// The permanent.
@@ -679,6 +686,7 @@ pub(crate) fn events(
             life(state, *who, *delta)?
         }
         ManualAction::CreateToken { token, count } => create_tokens(state, player, token, *count)?,
+        ManualAction::CopyToken { object, count } => copy_tokens(state, player, *object, *count)?,
         ManualAction::Tap { object } => tap(state, *object, true)?,
         ManualAction::Untap { object } => tap(state, *object, false)?,
         ManualAction::Draw { count } => draws(state, player, *count)?,
@@ -1003,6 +1011,35 @@ fn create_tokens(
             Event::TokenCreated(TokenCreated {
                 object: ObjectId(first + made),
                 copy_of: None,
+                controller: player,
+                name: definition.name.clone(),
+                tapped: false,
+                attacking: None,
+                definition: Arc::clone(&definition),
+            })
+        })
+        .collect())
+}
+
+fn copy_tokens(
+    state: &GameState,
+    player: PlayerId,
+    object: ObjectId,
+    count: u32,
+) -> Result<Vec<Event>, ManualRefusal> {
+    if !(1..=MAX_TOKENS).contains(&count) {
+        return Err(ManualRefusal::OutOfRange("the number of tokens"));
+    }
+    let original = permanent(state, object)?;
+    let values = crate::copies::copiable_values(state, original.reference(), None)
+        .ok_or(ManualRefusal::BadToken("a permanent that can be copied"))?;
+    let definition = Arc::new(values);
+    let first = state.next_object().get();
+    Ok((0..u64::from(count))
+        .map(|made| {
+            Event::TokenCreated(TokenCreated {
+                object: ObjectId(first + made),
+                copy_of: Some(original.reference()),
                 controller: player,
                 name: definition.name.clone(),
                 tapped: false,

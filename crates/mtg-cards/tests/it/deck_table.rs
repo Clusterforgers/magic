@@ -123,13 +123,21 @@ fn replacing_the_legality_updates_the_issue_count_and_the_state(
     #[case] issues: u32,
 ) {
     // The check of the deck's own format refused it for one issue.
-    let mut report = report(DeckState::of(&counts), counts, vec![issue(IssueCode::Copies)]);
+    let mut report = report(
+        DeckState::of(&counts),
+        counts,
+        vec![issue(IssueCode::Copies)],
+    );
     report.summary.legal = false;
     let legality: Vec<Issue> = codes.into_iter().map(issue).collect();
     report.set_legality(legality.clone());
     assert_eq!(report.legality, legality);
     assert_eq!(
-        (report.summary.state, report.summary.issues, report.summary.legal),
+        (
+            report.summary.state,
+            report.summary.issues,
+            report.summary.legal
+        ),
         (state, issues, issues == 0)
     );
 }

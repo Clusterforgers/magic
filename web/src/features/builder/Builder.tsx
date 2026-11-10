@@ -7,6 +7,7 @@ import { describeDeckError, isSessionEnded } from '@/features/decks/errors'
 import { STATE_LABEL } from '@/features/decks/format'
 import { nameProblem as checkName } from '@/features/decks/rules'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import { BY_HAND } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
 import type { CardsApi } from '@/net/cards'
 import type { DecksApi } from '@/net/decks'
@@ -24,6 +25,7 @@ import {
   moveLine,
   openingPane,
   removeLine,
+  setByHand,
   sameDeck,
   totalOf,
 } from './deckEdit'
@@ -246,11 +248,16 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
       setAnnouncement(`Moved ${nameOf(zone, id)} to ${ZONE_TO[to]}.`)
       setDraft((current) => moveLine(current, zone, id, to, count))
     },
+    byHand: (id, on) => {
+      const name = draft.lines.find((line) => line.card.oracle_id === id)?.card.name ?? 'the card'
+      setAnnouncement(on ? `${name} is ${BY_HAND}.` : `${name} is played by the rules again.`)
+      setDraft((current) => setByHand(current, id, on))
+    },
     preview: showPreview,
   }
 
   return (
-    <PageShell width="wide" className="flex flex-col gap-3 py-4 sm:h-[calc(100dvh-3.5rem-1px)] sm:py-4">
+    <PageShell width="wider" className="flex flex-col gap-3 py-4 sm:h-[calc(100dvh-3.5rem-1px)] sm:py-4">
       <h1 className="sr-only">Edit {stored.view.name}</h1>
       <ViewSwitch shown={shown} onChange={setShown} count={totalOf(draft)} />
       {refusal === null ? null : (
@@ -279,6 +286,7 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
         <DeckPane
           draft={draft}
           deckId={stored.view.id}
+          cardsApi={cards}
           state={stored.view.state}
           check={check}
           dirty={dirty}

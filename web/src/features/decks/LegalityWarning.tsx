@@ -32,7 +32,7 @@ export function LegalityWarning({ format, issues, lines, aside, slot, className 
       className={cn('grid gap-1 rounded-lg border border-warning bg-warning/12 px-3 py-2 text-sm', className)}
     >
       <p id={id} className="flex items-start gap-2 font-semibold text-warning">
-        <TriangleAlertIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+        <TriangleAlertIcon aria-hidden="true" className="mt-1 size-4 shrink-0" />
         <span className="min-w-0">
           {notLegalText(format, issues)}
           {aside}
@@ -40,7 +40,7 @@ export function LegalityWarning({ format, issues, lines, aside, slot, className 
       </p>
       <p className="pl-6 text-foreground">{STILL_PLAYS}</p>
       {lines === undefined || lines.length === 0 ? null : (
-        <ul aria-label="Legality issues" className="grid list-disc gap-1 pl-10 text-foreground">
+        <ul aria-label="Legality issues" className="grid list-disc gap-1 pl-12 text-foreground">
           {lines.map((line) => (
             <li key={line.key}>{line.text}</li>
           ))}

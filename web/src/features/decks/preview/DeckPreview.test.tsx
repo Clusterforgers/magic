@@ -1,7 +1,9 @@
 // Goal: the deck preview shows a deck at a glance and nothing it was not given: commanders, name, legality, identity, size, the support counts with the not-validated slot only for a deck with hand-played cards, the bars, the cards grouped by type with count badges and a support mark, and a large view on a click.
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { FixMarksApiContext } from '@/features/fixmarks/apiContext'
+import { fixMarksClient } from '@/features/fixmarks/client'
 import { renderInRouter } from '@/test-utils/router'
 import { DeckPreview } from './DeckPreview'
 import type { DeckPreviewProps } from './DeckPreview'
@@ -40,6 +42,10 @@ const DECK: DeckPreviewProps['deck'] = {
   ],
   sideboard: [],
 }
+
+afterEach(() => {
+  fixMarksClient.clear()
+})
 
 describe('the deck preview', () => {
   it('names the deck with its source, format, identity and size', () => {
@@ -181,6 +187,30 @@ describe('the deck preview', () => {
     await user.keyboard('{Escape}')
     expect(screen.queryByRole('dialog')).toBeNull()
   })
+
+  it.each([
+    ['a card that is not Verified', 'Odd Dragon, played by hand', true],
+    ['a Verified card', 'Sol Ring', false],
+  ])(
+    'offers the fix mark in the large view of %s only when it is not Verified',
+    async (_name, tile, shown) => {
+      const user = userEvent.setup()
+      const api = {
+        list: vi.fn(() => Promise.resolve([])),
+        mark: vi.fn(),
+        unmark: vi.fn(),
+      }
+      render(
+        <FixMarksApiContext value={api}>
+          <DeckPreview deck={DECK} />
+        </FixMarksApiContext>,
+      )
+      await user.click(screen.getByRole('button', { name: tile }))
+      const zoom = await screen.findByRole('dialog')
+      const button = within(zoom).queryByRole('button', { name: /Mark important to fix/ })
+      expect(button !== null).toBe(shown)
+    },
+  )
 
   it('draws the large card up to 408 px wide, capped by the window height and the dialog width', async () => {
     const user = userEvent.setup()

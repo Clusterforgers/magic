@@ -1,4 +1,4 @@
-// Goal: every named seat of the lobby shows its deck to the whole table as the deck's name, format and a count of cards played by hand (one, many or none), a seat without a deck says "no deck yet", an open seat and a page that has only the lookup say nothing about decks, the summary waits for a seat without a deck to choose one, and no card name ever reaches the page, whatever the roster carries.
+// Goal: every named seat of the lobby shows its deck to the whole table as the deck's name, format and a count of cards played by hand (one, many or none), a seat without a deck says "no deck yet", an open seat and a page that has only the lookup say nothing about decks, a deck that breaks the table's rules carries a warning every seat sees, the summary waits for a seat without a deck to choose one, and no card name ever reaches the page, whatever the roster carries.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { SeatDeck } from '@/protocol/generated'
@@ -11,8 +11,8 @@ import { deckFormat, deckWords, issueWords, sameDeck, stillWords } from './deckW
 import { lobbyRows, mayReady, summaryText } from './lobbyModel'
 import type { LobbyRow } from './lobbyModel'
 
-const BURN: SeatDeck = { name: 'Burn', format: 'modern', manual_cards: 3 }
-const MILL: SeatDeck = { name: 'Pauper Mill', format: 'pauper', manual_cards: 1 }
+const BURN: SeatDeck = { name: 'Burn', format: 'modern', manual_cards: 3, warnings: 0 }
+const MILL: SeatDeck = { name: 'Pauper Mill', format: 'pauper', manual_cards: 1, warnings: 0 }
 
 const rows = (): HTMLElement[] => within(screen.getByRole('list', { name: 'Seats' })).getAllByRole('listitem')
 const deckLine = (row: HTMLElement): string | null =>
@@ -57,6 +57,15 @@ describe('what each seat shows the table', () => {
     )
     expect(deckLine(rows()[1] as HTMLElement)).toBe('Deck: Burn, Modern, 3 cards played by hand')
     expect(deckLine(rows()[2] as HTMLElement)).toBe('Deck: Pauper Mill, Pauper, 1 card played by hand')
+  })
+
+  it('shows every seat that a deck breaks the rules of the table, with an icon and the count', async () => {
+    await lobby([
+      ['Ann', true, false, SEAT_DECK],
+      ['Bea', true, false, { ...BURN, warnings: 2 }],
+    ])
+    expect(within(rows()[1] as HTMLElement).getByText('Not legal at this table (2)')).toBeInTheDocument()
+    expect(within(rows()[0] as HTMLElement).queryByText(/Not legal/)).toBeNull()
   })
 
   it('says "no deck yet" for a joined seat without one, and nothing for an open seat', async () => {
@@ -164,7 +173,7 @@ describe('no card name reaches the lobby', () => {
   it('shows no card of the built-in decks in the roster', async () => {
     await lobby([
       ['Ann', true, false, SEAT_DECK],
-      ['Bea', true, false, { name: 'Mono Red Giants', format: 'normal', manual_cards: 0 }],
+      ['Bea', true, false, { name: 'Mono Red Giants', format: 'normal', manual_cards: 0, warnings: 0 }],
     ])
     await screen.findByRole('listbox', { name: 'Built-in decks' })
     expect(
@@ -184,7 +193,7 @@ describe('the words for a deck', () => {
     [2, '2 cards played by hand'],
     [60, '60 cards played by hand'],
   ])('says %i cards as "%s"', (count, words) => {
-    expect(deckWords({ name: 'Burn', format: 'modern', manual_cards: count })).toBe(`Burn, Modern, ${words}`)
+    expect(deckWords({ name: 'Burn', format: 'modern', manual_cards: count, warnings: 0 })).toBe(`Burn, Modern, ${words}`)
   })
 
   it.each<[string, string]>([
@@ -203,6 +212,11 @@ describe('the words for a deck', () => {
     expect(sameDeck(BURN, { ...BURN, manual_cards: 2 })).toBe(false)
     expect(sameDeck(BURN, { ...BURN, format: 'legacy' })).toBe(false)
     expect(sameDeck(BURN, MILL)).toBe(false)
+  })
+
+  it('tells a deck with warnings from the same deck without', () => {
+    const illegal = { ...BURN, warnings: 2 }
+    expect(sameDeck(BURN, illegal)).toBe(false)
   })
 
   it.each<[SeatDeck | null | undefined, string]>([

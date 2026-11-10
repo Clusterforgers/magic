@@ -1,11 +1,10 @@
-// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, a check that found a card the game does not run whole is told from one that did not, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 4 played by hand"), a deck's note counts what is played by hand or what blocks it, or breaks a deck that runs whole down by tier, and an import summary counts cards per zone; the format list is the one the server checks.
+// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, a check that found a card the game does not run whole is told from one that did not, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 4 played by hand"), a deck's note counts what is played by hand (an old blocked check too), or breaks a deck that runs whole down by tier, and an import summary counts cards per zone; the format list is the one the server checks.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { Counts, DeckState, Support } from '@/protocol/generated'
 import { counts, deckIn, importResult, lineOf, summary } from './fakeDecks'
 import {
-  BLOCKED_MEANING,
   cardsText,
   checkNote,
   countsText,
@@ -83,7 +82,7 @@ describe('STATE_LABEL', () => {
     ['verified', 'Verified'],
     ['read', 'Whole deck runs'],
     ['manual_play', 'Played by hand'],
-    ['blocked', 'Blocked'],
+    ['blocked', 'Played by hand'],
     ['unchecked', 'Unchecked'],
   ] satisfies ReadonlyArray<[DeckState, string]>)('words %s as %s', (state, word) => {
     expect(STATE_LABEL[state]).toBe(word)
@@ -191,18 +190,10 @@ describe('checkNote', () => {
     expect(checkNote(deck)).toBe('34 from Forge · 4 unverified · 2 read')
   })
 
-  it.each([
-    ['one issue', 1, 0, '1 legality issue. '],
-    ['several issues', 3, 0, '3 legality issues. '],
-    ['one unplayable card', 0, 1, '1 unplayable card. '],
-    ['unplayable cards', 0, 2, '2 unplayable cards. '],
-    ['both', 2, 1, '2 legality issues, 1 unplayable card. '],
-    ['neither', 0, 0, ''],
-  ])('says what blocks a deck with %s, and what blocked means', (_what, issues, unplayable, what) => {
-    const deck = deckIn('blocked', {
-      summary: summary({ state: 'blocked', issues, counts: counts({ unplayable }) }),
-    })
-    expect(checkNote(deck)).toBe(`${what}${BLOCKED_MEANING}.`)
+  it('counts the cards played by hand of a check stored as blocked, and never refuses it', () => {
+    const found = counts({ unplayable: 1 })
+    const deck = deckIn('blocked', { summary: summary({ state: 'blocked', issues: 2, counts: found }) })
+    expect(checkNote(deck)).toBe(countsText(found))
   })
 
   it('says "Not checked yet" for an unchecked deck, whatever its changed flag holds', () => {

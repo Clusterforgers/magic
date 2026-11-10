@@ -1,10 +1,10 @@
-import { Check } from 'lucide-react'
 import type { Ref } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
 import { HIGHLIGHT } from '../cardSize'
 import { CardFace } from '../CardFace'
+import { ChosenMark } from '../ChosenMark'
 import { usePreviewHandlers } from '../usePreviewHandlers'
 import { useChoiceAnchor } from './choiceAnchor'
 
@@ -102,15 +102,7 @@ export function PromptCard({
       ) : (
         <CardFace object={object} role={null} size={size} fit />
       )}
-      {chosen ? (
-        <span
-          aria-hidden="true"
-          data-slot="chosen-mark"
-          className="absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-primary text-primary-foreground ring-2 ring-background"
-        >
-          <Check className="size-3.5" />
-        </span>
-      ) : null}
+      {chosen ? <ChosenMark /> : null}
       {hotkey === undefined ? null : (
         <kbd
           aria-hidden="true"

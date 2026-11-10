@@ -43,3 +43,50 @@
     animation: moment-die-roll 900ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
   }
 }
+
+/*
+ * A coin (`CoinFace.tsx`): two faces back to back in 3D, tails turned half a turn. It rests with its side up, and
+ * where motion is welcome it is tossed, turns five times (a half more for tails) and drops back in about a second.
+ */
+.coin {
+  perspective: 40rem;
+}
+
+.coin-body {
+  transform-style: preserve-3d;
+}
+
+.coin-face {
+  backface-visibility: hidden;
+}
+
+.coin-back {
+  transform: rotateY(180deg);
+}
+
+[data-slot='coin'][data-side='Tails'] .coin-body {
+  transform: rotateY(180deg);
+}
+
+@keyframes moment-coin-flip {
+  0% {
+    transform: translateY(0) rotateY(0deg) scale(0.8);
+  }
+  45% {
+    transform: translateY(-2.5rem) rotateY(calc(var(--coin-turn) * 0.5)) scale(1.1);
+  }
+  100% {
+    transform: translateY(0) rotateY(var(--coin-turn)) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot='coin']:not([data-still]) .coin-body {
+    --coin-turn: 1800deg;
+    animation: moment-coin-flip 1000ms cubic-bezier(0.3, 0.6, 0.4, 1) both;
+  }
+
+  [data-slot='coin'][data-side='Tails']:not([data-still]) .coin-body {
+    --coin-turn: 1980deg;
+  }
+}

@@ -1,11 +1,10 @@
-//! Goal: a recipe names a seat's companion beside its library and commanders and rebuilds the setup with it at two to four seats, mixed with seats that have none; the companion is part of the deck's fingerprint, so a changed, lost, swapped or dropped companion fails the rebuild with the seat named, a deck that no longer meets its condition is refused by the engine's setup check, and a recipe stored without a companion reads and hashes as it did.
+//! Goal: a recipe names a seat's companion beside its library and commanders and rebuilds the setup with it at two to four seats, mixed with seats that have none; the companion is part of the deck's fingerprint, so a changed, lost, swapped or dropped companion fails the rebuild with the seat named, a deck that no longer meets its condition still builds (legality only warns), and a recipe stored without a companion reads and hashes as it did.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
-use mtg_engine::error::SetupError;
 use mtg_engine::rng::GameRng;
 use mtg_server::{Catalog, DeckFingerprint, DeckRef, GameRecipe, RecipeError};
 use mtg_testkit::cards::{creature, land};
@@ -47,6 +46,7 @@ fn oracle(ids: &[String], companion: Option<&str>) -> DeckRef {
         commanders: Vec::new(),
         companion: companion.map(str::to_owned),
         printings: Vec::new(),
+        by_hand: Vec::new(),
     }
 }
 
@@ -189,19 +189,16 @@ fn a_companion_the_catalog_lacks_is_named_with_its_seat() {
 }
 
 #[test]
-fn a_deck_that_no_longer_meets_the_condition_is_refused_by_the_setup_check() {
+fn a_deck_that_no_longer_meets_the_condition_still_builds_with_its_companion() {
     let (mut ids, mut cards) = deck_and_catalog();
     cards.insert("giant".to_owned(), creature("Giant", 5, &[], 5, 5));
     cards.insert("plains".to_owned(), land(mtg_core::color::Color::White));
     ids[0] = "giant".to_owned();
     let catalog = catalog_of(&cards);
     let recipe = recipe(2, &ids, &catalog);
-    match recipe.build_with(&catalog).unwrap_err() {
-        RecipeError::Setup(SetupError::InvalidCompanion { player, .. }) => {
-            assert_eq!(player.index(), 0);
-        }
-        other => panic!("{other}"),
-    }
+    // Legality only warns (`docs/deck-check.md`): the server never lets the engine refuse a deck.
+    let setup = recipe.build_with(&catalog).unwrap();
+    assert!(setup.players[0].companion.is_some());
     // The same cards at a seat that names none build.
     let plain = GameRecipe::normal(7, [oracle(&ids, None), oracle(&ids, None)])
         .with_fingerprints_from(&catalog)

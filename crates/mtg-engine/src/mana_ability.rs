@@ -164,7 +164,13 @@ pub(crate) fn split(made: &[ManaType]) -> Option<(ManaType, u32, Vec<ManaType>)>
 /// every type is a distinct source of one permanent and a client taps for the type it wants.
 // One pass over the shape of each ability: its condition, limit, cost, the mana it adds and what it does besides.
 #[allow(clippy::too_many_lines)]
-fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) -> Vec<RuleMana> {
+fn rule_mana(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    printed: usize,
+    here: bool,
+) -> Vec<RuleMana> {
     let Some(object) = state.object(id) else {
         return Vec::new();
     };
@@ -174,6 +180,10 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         let Some(shape) = mana_shape(&rules) else {
             continue;
         };
+        // A payment uses only the abilities that work where the card is; a view previews a hand card's ways too.
+        if here && shape.from != crate::resolve::zone_kind(object.zone()) {
+            continue;
+        }
         // The mana is counted after what the ability does first (a counter put on the source).
         let ahead = c8_time_ahead(state, player, object, shape.before);
         let ahead_scope = ahead
@@ -202,7 +212,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             continue;
         }
         // What the cost takes: the source is not offered to itself when the cost taps or loses it.
-        let barred = if shape.tap || shape.sacrifice {
+        let barred = if shape.tap || shape.sacrifice || shape.exile {
             vec![id]
         } else {
             Vec::new()
@@ -376,6 +386,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         // Every use takes others, so what limits the uses is what the cost takes.
         let repeat = !tap
             && !sacrifice
+            && !shape.exile
             && !once
             && !takes.is_empty()
             && shape.pays.is_empty()
@@ -397,6 +408,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                     produces,
                     count,
                     sacrifice,
+                    exile: shape.exile,
                     extra,
                     tapless: !tap,
                     only: only.clone(),
@@ -425,7 +437,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
     found
 }
 
-/// The mana abilities in the rules of `id` that its controller can use now, by address, each with an option for every
+/// The mana abilities in the rules of `id` for a view, in any zone (a hand card previews its ways), by address, each with an option for every
 /// way to use it as the payment offers it: the mana counted now, the chosen colour, the mana it costs.
 pub fn mana_ways(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Vec<ManaOption>)> {
     let (Some(object), Some(chars)) = (state.object(id), characteristics(state, id)) else {
@@ -435,7 +447,7 @@ pub fn mana_ways(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Vec<ManaOp
     if mana_forbidden(state, player, id) {
         return Vec::new();
     }
-    rule_mana(state, player, id, chars.abilities.len())
+    rule_mana(state, player, id, chars.abilities.len(), false)
         .into_iter()
         .map(|mana| (mana.address, mana.options))
         .collect()
@@ -493,15 +505,36 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
                 found.push(option);
             }
         }
-        for mana in rule_mana(state, player, id, chars.abilities.len()) {
+        for mana in rule_mana(state, player, id, chars.abilities.len(), true) {
             if !mana.tap || can_tap {
                 found.extend(mana.options);
             }
         }
     }
+    found.extend(hand_options(state, player));
     // The replacement comes first: the mana a triggered mana ability adds is not mana the permanent produced (CR 605.1b).
     let found = crate::mana_replace::fold(state, player, found);
     mana_bonus::fold(state, player, found)
+}
+
+/// The mana abilities of the cards in `player`'s hand that exile themselves for mana (a Spirit Guide): sources of a
+/// payment and of priority like a permanent's, which no tap, untap or summoning sickness limits.
+fn hand_options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
+    let mut found = Vec::new();
+    for &id in state.zone(Zone::Hand(player)) {
+        // Most cards have no ability that works from the hand; only those are read.
+        let works = state
+            .object(id)
+            .is_some_and(|object| crate::ability_reader::definition_works_elsewhere(object.card()));
+        if !works || mana_forbidden(state, player, id) {
+            continue;
+        }
+        let printed = characteristics(state, id).map_or(0, |chars| chars.abilities.len());
+        for mana in rule_mana(state, player, id, printed, true) {
+            found.extend(mana.options);
+        }
+    }
+    found
 }
 
 /// The state after the effects a mana ability runs before its mana (CR 605.3b: in the order written), or `None` when
@@ -547,7 +580,7 @@ pub(crate) fn activation(
     let printed = characteristics(state, id).map_or(0, |chars| chars.abilities.len());
     // The variants a triggered mana ability's pick makes of an option are numbered past the ability's own sources.
     let base = option.source.ability % mana_bonus::STRIDE;
-    let rule = rule_mana(state, player, id, printed)
+    let rule = rule_mana(state, player, id, printed, true)
         .into_iter()
         .find(|mana| {
             mana.options
@@ -595,6 +628,14 @@ pub(crate) fn activation(
             cause: ZoneCause::Sacrificed,
         });
     }
+    if shape.as_ref().is_some_and(|shape| shape.exile) {
+        events.push(Event::ZoneChanged {
+            object: id,
+            from: object.zone(),
+            to: Zone::Exile,
+            cause: ZoneCause::Exiled,
+        });
+    }
     if let Some(shape) = &shape {
         events.extend(run_inline(state, player, object, shape.before)?);
     }
@@ -608,7 +649,7 @@ pub(crate) fn activation(
     if let Some(shape) = shape {
         // What it does besides reads the state after the cost is paid (CR 602.2): a depletion land is sacrificed once
         // its last counter is removed. The sacrificed source is read where it was, as before.
-        let paid = (!shape.sacrifice && !shape.then.is_empty())
+        let paid = (!shape.sacrifice && !shape.exile && !shape.then.is_empty())
             .then(|| r6e_after(state, &events))
             .flatten();
         let now = paid.as_ref().unwrap_or(state);

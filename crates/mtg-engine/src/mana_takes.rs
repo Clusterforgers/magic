@@ -203,8 +203,8 @@ pub(crate) fn without_taken(
         .collect()
 }
 
-/// `sources` for paying for the card `id`: no cost takes the card from the hand it waits in, since it is on the stack
-/// (or in exile) by the time the payment is made.
+/// `sources` for paying for the card `id`: no cost takes the card from the hand it waits in, and the card is no source
+/// of its own mana (a Spirit Guide cast), since it is on the stack (or in exile) by the time the payment is made.
 pub(crate) fn for_card<'a>(
     state: &GameState,
     sources: &'a [ManaOption],
@@ -214,13 +214,16 @@ pub(crate) fn for_card<'a>(
         .object(id)
         .is_some_and(|object| matches!(object.zone(), Zone::Hand(_)));
     let mentioned = |option: &ManaOption| {
-        option
-            .takes
-            .iter()
-            .any(|take| take.exile && take.from.contains(&id))
+        option.source.object == id
+            || option
+                .takes
+                .iter()
+                .any(|take| take.exile && take.from.contains(&id))
     };
     if in_hand && sources.iter().any(mentioned) {
-        Cow::Owned(without_taken(sources, &|other| other == id))
+        let mut sources = without_taken(sources, &|other| other == id);
+        sources.retain(|option| option.source.object != id);
+        Cow::Owned(sources)
     } else {
         Cow::Borrowed(sources)
     }

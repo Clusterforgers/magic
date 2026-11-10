@@ -17,6 +17,17 @@ export const SIZES: readonly Size[] = [
   { width: 390, height: 844 },
 ]
 
+/** Sizes between and beyond the design sizes that the layout gate sweeps too: a wide window, a laptop, a tablet and a small phone. */
+export const EXTRA_SIZES: readonly Size[] = [
+  { width: 1600, height: 1000 },
+  { width: 1400, height: 900 },
+  { width: 768, height: 1024 },
+  { width: 360, height: 740 },
+]
+
+/** The sizes of the layout gate: the six design sizes, then the extra ones. */
+export const GATE_SIZES: readonly Size[] = [...SIZES, ...EXTRA_SIZES]
+
 /** The two colour schemes of the app. */
 export const THEMES = ['light', 'dark'] as const
 
@@ -28,13 +39,14 @@ export const TEXT_FLOOR = 12
 
 /**
  * What the table scrolls or clips on purpose: the art of a card is a picture of a card, and the strip of opponents, the
- * chips of the stack and the hand scroll inside their own box where the width is short (docs/ui-design.md, Table
+ * chips of the stack, a line of the payment and the hand scroll inside their own box where the width is short (docs/ui-design.md, Table
  * layout).
  */
 export const TABLE_EXEMPT = [
   '[data-slot="card-face"]',
   '[data-slot="tile-strip"]',
   '[data-slot="stack-chips"] ol',
+  '[data-slot="payment"] [data-line]',
   '[data-slot="hand-fan"]',
 ]
 
@@ -214,23 +226,28 @@ export function measure(ask: Ask): Look {
       actions[name] = null
       continue
     }
-    let box = boxOf(element)
-    if (ask.reveal && !inside(box)) {
-      element.scrollIntoView({ block: 'center', inline: 'nearest' })
-      box = boxOf(element)
-    }
     // A disabled control has its pointer events off, so the hit test would skip it: it is tested as if they were on.
     const target = element as HTMLElement
     const kept = target.style.pointerEvents
     target.style.pointerEvents = 'auto'
     // A point outside the window has nothing to hit; the action being outside is a finding of its own.
-    const free = spots.every((spot) => {
-      const top = document.elementFromPoint(
-        box.left + (box.right - box.left) * spot.x,
-        box.top + (box.bottom - box.top) * spot.y,
-      )
-      return top === null || element.contains(top)
-    })
+    const hit = (at: Box): boolean =>
+      spots.every((spot) => {
+        const top = document.elementFromPoint(
+          at.left + (at.right - at.left) * spot.x,
+          at.top + (at.bottom - at.top) * spot.y,
+        )
+        return top === null || element.contains(top)
+      })
+    let box = boxOf(element)
+    let free = hit(box)
+    // An action inside the window can still lie out of view in a list that scrolls on its own (a scroll left there
+    // by an earlier size): a page that may scroll brings it into view as a person would.
+    if (ask.reveal && (!inside(box) || !free)) {
+      element.scrollIntoView({ block: 'center', inline: 'nearest' })
+      box = boxOf(element)
+      free = hit(box)
+    }
     target.style.pointerEvents = kept
     actions[name] = { box, free }
   }

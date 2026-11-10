@@ -46,6 +46,8 @@ const SCALAR_KEYS: &[&str] = &[
     "tax",
     "delayed",
     "commander_lethal",
+    // The seat that protects a battle.
+    "protector",
     "power",
     "toughness",
     "printed_power",

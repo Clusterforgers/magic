@@ -4,7 +4,7 @@
  * `localStorage`. A session applies them at `Welcome` (`welcomeRequests`).
  */
 import { useSyncExternalStore } from 'react'
-import type { AutoChoices, ClientMessage, Stop } from '@/protocol/generated'
+import type { AutoChoices, AutoYield, ClientMessage, Stop } from '@/protocol/generated'
 import { canHoldStop } from './stops'
 
 /** The `localStorage` key of the default stops. */
@@ -13,6 +13,8 @@ export const DEFAULT_STOPS_KEY = 'mtg.defaultStops'
 export const END_TURN_KEY = 'mtg.endTurnByHand'
 /** The `localStorage` key of the auto choices. */
 export const AUTO_CHOICES_KEY = 'mtg.autoChoices'
+/** The `localStorage` key of the abilities always yielded to. */
+export const AUTO_YIELDS_KEY = 'mtg.autoYields'
 /** The `localStorage` key of the games the default stops were given to. */
 export const APPLIED_KEY = 'mtg.defaultStopsApplied'
 /** How many games `APPLIED_KEY` remembers. */
@@ -20,12 +22,14 @@ export const APPLIED_LIMIT = 50
 
 /** The preferences at one moment. */
 export interface FlowPrefs {
-  /** The pinned stops a new game starts with; empty when none were saved. */
+  /** The pinned stops a new game starts with; `DEFAULT_STOPS` when none were saved. */
   defaultStops: readonly Stop[]
   /** Whether the seat ends its own turns by hand. */
   endTurnByHand: boolean
   /** The decisions the server answers for the seat. */
   autoChoices: AutoChoices
+  /** The abilities the seat always yields to, in every game. */
+  autoYields: readonly AutoYield[]
 }
 
 const listeners = new Set<() => void>()
@@ -60,9 +64,20 @@ function parseJson(text: string | null): unknown {
   }
 }
 
-/** The stored stops that are still well formed: a side, a step that can hold a stop, and lasting. */
+/**
+ * The stops pinned for a viewer who saved none, as the server holds them for a new account: the own declare
+ * attackers step and postcombat main phase, so the turn never runs past the attack or the second main by itself.
+ */
+export const DEFAULT_STOPS: readonly Stop[] = [
+  { side: 'Own', step: 'DeclareAttackers', keep: true },
+  { side: 'Own', step: 'Main2', keep: true },
+]
+
+/** The stored stops that are still well formed: a side, a step that can hold a stop, and lasting; `DEFAULT_STOPS` when none were saved. */
 function readStops(): Stop[] {
-  const raw = parseJson(readItem(DEFAULT_STOPS_KEY))
+  const text = readItem(DEFAULT_STOPS_KEY)
+  if (text === null) return [...DEFAULT_STOPS]
+  const raw = parseJson(text)
   if (!Array.isArray(raw)) return []
   return raw.flatMap((item: unknown) => {
     if (typeof item !== 'object' || item === null) return []
@@ -88,7 +103,18 @@ function readAuto(): AutoChoices {
   }
 }
 
-/** The preferences now: the stored ones, none by default. */
+/** The stored yields that are still well formed: a name and the words, both text. */
+function readYields(): AutoYield[] {
+  const raw = parseJson(readItem(AUTO_YIELDS_KEY))
+  if (!Array.isArray(raw)) return []
+  return raw.flatMap((item: unknown) => {
+    if (typeof item !== 'object' || item === null) return []
+    const { name, text } = item as Record<string, unknown>
+    return typeof name === 'string' && typeof text === 'string' ? [{ name, text }] : []
+  })
+}
+
+/** The preferences now: the stored ones, `DEFAULT_STOPS` and everything else off by default. */
 export function flowPrefs(): FlowPrefs {
   current ??= readLocal()
   return current
@@ -105,6 +131,7 @@ function readLocal(): FlowPrefs {
     defaultStops: readStops(),
     endTurnByHand: readItem(END_TURN_KEY) === 'on',
     autoChoices: readAuto(),
+    autoYields: readYields(),
   }
 }
 
@@ -114,6 +141,7 @@ function store(next: FlowPrefs): void {
     writeItem(DEFAULT_STOPS_KEY, JSON.stringify(next.defaultStops))
     writeItem(END_TURN_KEY, next.endTurnByHand ? 'on' : null)
     writeItem(AUTO_CHOICES_KEY, hasAuto(next.autoChoices) ? JSON.stringify(next.autoChoices) : null)
+    writeItem(AUTO_YIELDS_KEY, next.autoYields.length === 0 ? null : JSON.stringify(next.autoYields))
   } else account(next)
   change(next)
 }
@@ -125,7 +153,20 @@ function hasAuto(auto: AutoChoices): boolean {
 
 /** Whether `prefs` are what a new account has. */
 function isDefault(prefs: FlowPrefs): boolean {
-  return prefs.defaultStops.length === 0 && !prefs.endTurnByHand && !hasAuto(prefs.autoChoices)
+  return (
+    sameStops(prefs.defaultStops, DEFAULT_STOPS) &&
+    !prefs.endTurnByHand &&
+    !hasAuto(prefs.autoChoices) &&
+    prefs.autoYields.length === 0
+  )
+}
+
+/** Whether `a` and `b` pin the same stops, in any order. */
+function sameStops(a: readonly Stop[], b: readonly Stop[]): boolean {
+  return (
+    a.length === b.length &&
+    a.every((stop) => b.some((other) => other.side === stop.side && other.step === stop.step))
+  )
 }
 
 /**
@@ -168,6 +209,17 @@ export function saveAutoChoices(choices: AutoChoices): void {
   store({ ...flowPrefs(), autoChoices: choices })
 }
 
+/** Stores the abilities the seat always yields to, as the server holds them. */
+export function saveAutoYields(yields: readonly AutoYield[]): void {
+  const kept = flowPrefs().autoYields
+  if (kept.length === yields.length && kept.every((key, i) => sameYield(key, yields[i]))) return
+  store({ ...flowPrefs(), autoYields: yields })
+}
+
+function sameYield(a: AutoYield, b: AutoYield | undefined): boolean {
+  return b !== undefined && a.name === b.name && a.text === b.text
+}
+
 /** Forgets the cached preferences, so the next read goes to storage again (tests). */
 export function resetFlowPrefs(): void {
   current = null
@@ -189,6 +241,8 @@ export interface WelcomeFacts {
   stops: readonly Stop[]
   endTurnByHand: boolean
   autoChoices: AutoChoices
+  /** The yields the server holds for the seat; absent counts as none. */
+  autoYields?: readonly AutoYield[]
 }
 
 /**
@@ -212,6 +266,9 @@ export function welcomeRequests(welcome: WelcomeFacts, prefs: FlowPrefs = flowPr
     smart_stops !== welcome.autoChoices.smart_stops
   )
     requests.push({ type: 'AutoChoices', choices: prefs.autoChoices })
+  const held = welcome.autoYields ?? []
+  if (prefs.autoYields.some((key) => !held.some((other) => sameYield(key, other))))
+    requests.push({ type: 'LoadAutoYields', yields: [...prefs.autoYields] })
   return requests
 }
 

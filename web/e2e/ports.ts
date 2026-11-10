@@ -20,6 +20,13 @@ export const DEV_WEB_URL = `http://127.0.0.1:${DEV_WEB_PORT}`
 export const ACCOUNTS_DATABASE_URL: string | undefined =
   process.env.E2E_DATABASE_URL === '' ? undefined : process.env.E2E_DATABASE_URL
 
+/**
+ * The clock of the active player's decisions, in seconds, from `E2E_ACTIVE_SECS`. Only when it is set does the main
+ * server run that clock and a timer bank (`E2E_EXTENSION_SECS`, default 4 s); `bank.spec.ts` is skipped without it.
+ */
+export const ACTIVE_SECS: string | undefined = process.env.E2E_ACTIVE_SECS || undefined
+export const EXTENSION_SECS: string = process.env.E2E_EXTENSION_SECS || '4'
+
 /** The second pair of ports, used only with `E2E_DATABASE_URL`. */
 export const ACCOUNTS_WEB_PORT = Number(process.env.E2E_ACCOUNTS_WEB_PORT ?? 5302)
 export const ACCOUNTS_SERVER_PORT = Number(process.env.E2E_ACCOUNTS_SERVER_PORT ?? 8302)

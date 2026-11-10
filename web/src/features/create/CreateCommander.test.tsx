@@ -20,12 +20,20 @@ describe('the form as first shown', () => {
     )
   })
 
-  it('has a number field for the seats with no most, so a table of 24 is asked for by typing it', async () => {
+  it('has a number field for the seats up to 256, so a table of 24 is asked for by typing it', async () => {
     const { user } = await openCreateForm({}, 'default')
     expect(seats()).toHaveAttribute('type', 'number')
-    expect(seats()).not.toHaveAttribute('max')
+    expect(seats()).toHaveAttribute('max', '256')
     await typeSeats(user, 24)
     expect(seats()).toHaveValue(24)
+  })
+
+  it('builds no rows for a count past 256 and says so', async () => {
+    const { user } = await openCreateForm({}, 'default')
+    await typeSeats(user, 24)
+    await typeSeats(user, 2500)
+    expect(seats()).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByText(/from 2 to 256/)).toBeInTheDocument()
   })
 
   it('keeps a link for every seat to the Normal format', async () => {
