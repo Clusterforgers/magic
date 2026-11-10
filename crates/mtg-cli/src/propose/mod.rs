@@ -407,8 +407,20 @@ pub async fn run_command(
     if args.lines {
         lines::check_args(args)?;
         let cards = stored_cards(db).await?;
+        let legal = order::commander_legal_ids(db).await?;
         let out = args.out.clone().unwrap_or_else(|| default_out(cache));
-        return lines::command(cards, out, args, progress, api).await;
+        let spend = if args.dry_run {
+            None
+        } else {
+            spend_of(args, cache, &options_of(args)?)?
+        };
+        let stored = lines::Stored {
+            cards,
+            legal,
+            out,
+            spend,
+        };
+        return lines::command(stored, args, progress, env, api).await;
     }
     let cards = stored_cards(db).await?;
     let within = if args.precons {

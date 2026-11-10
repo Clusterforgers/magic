@@ -1,10 +1,15 @@
-//! `propose --lines`: for a card whose translation has exactly one gapped line, a local model writes only that ability
-//! from a small prompt and a schema for its kind; the part is merged into the translation at its line and the checker
-//! judges the whole card. Only the checker's `Verified` can play without a player's read (`docs/cards-dsl.md`).
+//! `propose --lines`: for a card whose Forge translation has one or two gapped lines, a model writes only those abilities
+//! from a small prompt (the line, its Forge script lines, the proven abilities and the nearest solved examples); the parts
+//! are merged into the translation and the checker judges the whole card. A local server or the paid API, one request at
+//! a time or through batches (`docs/cards-dsl.md`, Line fill). Only the checker's `Verified` can play without a read.
 
+pub mod batch;
+pub mod card;
 pub mod client;
+pub mod paid;
 pub mod part;
 pub mod pool;
+pub mod price;
 
 #[cfg(test)]
 mod tests;
@@ -18,17 +23,17 @@ use std::time::Instant;
 
 use mtg_cards::Caps;
 use mtg_cards::PrintedCard;
-use mtg_cards::ability::Ability;
-use mtg_cards::load::{Library, slug};
-use mtg_cards::proposal::check;
-use serde_json::{Value, json};
+use mtg_cards::load::Library;
 
+use self::card::{Prepared, Step, Work};
+use self::paid::{Meter, Sent};
 use self::part::Kind;
-use self::pool::{Gap, GapAt, Pool, Translation, describe, merge};
+use self::pool::{Pool, Shape, Translation, describe};
+use super::budget::Stop;
 use super::forge_hint::ForgeHints;
-use super::model::{Message, ModelClient, Request};
+use super::model::ModelClient;
+use super::order::digital_only;
 use super::outcome::Outcome;
-use super::prompt::{diagnosis, extract_json};
 use super::select;
 use super::store::Store;
 use crate::args::{ProposeArgs, Provider};
@@ -41,14 +46,22 @@ pub const RESULTS: &str = "lines.tsv";
 /// Cards in a row that get no answer before the run gives up.
 const FAILURES_IN_A_ROW: usize = 5;
 
+/// How many solved examples a line's prompt holds.
+pub const EXAMPLES: usize = 4;
+
 /// The sentence that closes the report: what may play without a read.
 pub const SAFETY: &str = "Only `accepted Verified`, the checker's own pass, can play without a player's read. Every other result is a proposal marked source `sweep` (model-written, unread) in its meta file, and plays only after a player reads and approves it.";
 
-/// Refuses the flag combinations line mode does not allow: the local provider with an address of its own.
+/// Refuses the flag combinations line mode does not allow: a local server needs its address, a batch the paid API.
 pub fn check_args(args: &ProposeArgs) -> Result<(), CliError> {
-    if args.provider != Provider::Openai || args.base_url.is_none() {
+    if args.provider == Provider::Openai && args.base_url.is_none() {
         return Err(CliError::Config(
-            "--lines runs on a local model only: pass --provider openai with --base-url, such as http://localhost:11434/v1".into(),
+            "--lines on a local model needs --base-url, such as http://localhost:11434/v1".into(),
+        ));
+    }
+    if args.batch && args.provider != Provider::Anthropic {
+        return Err(CliError::Config(
+            "--batch is the Message Batches API of Anthropic; it needs --provider anthropic".into(),
         ));
     }
     for (given, flag) in [
@@ -74,7 +87,7 @@ pub fn read_names(path: &Path) -> Result<Vec<String>, CliError> {
         .collect())
 }
 
-/// The clients of a run, one for each kind of ability (each sends the schema of its kind).
+/// The clients of a run, one for each kind of ability (each may constrain the answer to the schema of its kind).
 pub trait LineModels: Send + Sync {
     /// The client that asks for an ability of `kind`.
     fn client(&self, kind: Kind) -> Result<Arc<dyn ModelClient>, CliError>;
@@ -96,76 +109,102 @@ pub struct LineCtx<'a> {
     pub translations: &'a Path,
     /// The model id.
     pub model: &'a str,
+    /// The oracle ids of the Commander-legal cards; none takes every card.
+    pub legal: Option<&'a BTreeSet<String>>,
+    /// The solved lines the examples come from, read when first needed.
+    pub pool: OnceLock<Pool>,
 }
 
-/// A card ready to ask about.
-struct Prepared<'a> {
-    card: &'a PrintedCard,
-    translation: Translation,
-    at: GapAt,
-    gap: Gap,
-    request: Request,
+/// The settings of a run.
+#[derive(Debug, Default)]
+pub struct LineOptions {
+    /// How many independent answers each line gets in the first round.
+    pub samples: usize,
+    /// Skip the names the results file already holds.
+    pub resume: bool,
+    /// The meter: the spend cap and the ledger of a paid run.
+    pub meter: Meter,
 }
 
 /// What became of one name.
 enum Done {
     Skipped(String),
-    Asked(Outcome, u32),
+    Asked {
+        word: String,
+        outcome: Outcome,
+        requests: u32,
+    },
+}
+
+/// The printed text of every face, the face names in front when there are several.
+fn oracle_of(card: &PrintedCard) -> String {
+    if card.faces.len() < 2 {
+        return card
+            .faces
+            .first()
+            .map(|face| face.oracle_text.clone())
+            .unwrap_or_default();
+    }
+    card.faces
+        .iter()
+        .map(|face| format!("{}: {}", face.name, face.oracle_text))
+        .collect::<Vec<_>>()
+        .join("\n//\n")
 }
 
 impl LineCtx<'_> {
-    /// The card of a name that line mode can work on, with its request; the error says why it is skipped.
-    fn prepare<'p>(&'p self, name: &str, pool: &OnceLock<Pool>) -> Result<Prepared<'p>, String> {
+    fn pool(&self) -> &Pool {
+        self.pool
+            .get_or_init(|| Pool::load_with(self.translations, Some(self.forge), self.cards))
+    }
+
+    /// The card of a name that line mode can work on, with the request of each gapped line; the error says why it is
+    /// skipped.
+    pub fn prepare<'p>(&'p self, name: &str) -> Result<Prepared<'p>, String> {
         let at = select::by_names(self.cards, &[name.to_owned()])
             .map_err(|_| "not in the database".to_owned())?
             .first()
             .copied()
             .ok_or("not in the database")?;
         let card = &self.cards[at];
+        if self
+            .legal
+            .is_some_and(|legal| !legal.contains(&card.oracle_id) || digital_only(card))
+        {
+            return Err("not Commander-legal".into());
+        }
         if !select::in_sweep_scope(card, self.library, self.caps) {
             return Err("out of scope (hand-written, compiled or textless)".into());
         }
         let translation = Translation::load(self.translations, &card.name)?;
-        let at = translation.single_gap()?;
+        let ats = translation.gaps()?;
         let script = self.forge.script_of(card).ok_or("no Forge script")?;
-        let gap = describe(card, &script, &at).ok_or("the gapped line is not in the script")?;
-        let pool = pool.get_or_init(|| Pool::load(self.translations));
-        let examples = pool.nearest(gap.kind, &at.text, 3);
-        let request = part::request(self.model, &card.name, &gap, gap.kind, &examples);
+        let oracle = oracle_of(card);
+        let mut gaps = Vec::new();
+        let mut requests = Vec::new();
+        for at in ats {
+            let gap = describe(card, &script, &at).ok_or("a gapped line is not in the script")?;
+            let examples = self.pool().nearest(
+                gap.kind,
+                &Shape::of(&gap.forge),
+                &at.text,
+                &card.name,
+                EXAMPLES,
+            );
+            let about = part::Card {
+                name: &card.name,
+                oracle: &oracle,
+                proven: &translation.proposal,
+            };
+            requests.push(part::request(self.model, about, &gap, &examples));
+            gaps.push((at, gap));
+        }
         Ok(Prepared {
             card,
             translation,
-            at,
-            gap,
-            request,
+            gaps,
+            requests,
         })
-    }
-
-    /// The prompt of the first card that can be asked, as a dry run shows it.
-    pub fn dry_run(&self, names: &[String]) -> Result<String, CliError> {
-        let pool = OnceLock::new();
-        let mut skipped = 0;
-        for name in names {
-            let Ok(done) = self.prepare(name, &pool) else {
-                skipped += 1;
-                continue;
-            };
-            let tokens = done.request.estimated_tokens();
-            return Ok(format!(
-                "propose --lines --dry-run: nothing is sent\nmodel: {}\nnames: {} ({skipped} skipped before the first)\nfirst: {} ({}, schema of {} bytes)\nestimated input tokens of one request: {tokens} (an upper estimate, 3 bytes a token)\n\n--- system ---\n{}\n\n--- user ---\n{}",
-                self.model,
-                names.len(),
-                done.card.name,
-                done.gap.kind.word(),
-                part::schema(done.gap.kind).to_string().len(),
-                done.request.system,
-                done.request
-                    .messages
-                    .first()
-                    .map_or("", |m| m.text.as_str()),
-            ));
-        }
-        Err(CliError::Config("no name can be asked in line mode".into()))
     }
 
     /// Asks the model about each name in order and saves the results in `out`.
@@ -174,13 +213,12 @@ impl LineCtx<'_> {
         models: &dyn LineModels,
         names: &[String],
         out: &Path,
-        resume: bool,
+        mut options: LineOptions,
         progress: &Progress,
     ) -> Result<String, CliError> {
         let store = Store::new(out);
         let results = out.join(RESULTS);
-        let pool = OnceLock::new();
-        let done: BTreeSet<String> = if resume {
+        let done: BTreeSet<String> = if options.resume {
             read_results(&results)
                 .into_iter()
                 .map(|row| row.name)
@@ -189,20 +227,29 @@ impl LineCtx<'_> {
             BTreeSet::new()
         };
         let mut failures = 0;
+        let mut stopped = None;
         for name in names.iter().filter(|name| !done.contains(*name)) {
             let started = Instant::now();
-            let finished = match self.prepare(name, &pool) {
-                Ok(prepared) => self.ask(&prepared, models, &store)?,
+            let finished = match self.prepare(name) {
+                Ok(prepared) => match self.ask(&prepared, models, &store, &mut options)? {
+                    Ok(done) => done,
+                    Err(stop) => {
+                        stopped = Some(stop);
+                        break;
+                    }
+                },
                 Err(why) => Done::Skipped(why),
             };
             let secs = started.elapsed().as_secs_f64();
             let row = Row::of(name, &finished, secs);
             append(&results, &row)?;
             progress.line(row.display());
-            failures = if matches!(finished, Done::Asked(Outcome::Failed(_), _)) {
-                failures + 1
-            } else {
-                0
+            failures = match finished {
+                Done::Asked {
+                    outcome: Outcome::Failed(_),
+                    ..
+                } => failures + 1,
+                _ => 0,
             };
             if failures >= FAILURES_IN_A_ROW {
                 return Err(CliError::Config(format!(
@@ -211,132 +258,75 @@ impl LineCtx<'_> {
                 )));
             }
         }
-        Ok(render(&read_results(&results), out))
+        store.write_summary()?;
+        let mut text = render(&read_results(&results), out);
+        if let Some(spend) = &options.meter.spend {
+            let _ = write!(
+                text,
+                "\nspent: {} this run; the ledger holds {} of the cap {}",
+                spend.run(),
+                spend.ledger_total()?,
+                spend.cap()
+            );
+        }
+        if let Some(stop) = stopped {
+            let _ = write!(text, "\nstopped: {stop}; `--resume` goes on");
+        }
+        Ok(text)
     }
 
-    /// Asks for the ability, repairs once, merges and judges.
+    /// Asks a card's lines, repairs up to [`card::LINE_REPAIRS`] rounds, merges, judges and saves; the error of the
+    /// inner result is the spend cap's stop.
     fn ask(
         &self,
         prepared: &Prepared<'_>,
         models: &dyn LineModels,
         store: &Store,
-    ) -> Result<Done, CliError> {
-        let client = models.client(prepared.gap.kind)?;
-        let mut requests = 0;
-        let mut request = prepared.request.clone();
-        let mut judged = None;
-        for round in 0..2 {
-            requests += 1;
-            let answer = match client.complete(&request) {
-                Ok(answer) => answer.text,
-                Err(error) if error.is_fatal() => return Err(CliError::Model(error)),
-                // The first answer stands when its repair round gets none.
-                Err(_) if round > 0 => break,
-                Err(error) => {
-                    return Ok(Done::Asked(Outcome::Failed(error.to_string()), requests));
-                }
-            };
-            let attempt = self.judge(prepared, &answer);
-            let problem = match &attempt {
-                Err(problem) => Some(problem.clone()),
-                Ok(judgement) if Outcome::of_judged(judgement).is_repairable() => {
-                    Some(diagnosis(&judgement.report))
-                }
-                Ok(_) => None,
-            };
-            let repair = problem.filter(|_| round == 0);
-            judged = Some((answer.clone(), attempt));
-            let Some(problem) = repair else { break };
-            request.messages.push(Message::assistant(answer));
-            request
-                .messages
-                .push(Message::user(part::repair_message(&problem)));
-        }
-        let (answer, attempt) = judged.ok_or_else(|| CliError::Config("no answer".into()))?;
-        let outcome = self.keep(prepared, store, &answer, attempt)?;
-        Ok(Done::Asked(outcome, requests))
-    }
-
-    /// Reads the answer as one ability, merges it at the gap and checks the whole card; the error is for the model.
-    fn judge(&self, prepared: &Prepared<'_>, answer: &str) -> Result<Judged, String> {
-        let value: Value = serde_json::from_str(extract_json(answer))
-            .map_err(|error| format!("the answer is not JSON: {error}"))?;
-        serde_json::from_value::<Ability>(value.clone())
-            .map_err(|error| format!("the answer is not an ability of the rules: {error}"))?;
-        let merged = merge(
-            &prepared.translation.proposal,
-            prepared.at.face,
-            prepared.at.at,
-            value,
-        )
-        .ok_or("the translation has no place for the ability")?;
-        let json = merged.to_string();
-        let report = check(&json, prepared.card, self.library, self.names, self.caps);
-        Ok(Judged { json, report })
-    }
-
-    /// Saves the result: `Verified` and `Partial` as accepted proposals, `Unchecked` under `unchecked/`, the rest under
-    /// `rejected/`. Every file has a meta file that marks the source as model-written and unread.
-    fn keep(
-        &self,
-        prepared: &Prepared<'_>,
-        store: &Store,
-        answer: &str,
-        attempt: Result<Judged, String>,
-    ) -> Result<Outcome, CliError> {
-        let name = &prepared.card.name;
-        let meta = json!({
-            "source": mtg_db::SOURCE_SWEEP,
-            "written_by": "model-line",
-            "model": self.model,
-            "kind": prepared.gap.kind.word(),
-            "line": prepared.gap.oracle,
-        });
-        let dir = store.dir();
-        let stem = slug(name);
-        let write_meta = |base: &Path| {
-            write(
-                &base.join("meta").join(format!("{stem}.json")),
-                &meta.to_string(),
-            )
+        options: &mut LineOptions,
+    ) -> Result<Result<Done, Stop>, CliError> {
+        let mut work = Work::new(prepared, options.samples);
+        let attempt = loop {
+            let mut answers: Vec<Vec<Option<String>>> = vec![Vec::new(); work.asking.len()];
+            let mut failure = None;
+            let pending: Vec<(usize, usize, crate::propose::model::Request)> = work
+                .pending()
+                .into_iter()
+                .map(|(line, sample, request)| (line, sample, request.clone()))
+                .collect();
+            for (line, sample, request) in &pending {
+                let (line, sample) = (*line, *sample);
+                let client = models.client(prepared.gaps[line].1.kind)?;
+                let sent = options.meter.send(&*client, request, &work.name)?;
+                let (answer, cost) = match sent {
+                    Sent::Answer(text, cost) => (Some(text), cost),
+                    Sent::Unanswered(why, cost) => {
+                        failure = Some(why);
+                        (None, cost)
+                    }
+                    Sent::Stop(stop) => return Ok(Err(stop)),
+                };
+                debug_assert_eq!(answers[line].len(), sample);
+                answers[line].push(answer);
+                work.requests += 1;
+                work.micros = work.micros.saturating_add(cost.0);
+            }
+            match self.step(prepared, &mut work, &answers, failure) {
+                Step::Again => {}
+                Step::Done(attempt) => break attempt,
+            }
         };
-        let judged = match attempt {
-            Err(problem) => {
-                store.save_rejected(name, answer, &problem)?;
-                return Ok(Outcome::Invalid);
-            }
-            Ok(judged) => judged,
-        };
-        let outcome = Outcome::of_judged(&judged);
-        match (&judged.report.rules, outcome.is_kept(), &outcome) {
-            (Some(rules), true, _) => {
-                store.save_accepted(name, rules)?;
-                write_meta(dir)?;
-            }
-            (_, _, Outcome::Unchecked) => {
-                let base = dir.join("unchecked");
-                write(&base.join(format!("{stem}.json")), &judged.json)?;
-                write_meta(&base)?;
-            }
-            _ => store.save_rejected(name, &judged.json, &judged.report.render(false))?,
-        }
-        Ok(outcome)
+        let requests = work.requests;
+        let (outcome, label, _) = self.finish(prepared, store, &work, attempt)?;
+        Ok(Ok(Done::Asked {
+            word: label,
+            outcome,
+            requests,
+        }))
     }
 }
 
-/// A merged proposal and the checker's report of it.
-struct Judged {
-    json: String,
-    report: mtg_cards::proposal::Report,
-}
-
-impl Outcome {
-    fn of_judged(judged: &Judged) -> Outcome {
-        Outcome::of(&judged.report)
-    }
-}
-
-fn write(path: &Path, text: &str) -> Result<(), CliError> {
+/// Writes `text` and a line break to `path`, making its folder.
+pub(crate) fn write(path: &Path, text: &str) -> Result<(), CliError> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|source| CliError::io(parent, source))?;
     }
@@ -362,10 +352,12 @@ impl Row {
     fn of(name: &str, done: &Done, secs: f64) -> Row {
         let (word, requests, note) = match done {
             Done::Skipped(why) => ("skipped".to_owned(), 0, why.clone()),
-            Done::Asked(Outcome::Failed(why), requests) => {
-                ("no answer".to_owned(), *requests, why.clone())
-            }
-            Done::Asked(outcome, requests) => (outcome.word().to_owned(), *requests, String::new()),
+            Done::Asked {
+                outcome: Outcome::Failed(why),
+                requests,
+                ..
+            } => ("no answer".to_owned(), *requests, why.clone()),
+            Done::Asked { word, requests, .. } => (word.clone(), *requests, String::new()),
         };
         Row {
             name: name.to_owned(),
@@ -376,7 +368,34 @@ impl Row {
         }
     }
 
-    fn display(&self) -> String {
+    /// A row of a card asked through a batch.
+    pub(crate) fn asked(name: &str, word: &str, outcome: &Outcome, requests: u32) -> Row {
+        let note = match outcome {
+            Outcome::Failed(why) => why.clone(),
+            _ => String::new(),
+        };
+        Row {
+            name: name.to_owned(),
+            word: word.to_owned(),
+            requests,
+            secs: 0.0,
+            note,
+        }
+    }
+
+    /// A row of a card that line mode cannot work on.
+    pub(crate) fn skipped(name: &str, why: &str) -> Row {
+        Row {
+            name: name.to_owned(),
+            word: "skipped".to_owned(),
+            requests: 0,
+            secs: 0.0,
+            note: why.to_owned(),
+        }
+    }
+
+    /// The row as a line of progress.
+    pub(crate) fn display(&self) -> String {
         let note = if self.note.is_empty() {
             String::new()
         } else {
@@ -389,7 +408,8 @@ impl Row {
     }
 }
 
-fn append(path: &Path, row: &Row) -> Result<(), CliError> {
+/// Adds a row to the results file.
+pub(crate) fn append(path: &Path, row: &Row) -> Result<(), CliError> {
     use std::io::Write as _;
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent).map_err(|source| CliError::io(parent, source))?;
@@ -443,6 +463,7 @@ pub fn render(rows: &[Row], out: &Path) -> String {
         "unchecked",
         "mismatch",
         "invalid",
+        "cannot express",
         "accepted but empty",
         "no answer",
         "skipped",
@@ -465,14 +486,33 @@ pub fn render(rows: &[Row], out: &Path) -> String {
     text
 }
 
-/// `propose --lines` from the command line, on the cards of the database: the dry run's prompt or the run's summary.
+/// What `propose --lines` reads from the database and the cache.
+pub struct Stored {
+    /// The stored cards.
+    pub cards: Vec<PrintedCard>,
+    /// The oracle ids of the Commander-legal ones.
+    pub legal: BTreeSet<String>,
+    /// Where the results go.
+    pub out: PathBuf,
+    /// The spend cap of a paid run; none for a dry run or a local server.
+    pub spend: Option<super::spend::Spend>,
+}
+
+/// `propose --lines` from the command line, on the cards of the database: the dry run's prompt and prices, or the run's
+/// summary.
 pub async fn command(
-    cards: Vec<PrintedCard>,
-    out: PathBuf,
+    stored: Stored,
     args: &ProposeArgs,
     progress: Progress,
+    env: &dyn Fn(&str) -> Option<String>,
     api: &super::anthropic::AnthropicConfig,
 ) -> Result<String, CliError> {
+    let Stored {
+        cards,
+        legal,
+        out,
+        spend,
+    } = stored;
     check_args(args)?;
     let (Some(names_file), Some(translations), Some(forge_dir)) =
         (&args.names_file, &args.translations, &args.forge_hint)
@@ -484,19 +524,28 @@ pub async fn command(
     let names = read_names(names_file)?;
     let forge = ForgeHints::open(forge_dir)?;
     let model = super::options_of(args)?.model;
-    let mut config = api.clone();
-    config.base_url = args.base_url.clone().unwrap_or_default();
-    config.timeout = std::time::Duration::from_secs(args.request_timeout);
-    config.attempts = args.retries.saturating_add(1);
-    let base = super::c11i_openai::OpenAi {
-        json_mode: false,
-        schema: false,
-        max_answer_tokens: args.max_answer_tokens.min(part::LINE_ANSWER_TOKENS),
-        reasoning: args.reasoning,
-    };
+    let samples = usize::from(args.samples);
     let (translations, dry, resume) = (translations.clone(), args.dry_run, args.resume);
-    let handle = tokio::runtime::Handle::current();
-    // The client blocks on the runtime, so the loop runs on a blocking thread.
+    let models = if dry {
+        None
+    } else {
+        Some(models_of(args, env, api, &progress)?)
+    };
+    let batch_api = if args.batch && !dry {
+        Some(super::batch::BatchApi::new(
+            super::anthropic_client_of(args, env, api, progress.clone())?,
+            args.reasoning.map(crate::args::Reasoning::as_str),
+        ))
+    } else {
+        None
+    };
+    let settings = batch::BatchSettings {
+        size: usize::try_from(args.batch_size).unwrap_or(usize::MAX),
+        poll_every: std::time::Duration::from_secs(args.poll_every),
+        schema: args.schema,
+    };
+    let max_spend = args.max_spend;
+    // The clients block on the runtime, so the loop runs on a blocking thread.
     tokio::task::spawn_blocking(move || {
         let library = mtg_cards::builtin::library().map_err(|errors| {
             CliError::Config(format!("the embedded rules files do not load:\n{errors}"))
@@ -511,13 +560,70 @@ pub async fn command(
             forge: &forge,
             translations: &translations,
             model: &model,
+            legal: Some(&legal),
+            pool: OnceLock::new(),
         };
         if dry {
-            return ctx.dry_run(&names);
+            return ctx.dry_run(&names, samples, max_spend);
         }
-        let models = client::HttpModels::new(base, config, handle, progress.clone());
-        ctx.run(&models, &names, &out, resume, &progress)
+        let options = LineOptions {
+            samples,
+            resume,
+            meter: Meter { spend },
+        };
+        if let Some(api) = &batch_api {
+            return ctx.run_batch(api, &names, &out, options, &settings, &progress);
+        }
+        let models = models.ok_or_else(|| CliError::Config("no model client".into()))?;
+        ctx.run(&*models, &names, &out, options, &progress)
     })
     .await
     .map_err(|error| CliError::Config(format!("the run stopped: {error}")))?
+}
+
+/// The clients of a run the arguments name: the Anthropic API with the key of `env`, or a local server.
+fn models_of(
+    args: &ProposeArgs,
+    env: &dyn Fn(&str) -> Option<String>,
+    api: &super::anthropic::AnthropicConfig,
+    progress: &Progress,
+) -> Result<Box<dyn LineModels>, CliError> {
+    let handle = tokio::runtime::Handle::current();
+    let mut config = api.clone();
+    config.timeout = std::time::Duration::from_secs(args.request_timeout);
+    config.attempts = args.retries.saturating_add(1);
+    Ok(match args.provider {
+        Provider::Anthropic => {
+            if let Some(base) = &args.base_url {
+                config.base_url.clone_from(base);
+            }
+            let base = super::anthropic::Anthropic {
+                effort: args.reasoning.map(crate::args::Reasoning::as_str),
+                workspace: super::anthropic::workspace_from_env(env),
+            };
+            Box::new(paid::PaidModels::new(
+                super::anthropic::ApiKey::from_env(env)?,
+                config,
+                handle,
+                progress.clone(),
+                base,
+                args.schema,
+            ))
+        }
+        Provider::Openai => {
+            config.base_url = args.base_url.clone().unwrap_or_default();
+            let base = super::c11i_openai::OpenAi {
+                json_mode: false,
+                schema: false,
+                max_answer_tokens: args.max_answer_tokens.min(part::LINE_ANSWER_TOKENS),
+                reasoning: args.reasoning,
+            };
+            Box::new(client::HttpModels::new(
+                base,
+                config,
+                handle,
+                progress.clone(),
+            ))
+        }
+    })
 }

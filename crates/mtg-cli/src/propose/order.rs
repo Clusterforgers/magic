@@ -1,24 +1,61 @@
 //! `propose-order`: the order of a paid run. The cards of the saved decks come first, the most used first, then the other
-//! cards by EDHREC popularity; only cards without rules in the repository (no hand-written file, no draft, not made
-//! `Verified` by the compiler).
+//! cards by EDHREC popularity; only Commander-legal paper cards (no Alchemy, perpetual or other digital-only card) without
+//! rules in the repository (no hand-written file, no draft, not made `Verified` by the compiler).
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
+use std::path::Path;
 
 use mtg_cards::builtin;
 use mtg_cards::load::{Library, slug};
 use mtg_cards::{Caps, PrintedCard};
-use mtg_db::Database;
+use mtg_db::{CardSearch, Database};
 
+use super::lines::pool::Translation;
 use super::select::in_sweep_scope;
 use crate::args::ProposeOrderArgs;
-use crate::audit::stored_cards;
+use crate::audit::{stored_cards, stored_cards_matching};
 use crate::cache::Cache;
 use crate::error::CliError;
 use crate::popularity::Popularity;
 
 /// How many decks of the server use a card.
 pub type Demand = BTreeMap<String, u32>;
+
+/// Whether a card exists only in digital play: an Alchemy rebalance (`A-` name) or a card whose text uses a digital-only
+/// mechanic (perpetual changes, seek, conjure, spellbooks). Scryfall's Commander legality leaves these out already; this
+/// is the guard for a stale database.
+pub fn digital_only(card: &PrintedCard) -> bool {
+    const WORDS: &[&str] = &["perpetual", "seek ", "seeks ", "conjure", "spellbook"];
+    card.name.starts_with("A-")
+        || card.faces.iter().any(|face| {
+            let text = face.oracle_text.to_lowercase();
+            WORDS.iter().any(|word| text.contains(word))
+        })
+}
+
+/// The cards that are Commander-legal (their oracle id in `legal`) and not digital-only.
+pub fn commander_cards(cards: Vec<PrintedCard>, legal: &BTreeSet<String>) -> Vec<PrintedCard> {
+    cards
+        .into_iter()
+        .filter(|card| legal.contains(&card.oracle_id) && !digital_only(card))
+        .collect()
+}
+
+/// The oracle ids of the stored cards Scryfall lists as legal in Commander.
+pub async fn commander_legal_ids(db: &Database) -> Result<BTreeSet<String>, CliError> {
+    let search = CardSearch {
+        legal_in: Some("commander".to_owned()),
+        ..CardSearch::default()
+    };
+    let cards = stored_cards_matching(db, &search).await?;
+    Ok(cards.into_iter().map(|card| card.oracle_id).collect())
+}
+
+/// Whether line mode can work on a card: its translation in `dir` has one or two gapped lines and nothing else wrong.
+pub fn line_ready(dir: &Path, name: &str) -> bool {
+    Translation::load(dir, name).is_ok_and(|translation| translation.gaps().is_ok())
+}
 
 /// The names of the cards in the order of a run: first those of `demand` (a card's oracle id and the number of saved decks
 /// that use it), the most used first, then the rest by EDHREC rank (a card without a rank last), ties by name. Only cards
@@ -61,7 +98,8 @@ pub async fn command(
     let library = builtin::library().map_err(|errors| {
         CliError::Config(format!("the embedded rules files do not load:\n{errors}"))
     })?;
-    let cards = stored_cards(db).await?;
+    let legal = commander_legal_ids(db).await?;
+    let cards = commander_cards(stored_cards(db).await?, &legal);
     let demand: Demand = db
         .decks()
         .card_demand()
@@ -82,6 +120,9 @@ pub async fn command(
         popularity.as_ref(),
         &drafted,
     );
+    if let Some(dir) = &args.lines {
+        names.retain(|name| line_ready(dir, name));
+    }
     if let Some(limit) = args.limit {
         names.truncate(limit);
     }
@@ -104,8 +145,13 @@ pub async fn command(
     tokio::fs::write(path, &text)
         .await
         .map_err(|source| CliError::io(path, source))?;
+    let asks = if args.lines.is_some() {
+        "propose --lines --names-file"
+    } else {
+        "propose --cards"
+    };
     Ok(format!(
-        "propose-order: {} written to {} ({in_decks} of the saved decks first, then by popularity{}); `propose --cards {}` asks them in that order",
+        "propose-order: {} written to {} ({in_decks} of the saved decks first, then by popularity{}); `{asks} {}` asks them in that order",
         if names.len() == 1 {
             "1 card".to_owned()
         } else {
@@ -124,7 +170,8 @@ pub async fn command(
 #[cfg(test)]
 mod tests {
     //! Goal: the order puts the cards of saved decks first by how many decks use them, then the rest by popularity with
-    //! unranked cards last, and leaves out cards that have rules, a draft or a compiled `Verified` reading.
+    //! unranked cards last, leaves out cards that have rules, a draft or a compiled `Verified` reading and cards that are
+    //! digital-only or not Commander-legal, and the line list keeps the cards with one or two gapped lines.
     use mtg_cards::PrintedFace;
 
     use super::*;
@@ -213,5 +260,73 @@ mod tests {
         assert!(!names.contains(&"Mu".to_owned()), "{names:?}");
         assert!(!names.contains(&"Bear".to_owned()), "{names:?}");
         assert_eq!(names.len(), 4);
+    }
+
+    #[rstest::rstest]
+    #[case::paper("Opt", "Scry 1. Draw a card.", false)]
+    #[case::alchemy_rebalance("A-Opt", "Scry 1. Draw a card.", true)]
+    #[case::perpetual("Rope", "Target creature perpetually gets +1/+1.", true)]
+    #[case::seek("Finder", "Seek a land card.", true)]
+    #[case::conjure("Maker", "Conjure a card named Opt into your hand.", true)]
+    #[case::spellbook("Book", "Draft a card from this card's spellbook.", true)]
+    fn digital_only_cards_are_left_out_of_the_commander_pool(
+        #[case] name: &str,
+        #[case] text: &str,
+        #[case] digital: bool,
+    ) {
+        let printed = card(name, text);
+        assert_eq!(digital_only(&printed), digital);
+        let legal: BTreeSet<String> = [printed.oracle_id.clone()].into();
+        assert_eq!(commander_cards(vec![printed], &legal).is_empty(), digital);
+    }
+
+    #[test]
+    fn a_card_without_commander_legality_is_left_out() {
+        let cards = oddities();
+        let legal: BTreeSet<String> = ["id-Mu".to_owned(), "id-Beta".to_owned()].into();
+        let kept: Vec<String> = commander_cards(cards, &legal)
+            .into_iter()
+            .map(|card| card.name)
+            .collect();
+        assert_eq!(kept, ["Mu", "Beta"]);
+    }
+
+    #[test]
+    fn the_line_list_keeps_cards_with_one_or_two_gapped_lines() {
+        let dir = tempfile::tempdir().unwrap();
+        let line = |gap: Option<&str>, abilities: Vec<usize>| serde_json::json!({"face": 0, "tag": "T", "text": gap.unwrap_or("x"), "abilities": abilities, "gap": gap});
+        let put = |name: &str, lines: Vec<serde_json::Value>| {
+            let stem = slug(name);
+            std::fs::create_dir_all(dir.path().join("meta")).unwrap();
+            std::fs::write(
+                dir.path().join(format!("{stem}.json")),
+                r#"{"faces":[{"abilities":[]}]}"#,
+            )
+            .unwrap();
+            std::fs::write(
+                dir.path().join("meta").join(format!("{stem}.json")),
+                serde_json::json!({"lines": lines}).to_string(),
+            )
+            .unwrap();
+        };
+        put("One", vec![line(Some("a"), vec![])]);
+        put(
+            "Two",
+            vec![line(Some("a"), vec![]), line(Some("b"), vec![])],
+        );
+        put(
+            "Three",
+            vec![
+                line(Some("a"), vec![]),
+                line(Some("b"), vec![]),
+                line(Some("c"), vec![]),
+            ],
+        );
+        put("Whole", vec![line(None, vec![0])]);
+        let ready: Vec<&str> = ["One", "Two", "Three", "Whole", "Absent"]
+            .into_iter()
+            .filter(|name| line_ready(dir.path(), name))
+            .collect();
+        assert_eq!(ready, ["One", "Two"]);
     }
 }

@@ -6,7 +6,8 @@ use serde::{Deserialize, Serialize};
 use super::price::Usd;
 
 /// The first line of the summary.
-pub const SUMMARY_HEADER: &str = "card\toutcome\tmissing_engine_piece\trequests\tusd\tdetail";
+pub const SUMMARY_HEADER: &str =
+    "card\toutcome\tmissing_engine_piece\trequests\tusd\tdetail\tagree";
 
 /// How a card ended, as the word of the `outcome` column, in the order the summary lists them.
 pub const OUTCOMES: [&str; 8] = [
@@ -40,6 +41,9 @@ pub struct CardRecord {
     pub micros: u64,
     /// The first thing the checker found wrong, the constructs without a writer, or the API's complaint.
     pub detail: String,
+    /// With several sampled answers (`propose --lines --samples N`): whether they all said the same; none otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub agree: Option<bool>,
 }
 
 impl CardRecord {
@@ -47,8 +51,13 @@ impl CardRecord {
     pub fn line(&self) -> String {
         let one_line = |text: &str| text.split_whitespace().collect::<Vec<_>>().join(" ");
         let detail: String = one_line(&self.detail).chars().take(DETAIL_LENGTH).collect();
+        let agree = match self.agree {
+            Some(true) => "yes",
+            Some(false) => "no",
+            None => "",
+        };
         format!(
-            "{}\t{}\t{}\t{}\t{}\t{}",
+            "{}\t{}\t{}\t{}\t{}\t{}\t{agree}",
             one_line(&self.card).replace('\t', " "),
             self.outcome,
             one_line(&self.missing_engine_piece.join(" | ")).replace('\t', " "),
@@ -91,6 +100,7 @@ mod tests {
             requests: 2,
             micros: 12_345,
             detail: "ability 0 reads back as \"x\"\nbut the card says \"y\"".into(),
+            agree: None,
         }
     }
 
@@ -112,17 +122,29 @@ mod tests {
     }
 
     #[test]
-    fn a_line_has_six_columns_whatever_the_text_holds() {
+    fn a_line_has_seven_columns_whatever_the_text_holds() {
         let mut odd = record("Odd\tName", "mismatch", &["a\tb", "c\nd"]);
         odd.detail = "x\ty\n".repeat(200);
         let line = odd.line();
         let columns: Vec<&str> = line.split('\t').collect();
-        assert_eq!(columns.len(), 6, "{line}");
+        assert_eq!(columns.len(), 7, "{line}");
         assert_eq!(columns[0], "Odd Name");
         assert_eq!(columns[2], "a b | c d");
         assert_eq!(columns[3..5], ["2", "0.012345"]);
         assert!(columns[5].chars().count() <= DETAIL_LENGTH);
+        assert_eq!(columns[6], "");
         assert!(!line.contains('\n'));
+    }
+
+    #[test]
+    fn sampled_answers_say_whether_they_agree() {
+        let mut agreed = record("Opt", "verified", &[]);
+        agreed.agree = Some(true);
+        assert!(agreed.line().ends_with("\tyes"));
+        agreed.agree = Some(false);
+        assert!(agreed.line().ends_with("\tno"));
+        let json = serde_json::to_string(&agreed).unwrap();
+        assert_eq!(serde_json::from_str::<CardRecord>(&json).unwrap(), agreed);
     }
 
     #[test]

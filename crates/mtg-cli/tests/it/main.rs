@@ -24,6 +24,7 @@ mod forge_hint;
 mod gaps;
 mod ingest;
 mod ingest_printings;
+mod lf23_lines_paid;
 mod memory_runs;
 mod promote_draft;
 mod propose;

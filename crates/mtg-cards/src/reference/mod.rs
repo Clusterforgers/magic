@@ -75,10 +75,83 @@ fn all_defs() -> Vec<TypeDef> {
         .collect()
 }
 
+/// An enum with more variants than this shows only the variants a focused reference finds words for.
+const FOCUS_ENUM: usize = 12;
+
+/// A focused reference for one line: the notation, the asked variants of `Ability`, then the types they reach, breadth
+/// first, while the text stays within `budget` bytes. A large enum shows only the variants whose name is in `words`
+/// (lowercase, whole or as all of its camel-case words); the others are counted, not shown.
+pub fn dsl_reference_focused(variants: &[&str], words: &BTreeSet<String>, budget: usize) -> String {
+    static DEFS: std::sync::OnceLock<Vec<TypeDef>> = std::sync::OnceLock::new();
+    let defs = DEFS.get_or_init(all_defs);
+    let by_name: BTreeMap<&str, &TypeDef> =
+        defs.iter().map(|def| (def.name.as_str(), def)).collect();
+    let mut text = String::from(NOTATION);
+    text.push_str("\nOnly the parts of the reference this line likely needs are shown.\n\nenum Ability (the variants asked for)\n");
+    let mut queue: VecDeque<String> = VecDeque::new();
+    if let Some(Body::Enum(all)) = by_name.get("Ability").map(|def| &def.body) {
+        for variant in all.iter().filter(|v| variants.contains(&v.name.as_str())) {
+            let _ = writeln!(text, "  {}", variant_line(variant));
+            queue.extend(words_in(shape_types(&variant.shape)));
+        }
+    }
+    let mut seen: BTreeSet<String> = queue.iter().cloned().collect();
+    let named = |name: &str| {
+        let lower = name.to_lowercase();
+        words.contains(&lower) || words_of(name).split(' ').all(|word| words.contains(word))
+    };
+    while let Some(name) = queue.pop_front() {
+        let Some(def) = by_name.get(name.as_str()) else {
+            continue;
+        };
+        let (rendered, used) = match &def.body {
+            Body::Enum(all) if all.len() > FOCUS_ENUM => {
+                let kept: Vec<&Variant> = all.iter().filter(|v| named(&v.name)).collect();
+                let mut part = format!(
+                    "enum {}{} ({} of {} variants shown)\n",
+                    def.name,
+                    doc_suffix(&def.doc),
+                    kept.len(),
+                    all.len()
+                );
+                let mut used = Vec::new();
+                for variant in kept {
+                    let _ = writeln!(part, "  {}", variant_line(variant));
+                    used.extend(words_in(shape_types(&variant.shape)));
+                }
+                (part, used)
+            }
+            _ => (render(def), type_names(def)),
+        };
+        if text.len() + rendered.len() + 1 > budget {
+            continue;
+        }
+        text.push('\n');
+        text.push_str(&rendered);
+        for next in used {
+            if by_name.contains_key(next.as_str()) && seen.insert(next.clone()) {
+                queue.push_back(next);
+            }
+        }
+    }
+    text
+}
+
 /// The names of the types reachable from the roots, in breadth-first order.
 fn reachable(by_name: &BTreeMap<&str, &TypeDef>) -> Vec<String> {
-    let mut seen: BTreeSet<String> = ROOTS.iter().map(|name| (*name).to_owned()).collect();
-    let mut queue: VecDeque<String> = ROOTS.iter().map(|name| (*name).to_owned()).collect();
+    let roots: Vec<String> = ROOTS.iter().map(|name| (*name).to_owned()).collect();
+    reachable_from(by_name, &roots)
+}
+
+/// The names of the types reachable from `roots`, in breadth-first order.
+fn reachable_from(by_name: &BTreeMap<&str, &TypeDef>, roots: &[String]) -> Vec<String> {
+    let roots: Vec<String> = roots
+        .iter()
+        .filter(|name| by_name.contains_key(name.as_str()))
+        .cloned()
+        .collect();
+    let mut seen: BTreeSet<String> = roots.iter().cloned().collect();
+    let mut queue: VecDeque<String> = roots.into_iter().collect();
     let mut order = Vec::new();
     while let Some(name) = queue.pop_front() {
         let Some(def) = by_name.get(name.as_str()) else {
@@ -96,24 +169,31 @@ fn reachable(by_name: &BTreeMap<&str, &TypeDef>) -> Vec<String> {
 
 /// The capitalised words of the types a definition uses.
 fn type_names(def: &TypeDef) -> Vec<String> {
-    fn of_fields(fields: &[Field]) -> impl Iterator<Item = &String> {
-        fields.iter().map(|field| &field.ty)
-    }
     let mut types: Vec<&String> = Vec::new();
     match &def.body {
         Body::Enum(variants) => {
             for variant in variants {
-                match &variant.shape {
-                    Shape::Unit => {}
-                    Shape::Tuple(items) => types.extend(items),
-                    Shape::Fields(list) => types.extend(of_fields(list)),
-                }
+                types.extend(shape_types(&variant.shape));
             }
         }
-        Body::Struct(list) => types.extend(of_fields(list)),
+        Body::Struct(list) => types.extend(list.iter().map(|field| &field.ty)),
         Body::Tuple(items) => types.extend(items),
         Body::Unit | Body::Text => {}
     }
+    words_in(types)
+}
+
+/// The type texts of a variant's payload.
+fn shape_types(shape: &Shape) -> Vec<&String> {
+    match shape {
+        Shape::Unit => Vec::new(),
+        Shape::Tuple(items) => items.iter().collect(),
+        Shape::Fields(list) => list.iter().map(|field| &field.ty).collect(),
+    }
+}
+
+/// The capitalised words of type texts (`Option<Vec<Effect>>` gives `Option`, `Vec`, `Effect`).
+fn words_in(types: Vec<&String>) -> Vec<String> {
     types
         .into_iter()
         .flat_map(|ty| ty.split(|c: char| !c.is_alphanumeric() && c != '_'))

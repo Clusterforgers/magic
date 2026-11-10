@@ -2,10 +2,11 @@
 
 use std::time::Duration;
 
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 /// The author of a message.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Role {
     /// The person asking.
     User,
@@ -14,7 +15,7 @@ pub enum Role {
 }
 
 /// One message of a conversation.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Message {
     /// Who wrote it.
     pub role: Role,
@@ -41,7 +42,7 @@ impl Message {
 }
 
 /// A request for one answer.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Request {
     /// The model id.
     pub model: String,

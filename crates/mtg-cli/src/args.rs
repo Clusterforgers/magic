@@ -345,6 +345,11 @@ pub struct ProposeOrderArgs {
     /// Keep only the first N names.
     #[arg(long, value_name = "N")]
     pub limit: Option<usize>,
+
+    /// The line list: keep only the cards whose Forge translation in this folder has one or two gapped lines
+    /// (`propose --lines --names-file` reads it).
+    #[arg(long, value_name = "DIR")]
+    pub lines: Option<PathBuf>,
 }
 
 /// Options of `propose`.
@@ -395,7 +400,8 @@ pub struct ProposeArgs {
     pub no_json_mode: bool,
 
     /// Send the JSON schema of a rules file (`response_format` `json_schema`) so an OpenAI-style server limits the answer
-    /// to valid shapes; replaces the plain JSON-object mode (`mtg-cli dsl-schema` prints it).
+    /// to valid shapes; replaces the plain JSON-object mode (`mtg-cli dsl-schema` prints it). With `--lines` on the
+    /// Anthropic API it sends the schema of the line's kind as structured output when its types are not recursive.
     #[arg(long, conflicts_with = "no_json_mode")]
     pub schema: bool,
 
@@ -440,7 +446,7 @@ pub struct ProposeArgs {
 
     /// Ask through the Message Batches API: half the price, answers within a day. The run waits for each batch (polling),
     /// settles it into the ledger when its results are read, and `--resume` collects a batch that is still out.
-    #[arg(long, conflicts_with = "lines")]
+    #[arg(long)]
     pub batch: bool,
 
     /// With `--batch`: the most requests in one batch (the API takes 100000 and 256 MB; each request carries the rules).
@@ -487,13 +493,19 @@ pub struct ProposeArgs {
     #[arg(long, value_name = "DIR")]
     pub forge_hint: Option<PathBuf>,
 
-    /// Line mode, for a local model only (`--provider openai --base-url`): for each name in `--names-file` whose Forge
-    /// translation has exactly one gapped line, the model writes only that ability from a small prompt and the schema of
-    /// its kind; the part is merged into the translation and the checker judges the card. Needs `--forge-hint` and
-    /// `--translations`. The results are proposals marked as model-written and unread; only the checker's `Verified`
-    /// can play without a read.
+    /// Line mode: for each Commander-legal name in `--names-file` whose Forge translation has one or two gapped lines, the
+    /// model writes only those abilities from a small prompt (the line, its script lines, the proven abilities and the
+    /// nearest solved examples); the parts are merged into the translation and the checker judges the card. On the
+    /// Anthropic API (`--max-spend`, `--batch`, `--resume`) or a local server (`--provider openai --base-url`). Needs
+    /// `--forge-hint` and `--translations`. The results are proposals marked as model-written and unread; only the
+    /// checker's `Verified` can play without a read.
     #[arg(long, requires_all = ["names_file", "translations"], conflicts_with_all = ["cards", "sample", "promote"])]
     pub lines: bool,
+
+    /// With `--lines`: how many independent answers each line gets in its first round; the best is kept and the summary's
+    /// `agree` column says whether they all said the same.
+    #[arg(long, value_name = "N", requires = "lines", default_value_t = 1, value_parser = clap::value_parser!(u8).range(1..=5))]
+    pub samples: u8,
 
     /// With `--lines`: the cards to work on, one name a line, taken in order.
     #[arg(long, value_name = "FILE", requires = "lines")]

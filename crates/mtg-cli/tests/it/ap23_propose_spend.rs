@@ -945,10 +945,11 @@ fn every_card_ends_as_a_draft_or_a_failure_with_the_engine_piece_it_misses_in_on
             "missing_engine_piece",
             "requests",
             "usd",
-            "detail"
+            "detail",
+            "agree"
         ]
     );
-    assert!(lines.iter().all(|line| line.len() == 6), "{summary}");
+    assert!(lines.iter().all(|line| line.len() == 7), "{summary}");
     let by_card = |name: &str| lines.iter().find(|line| line[0] == name).unwrap().clone();
     assert_eq!(&by_card("Wind Drake")[1..4], ["verified", "", "1"]);
     let bell = by_card("Kormus Bell");
@@ -1338,6 +1339,7 @@ async fn the_order_helper_lists_the_cards_of_saved_decks_first_and_only_cards_wi
         &ProposeOrderArgs {
             out: None,
             limit: None,
+            lines: None,
         },
     )
     .await
@@ -1362,6 +1364,7 @@ async fn the_order_helper_lists_the_cards_of_saved_decks_first_and_only_cards_wi
         &ProposeOrderArgs {
             out: Some(file.clone()),
             limit: Some(1),
+            lines: None,
         },
     )
     .await

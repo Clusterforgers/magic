@@ -149,11 +149,23 @@ impl BatchApi {
 
     /// Asks for a batch. Creating is not repeated after a timeout, which may have left a batch behind.
     pub fn create(&self, items: &[(String, &Request)]) -> Result<BatchInfo, ModelError> {
+        let params: Vec<(String, Value)> = items
+            .iter()
+            .map(|(id, request)| (id.clone(), request_body_with(request, self.effort)))
+            .collect();
+        self.create_params(&params)
+    }
+
+    /// The effort every request asks for.
+    pub fn effort(&self) -> Option<&'static str> {
+        self.effort
+    }
+
+    /// Asks for a batch of request bodies built by the caller, each with its custom id.
+    pub fn create_params(&self, items: &[(String, Value)]) -> Result<BatchInfo, ModelError> {
         let requests: Vec<Value> = items
             .iter()
-            .map(|(id, request)| {
-                json!({"custom_id": id, "params": request_body_with(request, self.effort)})
-            })
+            .map(|(id, params)| json!({"custom_id": id, "params": params}))
             .collect();
         let body = json!({ "requests": requests });
         let text = self
@@ -614,46 +626,29 @@ impl Run<'_, '_> {
         let worst = items.iter().fold(Usd(0), |sum, item| {
             sum.plus(self.spend.worst_case(&item.request))
         });
-        let millis = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .map_or(0, |since| since.as_millis());
-        let ticket = format!("{millis}-r{round}");
-        let model = self.cfg.options.model.clone();
-        let ledger = self.spend.ledger().clone();
-        ledger.append(&[Entry {
-            card: reserved_label(&ticket),
-            model: model.clone(),
-            usage: Usage::default(),
-            micros: signed(worst),
-        }])?;
-        let sent: Vec<(String, &Request)> = items
+        let params: Vec<(String, Value)> = items
             .iter()
-            .map(|item| (item.id.clone(), &item.request))
+            .map(|item| {
+                (
+                    item.id.clone(),
+                    request_body_with(&item.request, self.cfg.api.effort()),
+                )
+            })
             .collect();
-        self.progress(format_args!(
-            "asking for a batch of {} requests (round {round}, at most {worst})",
-            items.len()
-        ));
-        let info = match self.cfg.api.create(&sent) {
-            Ok(info) => info,
-            Err(error) => {
-                // A timeout may have left a batch behind: its worst case stays in the ledger.
-                if !error.may_be_billed() {
-                    ledger.append(&[Entry {
-                        card: settled_label(&ticket),
-                        model,
-                        usage: Usage::default(),
-                        micros: -signed(worst),
-                    }])?;
-                }
-                return Err(CliError::Model(error));
-            }
-        };
+        let opened = open(
+            self.cfg.api,
+            &self.spend,
+            &self.cfg.options.model,
+            round,
+            &params,
+            worst,
+            self.cfg.progress,
+        )?;
         let state = State {
             model: self.cfg.options.model.clone(),
             round,
-            ticket,
-            batch_id: info.id,
+            ticket: opened.ticket,
+            batch_id: opened.batch_id,
             reserved_micros: worst.0,
             entries: items
                 .iter()
@@ -670,71 +665,33 @@ impl Run<'_, '_> {
         Ok(state)
     }
 
-    /// Waits for the batch, reads its results and settles the ledger: each billed request at its cost, and the batch's
-    /// worst case given back. A batch settled before (a run that stopped after this step) is not billed twice.
+    /// Waits for the batch, reads its results and settles the ledger (see [`settle`]).
     fn collect(
         &mut self,
         state: &State,
         items: &[Item],
     ) -> Result<BTreeMap<String, Answered>, CliError> {
-        let mut info = self
-            .cfg
-            .api
-            .status(&state.batch_id)
-            .map_err(CliError::Model)?;
-        while !info.ended {
-            self.progress(format_args!(
-                "batch {}: {} processing, {} succeeded, {} errored, {} canceled, {} expired",
-                info.id, info.processing, info.succeeded, info.errored, info.canceled, info.expired
-            ));
-            thread::sleep(self.cfg.options.poll_every);
-            info = self
-                .cfg
-                .api
-                .status(&state.batch_id)
-                .map_err(CliError::Model)?;
-        }
-        let answers = self
-            .cfg
-            .api
-            .results(&state.batch_id)
-            .map_err(CliError::Model)?;
+        let answers = wait(
+            self.cfg.api,
+            &state.batch_id,
+            self.cfg.options.poll_every,
+            self.cfg.progress,
+        )?;
+        let mut billed = Vec::new();
         for item in items {
             self.budget.release(item.request.estimated_tokens());
-        }
-        let ledger = self.spend.ledger().clone();
-        let settled = settled_label(&state.ticket);
-        let already = ledger.has_label(&settled)?;
-        let mut rows = Vec::new();
-        let mut total = Usd(0);
-        for item in items {
-            let usage = match answers.get(&item.id) {
-                Some(Answered::Text(response)) => Some(response.usage),
-                Some(Answered::NoText { usage, .. }) => Some(*usage),
-                _ => None,
-            };
-            if let Some(usage) = usage {
+            if let Some(usage) = usage_of(answers.get(&item.id)) {
                 self.budget.record(usage);
-                let cost = self.spend.price().cost(&usage, self.spend.billing());
-                total = total.plus(cost);
-                rows.push(Entry {
-                    card: item.card.clone(),
-                    model: state.model.clone(),
-                    usage,
-                    micros: signed(cost),
-                });
+                billed.push((item.card.clone(), usage));
             }
         }
-        if !already {
-            rows.push(Entry {
-                card: settled,
-                model: state.model.clone(),
-                usage: Usage::default(),
-                micros: -signed(Usd(state.reserved_micros)),
-            });
-            ledger.append(&rows)?;
-            self.spend.add_run(total);
-        }
+        let total = settle(
+            &mut self.spend,
+            &state.model,
+            &state.ticket,
+            Usd(state.reserved_micros),
+            &billed,
+        )?;
         self.budget.add_cost(total);
         self.progress(format_args!(
             "batch {} ended after {} s: {} billed",
@@ -776,4 +733,123 @@ impl Run<'_, '_> {
             self.after_first_round(items, &answers)
         }
     }
+}
+
+/// A batch that is out: the label of its worst case in the ledger and its id.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Opened {
+    /// The label of the ledger line that holds the batch's worst case.
+    pub ticket: String,
+    /// The batch id.
+    pub batch_id: String,
+}
+
+/// Writes the worst case of a batch to the ledger and asks for the batch of `params` (custom id, request body). When the
+/// ask fails for certain, the worst case is given back; a timeout may have left a batch behind, so it stays.
+pub fn open(
+    api: &BatchApi,
+    spend: &Spend,
+    model: &str,
+    round: u8,
+    params: &[(String, Value)],
+    worst: Usd,
+    progress: &Progress,
+) -> Result<Opened, CliError> {
+    let millis = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_or(0, |since| since.as_millis());
+    let ticket = format!("{millis}-r{round}");
+    let ledger = spend.ledger().clone();
+    ledger.append(&[Entry {
+        card: reserved_label(&ticket),
+        model: model.to_owned(),
+        usage: Usage::default(),
+        micros: signed(worst),
+    }])?;
+    progress.line(format_args!(
+        "asking for a batch of {} requests (round {round}, at most {worst})",
+        params.len()
+    ));
+    match api.create_params(params) {
+        Ok(info) => Ok(Opened {
+            ticket,
+            batch_id: info.id,
+        }),
+        Err(error) => {
+            if !error.may_be_billed() {
+                ledger.append(&[Entry {
+                    card: settled_label(&ticket),
+                    model: model.to_owned(),
+                    usage: Usage::default(),
+                    micros: -signed(worst),
+                }])?;
+            }
+            Err(CliError::Model(error))
+        }
+    }
+}
+
+/// Waits for a batch to end, looking every `poll_every`, and reads its results.
+pub fn wait(
+    api: &BatchApi,
+    id: &str,
+    poll_every: std::time::Duration,
+    progress: &Progress,
+) -> Result<BTreeMap<String, Answered>, CliError> {
+    let mut info = api.status(id).map_err(CliError::Model)?;
+    while !info.ended {
+        progress.line(format_args!(
+            "batch {}: {} processing, {} succeeded, {} errored, {} canceled, {} expired",
+            info.id, info.processing, info.succeeded, info.errored, info.canceled, info.expired
+        ));
+        thread::sleep(poll_every);
+        info = api.status(id).map_err(CliError::Model)?;
+    }
+    api.results(id).map_err(CliError::Model)
+}
+
+/// The tokens a batch result was billed for; none for a request that errored, expired or was canceled.
+pub fn usage_of(answered: Option<&Answered>) -> Option<Usage> {
+    match answered {
+        Some(Answered::Text(response)) => Some(response.usage),
+        Some(Answered::NoText { usage, .. }) => Some(*usage),
+        _ => None,
+    }
+}
+
+/// Settles a batch into the ledger: each billed request (card, usage) at its cost, and the batch's worst case given
+/// back. A batch settled before (a run that stopped after this step) is not billed twice. Returns what it cost.
+pub fn settle(
+    spend: &mut Spend,
+    model: &str,
+    ticket: &str,
+    reserved: Usd,
+    billed: &[(String, Usage)],
+) -> Result<Usd, CliError> {
+    let ledger = spend.ledger().clone();
+    let settled = settled_label(ticket);
+    let already = ledger.has_label(&settled)?;
+    let mut rows = Vec::new();
+    let mut total = Usd(0);
+    for (card, usage) in billed {
+        let cost = spend.price().cost(usage, spend.billing());
+        total = total.plus(cost);
+        rows.push(Entry {
+            card: card.clone(),
+            model: model.to_owned(),
+            usage: *usage,
+            micros: signed(cost),
+        });
+    }
+    if !already {
+        rows.push(Entry {
+            card: settled,
+            model: model.to_owned(),
+            usage: Usage::default(),
+            micros: -signed(reserved),
+        });
+        ledger.append(&rows)?;
+        spend.add_run(total);
+    }
+    Ok(total)
 }

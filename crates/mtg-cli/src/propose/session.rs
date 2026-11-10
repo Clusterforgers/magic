@@ -168,6 +168,7 @@ impl Finished {
             requests: self.used.requests,
             micros: self.used.cost.0,
             detail: self.detail.clone(),
+            agree: None,
         }
     }
 }
@@ -526,7 +527,7 @@ pub(super) fn keep(
 }
 
 /// The first thing the checker found wrong, the constructs without a writer, or a word about an empty proposal.
-fn detail_of(outcome: &Outcome, report: &Report) -> String {
+pub(super) fn detail_of(outcome: &Outcome, report: &Report) -> String {
     match outcome {
         Outcome::Invalid | Outcome::Mismatch => diagnosis(report)
             .lines()
