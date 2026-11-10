@@ -1,4 +1,4 @@
-//! Goal: `ClientMessage::Manual` is taken from a seat that does not hold the pending decision as well as from one that does, shown to every seat as a batch that starts with the action and saved; the pending decision keeps its id when the change leaves it equal and is never answered for its seat; a refused action, a seat out of the game and a message before the game starts get an error to the sender alone and change nothing.
+//! Goal: a token a seat makes by hand reaches every seat with its keywords, and `ClientMessage::Manual` is taken from a seat that does not hold the pending decision as well as from one that does, shown to every seat as a batch that starts with the action and saved; the pending decision keeps its id when the change leaves it equal and is never answered for its seat; a refused action, a seat out of the game and a message before the game starts get an error to the sender alone and change nothing.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -134,4 +134,55 @@ async fn a_manual_action_before_the_game_starts_is_refused() {
             .iter()
             .any(|m| matches!(m, ServerMessage::Error { .. }))
     );
+}
+
+/// The token a seat sees after `received`, by name.
+fn token_seen(received: &[ServerMessage], name: &str) -> mtg_protocol::ObjectView {
+    received
+        .iter()
+        .find_map(|m| match m {
+            ServerMessage::Events(batch) => batch.objects.iter().find(|o| o.name == name).cloned(),
+            _ => None,
+        })
+        .expect("the token in the table of a batch")
+}
+
+#[rstest]
+#[case::a_custom_creature_with_keywords(
+    r#"{"CreateToken":{"token":{"Custom":{"name":"Angel","colors":["White"],"types":["Creature"],"subtypes":["Angel"],"power":4,"toughness":4,"keywords":["Vigilance","Flying"]}},"count":1}}"#,
+    "Angel",
+    &["Flying", "Vigilance"]
+)]
+#[case::a_custom_creature_without_keywords(
+    r#"{"CreateToken":{"token":{"Custom":{"name":"Imp","colors":[],"types":["Creature"],"subtypes":["Imp"],"power":1,"toughness":1}},"count":1}}"#,
+    "Imp",
+    &[]
+)]
+#[case::a_common_token_with_flying(
+    r#"{"CreateToken":{"token":{"Common":"Bird"},"count":1}}"#,
+    "Bird",
+    &["Flying"]
+)]
+#[tokio::test]
+async fn a_token_made_by_hand_carries_its_keywords_to_every_seat(
+    #[case] action: &str,
+    #[case] name: &str,
+    #[case] keywords: &[&str],
+) {
+    let (handle, _) = new_game(2);
+    let (mut clients, _) = start_table(&handle, 2).await;
+    let (holder, _, _) = passive_until_priority(&handle, &mut clients).await;
+    let action: ManualAction = serde_json::from_str(action).unwrap();
+    let received = poke(
+        &handle,
+        &mut clients,
+        holder,
+        ClientMessage::Manual { action },
+    )
+    .await;
+    for seen in &received {
+        let token = token_seen(seen, name);
+        assert_eq!(token.keywords, keywords, "{name}");
+        assert_eq!(token.controller, seat(holder));
+    }
 }
