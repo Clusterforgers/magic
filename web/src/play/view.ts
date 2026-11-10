@@ -76,7 +76,7 @@ function shareTable(previous: TableView, next: TableView): TableView {
     combat: keep(previous.combat, next.combat),
     combat_forecast: keep(previous.combat_forecast, next.combat_forecast),
     result: keep(previous.result, next.result),
-    tokens: keep(previous.tokens, next.tokens),
+    ...(next.tokens === undefined ? {} : { tokens: keep(previous.tokens, next.tokens) }),
   }
 }
 
