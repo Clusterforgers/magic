@@ -267,13 +267,13 @@ fn judged(report: &DeckReport) -> (DeckState, u32, u32, u32, u32) {
     vec![(Kind::Approved, 1, Main, 59), (Kind::Plain, 2, Sideboard, 1)],
     (DeckState::ManualPlay, 0, 59, 0, 1),
 )]
-#[case::an_unknown_card_blocks_a_deck_of_reads(
+#[case::an_unknown_card_is_played_by_hand_in_a_deck_of_reads(
     vec![(Kind::Approved, 1, Main, 59), (Kind::Missing, 2, Main, 1)],
-    (DeckState::Blocked, 0, 59, 0, 0),
+    (DeckState::ManualPlay, 0, 59, 0, 0),
 )]
-#[case::an_unknown_card_blocks_a_deck_with_cards_to_read(
+#[case::an_unknown_card_is_played_by_hand_in_a_deck_with_cards_to_read(
     vec![(Kind::Pending, 1, Main, 59), (Kind::Missing, 2, Main, 1)],
-    (DeckState::Blocked, 1, 0, 59, 0),
+    (DeckState::ManualPlay, 1, 0, 59, 0),
 )]
 fn the_state_and_the_cards_to_read_follow_the_cards_of_a_deck(
     #[case] entries: Vec<Entry>,
@@ -413,11 +413,14 @@ fn a_table_that_lifts_every_issue_leaves_the_state_the_cards_give(
         name: None,
     }]);
     assert_eq!(
-        (report.summary.state, report.summary.issues),
-        (DeckState::Blocked, 1)
+        (report.summary.state, report.summary.legal, report.summary.issues),
+        (state, false, 1)
     );
     report.set_legality(Vec::new());
-    assert_eq!((report.summary.state, report.summary.issues), (state, 0));
+    assert_eq!(
+        (report.summary.state, report.summary.legal, report.summary.issues),
+        (state, true, 0)
+    );
 }
 
 const KINDS: [Kind; 8] = [
@@ -462,9 +465,7 @@ proptest! {
                 Kind::Wrong | Kind::Plain
             )
         };
-        let expected = if used.contains(&Kind::Missing) {
-            DeckState::Blocked
-        } else if used.iter().any(|kind| by_hand(&kind)) {
+        let expected = if used.iter().any(|kind| by_hand(&kind) || *kind == Kind::Missing) {
             DeckState::ManualPlay
         } else if used.iter().any(|kind| {
             matches!(kind, Kind::Approved | Kind::Pending | Kind::ReadBeforeAnEdit)

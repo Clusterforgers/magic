@@ -178,6 +178,7 @@ async fn the_lobby_shows_an_open_seat_with_no_name_and_counts_it_as_needed() {
                     name: "Mono Green Stompers".to_owned(),
                     format: "normal".to_owned(),
                     manual_cards: 0,
+                    warnings: 0,
                 }),
             },
             open(1),

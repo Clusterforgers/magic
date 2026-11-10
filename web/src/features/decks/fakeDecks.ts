@@ -39,6 +39,7 @@ export const counts = (over: Partial<Counts> = {}): Counts => ({
 export const summary = (over: Partial<Summary> = {}): Summary => ({
   format: 'commander',
   state: 'verified',
+  legal: true,
   counts: counts(),
   zones: [{ zone: 'main', counts: counts() }],
   issues: 0,
@@ -120,14 +121,9 @@ export function reportOf(
     const inZone = cards.filter((card) => card.zone === zone)
     return inZone.length === 0 ? [] : [{ zone, counts: tally(inZone) }]
   })
+  // Legality never sets the state: an unplayable card is played by hand, and the issues are a warning (`legal`).
   const state: DeckState =
-    legality.length > 0 || all.unplayable > 0
-      ? 'blocked'
-      : all.verified + all.read + all.forge < all.total
-        ? 'manual_play'
-        : all.read + all.forge > 0
-          ? 'read'
-          : 'verified'
+    all.verified + all.read + all.forge < all.total ? 'manual_play' : all.read + all.forge > 0 ? 'read' : 'verified'
   const toRead = new Set(cards.filter((card) => card.draft === 'pending').map((card) => card.oracle_id)).size
   return {
     deck_hash: 'a'.repeat(64),
@@ -135,7 +131,15 @@ export function reportOf(
     format,
     legality,
     cards: [...cards],
-    summary: { format, state, counts: all, zones, issues: legality.length, to_read: toRead },
+    summary: {
+      format,
+      state,
+      legal: legality.length === 0,
+      counts: all,
+      zones,
+      issues: legality.length,
+      to_read: toRead,
+    },
     ...over,
   }
 }
@@ -268,16 +272,16 @@ export function startDecks(script: DecksScript = {}): DecksServer {
       if (custom !== undefined) return custom
       made += 1
       const copies = body.cards.reduce((sum, line) => sum + line.count, 0)
-      const state: DeckState = copies === 0 ? 'blocked' : 'verified'
       const saved = deckItem({
         id: `made-${made}`,
         name: body.name,
         format: body.format,
-        state,
-        verified: state === 'verified',
+        state: 'verified',
+        verified: true,
         summary: summary({
           format: body.format,
-          state,
+          state: 'verified',
+          legal: copies > 0,
           counts: counts({ total: copies, verified: copies }),
           issues: copies === 0 ? 1 : 0,
         }),
@@ -285,7 +289,7 @@ export function startDecks(script: DecksScript = {}): DecksServer {
       held = [saved, ...held]
       return jsonResponse(
         201,
-        deckView({ id: saved.id, name: saved.name, format: saved.format, state, verified: saved.verified }),
+        deckView({ id: saved.id, name: saved.name, format: saved.format, state: saved.state, verified: saved.verified }),
       )
     }
     if (path === '/api/decks/import' && method === 'POST') {

@@ -213,8 +213,8 @@ export function DeckPane({
     dirty,
     saving,
     name: draft.name,
-    issues: report.legality.length,
-    format: formatLabel(draft.format),
+    issues: report.legality,
+    format: draft.format,
   })
   const showHand = (): void => {
     setHandOpen(true)

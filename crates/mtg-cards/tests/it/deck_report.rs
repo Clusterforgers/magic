@@ -463,6 +463,29 @@ fn commander_decks(#[case] lines: Vec<DeckLine>, #[case] expected: Vec<IssueCode
 }
 
 #[rstest]
+#[case::a_banned_card(atraxa(50, 48, &[line(Main, "Tolarian Academy", 1)]), IssueCode::Banned)]
+#[case::an_off_identity_card(atraxa(50, 48, &[line(Main, "Lightning Bolt", 1)]), IssueCode::ColorIdentity)]
+#[case::a_wrong_size(atraxa(50, 40, &[]), IssueCode::DeckSize)]
+#[case::a_card_the_database_lacks(
+    atraxa(50, 48, &[DeckLine { zone: Main, oracle_id: id(999), count: 1 }]),
+    IssueCode::UnknownCard
+)]
+fn legality_warns_and_never_decides_the_state(
+    #[case] lines: Vec<DeckLine>,
+    #[case] code: IssueCode,
+) {
+    let mut found = report("commander", &lines);
+    assert!(codes(&found).contains(&code), "{:#?}", found.legality);
+    assert!(!found.summary.legal);
+    assert_ne!(found.summary.state, DeckState::Blocked);
+    assert_eq!(found.summary.issues as usize, found.legality.len());
+    let state = found.summary.state;
+    found.set_legality(Vec::new());
+    assert!(found.summary.legal);
+    assert_eq!(found.summary.state, state, "the state is about the cards alone");
+}
+
+#[rstest]
 #[case::legal(sixty(&[]), vec![])]
 #[case::four_copies(sixty(&[line(Main, "Lightning Bolt", 4)]), vec![])]
 #[case::five_copies(sixty(&[line(Main, "Lightning Bolt", 5)]), vec![IssueCode::Copies])]
@@ -517,10 +540,10 @@ fn freeform_asks_for_a_card_and_nothing_else(
 #[case("commander")]
 #[case("modern")]
 #[case("freeform")]
-fn an_empty_deck_is_blocked_in_every_format(#[case] format: &str) {
+fn an_empty_deck_is_not_legal_in_any_format(#[case] format: &str) {
     let found = report(format, &[]);
     assert_eq!(codes(&found), [IssueCode::Empty]);
-    assert_eq!(found.summary.state, DeckState::Blocked);
+    assert!(!found.summary.legal);
     assert!(found.cards.is_empty() && found.summary.zones.is_empty());
 }
 
@@ -548,7 +571,10 @@ fn a_format_without_rules_and_a_card_the_database_lacks_are_issues() {
     let card = found.cards.iter().find(|c| c.oracle_id == id(999)).unwrap();
     assert_eq!((card.support, card.count), (Support::Unplayable, 2));
     assert_eq!(card.name, id(999));
-    assert_eq!(found.summary.state, DeckState::Blocked);
+    assert_eq!(
+        (found.summary.state, found.summary.legal),
+        (DeckState::ManualPlay, false)
+    );
 
     let freeform = report("freeform", &[ghost]);
     assert_eq!(codes(&freeform), [IssueCode::UnknownCard]);
@@ -738,8 +764,8 @@ fn every_support_state_is_reported_with_its_reasons_and_spans() {
     );
     assert_eq!(
         found.summary.state,
-        DeckState::Blocked,
-        "an unplayable card blocks the deck"
+        DeckState::ManualPlay,
+        "an unplayable card is played by hand"
     );
 }
 
@@ -748,11 +774,11 @@ fn every_support_state_is_reported_with_its_reasons_and_spans() {
 #[case::a_partial_card(vec![(Main, 21, 40), (Main, 22, 1)], DeckState::ManualPlay)]
 #[case::a_manual_card(vec![(Main, 21, 40), (Main, 23, 1)], DeckState::ManualPlay)]
 #[case::a_stale_card_counts_as_manual(vec![(Main, 21, 40), (Main, 24, 1)], DeckState::ManualPlay)]
-#[case::an_unplayable_card(vec![(Main, 21, 40), (Main, 25, 1)], DeckState::Blocked)]
+#[case::an_unplayable_card(vec![(Main, 21, 40), (Main, 25, 1)], DeckState::ManualPlay)]
 #[case::one_manual_card_in_the_sideboard(vec![(Main, 21, 40), (Sideboard, 23, 1)], DeckState::ManualPlay)]
 #[case::one_manual_card_in_the_command_zone(vec![(Main, 21, 40), (Commander, 22, 1)], DeckState::ManualPlay)]
 #[case::one_manual_card_as_companion(vec![(Main, 21, 40), (Companion, 26, 1)], DeckState::ManualPlay)]
-#[case::an_unplayable_card_in_the_sideboard(vec![(Main, 21, 40), (Sideboard, 25, 1)], DeckState::Blocked)]
+#[case::an_unplayable_card_in_the_sideboard(vec![(Main, 21, 40), (Sideboard, 25, 1)], DeckState::ManualPlay)]
 #[case::verified_in_every_zone(vec![(Main, 21, 40), (Sideboard, 21, 3), (Commander, 21, 1), (Companion, 21, 1)], DeckState::Verified)]
 fn the_state_counts_every_zone(#[case] lines: Vec<(DeckZone, u32, u32)>, #[case] state: DeckState) {
     let found = states_report(&lines, &Caps::everything());
@@ -901,6 +927,7 @@ fn the_report_keeps_its_wire_shape() {
         json!({
             "format": "freeform",
             "state": "manual_play",
+            "legal": true,
             "counts": {"total": 3, "verified": 2, "read": 0, "forge": 0, "unverified": 0, "partial": 1, "manual": 0, "stale": 0, "unplayable": 0},
             "zones": [
                 {"zone": "main", "counts": {"total": 2, "verified": 2, "read": 0, "forge": 0, "unverified": 0, "partial": 0, "manual": 0, "stale": 0, "unplayable": 0}},

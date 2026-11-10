@@ -28,6 +28,7 @@ fn summary(state: DeckState) -> Summary {
     Summary {
         format: "commander".to_owned(),
         state,
+        legal: true,
         counts,
         zones: vec![ZoneCounts {
             zone: DeckZone::Main,

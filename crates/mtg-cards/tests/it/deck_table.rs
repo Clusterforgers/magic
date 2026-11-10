@@ -1,4 +1,4 @@
-//! Goal: the deck rules of a table lift exactly the issues of the format's own check that they replace (size, copies, colour identity, the pair of commanders), nothing else, and a report whose legality is replaced follows with its issue count and state.
+//! Goal: the deck rules of a table lift exactly the issues of the format's own check that they replace (size, copies, colour identity, the pair of commanders), nothing else, and a report whose legality is replaced follows with its issue count and legal flag while its state stays the one of its cards.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::deck::{Counts, DeckReport, DeckState, DeckZone, Issue, IssueCode, Summary};
@@ -89,6 +89,7 @@ fn report(state: DeckState, counts: Counts, legality: Vec<Issue>) -> DeckReport 
         summary: Summary {
             format: "commander".into(),
             state,
+            legal: true,
             counts,
             zones: Vec::new(),
             issues: u32::try_from(legality.len()).unwrap(),
@@ -112,9 +113,9 @@ fn counts(verified: u32, manual: u32, unplayable: u32) -> Counts {
 #[rstest]
 #[case::cleared_and_verified(counts(100, 0, 0), vec![], DeckState::Verified, 0)]
 #[case::cleared_with_manual_cards(counts(97, 3, 0), vec![], DeckState::ManualPlay, 0)]
-#[case::cleared_with_an_unplayable_card(counts(99, 0, 1), vec![], DeckState::Blocked, 0)]
-#[case::one_issue_left(counts(100, 0, 0), vec![IssueCode::Banned], DeckState::Blocked, 1)]
-#[case::two_issues_left(counts(97, 3, 0), vec![IssueCode::Banned, IssueCode::DeckSize], DeckState::Blocked, 2)]
+#[case::cleared_with_an_unplayable_card(counts(99, 0, 1), vec![], DeckState::ManualPlay, 0)]
+#[case::one_issue_left(counts(100, 0, 0), vec![IssueCode::Banned], DeckState::Verified, 1)]
+#[case::two_issues_left(counts(97, 3, 0), vec![IssueCode::Banned, IssueCode::DeckSize], DeckState::ManualPlay, 2)]
 fn replacing_the_legality_updates_the_issue_count_and_the_state(
     #[case] counts: Counts,
     #[case] codes: Vec<IssueCode>,
@@ -122,12 +123,13 @@ fn replacing_the_legality_updates_the_issue_count_and_the_state(
     #[case] issues: u32,
 ) {
     // The check of the deck's own format refused it for one issue.
-    let mut report = report(DeckState::Blocked, counts, vec![issue(IssueCode::Copies)]);
+    let mut report = report(DeckState::of(&counts), counts, vec![issue(IssueCode::Copies)]);
+    report.summary.legal = false;
     let legality: Vec<Issue> = codes.into_iter().map(issue).collect();
     report.set_legality(legality.clone());
     assert_eq!(report.legality, legality);
     assert_eq!(
-        (report.summary.state, report.summary.issues),
-        (state, issues)
+        (report.summary.state, report.summary.issues, report.summary.legal),
+        (state, issues, issues == 0)
     );
 }

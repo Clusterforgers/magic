@@ -1,13 +1,15 @@
-import { BanIcon, CheckIcon, LoaderCircleIcon } from 'lucide-react'
+import { CheckIcon, LoaderCircleIcon, TriangleAlertIcon } from 'lucide-react'
 import { useId, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { IdentityPips } from '@/features/builder/IdentityPips'
 import { CardPicture } from '@/features/cards/CardPicture'
 import { cardsText, formatLabel } from '@/features/decks/format'
+import { notLegalText, STILL_PLAYS } from '@/features/decks/legality'
 import { ToRead } from '@/features/decks/ToRead'
 import { BY_HAND, byHandCopies, linesByHand, linesText } from '@/lib/byHand'
 import { cn } from '@/lib/utils'
+import type { Issue } from '@/protocol/generated'
 import { copiesOf, groupByKind, identityOfDeck, manaCurve, supportCounts, typeCounts } from './model'
 import type { DeckPreviewData } from './model'
 import { CardGroups } from './PreviewCards'
@@ -18,10 +20,10 @@ export interface PreviewLegality {
   verdict: 'legal' | 'illegal' | 'checking' | 'unknown'
   /** The format the verdict is for, as people say it ("Commander"). */
   format: string
-  /** Why the deck is not legal. */
+  /** The issues, grouped by kind in the title ("2 banned cards, colour identity"). */
+  issues?: readonly Pick<Issue, 'code'>[]
+  /** Why the deck is not legal, as sentences. */
   reasons?: readonly string[]
-  /** The id of the reasons list, for a control that is off because of them to point at (`aria-describedby`). */
-  reasonsId?: string
 }
 
 /** What a deck preview takes. */
@@ -39,30 +41,40 @@ export interface DeckPreviewProps {
 }
 
 function Legality({ legality }: { legality: PreviewLegality }) {
-  const { verdict, format, reasons = [], reasonsId } = legality
+  const { verdict, format, issues = [], reasons = [] } = legality
   if (verdict === 'unknown') return null
+  const illegal = verdict === 'illegal'
   return (
-    <div data-slot="legality" data-verdict={verdict} className="grid gap-1 text-sm">
-      <p className="flex items-center gap-2 font-medium">
+    <div
+      data-slot="legality"
+      data-verdict={verdict}
+      className={cn(
+        'grid gap-1 text-sm',
+        illegal && 'rounded-lg border border-warning bg-warning/12 px-3 py-2',
+      )}
+    >
+      <p className={cn('flex items-start gap-2 font-medium', illegal && 'font-semibold text-warning')}>
         {verdict === 'legal' ? (
-          <CheckIcon aria-hidden="true" className="size-4 text-support-verified" />
-        ) : verdict === 'illegal' ? (
-          <BanIcon aria-hidden="true" className="size-4 text-destructive" />
+          <CheckIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-support-verified" />
+        ) : illegal ? (
+          <TriangleAlertIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
         ) : (
-          <LoaderCircleIcon aria-hidden="true" className="size-4 animate-spin text-muted-foreground" />
+          <LoaderCircleIcon
+            aria-hidden="true"
+            className="mt-0.5 size-4 shrink-0 animate-spin text-muted-foreground"
+          />
         )}
-        {verdict === 'legal'
-          ? `Legal in ${format}`
-          : verdict === 'illegal'
-            ? `Not legal in ${format}`
-            : `Checking the deck for ${format}…`}
+        <span className="min-w-0">
+          {verdict === 'legal'
+            ? `Legal in ${format}`
+            : illegal
+              ? notLegalText(format, issues)
+              : `Checking the deck for ${format}…`}
+        </span>
       </p>
+      {illegal ? <p className="pl-6">{STILL_PLAYS}</p> : null}
       {reasons.length === 0 ? null : (
-        <ul
-          id={reasonsId}
-          aria-label={`Why the deck is not legal in ${format}`}
-          className="list-disc pl-6 text-xs text-destructive"
-        >
+        <ul aria-label={`Why the deck is not legal in ${format}`} className="list-disc pl-10 text-xs">
           {[...new Set(reasons)].map((reason) => (
             <li key={reason} className="[overflow-wrap:anywhere]">
               {reason}

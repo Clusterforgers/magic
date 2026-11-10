@@ -3,13 +3,12 @@ import {
   cardHit,
   deckItem,
   deckView,
-  legalityIssue,
   lineOf,
   reportCard,
   reportOf,
 } from '@/features/decks/fakeDecks'
 import type { Counts, DeckListItem, DeckView, PreconListItem, PreconView, Reason } from '@/protocol/generated'
-import type { CardHit, DeckPicture, DeckState, Support } from '@/protocol/generated'
+import type { CardHit, DeckPicture, DeckState, Issue, Summary, Support } from '@/protocol/generated'
 
 type Colour = 'W' | 'U' | 'B' | 'R' | 'G'
 
@@ -83,6 +82,8 @@ export interface FixtureDeck {
   commanders: readonly (readonly [string, readonly Colour[]])[]
   /** Pool cards played by hand, by name. */
   hand?: readonly string[]
+  /** The rules of its format the deck breaks: warnings, none when left out. */
+  issues?: readonly Issue[]
   /** Copies in all, the commanders included; 100 when left out. */
   size?: number
 }
@@ -157,11 +158,18 @@ const tally = (made: Made): Counts => {
 }
 
 const stateOf = (counts: Counts): DeckState =>
-  counts.unplayable > 0
-    ? 'blocked'
-    : counts.manual + counts.partial + counts.stale > 0
-      ? 'manual_play'
-      : 'verified'
+  counts.manual + counts.partial + counts.stale + counts.unplayable > 0 ? 'manual_play' : 'verified'
+
+/** The summary of a fixture deck: its state and counts, and its issues as a legality warning. */
+const summaryOf = (deck: FixtureDeck, state: DeckState, counts: Counts): Summary => ({
+  format: deck.format,
+  state,
+  legal: (deck.issues ?? []).length === 0,
+  counts,
+  zones: [{ zone: 'main', counts }],
+  issues: (deck.issues ?? []).length,
+  to_read: 0,
+})
 
 /** A stored deck as the list of `GET /api/decks` shows it. */
 export function fixtureListItem(deck: FixtureDeck): DeckListItem {
@@ -174,7 +182,7 @@ export function fixtureListItem(deck: FixtureDeck): DeckListItem {
     format: deck.format,
     state,
     verified: state === 'verified',
-    summary: { format: deck.format, state, counts, zones: [{ zone: 'main', counts }], issues: 0, to_read: 0 },
+    summary: summaryOf(deck, state, counts),
     commanders: made.commanders,
     pictures: picturesOf(made),
   })
@@ -203,7 +211,7 @@ export function fixtureDeckView(deck: FixtureDeck): DeckView {
           reportCard(line.card.name, { count: line.count, support: line.support, reasons: line.reasons }),
         ),
       ],
-      state === 'blocked' ? [legalityIssue('the deck is not legal in this format')] : [],
+      [...(deck.issues ?? [])],
     ),
   })
 }
@@ -226,8 +234,8 @@ export function fixturePreconItem(deck: FixtureDeck & { set: string; state?: Dec
     format: deck.commanders.length > 0 ? 'commander' : 'freeform',
     state,
     verified: state === 'verified',
-    playable: state !== 'blocked',
-    summary: { format: 'commander', state, counts, zones: [{ zone: 'main', counts }], issues: 0, to_read: 0 },
+    playable: true,
+    summary: { ...summaryOf(deck, state, counts), format: 'commander' },
   }
 }
 
@@ -245,7 +253,7 @@ export function fixturePreconView(deck: FixtureDeck & { set: string; state?: Dec
     }))
   return {
     precon: fixturePreconItem(deck),
-    issues: [],
+    issues: [...(deck.issues ?? [])],
     boards: [
       ...(made.commanders.length === 0
         ? []

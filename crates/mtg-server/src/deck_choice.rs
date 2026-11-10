@@ -38,7 +38,7 @@ pub(crate) enum Refused {
     /// The id is no built-in deck and no stored deck of the caller's. A deck of another account, a
     /// deck that does not exist and a caller who is not signed in all look alike.
     Unknown,
-    /// The deck check refuses the deck.
+    /// No game can start with the deck ([`no_cards`]); legality never refuses one.
     Blocked(Vec<Issue>),
     /// The answer to send as it is: the database failed.
     Failed(ApiError),
@@ -70,11 +70,11 @@ impl Refused {
     }
 }
 
-/// The 422 of a refused deck: the issues go in the body next to `error` and `message`.
+/// The 422 of a deck no game can start with: the issues go in the body next to `error` and `message`.
 pub(crate) fn blocked(issues: &[Issue]) -> ApiError {
     let body = DeckBlockedBody {
         error: DeckChoiceErrorCode::DeckBlocked,
-        message: "that deck cannot be played in this game".to_owned(),
+        message: "that deck has no cards a game can play".to_owned(),
         issues: issues.to_vec(),
     };
     let message = body.message.clone();
@@ -131,24 +131,23 @@ pub(crate) fn built_in(id: &str) -> Result<ChosenDeck, Refused> {
     })
 }
 
-/// The precon with this code as a seat's deck: judged as the list shows it, then refused when the
-/// deck check blocks it or a game of this server cannot take it. An unknown code, a malformed one
-/// and a server without a database are one [`Refused::Unknown`].
+/// The precon with this code as a seat's deck: judged as the list shows it, with its legality issues as warnings;
+/// refused only when no card of it is one the database knows. An unknown code, a malformed one and a server without
+/// a database are one [`Refused::Unknown`].
 async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
     let Some(source) = app.cards() else {
         return Err(Refused::Unknown);
     };
     let (deck, judged) = judged_precon(source, code).await?.ok_or(Refused::Unknown)?;
-    // What the deck check refuses and no table can lift ends here; the rest, and the engine's own
-    // check, wait for the table the deck is chosen for.
-    if is_held_back(&judged.report) {
-        return Err(Refused::Blocked(judged.issues));
+    if judged.cards.is_empty() && judged.leaders.is_empty() {
+        return Err(Refused::Blocked(vec![no_cards()]));
     }
     let own_issues = judged.report.legality.clone();
     let note = SeatDeck {
         name: deck.summary.name.clone(),
         format: judged.format.to_owned(),
         manual_cards: manual_cards(&judged.report),
+        warnings: 0,
     };
     let printings = printings_of(&judged.lines, false);
     let seeds: Vec<Arc<CardDefinition>> = judged
@@ -204,9 +203,16 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
     let lines = lines_of(&deck);
     let loaded = Loaded::load(source, &lines).await?;
     let report = loaded.report_off(&deck.format, &lines).await?;
-
-    if is_held_back(&report) {
-        return Err(Refused::Blocked(report.legality.clone()));
+    // A card the database no longer holds stays out of the game; the report counts it as played by hand.
+    let lines: Vec<Line> = lines
+        .into_iter()
+        .filter(|line| loaded.card(&line.oracle_id).is_some())
+        .collect();
+    if !lines
+        .iter()
+        .any(|line| matches!(line.zone, DeckZone::Main | DeckZone::Commander))
+    {
+        return Err(Refused::Blocked(vec![no_cards()]));
     }
     let ids = library_ids(&lines);
     let commander_ids = commander_ids(&lines);
@@ -221,6 +227,7 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
         name: deck.name.clone(),
         format: deck.format.clone(),
         manual_cards: manual_cards(&report),
+        warnings: 0,
     };
     let unreadable = |error| {
         tracing::error!(%error, "a stored deck could not be fingerprinted");
@@ -353,14 +360,6 @@ fn engine_judges(standing: &[Issue], report: &DeckReport) -> bool {
     standing.is_empty() && report.summary.counts.unplayable == 0
 }
 
-/// Whether the deck check refuses a deck at every table: a card the game cannot play, or an issue
-/// that no deck rule of a table lifts. The other issues are judged at the table the deck is for
-/// ([`ChosenDeck::issues_in`]).
-pub(crate) fn is_held_back(report: &DeckReport) -> bool {
-    report.summary.counts.unplayable > 0
-        || report.legality.iter().any(|issue| !issue.code.liftable())
-}
-
 /// The oracle id of every card of a zone, a line's copies one after the other, in line order.
 fn zone_ids(lines: &[Line], zone: DeckZone) -> Vec<String> {
     lines
@@ -423,6 +422,17 @@ pub(crate) fn manual_cards(report: &DeckReport) -> u32 {
         })
         .map(|card| card.count)
         .fold(0, u32::saturating_add)
+}
+
+/// The one deck no game can start with: no card of its main deck or command zone is one the database knows.
+pub(crate) fn no_cards() -> Issue {
+    Issue {
+        code: IssueCode::Empty,
+        message: "the deck has no card the game knows, so no game can start with it".to_owned(),
+        zone: Some(DeckZone::Main),
+        oracle_id: None,
+        name: None,
+    }
 }
 
 pub(crate) fn no_command_zone() -> Issue {
@@ -615,6 +625,7 @@ mod tests {
             summary: Summary {
                 format: "modern".into(),
                 state: DeckState::ManualPlay,
+                legal: true,
                 counts: Counts::default(),
                 zones: Vec::new(),
                 issues: 0,

@@ -33,5 +33,5 @@ export function issueWords(issue: Pick<Issue, 'message'>): string {
   return /[.!?]$/.test(capital) ? capital : `${capital}.`
 }
 
-/** What to say when a deck was refused and the server named no issue: it holds cards the game cannot play. */
-export const NO_ISSUES = 'The deck holds cards that the game cannot play.'
+/** What to say when a deck was refused and the server named no issue: it holds no card the game knows. */
+export const NO_ISSUES = 'The deck has no card the game knows.'

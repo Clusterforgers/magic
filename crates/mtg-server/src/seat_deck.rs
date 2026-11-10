@@ -54,6 +54,7 @@ impl ChosenDeck {
                 name: deck.name.to_owned(),
                 format: DEMO_FORMAT.to_owned(),
                 manual_cards: 0,
+                warnings: 0,
             },
             own_issues: Arc::from([]),
             reads: BTreeMap::new(),
@@ -82,6 +83,7 @@ impl ChosenDeck {
                 name: "No deck".to_owned(),
                 format: "commander".to_owned(),
                 manual_cards: 0,
+                warnings: 0,
             },
             own_issues: Arc::from([]),
             reads: BTreeMap::new(),
@@ -282,16 +284,50 @@ impl ChosenDeck {
     }
 
     /// The deck with the issues its own check found (`deck_report` in the deck's format), which a
-    /// table's deck rules may lift ([`ChosenDeck::issues_in`]). Only issues of codes a table can lift
-    /// belong here: the others refuse the deck before it is chosen.
+    /// table's deck rules may lift ([`ChosenDeck::issues_in`]). They are warnings: none refuses the deck.
     #[must_use]
     pub(crate) fn with_own_issues(mut self, issues: Vec<Issue>) -> ChosenDeck {
         self.own_issues = issues.into();
         self
     }
 
+    /// The deck as a table of `format` under `house` rules plays it, and the rules it breaks there
+    /// ([`ChosenDeck::issues_in`]): the table is told their count as warnings, and a table without a command zone
+    /// takes the commanders into the library (after its cards, so the printings keep their order). Legality never
+    /// refuses a deck.
+    pub fn for_table(mut self, format: FormatKind, house: &HouseRules) -> (ChosenDeck, Vec<Issue>) {
+        let issues = self.issues_in(format, house);
+        self.note.warnings = u32::try_from(issues.len()).unwrap_or(u32::MAX);
+        let oracle = matches!(self.deck, DeckRef::Oracle { .. });
+        if format == FormatKind::Normal && oracle && !self.commanders.is_empty() {
+            let cards: Vec<Arc<CardDefinition>> = self
+                .cards
+                .iter()
+                .chain(self.commanders.iter())
+                .cloned()
+                .collect();
+            match DeckFingerprint::of_seat_with(&cards, &[], self.companion.as_ref()) {
+                Ok(fingerprint) => {
+                    if let DeckRef::Oracle {
+                        cards: ids,
+                        commanders: leaders,
+                        ..
+                    } = &mut self.deck
+                    {
+                        ids.append(leaders);
+                    }
+                    self.fingerprint = fingerprint;
+                    self.cards = cards.into();
+                    self.commanders = Arc::from([]);
+                }
+                Err(error) => tracing::error!(%error, "a deck's commanders could not join its library"),
+            }
+        }
+        (self, issues)
+    }
+
     /// The rules of `format`, under the `house` rules of the game, that the deck breaks, in the words
-    /// of the deck check; none when the game accepts the deck.
+    /// of the deck check; none when the deck is legal there. They warn and never refuse the deck.
     ///
     /// A Commander table that relaxed a rule the deck's own check refused for (size, copies, colour
     /// identity, the pair of commanders) leaves that issue to the engine's `validate_seat` under the
@@ -509,6 +545,7 @@ mod tests {
             name: name.to_owned(),
             format: "modern".to_owned(),
             manual_cards: 3,
+            warnings: 0,
         };
         ChosenDeck::stored(vec!["forest".to_owned(); 60], cards, note).unwrap()
     }
@@ -537,6 +574,7 @@ mod tests {
             name: "x".to_owned(),
             format: "commander".to_owned(),
             manual_cards: 0,
+            warnings: 0,
         };
         let own = vec![issue(IssueCode::Copies), issue(IssueCode::DeckSize)];
         let chosen = ChosenDeck::led(vec![], library, vec![], vec![commander], note)
@@ -589,7 +627,8 @@ mod tests {
             &SeatDeck {
                 name: "Mono Red Giants".into(),
                 format: "normal".into(),
-                manual_cards: 0
+                manual_cards: 0,
+                warnings: 0,
             }
         );
         assert_eq!(deck.cards().len(), 60);
@@ -703,6 +742,7 @@ mod printing_tests {
             name: "Greens".to_owned(),
             format: "commander".to_owned(),
             manual_cards: 0,
+            warnings: 0,
         };
         let bear = card("Bear", "bear");
         let library = vec![bear.clone(), bear, card("Elk", "elk")];

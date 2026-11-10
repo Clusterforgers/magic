@@ -505,12 +505,14 @@ impl Registry {
         let libraries = held.iter().map(|deck| deck.cards().to_vec()).collect();
         let commanders = held.iter().map(|deck| deck.commanders().to_vec()).collect();
         let companions = held.iter().map(|deck| deck.companion().cloned()).collect();
-        let setup = GameSetup::new(options.format.rules(), seed, libraries)
+        let mut setup = GameSetup::new(options.format.rules(), seed, libraries)
             .with_commanders(commanders)
             .with_companions(companions)
             .with_house_rules(options.house_rules.clone())
             .with_conjurable(conjured);
-        // Refused like a recipe that does not build: too few seats, a deck the format does not allow.
+        // Legality only warns (`docs/deck-check.md`), so the engine does not judge the decks.
+        setup.validate_decks = false;
+        // Refused like a recipe that does not build: too few seats, a command zone in a Normal game.
         setup.validate().map_err(RecipeError::from)?;
         self.admit(setup, names, Some(recipe), host, options, Some(decks))
             .await

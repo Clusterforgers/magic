@@ -7,8 +7,8 @@ const input = (over: Partial<SaveInput> = {}): SaveInput => ({
   dirty: true,
   saving: false,
   name: 'Burn',
-  issues: 0,
-  format: 'Modern',
+  issues: [],
+  format: 'modern',
   ...over,
 })
 
@@ -37,14 +37,17 @@ describe('saveStatus', () => {
   })
 
   it.each([
-    [1, 'Unsaved changes. The deck has 1 issue in Modern; it can still be saved.'],
-    [3, 'Unsaved changes. The deck has 3 issues in Modern; it can still be saved.'],
-  ])('says %i legality issues and that they do not stop the save', (issues, text) => {
+    [[{ code: 'banned' }], 'Unsaved changes. Not legal in Modern: 1 banned card; it can still be saved and played.'],
+    [
+      [{ code: 'banned' }, { code: 'banned' }, { code: 'deck_size' }],
+      'Unsaved changes. Not legal in Modern: 2 banned cards, deck size; it can still be saved and played.',
+    ],
+  ] as const)('says the legality issues %j and that they do not stop the save', (issues, text) => {
     const status = saveStatus(input({ issues }))
     expect(status).toEqual({ kind: 'ready', text, blocker: null })
   })
 
   it('says nothing of legality when there is nothing to save', () => {
-    expect(saveStatus(input({ dirty: false, issues: 4 })).text).toBe('All changes saved.')
+    expect(saveStatus(input({ dirty: false, issues: [{ code: 'banned' }] })).text).toBe('All changes saved.')
   })
 })

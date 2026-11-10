@@ -2,6 +2,8 @@ import { CheckIcon, LoaderCircleIcon, StarIcon } from 'lucide-react'
 import type { KeyboardEvent } from 'react'
 import { IdentityPips } from '@/features/builder/IdentityPips'
 import { DeckStateBadge } from '@/features/decks/DeckStateBadge'
+import { LegalityPill } from '@/features/decks/LegalityPill'
+import { notLegalText } from '@/features/decks/legality'
 import { ToRead } from '@/features/decks/ToRead'
 import { cn } from '@/lib/utils'
 import { entryFacts, entrySupport, handWords } from './deckEntries'
@@ -93,6 +95,7 @@ export function DeckOption({
         <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
           {entry.identity === null ? null : <IdentityPips identity={entry.identity} />}
           <DeckStateBadge state={support.state} label={support.label} />
+          {entry.legal ? null : <LegalityPill label={notLegalText(entry.format, entry.issues)} />}
           <ToRead count={entry.toRead} className="text-xs" />
           {hand === null ? null : (
             <span data-slot="deck-by-hand" className="text-xs text-muted-foreground">

@@ -40,6 +40,7 @@ fn lobby(flags: [(bool, bool); 3]) -> ServerMessage {
                 name: "Mono Green Stompers".to_owned(),
                 format: "normal".to_owned(),
                 manual_cards: 0,
+                warnings: 0,
             }),
         })
         .collect();

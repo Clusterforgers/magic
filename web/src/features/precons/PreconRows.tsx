@@ -1,5 +1,6 @@
 import { PlayIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { LegalityPill } from '@/features/decks/LegalityPill'
 import { ToRead } from '@/features/decks/ToRead'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { cn } from '@/lib/utils'
@@ -7,7 +8,7 @@ import type { PreconListItem } from '@/protocol/generated'
 import { PreconBadge } from './PreconBadge'
 import { FavouriteButton } from './FavouriteButton'
 import type { Favourites } from './useFavourites'
-import { breakdownWords, commandersText, releaseText, statusOf } from './format'
+import { breakdownWords, commandersText, legalityWords, releaseText, statusOf } from './format'
 
 /** The window from which the precons are a table with columns; under it each is a stacked row. */
 export const TABLE_FROM = '(min-width: 64rem)'
@@ -28,9 +29,10 @@ export interface RowsProps {
 }
 
 const statusId = (precon: PreconListItem): string => `precon-status-${precon.code}`
+const legalityId = (precon: PreconListItem): string => `precon-legality-${precon.code}`
 const cardsLabel = (precon: PreconListItem): string => `${precon.card_count} cards`
 
-/** The Details and Play buttons of a row. Play of a deck the game cannot take stays in place, disabled and explained. */
+/** The Details and Play buttons of a row. Play is there for every deck; a legality warning is said beside the badge. */
 function Actions({
   precon,
   onDetails,
@@ -39,7 +41,6 @@ function Actions({
   busy,
   favourites,
 }: RowsProps & { precon: PreconListItem }) {
-  const blocked = statusOf(precon) === 'blocked'
   return (
     <div className="flex items-center gap-2">
       {favourites === undefined ? null : (
@@ -58,8 +59,8 @@ function Actions({
         type="button"
         data-play={precon.code}
         aria-label={`Play ${precon.name}`}
-        aria-describedby={blocked ? statusId(precon) : undefined}
-        disabled={blocked || busy}
+        aria-describedby={precon.summary.legal ? undefined : legalityId(precon)}
+        disabled={busy}
         loading={playing === precon.code}
         // A disabled button that keeps focus does not drop it when another Play starts while it is the one in hand.
         focusableWhenDisabled
@@ -72,8 +73,9 @@ function Actions({
   )
 }
 
-/** The badge and, for a deck the game cannot take, the way to the reasons. */
+/** The badge and, for a deck that breaks its format's rules, the warning (Details list why). */
 function Check({ precon }: { precon: PreconListItem }) {
+  const legal = legalityWords(precon)
   return (
     <div className="grid justify-items-start gap-1">
       <PreconBadge precon={precon} id={statusId(precon)} />
@@ -90,9 +92,7 @@ function Check({ precon }: { precon: PreconListItem }) {
         </span>
       )}
       <ToRead count={precon.summary.to_read} target={{ precon: precon.code }} className="text-xs" />
-      {statusOf(precon) === 'blocked' ? (
-        <span className="text-xs whitespace-nowrap text-muted-foreground">Details list what stops it.</span>
-      ) : null}
+      {legal === null ? null : <LegalityPill id={legalityId(precon)} label={legal} />}
     </div>
   )
 }

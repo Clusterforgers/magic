@@ -11,10 +11,11 @@ import type { DecksApi } from '@/net/decks'
 import { favouritesApi as sharedFavourites } from '@/net/favourites'
 import type { FavouritesApi } from '@/net/favourites'
 import type { PreconsApi } from '@/net/precons'
+import { LegalityWarning } from '@/features/decks/LegalityWarning'
 import { useFavourites } from '@/features/precons/useFavourites'
 import type { SeatDeck } from '@/protocol/generated'
 import type { DeckEntry } from './deckEntries'
-import { deckWords, issueWords, NO_ISSUES } from './deckWords'
+import { deckFormat, deckWords, issueWords, NO_ISSUES } from './deckWords'
 import { DeckPane } from './DeckPane'
 import { usePreconChoices } from './usePreconChoices'
 import { useDeckSort } from './deckSort'
@@ -51,8 +52,8 @@ export interface DeckChooserProps {
   /** Some request of the lobby is out, so nothing else can be sent. */
   busy: boolean
   choice: DeckChoice
-  /** Told which deck is selected but not chosen, and whether this table cannot take it, for the Ready button's words. */
-  onPreview?(previewing: { name: string; blocked: boolean } | null): void
+  /** Told which deck is selected but not chosen, for the Ready button's words. */
+  onPreview?(previewing: { name: string } | null): void
   /** The account's favourite precons come from here. */
   favouritesApi?: FavouritesApi
 }
@@ -72,8 +73,9 @@ function deckKinds(format: GameFormat, signedIn: boolean): { kind: Kind; label: 
  * The player's own deck: what the table is told of it and, until the seat is ready, the decks to choose among in tabs
  * (the account's stored decks, built-in decks in Normal games, precons). Each tab is a list and the preview of the
  * selected deck beside it (a dialog under 1000 px): its commanders, legality at this table, support summary, mana
- * curve and every card; "Use this deck" (or Enter or a double click on a row) takes it. A deck the table cannot take
- * is shown but not chosen. The choice shows at once with a spinner; a refusal puts the old choice back and says why.
+ * curve and every card; "Use this deck" (or Enter or a double click on a row) takes it. A deck that breaks the table's
+ * rules is taken with a warning, listed under the seat's deck. The choice shows at once with a spinner; a refusal puts
+ * the old choice back and says why.
  */
 export function DeckChooser({
   api,
@@ -108,7 +110,14 @@ export function DeckChooser({
   const restedId = useDebouncedValue(selected?.id ?? null, REST_MS)
   const rested = watching && selected !== null && selected.id === restedId ? selected : null
   const details = useDeckDetails(decks, precons, rested)
-  const verdicts = useVerdicts(decks, game, rested === null || rested.kind === 'builtin' ? [] : [rested.id])
+  // The seat's own deck is checked too when it breaks the table's rules, so the warning under it can list why.
+  const warnedId = current != null && current.warnings > 0 ? choice.chosenId : null
+  const verdicts = useVerdicts(decks, game, [
+    ...(rested === null || rested.kind === 'builtin' ? [] : [rested.id]),
+    ...(warnedId === null ? [] : [warnedId]),
+  ])
+  const warned = warnedId === null ? undefined : verdicts.of.get(warnedId)
+  const warning = warned?.status === 'ready' ? warned.verdict.warning : null
   const select = useCallback((entry: DeckEntry) => setSelected(entry), [])
   const clear = useCallback(() => setSelected(null), [])
   const use = (entry: DeckEntry): void => {
@@ -131,12 +140,10 @@ export function DeckChooser({
     />
   )
   const known = selected !== null && current != null && selected.name === current.name
-  const verdict = selected === null ? undefined : verdicts.of.get(selected.id)
-  const blocked = verdict?.status === 'ready' && verdict.verdict.kind === 'blocked'
   const previewName = selected === null || known || ready ? null : selected.name
   useEffect(() => {
-    onPreview?.(previewName === null ? null : { name: previewName, blocked })
-  }, [onPreview, previewName, blocked])
+    onPreview?.(previewName === null ? null : { name: previewName })
+  }, [onPreview, previewName])
   const source = {
     game,
     format,
@@ -171,6 +178,14 @@ export function DeckChooser({
                 ? 'You have no deck yet. Choose one to press Ready.'
                 : deckWords(current)}
           </p>
+          {current == null || current.warnings === 0 ? null : (
+            <LegalityWarning
+              slot="seat-deck-warning"
+              format={deckFormat(format)}
+              issues={warning?.issues ?? current.warnings}
+              lines={warning?.reasons.map((text, index) => ({ key: `${index}:${text}`, text }))}
+            />
+          )}
         </div>
         {ready || current == null ? null : wide ? (
           <Button

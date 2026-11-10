@@ -1,4 +1,4 @@
-//! Goal: on Postgres a stored deck names its companion in the game: the card's compiled rules reach the seat's game at two, three and four seats beside a precon and built-in decks that have none, the table is told the deck and never a companion before the opening reveals it, the recipe names it with a fingerprint over it, a restart brings the game back with the companion at the seat, a companion that breaks its condition or a second one refuses the deck with its code in every way a deck is chosen, and a card without a companion ability is no companion for the game.
+//! Goal: on Postgres a stored deck names its companion in the game: the card's compiled rules reach the seat's game at two, three and four seats beside a precon and built-in decks that have none, the table is told the deck and never a companion before the opening reveals it, the recipe names it with a fingerprint over it, a restart brings the game back with the companion at the seat, a companion that breaks its condition or a second one warns with its code in every way a deck is chosen and the deck is still taken, and a card without a companion ability is no companion for the game.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::Client;
@@ -356,7 +356,7 @@ async fn a_stored_deck_plays_its_companion_at_every_table_size_and_a_restart_kee
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_companion_that_breaks_its_condition_refuses_the_deck_wherever_it_is_chosen(
+async fn a_companion_that_breaks_its_condition_warns_wherever_the_deck_is_chosen(
     pool: PgPool,
 ) {
     let (server, _db) = start(&pool).await;
@@ -379,14 +379,18 @@ async fn a_companion_that_breaks_its_condition_refuses_the_deck_wherever_it_is_c
             .post(server.addr, "/api/games", &body(&ann, 2, &id).to_string())
             .await;
         let by_join = join(server.addr, &game, &json!({"name": "Bo", "deck": id}), &[]).await;
-        for reply in [by_put, at_creation] {
-            assert_eq!(
-                (reply.status, reply.error_code().as_str()),
-                (422, "deck_blocked"),
-                "{}",
-                reply.text()
-            );
-            let issue = reply.json()["issues"][0].clone();
+        assert_eq!(by_put.status, 200, "{}", by_put.text());
+        assert!(by_put.json()["warnings"].as_u64().unwrap() >= 1, "{code}");
+        assert_eq!(at_creation.status, 201, "{}", at_creation.text());
+        let made = at_creation.json()["game"].as_str().unwrap().to_owned();
+        for table in [&game, &made] {
+            let check = json!({"deck": id, "game": table});
+            let report = ann
+                .post(server.addr, "/api/decks/check", &check.to_string())
+                .await
+                .json();
+            assert_eq!(report["summary"]["legal"], false, "{code}");
+            let issue = report["legality"][0].clone();
             assert_eq!(issue["code"], code, "{issue}");
             assert_eq!(issue["zone"], "companion");
             if let Some(name) = name {
@@ -400,11 +404,6 @@ async fn a_companion_that_breaks_its_condition_refuses_the_deck_wherever_it_is_c
         .await
         .json();
     assert_eq!(listed["seats"][1]["name"], "", "no seat was taken");
-    assert_eq!(
-        server.registry.len(),
-        1,
-        "no game was made by a refused deck"
-    );
 }
 
 #[sqlx::test(migrations = false)]

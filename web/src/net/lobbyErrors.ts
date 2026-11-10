@@ -59,7 +59,7 @@ export class LobbyError extends Error {
   readonly status: number
   /** Seconds the server asked the client to wait (`Retry-After` of a 429), or null. */
   readonly retryAfter: number | null
-  /** What breaks the rules, for a refused deck (422 `deck_blocked`); empty for every other failure. */
+  /** Why a deck was refused (422 `deck_blocked`: no card the database knows); empty for every other failure. */
   readonly issues: readonly Issue[]
 
   constructor(
@@ -153,7 +153,7 @@ const MESSAGES: Record<LobbyFailureCode, (error: LobbyError) => string> = {
   internal: () => 'The server ran into a problem. Try again in a moment.',
   unknown_deck: () =>
     'That deck is not available: it was deleted, or it is not in the account you are signed in with. Choose another.',
-  deck_blocked: () => 'That deck cannot be played in this game.',
+  deck_blocked: () => 'That deck has no cards a game can play.',
   seat_ready: () => 'This seat is ready, so its deck cannot change. Take Ready back first.',
   unknown: (error) =>
     `The server refused the request, and this page does not know why. It said "${error.message}".`,

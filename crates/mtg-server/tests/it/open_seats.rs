@@ -91,6 +91,7 @@ fn roster(rows: &[(&str, bool, bool)]) -> ServerMessage {
                     name: deck.name.to_owned(),
                     format: "normal".to_owned(),
                     manual_cards: 0,
+                    warnings: 0,
                 }
             }),
         })

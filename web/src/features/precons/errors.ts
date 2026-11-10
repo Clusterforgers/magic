@@ -35,9 +35,9 @@ export const isUnavailable = (error: unknown): boolean =>
 /** Why a game could not be made from a precon, and whether asking again with the same name could work. */
 export interface PlayFailure {
   text: string
-  /** True when the precon itself is the trouble (the game does not take it, or it is gone): trying again will not help. */
+  /** True when the precon itself is the trouble (no card a game can play, or it is gone): trying again will not help. */
   final: boolean
-  /** True when the details list what stops the deck. */
+  /** True when the details show why no game can start with the deck. */
   blocked: boolean
 }
 
@@ -46,7 +46,7 @@ export function playFailure(error: unknown, name: string): PlayFailure {
   if (error instanceof ApiError) {
     if (error.status === 422) {
       return {
-        text: `The game would not take ${name}. Open its details to see what stops it.`,
+        text: `${name} has no cards a game can play. Open its details to see its cards.`,
         final: true,
         blocked: true,
       }

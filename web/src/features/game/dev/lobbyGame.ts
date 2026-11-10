@@ -8,7 +8,8 @@ import { createSession } from '@/play/session'
 import type { Session } from '@/play/session'
 import { initialPlayState } from '@/play/store'
 import type { LobbyRoster } from '@/play/store'
-import type { Counts, DeckListItem, DeckState, HouseRules, SeatDeck } from '@/protocol/generated'
+import type { GameFormat } from '@/lib/houseRules'
+import type { Counts, DeckListItem, DeckState, HouseRules, Issue, SeatDeck } from '@/protocol/generated'
 import { legalityIssue, reportCard, reportOf } from '@/features/decks/fakeDecks'
 import type { DevLobbySearch } from './lobbySearch'
 
@@ -28,12 +29,12 @@ const LONG = [
   'Hubert Blaine Wolfeschlegelstein',
 ]
 
-/** The decks the fixture's seats play, in turn: built-in ones and stored ones with cards to resolve by hand. */
+/** The decks the fixture's seats play, in turn: built-in ones and stored ones with cards to resolve by hand, one not legal here. */
 const SEAT_DECKS: readonly SeatDeck[] = [
-  { name: 'Mono Green Stompers', format: 'normal', manual_cards: 0 },
-  { name: 'Burn', format: 'modern', manual_cards: 3 },
-  { name: 'Mono White Weenies', format: 'normal', manual_cards: 0 },
-  { name: 'Graveyard Pauper with a Very Long Deck Name That Wraps', format: 'pauper', manual_cards: 1 },
+  { name: 'Mono Green Stompers', format: 'normal', manual_cards: 0, warnings: 0 },
+  { name: 'Burn', format: 'modern', manual_cards: 3, warnings: 2 },
+  { name: 'Mono White Weenies', format: 'normal', manual_cards: 0, warnings: 0 },
+  { name: 'Graveyard Pauper with a Very Long Deck Name That Wraps', format: 'pauper', manual_cards: 1, warnings: 0 },
 ]
 
 /** The built-in decks the chooser lists. */
@@ -101,13 +102,21 @@ function storedDeck(
     verified: state === 'verified',
     changed: false,
     checked_at: '2026-10-17T12:00:00Z',
-    summary: { format, state, counts: tally, zones: [{ zone: 'main', counts: tally }], issues, to_read: 0 },
+    summary: {
+      format,
+      state,
+      legal: issues === 0,
+      counts: tally,
+      zones: [{ zone: 'main', counts: tally }],
+      issues,
+      to_read: 0,
+    },
     commanders: [],
     pictures: [],
   }
 }
 
-/** The signed-in player's stored decks: verified, with cards to resolve by hand, blocked, and one the game refuses. */
+/** The signed-in player's stored decks: verified, with cards to resolve by hand, one not legal in its format, and a Commander deck. */
 /** The stored decks every fixture lists first. */
 export const STORED_DECKS: DeckListItem[] = [
   storedDeck('stored-burn', 'Burn', 'modern', 'manual_play', counts({ verified: 57, manual: 3 })),
@@ -115,7 +124,7 @@ export const STORED_DECKS: DeckListItem[] = [
     'stored-pauper',
     'Pauper Affinity',
     'pauper',
-    'blocked',
+    'manual_play',
     counts({ verified: 58, unplayable: 2 }),
     2,
   ),
@@ -191,8 +200,11 @@ export function lobbyGame(options: DevLobbySearch): GameContextValue {
   return { game: 'dev-lobby', session, lookup: { game, missing: false, failed: false } }
 }
 
-/** What the table is told of a stored deck: the cards that are not verified are the ones to resolve by hand. */
-const factsOf = (deck: DeckListItem): SeatDeck => ({
+/**
+ * What the table is told of a stored deck: the cards that are not verified are the ones to resolve by hand, and the
+ * rules of the table it breaks are counted.
+ */
+const factsOf = (deck: DeckListItem, format: GameFormat): SeatDeck => ({
   name: deck.name,
   format: deck.format,
   manual_cards:
@@ -200,6 +212,7 @@ const factsOf = (deck: DeckListItem): SeatDeck => ({
     deck.summary.counts.partial +
     deck.summary.counts.stale +
     deck.summary.counts.unplayable,
+  warnings: tableIssues(deck.id, format).length,
 })
 
 /** Setting a seat's deck in the roster, as the server's next `Lobby` message would. */
@@ -213,8 +226,9 @@ function setDeck(session: Session, seat: number, deck: SeatDeck): void {
 
 /**
  * The calls of the lobby's controls with no server behind them: every one succeeds, and a removal opens the seat in the
- * roster as the server's next `Lobby` message would. A deck is chosen after a short wait and shows in the roster; the
- * Commander deck is refused with its issues, as a Normal game refuses it. Close and Leave then take the page to Play.
+ * roster as the server's next `Lobby` message would. A deck is chosen after a short wait and shows in the roster; a deck
+ * that breaks the table's rules (the Commander deck in a Normal game) is taken with its warnings counted. Close and
+ * Leave then take the page to Play.
  */
 export function lobbyApi(
   session: Session,
@@ -238,30 +252,12 @@ export function lobbyApi(
       await new Promise((resolve) => setTimeout(resolve, 400))
       const demo = DEMO_DECKS.find((deck) => deck.id === id)
       const stored = STORED_DECKS.find((deck) => deck.id === id)
-      if (stored?.format === 'commander' && options.format !== 'commander') {
-        throw new LobbyError('deck_blocked', 422, 'The deck cannot be played in this game.', null, [
-          {
-            code: 'no_commander_zone',
-            message: 'a Normal game has no command zone, but this deck has a commander',
-            zone: 'commander',
-            oracle_id: null,
-            name: null,
-          },
-          {
-            code: 'copies',
-            message: 'Sol Ring: 4 copies is the most a Normal deck may hold, and this deck has 5',
-            zone: 'main',
-            oracle_id: 'dev-sol-ring',
-            name: 'Sol Ring',
-          },
-        ])
-      }
       const facts =
         demo === undefined
           ? stored === undefined
             ? options.lookup?.(id)
-            : factsOf(stored)
-          : { name: demo.name, format: 'normal', manual_cards: 0 }
+            : factsOf(stored, options.format ?? 'normal')
+          : { name: demo.name, format: 'normal', manual_cards: 0, warnings: 0 }
       if (facts === undefined) throw new LobbyError('unknown_deck', 404, 'no such deck')
       setDeck(session, seat, facts)
       return facts
@@ -269,19 +265,54 @@ export function lobbyApi(
   }
 }
 
+/** The rules of the table a fixture deck breaks: a warning each, never a refusal. */
+export function tableIssues(deck: string, format: GameFormat = 'normal'): Issue[] {
+  if (deck === 'stored-atraxa' && format !== 'commander') return COMMANDER_AT_NORMAL
+  return TABLE_ISSUES[deck] ?? []
+}
+
 /** What the table says of a deck: stored decks by their check state, precons by their code. */
-export function tableReport(deck: string) {
+export function tableReport(deck: string, format: GameFormat = 'normal') {
   const stored = STORED_DECKS.find((candidate) => candidate.id === deck)
   const state = stored?.state ?? PRECON_STATES[deck] ?? 'verified'
   const cards = [reportCard('Forest', { count: 90 })]
   if (state === 'manual_play') cards.push(reportCard('Mana Reflection', { count: 4, support: 'manual' }))
-  if (state === 'blocked') cards.push(reportCard('Phantom Card', { count: 2, support: 'unplayable' }))
-  const issues = state === 'blocked' ? [legalityIssue('the deck is not legal in this format')] : []
-  return reportOf(cards, issues)
+  if (UNPLAYABLE.has(deck)) cards.push(reportCard('Phantom Card', { count: 2, support: 'unplayable' }))
+  return reportOf(cards, tableIssues(deck, format))
 }
 
 const PRECON_STATES: Record<string, DeckState> = {
   'precon:c18-draconic-domination': 'verified',
   'precon:c19-merciless-rage': 'manual_play',
-  'precon:c17-arcane-wizardry': 'blocked',
+  'precon:c17-arcane-wizardry': 'manual_play',
+}
+
+/** The decks with cards the game cannot play: they are played by hand. */
+const UNPLAYABLE = new Set(['stored-pauper', 'precon:c17-arcane-wizardry'])
+
+const COMMANDER_AT_NORMAL: Issue[] = [
+  legalityIssue('a Normal game has no command zone, but this deck has a commander', {
+    code: 'no_commander_zone',
+    zone: 'commander',
+  }),
+  legalityIssue('Sol Ring: 4 copies is the most a Normal deck may hold, and this deck has 5', {
+    code: 'copies',
+    zone: 'main',
+    oracle_id: 'dev-sol-ring',
+    name: 'Sol Ring',
+  }),
+]
+
+const TABLE_ISSUES: Record<string, Issue[]> = {
+  'stored-pauper': [
+    legalityIssue('Atog is banned in Pauper', { code: 'banned', name: 'Atog' }),
+    legalityIssue('Myr Enforcer is banned in Pauper', { code: 'banned', name: 'Myr Enforcer' }),
+  ],
+  'precon:c17-arcane-wizardry': [
+    legalityIssue('Mana Crypt is banned in Commander', { code: 'banned', name: 'Mana Crypt' }),
+    legalityIssue("Swords to Plowshares has W in its color identity, outside the commander's (UBR)", {
+      code: 'color_identity',
+      name: 'Swords to Plowshares',
+    }),
+  ],
 }

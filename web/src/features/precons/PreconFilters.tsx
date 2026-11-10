@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { filtersActive, NO_FILTERS, STATUS_LABEL, STATUSES } from './format'
-import type { Filters, PreconStatus, SetOption } from './format'
+import type { Filters, SetOption, StatusFilter } from './format'
 
 interface Props {
   filters: Filters
@@ -12,7 +12,7 @@ interface Props {
   onChange(next: Filters): void
 }
 
-const isStatus = (value: string): value is PreconStatus => STATUSES.some((status) => status === value)
+const isStatus = (value: string): value is StatusFilter => STATUSES.some((status) => status === value)
 
 /** Search by name, set or commander, and the set and deck-check filters above the list. */
 export function PreconFilters({ filters, sets, onChange }: Props) {

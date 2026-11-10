@@ -1,4 +1,4 @@
-//! Goal: the deck a seat plays keeps its documented wire shape: the roster lists a deck's name, format and manual-card count and leaves the field out for a seat without one, any table of decks survives a JSON round trip, the bodies that name a deck refuse anything else, the refusal of a blocked deck lists its issues, every deck error code has one spelling, and the TypeScript bindings carry all of it.
+//! Goal: the deck a seat plays keeps its documented wire shape: the roster lists a deck's name, format, manual-card count and warning count and leaves the field out for a seat without one, any table of decks survives a JSON round trip, the bodies that name a deck refuse anything else, the refusal of a deck no game can start with lists its issues, every deck error code has one spelling, and the TypeScript bindings carry all of it.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -18,6 +18,7 @@ fn deck(name: &str, format: &str, manual_cards: u32) -> SeatDeck {
         name: name.to_owned(),
         format: format.to_owned(),
         manual_cards,
+        warnings: 0,
     }
 }
 
@@ -44,7 +45,7 @@ fn a_seat_without_a_deck_leaves_the_field_out_and_a_seat_with_one_names_it() {
             "seats": [
                 {
                     "seat": 0, "name": "Seat 0", "connected": true, "ready": false,
-                    "deck": {"name": "Burn", "format": "modern", "manual_cards": 3},
+                    "deck": {"name": "Burn", "format": "modern", "manual_cards": 3, "warnings": 0},
                 },
                 {"seat": 1, "name": "Seat 1", "connected": true, "ready": false},
             ],
@@ -114,10 +115,10 @@ proptest! {
             let mut fields: Vec<&str> = row.as_object().unwrap().keys().map(String::as_str).collect();
             fields.sort_unstable();
             if let Some(deck) = row.get("deck") {
-                // The table learns three facts of a deck and nothing that could be a card.
+                // The table learns four facts of a deck and nothing that could be a card.
                 let mut facts: Vec<&str> = deck.as_object().unwrap().keys().map(String::as_str).collect();
                 facts.sort_unstable();
-                prop_assert_eq!(facts, ["format", "manual_cards", "name"]);
+                prop_assert_eq!(facts, ["format", "manual_cards", "name", "warnings"]);
                 prop_assert_eq!(fields, ["connected", "deck", "name", "ready", "seat"]);
             } else {
                 prop_assert_eq!(fields, ["connected", "name", "ready", "seat"]);

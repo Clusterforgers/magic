@@ -1,4 +1,4 @@
-//! Goal: on Postgres the precon browser lists every stored precon with the deck check of its cards and whether a game takes it, shows one by board with each card's support, follows the precons and the cards without a restart, and answers an unknown code like a malformed one; a seat plays a precon as its deck and a lobby is made with one in a single request, both held to the rules of any seat's deck (the holder alone chooses, a deck the game cannot play is refused with its issues, the recipe names the cards with their fingerprint); the endpoints are public, throttled per address and leak nothing of any account, and the writes keep the origin guard.
+//! Goal: on Postgres the precon browser lists every stored precon with the deck check of its cards and whether a game can start with it, shows one by board with each card's support, follows the precons and the cards without a restart, and answers an unknown code like a malformed one; a seat plays a precon as its deck and a lobby is made with one in a single request, both held to the rules of any seat's deck (the holder alone chooses, an illegal deck is taken with its warnings and only a deck with no known card is refused, the recipe names the cards with their fingerprint); the endpoints are public, throttled per address and leak nothing of any account, and the writes keep the origin guard.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -134,7 +134,7 @@ fn commander() -> PreconDeck {
     )
 }
 
-/// A card nobody stored: the deck is blocked.
+// A card nobody stored: the deck warns and plays without it.
 fn ghost() -> PreconDeck {
     deck(
         "Ghost Pack",
@@ -145,7 +145,7 @@ fn ghost() -> PreconDeck {
     )
 }
 
-/// Verified for the deck check, but too short for a Normal game.
+// Verified for the deck check, and too short for a Normal game: a warning.
 fn short() -> PreconDeck {
     deck(
         "Short Pack",
@@ -315,18 +315,19 @@ async fn the_list_names_every_precon_with_its_deck_check_and_whether_a_game_take
     assert_eq!(boss["state"], "manual_play");
     assert_eq!(boss["playable"], true);
 
-    // A card nobody stored blocks the deck.
+    // A card nobody stored is a warning and is played by hand.
     let lost = item(&list, GHOST);
-    assert_eq!(lost["state"], "blocked");
-    assert_eq!(lost["playable"], false);
+    assert_eq!(lost["state"], "manual_play");
+    assert_eq!(lost["summary"]["legal"], false);
+    assert_eq!(lost["playable"], true);
     assert_eq!(lost["summary"]["counts"]["unplayable"], 1);
     assert_eq!(lost["summary"]["issues"], 1);
 
-    // Clean for the deck check, refused by the game.
+    // Clean for the deck check; the game warns and still takes it.
     let little = item(&list, SHORT);
     assert_eq!(
         (little["state"].clone(), little["playable"].clone()),
-        (json!("verified"), json!(false))
+        (json!("verified"), json!(true))
     );
 }
 
@@ -490,7 +491,7 @@ async fn the_list_follows_the_precons_and_the_cards_without_a_restart(pool: PgPo
     assert_eq!(after["precons"][0]["code"], "tst-bears-pack");
     assert_eq!(item(&after, "tst-bears-pack")["state"], "verified");
     assert_eq!(item(&after, EVERGREEN)["card_count"], 40);
-    assert_eq!(item(&after, EVERGREEN)["playable"], false);
+    assert_eq!(item(&after, EVERGREEN)["playable"], true, "short, and still taken");
 
     // Rules text on a card that had none: the deck holding it needs the table now.
     database
@@ -667,32 +668,25 @@ async fn only_the_holder_of_a_seat_chooses_its_deck_and_a_precon_changes_nothing
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_precon_the_game_cannot_take_is_refused_with_its_issues_and_nobody_is_seated_by_it(
-    pool: PgPool,
-) {
+async fn an_illegal_precon_is_taken_with_its_warnings_and_its_game_starts(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register(server.addr, "ann", PASSWORD).await;
-    let game = create(&server, &ann, &on(EVERGREEN)).await;
 
     for (code, issue) in [
         (COMMANDER, "no_commander_zone"),
         (SHORT, "deck_size"),
         (GHOST, "unknown_card"),
     ] {
-        // As a seat's deck.
-        let refused = choose(&server, &ann, &game, 0, &on(code)).await;
-        assert_eq!(refused.status, 422, "{code}: {}", refused.text());
-        assert_eq!(refused.error_code(), "deck_blocked");
-        assert_eq!(refused.json()["issues"][0]["code"], issue, "{code}");
         // When a game is made with it.
         let body = json!({"format": "normal", "seats": [{"name": "Ann", "deck": on(code)}, {"name": "B", "deck": "mono-red"}]});
         let at_creation = ann.post(server.addr, "/api/games", &body.to_string()).await;
-        assert_eq!(
-            (at_creation.status, at_creation.error_code().as_str()),
-            (422, "deck_blocked"),
-            "{code}"
-        );
-        // When a joiner brings it.
+        assert_eq!(at_creation.status, 201, "{code}: {}", at_creation.text());
+
+        // As a seat's deck, and when a joiner brings it.
+        let game = create(&server, &ann, &on(EVERGREEN)).await;
+        let chosen = choose(&server, &ann, &game, 0, &on(code)).await;
+        assert_eq!(chosen.status, 200, "{code}: {}", chosen.text());
+        assert!(chosen.json()["warnings"].as_u64().unwrap() >= 1, "{code}");
         let join = net::lobby::join(
             server.addr,
             &game,
@@ -700,21 +694,38 @@ async fn a_precon_the_game_cannot_take_is_refused_with_its_issues_and_nobody_is_
             &[],
         )
         .await;
-        assert_eq!(
-            (join.status, join.error_code().as_str()),
-            (422, "deck_blocked"),
-            "{code}"
+        assert_eq!(join.status, 200, "{code}: {}", join.text());
+        let listed = net::get(server.addr, &format!("/api/games/{game}"))
+            .await
+            .json();
+        assert!(
+            listed["seats"][1]["deck"]["warnings"].as_u64().unwrap() >= 1,
+            "{code}: every seat sees the warning"
         );
+        let check = json!({"deck": on(code), "game": game});
+        let report = ann
+            .post(server.addr, "/api/decks/check", &check.to_string())
+            .await
+            .json();
+        assert_eq!(report["summary"]["legal"], false, "{code}");
+        assert!(report["legality"].to_string().contains(issue), "{code}: {report}");
+
+        let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+        for seat in 0..2 {
+            handle
+                .send(mtg_core::ids::PlayerId(seat), mtg_protocol::ClientMessage::Ready)
+                .await
+                .unwrap();
+        }
+        for _ in 0..200 {
+            if handle.status().await.unwrap().started {
+                break;
+            }
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+        assert!(handle.status().await.unwrap().started, "{code}: the game starts");
     }
-    let listed = net::get(server.addr, &format!("/api/games/{game}"))
-        .await
-        .json();
-    assert_eq!(listed["seats"][1]["name"], "", "the seat is still open");
-    assert_eq!(
-        server.registry.len(),
-        1,
-        "no game was made by a refused deck"
-    );
+    let game = create(&server, &ann, &on(EVERGREEN)).await;
 
     // An unknown code is the 404 of a deck nobody has; at creation it is a 400.
     let nobody = choose(&server, &ann, &game, 0, &on("tst-nothing-here")).await;

@@ -73,9 +73,6 @@ function builtInCards(entry: DeckEntry): PreviewCard[] {
   }))
 }
 
-/** The id of the legality block's reasons: the one place a deck's issues are written, which the off button points at. */
-const WHY_ID = 'deck-pane-why'
-
 function legalityOf(
   verdict: VerdictState | undefined,
   format: GameFormat,
@@ -85,16 +82,17 @@ function legalityOf(
   if (builtIn) return { verdict: 'legal', format: name }
   if (verdict === undefined || verdict.status === 'checking') return { verdict: 'checking', format: name }
   if (verdict.status === 'failed') return { verdict: 'unknown', format: name }
-  if (verdict.verdict.kind === 'blocked') {
-    return { verdict: 'illegal', format: name, reasons: verdict.verdict.reasons, reasonsId: WHY_ID }
+  const { warning } = verdict.verdict
+  if (warning !== null) {
+    return { verdict: 'illegal', format: name, issues: warning.issues, reasons: warning.reasons }
   }
   return { verdict: 'legal', format: name }
 }
 
 /**
  * The preview of the selected deck beside the list: the shared `DeckPreview` with this table's verdict as its
- * legality, a link to the cards played by hand, and "Use this deck", which a deck the table cannot take does not
- * allow (the legality above lists why, once). The built-in decks have no card data and list their cards by name.
+ * legality (a deck that breaks the table's rules is a warning), a link to the cards played by hand, and "Use this
+ * deck", which every deck allows. The built-in decks have no card data and list their cards by name.
  */
 export function DeckPane({
   entry,
@@ -120,7 +118,6 @@ export function DeckPane({
     )
   }
   const builtIn = entry.kind === 'builtin'
-  const blocked = verdict?.status === 'ready' && verdict.verdict.kind === 'blocked' ? verdict.verdict : null
   const ready = detail.status === 'ready' ? detail.data : null
   const actions = (
     <>
@@ -128,9 +125,7 @@ export function DeckPane({
         type="button"
         data-slot="use-deck"
         loading={pending}
-        disabled={chosen || blocked !== null || (waiting && !pending)}
-        focusableWhenDisabled={blocked !== null}
-        aria-describedby={blocked === null ? undefined : WHY_ID}
+        disabled={chosen || (waiting && !pending)}
         onClick={() => onUse(entry)}
       >
         {chosen ? <CheckIcon aria-hidden="true" /> : null}

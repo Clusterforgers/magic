@@ -1,0 +1,7 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 0d2e5629c6b74260f5c901438f357d8af276e925f4a61d0f1367abbcbe42ea44 # shrinks to seats = [LobbySeat { seat: PlayerId(0), name: "Seat 0", connected: true, ready: false, deck: None }, LobbySeat { seat: PlayerId(1), name: "Seat 1", connected: true, ready: false, deck: Some(SeatDeck { name: "*ঙ¥$<ୋc⯵໖=&𞸘&𝔾⁰`🇺", format: "µmὴ%𐠲$ᰫ[&\"ꪕஆS§`𝍡^I¥𝼎Iￛ𑶨Gল?𝒬꒯႓?🕴🕴𑊈🉐", manual_cards: 117, warnings: 0 }) }]

@@ -3,8 +3,8 @@ import type { DeckChoiceErrorCode } from "./DeckChoiceErrorCode";
 import type { Issue } from "./Issue";
 
 /**
- * The body of a refused deck (422 `deck_blocked`): why the deck check will not let it be played in
- * this game. The issues name cards, and go only to the account whose deck it is.
+ * The body of a refused deck (422 `deck_blocked`): a deck no game can start with. The issues name cards, and go
+ * only to the account whose deck it is.
  */
 export type DeckBlockedBody = { 
 /**

@@ -475,11 +475,13 @@ impl GameRecipe {
             commanders.push(seat.commanders);
             companions.push(seat.companion);
         }
-        let setup = GameSetup::new(self.format.rules(), self.seed, libraries)
+        let mut setup = GameSetup::new(self.format.rules(), self.seed, libraries)
             .with_commanders(commanders)
             .with_companions(companions)
             .with_house_rules(self.house_rules.clone())
             .with_conjurable(conjured);
+        // Legality only warns (`docs/deck-check.md`), so the engine does not judge the decks.
+        setup.validate_decks = false;
         setup.validate()?;
         Ok(setup)
     }
