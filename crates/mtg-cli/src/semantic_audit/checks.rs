@@ -174,8 +174,13 @@ const CONDITIONAL: [&str; 9] = [
     "paid",
 ];
 
+/// Trigger filters that fold an intervening "if" into the event ("if you cast it", "if it was kicked").
+const FILTERED: [&str; 6] = [
+    "WasCast", "Kicked", "Test", "Compare", "CastWith", "Matches",
+];
+
 /// Amount and effect forms that count (anything but a fixed number).
-const COUNTED: [&str; 42] = [
+const COUNTED: [&str; 44] = [
     "Count",
     "Stat",
     "Life",
@@ -216,6 +221,8 @@ const COUNTED: [&str; 42] = [
     "each_target",
     "X",
     "CountOf",
+    "ColorsSpent",
+    "Triggering",
     "EachColorAmong",
     "AttackTax",
 ];
@@ -239,7 +246,7 @@ fn intervening_if(text: &str, f: &Facts) -> Option<String> {
         .iter()
         .any(|s| text.starts_with(s));
     let head = text.split(['.', ':']).next().unwrap_or_default();
-    (trigger && head.contains(", if ") && !f.any(&CONDITIONAL))
+    (trigger && head.contains(", if ") && !f.any(&CONDITIONAL) && !f.any(&FILTERED))
         .then(|| "trigger has an if, rules no condition".into())
 }
 
@@ -264,7 +271,9 @@ fn may(text: &str, f: &Facts) -> Option<String> {
     .iter()
     .any(|p| has(text, p));
     let asks = has(text, "may") && !permission;
-    let optional = f.any_part(&["May", "optional", "Optional", "Choose", "Pay"]) || f.min_zero;
+    let optional = f.any_part(&[
+        "May", "optional", "Optional", "Choose", "Pay", "Opening", "RevealOr",
+    ]) || f.min_zero;
     (asks && !optional).then(|| "may, rules ask nothing".into())
 }
 
@@ -352,7 +361,8 @@ fn another(text: &str, f: &Facts) -> Option<String> {
         .any(|(i, word)| *word == "another" && (i == 0 || w[i - 1] != "as"));
     let other = other && !has(text, "its other") && !has(text, "their other");
     let cued = another || other;
-    (cued && !f.any_part(&["Other", "Another"]) && !f.any(&["rest_as"]))
+    let excluded = f.any(&["Not"]) && f.any(&["Is"]);
+    (cued && !f.any_part(&["Other", "Another"]) && !f.any(&["rest_as"]) && !excluded)
         .then(|| "another, rules keep the source".into())
 }
 
@@ -379,9 +389,21 @@ fn non_filter(text: &str, f: &Facts) -> Option<String> {
 /// Numbers of the clause (2 and up, mana symbols aside) the rules lack.
 fn numbers(text: &str, f: &Facts) -> Option<String> {
     let plain = without_symbols(text);
-    let missing: BTreeSet<i64> = words(&plain)
-        .into_iter()
-        .flat_map(|w| w.split('/'))
+    let w = words(&plain);
+    // Only amounts of a verb the rules always carry as a number: damage, life, cards drawn or milled, a scry, a pump.
+    let counted = |i: usize| {
+        let next = w.get(i + 1).copied();
+        let before = i.checked_sub(1).map(|j| w[j]);
+        matches!(next, Some("damage" | "life"))
+            || matches!(
+                before,
+                Some("draw" | "draws" | "mill" | "mills" | "scry" | "surveil")
+            )
+            || w[i].starts_with('+')
+    };
+    let missing: BTreeSet<i64> = (0..w.len())
+        .filter(|&i| counted(i))
+        .flat_map(|i| w[i].split('/'))
         .filter_map(|w| number(w.trim_start_matches(['+', '-', '\u{2212}'])))
         .filter(|n| !f.numbers.contains(n) && !f.numbers.contains(&-n))
         .collect();
@@ -395,7 +417,9 @@ fn numbers(text: &str, f: &Facts) -> Option<String> {
 fn instead(text: &str, f: &Facts) -> Option<String> {
     let held = f.any_part(&[
         "Instead",
-        "instead",
+        "Replace",
+        "Shield",
+        "Floor",
         "Replace",
         "Prevent",
         "otherwise",

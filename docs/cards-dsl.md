@@ -267,6 +267,8 @@ A whole card the checker cannot prove goes to the players instead of waiting for
 - `cargo test -p mtg-cli drafts::` checks every draft against its record: valid, verdict `Unchecked` (or a matched Forge `Mismatch`, through a `Differs` clause exactly when marked `differs`), whole, fingerprints current, and the smoke gate.
 - `mtg-cli` embeds the directory at build time. `compile` makes each draft its card's current draft in `card_drafts` and retires the stored ones it no longer holds.
 - `mtg-cli coverage --deck CODE` lists the cards that are neither `Verified` nor `Read` (`Unverified` cards among them); `mtg-cli draft-suspects` finds drafts likely to be wrong by setting the engine's English against the Oracle text, read-only.
+- `mtg-cli semantic-audit` runs a table of structural checks (`semantic_audit/checks.rs`) between each clause and the abilities that stand for it over the corpus, the drafts and the newest translator run's offered drafts: an intervening "if", "for each", "may", a target and its count, a duration, "each opponent", "another", "nontoken" and "non-" filters, numbers and "instead" the rules lack, and a clause no ability stands for (`unclaused`). Findings go to a TSV ranked by check and EDHREC rank, read-only.
+- `mtg-cli mutation-score` measures those checks and the checker's read back on single-fault mutants of `Full` corpus cards (`mtg_testkit::mutate`: a number, a condition, "may", "another", a filter, you and opponents, a duration, an ability): the share of mutants each catches, per kind.
 - A "reads wrong" verdict adds a fix mark with its note (`mtg-cli fix-marks`, `reads`); the fix is a new draft (a new `read_hash`), which is read again.
 
 ### Forge translator

@@ -60,7 +60,7 @@ fn targets(max: i64, min: i64) -> Value {
 #[case::target_count(
     "Destroy up to two target creatures.",
     json!({"Spell": {"targets": targets(1, 0)}}),
-    &["target-count", "number"]
+    &["target-count"]
 )]
 #[case::target_count_up_to(
     "Tap up to two target creatures.",
@@ -119,6 +119,31 @@ fn targets(max: i64, min: i64) -> Value {
 #[case::number_near(
     "Probe deals 3 damage to any target.",
     json!({"Spell": {"targets": targets(1, 1), "effects": [{"DealDamage": {"amount": 3}}]}}),
+    &[]
+)]
+#[case::number_draw("Draw two cards.", json!({"Draw": {"count": 3}}), &["number"])]
+#[case::number_draw_near("Draw two cards.", json!({"Draw": {"count": 2}}), &[])]
+#[case::number_mana_list("{T}: Add six {G}.", json!({"AddMana": {"mana": {"Fixed": ["Green"]}}}), &[])]
+#[case::number_piles("Separate them into two piles.", json!({"SeparatePiles": {}}), &[])]
+#[case::may_opening_hand("You may reveal this card from your opening hand.", json!({"OpeningReveal": {}}), &[])]
+#[case::for_each_colour_spent(
+    "It enters with a +1/+1 counter for each color of mana spent to cast it.",
+    json!({"WithCounters": {"count": "ColorsSpent"}}),
+    &[]
+)]
+#[case::instead_shield(
+    "If that spell would be put into your graveyard, exile it instead.",
+    json!({"Shield": {"by": {"MoveTo": "Exile"}}}),
+    &[]
+)]
+#[case::other_but_the_target(
+    "Each other creature you control becomes a copy of that creature.",
+    json!({"BecomeCopy": {"what": {"Each": [{"Type": "Creature"}, {"Not": {"Is": {"Target": 0}}}]}}}),
+    &[]
+)]
+#[case::if_folded_into_the_trigger(
+    "When ~ enters, if you cast it, draw a card.",
+    json!({"Triggered": {"when": {"ZoneChange": {"what": ["This", {"WasCast": {}}]}}}}),
     &[]
 )]
 #[case::mana_symbols_are_no_number("{3}, {T}: Draw a card.", json!({"Activated": {"cost": "{3}"}}), &[])]
