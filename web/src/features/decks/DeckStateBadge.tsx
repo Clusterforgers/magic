@@ -1,19 +1,18 @@
-import { BanIcon, CircleCheckIcon, CircleDashedIcon, HandIcon, ShieldCheckIcon } from 'lucide-react'
+import { CircleCheckIcon, CircleDashedIcon, HandIcon, ShieldCheckIcon } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { Pill } from '@/components/Pill'
 import type { PillTone } from '@/components/Pill'
-import { cn } from '@/lib/utils'
 import type { DeckState } from '@/protocol/generated'
-import { BLOCKED_MEANING, STATE_LABEL } from './format'
+import { STATE_LABEL } from './format'
 
-// Whole class names, so Tailwind can see them. A pill has no destructive tone, so Blocked tints the neutral one.
-const LOOK: Record<DeckState, { Icon: LucideIcon; tone: PillTone; className?: string }> = {
+const LOOK: Record<DeckState, { Icon: LucideIcon; tone: PillTone }> = {
   verified: { Icon: ShieldCheckIcon, tone: 'success' },
   // The whole deck runs, some of it not Verified: the success tone with its own icon, apart from Verified's shield.
   read: { Icon: CircleCheckIcon, tone: 'success' },
   manual_play: { Icon: HandIcon, tone: 'warning' },
-  blocked: { Icon: BanIcon, tone: 'neutral', className: 'bg-destructive/12 text-destructive' },
+  // Only a check stored before legality became a warning says `blocked`; such a deck is played by hand.
+  blocked: { Icon: HandIcon, tone: 'warning' },
   unchecked: { Icon: CircleDashedIcon, tone: 'neutral' },
 }
 
@@ -24,19 +23,13 @@ interface DeckStateBadgeProps extends Omit<ComponentProps<typeof Pill>, 'tone' |
 }
 
 /**
- * The check state of a deck as a pill: an icon and a word (Verified, Whole deck runs, Played by hand, Blocked, Unchecked), never colour
- * alone. A blocked deck's pill carries what that means as its description.
+ * The check state of a deck as a pill: an icon and a word (Verified, Whole deck runs, Played by hand, Unchecked), never
+ * colour alone. Legality is apart (`LegalityPill`).
  */
-export function DeckStateBadge({ state, label, className, ...props }: DeckStateBadgeProps) {
-  const { Icon, tone, className: tint } = LOOK[state]
+export function DeckStateBadge({ state, label, ...props }: DeckStateBadgeProps) {
+  const { Icon, tone } = LOOK[state]
   return (
-    <Pill
-      tone={tone}
-      data-deck-state={state}
-      title={state === 'blocked' ? BLOCKED_MEANING : undefined}
-      className={cn(tint, className)}
-      {...props}
-    >
+    <Pill tone={tone} data-deck-state={state} {...props}>
       <Icon aria-hidden="true" />
       {label ?? STATE_LABEL[state]}
     </Pill>

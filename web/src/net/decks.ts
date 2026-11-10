@@ -171,6 +171,9 @@ export function readSummary(value: unknown): Summary | null {
   if (!isCount(value.issues) || !isCount(value.to_read) || !Array.isArray(value.zones)) return null
   const counts = readCounts(value.counts)
   if (counts === null) return null
+  // A check stored before the legality warning has no `legal`: it reads as legal, unless an old `blocked` says otherwise.
+  const legal = value.legal === undefined ? value.state !== 'blocked' : value.legal
+  if (!isFlag(legal)) return null
   const zones: ZoneCounts[] = []
   for (const entry of value.zones) {
     const zoneCounts = isRecord(entry) ? readCounts(entry.counts) : null
@@ -180,6 +183,7 @@ export function readSummary(value: unknown): Summary | null {
   return {
     format: value.format,
     state: value.state,
+    legal,
     counts,
     zones,
     issues: value.issues,

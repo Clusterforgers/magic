@@ -1,7 +1,7 @@
 import { LegalitySection } from '@/features/builder/LegalitySection'
 import type { DeckReport } from '@/protocol/generated'
 import { DeckStateBadge } from './DeckStateBadge'
-import { BLOCKED_MEANING, countsText } from './format'
+import { countsText } from './format'
 
 /**
  * What the check says of a list before it is saved: the state and how many cards the game runs whole or leaves to the
@@ -24,9 +24,6 @@ export function ImportCheck({ report }: { report: DeckReport | null }) {
         <span>{countsText(counts)}</span>
       </p>
       <LegalitySection issues={report.legality} format={report.format} stale={false} />
-      {state === 'blocked' ? (
-        <p className="text-sm text-muted-foreground">You can still save it. {BLOCKED_MEANING}.</p>
-      ) : null}
     </div>
   )
 }

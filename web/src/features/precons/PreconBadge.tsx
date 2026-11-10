@@ -7,12 +7,11 @@ const AS_STATE: Record<PreconStatus, DeckState> = {
   whole: 'verified',
   read: 'read',
   hand: 'manual_play',
-  blocked: 'blocked',
 }
 
 /**
- * What the game does with a precon as a pill: an icon and the words ("Whole deck runs", "3 cards played by hand",
- * "Cannot be taken"), never colour alone.
+ * What the game does with a precon as a pill: an icon and the words ("Whole deck runs", "3 cards played by hand"),
+ * never colour alone. Legality is a warning beside it (`LegalityPill`).
  */
 export function PreconBadge({
   precon,

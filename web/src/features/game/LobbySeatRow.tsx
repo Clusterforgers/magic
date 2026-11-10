@@ -1,8 +1,9 @@
-import { Circle, CircleCheck, CircleDashed, UserMinus } from 'lucide-react'
+import { Circle, CircleCheck, CircleDashed, TriangleAlertIcon, UserMinus } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Pill } from '@/components/Pill'
 import type { PillTone } from '@/components/Pill'
 import { Button } from '@/components/ui/button'
+import { tableWarning } from '@/features/decks/legality'
 import { cn } from '@/lib/utils'
 import { deckWords } from './deckWords'
 import { seatState } from './lobbyModel'
@@ -90,6 +91,16 @@ export function LobbySeatRow({ row, account, host = false, remove }: LobbySeatRo
             >
               <span className="sr-only">Deck: </span>
               {row.deck === null ? 'no deck yet' : deckWords(row.deck)}
+            </span>
+          )}
+          {/* Everyone sees that a seat's deck breaks the table's rules, as a count; only its owner learns which. */}
+          {!row.named || row.deck == null || row.deck.warnings === 0 ? null : (
+            <span
+              data-slot="seat-deck-warnings"
+              className="flex min-w-0 items-start gap-1 text-xs font-medium text-warning"
+            >
+              <TriangleAlertIcon aria-hidden="true" className="mt-px size-3.5 shrink-0" />
+              <span className="min-w-0 [overflow-wrap:anywhere]">{tableWarning(row.deck.warnings)}</span>
             </span>
           )}
         </span>

@@ -35,6 +35,7 @@ fn roster(flags: [(bool, bool); 2]) -> ServerMessage {
                 name: DECKS[index].to_owned(),
                 format: "normal".to_owned(),
                 manual_cards: 0,
+                warnings: 0,
             }),
         })
         .collect();

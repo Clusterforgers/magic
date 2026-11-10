@@ -72,9 +72,9 @@ pub(crate) struct Judged {
     pub(crate) format: &'static str,
     /// The deck check, entries without a card included.
     pub(crate) report: DeckReport,
-    /// What keeps the deck out of a game: the legality issues and the rules of the game's format.
+    /// The warnings: the legality issues and the rules of the game's format the deck breaks.
     pub(crate) issues: Vec<Issue>,
-    /// Whether a game takes the deck: no issue and not blocked.
+    /// Whether a game can start with the deck: it has a card the database knows.
     pub(crate) playable: bool,
     /// The lines of the entries that have a card, in deck order.
     pub(crate) lines: Vec<Line>,
@@ -252,12 +252,12 @@ impl<'a> Judge<'a> {
         } else {
             FormatKind::Normal
         };
-        // The engine's check is the second line: a deck the report already blocks needs no repeat.
+        // The engine's check is the second line, for a deck its own check finds legal. Both only warn.
         let mut issues = report.legality.clone();
         if issues.is_empty() {
             issues = format_issues(kind, &cards, &leaders, None, &HouseRules::default());
         }
-        let playable = issues.is_empty() && report.summary.state != DeckState::Blocked;
+        let playable = !(cards.is_empty() && leaders.is_empty());
         let reads: Reads = self
             .reads
             .iter()
@@ -293,7 +293,7 @@ pub(crate) async fn judged_off(
 }
 
 /// Adds the entries that match no card to a report: an `unknown_card` issue each, their copies as
-/// `unplayable`, and a blocked deck.
+/// `unplayable`, played by hand, and an illegal deck.
 fn count_unresolved(report: &mut DeckReport, unresolved: &[Unresolved]) {
     if unresolved.is_empty() {
         return;
@@ -333,7 +333,8 @@ fn count_unresolved(report: &mut DeckReport, unresolved: &[Unresolved]) {
             .position(|candidate| *candidate == zone.zone)
     });
     report.summary.issues = u32::try_from(report.legality.len()).unwrap_or(u32::MAX);
-    report.summary.state = DeckState::Blocked;
+    report.summary.legal = false;
+    report.summary.state = DeckState::of(&report.summary.counts);
 }
 
 /// The lower-case words of `text` joined by hyphens: ASCII letters and digits only, apostrophes
@@ -617,7 +618,7 @@ async fn finished(mut building: Building) -> Result<Arc<PreconIndex>, String> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a precon's code is its set and the slug of its name in lower-case ASCII words, cut to a bounded length and made unique by the deck's id, and entries that match no card block the deck and are counted as unplayable in the zone they sit in.
+    //! Goal: a precon's code is its set and the slug of its name in lower-case ASCII words, cut to a bounded length and made unique by the deck's id, and entries that match no card make the deck not legal and played by hand, counted as unplayable in the zone they sit in.
     use mtg_cards::deck::{DeckState, Summary};
     use rstest::rstest;
 
@@ -694,6 +695,7 @@ mod tests {
             summary: Summary {
                 format: "commander".into(),
                 state: DeckState::Verified,
+                legal: true,
                 counts: Counts {
                     total: 99,
                     verified: 99,
@@ -714,7 +716,7 @@ mod tests {
     }
 
     #[test]
-    fn entries_without_a_card_block_the_deck_and_count_as_unplayable_in_their_zone() {
+    fn entries_without_a_card_warn_and_count_as_unplayable_in_their_zone() {
         let mut report = report();
         count_unresolved(
             &mut report,
@@ -732,7 +734,10 @@ mod tests {
             ],
         );
         let summary = &report.summary;
-        assert_eq!(summary.state, DeckState::Blocked);
+        assert_eq!(
+            (summary.state, summary.legal),
+            (DeckState::ManualPlay, false)
+        );
         assert_eq!((summary.counts.total, summary.counts.unplayable), (102, 3));
         assert_eq!(summary.issues, 2);
         let zones: Vec<_> = summary

@@ -23,6 +23,7 @@ fn deck(manual: u32) -> ChosenDeck {
         name: format!("By hand {manual}"),
         format: "normal".to_owned(),
         manual_cards: manual,
+        warnings: 0,
     };
     ChosenDeck::stored(vec!["forest".to_owned(); 60], cards, note).unwrap()
 }

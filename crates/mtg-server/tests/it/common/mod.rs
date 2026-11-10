@@ -377,3 +377,17 @@ pub fn oracle_id_of(name: &str) -> String {
         .cloned()
         .unwrap_or_else(|| panic!("the corpus has no card named {name}"))
 }
+
+/// The warning count of every seat's deck as the roster tells the table, read by joining `seat` through the handle;
+/// zero for a seat without a deck.
+pub async fn seat_warnings(handle: &GameHandle, seat: usize) -> Vec<u32> {
+    let mut messages = handle.join(PlayerId::from_index(seat)).await.unwrap();
+    loop {
+        if let ServerMessage::Lobby { seats, .. } = messages.recv().await.unwrap() {
+            return seats
+                .iter()
+                .map(|seat| seat.deck.as_ref().map_or(0, |deck| deck.warnings))
+                .collect();
+        }
+    }
+}

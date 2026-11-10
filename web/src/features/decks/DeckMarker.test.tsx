@@ -1,4 +1,4 @@
-// Goal: the marker beside a deck's name says the badge's word for the state of the check of the moment (verified, runs on reads, played by hand, blocked), and "Unsaved draft" for a draft that differs from the saved deck whatever state the saved deck had, so a Verified marker never outlives the deck it was earned by; the words "Unsaved draft" are gone.
+// Goal: the marker beside a deck's name says the badge's word for the state of the check of the moment (verified, runs on reads, played by hand; an old blocked check reads as played by hand and never as a refusal), and "Unsaved draft" for a draft that differs from the saved deck whatever state the saved deck had, so a Verified marker never outlives the deck it was earned by; the words "Unsaved draft" are gone.
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { DeckState } from '@/protocol/generated'
@@ -9,7 +9,7 @@ const CASES: ReadonlyArray<readonly [string, DeckState, MarkerChange, MarkerKind
   ['a clean saved check', 'verified', {}, 'verified', 'Verified'],
   ['a deck on reads', 'read', {}, 'read', 'Whole deck runs'],
   ['a deck played by hand', 'manual_play', {}, 'manual_play', 'Played by hand'],
-  ['a blocked deck', 'blocked', {}, 'blocked', 'Blocked'],
+  ['a check stored as blocked', 'blocked', {}, 'blocked', 'Played by hand'],
   ['a state never stored by a check', 'unchecked', {}, 'unchecked', 'Unchecked'],
   ['a draft of a verified deck', 'verified', { dirty: true }, 'changed', 'Unsaved draft'],
   ['a draft of a deck played by hand', 'manual_play', { dirty: true }, 'changed', 'Unsaved draft'],
@@ -38,18 +38,18 @@ describe('DeckMarker', () => {
     expect(MARKER_LABEL[kind]).toBe(word)
   })
 
-  it('gives each of the five markers its own icon, so colour never carries the meaning alone', () => {
-    const icons = ['verified', 'manual_play', 'blocked', 'unchecked', 'changed'].map((kind) => {
+  it('gives each of the four markers its own icon, so colour never carries the meaning alone', () => {
+    const icons = ['verified', 'manual_play', 'unchecked', 'changed'].map((kind) => {
       const state: DeckState = kind === 'changed' ? 'verified' : (kind as DeckState)
       const { container } = render(<DeckMarker state={state} dirty={kind === 'changed'} />)
       return container.querySelector('[data-marker] svg')?.getAttribute('class')
     })
     expect(icons.every((icon) => (icon ?? '').includes('lucide-'))).toBe(true)
-    expect(new Set(icons).size).toBe(5)
+    expect(new Set(icons).size).toBe(4)
   })
 
   it.each<[string, DeckState, MarkerChange, string | null]>([
-    ['a blocked deck', 'blocked', {}, 'Cannot be taken to a game until its issues are fixed'],
+    ['a check stored as blocked', 'blocked', {}, null],
     ['a verified deck', 'verified', {}, null],
     ['a deck played by hand', 'manual_play', {}, null],
     ['a deck with a state of no check', 'unchecked', {}, null],

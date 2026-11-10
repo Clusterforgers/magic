@@ -89,14 +89,16 @@ describe('the live check in the builder', () => {
     expect(within(deckPane()).queryByRole('region', { name: /^Not legal/ })).toBeNull()
     await add(user, 'giant', 'Giant Growth')
     const one = await within(deckPane()).findByRole('region', { name: /^Not legal in Modern/ }, WAIT)
-    expect(one).toHaveTextContent('1 issue')
+    expect(within(one).getAllByRole('listitem')).toHaveLength(1)
     expect(one).not.toHaveTextContent('as saved')
     await add(user, 'sol', 'Sol Ring')
     await waitFor(
       () =>
-        expect(within(deckPane()).getByRole('region', { name: /^Not legal in Modern/ })).toHaveTextContent(
-          '2 issues',
-        ),
+        expect(
+          within(within(deckPane()).getByRole('region', { name: /^Not legal in Modern/ })).getAllByRole(
+            'listitem',
+          ),
+        ).toHaveLength(2),
       WAIT,
     )
   })

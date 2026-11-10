@@ -53,8 +53,8 @@ card_count: number,
  */
 format: string, 
 /**
- * The deck check: `verified`, `read`, `manual_play` or `blocked`. It is derived from the cards' rules and
- * the engine's capabilities each time they change, so it is never `unchecked`.
+ * The deck check: `verified`, `read` or `manual_play`. It is derived from the cards' rules and the engine's
+ * capabilities each time they change, so it is never `unchecked` or `blocked`.
  */
 state: DeckState, 
 /**
@@ -62,9 +62,8 @@ state: DeckState,
  */
 verified: boolean, 
 /**
- * Whether a game of this server takes the deck today: the deck check does not block it and the
- * rules of the game's format hold. A deck that is not playable is refused with `deck_blocked`
- * when it is chosen; `GET /api/precons/{code}` lists why.
+ * Whether a game of this server takes the deck: false only for a deck with no card the database knows, which no
+ * game can start with (refused with `deck_blocked`). Legality never decides it; `summary.legal` warns.
  */
 playable: boolean, 
 /**

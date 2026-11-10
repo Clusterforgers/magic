@@ -178,7 +178,7 @@ describe('the legality section', () => {
   it('lists the issues as plain sentences, apart from the support marks of the lines', async () => {
     await renderBuilder({ view: checked({}, ENTRIES, legalityIssues(LEGALITY)) })
     const section = pane().getByRole('region', { name: /^Not legal in Modern/ })
-    expect(section).toHaveTextContent('2 issues')
+    expect(section).toHaveTextContent('It can still be taken to a game.')
     expect(
       within(section)
         .getAllByRole('listitem')
@@ -206,7 +206,7 @@ describe('the marker beside the name', () => {
   it.each([
     ['a clean saved check', { state: 'verified', verified: true }, 'Verified'],
     ['a deck played by hand', { state: 'manual_play' }, 'Played by hand'],
-    ['a blocked deck', { state: 'blocked' }, 'Blocked'],
+    ['a check stored as blocked', { state: 'blocked' }, 'Played by hand'],
     ['a deck on reads', { state: 'read' }, 'Whole deck runs'],
   ] as const)('says the word for %s', async (_what, over, word) => {
     await renderBuilder({ view: over })

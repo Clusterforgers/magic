@@ -12,10 +12,15 @@ export type Summary = {
  */
 format: string, 
 /**
- * `blocked` if the deck is illegal or holds an unplayable card, `manual_play` if some card is
- * not run whole, `read` if some run whole without being verified, otherwise `verified`.
+ * `manual_play` if some card is not run whole, `read` if some run whole without being verified, otherwise
+ * `verified`; never `blocked`.
  */
 state: DeckState, 
+/**
+ * Whether the deck has no legality issue in the format, or at the table, it was judged for. An illegal deck is a
+ * warning and still goes to a game. A check stored before this field reads as legal.
+ */
+legal: boolean, 
 /**
  * Copies by support state across all zones.
  */
