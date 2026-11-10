@@ -14,7 +14,8 @@ use crate::assemble::{MANA_WAYS, PLAIN_MANA_ABILITY, mana_shape, plain_mana_abil
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{
-    Destination, DieRow, Effect, Mode, Order, Place, Produce, TokenRef, ValueKind, VoteFor,
+    Destination, DieRow, Effect, Mode, NewTargets, Order, Place, Produce, TokenRef, ValueKind,
+    VoteFor,
 };
 use crate::keyword::Keyword;
 use crate::modify::{CastPermission, Duration, GameRule, Modification, Prohibited};
@@ -3643,8 +3644,20 @@ impl Walker<'_> {
                     w.at("each_target", |w| w.selector(selector));
                 }
             }
-            Effect::ChangeTargets { what, .. } => {
+            Effect::ChangeTargets { what, to, onto } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
+                match (to, onto) {
+                    (NewTargets::One, Some(onto)) => {
+                        w.at("onto", |w| w.reference(onto, Kind::Object));
+                    }
+                    (NewTargets::One, None) => {
+                        w.problem("a change of one target names the object it changes to");
+                    }
+                    (_, Some(_)) => {
+                        w.problem("only a change of one target names the object it changes to");
+                    }
+                    (_, None) => {}
+                }
             }
             Effect::CopyAbility { what, count, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));

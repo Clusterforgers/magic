@@ -129,7 +129,7 @@ use super::where_x;
 use crate::ability::{Ability, Activators, Limit, Timing};
 use crate::compile::classify;
 use crate::cost::{Cost, CostItem};
-use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
+use crate::effect::{Destination, Effect, Mode, NewTargets, Order, Place, Produce, TokenRef};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{ManaLasts, SpendOn};
@@ -1715,6 +1715,10 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Flip { .. }
                 | Effect::TurnFaceUp { .. }
                 | Effect::CopySpell { .. }
+                | Effect::ChangeTargets {
+                    to: NewTargets::Another | NewTargets::One,
+                    ..
+                }
         )
 }
 
@@ -2620,6 +2624,11 @@ impl Writer<'_> {
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
             Effect::DealDamage { .. } if unpreventable(effect) => self.g11b_hard(effect)?,
+            Effect::ChangeTargets { .. } if !self.named => {
+                let text = super::ep24_retarget::ep24_retarget_text(effect, self.targets.first()?)?;
+                self.named = true;
+                text
+            }
             Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
                 self.copy_effect(effect)?
             }

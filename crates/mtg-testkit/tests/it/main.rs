@@ -232,6 +232,7 @@ mod entered_this_turn;
 mod enters;
 mod ep22_every_zone;
 mod ep22_granted_loyalty;
+mod ep24_change_targets;
 mod equip_to;
 mod equipment;
 mod equipment_creature;

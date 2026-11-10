@@ -347,9 +347,24 @@ fn change_targets(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     only(
         p,
         "ChangeTargets",
-        &["TargetType", "ValidTgts", "Optional", "Defined"],
+        &[
+            "TargetType",
+            "ValidTgts",
+            "Optional",
+            "Defined",
+            "DefinedMagnet",
+            "ChangeSingleTarget",
+        ],
     )?;
-    let to = if p.get("Optional") == Some("True") {
+    // "Change a target of target spell or ability to ~": one target becomes the source.
+    let magnet = match (p.get("DefinedMagnet"), p.get("ChangeSingleTarget")) {
+        (None, None) => false,
+        (Some("Self"), Some("True")) if !p.has("Optional") && !p.has("Defined") => true,
+        _ => return unmapped("key:ChangeTargets.DefinedMagnet"),
+    };
+    let to = if magnet {
+        "One"
+    } else if p.get("Optional") == Some("True") {
         "Choose"
     } else {
         "Another"
@@ -364,20 +379,27 @@ fn change_targets(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(kind) = p.get("TargetType") else {
         return unmapped("key:ChangeTargets.no-TargetType");
     };
-    let (kind, single) = match kind.strip_suffix(".singleTarget") {
-        Some(kind) => (kind, true),
-        None => (kind, false),
+    let (kind, single) = match kind {
+        "Instant.singleTarget,Sorcery.singleTarget" => ("Instant,Sorcery", true),
+        kind => match kind.strip_suffix(".singleTarget") {
+            Some(kind) => (kind, true),
+            None => (kind, false),
+        },
     };
     if to == "Another" && !single {
         return unmapped("key:ChangeTargets.Another-without-single-target");
     }
-    let mut selector = vec![match kind {
-        "Spell" => json!("Spell"),
+    let mut selector = match kind {
+        "Spell" => vec![json!("Spell")],
+        "Instant,Sorcery" => vec![
+            json!("Spell"),
+            json!({"AnyOf": [{"Type": "Instant"}, {"Type": "Sorcery"}]}),
+        ],
         "SpellAbility" | "Spell,Activated,Triggered" => {
-            json!({"AnyOf": ["Spell", {"Ability": "Activated"}, {"Ability": "Triggered"}]})
+            vec![json!({"AnyOf": ["Spell", {"Ability": "Activated"}, {"Ability": "Triggered"}]})]
         }
         other => return unmapped(format!("key:ChangeTargets.TargetType={other}")),
-    }];
+    };
     if single {
         selector.push(json!("SingleTarget"));
     }
@@ -391,5 +413,8 @@ fn change_targets(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         selector.extend(spell_selector(ctx, &valid.join(","))?);
     }
     let what = ctx.target(json!({"what": {"Object": selector}}))?;
+    if magnet {
+        return Ok(json!({"ChangeTargets": {"what": what, "to": to, "onto": "This"}}));
+    }
     Ok(json!({"ChangeTargets": {"what": what, "to": to}}))
 }

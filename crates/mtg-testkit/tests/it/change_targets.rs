@@ -34,6 +34,7 @@ fn redirect(to: NewTargets) -> Arc<CardDefinition> {
                 effects: vec![Effect::ChangeTargets {
                     what: Ref::Target(0),
                     to,
+                    onto: None,
                 }],
             }),
     )

@@ -54,6 +54,8 @@ pub enum NewTargets {
     Another,
     /// "You may choose new targets": each target may become any legal target (CR 115.7b).
     Choose,
+    /// "Change a target of it to ~": one target becomes the object `onto` names, if that is a legal target (CR 115.7c).
+    One,
 }
 
 /// A phase an effect adds to the turn (CR 500.8).
@@ -1454,6 +1456,9 @@ pub enum Effect {
         what: Ref,
         /// How they change.
         to: NewTargets,
+        /// The object a target changes to (`One` only).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        onto: Option<Ref>,
     },
     /// The permanents become copies of an object for a while ("becomes a copy of target creature until end of turn",
     /// CR 707.2): the copy effect is the first layer, and the permanent is what it was again when it ends.
