@@ -521,6 +521,10 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let mut texts = super::written_memo::written(ability, ep23_written_anew);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
+    // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
+    if matches!(ability, Ability::CostModifier { life, .. } if *life > 0) {
+        texts.retain(|text| text.contains(" life to "));
+    }
     texts
 }
 

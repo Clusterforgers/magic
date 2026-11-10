@@ -39,16 +39,15 @@ fn ping() -> Arc<CardDefinition> {
 
 /// Seat `caster` casts Ping at the named creatures; the dragons belong to seat 1 and the bear to seat 0.
 fn cast(seats: usize, caster: usize, at: &[&str], life: i32) -> Result<Driver, ScriptError> {
-    let mut scenario = Scenario::new(seats)
+    let mut mine = vec![ready(bear())];
+    let mut theirs = vec![ready(dragon("Dragon A")), ready(dragon("Dragon B"))];
+    if caster == 0 { &mut mine } else { &mut theirs }.push(ready(mountain()));
+    let scenario = Scenario::new(seats)
         .at(1, caster, Step::Main1)
         .life(caster, life)
         .hand(caster, [ping()])
-        .battlefield(caster, [ready(mountain())])
-        .battlefield(0, [ready(bear())])
-        .battlefield(1, [ready(dragon("Dragon A")), ready(dragon("Dragon B"))]);
-    if caster == 0 {
-        scenario = scenario.battlefield(1, [ready(mountain())]);
-    }
+        .battlefield(0, mine)
+        .battlefield(1, theirs);
     let mut driver = Driver::from_scenario(scenario)?;
     let targets = at
         .iter()
@@ -79,12 +78,11 @@ fn a_caster_short_of_the_life_cannot_cast(
     #[values(2, 3, 4)] seats: usize,
     #[values(2, 3)] life: i32,
 ) -> Result<(), ScriptError> {
-    let mut scenario = Scenario::new(seats)
+    let scenario = Scenario::new(seats)
         .life(0, life)
         .hand(0, [ping()])
         .battlefield(0, [ready(mountain())])
         .battlefield(1, [ready(dragon("Dragon A"))]);
-    scenario = scenario.battlefield(1, [ready(mountain())]);
     let mut driver = Driver::from_scenario(scenario)?;
     let target = driver.target_named("Dragon A")?;
     driver.begin_cast("Ping")?;
