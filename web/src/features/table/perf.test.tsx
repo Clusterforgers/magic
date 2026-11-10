@@ -1,4 +1,4 @@
-// Goal: a batch redraws only what it changed, at the worst case of 12 seats with 40 permanents each (480 cards on screen): tapping one permanent renders that card and no battlefield row, a change to the turn renders no card, a change of controller renders that card and the two rows it leaves and joins; a decision arriving, being replaced or answered renders only the viewer's own marked cards (once each) and no row, and while one is on screen a tap still renders one card; with stacks on, 4 seats of 40 permanents mount inside a time budget as one face a box, the tap of a lone creature renders its card and no row, and a land that leaves its stack redraws that row only.
+// Goal: a batch redraws only what it changed, at the worst case of 12 seats with 40 permanents each (480 cards on screen): tapping one permanent renders that card and no battlefield row, a change to the turn renders no card, a change of controller renders that card and the two rows it leaves and joins; a decision arriving, being replaced or answered renders only the viewer's own marked cards (once each) and no row, and while one is on screen a tap still renders one card; over a run of 20 mana taps, each answering and replacing the prompt, the faces inside draw again only for the tapped card and the hand notes that change; with stacks on, 4 seats of 40 permanents mount inside a time budget as one face a box, the tap of a lone creature renders its card and no row, and a land that leaves its stack redraws that row only.
 import { act } from '@testing-library/react'
 import type { ComponentProps } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -15,8 +15,20 @@ import { battlefieldStacks } from './rowStacks'
 import { splitBattlefield } from './selectors'
 
 // The probe sits on two seams: every render of a card face is one render of a card, and every render of a
-// `CardRow` is one render of the component that owns it (a battlefield row, a hand, a command zone).
-const probe = vi.hoisted(() => ({ faces: new Map<number, number>(), rows: new Map<string, number>() }))
+// `CardRow` is one render of the component that owns it (a battlefield row, a hand, a command zone). `drawn` counts the
+// faces that draw inside (each reads the image setting once), which a card redrawn for its mark alone skips.
+const probe = vi.hoisted(() => ({ faces: new Map<number, number>(), rows: new Map<string, number>(), drawn: 0 }))
+
+vi.mock('@/features/cards/imageSetting', async (importOriginal) => {
+  const original = await importOriginal<typeof import('@/features/cards/imageSetting')>()
+  return {
+    ...original,
+    useImageChoice() {
+      probe.drawn += 1
+      return original.useImageChoice()
+    },
+  }
+})
 
 vi.mock('./CardFace', async (importOriginal) => {
   const original = await importOriginal<typeof import('./CardFace')>()
@@ -50,6 +62,7 @@ const battlefieldRows = (): string[] => [...probe.rows.keys()].filter((label) =>
 const reset = (): void => {
   probe.faces.clear()
   probe.rows.clear()
+  probe.drawn = 0
 }
 
 interface Mounted {
@@ -310,6 +323,39 @@ describe('a decision at the same table', () => {
     expect(probe.faces.size).toBeGreaterThan(0)
     for (const id of probe.faces.keys()) expect(own.has(id)).toBe(true)
     for (const count of probe.faces.values()) expect(count).toBeLessThanOrEqual(2)
+    expect(battlefieldRows()).toEqual([])
+  })
+
+  it('draws again only the faces a run of mana taps changes, though every tap answers and replaces the prompt', () => {
+    const { h, send, view } = mount()
+    const sources = view().objects.filter(
+      (object) => object.controller === 0 && object.zone === 'Battlefield' && object.permanent?.tapped === false,
+    )
+    const taps = 20
+    expect(sources.length).toBeGreaterThan(taps)
+    const offer = (left: readonly ObjectView[]): Partial<PriorityOptions> => ({
+      castable: handOf(view()).slice(0, 2),
+      mana_abilities: left.map((object) => ({ source: { object: object.id, ability: 0 }, produces: 'Green' })),
+    })
+    act(() => h.deliver(priority(100, offer(sources))))
+    reset()
+    for (let at = 0; at < taps; at += 1) {
+      const source = must(sources[at])
+      act(() => {
+        h.session.answer({ Priority: { ActivateMana: { object: source.id, ability: 0 } } })
+      })
+      send({
+        events: [{ Public: { PermanentTapped: { object: source.id } } }],
+        objects: [withTapped(source, true)],
+      })
+      act(() => h.deliver(priority(101 + at, offer(sources.slice(at + 1)))))
+    }
+    // Each tap takes every mark of the seat away and puts it back, so each of its cards is redrawn twice; the faces
+    // inside draw again for the tapped card and the hand cards whose notes come and go, not for all 49.
+    const own = ownOf(view()).size
+    const redrawn = [...probe.faces.values()].reduce((sum, count) => sum + count, 0)
+    expect(redrawn).toBeGreaterThanOrEqual(2 * own * (taps - 1))
+    expect(probe.drawn).toBeLessThanOrEqual(12 * taps)
     expect(battlefieldRows()).toEqual([])
   })
 
