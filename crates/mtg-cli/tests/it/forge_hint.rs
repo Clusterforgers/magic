@@ -53,6 +53,7 @@ fn options(max_input_tokens: u64) -> Options {
         max_input_tokens,
         jobs: 1,
         status_every: Duration::ZERO,
+        ..Options::default()
     }
 }
 

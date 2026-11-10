@@ -168,6 +168,7 @@ pub fn c11i_parse_response(body: &str, sent: u64, limit: u32) -> Result<Response
         text,
         usage: Usage {
             input_tokens,
+            cache_write_tokens: 0,
             cache_read_tokens: count("/prompt_tokens_details/cached_tokens")
                 .unwrap_or(0)
                 .min(input_tokens),
@@ -264,6 +265,7 @@ mod tests {
             response.usage,
             Usage {
                 input_tokens: 3000,
+                cache_write_tokens: 0,
                 cache_read_tokens: 2800,
                 output_tokens: 42
             }

@@ -2,20 +2,26 @@
 //! checker accepts (`docs/cards-dsl.md`, Proposals and drafts). The person who runs it supplies the API key and pays.
 
 pub mod anthropic;
+pub mod batch;
 pub mod budget;
 pub mod c11i_http;
 pub mod c11i_openai;
 pub mod examples;
 pub mod fake;
 pub mod forge_hint;
+pub mod ledger;
 pub mod lines;
 pub mod model;
+pub mod order;
 pub mod outcome;
+pub mod price;
 pub mod prompt;
 pub mod select;
 pub mod session;
+pub mod spend;
 pub mod status;
 pub mod store;
+pub mod summary;
 pub mod w19b_solved;
 
 use std::collections::BTreeSet;
@@ -28,7 +34,7 @@ use mtg_cards::builtin;
 use mtg_cards::reference::dsl_reference;
 use mtg_db::Database;
 
-use crate::args::{PromoteArgs, ProposeArgs, Provider};
+use crate::args::{PromoteArgs, ProposeArgs, Provider, Reasoning};
 use crate::audit::stored_cards;
 use crate::cache::Cache;
 use crate::compile::names_of;
@@ -39,9 +45,12 @@ use anthropic::{AnthropicClient, AnthropicConfig, ApiKey};
 use c11i_openai::{OpenAi, OpenAiClient};
 use examples::ExampleIndex;
 use forge_hint::{ForgeHints, HintState};
+use ledger::Ledger;
 use model::{ModelClient, estimate_tokens};
 use outcome::ProposeReport;
+use price::Billing;
 use session::{Context, Options, Session};
+use spend::Spend;
 use store::Store;
 use w19b_solved::W19bSolvedExamples;
 
@@ -122,6 +131,17 @@ pub fn dry_run_in(
     targets: &[usize],
     options: &Options,
 ) -> Result<String, CliError> {
+    dry_run_with(ctx, cards, targets, options, None)
+}
+
+/// [`dry_run_in`] that also says how many requests a spend cap would allow.
+pub fn dry_run_with(
+    ctx: &Context<'_>,
+    cards: &[PrintedCard],
+    targets: &[usize],
+    options: &Options,
+    max_spend: Option<price::Usd>,
+) -> Result<String, CliError> {
     let Some(first) = targets.first().and_then(|at| cards.get(*at)) else {
         return Err(CliError::Config("no card is selected".into()));
     };
@@ -161,6 +181,12 @@ pub fn dry_run_in(
         options.max_input_tokens,
         options.max_requests
     );
+    if let Some(price) = price::price_of(&options.model) {
+        let system_tokens = estimate_tokens(ctx.system.len());
+        let card_tokens = estimate_tokens(message.len());
+        let estimate = price.estimate(system_tokens, card_tokens, &request);
+        let _ = writeln!(text, "{}", estimate.lines(&options.model, max_spend));
+    }
     let _ = writeln!(
         text,
         "the system prompt is sent with a cache marker, so a billed request reads it from the cache at a fraction of the price; every token counts against --max-input-tokens\n\n--- system prompt: the instructions ---\n{}[the DSL reference follows: {} tokens]\n\n--- card prompt ---\n{message}",
@@ -173,7 +199,8 @@ pub fn dry_run_in(
 /// The options of a run from the command line; a local provider has no default model.
 pub fn options_of(args: &ProposeArgs) -> Result<Options, CliError> {
     let model = match (&args.model, args.provider) {
-        (Some(model), _) => model.clone(),
+        (Some(model), Provider::Anthropic) => price::model_id(model).to_owned(),
+        (Some(model), Provider::Openai) => model.clone(),
         (None, Provider::Anthropic) => DEFAULT_MODEL.to_owned(),
         (None, Provider::Openai) => {
             return Err(CliError::Config(
@@ -190,15 +217,69 @@ pub fn options_of(args: &ProposeArgs) -> Result<Options, CliError> {
         max_input_tokens: args.max_input_tokens,
         jobs: args.jobs,
         status_every: STATUS_EVERY,
+        spend: None,
+        warm_cache: args.provider == Provider::Anthropic,
+        poll_every: Duration::from_secs(args.poll_every),
+        batch_size: usize::try_from(args.batch_size).unwrap_or(usize::MAX),
     })
 }
 
 /// What `--schema` with the Anthropic provider prints: that API takes no schema, so the flag does nothing there.
 pub const W3A_SCHEMA_IGNORED: &str = "--schema is ignored: only --provider openai sends a schema; the Anthropic API is asked as usual";
 
-/// What `--reasoning` with the Anthropic provider prints: only an OpenAI-style server is sent the effort.
-pub const T18A_REASONING_IGNORED: &str =
-    "--reasoning is ignored: only --provider openai sends a reasoning effort";
+/// The Anthropic client the arguments name: the key from `ANTHROPIC_API_KEY` (required; nothing else supplies it), the
+/// address of `--base-url`, the effort of `--reasoning` and the optional `ANTHROPIC_WORKSPACE_ID`, sent as
+/// `anthropic-workspace-id` with every request (a key that is not scoped to a workspace needs it).
+pub fn anthropic_client_of(
+    args: &ProposeArgs,
+    env: &dyn Fn(&str) -> Option<String>,
+    api: &AnthropicConfig,
+    progress: Progress,
+) -> Result<AnthropicClient, CliError> {
+    let mut config = api.clone();
+    config.timeout = Duration::from_secs(args.request_timeout);
+    config.attempts = args.retries.saturating_add(1);
+    if let Some(base) = &args.base_url {
+        config.base_url.clone_from(base);
+    }
+    let key = ApiKey::from_env(env)?;
+    Ok(AnthropicClient::with_options(
+        key,
+        &config,
+        tokio::runtime::Handle::current(),
+        progress,
+        args.reasoning.map(Reasoning::as_str),
+        anthropic::workspace_from_env(env),
+    )?)
+}
+
+/// The spend cap of a run: required to ask the Anthropic API, and only for it (a local server costs nothing). The ledger
+/// is the one in the cache directory.
+pub fn spend_of(
+    args: &ProposeArgs,
+    cache: &Cache,
+    options: &Options,
+) -> Result<Option<Spend>, CliError> {
+    match (args.provider, args.max_spend) {
+        (Provider::Anthropic, Some(cap)) => {
+            let billing = if args.batch {
+                Billing::Batch
+            } else {
+                Billing::Standard
+            };
+            Spend::new(Ledger::of(cache), cap, &options.model, billing).map(Some)
+        }
+        (Provider::Anthropic, None) => Err(CliError::Config(
+            "--max-spend USD is required to ask the Anthropic API: the most this run may spend, counted with everything \
+             the cost ledger already holds (--dry-run shows the cost and needs none)"
+                .into(),
+        )),
+        (Provider::Openai, Some(_)) => Err(CliError::Config(
+            "--max-spend is for the Anthropic API; a local server costs nothing and no price is known for other APIs".into(),
+        )),
+        (Provider::Openai, None) => Ok(None),
+    }
+}
 
 /// The client of the provider the arguments name, reaching `api` (its address replaced by `--base-url`). The Anthropic
 /// key is required; a key for a local server is optional.
@@ -214,17 +295,10 @@ pub fn c11i_client_of(
     config.attempts = args.retries.saturating_add(1);
     Ok(match args.provider {
         Provider::Anthropic => {
-            if let Some(base) = &args.base_url {
-                config.base_url.clone_from(base);
-            }
-            let key = ApiKey::from_env(env)?;
             if args.schema {
                 progress.line(W3A_SCHEMA_IGNORED);
             }
-            if args.reasoning.is_some() {
-                progress.line(T18A_REASONING_IGNORED);
-            }
-            Box::new(AnthropicClient::new(key, &config, handle, progress)?)
+            Box::new(anthropic_client_of(args, env, api, progress)?)
         }
         Provider::Openai => {
             config.base_url = args
@@ -243,12 +317,29 @@ pub fn c11i_client_of(
     })
 }
 
+/// The card names of a file: one a line, blank lines and lines that begin with `#` left out.
+pub fn names_in(path: &Path) -> Result<Vec<String>, CliError> {
+    let text = std::fs::read_to_string(path).map_err(|source| CliError::io(path, source))?;
+    Ok(text
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty() && !line.starts_with('#'))
+        .map(str::to_owned)
+        .collect())
+}
+
 /// The cards the arguments select, as positions in `cards`; a sample draws only from the oracle ids of `within` when given.
 pub fn targets_of(
     cards: &[PrintedCard],
     args: &ProposeArgs,
     within: Option<&BTreeSet<String>>,
 ) -> Result<Vec<usize>, CliError> {
+    if let [file] = args.cards.as_slice() {
+        // A single value that is a file is a list of names, one a line (what `propose-order` writes).
+        if Path::new(file).is_file() {
+            return select::by_names(cards, &names_in(Path::new(file))?);
+        }
+    }
     if !args.cards.is_empty() {
         return select::by_names(cards, &args.cards);
     }
@@ -326,32 +417,60 @@ pub async fn run_command(
         None
     };
     let targets = targets_of(&cards, args, within.as_ref())?;
-    let options = options_of(args)?;
+    let mut options = options_of(args)?;
     let ctx = w19b_context_of(db, &cards, args).await?;
     if args.dry_run {
-        return dry_run_in(&ctx, &cards, &targets, &options);
+        return dry_run_with(&ctx, &cards, &targets, &options, args.max_spend);
     }
     if targets.is_empty() {
         return Err(CliError::Config("no card is selected".into()));
     }
-    let client = c11i_client_of(args, env, api, progress.clone())?;
+    options.spend = spend_of(args, cache, &options)?;
+    if args.batch && args.provider != Provider::Anthropic {
+        return Err(CliError::Config(
+            "--batch is the Message Batches API of Anthropic; it needs --provider anthropic".into(),
+        ));
+    }
     let store = Store::new(args.out.clone().unwrap_or_else(|| default_out(cache)));
     let accepted: Vec<PathBuf> = targets
         .iter()
         .map(|&index| store.accepted_path(&cards[index].name))
         .collect();
+    let drafts: Vec<PathBuf> = targets
+        .iter()
+        .map(|&index| store.draft_path(&cards[index].name))
+        .collect();
     // The client blocks on the runtime, so the loop runs on a blocking thread.
-    let report = tokio::task::spawn_blocking(move || {
-        propose_in(
-            &ctx, &cards, &targets, &*client, &options, &store, &progress,
-        )
-    })
-    .await
+    let report = if args.batch {
+        let api = batch::BatchApi::new(
+            anthropic_client_of(args, env, api, progress.clone())?,
+            args.reasoning.map(Reasoning::as_str),
+        );
+        tokio::task::spawn_blocking(move || {
+            batch::BatchRun {
+                ctx: &ctx,
+                api: &api,
+                options: &options,
+                store: &store,
+                progress: &progress,
+            }
+            .run(&cards, &targets)
+        })
+        .await
+    } else {
+        let client = c11i_client_of(args, env, api, progress.clone())?;
+        tokio::task::spawn_blocking(move || {
+            propose_in(
+                &ctx, &cards, &targets, &*client, &options, &store, &progress,
+            )
+        })
+        .await
+    }
     .map_err(|error| CliError::Config(format!("the run stopped: {error}")))??;
     let mut text = report.render();
     if let Some(out) = &args.promote {
         text.push('\n');
-        text.push_str(&w2a_promote_run(db, cache, out, accepted).await?);
+        text.push_str(&w2a_promote_run(db, cache, out, accepted, drafts).await?);
     }
     Ok(text)
 }
@@ -385,27 +504,38 @@ async fn w19b_context_of(
     Ok(ctx)
 }
 
-/// Promotes the accepted proposals a run saved, into the `mtg-cards` crate directory `out`, as `promote` does.
+/// Promotes what a run saved, into the `mtg-cards` crate directory `out`, as `promote` does: the accepted proposals become
+/// corpus cards, and the drafts (valid, with a construct that has no writer) become drafts that play Unverified
+/// (`promote --draft --source sweep`).
 async fn w2a_promote_run(
     db: &Database,
     cache: &Cache,
     out: &Path,
     accepted: Vec<PathBuf>,
+    drafts: Vec<PathBuf>,
 ) -> Result<String, CliError> {
-    let files: Vec<PathBuf> = accepted.into_iter().filter(|path| path.is_file()).collect();
-    if files.is_empty() {
+    let accepted: Vec<PathBuf> = accepted.into_iter().filter(|path| path.is_file()).collect();
+    let drafts: Vec<PathBuf> = drafts.into_iter().filter(|path| path.is_file()).collect();
+    if accepted.is_empty() && drafts.is_empty() {
         return Ok("nothing to promote".into());
     }
-    let args = PromoteArgs {
-        dry_run: false,
-        partial: false,
-        out: Some(out.to_path_buf()),
-        draft: false,
-        no_smoke: false,
-        drafts: None,
-        source: None,
-        differs: false,
-        files,
-    };
-    Ok(w2a_promote(db, cache, &args).await?.render())
+    let mut parts = Vec::new();
+    for (files, draft) in [(accepted, false), (drafts, true)] {
+        if files.is_empty() {
+            continue;
+        }
+        let args = PromoteArgs {
+            dry_run: false,
+            partial: false,
+            out: Some(out.to_path_buf()),
+            draft,
+            no_smoke: false,
+            drafts: None,
+            source: draft.then(|| "sweep".to_owned()),
+            differs: false,
+            files,
+        };
+        parts.push(w2a_promote(db, cache, &args).await?.render());
+    }
+    Ok(parts.join("\n"))
 }

@@ -2,7 +2,7 @@
 //! and keep what is accepted. `--jobs` cards are in flight at once; they share one budget and one set of stop rules.
 
 use std::collections::BTreeSet;
-use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::mpsc::{self, RecvTimeoutError};
 use std::sync::{Mutex, MutexGuard, PoisonError};
 use std::thread;
@@ -16,10 +16,15 @@ use super::budget::{Budget, Stop};
 use super::examples::ExampleIndex;
 use super::forge_hint::{ForgeHints, HintRecord, HintState};
 use super::model::{ModelClient, ModelError, Request, Response};
-use super::outcome::{Outcome, ProposeReport, Tally};
-use super::prompt::{extract_json, first_request, hinted_card_prompt, repair_request};
+use super::outcome::{Outcome, ProposeReport, SpendReport, Tally};
+use super::price::Usd;
+use super::prompt::{
+    diagnosis, extract_json, first_request, hinted_card_prompt, repair_request, take_missing,
+};
+use super::spend::{Refused, Spend};
 use super::status::status_line;
 use super::store::Store;
+use super::summary::CardRecord;
 use crate::error::CliError;
 use crate::progress::Progress;
 
@@ -98,12 +103,23 @@ pub struct Options {
     pub jobs: u32,
     /// The time between two status lines while the run goes on; zero prints only the last one.
     pub status_every: Duration,
+    /// The spend cap and the cost ledger of a paid run; none for a local model.
+    pub spend: Option<Spend>,
+    /// Sends the first request alone, so that the others read the shared rules from the API's cache and do not each write
+    /// it (a cache entry exists only once the first request has been answered).
+    pub warm_cache: bool,
+    /// With `--batch`: the time between two looks at a batch that is out.
+    pub poll_every: Duration,
+    /// With `--batch`: the most requests in one batch; zero takes the default.
+    pub batch_size: usize,
 }
 
 /// What the model said and the checker's report of it.
-struct Attempt {
-    json: String,
-    report: Report,
+pub(super) struct Attempt {
+    pub(super) json: String,
+    pub(super) report: Report,
+    /// The engine pieces the model says are missing.
+    pub(super) missing: Vec<String>,
 }
 
 /// Why a request got no answer.
@@ -111,18 +127,55 @@ enum Asked {
     /// The budget refused; the shared state remembers which.
     Budget,
     Failed(ModelError),
+    /// The ledger of the spend cap cannot be kept, which ends the run.
+    Ledger(CliError),
 }
 
-/// How a card ended and how many requests it took.
-struct Finished {
-    outcome: Outcome,
-    requests: u32,
-    hint: HintState,
+/// What a card has cost so far.
+#[derive(Debug, Clone, Copy, Default)]
+pub(super) struct Used {
+    pub(super) requests: u32,
+    pub(super) cost: Usd,
+}
+
+/// How a card ended.
+pub(super) struct Finished {
+    pub(super) outcome: Outcome,
+    pub(super) used: Used,
+    pub(super) hint: HintState,
+    pub(super) missing: Vec<String>,
+    pub(super) detail: String,
+}
+
+impl Finished {
+    /// A card the budget kept from running.
+    fn not_run(used: Used) -> Self {
+        Self {
+            outcome: Outcome::NotRun,
+            used,
+            hint: HintState::Off,
+            missing: Vec::new(),
+            detail: String::new(),
+        }
+    }
+
+    /// The card's record for the summary.
+    pub(super) fn record(&self, card: &str) -> CardRecord {
+        CardRecord {
+            card: card.to_owned(),
+            outcome: self.outcome.key().to_owned(),
+            missing_engine_piece: self.missing.clone(),
+            requests: self.used.requests,
+            micros: self.used.cost.0,
+            detail: self.detail.clone(),
+        }
+    }
 }
 
 /// What the workers of a run share, behind one lock: the budget and the stop rules are checked and updated together.
 struct Shared {
     budget: Budget,
+    spend: Option<Spend>,
     stopped: Option<Stop>,
     tally: Tally,
     /// Cards in a row, in the order they finished, that got no answer.
@@ -139,6 +192,10 @@ pub struct Session<'a> {
     store: &'a Store,
     progress: &'a Progress,
     shared: Mutex<Shared>,
+    /// Whether a request has been answered, so the API holds the shared rules in its cache.
+    warmed: AtomicBool,
+    /// Held by the first request, so that the others wait for the cache entry instead of each writing it.
+    gate: Mutex<()>,
 }
 
 impl<'a> Session<'a> {
@@ -158,11 +215,14 @@ impl<'a> Session<'a> {
             progress,
             shared: Mutex::new(Shared {
                 budget: Budget::new(options.max_requests, options.max_input_tokens),
+                spend: options.spend.clone(),
                 stopped: None,
                 tally: Tally::default(),
                 failures: 0,
                 error: None,
             }),
+            warmed: AtomicBool::new(false),
+            gate: Mutex::new(()),
         }
     }
 
@@ -194,6 +254,7 @@ impl<'a> Session<'a> {
             ticker.join().is_err() || ended.contains(&true)
         });
         self.progress.line(self.status(total, started.elapsed()));
+        let summary = self.store.write_summary();
         let shared = self
             .shared
             .into_inner()
@@ -201,13 +262,17 @@ impl<'a> Session<'a> {
         match shared.error {
             Some(error) => Err(error),
             None if panicked => Err(CliError::Config("a worker of the run stopped".into())),
-            None => Ok(ProposeReport {
-                model: self.options.model.clone(),
-                tally: shared.tally,
-                budget: shared.budget,
-                stopped: shared.stopped,
-                out: self.store.dir().to_path_buf(),
-            }),
+            None => {
+                summary?;
+                Ok(ProposeReport {
+                    model: self.options.model.clone(),
+                    tally: shared.tally,
+                    budget: shared.budget,
+                    stopped: shared.stopped,
+                    out: self.store.dir().to_path_buf(),
+                    spend: shared.spend.as_ref().map(spend_report),
+                })
+            }
         }
     }
 
@@ -239,28 +304,22 @@ impl<'a> Session<'a> {
                 return;
             };
             let finished = if self.state().stopped.is_some() {
-                Ok(Finished {
-                    outcome: Outcome::NotRun,
-                    requests: 0,
-                    hint: HintState::Off,
-                })
+                Ok(Finished::not_run(Used::default()))
             } else {
                 self.card(card)
             };
-            match finished {
-                Ok(finished) => self.finish(card, &finished),
-                Err(error) => {
-                    let mut state = self.state();
-                    if state.error.is_none() {
-                        state.error = Some(error);
-                    }
+            let saved = finished.and_then(|finished| self.finish(card, &finished));
+            if let Err(error) = saved {
+                let mut state = self.state();
+                if state.error.is_none() {
+                    state.error = Some(error);
                 }
             }
         }
     }
 
-    /// Counts a finished card, ends the run after too many failures in a row, and prints the card's line.
-    fn finish(&self, card: &PrintedCard, finished: &Finished) {
+    /// Counts a finished card, ends the run after too many failures in a row, saves the card's record and prints its line.
+    fn finish(&self, card: &PrintedCard, finished: &Finished) -> Result<(), CliError> {
         let mut state = self.state();
         if let Outcome::Failed(message) = &finished.outcome {
             state.failures += 1;
@@ -280,114 +339,208 @@ impl<'a> Session<'a> {
             HintState::Unhinted => state.tally.unhinted += 1,
         }
         drop(state);
-        if finished.outcome != Outcome::NotRun {
-            let why = match &finished.outcome {
-                Outcome::Failed(message) => format!(": {message}"),
-                _ => String::new(),
-            };
-            self.progress.line(format_args!(
-                "{}: {} ({} requests){why}",
-                card.name,
-                finished.outcome.word(),
-                finished.requests
-            ));
+        if finished.outcome == Outcome::NotRun {
+            return Ok(());
         }
+        self.store.save_record(&finished.record(&card.name))?;
+        let why = match &finished.outcome {
+            Outcome::Failed(message) => format!(": {message}"),
+            _ => String::new(),
+        };
+        self.progress.line(format_args!(
+            "{}: {} ({} requests){why}",
+            card.name,
+            finished.outcome.word(),
+            finished.used.requests
+        ));
+        Ok(())
     }
 
     /// One card: ask, check, and repair once when the checker rejects the answer.
     fn card(&self, printed: &PrintedCard) -> Result<Finished, CliError> {
-        let mut requests = 0;
+        let mut used = Used::default();
         let message = self.ctx.card_message(printed, self.options.examples);
         let hint = message.hint;
         let first = first_request(&self.options.model, &self.ctx.system, message.text);
-        let answer = match self.ask(&first, false, &mut requests) {
+        let answer = match self.ask(&first, false, &printed.name, &mut used) {
             Ok(answer) => answer,
-            Err(Asked::Budget) => {
-                return Ok(Finished {
-                    outcome: Outcome::NotRun,
-                    requests,
-                    hint: HintState::Off,
-                });
-            }
+            Err(Asked::Budget) => return Ok(Finished::not_run(used)),
+            Err(Asked::Ledger(error)) => return Err(error),
             Err(Asked::Failed(error)) => {
+                let detail = error.to_string();
                 return Ok(Finished {
                     outcome: unanswered(error)?,
-                    requests,
+                    used,
                     hint,
+                    missing: Vec::new(),
+                    detail,
                 });
             }
         };
-        let mut attempt = self.judge(printed, &answer.text);
+        let mut attempt = judge(self.ctx, printed, &answer.text);
         if Outcome::of(&attempt.report).is_repairable() {
             let repair = repair_request(&first, &answer.text, &attempt.report);
-            match self.ask(&repair, true, &mut requests) {
-                Ok(second) => attempt = self.judge(printed, &second.text),
+            match self.ask(&repair, true, &printed.name, &mut used) {
+                Ok(second) => {
+                    let mut next = judge(self.ctx, printed, &second.text);
+                    if next.missing.is_empty() {
+                        next.missing = std::mem::take(&mut attempt.missing);
+                    }
+                    attempt = next;
+                }
+                Err(Asked::Ledger(error)) => return Err(error),
                 // The first answer stands as it is.
                 Err(Asked::Budget | Asked::Failed(_)) => {}
             }
         }
+        let (outcome, detail) = keep(self.ctx, self.store, printed, &attempt, hint)?;
         Ok(Finished {
-            outcome: self.keep(printed, &attempt, hint)?,
-            requests,
+            outcome,
+            used,
             hint,
+            missing: attempt.missing,
+            detail,
         })
     }
 
-    /// Sends a request when the budget allows it; the tokens it may cost stay reserved while it is out.
-    fn ask(&self, request: &Request, repair: bool, requests: &mut u32) -> Result<Response, Asked> {
-        {
+    /// Sends a request when the budget and the spend cap allow it. The tokens and the money it may cost stay held while it
+    /// is out; what it really cost goes into the ledger, whether or not the answer is usable.
+    fn ask(
+        &self,
+        request: &Request,
+        repair: bool,
+        card: &str,
+        used: &mut Used,
+    ) -> Result<Response, Asked> {
+        let held = {
             let mut state = self.state();
+            let held = match state.spend.as_mut().map(|spend| spend.reserve(request)) {
+                None => None,
+                Some(Ok(held)) => Some(held),
+                Some(Err(Refused::Cap(stop))) => {
+                    state.stopped.get_or_insert(stop);
+                    return Err(Asked::Budget);
+                }
+                Some(Err(Refused::Ledger(error))) => return Err(Asked::Ledger(error)),
+            };
             if let Err(stop) = state.budget.admit(request, repair) {
+                if let (Some(spend), Some(held)) = (state.spend.as_mut(), held) {
+                    spend.release(held);
+                }
                 state.stopped.get_or_insert(stop);
                 return Err(Asked::Budget);
             }
-        }
-        *requests += 1;
-        let result = self.client.complete(request);
+            held
+        };
+        used.requests += 1;
+        let result = self.complete(request);
         let mut state = self.state();
         state.budget.release(request.estimated_tokens());
-        let response = result.map_err(Asked::Failed)?;
-        state.budget.record(response.usage);
-        Ok(response)
+        let usage = match &result {
+            Ok(response) => Some(response.usage),
+            Err(error) => error.billed(),
+        };
+        if let Some(usage) = usage {
+            state.budget.record(usage);
+        }
+        if let (Some(spend), Some(held)) = (state.spend.as_mut(), held) {
+            let billed = match (&result, usage) {
+                (_, Some(usage)) => spend.bill(held, card, usage),
+                (Err(error), None) if error.may_be_billed() => spend.forfeit(held, card),
+                _ => {
+                    spend.release(held);
+                    Ok(Usd(0))
+                }
+            };
+            let cost = billed.map_err(Asked::Ledger)?;
+            used.cost = used.cost.plus(cost);
+            state.budget.add_cost(cost);
+        }
+        result.map_err(Asked::Failed)
     }
 
-    /// Checks what the model wrote against the card.
-    fn judge(&self, printed: &PrintedCard, answer: &str) -> Attempt {
-        let json = extract_json(answer).to_owned();
-        let report = check(
-            &json,
-            printed,
-            self.ctx.library,
-            &self.ctx.names,
-            &self.ctx.caps,
-        );
-        Attempt { json, report }
+    /// Sends the request; with `warm_cache` the first one goes alone, and the others wait for it.
+    fn complete(&self, request: &Request) -> Result<Response, ModelError> {
+        if !self.options.warm_cache || self.warmed.load(Ordering::Acquire) {
+            return self.client.complete(request);
+        }
+        let gate = self.gate.lock().unwrap_or_else(PoisonError::into_inner);
+        if self.warmed.load(Ordering::Acquire) {
+            drop(gate);
+            return self.client.complete(request);
+        }
+        let result = self.client.complete(request);
+        if result.is_ok() {
+            self.warmed.store(true, Ordering::Release);
+        }
+        drop(gate);
+        result
     }
+}
 
-    /// Saves the attempt as an accepted proposal, or as a rejected one with the report, and the hint modes of the run when
-    /// it used any.
-    fn keep(
-        &self,
-        printed: &PrintedCard,
-        attempt: &Attempt,
-        hint: HintState,
-    ) -> Result<Outcome, CliError> {
-        let outcome = Outcome::of(&attempt.report);
-        match (&attempt.report.rules, outcome.is_kept()) {
-            (Some(rules), true) => {
-                self.store.save_accepted(&printed.name, rules)?;
-            }
-            _ => self.store.save_rejected(
-                &printed.name,
-                &attempt.json,
-                &attempt.report.render(false),
-            )?,
+/// What a run spent, from its spend state.
+pub(super) fn spend_report(spend: &Spend) -> SpendReport {
+    SpendReport {
+        run: spend.run(),
+        ledger: spend.ledger_total().unwrap_or_default(),
+        cap: spend.cap(),
+    }
+}
+
+/// Checks what the model wrote against the card: its `missing` field is taken out first, since the checker reads rules.
+pub(super) fn judge(ctx: &Context<'_>, printed: &PrintedCard, answer: &str) -> Attempt {
+    let (json, missing) = take_missing(extract_json(answer));
+    let report = check(&json, printed, ctx.library, &ctx.names, &ctx.caps);
+    Attempt {
+        json,
+        report,
+        missing,
+    }
+}
+
+/// Saves the attempt as an accepted proposal, as a draft (valid, with a construct that has no writer), or as a rejected
+/// one with the report, and the hint modes of the run when it used any. Returns the outcome and the first thing worth
+/// knowing about it.
+pub(super) fn keep(
+    ctx: &Context<'_>,
+    store: &Store,
+    printed: &PrintedCard,
+    attempt: &Attempt,
+    hint: HintState,
+) -> Result<(Outcome, String), CliError> {
+    let outcome = Outcome::of(&attempt.report);
+    match (&attempt.report.rules, &outcome) {
+        (Some(rules), kept) if kept.is_kept() => {
+            store.save_accepted(&printed.name, rules)?;
         }
-        let record = self.ctx.hint_record(hint);
-        if !record.is_plain() {
-            self.store.save_hints(&printed.name, &record)?;
+        (Some(rules), draft) if draft.is_draft() => {
+            store.save_draft(&printed.name, rules)?;
         }
-        Ok(outcome)
+        _ => store.save_rejected(&printed.name, &attempt.json, &attempt.report.render(false))?,
+    }
+    let record = ctx.hint_record(hint);
+    if !record.is_plain() {
+        store.save_hints(&printed.name, &record)?;
+    }
+    Ok((outcome.clone(), detail_of(&outcome, &attempt.report)))
+}
+
+/// The first thing the checker found wrong, the constructs without a writer, or a word about an empty proposal.
+fn detail_of(outcome: &Outcome, report: &Report) -> String {
+    match outcome {
+        Outcome::Invalid | Outcome::Mismatch => diagnosis(report)
+            .lines()
+            .map(|line| line.trim_start_matches("- "))
+            .collect::<Vec<_>>()
+            .join(" / "),
+        Outcome::Unchecked => format!(
+            "no writer for: {}",
+            report.unwritten().collect::<Vec<_>>().join(", ")
+        ),
+        Outcome::Empty => "accepted, but nothing is modelled".to_owned(),
+        Outcome::Verified | Outcome::Partial | Outcome::Failed(_) | Outcome::NotRun => {
+            String::new()
+        }
     }
 }
 

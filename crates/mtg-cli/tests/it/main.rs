@@ -1,5 +1,6 @@
 //! Goal: fetching, caching and ingesting card data against local mock servers and a database per test; one test binary so the crate's integration tests share one link and run together on the thread pool.
 
+mod ap23_propose_spend;
 mod audit;
 mod c11i_propose_local;
 mod check_rules;

@@ -75,10 +75,20 @@ pub fn estimate_tokens(bytes: usize) -> u64 {
 pub struct Usage {
     /// All input tokens: new, written to the cache and read from it.
     pub input_tokens: u64,
+    /// The input tokens that were written to the cache (billed at a premium).
+    pub cache_write_tokens: u64,
     /// The input tokens that were read from the cache.
     pub cache_read_tokens: u64,
     /// The tokens of the answer.
     pub output_tokens: u64,
+}
+
+impl Usage {
+    /// The input tokens that were neither written to the cache nor read from it.
+    pub fn uncached_tokens(&self) -> u64 {
+        self.input_tokens
+            .saturating_sub(self.cache_write_tokens + self.cache_read_tokens)
+    }
 }
 
 /// An answer.
@@ -148,6 +158,15 @@ pub enum ModelError {
     /// The answer is not what the API documents.
     #[error("unexpected answer from the API: {0}")]
     Answer(String),
+    /// The API answered and billed the request, but the answer holds no text: the answer tokens went to thinking, or the
+    /// model declined.
+    #[error("the answer holds no text: {why}")]
+    Unanswered {
+        /// What the request cost anyway.
+        usage: Usage,
+        /// Why there is no text.
+        why: String,
+    },
     /// A scripted client has no answer for the card.
     #[error("no scripted answer: {0}")]
     Unscripted(String),
@@ -178,6 +197,19 @@ impl ModelError {
             | ModelError::Truncated { .. } => true,
             _ => false,
         }
+    }
+
+    /// What a failed request cost: an answer without text was billed in full.
+    pub fn billed(&self) -> Option<Usage> {
+        match self {
+            ModelError::Unanswered { usage, .. } => Some(*usage),
+            _ => None,
+        }
+    }
+
+    /// Whether the API may have billed a request that got no answer: it took the request and the answer did not arrive.
+    pub fn may_be_billed(&self) -> bool {
+        matches!(self, ModelError::Timeout { .. } | ModelError::Transport(_))
     }
 
     /// The wait the API asked for.
