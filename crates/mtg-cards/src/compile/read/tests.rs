@@ -1212,3 +1212,4 @@ mod g13d_writers;
 mod w20_attached;
 mod w22_moves;
 mod w22_shields;
+mod wf24_writers;

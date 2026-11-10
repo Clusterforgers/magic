@@ -707,6 +707,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     w22_shields::w22_goad_wordings(&mut texts);
     w22_moves::w22_graved_wordings(&mut texts);
     w22_moves::w22_library_wordings(ability, &mut texts);
+    super::r7e_events::wf24_activated_wordings(&mut texts);
     super::w19d_suffixes::add(&mut texts);
     super::r6b_wordings::add(ability, &mut texts);
     super::r7a_wordings::add(ability, &mut texts);

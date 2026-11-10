@@ -1,6 +1,7 @@
 //! Goal: the translator faults the semantic audit found stay closed: a group of a target opponent's creatures reads the
 //! target (Curious Colossus), two targets of one `MoveCounter` line are distinct objects (Nexus Mentality), and the
-//! keywords a lasting `GainControl` adds last as long as the text says (Slave of Bolas, Momo's Heist).
+//! keywords a lasting `GainControl` adds last as long as the text says (Slave of Bolas, Momo's Heist), and the source of
+//! an activation named by an object type is a permanent (Kurkesh, Onakke Ancient).
 #![allow(clippy::unwrap_used)]
 
 use rstest::rstest;
@@ -94,4 +95,26 @@ fn wf24_added_keywords_last_as_the_text_says(
             gaps(&text)
         ),
     }
+}
+
+#[rstest]
+#[case::bare_type(
+    "ValidCard$ Artifact | ",
+    Some(json!([{"Type": "Artifact"}, {"In": "Battlefield"}]))
+)]
+#[case::zoned(
+    "ValidCard$ Creature.inZoneBattlefield | ",
+    Some(json!([{"Type": "Creature"}, {"In": "Battlefield"}]))
+)]
+#[case::the_card_itself("ValidCard$ Card.Self | ", Some(json!(["This"])))]
+#[case::any_source("", None)]
+fn wf24_an_activated_source_of_a_type_is_a_permanent(
+    #[case] valid: &str,
+    #[case] what: Option<Value>,
+) {
+    let text = format!(
+        "Name:Subject\nTypes:Creature Shaman\nPT:1/1\nT:Mode$ AbilityCast | {valid}ValidSA$ Activated.!ManaAbility | ValidActivatingPlayer$ You | TriggerZones$ Battlefield | Execute$ TrigDraw | TriggerDescription$ X.\nSVar:TrigDraw:DB$ Draw | NumCards$ 1\n"
+    );
+    let found = &abilities(&text)[0]["Triggered"]["when"]["Did"];
+    assert_eq!(found.get("what").cloned(), what, "{found}");
 }
