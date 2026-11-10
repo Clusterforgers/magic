@@ -178,6 +178,7 @@ pub(crate) async fn get_one(
                 oracle_id: card.oracle_id.to_string(),
                 printing_id: printing_id.clone(),
                 count: entry.count,
+                by_hand: false,
             });
             let hit = match &line {
                 Some(line) => loaded.view(line).map(|view| view.card),

@@ -1,9 +1,9 @@
 /**
- * The moments of a batch that every seat is meant to see: cards a player revealed and dice a player rolled. Pure: what
- * stands, for how long and how large. `store.ts` holds them, `TableMoments.tsx` draws them.
+ * The moments of a batch that every seat is meant to see: cards a player revealed, dice a player rolled and coins a player
+ * flipped. Pure: what stands, for how long and how large. `store.ts` holds them, `TableMoments.tsx` draws them.
  */
 import type { LogEntry } from '@/play/store'
-import type { Event, ObjectView, PlayerId } from '@/protocol/generated'
+import type { CoinSide, Event, ObjectView, PlayerId } from '@/protocol/generated'
 import { eventContexts } from '../eventContext'
 
 /** Cards a player revealed to every seat. */
@@ -27,14 +27,28 @@ export interface RollMoment {
   why: string | null
 }
 
+/** A coin a player flipped, for an effect or by hand: the side it came up and, for an effect, the call and whether it won. */
+export interface CoinMoment {
+  kind: 'coin'
+  key: string
+  player: PlayerId
+  side: CoinSide
+  /** What the player called, and whether the call matched; null for a coin flipped by hand, which nobody calls. */
+  call: { side: CoinSide; won: boolean } | null
+  why: string | null
+}
+
 /** One thing that stands over the table for a while. */
-export type Moment = RevealMoment | RollMoment
+export type Moment = RevealMoment | RollMoment | CoinMoment
 
 /** How long a reveal stands before it goes by itself, in ms; a click, Escape or Dismiss ends it sooner. */
 export const REVEAL_MS = 6000
 
 /** How long a die stands: the roll takes `ROLL_TICKS` ticks, the result stays the rest of the time, in ms. */
 export const ROLL_MS = 3600
+
+/** How long a coin turns in the air before it lands, in ms; the moment stands `ROLL_MS` in all. */
+export const COIN_FLIP_MS = 1000
 
 /** The most moments on screen together; the oldest goes when a newer one comes. */
 export const MOST_MOMENTS = 3
@@ -66,6 +80,19 @@ function rollOf(event: Payload): { player: PlayerId; sides: number; result: numb
   return null
 }
 
+/** The coin a public event flipped, with who flipped it, the side and the call; null for any other event. */
+function coinOf(event: Payload): Omit<CoinMoment, 'kind' | 'key' | 'why'> | null {
+  if ('CoinFlipped' in event) {
+    const { player, won, call, side } = event.CoinFlipped
+    return { player, side, call: { side: call, won } }
+  }
+  if ('ManualRolled' in event) {
+    const { player, kind, result } = event.ManualRolled
+    return 'Coin' in kind ? { player, side: result === 1 ? 'Heads' : 'Tails', call: null } : null
+  }
+  return null
+}
+
 /**
  * The moments of a batch, in the order of its events. A reveal is public (`Event::Revealed`), so every seat has one;
  * a look at a library (`LibraryLooked`) is the looker's alone and a hidden event names no card, so neither makes a
@@ -84,6 +111,11 @@ export function momentsOf({ entries, nameOf }: MomentInput): Moment[] {
     if ('Revealed' in event) {
       const cards = entry.seen ?? []
       if (cards.length > 0) moments.push({ kind: 'reveal', key, player: event.Revealed.player, cards, why })
+      return
+    }
+    const coin = coinOf(event)
+    if (coin !== null) {
+      moments.push({ kind: 'coin', key, ...coin, why })
       return
     }
     const roll = rollOf(event)

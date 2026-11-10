@@ -1,7 +1,7 @@
 /** The create-game form as plain data: defaults, edits, the server's own checks, and the request body. */
 import { requestRules, rulesFromTexts } from '@/lib/houseRules'
 import type { GameFormat, RuleTexts } from '@/lib/houseRules'
-import { COMMANDER_POD, MAX_NAME_CHARS, MIN_SEATS } from '@/lib/limits'
+import { COMMANDER_POD, MAX_FORM_SEATS, MAX_NAME_CHARS, MIN_SEATS } from '@/lib/limits'
 import type { CreateGameRequest, DeckInfo } from '@/net/api'
 import type { Visibility } from '@/protocol/generated'
 
@@ -84,10 +84,12 @@ export function defaultDraft(
   return host === undefined || first === undefined ? draft : editSeat(draft, first.id, { name: host })
 }
 
-/** The count a typed text names, or null when it is not a whole number from `MIN_SEATS` up. */
+/** The count a typed text names, or null when it is not a whole number from `MIN_SEATS` to `MAX_FORM_SEATS`. */
 export function seatsTyped(text: string): number | null {
   const count = Number(text)
-  return text.trim() !== '' && Number.isInteger(count) && count >= MIN_SEATS ? count : null
+  return text.trim() !== '' && Number.isInteger(count) && count >= MIN_SEATS && count <= MAX_FORM_SEATS
+    ? count
+    : null
 }
 
 /** The form with one more seat. */
@@ -101,10 +103,10 @@ export function removeSeat(draft: Draft, id: number): Draft {
   return { ...draft, seats: draft.seats.filter((seat) => seat.id !== id) }
 }
 
-/** The form with `count` seats (at least `MIN_SEATS`, no most): new ones at the end, or the last ones gone. A count that is not a number leaves it as it was. */
+/** The form with `count` seats (from `MIN_SEATS` to `MAX_FORM_SEATS`): new ones at the end, or the last ones gone. A count that is not a number leaves it as it was. */
 export function resizeSeats(draft: Draft, decks: readonly DeckInfo[], count: number): Draft {
   if (!Number.isFinite(count)) return draft
-  const target = Math.max(MIN_SEATS, Math.trunc(count))
+  const target = Math.min(MAX_FORM_SEATS, Math.max(MIN_SEATS, Math.trunc(count)))
   if (target === draft.seats.length) return draft
   let next = draft
   while (next.seats.length < target) next = withSeat(next, decks)

@@ -79,10 +79,18 @@ export function planCorner(input: CornerInput): CornerPlan | null {
   return best
 }
 
-/** The room a pod column leaves for the corner: its height less the pod's padding, the blocks above and the gap between. */
-export function cornerHeight(column: number | null, above: number | null): number | null {
+/**
+ * The room a pod column leaves for the corner: its height less the pod's padding, the blocks above and the gap
+ * between, and the chips `below` it (with their gap) where a cramped column lays them there.
+ */
+export function cornerHeight(
+  column: number | null,
+  above: number | null,
+  below: number | null = null,
+): number | null {
   if (column === null || above === null) return null
-  return Math.max(0, column - 2 * POD_PAD_PX - above - POD_GAP_PX)
+  const under = below === null || below <= 0 ? 0 : below + POD_GAP_PX
+  return Math.max(0, column - 2 * POD_PAD_PX - above - POD_GAP_PX - under)
 }
 
 /** A pod column shorter than this (px) cannot hold the pod's full blocks and the least picture: the pod folds its chips into the name and pool rows. */

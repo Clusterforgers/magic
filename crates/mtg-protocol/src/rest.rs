@@ -49,7 +49,7 @@ pub use precons::{
     PRECON_DECK_PREFIX, PreconBoard, PreconCardView, PreconErrorCode, PreconList, PreconListItem,
     PreconView,
 };
-pub use prefs::{MAX_DEFAULT_STOPS, UserPrefs};
+pub use prefs::{MAX_AUTO_YIELDS, MAX_DEFAULT_STOPS, UserPrefs, default_stops};
 pub use reads::{CardDraft, MyRead, ReadBody, ReadCard, ReadQueue, ReadQueueCard, ReadVerdict};
 
 /// Fewest characters in a username.

@@ -22,6 +22,7 @@ export function usePrefsSync(enabled: boolean, api: PrefsApi = prefsApi): void {
             default_stops: [...prefs.defaultStops],
             end_turn_by_hand: prefs.endTurnByHand,
             auto_choices: prefs.autoChoices,
+            auto_yields: [...prefs.autoYields],
           })
           .catch(() => {
             // The change stays for this page; the next one tries again.
@@ -36,6 +37,7 @@ export function usePrefsSync(enabled: boolean, api: PrefsApi = prefsApi): void {
             defaultStops: loaded.default_stops,
             endTurnByHand: loaded.end_turn_by_hand,
             autoChoices: loaded.auto_choices,
+            autoYields: loaded.auto_yields,
           },
           (prefs) => {
             if (!stale) save(prefs)

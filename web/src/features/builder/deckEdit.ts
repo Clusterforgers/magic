@@ -10,6 +10,8 @@ export interface Line {
   card: CardHit
   count: number
   printingId: string | null
+  /** The owner plays the card by hand: the game hosts it as a manual card whatever its rules. */
+  byHand?: boolean
 }
 
 /** What the builder edits: the fields of a save, with the cards as lines that carry the whole card. */
@@ -73,12 +75,14 @@ export function draftOf(view: Pick<DeckView, 'name' | 'format' | 'notes' | 'card
         card: stored.card,
         count: stored.count,
         printingId: stored.printing_id,
+        ...(stored.by_hand === true ? { byHand: true } : {}),
       })
     } else {
       lines[existing] = {
         ...line,
         count: line.count + stored.count,
         printingId: line.printingId ?? stored.printing_id,
+        ...(line.byHand === true || stored.by_hand === true ? { byHand: true } : {}),
       }
     }
   }
@@ -91,7 +95,24 @@ const bodyLines = (lines: readonly Line[]): DeckLineBody[] =>
     oracle_id: line.card.oracle_id,
     printing_id: line.printingId,
     count: line.count,
+    ...(line.byHand === true ? { by_hand: true } : {}),
   }))
+
+/** Whether the owner plays `oracleId` by hand: a card is played by hand when any of its lines says so. */
+export const isByHand = (draft: Draft, oracleId: string): boolean =>
+  draft.lines.some((line) => line.card.oracle_id === oracleId && line.byHand === true)
+
+/** Marks every line of `oracleId` "play by hand" (`on`) or clears the mark; the same draft when nothing changes. */
+export function setByHand(draft: Draft, oracleId: string, on: boolean): Draft {
+  let changed = false
+  const lines = draft.lines.map((line) => {
+    if (line.card.oracle_id !== oracleId || (line.byHand === true) === on) return line
+    changed = true
+    const { byHand: _, ...rest } = line
+    return on ? { ...rest, byHand: true } : rest
+  })
+  return changed ? { ...draft, lines } : draft
+}
 
 /** The body of `PUT /api/decks/{id}` for a draft: the name trimmed, the lines in the draft's order. */
 export const bodyOf = (draft: Draft): DeckBody => ({
@@ -109,7 +130,7 @@ export const checkRequestOf = ({ format, lines }: Pick<Draft, 'format' | 'lines'
 })
 
 const key = (line: Line): string =>
-  `${line.zone}|${line.card.oracle_id}|${line.printingId ?? ''}|${line.count}`
+  `${line.zone}|${line.card.oracle_id}|${line.printingId ?? ''}|${line.count}${line.byHand === true ? '|by-hand' : ''}`
 
 /**
  * What the deck check sees of a draft, as text: the format and the lines in any order. Drafts with equal keys have

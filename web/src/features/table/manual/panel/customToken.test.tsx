@@ -1,4 +1,4 @@
-// Goal: the Tokens row of the Commands panel also makes a custom creature: "Custom creature…" asks for a name, a power and a toughness, builds the same CreateToken action the card menu's form built (a creature with no colour, the name as its one subtype when it is letters only), says what is wrong before Apply, and leaves the common tokens as they were.
+// Goal: the Tokens row of the Commands panel also makes a custom creature: "Custom creature…" asks for a name, a power and a toughness, builds the same CreateToken action the card menu's form built (a creature, the name as its one subtype when it is letters only and no subtypes are typed), also takes colors, artifact and enchantment types and typed subtypes, says what is wrong before Apply, and leaves the common tokens as they were.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { ManualAction } from '@/protocol/generated'
@@ -46,6 +46,29 @@ describe('the preview of a custom creature', () => {
       'Create 1 Elf 2 1/1 token',
       creature('Elf 2', 1, 1, []),
     ],
+    [
+      'colors, types and typed subtypes',
+      custom({
+        name: 'Construct',
+        colors: ['Blue', 'White'],
+        artifact: true,
+        enchantment: true,
+        subtypes: 'Golem, Spirit  golem',
+      }),
+      1,
+      '1 Construct 2/3 white blue artifact enchantment creature token enters under your control',
+      'Create 1 Construct 2/3 token',
+      {
+        Custom: {
+          name: 'Construct',
+          colors: ['White', 'Blue'],
+          types: ['Artifact', 'Enchantment', 'Creature'],
+          subtypes: ['Golem', 'Spirit', 'golem'],
+          power: 2,
+          toughness: 3,
+        },
+      },
+    ],
   ])('says and builds %s', (_name, draft, amount, preview, apply, token) => {
     expect(tokenPreview(draft, amount)).toEqual({
       preview,
@@ -55,6 +78,7 @@ describe('the preview of a custom creature', () => {
   })
 
   const STATS = 'Power and toughness are whole numbers from 0 to 99.'
+  const SUBTYPES = 'Subtypes are up to 6 words of letters, apart by spaces or commas.'
   const NAME = 'Name the token in 1 to 40 characters.'
   it.each<[string, TokenDraft, string]>([
     ['no name', custom({ name: ' ' }), NAME],
@@ -63,6 +87,8 @@ describe('the preview of a custom creature', () => {
     ['a negative toughness', custom({ toughness: -1 }), STATS],
     ['a power that is not a whole number', custom({ power: 1.5 }), STATS],
     ['an emptied power', custom({ power: Number.NaN }), STATS],
+    ['a subtype with a digit', custom({ subtypes: 'Elf2' }), SUBTYPES],
+    ['seven subtypes', custom({ subtypes: 'a b c d e f g' }), SUBTYPES],
   ])('refuses %s and sends nothing', (_name, draft, problem) => {
     expect(tokenPreview(draft, 1)).toEqual({ problem })
   })
@@ -123,6 +149,31 @@ describe('the Tokens row', () => {
     await user.click(form.getByRole('button', { name: 'Create 2 Knight 2/3 tokens' }))
     expect(manual).toHaveBeenCalledWith({
       CreateToken: { token: creature('Knight', 2, 3, ['Knight']), count: 2 },
+    })
+  })
+
+  it('sends the colors, types and subtypes ticked and typed in the form', async () => {
+    const { user, form, manual } = await openRow()
+    await user.selectOptions(form.getByRole('combobox', { name: 'Token' }), CUSTOM)
+    await user.type(form.getByLabelText('Name of the token'), 'Gearhulk')
+    await user.click(form.getByRole('checkbox', { name: 'Red' }))
+    await user.click(form.getByRole('checkbox', { name: 'Artifact' }))
+    await user.type(form.getByLabelText(/^Subtypes/), 'Construct')
+    await user.click(form.getByRole('button', { name: /^Create 1 Gearhulk/ }))
+    expect(manual).toHaveBeenCalledWith({
+      CreateToken: {
+        token: {
+          Custom: {
+            name: 'Gearhulk',
+            colors: ['Red'],
+            types: ['Artifact', 'Creature'],
+            subtypes: ['Construct'],
+            power: 1,
+            toughness: 1,
+          },
+        },
+        count: 1,
+      },
     })
   })
 

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT deck_id, zone, oracle_id, printing_id, count\n           FROM deck_cards WHERE deck_id = ANY($1) ORDER BY deck_id, position",
+  "query": "SELECT deck_id, zone, oracle_id, printing_id, count, by_hand\n           FROM deck_cards WHERE deck_id = ANY($1) ORDER BY deck_id, position",
   "describe": {
     "columns": [
       {
@@ -57,6 +57,17 @@
             "name": "count"
           }
         }
+      },
+      {
+        "ordinal": 5,
+        "name": "by_hand",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "deck_cards",
+            "name": "by_hand"
+          }
+        }
       }
     ],
     "parameters": {
@@ -69,8 +80,9 @@
       false,
       false,
       true,
+      false,
       false
     ]
   },
-  "hash": "26c921af907e6e095a46069092c55b7b97bf2e62f8e88ace0f8fd1a7685357b7"
+  "hash": "32bfedd5dbe038e6244a50363b35404110b735579603fb677379e94cd6dd9df0"
 }

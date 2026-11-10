@@ -6,7 +6,7 @@ use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
 use crate::abilities::{AbilitySource, Cause, PutOnStack};
-use crate::choose::{Choice, Choices, Target};
+use crate::choose::{Choice, Choices, CoinSide, Target};
 use crate::combat::{AttackTarget, DamageForm, DamageTarget};
 use crate::copies::{AbilityCopy, BecameCopy, CardCopy, SpellCopy};
 use crate::counters::CountersChanged;
@@ -806,8 +806,14 @@ pub enum Event {
     CoinFlipped {
         /// Who flipped.
         player: PlayerId,
-        /// The flip was won.
+        /// The flip was won: the call matched the side the coin came up (CR 705.1).
         won: bool,
+        /// The side the player called.
+        #[serde(default)]
+        call: CoinSide,
+        /// The side the coin came up.
+        #[serde(default)]
+        side: CoinSide,
     },
     /// A player proliferated (CR 701.34): the counters it gave are the `CountersChanged` events that follow it.
     Proliferated {

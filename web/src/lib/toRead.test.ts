@@ -52,6 +52,7 @@ describe('the address of the review screen', () => {
     [{ deck: '7d1c5b6e-0000-4000-8000-000000000001' }, '/read?deck=7d1c5b6e-0000-4000-8000-000000000001'],
     [{ precon: 'c18-adaptive-enchantment' }, '/read?precon=c18-adaptive-enchantment'],
     [{ precon: 'a b&c' }, '/read?precon=a%20b%26c'],
+    [{ mine: true as const }, '/read?mine=true'],
   ])('is %j at %s', (target, path) => {
     expect(readPath(target)).toBe(path)
   })

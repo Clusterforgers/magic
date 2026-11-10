@@ -3200,7 +3200,7 @@ impl Pass<'_> {
                 }
                 ChoiceOption::Label(name) => Some(Chosen::CreatureType(Subtype(name))),
                 ChoiceOption::Player(player) => Some(Chosen::Player(player)),
-                ChoiceOption::Secret(_) => None,
+                ChoiceOption::Secret(_) | ChoiceOption::Side(_) => None,
             }
         })))
     }

@@ -1,8 +1,9 @@
 // Goal: the session sends one flat SetStop or FullControl message per request, changes the store only when the server says so, never sends a stop for a step the server refuses (untap, cleanup) or anything while the socket is closed, and asks for no yield while Full Control is on.
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { FullControlMode, Step, StopSide } from '@/protocol/generated'
 import { startSession } from '@/test-utils/harness'
 import { welcome } from '@/test-utils/socketSetup'
+import { resetDefaultStops } from './flowPrefs'
 import { canHoldStop, STOP_STEPS } from './stops'
 
 const SIDES: StopSide[] = ['Own', 'Opponent']
@@ -43,6 +44,9 @@ describe('which steps can hold a stop', () => {
 })
 
 describe('setStop', () => {
+  // A seat that saved no stops is sent the pinned defaults at Welcome; these tests count the frames of one press.
+  beforeEach(resetDefaultStops)
+
   it.each(cases(STOP_STEPS))('sends %s %s on=%s keep=%s as one flat message', (side, step, on, keep) => {
     const h = startSession()
     h.join()

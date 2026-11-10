@@ -53,7 +53,7 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
     ? `Ability of ${object.name}${object.rules_text === undefined ? '' : ` (${object.rules_text})`}, controlled`
     : `${cardLabel(object, null)}, cast`
   return (
-    <li className={cn('shrink-0', hidden && 'invisible')} aria-hidden={hidden || undefined}>
+    <li className={cn('max-w-full shrink-0', hidden && 'invisible')} aria-hidden={hidden || undefined}>
       <button
         type="button"
         data-object-id={hidden ? undefined : id}
@@ -66,7 +66,7 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
         {...(hidden ? {} : handlers)}
         className={cn(
           'relative flex h-8 items-center gap-1.5 rounded-lg border bg-background px-2 text-sm font-medium outline-offset-2 outline-primary focus-visible:outline-2',
-          top ? 'max-w-72 border-primary' : 'max-w-48',
+          top ? 'max-w-[min(18rem,100%)] border-primary' : 'max-w-[min(12rem,100%)]',
           empty && 'border-dashed',
         )}
       >
@@ -142,7 +142,7 @@ function useFitCount(list: RefObject<HTMLOListElement | null>, items: number): n
  * opens the Stack tab, so the row never scrolls or runs out of the strip. One tab stop, moved with the arrow keys;
  * hover or focus previews the card. Nothing is drawn while the stack is empty. The top chip names what it aims at
  * ("→ Hill Giant") beside a dot in its controller's colour and is where the arrows to the targets start; a chip that
- * is hovered or focused draws its own arrows (`combat/stackArrows.ts`).
+ * is hovered or focused draws its own arrows, and a folded chip those of every item in its run (`combat/stackArrows.ts`).
  */
 export function StackChips() {
   const ids = usePlay(useShallow(stackTopFirst))

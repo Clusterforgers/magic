@@ -271,6 +271,18 @@ fn take(driver: &mut Driver, action: ManualAction) {
         assert!(chars.colors.contains(Color::Black));
         assert!(chars.is_creature());
     })]
+#[case::copies_of_an_opponents_permanent(
+    |i: &Ids| ManualAction::CopyToken { object: i.theirs, count: 2 },
+    |d: &Driver, i: &Ids| {
+        let made = tokens_named(d, "Theirs");
+        assert_eq!(made.len(), 2);
+        for id in made {
+            let object = d.state().object(id).unwrap();
+            assert_eq!(object.controller(), pid(0));
+            assert!(object.copy_effect().is_some());
+        }
+        assert!(d.state().object(i.theirs).unwrap().copy_effect().is_none());
+    })]
 #[case::tapping(|i: &Ids| ManualAction::Tap { object: i.mine },
     |d: &Driver, i: &Ids| assert!(tapped_now(d, i.mine)))]
 #[case::tapping_an_opponents_permanent(|i: &Ids| ManualAction::Tap { object: i.theirs },
@@ -444,6 +456,15 @@ fn custom(name: &str, types: Vec<CardType>, stats: Option<(i32, i32)>) -> Manual
     |_: &Ids| ManualRefusal::OutOfRange("the number of tokens"))]
 #[case::too_many_tokens(
     |_: &Ids| ManualAction::CreateToken { token: ManualToken::Common(CommonToken::Soldier), count: 11 },
+    |_: &Ids| ManualRefusal::OutOfRange("the number of tokens"))]
+#[case::copying_a_card_in_hand(
+    |i: &Ids| ManualAction::CopyToken { object: i.hand_creature, count: 1 },
+    |i: &Ids| ManualRefusal::WrongZone { object: i.hand_creature, zone: Zone::Hand(pid(0)) })]
+#[case::no_copies(
+    |i: &Ids| ManualAction::CopyToken { object: i.mine, count: 0 },
+    |_: &Ids| ManualRefusal::OutOfRange("the number of tokens"))]
+#[case::too_many_copies(
+    |i: &Ids| ManualAction::CopyToken { object: i.mine, count: 11 },
     |_: &Ids| ManualRefusal::OutOfRange("the number of tokens"))]
 #[case::a_token_without_a_name(|_: &Ids| custom("  ", vec![CardType::Artifact], None),
     |_: &Ids| ManualRefusal::BadToken("a name of 1 to 40 characters"))]

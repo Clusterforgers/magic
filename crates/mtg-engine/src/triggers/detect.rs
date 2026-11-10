@@ -1149,7 +1149,9 @@ fn about_players_and_permanents(
         } => {
             found.push(Happened::W15cClashWon { player: *player });
         }
-        Event::CoinFlipped { player, won: true } => {
+        Event::CoinFlipped {
+            player, won: true, ..
+        } => {
             found.push(Happened::CoinFlipWon { player: *player });
         }
         Event::Amassed { player, .. } => found.push(Happened::Amassed { player: *player }),

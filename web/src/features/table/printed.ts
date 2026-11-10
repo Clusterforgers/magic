@@ -36,7 +36,13 @@ function ask(oracleId: string): void {
   fetcher(oracleId).then(
     (detail) =>
       settle(
-        detail.faces.map(({ name, power, toughness, loyalty }) => ({ name, power, toughness, loyalty })),
+        detail.faces.map(({ name, power, toughness, loyalty, defense }) => ({
+          name,
+          power,
+          toughness,
+          loyalty,
+          defense,
+        })),
       ),
     () => settle('unavailable'),
   )

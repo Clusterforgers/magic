@@ -3,9 +3,9 @@
  * the signed-in account and replace them. The answer is the generated `UserPrefs`, checked at runtime; a failure
  * rejects with `PrefsError`. Every request carries the session cookie (`credentials: 'include'`).
  */
-import type { AutoChoices, Stop, UserPrefs } from '@/protocol/generated'
+import type { AutoChoices, AutoYield, Stop, UserPrefs } from '@/protocol/generated'
 import type { Fetch } from './api'
-import { isFlag, isListOf, isRecord } from './check'
+import { isFlag, isListOf, isRecord, isText } from './check'
 
 /** A preference call that did not work: the server refused it, could not be reached or answered something unreadable. */
 export class PrefsError extends Error {
@@ -55,18 +55,24 @@ function isAutoChoices(
   )
 }
 
+function isAutoYield(value: unknown): value is AutoYield {
+  return isRecord(value) && isText(value.name) && isText(value.text)
+}
+
 function readPrefs(body: unknown): UserPrefs | null {
   if (
     !isRecord(body) ||
     !isListOf(body.default_stops, isStop) ||
     !isFlag(body.end_turn_by_hand) ||
-    !isAutoChoices(body.auto_choices)
+    !isAutoChoices(body.auto_choices) ||
+    (body.auto_yields !== undefined && !isListOf(body.auto_yields, isAutoYield))
   )
     return null
   return {
     default_stops: body.default_stops,
     end_turn_by_hand: body.end_turn_by_hand,
     auto_choices: { ...body.auto_choices, smart_stops: body.auto_choices.smart_stops ?? false },
+    auto_yields: body.auto_yields === undefined ? [] : body.auto_yields,
   }
 }
 

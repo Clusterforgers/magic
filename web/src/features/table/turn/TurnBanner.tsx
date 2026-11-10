@@ -78,8 +78,9 @@ export function TurnBanner() {
           {announcement}
         </p>
       ) : null}
-      {/* The bar's spacer: the free room after the step ladder, whether or not the banner shows. */}
-      <div ref={room} data-slot="turn-banner-room" className="relative h-full min-w-px flex-1">
+      {/* The bar's spacer: the free room after the step ladder, whether or not the banner shows. From 1024 px it keeps
+          BANNER_BAR_MIN_PX (7rem), so the badge's step words are cut before the banner leaves the bar. */}
+      <div ref={room} data-slot="turn-banner-room" className="relative h-full min-w-px flex-1 lg:min-w-28">
         {on && place === 'bar' ? band : null}
       </div>
       {on && place === 'below' ? band : null}

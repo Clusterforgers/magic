@@ -740,6 +740,58 @@ impl CardSource {
         }
     }
 
+    /// The definitions of the cards of `ids` as their deck's owner plays them by hand, by id: the printed side alone,
+    /// its text left to the table (`mtg_cards::assemble_by_hand`), whatever rules `rules` holds for it.
+    async fn by_hand_in(
+        &self,
+        rules: &Library,
+        ids: &[String],
+    ) -> Result<BTreeMap<String, Arc<CardDefinition>>, CatalogError> {
+        if ids.is_empty() {
+            return Ok(BTreeMap::new());
+        }
+        let asked: Vec<OracleId> = ids.iter().map(|id| OracleId(canonical(id))).collect();
+        let found = self
+            .db
+            .cards()
+            .get_many(&asked)
+            .await
+            .map_err(|error| CatalogError::Database(error.to_string()))?;
+        let by_id: BTreeMap<String, &Card> = found
+            .iter()
+            .map(|card| (canonical(card.oracle_id.as_str()), card))
+            .collect();
+        let mut cards = BTreeMap::new();
+        let mut missing = Vec::new();
+        for id in ids {
+            let Some(card) = by_id.get(&canonical(id)) else {
+                missing.push(id.clone());
+                continue;
+            };
+            let printed = printed_card(card);
+            let record = rules.support(&printed, &self.caps);
+            let assembled = mtg_cards::assemble_by_hand(&printed, &record, &self.caps);
+            cards.insert(id.clone(), Arc::new(identified(assembled.definition, id)));
+        }
+        if missing.is_empty() {
+            Ok(cards)
+        } else {
+            Err(CatalogError::NotFound { ids: missing })
+        }
+    }
+
+    /// [`CardSource::by_hand_in`] with the library as it is now.
+    pub(crate) async fn by_hand(
+        &self,
+        ids: &[String],
+    ) -> Result<BTreeMap<String, Arc<CardDefinition>>, CatalogError> {
+        if ids.is_empty() {
+            return Ok(BTreeMap::new());
+        }
+        let (rules, _) = self.library().await?;
+        self.by_hand_in(&rules, ids).await
+    }
+
     /// The cards that `seeds` can conjure, by the name a conjure asks for, and the drafts they play on: a name the card
     /// index resolves to exactly one card is assembled in `rules` as any card of a deck is (a card without rules
     /// arrives with its printed side and is played by hand), and the cards it can conjure follow in turn. A name that
@@ -860,7 +912,8 @@ impl CardSource {
             .filter_map(|id| catalog.get(id).cloned())
             .collect();
         let (conjured, _) = self.conjured_in(&rules, &seeds).await?;
-        Ok(catalog.with_conjured(conjured))
+        let by_hand = self.by_hand_in(&rules, &recipe.by_hand_ids()).await?;
+        Ok(catalog.with_conjured(conjured).with_by_hand(by_hand))
     }
 }
 

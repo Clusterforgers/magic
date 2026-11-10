@@ -1,5 +1,5 @@
 // Goal: the precon page lists every precon with its deck check as an icon and words, filters by search, set and state, shows the loading, empty, failed and no-card-data states, opens the details with each card's mark and clauses and a Copy list of the cards that are not Verified, and Play makes a game with `precon:<code>` (one click for an account, a name first for a guest) and opens its lobby, while a deck the game cannot take has a disabled Play and a 422 says so.
-import { screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AuthContext } from '@/features/auth/context'
@@ -181,6 +181,45 @@ describe('favourites', () => {
   })
 })
 
+describe('the order', () => {
+  const names = () => rows().map((row) => within(row).getByRole('rowheader').textContent ?? '')
+  const sortBy = () => screen.getByRole('combobox', { name: 'Sort by' })
+
+  it.each([
+    ['newest', 'Precons, newest release first', 'Eldrazi Unbound'],
+    ['name', 'Precons by name', 'Adaptive Enchantment'],
+    ['favorites', 'Precons, your favorites first', 'Izzet Challenger'],
+  ] as const)('lists %s and keeps the choice', async (sort, caption, first) => {
+    const page = await open({ user: 'Ada_L', starred: ['chl-izzet-challenger'] })
+    await listed()
+    await page.user.selectOptions(sortBy(), sort)
+    expect(await screen.findByRole('table', { name: caption })).toBeInTheDocument()
+    expect(names()[0]).toContain(first)
+    expect(window.localStorage.getItem('magic.preconSort')).toBe(sort)
+  })
+
+  it('puts a precon starred on the page among the favorites', async () => {
+    const page = await open({ user: 'Ada_L', starred: ['chl-izzet-challenger'] })
+    await listed()
+    await page.user.selectOptions(sortBy(), 'favorites')
+    await page.user.click(
+      within(rowOf('Arcane Maelstrom')).getByRole('button', {
+        name: 'Add Arcane Maelstrom to your favourites',
+      }),
+    )
+    expect(names().slice(0, 2).join('|')).toMatch(/Arcane Maelstrom.*\|.*Izzet Challenger/)
+  })
+
+  it('offers a guest no favorites first and lists a kept one newest first', async () => {
+    window.localStorage.setItem('magic.preconSort', 'favorites')
+    await open()
+    expect(await listed()).toBeInTheDocument()
+    expect(sortBy()).toHaveValue('newest')
+    const option = within(sortBy()).getByRole('option', { name: 'Favorites first (sign in)' })
+    expect(option).toBeDisabled()
+  })
+})
+
 describe('the reads', () => {
   const READS = [
     checked(preconItem({ code: 'r1', name: 'On Reads', set: 'RRR' }), { read: 4 }),
@@ -307,6 +346,18 @@ describe('the details', () => {
     expect(within(main).queryByText('Sol Ring')).toBeNull()
     expect(within(main).getByText('Seer')).toBeInTheDocument()
     expect(screen.queryByRole('region', { name: /Commander/ })).toBeNull()
+  })
+
+  it('draws each card with its picture and shows the large picture on a mouse hover of its name', async () => {
+    const page = await open({ views: [view] })
+    await listed()
+    await page.user.click(screen.getByRole('button', { name: 'Details of Eldrazi Unbound' }))
+    const dialog = await screen.findByRole('dialog', { name: 'Eldrazi Unbound' })
+    const main = await within(dialog).findByRole('region', { name: /Main deck/ })
+    const row = within(main).getByText('Sol Ring').closest('li') as HTMLElement
+    expect(row.querySelector('img')).toHaveAttribute('src', '/api/images/oracle/oracle-sol-ring/0/small')
+    act(() => fireEvent.pointerEnter(within(row).getByText('Sol Ring'), { pointerType: 'mouse' }))
+    expect(document.querySelector('[data-slot="hover-picture"]')).not.toBeNull()
   })
 
   it('copies the cards that are not Verified, a block each with its clauses quoted beside the reasons', async () => {

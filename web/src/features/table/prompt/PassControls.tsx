@@ -16,8 +16,10 @@ import { InControlsDock } from '../ControlsDock'
 import { useDockForm } from '../dockLayout'
 import { usePrompt } from './PromptContext'
 import {
+  endTurnShown,
   enterYields,
   KEY_LEGEND,
+  lastWindow,
   passSituation,
   primaryDescription,
   primaryLabel,
@@ -40,13 +42,14 @@ export function topYieldable(state: PlayState): ObjectView | undefined {
 const KEY_CAP = 'ml-1 inline-block rounded border px-1 text-xs leading-4 font-normal'
 
 /**
- * The ways to pass priority, for a Priority prompt: a primary button that says what passing does now ("Next: Combat",
- * "Resolve Lightning Bolt", "End turn", "Continue"), "End turn" beside it to pass until the turn ends, and a small menu
- * with "Resolve everything on the stack", "Always yield to <ability>" (over an ability every player can read) and "Pass
- * until my next turn". The yields are the server's: it passes for the seat and says so, and the prompt goes with its
- * first pass. With nothing holding the keyboard Space passes once and
- * Enter ends the turn (the "End turn" button), or passes once where there is no such button: under Full Control, which
- * the server does not let a yield run beside, and in the last window of the turn, where the primary button ends it.
+ * The ways to pass priority, for a Priority prompt: a primary button that passes once and says what that does now
+ * ("Next: Combat", "Resolve Lightning Bolt", "Continue"), "End turn" beside it to pass until the turn ends, and a small
+ * menu with "Resolve everything on the stack", "Always yield to <ability>" (over an ability every player can read) and
+ * "Pass until my next turn". Resolve and End turn are never one button: in the last window of the viewer's turn the
+ * primary button is not drawn and "End turn" alone moves on, so a Resolve pressed twice never ends the turn. The
+ * yields are the server's: it passes for the seat and says so, and the prompt goes with its first pass. With nothing
+ * holding the keyboard Space passes once and Enter ends the turn (the "End turn" button); under Full Control, which the
+ * server does not let a yield run beside, Enter passes once.
  * On the table the buttons are drawn in the controls dock at the bottom right (`InControlsDock`), not in the prompt;
  * the dock's form (`useDockForm`) says whether they carry key hints and the spell's name or keep to short words.
  */
@@ -73,19 +76,23 @@ export function PassControls({ canPass }: { canPass: boolean }) {
     if (session.autoYield(id)) setAsked(true)
   }
   const topAbility = usePlay(topYieldable)
-  const yieldKey = enterYields(situation, !canYield)
+  const yieldKey = enterYields(!canYield)
+  const endTurn = yieldKey ? () => yieldTo('EndOfTurn') : pass
   const form = useDockForm()
-  // The dock of a phone has no room for "End turn" beside the primary button, so the menu holds it.
+  const last = lastWindow(situation)
+  // The dock of a phone has no room for "End turn" beside the primary button, so the menu holds it; in the last
+  // window there is no primary button and "End turn" stands in the dock.
   const compact = form === 'compact'
   const full = form === 'full'
-  usePrimaryKey({ space: pass, enter: yieldKey ? () => yieldTo('EndOfTurn') : pass }, free)
+  const endTurnInDock = endTurnShown(situation, !canYield) && (!compact || last)
+  usePrimaryKey({ space: pass, enter: endTurn }, free)
 
   const label = primaryLabel(situation, form)
   // Where the dock has no room for key hints the buttons are as wide as their words need: the keys are in the tooltips and the menu.
   const padding = full ? 'px-4' : 'px-3'
   return (
     <InControlsDock>
-      {yieldKey && !compact ? (
+      {endTurnInDock ? (
         <Button
           data-slot="secondary-action"
           variant="outline"
@@ -94,7 +101,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
           title="Enter"
           aria-keyshortcuts="Enter"
           aria-description={YIELD_WORDS.EndOfTurn.description}
-          onClick={() => yieldTo('EndOfTurn')}
+          onClick={endTurn}
         >
           {YIELD_WORDS.EndOfTurn.action}
           {full ? (
@@ -115,7 +122,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
             <EllipsisVertical aria-hidden="true" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {yieldKey && compact ? (
+            {compact && !last ? (
               <DropdownMenuItem
                 data-yield="EndOfTurn"
                 aria-description={YIELD_WORDS.EndOfTurn.description}
@@ -160,22 +167,24 @@ export function PassControls({ canPass }: { canPass: boolean }) {
         </DropdownMenu>
       ) : null}
       {/* Last, so the primary button is the one in the corner of the dock and the last stop of its row. */}
-      <Button
-        data-slot="primary-action"
-        className={cn('h-11 min-w-0 max-sm:basis-full', padding)}
-        disabled={!free}
-        title={yieldKey ? 'Space' : 'Space or Enter'}
-        aria-keyshortcuts={yieldKey ? 'Space' : 'Space Enter'}
-        aria-description={primaryDescription(situation)}
-        onClick={pass}
-      >
-        <span className="truncate">{label}</span>
-        {full ? (
-          <kbd aria-hidden="true" data-slot="key-cap" className={`${KEY_CAP} border-primary-foreground/40`}>
-            {yieldKey ? 'Space' : 'Space · Enter'}
-          </kbd>
-        ) : null}
-      </Button>
+      {label === null ? null : (
+        <Button
+          data-slot="primary-action"
+          className={cn('h-11 min-w-0 max-sm:basis-full', padding)}
+          disabled={!free}
+          title={yieldKey ? 'Space' : 'Space or Enter'}
+          aria-keyshortcuts={yieldKey ? 'Space' : 'Space Enter'}
+          aria-description={primaryDescription(situation)}
+          onClick={pass}
+        >
+          <span className="truncate">{label}</span>
+          {full ? (
+            <kbd aria-hidden="true" data-slot="key-cap" className={`${KEY_CAP} border-primary-foreground/40`}>
+              {yieldKey ? 'Space' : 'Space · Enter'}
+            </kbd>
+          ) : null}
+        </Button>
+      )}
     </InControlsDock>
   )
 }

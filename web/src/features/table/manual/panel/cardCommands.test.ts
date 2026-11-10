@@ -40,7 +40,19 @@ describe('which commands a picked card offers', () => {
       'an untapped creature of the seat',
       card(),
       {},
-      ['move', 'counters', 'tap', 'damage', 'pump', 'grant', 'blocks', 'transform', 'sacrifice', 'give'],
+      [
+        'move',
+        'counters',
+        'tap',
+        'damage',
+        'pump',
+        'grant',
+        'blocks',
+        'transform',
+        'sacrifice',
+        'give',
+        'copy',
+      ],
     ],
     [
       'a summoning sick creature of the seat',
@@ -58,25 +70,38 @@ describe('which commands a picked card offers', () => {
         'transform',
         'sacrifice',
         'give',
+        'copy',
       ],
     ],
     [
       'a land',
       card({ types: ['Land'], subtypes: [] }),
       {},
-      ['move', 'counters', 'tap', 'damage', 'grant', 'transform', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'damage', 'grant', 'transform', 'sacrifice', 'give', 'copy'],
     ],
     [
       'an unattached Aura',
       card({ subtypes: ['Aura'], types: ['Enchantment'] }),
       {},
-      ['move', 'counters', 'tap', 'attach', 'damage', 'grant', 'transform', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'attach', 'damage', 'grant', 'transform', 'sacrifice', 'give', 'copy'],
     ],
     [
       'an attached Equipment',
       { ...EQUIPMENT, attached_to: 20 },
       {},
-      ['move', 'counters', 'tap', 'attach', 'unattach', 'damage', 'grant', 'transform', 'sacrifice', 'give'],
+      [
+        'move',
+        'counters',
+        'tap',
+        'attach',
+        'unattach',
+        'damage',
+        'grant',
+        'transform',
+        'sacrifice',
+        'give',
+        'copy',
+      ],
     ],
     [
       'a card in the seat hand',
@@ -112,19 +137,31 @@ describe('which commands a picked card offers', () => {
       'a creature of an opponent',
       card({ owner: 1, controller: 1 }),
       {},
-      ['move', 'counters', 'tap', 'pump', 'grant'],
+      ['move', 'counters', 'tap', 'pump', 'grant', 'copy'],
     ],
     [
       'a creature the seat controls and an opponent owns',
       card({ owner: 1 }),
       {},
-      ['move', 'counters', 'tap', 'damage', 'pump', 'grant', 'blocks', 'transform', 'sacrifice', 'give'],
+      [
+        'move',
+        'counters',
+        'tap',
+        'damage',
+        'pump',
+        'grant',
+        'blocks',
+        'transform',
+        'sacrifice',
+        'give',
+        'copy',
+      ],
     ],
     [
       'a token of the seat',
       card({ kind: 'Token' }),
       {},
-      ['move', 'counters', 'tap', 'damage', 'pump', 'grant', 'blocks', 'sacrifice', 'give'],
+      ['move', 'counters', 'tap', 'damage', 'pump', 'grant', 'blocks', 'sacrifice', 'give', 'copy'],
     ],
   ])('%s: %j', (_name, object, over, expected) => {
     expect(ids(object, over)).toEqual(expected)
@@ -141,7 +178,7 @@ describe('which commands a picked card offers', () => {
     expect(commands[0]?.unavailable).toMatch(/Only Bo/)
     expect(
       commands.filter((command) => command.unavailable === undefined).map((command) => command.id),
-    ).toEqual(['counters', 'tap', 'pump', 'grant'])
+    ).toEqual(['counters', 'tap', 'pump', 'grant', 'copy'])
   })
 
   it('names the tap row after what it does', () => {

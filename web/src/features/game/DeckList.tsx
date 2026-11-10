@@ -47,6 +47,8 @@ interface DeckListProps {
   /** Cards a view that was read knows for a deck whose row has no picture. */
   pictures(id: string): DeckEntry['pictures']
   /** The order of the rows, and the way to change it (the chooser keeps it for every list). */
+  /** Whether "Favorites first" is offered: only a signed-in player has starred precons. */
+  favoritesSort: boolean
   sort: SortKey
   onSort(sort: SortKey): void
   onSelect(entry: DeckEntry): void
@@ -88,6 +90,7 @@ export function DeckList({
   pendingId,
   colours,
   pictures,
+  favoritesSort,
   sort,
   onSort,
   onSelect,
@@ -205,7 +208,7 @@ export function DeckList({
               if (isSortKey(event.target.value)) onSort(event.target.value)
             }}
           >
-            {SORT_CHOICES.map((choice) => (
+            {SORT_CHOICES.filter((choice) => favoritesSort || choice.value !== 'favorites').map((choice) => (
               <NativeSelectOption key={choice.value} value={choice.value}>
                 {choice.label}
               </NativeSelectOption>

@@ -243,6 +243,16 @@ describe('the plays of a card', () => {
   it('has the abilities alone for a graveyard card', () => {
     expect(playsOf(10, 'Gem', options([]), found, []).map((play) => play.key)).toHaveLength(2)
   })
+
+  it.each<[string, boolean, string[]]>([
+    ['a Spirit Guide in the hand', true, ['Cast Guide', 'Add red mana, exiling it']],
+    ['a permanent', false, ['Cast Guide', 'Add red mana']],
+  ])('offers the cast and the mana of %s', (_name, exile, words) => {
+    const plays = playsOf(10, 'Guide', options([], { castable: [10] }), new Map(), [
+      { ...tap(0, 'Red'), exile },
+    ])
+    expect(plays.map((play) => play.words)).toEqual(words)
+  })
 })
 
 describe('what a screen reader hears', () => {

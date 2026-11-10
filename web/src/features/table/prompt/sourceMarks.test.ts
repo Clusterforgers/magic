@@ -1,4 +1,4 @@
-/** Goal: a source chip marks restricted mana `only`, the life and energy a use pays and the permanents or cards it takes, in a fixed order, and says when only some of its ways carry a mark. */
+/** Goal: a source chip marks restricted mana `only`, the life and energy a use pays, a source in the hand and the permanents or cards it takes, in a fixed order, and says when only some of its ways carry a mark. */
 import { describe, expect, it } from 'vitest'
 import type { ManaOption } from '@/protocol/generated'
 import { source } from '@/test-utils/mana'
@@ -32,6 +32,11 @@ describe('sourceMarks', () => {
       'an exiled hand card',
       [way({ takes: [{ count: 1, exile: true, from: [7] }] })],
       [['exile 1', 'exiles 1 card from your hand']],
+    ],
+    [
+      'a Spirit Guide in the hand',
+      [way({ exile: true, tapless: true }, 'R')],
+      [['from hand', 'exiles it from your hand']],
     ],
     [
       'every mark at once, in order',

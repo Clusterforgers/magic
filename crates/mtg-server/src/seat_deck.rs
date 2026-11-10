@@ -119,6 +119,7 @@ impl ChosenDeck {
                 commanders: commander_ids,
                 companion: None,
                 printings: Vec::new(),
+                by_hand: Vec::new(),
             },
             note,
             own_issues: Arc::from([]),
@@ -155,6 +156,16 @@ impl ChosenDeck {
         self.commanders = printed.split_off(library).into();
         self.cards = printed.into();
         *kept = printings;
+        self
+    }
+
+    /// The deck noting the oracle ids of the cards its owner plays by hand, so a resumed game hosts them alike; the
+    /// cards are already the definitions played by hand. A built-in deck has none and stays as it is.
+    #[must_use]
+    pub fn with_by_hand(mut self, ids: Vec<String>) -> ChosenDeck {
+        if let DeckRef::Oracle { by_hand, .. } = &mut self.deck {
+            *by_hand = ids;
+        }
         self
     }
 

@@ -4,7 +4,7 @@ import { usesWords } from './spendRules'
 
 /** One mark: the short word the chip shows and the sentence a screen reader and the tooltip get. */
 export interface SourceMark {
-  key: 'only' | 'life' | 'energy' | 'tap' | 'sacrifice' | 'exile'
+  key: 'only' | 'life' | 'energy' | 'hand' | 'tap' | 'sacrifice' | 'exile'
   short: string
   words: string
 }
@@ -27,8 +27,8 @@ function most(options: readonly ManaOption[], amount: (option: ManaOption) => nu
 }
 
 /**
- * The marks of the options of one source, in a fixed order: `only` for restricted mana, then life, energy and the
- * permanents or cards a use takes; a mark that only some ways carry says so in its words.
+ * The marks of the options of one source, in a fixed order: `only` for restricted mana, then life, energy, a source
+ * in the hand and the permanents or cards a use takes; a mark that only some ways carry says so in its words.
  */
 export function sourceMarks(options: readonly ManaOption[]): SourceMark[] {
   const some = (all: boolean): string => (all ? '' : ' for some mana')
@@ -57,6 +57,10 @@ export function sourceMarks(options: readonly ManaOption[]): SourceMark[] {
       short: `${energy.count} energy`,
       words: `pays ${energy.count} energy${some(energy.all)}`,
     })
+  }
+  // A card of the hand that exiles itself for its mana (a Spirit Guide).
+  if (options.some((option) => option.exile === true)) {
+    marks.push({ key: 'hand', short: 'from hand', words: 'exiles it from your hand' })
   }
   for (const kind of ['tap', 'sacrifice', 'exile'] as const) {
     const taken = most(options, (option) =>

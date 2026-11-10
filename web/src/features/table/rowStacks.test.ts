@@ -343,3 +343,22 @@ describe('40 permanents a seat in a duel', () => {
     expect(fit.hidden).toBeGreaterThan(0)
   })
 })
+
+describe('a lane whose last permanent died', () => {
+  const permanents = [land(1), land(2)]
+  const stacks = battlefieldStacks(state(permanents), 1)
+  const input = { box: BIG, stacks, facing: NEAR, opened: NOTHING, marked: NOTHING }
+
+  it('keeps its place in the fit while its ghost plays, and loses it after', () => {
+    const without = must(layoutSeat(input).fit)
+    const held = must(layoutSeat({ ...input, held: { creatures: 1 } }).fit)
+    const lanes = (fit: typeof held) => fit.bands.flatMap((band) => band.lanes.map((lane) => lane.lane))
+    expect(lanes(without)).not.toContain('creatures')
+    expect(lanes(held)).toContain('creatures')
+  })
+
+  it('counts a ghost only where the lane has no permanent left', () => {
+    const rows = layoutSeat(input).rows
+    expect(laneCounts(rows, { lands: 3, creatures: 2 })).toMatchObject({ lands: 1, creatures: 2 })
+  })
+})

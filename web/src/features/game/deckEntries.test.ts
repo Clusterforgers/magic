@@ -233,6 +233,7 @@ describe('sorting', () => {
     name,
     byHand,
     state,
+    favourite: name === 'Dune' || name === 'alder',
     counts: deckIn('verified').summary.counts,
   })
   const rows = [
@@ -248,6 +249,7 @@ describe('sorting', () => {
     ['default', ['Cedar', 'alder', 'Birch', 'Dune', 'Ash']],
     ['name', ['alder', 'Ash', 'Birch', 'Cedar', 'Dune']],
     ['hand', ['Birch', 'Ash', 'Cedar', 'alder', 'Dune']],
+    ['favorites', ['alder', 'Dune', 'Cedar', 'Birch', 'Ash']],
   ])('orders by %s', (sort, expected) => {
     expect(names(sort)).toEqual(expected)
   })

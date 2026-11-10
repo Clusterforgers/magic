@@ -18,6 +18,7 @@ describe('createReadsApi', () => {
   it.each([
     [{ deck: 'a b' }, '/api/reads?deck=a%20b'],
     [{ precon: 'c18-adaptive' }, '/api/reads?precon=c18-adaptive'],
+    [{ mine: true as const }, '/api/reads?mine=true'],
   ])('asks for the list of %j with the session cookie', async (target, url) => {
     const { api, calls } = serve(() => jsonResponse(200, READ_QUEUE))
     expect(await api.queue(target)).toEqual(READ_QUEUE)
