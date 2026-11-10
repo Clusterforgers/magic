@@ -91,7 +91,7 @@ fn pct(part: usize, whole: usize) -> String {
     if whole == 0 {
         return "-".into();
     }
-    format!("{:.0}%", 100.0 * part as f64 / whole as f64)
+    format!("{}%", (100 * part + whole / 2) / whole)
 }
 
 impl MutationScore {
