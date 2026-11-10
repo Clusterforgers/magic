@@ -39,6 +39,10 @@ pub struct TokenCreated {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub attacking: Option<AttackTarget>,
+    /// It enters blocking this attacking creature: it was never declared as a blocker, so nothing triggers on its block.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub blocking: Option<ObjectId>,
     /// Its characteristics and abilities, so a log folds to the same game with no card data at hand.
     #[cfg_attr(feature = "ts", ts(skip))]
     pub definition: Arc<CardDefinition>,
@@ -141,6 +145,17 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
             target_left: false,
         });
     }
+    // A creature put onto the battlefield blocking blocks that attacker, which is blocked from then on (CR 509.1h).
+    if let Some(attacker) = event.blocking
+        && let Some(attack) = state
+            .combat
+            .attackers
+            .iter_mut()
+            .find(|attack| attack.object == attacker)
+    {
+        attack.blocked = true;
+        attack.blockers.push(id);
+    }
     state.tally(event.controller, Tally::Tokens);
     state.log_event(
         mtg_cards::value::TallyEvent::TokenCreated,
@@ -197,6 +212,7 @@ mod tests {
             name: "Soldier".into(),
             tapped,
             attacking,
+            blocking: None,
             definition: Arc::new(
                 CardDefinition::new("Soldier")
                     .with_type(CardType::Creature)

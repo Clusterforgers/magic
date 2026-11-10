@@ -210,9 +210,13 @@ fn affected(ctx: &Ctx, p: &Params) -> Tr<Value> {
         // Every zone only in the wording the writer reads back.
         (None, Some(_))
             if p.get("AffectedZone") == Some("All")
-                && !p
-                    .get("Description")
-                    .is_some_and(|text| text.contains(". The same is true for ")) =>
+                && !p.get("Description").is_some_and(|text| {
+                    text.contains(". The same is true for ")
+                        || (p.get("Affected") == Some("Land.YouCtrl")
+                            && text.starts_with(
+                                "Lands you control and land cards you own that aren't on the battlefield ",
+                            ))
+                }) =>
         {
             unmapped("key:Static.Continuous.AffectedZone=All")
         }

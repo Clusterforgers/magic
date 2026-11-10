@@ -1040,6 +1040,7 @@ fn create_tokens(
                 name: definition.name.clone(),
                 tapped: false,
                 attacking: None,
+                blocking: None,
                 definition: Arc::clone(&definition),
             })
         })
@@ -1069,6 +1070,7 @@ fn copy_tokens(
                 name: definition.name.clone(),
                 tapped: false,
                 attacking: None,
+                blocking: None,
                 definition: Arc::clone(&definition),
             })
         })

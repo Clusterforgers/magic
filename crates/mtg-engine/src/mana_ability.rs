@@ -814,6 +814,7 @@ mod tests {
             name: "Gem Elf".into(),
             tapped: false,
             attacking: None,
+            blocking: None,
             definition: gem,
         };
         apply_event(&mut game, &Event::TokenCreated(entered)).unwrap();

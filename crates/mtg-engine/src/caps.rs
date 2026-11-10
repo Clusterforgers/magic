@@ -322,6 +322,7 @@ const RUNS: &[&str] = &[
     "Effect.BecomeCopy",
     "Copy.Duration.UntilYourNextTurn",
     "Copy.Except.ThisAbility",
+    "Copy.Except.SetPT.Amount",
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",

@@ -46,6 +46,7 @@ fn token(game: &GameState, id: u64, controller: u64, name: &str, subtype: &str) 
         name: name.into(),
         tapped: false,
         attacking: None,
+        blocking: None,
         definition: Arc::new(definition),
         copy_of: None,
     })

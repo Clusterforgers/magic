@@ -150,6 +150,7 @@ fn make_token(game: &mut GameState, id: u64, controller: PlayerId, creature: boo
         name: "Token".into(),
         tapped: false,
         attacking: None,
+        blocking: None,
         definition: Arc::new(definition),
     });
     apply_event(game, &event).unwrap();

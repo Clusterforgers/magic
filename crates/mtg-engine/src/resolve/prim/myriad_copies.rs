@@ -60,6 +60,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 name: definition.name.clone(),
                 tapped: true,
                 attacking: Some(AttackTarget::Player(*opponent)),
+                blocking: None,
                 definition: definition.clone(),
             })
         })

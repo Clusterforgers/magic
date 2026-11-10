@@ -7,7 +7,8 @@ use crate::ability::Ability;
 use crate::card::{Card, Span};
 use crate::compile::{
     Clause, ClauseKind, block_plan, creature_at, die_row, die_row_texts, either_way_pair_texts,
-    own_names, read_keyword, read_keywords, same_written_text, static_pair_texts, written_variants,
+    ep23_three_texts, own_names, read_keyword, read_keywords, same_written_text, static_pair_texts,
+    written_variants,
 };
 use crate::keyword::Keyword;
 use crate::support::PrintedCard;
@@ -629,6 +630,7 @@ impl<'a> Pairer<'a> {
                 self.places[at] = self.places[at - 1];
             }
         }
+        self.ep23_three_costs();
         // An additional cost and the spell's reduction for what it pays are one clause wherever the script lists them.
         for first in 0..abilities.len() {
             if self.taken[first] || !matches!(abilities[first], Ability::AdditionalCost { .. }) {
@@ -651,6 +653,49 @@ impl<'a> Pairer<'a> {
                     self.slot_of[second] = Some(slot);
                     self.places[second] = self.places[first];
                     break;
+                }
+            }
+        }
+    }
+
+    /// An additional cost, the spell's reduction for what it pays and a second reduction of the spell are one clause
+    /// wherever the script lists them (Dargo, the Shipwrecker).
+    fn ep23_three_costs(&mut self) {
+        let abilities = self.abilities;
+        let free = |taken: &[bool], at: usize, cost: bool| {
+            !taken[at]
+                && if cost {
+                    matches!(abilities[at], Ability::AdditionalCost { .. })
+                } else {
+                    matches!(abilities[at], Ability::CostModifier { .. })
+                }
+        };
+        for first in 0..abilities.len() {
+            if !free(&self.taken, first, true) {
+                continue;
+            }
+            'pair: for second in 0..abilities.len() {
+                if second == first || !free(&self.taken, second, false) {
+                    continue;
+                }
+                for third in 0..abilities.len() {
+                    if third == first || third == second || !free(&self.taken, third, false) {
+                        continue;
+                    }
+                    let written =
+                        ep23_three_texts(&abilities[first], &abilities[second], &abilities[third]);
+                    if written.is_empty() {
+                        continue;
+                    }
+                    if let Some(slot) = self.find_text(&[ClauseKind::Static], &written, false) {
+                        self.settle(first, slot, ClauseState::Reads { ability: first });
+                        for later in [second, third] {
+                            self.taken[later] = true;
+                            self.slot_of[later] = Some(slot);
+                            self.places[later] = self.places[first];
+                        }
+                        break 'pair;
+                    }
                 }
             }
         }

@@ -92,8 +92,8 @@ fn a_damage_shield_is_played_or_left_by_hand(#[case] by: Value, #[case] opponent
 
 #[rstest]
 #[case::fixed(json!(1), true)]
-#[case::half_of_a_stat(json!({"Half": {"up": true, "of": {"Stat": {"of": {"Bound": "d"}, "stat": "Power"}}}}), false)]
-fn a_copy_with_a_computed_size_stays_by_hand(#[case] power: Value, #[case] runs: bool) {
+#[case::half_of_a_stat(json!({"Half": {"up": true, "of": {"Stat": {"of": {"Bound": "d"}, "stat": "Power"}}}}), true)]
+fn a_copy_with_a_fixed_or_computed_size_runs(#[case] power: Value, #[case] runs: bool) {
     let rules = json!([{"Spell": {"effects": [
         {"Destroy": {"what": "This", "as": "d"}},
         {"CreateToken": {"token": {"CopyOf": {"of": {"Bound": "d"}, "except": [

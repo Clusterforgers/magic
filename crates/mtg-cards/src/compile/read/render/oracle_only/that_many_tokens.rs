@@ -20,6 +20,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         tapped,
         attacking,
         against: None,
+        blocking: None,
         bind,
     } = last
     else {
@@ -33,6 +34,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         tapped: *tapped,
         attacking: *attacking,
         against: None,
+        blocking: None,
         bind: bind.clone(),
     });
     let Some(plain) = with_effects(ability, steps) else {

@@ -1408,6 +1408,10 @@ pub enum Effect {
         /// one that can no longer be attacked leaves them attacking nothing.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         against: Option<Ref>,
+        /// They enter blocking the attacking creature this names ("that's blocking that creature"): never declared as
+        /// blockers, so nothing triggers on their block.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        blocking: Option<Ref>,
         /// Names the tokens for the effects that follow ("then attach this to it").
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,

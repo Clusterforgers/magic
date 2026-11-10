@@ -791,9 +791,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 what.0 == [Pred::This],
             )
         }
-        TriggerPattern::TappedForMana { what, by } => {
+        TriggerPattern::TappedForMana { what, by, produced } => {
             let (name, s) = who(by);
-            (format!("{name} tap{s} {} for mana", subject(what)), false)
+            let made = produced.map_or_else(
+                || "mana".to_owned(),
+                |mana| format!("{{{}}}", mana.symbol()),
+            );
+            (format!("{name} tap{s} {} for {made}", subject(what)), false)
         }
         TriggerPattern::Blocks { what, blocking } => {
             let blocked = if blocking.is_empty() {

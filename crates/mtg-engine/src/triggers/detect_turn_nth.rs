@@ -125,6 +125,7 @@ fn events(pre: &GameState, acts: &[Act]) -> Vec<Event> {
                 name: "Treasure".into(),
                 tapped: false,
                 attacking: None,
+                blocking: None,
                 definition: Arc::new(CardDefinition::new("Treasure").with_type(CardType::Artifact)),
             }),
             Counter(name) => {

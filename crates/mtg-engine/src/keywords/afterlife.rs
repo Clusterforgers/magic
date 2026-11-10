@@ -42,6 +42,7 @@ impl KeywordRules for Afterlife {
                 tapped: false,
                 attacking: false,
                 against: None,
+                blocking: None,
                 bind: None,
             }],
         }]

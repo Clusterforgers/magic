@@ -100,7 +100,20 @@ pub(super) fn texts(ability: &Ability) -> Vec<String> {
         defining: *defining,
         from: *from,
     };
-    super::render::written_variants(&plain)
+    let written = super::render::written_variants(&plain);
+    // "Lands you control and land cards you own that aren't on the battlefield are Deserts": a land is never a spell, so
+    // the land cards outside the battlefield are every other zone.
+    let lands: Vec<String> = written
+        .iter()
+        .filter(|_| noun == "land")
+        .filter_map(|text| {
+            let rest = text.strip_prefix("Lands you control ")?;
+            Some(format!(
+                "Lands you control and land cards you own that aren't on the battlefield {rest}"
+            ))
+        })
+        .collect();
+    written
         .into_iter()
         .map(|text| {
             let text = text.strip_suffix('.').unwrap_or(&text);
@@ -108,5 +121,6 @@ pub(super) fn texts(ability: &Ability) -> Vec<String> {
                 "{text}. The same is true for {noun} spells you control and {noun} cards you own that aren't on the battlefield."
             )
         })
+        .chain(lands)
         .collect()
 }

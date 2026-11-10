@@ -181,7 +181,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 | `modifies_damage` (`DamageRules`) | first strike, double strike, deathtouch, trample, lifelink, wither, infect, toxic | `damage.rs`, the fold of `DamageDealt` |
 | `adds_abilities` (a `defining` static) | changeling, devoid | `layers::outside` and the layers pass |
 | `is_indestructible` | indestructible | state-based actions; the `Destroy` primitive |
-| `restricts_targeting`, `restricts_player_targeting` | hexproof, shroud | `legal_targets` through `protects` and `protects_player` |
+| `restricts_targeting`, `restricts_player_targeting` | hexproof, shroud | `legal_targets` through `protects` and `protects_player`; a player's hexproof from a quality through `hexproof::ep23_player_hexproof_from` |
 | `protects_from` (`Holder`, `Source`) | protection | `keywords::protected_from`: damage in `replace.rs`, `legal_host` in `attach.rs`, `stops_block`, `legal_targets` |
 | `grants_timing` | flash | `priority_options` through `grants_instant_timing` |
 
@@ -189,6 +189,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - Damage steps: the first-strike step occurs when an attacker or a blocker has first strike or double strike as blockers are declared (`damage::first_strike_step_needed`). An attacker divides damage freely among several blockers (`damage::division`); `DamageOptions.lethal` is toughness less damage marked, at most 1 from a deathtouch source, and `excess` the player or planeswalker attacked under trample. Deathtouch marks the creature in the fold and state-based actions destroy it; lifelink is `LifeGained` in the same batch as the `DamageDealt`, for combat and the `DealDamage` primitive alike.
 - Declarations: the engine lists `AttackOptions.required` and `BlockOptions.required` (CR 508.1d, 509.1c), `min_blockers`, attack and block limits and taxes (`rules.rs`, `attack_tax.rs`, `block_tax.rs`); the declaration must meet them or the engine refuses it, and a taxed one waits for its payment. A creature that must attack with no player to attack is not required to, and a requirement to block never binds a block that costs (CR 509.1d).
 - Removal from combat (CR 506.4): a creature whose controller changes, an attacked planeswalker that leaves (the attackers keep attacking nothing, `Attacker::attacks_nothing`) and `Effect::RemoveFromCombat` are folded into the combat state.
+- A token that enters attacking or blocking (CR 508.4, 509.1h) is folded from `TokenCreated.attacking` or `.blocking` into the combat state: never declared, so nothing triggers on its attack or block; a token blocks only an attacker still attacking its controller after blockers are declared.
 
 ## Continuous effects
 
