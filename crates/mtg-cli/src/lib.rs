@@ -31,6 +31,7 @@ pub mod progress;
 pub mod propose;
 pub mod read_candidates;
 pub mod reads;
+pub mod semantic_audit;
 pub mod status;
 pub mod translate;
 pub mod w19b_pairs;
@@ -121,6 +122,8 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         }
         Command::Reads(args) => reads::reads(&connect(cli.database_url).await?, &args).await,
         Command::DraftSuspects(args) => draft_suspects::draft_suspects(&args),
+        Command::SemanticAudit(args) => semantic_audit::semantic_audit(&cache, &args),
+        Command::MutationScore(args) => semantic_audit::mutation_score(&args),
         Command::ReadCandidates(args) => {
             read_candidates::read_candidates(&connect(cli.database_url).await?, &args).await
         }

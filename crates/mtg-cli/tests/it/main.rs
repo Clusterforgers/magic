@@ -48,6 +48,7 @@ mod r8p6_runs;
 mod r8q1_runs;
 mod reads;
 mod rebind_runs;
+mod semantic_audit;
 mod t18a_propose_speed;
 mod translate_forge;
 mod w2a_promote;

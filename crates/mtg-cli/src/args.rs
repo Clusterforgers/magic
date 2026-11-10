@@ -58,6 +58,10 @@ pub enum Command {
     Reads(ReadsArgs),
     /// Find the drafts likely to be wrong, read-only and without a model: the engine's English of each draft against the Oracle text on a fixed list of meaning-bearing tokens, as a TSV of findings per draft.
     DraftSuspects(DraftSuspectsArgs),
+    /// Find cards that play automatically (corpus, drafts, the newest translator run's offered drafts) whose rules differ in structure from their Oracle text, read-only and without a model: a table of checks between each clause and its abilities, as a TSV ranked by check and popularity.
+    SemanticAudit(SemanticAuditArgs),
+    /// Measure the semantic audit's checks and the checker's read back on single-fault mutants of `Full` corpus cards: the share of mutants each catches, per mutation kind.
+    MutationScore(MutationScoreArgs),
     /// List the drafts whose clauses read back as other text only in wording (the bulk read check, read-only, local database): counts per equivalence and a TSV of slug, name, printed clause, engine clause and rule.
     ReadCandidates(ReadCandidatesArgs),
     /// Cross-check the rules of the stored precon cards against Forge's card scripts, read from a local checkout: the verbs Forge names that the rules lack, and the unread tail grouped by Forge API and key.
@@ -269,6 +273,38 @@ pub struct DraftSuspectsArgs {
     /// Write the TSV to this file and print only the summary.
     #[arg(long, value_name = "FILE")]
     pub out: Option<PathBuf>,
+}
+
+/// Options of `semantic-audit`.
+#[derive(Debug, Args)]
+pub struct SemanticAuditArgs {
+    /// Write the TSV to this file and print only the summary.
+    #[arg(long, value_name = "FILE")]
+    pub out: Option<PathBuf>,
+
+    /// The translator run whose offered drafts are read (default: the newest `proposals/forgeNN` with a cards table).
+    #[arg(long, value_name = "DIR")]
+    pub forge: Option<PathBuf>,
+
+    /// The Oracle Cards file (default: the cache's).
+    #[arg(long, value_name = "FILE")]
+    pub oracle: Option<PathBuf>,
+
+    /// Only these cards, by slug.
+    #[arg(long, value_name = "SLUG", num_args = 1..)]
+    pub cards: Vec<String>,
+}
+
+/// Options of `mutation-score`.
+#[derive(Debug, Args)]
+pub struct MutationScoreArgs {
+    /// How many `Full` corpus cards are mutated, spread evenly over the corpus.
+    #[arg(long, value_name = "N", default_value_t = 300)]
+    pub cards: usize,
+
+    /// Where each card's mutants start among the candidate nodes.
+    #[arg(long, value_name = "N", default_value_t = 0)]
+    pub seed: u64,
 }
 
 /// Options of `read-candidates`.
