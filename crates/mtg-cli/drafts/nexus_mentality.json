@@ -38,7 +38,11 @@
                         },
                         {
                           "what": {
-                            "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                            "Object": [
+                              { "Not": { "Type": "Land" } },
+                              { "ControlledBy": "You" },
+                              { "Not": { "Is": { "Target": 0 } } }
+                            ]
                           }
                         }
                       ],

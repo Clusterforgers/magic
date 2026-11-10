@@ -945,3 +945,4 @@ mod vp20;
 mod w18;
 mod w19;
 mod w20;
+mod wf24;

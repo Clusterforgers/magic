@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 /// object for an action of a permanent) and `what` the object it was done to or by, when the action has one.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Action {
-    /// An ability was activated; `what` is its source.
+    /// An ability that isn't a mana ability was activated; `what` is its source.
     Activated,
     /// A loyalty ability was activated (CR 606.4); `what` is its source.
     ActivatedLoyalty,
@@ -95,7 +95,11 @@ impl Action {
     #[must_use]
     pub const fn verbs(self) -> (&'static str, &'static str) {
         match self {
-            Action::Activated => ("activate an ability", "activates an ability"),
+            // The engine logs no activation of a mana ability (CR 605.3b), so the words say so.
+            Action::Activated => (
+                "activate an ability that isn't a mana ability",
+                "activates an ability that isn't a mana ability",
+            ),
             Action::ActivatedLoyalty => {
                 ("activate a loyalty ability", "activates a loyalty ability")
             }

@@ -224,10 +224,18 @@ fn move_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let two = p.get("TargetMin") == Some("2") && p.get("TargetMax") == Some("2");
     if two && p.has("ValidTgts") && !p.has("Source") && !p.has("Defined") {
         let one = p.without(&["TargetMin", "TargetMax"]);
-        let (from, to) = (
-            subject(ctx, &one, "Self", None)?,
-            subject(ctx, &one, "Self", None)?,
-        );
+        let from = subject(ctx, &one, "Self", None)?;
+        // The two are distinct objects ("onto another target creature", CR 601.2c lets one object be both otherwise).
+        let mut spec = super::valid::target_spec(ctx, &one, None)?;
+        let other = json!({"Not": {"Is": from}});
+        match spec
+            .pointer_mut("/what/Object")
+            .and_then(Value::as_array_mut)
+        {
+            Some(preds) => preds.push(other),
+            None => return unmapped("key:MoveCounter.two-targets-of-players"),
+        }
+        let to = ctx.target(spec)?;
         return moved(ctx, from, to);
     }
     // Without `Source$` the target is the source and `Defined$` the object that receives them.
