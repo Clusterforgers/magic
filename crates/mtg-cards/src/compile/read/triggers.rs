@@ -1493,7 +1493,10 @@ fn step_text(step: Step, whose: &Ref) -> Option<String> {
         return Some(format!("the {words} of enchanted creature's controller"));
     }
     let owner = match whose {
-        Ref::AttachedPlayer => "enchanted player's",
+        // A main phase may come more than once a turn: "each of enchanted player's postcombat main phases".
+        Ref::AttachedPlayer if matches!(step, Step::Upkeep | Step::Draw | Step::End) => {
+            "enchanted player's"
+        }
         Ref::You => "your",
         Ref::Opponents => "each opponent's",
         Ref::EachPlayer => "each",

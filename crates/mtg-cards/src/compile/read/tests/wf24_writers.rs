@@ -214,3 +214,76 @@ fn battalion(what: &str, right: u32, op: &str) -> String {
 fn wf24_trigger_heads(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
     assert_eq!(reads(json, clause), same, "{clause}");
 }
+
+const SURVEIL: &str = r#"{"Surveil":{"count":2}}"#;
+const OPPONENTS_TURN: &str = "Whenever you cast a spell during an opponent's turn, surveil 2.";
+const FOUGHT: &str = r#"{"Compare":{"left":{"Count":["This",{"AnyOf":[{"DidThisTurn":{"event":"Attacked","combat":true}},{"DidThisTurn":{"event":"Blocked","combat":true}}]}]},"op":"Ge","right":1}}"#;
+const CLOCKWORK: &str = "At end of combat, if this creature attacked or blocked this combat, remove a +1/+0 counter from it.";
+
+fn headed(when: &str, condition: &str, effect: &str) -> String {
+    format!(r#"{{"Triggered":{{"when":{when},"if":{condition},"effects":[{effect}]}}}}"#)
+}
+
+const REMOVE: &str = r#"{"RemoveCounters":{"from":"This","counter":{"Other":"+1/+0"}}}"#;
+
+#[rstest]
+#[case::opponents_turn(&headed(r#"{"SpellCast":{"by":"You"}}"#, r#"{"AtTrigger":{"Not":"YourTurn"}}"#, SURVEIL), OPPONENTS_TURN, true)]
+#[case::your_turn(&headed(r#"{"SpellCast":{"by":"You"}}"#, r#"{"AtTrigger":"YourTurn"}"#, SURVEIL), OPPONENTS_TURN, false)]
+#[case::checked_again(&headed(r#"{"SpellCast":{"by":"You"}}"#, r#"{"Not":"YourTurn"}"#, SURVEIL), OPPONENTS_TURN, false)]
+#[case::an_opponent_casts(&headed(r#"{"SpellCast":{"by":"Opponents"}}"#, r#"{"AtTrigger":{"Not":"YourTurn"}}"#, SURVEIL), OPPONENTS_TURN, false)]
+#[case::creature_spell(&headed(r#"{"SpellCast":{"by":"You","what":[{"Type":"Creature"}]}}"#, r#"{"AtTrigger":{"Not":"YourTurn"}}"#, SURVEIL), OPPONENTS_TURN, false)]
+#[case::fought(&headed(r#"{"StepBegins":{"step":"EndCombat"}}"#, FOUGHT, REMOVE), CLOCKWORK, true)]
+#[case::attacked_only(&headed(r#"{"StepBegins":{"step":"EndCombat"}}"#, &FOUGHT.replace(r#"{"DidThisTurn":{"event":"Blocked","combat":true}}"#, r#"{"DidThisTurn":{"event":"Attacked","combat":true}}"#), REMOVE), CLOCKWORK, false)]
+#[case::this_turn(&headed(r#"{"StepBegins":{"step":"EndCombat"}}"#, &FOUGHT.replace("true", "false"), REMOVE), CLOCKWORK, false)]
+#[case::end_step(&headed(r#"{"StepBegins":{"step":"End"}}"#, FOUGHT, REMOVE), CLOCKWORK, false)]
+fn wf24_heads_with_a_condition(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+    assert_eq!(reads(json, clause), same, "{clause}");
+}
+
+const UPKEEP_ENCHANTED: &str = r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":{"ControllerOf":"Attached"}}},"effects":[{"PutCounters":{"on":"Attached","counter":"-1/-1"}}]}}"#;
+const LOSES_ALL: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"},"Other"]},"bounds":{"min":0,"max":1}}],"effects":[{"Tap":{"what":{"Target":0}}},{"PutCounters":{"on":{"Target":0},"counter":{"Other":"flying"}}}]}}"#;
+
+#[rstest]
+#[case::upkeep_that_creature(
+    UPKEEP_ENCHANTED,
+    "At the beginning of the upkeep of enchanted creature's controller, put a -1/-1 counter on that creature.",
+    true
+)]
+#[case::upkeep_other_counter(
+    &UPKEEP_ENCHANTED.replace("-1/-1", "+1/+1"),
+    "At the beginning of the upkeep of enchanted creature's controller, put a -1/-1 counter on that creature.",
+    false
+)]
+#[case::attached_that_creature(
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"}],"to":"Battlefield"}},"effects":[{"May":{"effects":[{"Attach":{"what":"This","to":"Triggering"}}]}}]}}"#,
+    "Whenever a creature enters, you may attach this Aura to that creature.",
+    true
+)]
+#[case::attached_to_its_own(
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"May":{"effects":[{"Attach":{"what":"This","to":"Triggering"}}]}}]}}"#,
+    "Whenever a creature enters, you may attach this Aura to that creature.",
+    false
+)]
+#[case::main_phase_of_enchanted(
+    r#"{"Triggered":{"when":{"StepBegins":{"step":"Main2","whose":"AttachedPlayer"}},"effects":[{"Draw":{}}]}}"#,
+    "At the beginning of enchanted player's postcombat main phase, draw a card.",
+    false
+)]
+#[case::upkeep_of_enchanted_player(
+    r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"AttachedPlayer"}},"effects":[{"Draw":{}}]}}"#,
+    "At the beginning of enchanted player's upkeep, draw a card.",
+    true
+)]
+#[case::tapped_and_one_counter(
+    LOSES_ALL,
+    "When this creature enters, tap up to one other target creature and put a flying counter on it.",
+    true
+)]
+#[case::tapped_and_one_counter_said_twice(
+    LOSES_ALL,
+    "When this creature enters, tap up to one other target creature. Put a flying counter and a lifelink counter on that creature.",
+    false
+)]
+fn wf24_other_wordings(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+    assert_eq!(reads(json, clause), same, "{clause}");
+}

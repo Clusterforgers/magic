@@ -88,7 +88,11 @@ pub(super) fn or_last_resort(
     write: impl FnOnce(&Ability) -> Vec<String>,
 ) -> Vec<String> {
     let outer = TABLE.with_borrow(|table| table.depth == 0);
-    if !texts.is_empty() || !outer || LAST_RESORT.get() {
+    if !texts.is_empty()
+        || !outer
+        || LAST_RESORT.get()
+        || !super::wf24_token_bind::wf24_last_resort_shape(ability)
+    {
         return texts;
     }
     LAST_RESORT.set(true);

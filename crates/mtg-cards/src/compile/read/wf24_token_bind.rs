@@ -44,14 +44,56 @@ fn rename(value: &mut Value) -> bool {
     }
 }
 
-/// The ability with its created tokens bound as the writers name them; `None` when nothing is renamed or the writers'
-/// name is already in use.
+/// How many times the value uses a string.
+fn count(value: &Value, wanted: &str) -> usize {
+    match value {
+        Value::String(text) => usize::from(text == wanted),
+        Value::Array(items) => items.iter().map(|item| count(item, wanted)).sum(),
+        Value::Object(map) => map.values().map(|item| count(item, wanted)).sum(),
+        _ => 0,
+    }
+}
+
+/// The ability with its created tokens bound as the writers name them, when the one use of the binding attaches the
+/// card to the token; `None` when nothing is renamed or the writers' name is already in use.
 pub(super) fn wf24_tokens_renamed(ability: &Ability) -> Option<Ability> {
     let mut value = serde_json::to_value(ability).ok()?;
+    let attach = serde_json::json!({"Attach": {"what": "This", "to": {"Bound": TOKEN}}});
+    let text = value.to_string();
+    if count(&value, TOKEN) != 2 || !text.contains(&attach.to_string()) {
+        return None;
+    }
     if uses(&value, TOKENS) || !rename(&mut value) {
         return None;
     }
     serde_json::from_value(value).ok()
+}
+
+/// Whether the last-resort pass may write the ability: a target tapped and given counters ("tap target creature an
+/// opponent controls and put a stun counter on it"), or the card attached to the object of the event.
+pub(super) fn wf24_last_resort_shape(ability: &Ability) -> bool {
+    let Ok(value) = serde_json::to_value(ability) else {
+        return false;
+    };
+    let Some(effects) = value
+        .as_object()
+        .and_then(|map| map.values().next())
+        .and_then(|body| body.get("effects"))
+    else {
+        return false;
+    };
+    let attach = serde_json::json!({"Attach": {"what": "This", "to": "Triggering"}});
+    let stunned = effects.as_array().is_some_and(|list| {
+        list.len() == 2
+            && list[0] == serde_json::json!({"Tap": {"what": {"Target": 0}}})
+            && list[1]
+                .get("PutCounters")
+                .and_then(|put| put.get("on"))
+                .is_some_and(|on| *on == serde_json::json!({"Target": 0}))
+    });
+    let attached = *effects == serde_json::json!([attach])
+        || *effects == serde_json::json!([{"May": {"effects": [attach]}}]);
+    stunned || attached
 }
 
 /// The head of a trigger with its condition, for the shapes no other writer knows: battalion, a spell cast during an
@@ -155,9 +197,31 @@ pub(super) fn wf24_and_attach(texts: &mut Vec<String>) {
     joined.extend(
         texts
             .iter()
-            .filter(|text| text.contains(" creature enters, you may attach ~ to it."))
+            .filter(|text| {
+                text.split_once(", ")
+                    .is_some_and(|(head, _)| head.contains(" enters") && !head.contains('~'))
+                    && text.ends_with(" attach ~ to it.")
+            })
             .map(|text| text.replacen(" attach ~ to it.", " attach ~ to that creature.", 1)),
     );
+    // "Whenever ~ attacks alone, double its power and toughness until end of turn."
+    joined.extend(
+        texts
+            .iter()
+            .filter(|text| text.starts_with("Whenever ~ attacks") && text.contains(", double ~'s "))
+            .map(|text| text.replacen(", double ~'s ", ", double its ", 1)),
+    );
+    // "At the beginning of the upkeep of enchanted creature's controller, put a -1/-1 counter on that creature."
+    const UPKEEP: &str = "At the beginning of the upkeep of enchanted creature's controller, ";
+    joined.extend(texts.iter().filter_map(|text| {
+        let rest = text.strip_prefix(UPKEEP)?;
+        rest.contains(" on enchanted creature").then(|| {
+            format!(
+                "{UPKEEP}{}",
+                rest.replace(" on enchanted creature", " on that creature")
+            )
+        })
+    }));
     joined.extend(texts.iter().filter_map(|text| counters_listed(text)));
     for text in joined {
         if !texts.contains(&text) {
