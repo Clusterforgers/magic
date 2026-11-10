@@ -1,8 +1,40 @@
-//! Goal: the pieces of ep23 translate as the card prints them: lands of every zone ("Lands you control and land cards you own that aren't on the battlefield are Islands") list every zone; creatures in that wording and lands of every player stay gaps.
+//! Goal: the pieces of ep23 translate as the card prints them: lands of every zone ("Lands you control and land cards you own that aren't on the battlefield are Islands") list every zone, a player gains hexproof from colours, and a tap for one type of mana names the type; creatures in that wording, lands of every player, a player's hexproof from another quality and a tap for a type Forge words otherwise stay gaps.
 use rstest::rstest;
 use serde_json::json;
 
 use super::{abilities, gaps};
+
+fn tap_trigger(produced: &str) -> String {
+    format!(
+        "Name:T\nTypes:Artifact\nT:Mode$ TapsForMana | ValidCard$ Permanent | Activator$ You | {produced}Execute$ Add | TriggerZones$ Battlefield | Static$ True | TriggerDescription$ Whenever you tap a permanent for {{C}}, add an additional {{C}}.\nSVar:Add:DB$ Mana | Produced$ C\n"
+    )
+}
+
+#[rstest]
+#[case::colorless("Produced$ C | ", Some("Colorless"))]
+#[case::green("Produced$ G | ", Some("Green"))]
+#[case::any_mana("", None)]
+fn ep23_a_tap_for_one_type_names_it(#[case] produced: &str, #[case] kind: Option<&str>) {
+    let script = tap_trigger(produced);
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let when = &abilities(&script)[0]["Triggered"]["when"]["TappedForMana"];
+    assert_eq!(
+        when.get("produced").and_then(|v| v.as_str()),
+        kind,
+        "{when}"
+    );
+}
+
+#[test]
+fn ep23_a_tap_for_a_combination_stays_a_gap() {
+    let found = gaps(&tap_trigger("Produced$ Combo Any | "));
+    assert!(
+        found
+            .iter()
+            .any(|gap| gap == "key:Trigger.TapsForMana.Produced=Combo Any"),
+        "{found:?}"
+    );
+}
 
 fn static_line(line: &str) -> String {
     format!("Name:T\nTypes:Creature\nPT:1/1\nS:{line}\n")
@@ -30,8 +62,8 @@ fn ep23_lands_of_every_zone_list_the_zones() {
 #[case::every_player_s(&format!(
     "Mode$ Continuous | Affected$ Land | AffectedZone$ All | AddType$ Island | {LANDS}"
 ))]
-fn ep23_other_lands_of_every_zone_stay_gaps_x(#[case] line: &str) {
-    ep23_other_lands_of_every_zone_stay_gaps(line);
+fn ep23_other_lands_of_every_zone_stay_gaps(#[case] line: &str) {
+    every_zone_gap(line);
 }
 
 fn spell(line: &str) -> String {
@@ -65,7 +97,7 @@ fn ep23_a_player_s_hexproof_from_other_qualities_stays_a_gap(
     assert!(found.iter().any(|found| found == gap), "{found:?}");
 }
 
-fn ep23_other_lands_of_every_zone_stay_gaps(line: &str) {
+fn every_zone_gap(line: &str) {
     let found = gaps(&static_line(line));
     assert!(
         found

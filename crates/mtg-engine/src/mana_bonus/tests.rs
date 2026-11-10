@@ -1,4 +1,4 @@
-//! Goal: the triggered mana abilities of the permanents in play join the mana of the tap that triggers them (whose land, whose tap, how many triggers), a pick of any color is a source for each color, using an option adds the bonus in the same batch as the tap, and the ability never triggers onto the stack.
+//! Goal: the triggered mana abilities of the permanents in play join the mana of the tap that triggers them (whose land, whose tap, how many triggers), a pick of any color is a source for each color, using an option adds the bonus in the same batch as the tap, a trigger on a tap for one type of mana fires only on a tap that makes that type (once for {C}{C}), and the ability never triggers onto the stack.
 use mtg_cards::CardDefinition;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
@@ -61,6 +61,44 @@ fn a_tap_for_mana_makes_the_mana_of_the_triggers_that_fire(
     let game = board(vec![trigger]);
     assert_eq!(made(&game, ME), mine);
     assert_eq!(made(&game, FOE), theirs);
+}
+
+/// "Whenever you tap a permanent for {X}, add an additional {Y}" with `produced` the type of X and `mana` Y.
+fn ep23_for(produced: &str, mana: &str) -> Arc<CardDefinition> {
+    let json = format!(
+        r#"{{"Triggered":{{"when":{{"TappedForMana":{{"what":[],"by":"You","produced":"{produced}"}}}},"effects":[{{"AddMana":{{"who":"You","mana":{{"Fixed":["{mana}"]}}}}}}]}}}}"#
+    );
+    Arc::new(
+        CardDefinition::new("Monument")
+            .with_type(CardType::Artifact)
+            .with_rules(serde_json::from_str(&json).unwrap()),
+    )
+}
+
+/// An artifact with "{T}: Add {C}{C}."
+fn ep23_ring() -> Arc<CardDefinition> {
+    let json = r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#;
+    Arc::new(
+        CardDefinition::new("Ring")
+            .with_type(CardType::Artifact)
+            .with_rules(serde_json::from_str(json).unwrap()),
+    )
+}
+
+use ManaType::Colorless as C;
+
+#[rstest]
+#[case::a_tap_for_green("Green", "Green", vec![vec![G, G], vec![B], vec![C, C]])]
+#[case::a_tap_for_colorless_once_for_two("Colorless", "Colorless", vec![vec![G], vec![B], vec![C, C, C]])]
+#[case::a_tap_for_a_type_no_one_makes("Red", "Red", vec![vec![G], vec![B], vec![C, C]])]
+fn ep23_a_tap_for_one_type_of_mana_fires_only_on_that_type(
+    #[case] produced: &str,
+    #[case] mana: &str,
+    #[case] mine: Vec<Vec<ManaType>>,
+) {
+    let game = board(vec![ep23_for(produced, mana), ep23_ring()]);
+    assert_eq!(made(&game, ME), mine);
+    assert_eq!(made(&game, FOE), [vec![G]]);
 }
 
 #[test]

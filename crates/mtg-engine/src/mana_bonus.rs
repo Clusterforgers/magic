@@ -90,8 +90,14 @@ fn ways(
     }
 }
 
-/// Whether `trigger` fires as `player` taps the permanent `land` for mana.
-fn fires(state: &GameState, trigger: &Trigger, player: PlayerId, land: ObjectRef) -> bool {
+/// Whether `trigger` fires as `player` taps the permanent `land` for mana that makes `made`.
+fn fires(
+    state: &GameState,
+    trigger: &Trigger,
+    player: PlayerId,
+    land: ObjectRef,
+    made: &[ManaType],
+) -> bool {
     let Some(shape) = mana_trigger(&trigger.body) else {
         return false;
     };
@@ -99,6 +105,7 @@ fn fires(state: &GameState, trigger: &Trigger, player: PlayerId, land: ObjectRef
     scope
         .players(shape.by)
         .is_ok_and(|players| players.contains(&player))
+        && shape.produced.is_none_or(|kind| made.contains(&kind))
         && scope.selects(shape.what, land).unwrap_or(false)
         && shape
             .condition
@@ -131,9 +138,14 @@ fn expand(
     let Some(land) = land.filter(|_| !option.tapless) else {
         return vec![option];
     };
+    // "Whenever you tap a permanent for {C}" reads the mana of the tap itself, before any trigger adds to it.
+    let made = option.made();
     // Each option with its number among the variants the picks of the triggers make.
     let mut found = vec![(option, 0)];
-    for trigger in triggers.iter().filter(|t| fires(state, t, player, land)) {
+    for trigger in triggers
+        .iter()
+        .filter(|t| fires(state, t, player, land, &made))
+    {
         let Some(shape) = mana_trigger(&trigger.body) else {
             continue;
         };

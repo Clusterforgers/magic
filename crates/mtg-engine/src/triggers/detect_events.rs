@@ -841,6 +841,20 @@ fn tap_for_mana(state: &GameState, land: &str, player: PlayerId, mana: usize) ->
     1,
     0
 )]
+#[case::ep23_a_tap_for_the_type_named(
+    r#"{"TappedForMana":{"what":[],"by":"You","produced":"Green"}}"#,
+    "Forest",
+    ME,
+    2,
+    1
+)]
+#[case::ep23_a_tap_for_another_type(
+    r#"{"TappedForMana":{"what":[],"by":"You","produced":"Colorless"}}"#,
+    "Forest",
+    ME,
+    1,
+    0
+)]
 fn tapping_a_permanent_for_mana_triggers_once_for_the_tap(
     #[case] when: &str,
     #[case] land: &str,

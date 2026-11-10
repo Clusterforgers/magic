@@ -2209,7 +2209,7 @@ impl<'a> Walker<'a> {
                 self.at("what", |w| w.selector(what));
             }
             TriggerPattern::Discarded { what, by }
-            | TriggerPattern::TappedForMana { what, by }
+            | TriggerPattern::TappedForMana { what, by, .. }
             | TriggerPattern::Cycled { what, by } => {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.reference(by, Kind::Player));

@@ -1,4 +1,4 @@
-//! Goal: the writers of ep23 write the card's words and nothing near them: a counter moved "onto a second target permanent" (other than the first target or not, as the reader reads it), lands of every zone ("Lands you control and land cards you own that aren't on the battlefield are Deserts in addition to their other types.") and a required cost with two reductions in one clause ("... {2} less to cast for each permanent sacrificed this way and {2} less to cast for each other artifact or creature you've sacrificed this turn."); creatures in that wording, fewer zones, another player's sacrifices, another amount or another kind do not read back.
+//! Goal: the writers of ep23 write the card's words and nothing near them: a tap for one type of mana ("Whenever you tap a permanent for {C}, add an additional {C}."), a counter moved "onto a second target permanent" (other than the first target or not, as the reader reads it), lands of every zone ("Lands you control and land cards you own that aren't on the battlefield are Deserts in addition to their other types.") and a required cost with two reductions in one clause ("... {2} less to cast for each permanent sacrificed this way and {2} less to cast for each other artifact or creature you've sacrificed this turn."); creatures in that wording, fewer zones, another player's sacrifices, another amount or another kind do not read back.
 use super::*;
 
 const ALL_ZONES: &str = r#"{"AnyOf":[{"In":"Battlefield"},{"In":"Stack"},{"In":"Hand"},{"In":"Library"},{"In":"Graveyard"},{"In":"Exile"},{"In":"Command"}]}"#;
@@ -82,6 +82,27 @@ fn ep23_a_counter_moves_onto_another_target(#[case] json: String, #[case] reads:
     let found = written_variants(&ability(&json));
     assert_eq!(
         found.iter().any(|w| same_text(w, NESTING)),
+        reads,
+        "{found:?}"
+    );
+}
+
+const MONUMENT: &str = "Whenever you tap a permanent for {C}, add an additional {C}.";
+
+fn tapped_for(produced: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"TappedForMana":{{"what":[],"by":"You"{produced}}}}},"effects":[{{"AddMana":{{"who":"You","mana":{{"Fixed":["Colorless"]}}}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::for_colorless(tapped_for(r#","produced":"Colorless""#), true)]
+#[case::for_any_mana(tapped_for(""), false)]
+#[case::for_green(tapped_for(r#","produced":"Green""#), false)]
+fn ep23_a_tap_for_one_type_writes_as_printed(#[case] json: String, #[case] reads: bool) {
+    let found = written_variants(&ability(&json));
+    assert_eq!(
+        found.iter().any(|w| same_text(w, MONUMENT)),
         reads,
         "{found:?}"
     );
