@@ -51,6 +51,7 @@ mod r8q1_runs;
 mod reads;
 mod rebind_runs;
 mod t18a_propose_speed;
+mod tp24_skipped;
 mod translate_forge;
 mod w2a_promote;
 mod w3a_propose_schema;
