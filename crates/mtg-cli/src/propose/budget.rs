@@ -1,8 +1,9 @@
-//! The hard budget of a run: requests and input tokens. A request is refused before it is sent when it would pass either.
+//! The hard budget of a run: requests, input tokens and (with `--max-spend`) money. A request is refused before it is sent when it would pass one.
 
 use thiserror::Error;
 
 use super::model::{Request, Usage};
+use super::price::Usd;
 
 /// Which budget ended the run.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Error)]
@@ -13,6 +14,18 @@ pub enum Stop {
     /// The next request would pass `--max-input-tokens`.
     #[error("the budget of {0} input tokens would be passed")]
     InputTokens(u64),
+    /// The next request could pass `--max-spend`.
+    #[error(
+        "the spend cap of {cap} would be passed: {spent} is spent or held and the next request could cost {next}"
+    )]
+    Spend {
+        /// The cap.
+        cap: Usd,
+        /// What the ledger holds and the requests out may cost.
+        spent: Usd,
+        /// The worst case of the next request.
+        next: Usd,
+    },
 }
 
 /// What a run may spend and what it has spent.
@@ -25,6 +38,8 @@ pub struct Budget {
     usage: Usage,
     /// Estimated input tokens of the requests that are out and not yet answered.
     reserved: u64,
+    /// What the answered requests cost in money, when the run keeps a spend cap.
+    cost: Option<Usd>,
 }
 
 impl Budget {
@@ -37,6 +52,7 @@ impl Budget {
             repairs: 0,
             usage: Usage::default(),
             reserved: 0,
+            cost: None,
         }
     }
 
@@ -64,8 +80,19 @@ impl Budget {
     /// Adds what an answered request cost.
     pub fn record(&mut self, usage: Usage) {
         self.usage.input_tokens += usage.input_tokens;
+        self.usage.cache_write_tokens += usage.cache_write_tokens;
         self.usage.cache_read_tokens += usage.cache_read_tokens;
         self.usage.output_tokens += usage.output_tokens;
+    }
+
+    /// Adds what an answered request cost in money; from then on the budget reports a cost.
+    pub fn add_cost(&mut self, cost: Usd) {
+        self.cost = Some(self.cost.unwrap_or_default().plus(cost));
+    }
+
+    /// What the requests cost in money so far, for a run that keeps a spend cap.
+    pub fn cost(&self) -> Option<Usd> {
+        self.cost
     }
 
     /// The requests made.
@@ -126,6 +153,7 @@ mod tests {
         assert!(budget.admit(&request(300), false).is_ok());
         budget.record(Usage {
             input_tokens: 80,
+            cache_write_tokens: 0,
             cache_read_tokens: 0,
             output_tokens: 5,
         });
@@ -159,6 +187,7 @@ mod tests {
         for _ in 0..3 {
             budget.record(Usage {
                 input_tokens: 10,
+                cache_write_tokens: 0,
                 cache_read_tokens: 4,
                 output_tokens: 2,
             });
@@ -167,6 +196,7 @@ mod tests {
             budget.usage(),
             Usage {
                 input_tokens: 30,
+                cache_write_tokens: 0,
                 cache_read_tokens: 12,
                 output_tokens: 6
             }

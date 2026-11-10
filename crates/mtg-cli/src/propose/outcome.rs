@@ -7,6 +7,7 @@ use mtg_cards::proposal::{Report, Verdict};
 use mtg_cards::support::Support;
 
 use super::budget::{Budget, Stop};
+use super::price::Usd;
 
 /// What became of one card.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -52,6 +53,25 @@ impl Outcome {
     /// Whether one repair round may fix it.
     pub fn is_repairable(&self) -> bool {
         matches!(self, Outcome::Invalid | Outcome::Mismatch)
+    }
+
+    /// The word of the `outcome` column of the summary and of a card's record.
+    pub fn key(&self) -> &'static str {
+        match self {
+            Outcome::Verified => "verified",
+            Outcome::Partial => "partial",
+            Outcome::Unchecked => "draft",
+            Outcome::Mismatch => "mismatch",
+            Outcome::Invalid => "invalid",
+            Outcome::Empty => "empty",
+            Outcome::Failed(_) => "no_answer",
+            Outcome::NotRun => "not_run",
+        }
+    }
+
+    /// Whether the proposal is valid and nothing contradicts the text, but a construct has no writer: it is saved as a draft.
+    pub fn is_draft(&self) -> bool {
+        matches!(self, Outcome::Unchecked)
     }
 
     /// The outcome as a short phrase.
@@ -139,6 +159,19 @@ pub struct ProposeReport {
     pub stopped: Option<Stop>,
     /// Where the proposals are.
     pub out: PathBuf,
+    /// The money side of the run, when it kept a spend cap.
+    pub spend: Option<SpendReport>,
+}
+
+/// What a run spent against its cap.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SpendReport {
+    /// Billed in this run.
+    pub run: Usd,
+    /// Everything the ledger holds, earlier runs and batches still out included.
+    pub ledger: Usd,
+    /// The cap.
+    pub cap: Usd,
 }
 
 impl ProposeReport {
@@ -148,7 +181,7 @@ impl ProposeReport {
         let rows = [
             ("Accepted Verified", tally.verified),
             ("Accepted Partial", tally.partial),
-            ("Unchecked", tally.unchecked),
+            ("Unchecked (draft)", tally.unchecked),
             ("Mismatch", tally.mismatch),
             ("Invalid", tally.invalid),
             ("Accepted, nothing modelled", tally.empty),
@@ -180,6 +213,13 @@ impl ProposeReport {
             usage.cache_read_tokens,
             usage.output_tokens
         );
+        if let Some(spend) = self.spend {
+            let _ = writeln!(
+                text,
+                "spent {} in this run; the ledger holds {} of the cap of {}",
+                spend.run, spend.ledger, spend.cap
+            );
+        }
         if let Some(stop) = self.stopped {
             let _ = writeln!(text, "stopped: {stop}; `--resume` continues");
         }
@@ -201,6 +241,56 @@ mod tests {
 
     use super::*;
     use crate::propose::model::Usage;
+
+    #[rstest]
+    #[case(Outcome::Verified, "verified", false)]
+    #[case(Outcome::Partial, "partial", false)]
+    #[case(Outcome::Unchecked, "draft", true)]
+    #[case(Outcome::Mismatch, "mismatch", false)]
+    #[case(Outcome::Invalid, "invalid", false)]
+    #[case(Outcome::Empty, "empty", false)]
+    #[case(Outcome::Failed("x".into()), "no_answer", false)]
+    #[case(Outcome::NotRun, "not_run", false)]
+    fn every_outcome_has_a_word_in_the_summary_and_only_unchecked_is_a_draft(
+        #[case] outcome: Outcome,
+        #[case] key: &str,
+        #[case] draft: bool,
+    ) {
+        assert_eq!((outcome.key(), outcome.is_draft()), (key, draft));
+        // The summary lists exactly these words, in this order.
+        assert!(crate::propose::summary::OUTCOMES.contains(&key));
+    }
+
+    #[test]
+    fn the_summary_reports_what_a_run_spent_against_its_cap() {
+        let report = ProposeReport {
+            model: "m".into(),
+            tally: Tally::default(),
+            budget: Budget::new(10, 5000),
+            stopped: Some(Stop::Spend {
+                cap: Usd(5_000_000),
+                spent: Usd(4_990_000),
+                next: Usd(120_000),
+            }),
+            out: PathBuf::from("/tmp/out"),
+            spend: Some(SpendReport {
+                run: Usd(1_500_000),
+                ledger: Usd(4_990_000),
+                cap: Usd(5_000_000),
+            }),
+        };
+        let text = report.render();
+        assert!(
+            text.contains(
+                "spent $1.500000 in this run; the ledger holds $4.990000 of the cap of $5.000000"
+            ),
+            "{text}"
+        );
+        assert!(
+            text.contains("stopped: the spend cap of $5.000000 would be passed: $4.990000 is spent or held and the next request could cost $0.120000; `--resume` continues"),
+            "{text}"
+        );
+    }
 
     #[test]
     fn each_outcome_is_counted_once() {
@@ -238,6 +328,7 @@ mod tests {
                 budget: Budget::new(10, 5000),
                 stopped: None,
                 out: PathBuf::from("/tmp/out"),
+                spend: None,
             }
             .render()
         };
@@ -356,6 +447,7 @@ mod tests {
         budget.admit(&request, true).unwrap();
         budget.record(Usage {
             input_tokens: 1200,
+            cache_write_tokens: 0,
             cache_read_tokens: 1000,
             output_tokens: 300,
         });
@@ -370,6 +462,7 @@ mod tests {
             budget,
             stopped: Some(Stop::Requests(10)),
             out: PathBuf::from("/tmp/out"),
+            spend: None,
         };
         let text = report.render();
         for expected in [

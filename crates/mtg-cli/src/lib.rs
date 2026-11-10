@@ -137,6 +137,7 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             Ok(w2a_promote::w2a_promote(&db, &cache, &args).await?.render())
         }
         Command::Propose(args) => propose::command(cli.database_url, &cache, &args, progress).await,
+        Command::ProposeOrder(args) => order_command(cli.database_url, &cache, &args).await,
         Command::DslReference => Ok(mtg_cards::reference::dsl_reference().trim_end().to_owned()),
         Command::DslSchema => Ok(mtg_cards::reference::w3a_card_schema().to_string()),
         Command::ExportPairs(args) => {
@@ -144,6 +145,15 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             w19b_pairs::w19b_export_pairs(&db, &args).await
         }
     }
+}
+
+/// `propose-order`: the order of a paid run.
+async fn order_command(
+    database_url: Option<String>,
+    cache: &Cache,
+    args: &args::ProposeOrderArgs,
+) -> Result<String, CliError> {
+    propose::order::command(&connect(database_url).await?, cache, args).await
 }
 
 /// `audit`: the sample as text, or written to the file `--file` names.

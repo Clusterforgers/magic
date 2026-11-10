@@ -29,6 +29,8 @@ pub struct Cli {
 
 /// The commands.
 #[derive(Debug, Subcommand)]
+// One command is parsed once per process, so the size of the largest variant costs nothing.
+#[allow(clippy::large_enum_variant)]
 pub enum Command {
     /// Download data into the cache.
     Fetch {
@@ -66,6 +68,8 @@ pub enum Command {
     TranslateForge(TranslateForgeArgs),
     /// Ask a model for the rules of cards and keep the proposals the checker accepts (needs `ANTHROPIC_API_KEY` and costs money; --dry-run sends nothing).
     Propose(ProposeArgs),
+    /// Write the order of a paid `propose` run: the cards of the saved decks first, most used first, then the others by popularity, only cards without rules in the repository; read-only.
+    ProposeOrder(ProposeOrderArgs),
     /// Copy the proposals the checker accepts as `Verified` into the corpus: the rules file in `cards/` and the card's Scryfall record from the cache as its fixture.
     Promote(PromoteArgs),
     /// Print the reference of the rules DSL that `propose` sends to the model: the type tree and its vocabulary.
@@ -331,6 +335,23 @@ impl Reasoning {
     }
 }
 
+/// Options of `propose-order`.
+#[derive(Debug, Args)]
+pub struct ProposeOrderArgs {
+    /// Write the names here, one a line (`propose --cards FILE` reads them); without it they are printed.
+    #[arg(long, value_name = "FILE")]
+    pub out: Option<PathBuf>,
+
+    /// Keep only the first N names.
+    #[arg(long, value_name = "N")]
+    pub limit: Option<usize>,
+
+    /// The line list: keep only the cards whose Forge translation in this folder has one or two gapped lines
+    /// (`propose --lines --names-file` reads it).
+    #[arg(long, value_name = "DIR")]
+    pub lines: Option<PathBuf>,
+}
+
 /// Options of `propose`.
 #[derive(Debug, Args)]
 // Each flag is one independent command-line switch.
@@ -369,7 +390,8 @@ pub struct ProposeArgs {
     #[arg(long, value_name = "URL")]
     pub base_url: Option<String>,
 
-    /// The model id (default `claude-sonnet-5-5` for Anthropic; required for `--provider openai`).
+    /// The model id (default `claude-sonnet-5-5` for Anthropic; required for `--provider openai`). For Anthropic `opus`,
+    /// `sonnet` and `haiku` name the current model of that family; the price of the model sets what `--max-spend` allows.
     #[arg(long, value_name = "ID")]
     pub model: Option<String>,
 
@@ -378,7 +400,8 @@ pub struct ProposeArgs {
     pub no_json_mode: bool,
 
     /// Send the JSON schema of a rules file (`response_format` `json_schema`) so an OpenAI-style server limits the answer
-    /// to valid shapes; replaces the plain JSON-object mode (`mtg-cli dsl-schema` prints it).
+    /// to valid shapes; replaces the plain JSON-object mode (`mtg-cli dsl-schema` prints it). With `--lines` on the
+    /// Anthropic API it sends the schema of the line's kind as structured output when its types are not recursive.
     #[arg(long, conflicts_with = "no_json_mode")]
     pub schema: bool,
 
@@ -395,9 +418,9 @@ pub struct ProposeArgs {
     #[arg(long, value_name = "N", default_value_t = 2, value_parser = clap::value_parser!(u32).range(0..=10))]
     pub retries: u32,
 
-    /// The reasoning effort of a model that has the setting (`gpt-oss`, o-series): sent as `reasoning_effort` to an
-    /// OpenAI-style server, which may reject or ignore it; the Anthropic provider never gets it. Default: not sent, so the
-    /// model uses its own.
+    /// The reasoning effort of a model that has the setting: sent as `output_config.effort` to the Anthropic API (thinking is
+    /// billed as answer tokens, so `low` is the cheapest) and as `reasoning_effort` to an OpenAI-style server (`gpt-oss`,
+    /// o-series), which may reject or ignore it. Default: not sent, so the model uses its own.
     #[arg(long, value_enum, value_name = "EFFORT")]
     pub reasoning: Option<Reasoning>,
 
@@ -414,6 +437,25 @@ pub struct ProposeArgs {
     /// The most input tokens to spend, cached tokens included; a request is not sent when its estimate would pass this.
     #[arg(long, value_name = "N", default_value_t = 3_000_000)]
     pub max_input_tokens: u64,
+
+    /// The most US dollars this run may spend, counting everything the cost ledger (`api-ledger.tsv` in the cache directory)
+    /// already holds: a request is not sent when its worst case (its input as a cache write and every answer token) would
+    /// pass it. Required to ask the Anthropic API; a local server costs nothing and takes none.
+    #[arg(long, value_name = "USD", value_parser = crate::propose::price::parse_usd)]
+    pub max_spend: Option<crate::propose::price::Usd>,
+
+    /// Ask through the Message Batches API: half the price, answers within a day. The run waits for each batch (polling),
+    /// settles it into the ledger when its results are read, and `--resume` collects a batch that is still out.
+    #[arg(long)]
+    pub batch: bool,
+
+    /// With `--batch`: the most requests in one batch (the API takes 100000 and 256 MB; each request carries the rules).
+    #[arg(long, value_name = "N", requires = "batch", default_value_t = crate::propose::batch::DEFAULT_BATCH_SIZE, value_parser = clap::value_parser!(u32).range(1..=100_000))]
+    pub batch_size: u32,
+
+    /// With `--batch`: the seconds between two looks at a batch that is out.
+    #[arg(long, value_name = "SECS", requires = "batch", default_value_t = 30, value_parser = clap::value_parser!(u64).range(1..))]
+    pub poll_every: u64,
 
     /// How many hand-written examples each prompt holds.
     #[arg(long, value_name = "N", default_value_t = 4, value_parser = clap::value_parser!(u8).range(3..=5))]
@@ -451,13 +493,19 @@ pub struct ProposeArgs {
     #[arg(long, value_name = "DIR")]
     pub forge_hint: Option<PathBuf>,
 
-    /// Line mode, for a local model only (`--provider openai --base-url`): for each name in `--names-file` whose Forge
-    /// translation has exactly one gapped line, the model writes only that ability from a small prompt and the schema of
-    /// its kind; the part is merged into the translation and the checker judges the card. Needs `--forge-hint` and
-    /// `--translations`. The results are proposals marked as model-written and unread; only the checker's `Verified`
-    /// can play without a read.
+    /// Line mode: for each Commander-legal name in `--names-file` whose Forge translation has one or two gapped lines, the
+    /// model writes only those abilities from a small prompt (the line, its script lines, the proven abilities and the
+    /// nearest solved examples); the parts are merged into the translation and the checker judges the card. On the
+    /// Anthropic API (`--max-spend`, `--batch`, `--resume`) or a local server (`--provider openai --base-url`). Needs
+    /// `--forge-hint` and `--translations`. The results are proposals marked as model-written and unread; only the
+    /// checker's `Verified` can play without a read.
     #[arg(long, requires_all = ["names_file", "translations"], conflicts_with_all = ["cards", "sample", "promote"])]
     pub lines: bool,
+
+    /// With `--lines`: how many independent answers each line gets in its first round; the best is kept and the summary's
+    /// `agree` column says whether they all said the same.
+    #[arg(long, value_name = "N", requires = "lines", default_value_t = 1, value_parser = clap::value_parser!(u8).range(1..=5))]
+    pub samples: u8,
 
     /// With `--lines`: the cards to work on, one name a line, taken in order.
     #[arg(long, value_name = "FILE", requires = "lines")]
@@ -987,6 +1035,70 @@ mod tests {
         assert_eq!(
             (args.request_timeout, args.retries, args.jobs),
             (timeout, retries, jobs)
+        );
+    }
+
+    #[rstest]
+    #[case::none(&[], None)]
+    #[case::dollars(&["--max-spend", "200"], Some(200_000_000))]
+    #[case::cents(&["--max-spend", "0.5"], Some(500_000))]
+    fn propose_takes_a_spend_cap_in_dollars(#[case] extra: &[&str], #[case] micros: Option<u64>) {
+        let mut line = vec!["--cards", "Opt"];
+        line.extend_from_slice(extra);
+        assert_eq!(propose(&line).unwrap().max_spend.map(|usd| usd.0), micros);
+    }
+
+    #[rstest]
+    #[case::zero(&["--cards", "Opt", "--max-spend", "0"])]
+    #[case::negative(&["--cards", "Opt", "--max-spend", "-3"])]
+    #[case::words(&["--cards", "Opt", "--max-spend", "much"])]
+    #[case::batch_size_without_batch(&["--cards", "Opt", "--batch-size", "10"])]
+    #[case::poll_without_batch(&["--cards", "Opt", "--poll-every", "5"])]
+    #[case::too_large_a_batch(&["--cards", "Opt", "--batch", "--batch-size", "100001"])]
+    #[case::no_wait_between_looks(&["--cards", "Opt", "--batch", "--poll-every", "0"])]
+    fn propose_refuses_a_bad_cap_and_batch_options_that_need_the_batch_flag(#[case] args: &[&str]) {
+        assert!(propose(args).is_err());
+    }
+
+    #[test]
+    fn propose_takes_the_batch_mode_with_its_size_and_poll_time() {
+        let defaults = propose(&["--cards", "Opt", "--batch"]).unwrap();
+        assert_eq!(
+            (defaults.batch, defaults.batch_size, defaults.poll_every),
+            (true, 500, 30)
+        );
+        let given = propose(&[
+            "--cards",
+            "Opt",
+            "--batch",
+            "--batch-size",
+            "50",
+            "--poll-every",
+            "5",
+        ])
+        .unwrap();
+        assert_eq!((given.batch_size, given.poll_every), (50, 5));
+        assert!(!propose(&["--cards", "Opt"]).unwrap().batch);
+    }
+
+    #[test]
+    fn propose_order_takes_a_file_and_a_limit() {
+        let Command::ProposeOrder(args) = Cli::try_parse_from([
+            "mtg-cli",
+            "propose-order",
+            "--out",
+            "/tmp/order.txt",
+            "--limit",
+            "500",
+        ])
+        .unwrap()
+        .command
+        else {
+            panic!("expected propose-order");
+        };
+        assert_eq!(
+            (args.out, args.limit),
+            (Some(PathBuf::from("/tmp/order.txt")), Some(500))
         );
     }
 

@@ -26,6 +26,7 @@ How your answer is used:
 - A checker reads each ability back as a sentence and compares it with the card's text. It accepts rules only when they are valid in the reference below and every ability reads back as a sentence of the card. Follow the shapes of the examples.
 - The oracle text is the only ground truth. Write one ability for each sentence the reference can say, a keyword line as {\"Keyword\": ...} abilities. When the reference has no construct for a sentence, write no ability for it: the table plays that sentence by hand. Never invent a variant or a field, and never change the card's meaning to fit.
 - Reminder text in parentheses is not a sentence of its own.
+- Besides \"faces\" the object may hold \"missing\": a list of short strings, one for each sentence or construct you left out because the reference cannot say it, naming the engine piece it needs (for example \"replacement effect: exile the creature instead of letting it die\"). People read it and the checker ignores it; leave it out when nothing is missing.
 ";
 
 /// The system prompt: the instructions, then the reference.
@@ -192,6 +193,38 @@ pub fn diagnosis(report: &Report) -> String {
     lines.join("\n")
 }
 
+/// The most pieces and the longest piece of `missing` that are kept.
+const MISSING_PIECES: usize = 10;
+const MISSING_LENGTH: usize = 200;
+
+/// The engine pieces the model says are missing: its object without the `missing` field (so that the checker sees only
+/// rules), and the pieces as short single lines. A text that is not a JSON object stays as it is.
+pub fn take_missing(json: &str) -> (String, Vec<String>) {
+    let Ok(serde_json::Value::Object(mut fields)) = serde_json::from_str::<serde_json::Value>(json)
+    else {
+        return (json.to_owned(), Vec::new());
+    };
+    let Some(missing) = fields.remove("missing") else {
+        return (json.to_owned(), Vec::new());
+    };
+    let words: Vec<String> = match missing {
+        serde_json::Value::String(one) => vec![one],
+        serde_json::Value::Array(all) => all
+            .into_iter()
+            .filter_map(|item| item.as_str().map(str::to_owned))
+            .collect(),
+        _ => Vec::new(),
+    };
+    let pieces = words
+        .iter()
+        .map(|word| word.split_whitespace().collect::<Vec<_>>().join(" "))
+        .filter(|word| !word.is_empty())
+        .map(|word| word.chars().take(MISSING_LENGTH).collect())
+        .take(MISSING_PIECES)
+        .collect();
+    (serde_json::Value::Object(fields).to_string(), pieces)
+}
+
 /// The JSON object of an answer: the text between the first `{` and the last `}`, so a code fence or a sentence around it
 /// does not matter.
 pub fn extract_json(answer: &str) -> &str {
@@ -250,6 +283,43 @@ mod tests {
                 "Write the rules of Shivan Dragon now. Reply with the JSON object only."
             )
         );
+    }
+
+    #[rstest]
+    #[case::a_list(
+        r#"{"faces":[],"missing":["replacement: exile instead","  a\n b  ",""]}"#,
+        vec!["replacement: exile instead", "a b"]
+    )]
+    #[case::one_word(r#"{"faces":[],"missing":"a trigger on discard"}"#, vec!["a trigger on discard"])]
+    #[case::not_strings(r#"{"faces":[],"missing":[1,{"a":2}]}"#, vec![])]
+    #[case::nothing_missing(r#"{"faces":[],"missing":[]}"#, vec![])]
+    fn the_missing_pieces_are_taken_out_of_the_rules_as_short_lines(
+        #[case] json: &str,
+        #[case] pieces: Vec<&str>,
+    ) {
+        let (rules, found) = take_missing(json);
+        assert_eq!(found, pieces);
+        assert!(!rules.contains("missing"), "{rules}");
+        assert_eq!(rules, r#"{"faces":[]}"#);
+    }
+
+    #[test]
+    fn a_text_without_the_field_or_that_is_no_object_is_left_as_it_is() {
+        for text in [r#"{"faces":[]}"#, "not json", "[1,2]", ""] {
+            assert_eq!(take_missing(text), (text.to_owned(), Vec::new()));
+        }
+        let many: Vec<String> = (0..30).map(|n| format!("piece {n}")).collect();
+        let long = "x".repeat(500);
+        let json = serde_json::json!({"faces": [], "missing": many}).to_string();
+        assert_eq!(take_missing(&json).1.len(), MISSING_PIECES);
+        let json = serde_json::json!({"faces": [], "missing": [long]}).to_string();
+        assert_eq!(take_missing(&json).1[0].len(), MISSING_LENGTH);
+    }
+
+    #[test]
+    fn the_instructions_offer_the_missing_field_without_making_it_part_of_the_rules() {
+        assert!(instructions().contains("\"missing\""));
+        assert!(instructions().contains("the checker ignores it"));
     }
 
     #[test]

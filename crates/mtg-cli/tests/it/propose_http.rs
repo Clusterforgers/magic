@@ -246,6 +246,8 @@ async fn the_command_asks_for_a_stored_card_and_keeps_the_accepted_proposal(pool
             &out_arg,
             "--examples",
             "3",
+            "--max-spend",
+            "20",
         ]),
         progress,
         &env_with_key,
@@ -298,7 +300,7 @@ async fn a_run_without_a_key_stops_before_any_request_and_a_dry_run_needs_none(p
     let error = run_command(
         &db,
         &cache,
-        &args(&["--cards", "Lightning Bolt"]),
+        &args(&["--cards", "Lightning Bolt", "--max-spend", "20"]),
         progress.clone(),
         &no_env,
         &config(&server),
