@@ -129,6 +129,8 @@ pub fn process(
         draws_changed: false,
         pulled: Vec::new(),
         activated: Vec::new(),
+        putter: crate::triggers::cause_of(state, &original, state)
+            .map(|cause| (cause.player, state.resolving().is_some())),
     };
     step.activated = step
         .slots
@@ -633,6 +635,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 ..
             }
         ),
+        ReplaceBy::Half => matches!(unit, Unit::Counters { .. }),
         ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
         | ReplaceBy::Prevent
@@ -776,6 +779,8 @@ struct Pass<'a> {
     pulled: Vec<ObjectId>,
     /// The objects that activated an ability in this batch: what they pay is a cost, not an effect.
     activated: Vec<ObjectId>,
+    /// Who puts the counters of the batch, and whether a resolving spell or ability (an effect) does.
+    putter: Option<(PlayerId, bool)>,
 }
 
 impl Pass<'_> {
@@ -961,13 +966,26 @@ impl Pass<'_> {
                     && scope.selects(what, reference)?
             }
             (
-                ReplaceWhen::CountersPut { on, counter },
+                ReplaceWhen::CountersPut {
+                    on,
+                    counter,
+                    by,
+                    effect,
+                },
                 Unit::Counters {
                     on: put,
                     counter: kind,
                 },
             ) => {
-                counter.as_ref().is_none_or(|wanted| wanted == kind)
+                let putter_fits = match (by, self.putter) {
+                    (None, _) => true,
+                    (Some(by), Some((player, _))) => scope.players(by)?.contains(&player),
+                    (Some(_), None) => false,
+                };
+                let effect_fits = !*effect || self.putter.is_some_and(|(_, resolving)| resolving);
+                putter_fits
+                    && effect_fits
+                    && counter.as_ref().is_none_or(|wanted| wanted == kind)
                     && match on {
                         None => true,
                         Some(on) => self.includes(&scope, on, *put)?,
@@ -1971,7 +1989,7 @@ impl Pass<'_> {
                 self.end_once_shield(candidate);
                 self.r6f_redirect_up_to(at, candidate, u32::MAX, applied);
             }
-            (ReplaceBy::Multiply(_) | ReplaceBy::Add(_), _) => {
+            (ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Half, _) => {
                 self.scale(at, by, &applied);
             }
             (
@@ -2270,6 +2288,7 @@ impl Pass<'_> {
         let more = |amount: u32| match by {
             ReplaceBy::Multiply(times) => amount.saturating_mul(*times),
             ReplaceBy::Add(extra) => amount.saturating_add(*extra),
+            ReplaceBy::Half => amount / 2,
             _ => amount,
         };
         let item = self.slots[at].item.clone();
@@ -2328,6 +2347,11 @@ impl Pass<'_> {
             }
             Item::One(Event::CountersChanged(CountersChanged { on, counter, delta })) => {
                 let now = i32::try_from(more(delta.unsigned_abs())).unwrap_or(i32::MAX);
+                // Half of one counter is none: nothing is put.
+                if now == 0 {
+                    self.slots.remove(at);
+                    return;
+                }
                 vec![Item::One(Event::CountersChanged(CountersChanged {
                     on,
                     counter,

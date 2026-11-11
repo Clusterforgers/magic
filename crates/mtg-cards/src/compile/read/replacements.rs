@@ -38,7 +38,13 @@ pub(super) fn sentences(when: &ReplaceWhen, by: &ReplaceBy) -> Vec<String> {
         ReplaceWhen::TokenCreation { controller, what } if what.is_empty() => {
             tokens(controller, by)
         }
-        ReplaceWhen::CountersPut { on, counter } => counters(on.as_ref(), counter.as_ref(), by),
+        ReplaceWhen::CountersPut {
+            on,
+            counter,
+            by: None,
+            effect: false,
+        } => counters(on.as_ref(), counter.as_ref(), by),
+        ReplaceWhen::CountersPut { .. } => super::ep24_counters::ep24_counter_texts(when, by),
         ReplaceWhen::Draw {
             who: Ref::You,
             except_draw_step,
@@ -248,7 +254,7 @@ fn counters(
 }
 
 /// How a sentence names the permanent again: "it", "that permanent", "that creature".
-fn anaphors(place: &str) -> Vec<String> {
+pub(super) fn anaphors(place: &str) -> Vec<String> {
     let noun = place
         .strip_prefix("another ")
         .or_else(|| place.strip_prefix("an "))

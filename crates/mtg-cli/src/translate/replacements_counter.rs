@@ -74,6 +74,7 @@ fn changed_by(word: &str, what: &str) -> Tr<Value> {
     };
     match how {
         "Twice" => Ok(json!({"Multiply": 2})),
+        "HalfDown" if what == "CounterNum" => Ok(json!("Half")),
         _ => match how
             .strip_prefix("Plus.")
             .and_then(|n| n.parse::<u32>().ok())
@@ -191,22 +192,54 @@ pub fn add_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         "ValidCounterType",
         "ReplaceWith",
         "ActiveZones",
+        "ValidSource",
+        "ValidObject",
+        "EffectOnly",
     ];
     check_keys(p, "Replacement.AddCounter", &read, |_, _| false)?;
     if p.get("ActiveZones") != Some("Battlefield") {
         return unmapped("key:Replacement.AddCounter.ActiveZones");
     }
-    let on = match (p.get("ValidCard"), p.get("ValidPlayer")) {
-        (Some(valid), None) => json!({"Each": selector_any(ctx, valid)?}),
-        (None, Some(_)) => player_ref(p.get("ValidPlayer"))?,
+    // "If you would put", "if an opponent would put": who puts the counters.
+    let putter = match p.get("ValidSource") {
+        None => None,
+        Some("You") => Some("You"),
+        Some("Opponent") => Some("Opponents"),
+        Some(_) => return unmapped("key:Replacement.AddCounter.ValidSource"),
+    };
+    let effect = match p.get("EffectOnly") {
+        None => false,
+        Some("True") => true,
+        Some(_) => return unmapped("key:Replacement.AddCounter.EffectOnly"),
+    };
+    let on = match (
+        p.get("ValidCard"),
+        p.get("ValidPlayer"),
+        p.get("ValidObject"),
+    ) {
+        (Some(valid), None, None) => Some(json!({"Each": selector_any(ctx, valid)?})),
+        (None, Some(_), None) => Some(player_ref(p.get("ValidPlayer"))?),
+        (None, None, Some("Permanent.inZoneBattlefield,Player")) => None,
+        (None, None, Some(valid)) if !valid.contains(',') => {
+            Some(json!({"Each": selector_any(ctx, valid.trim_end_matches("+inZoneBattlefield"))?}))
+        }
         _ => return unmapped("replacement:AddCounter-shape"),
     };
     let Some(name) = p.get("ReplaceWith") else {
         return unmapped("replacement:AddCounter-without-ReplaceWith");
     };
     let part = ctx.sub(name)?;
-    let read = ["DB", "ValidCounterType", "ChooseCounter", "Amount"];
+    let read = [
+        "DB",
+        "ValidCounterType",
+        "ChooseCounter",
+        "Amount",
+        "ValidSource",
+    ];
     check_keys(&part, "Replacement.AddCounter", &read, |_, _| false)?;
+    if part.has("ValidSource") && part.get("ValidSource") != p.get("ValidSource") {
+        return unmapped("key:Replacement.AddCounter.ValidSource");
+    }
     if part.get("DB") != Some("ReplaceCounter") {
         return unmapped("replacement:AddCounter-instead");
     }
@@ -222,7 +255,16 @@ pub fn add_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if kind.is_none() && (by.get("Add").is_some() || chosen) {
         return unmapped("replacement:AddCounter-plus-without-a-kind");
     }
-    let mut when = json!({ "on": on });
+    let mut when = json!({});
+    if let Some(on) = on {
+        when["on"] = on;
+    }
+    if let Some(putter) = putter {
+        when["by"] = json!(putter);
+    }
+    if effect {
+        when["effect"] = json!(true);
+    }
     if let Some(kind) = kind {
         let Some(kind) = counter_kind(kind) else {
             return unmapped("key:Replacement.AddCounter.CounterType");

@@ -1,4 +1,4 @@
-//! Goal: the pieces of ep24 translate as the card prints them: a change of one target to the source (`DefinedMagnet$ Self` with `ChangeSingleTarget$`) over spells and abilities or instant and sorcery spells with a single target; a magnet without a single change, another magnet or a magnet beside a chooser stays a gap. Unspent mana kept of one type or every type, and lost mana that becomes one type; another player, another type word or another replacement stays a gap. Mana spent as though of any color or type, for everything or for spells of one kind; white mana only, abilities or cards you do not own stay gaps. Mana of one color among objects on the battlefield, in your graveyard or of the card itself; an imprinted or exiled card and a count stay gaps. A draw limit of a number and opponents that can't make you sacrifice; a counted limit, costs or another kind of permanent stay gaps.
+//! Goal: the pieces of ep24 translate as the card prints them: a change of one target to the source (`DefinedMagnet$ Self` with `ChangeSingleTarget$`) over spells and abilities or instant and sorcery spells with a single target; a magnet without a single change, another magnet or a magnet beside a chooser stays a gap. Unspent mana kept of one type or every type, and lost mana that becomes one type; another player, another type word or another replacement stays a gap. Mana spent as though of any color or type, for everything or for spells of one kind; white mana only, abilities or cards you do not own stay gaps. Mana of one color among objects on the battlefield, in your graveyard or of the card itself; an imprinted or exiled card and a count stay gaps. A draw limit of a number and opponents that can't make you sacrifice; a counted limit, costs or another kind of permanent stay gaps. Counter replacements by who puts them (`ValidSource$`), for effects only and halved; another putter, a list of objects or a half by you stay gaps.
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -191,4 +191,46 @@ fn ep24_mana_of_a_color_among_translates(#[case] line: &str, #[case] among: Valu
 #[case::counted("Valid$ Permanent.YouCtrl | Amount$ 2")]
 fn ep24_other_reflected_colors_stay_gaps(#[case] line: &str) {
     assert!(!gaps(&tapped(line)).is_empty(), "{line}");
+}
+
+fn counters(line: &str) -> String {
+    format!(
+        "Name:T\nTypes:Enchantment\nR:Event$ AddCounter | ActiveZones$ Battlefield | {line} | Description$ x\nSVar:Twice:DB$ ReplaceCounter | Amount$ X\nSVar:Half:DB$ ReplaceCounter | ValidSource$ Opponent | Amount$ Y\nSVar:X:ReplaceCount$CounterNum/Twice\nSVar:Y:ReplaceCount$CounterNum/HalfDown\n"
+    )
+}
+
+#[rstest]
+#[case::mine_doubled(
+    "ValidSource$ You | ValidObject$ Permanent.inZoneBattlefield,Player | ReplaceWith$ Twice",
+    json!({"when": {"CountersPut": {"by": "You"}}, "by": {"Multiply": 2}})
+)]
+#[case::theirs_halved(
+    "ValidSource$ Opponent | ValidObject$ Permanent.inZoneBattlefield,Player | ReplaceWith$ Half",
+    json!({"when": {"CountersPut": {"by": "Opponents"}}, "by": "Half"})
+)]
+#[case::effects_only(
+    "ValidCard$ Permanent.YouCtrl | EffectOnly$ True | ReplaceWith$ Twice",
+    json!({"when": {"CountersPut": {"on": {"Each": [{"ControlledBy": "You"}]}, "effect": true}}, "by": {"Multiply": 2}})
+)]
+fn ep24_counter_putters_translate(#[case] line: &str, #[case] replacement: Value) {
+    let script = counters(line);
+    assert_eq!(gaps(&script), Vec::<String>::new(), "{line}");
+    assert_eq!(
+        abilities(&script),
+        vec![json!({"Replacement": replacement})]
+    );
+}
+
+#[rstest]
+#[case::another_putter(
+    "ValidSource$ Player | ValidObject$ Permanent.inZoneBattlefield,Player | ReplaceWith$ Twice"
+)]
+#[case::a_list_of_objects(
+    "ValidSource$ You | ValidObject$ Creature.YouCtrl,You | ReplaceWith$ Twice"
+)]
+#[case::half_by_you(
+    "ValidSource$ You | ValidObject$ Permanent.inZoneBattlefield,Player | ReplaceWith$ Half"
+)]
+fn ep24_other_counter_putters_stay_gaps(#[case] line: &str) {
+    assert!(!gaps(&counters(line)).is_empty(), "{line}");
 }

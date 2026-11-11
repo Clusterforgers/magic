@@ -453,7 +453,7 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
             phrase::selectors(ctx, what).replace("permanents", "tokens"),
             phrase::whose(ctx, controller)
         ),
-        ReplaceWhen::CountersPut { on, counter } => format!(
+        ReplaceWhen::CountersPut { on, counter, .. } => format!(
             "{} counters would be put on {}",
             counter
                 .as_ref()

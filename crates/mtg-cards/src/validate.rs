@@ -4690,7 +4690,10 @@ impl Walker<'_> {
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
             }
-            ReplaceWhen::CountersPut { on, .. } => {
+            ReplaceWhen::CountersPut { on, by, .. } => {
+                if let Some(by) = by {
+                    self.at("by", |w| w.reference(by, Kind::Player));
+                }
                 if let Some(on) = on {
                     self.at("on", |w| w.reference(on, Kind::Either));
                 }
@@ -4891,6 +4894,9 @@ impl Walker<'_> {
                 | ReplaceWhen::Enters { .. }
         );
         match by {
+            ReplaceBy::Half if !matches!(when, ReplaceWhen::CountersPut { .. }) => {
+                self.problem("only the counters of an event are halved");
+            }
             ReplaceBy::Multiply(0) => self.problem("multiplying by zero is `Prevent`"),
             ReplaceBy::Add(0) => self.problem("adding nothing changes nothing"),
             ReplaceBy::Multiply(_) | ReplaceBy::Add(_) if zone_move => {

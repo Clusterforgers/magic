@@ -1,4 +1,4 @@
-//! Goal: the writers of ep24 write the card's words and nothing near them: a change of targets ("Change a target of target spell or ability to ~.", "you may change the target of target instant or sorcery spell with a single target to ~", "Change the target of target spell or ability with a single target.", "You may choose new targets for target spell or ability."); another object to change to, another kind of spell or a missing "single target" do not read back. Unspent mana kept or turned into one type ("You don't lose unspent red mana as steps and phases end.", "If you would lose unspent mana, that mana becomes colorless instead."); another type, another player or another group do not read back. Mana spent as though of any color or type, for everything or one kind of spell; the other conversion or kind does not read back. A draw limit of one card for opponents and opponents that can't make you sacrifice; another limit or group does not read back.
+//! Goal: the writers of ep24 write the card's words and nothing near them: a change of targets ("Change a target of target spell or ability to ~.", "you may change the target of target instant or sorcery spell with a single target to ~", "Change the target of target spell or ability with a single target.", "You may choose new targets for target spell or ability."); another object to change to, another kind of spell or a missing "single target" do not read back. Unspent mana kept or turned into one type ("You don't lose unspent red mana as steps and phases end.", "If you would lose unspent mana, that mana becomes colorless instead."); another type, another player or another group do not read back. Mana spent as though of any color or type, for everything or one kind of spell; the other conversion or kind does not read back. A draw limit of one card for opponents and opponents that can't make you sacrifice; another limit or group does not read back. Counter replacements by a putter or for effects only (twice, half rounded down); another putter or count does not read back.
 use super::*;
 
 const SPELL_OR_ABILITY: &str =
@@ -184,5 +184,38 @@ fn ep24_mana_of_a_color_among_writes_as_printed(
     #[case] reads: bool,
 ) {
     let found = written_variants(&tap_for(among));
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
+fn season(when: &str, by: &str) -> Ability {
+    ability(&format!(
+        r#"{{"Replacement":{{"when":{{"CountersPut":{when}}},"by":{by}}}}}"#
+    ))
+}
+
+const VORINCLEX: &str = "If you would put one or more counters on a permanent or player, put twice that many of each of those kinds of counters on that permanent or player instead.";
+const VORINCLEX_HALF: &str = "If an opponent would put one or more counters on a permanent or player, they put half that many of each of those kinds of counters on that permanent or player instead, rounded down.";
+const DOUBLING: &str = "If an effect would put one or more counters on a permanent you control, it puts twice that many of those counters on that permanent instead.";
+
+#[rstest]
+#[case::mine_doubled(r#"{"by":"You"}"#, r#"{"Multiply":2}"#, VORINCLEX, true)]
+#[case::theirs_doubled(r#"{"by":"Opponents"}"#, r#"{"Multiply":2}"#, VORINCLEX, false)]
+#[case::mine_tripled(r#"{"by":"You"}"#, r#"{"Multiply":3}"#, VORINCLEX, false)]
+#[case::theirs_halved(r#"{"by":"Opponents"}"#, r#""Half""#, VORINCLEX_HALF, true)]
+#[case::mine_halved(r#"{"by":"You"}"#, r#""Half""#, VORINCLEX_HALF, false)]
+#[case::effects_doubled(
+    r#"{"effect":true,"on":{"Each":[{"ControlledBy":"You"},{"In":"Battlefield"}]}}"#,
+    r#"{"Multiply":2}"#,
+    DOUBLING,
+    true
+)]
+#[case::effects_on_any(r#"{"effect":true}"#, r#"{"Multiply":2}"#, DOUBLING, false)]
+fn ep24_counter_putters_write_as_printed(
+    #[case] when: &str,
+    #[case] by: &str,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let found = written_variants(&season(when, by));
     assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
 }
