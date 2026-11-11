@@ -1,7 +1,7 @@
 {
   "oracle_id": "40759025-91e1-4755-a8cf-0b68c8e9220f",
   "name": "Spiritual Visit",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spiritual Visit",
@@ -26,12 +26,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 46, "end": 214 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{W}" } } }
       ]
     }
   ]

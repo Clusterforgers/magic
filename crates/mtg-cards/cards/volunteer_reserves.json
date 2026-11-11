@@ -1,18 +1,13 @@
 {
   "oracle_id": "a2dabd52-0b75-42d7-a07d-0df7b38646e2",
   "name": "Volunteer Reserves",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Volunteer Reserves",
       "oracle_fingerprint": "f458e71140f37f63a78e111e96384ae9",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 326 }
-          }
-        },
+        { "Keyword": "Banding" },
         { "Keyword": { "CumulativeUpkeep": "{1}" } }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "oracle_id": "fa0ef984-b4e0-4c48-978c-0648e49d53f5",
   "name": "Dampen Thought",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Dampen Thought",
@@ -13,12 +13,7 @@
             "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 4 } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 32, "end": 203 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{1}{U}" } } }
       ]
     }
   ]

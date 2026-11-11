@@ -22,6 +22,8 @@ enum Params {
     Dash,
     /// A cost: mana symbols, or a dash and a cost in words.
     Cost,
+    /// Mana symbols only: a cost in words leaves the line to the text (splice, whose engine pays mana alone).
+    Mana,
     /// A number or `X`.
     Number,
     /// Words (`creature`, `from red`).
@@ -90,8 +92,8 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("shadow", Params::None),
     ("skulk", Params::None),
     ("banding", Params::None),
-    ("splice onto arcane", Params::Cost),
-    ("splice onto instant or sorcery", Params::Cost),
+    ("splice onto arcane", Params::Mana),
+    ("splice onto instant or sorcery", Params::Mana),
     ("infect", Params::None),
     ("wither", Params::None),
     ("persist", Params::None),
@@ -288,6 +290,7 @@ fn plausible(params: Params, rest: &str) -> bool {
         Params::None => rest.is_empty(),
         Params::Dash => rest.is_empty() || rest.starts_with('\u{2014}'),
         Params::Cost => rest.contains('{') || rest.starts_with('\u{2014}'),
+        Params::Mana => rest.starts_with('{'),
         Params::Number => {
             rest == "X" || (!rest.is_empty() && rest.chars().all(|c| c.is_ascii_digit()))
         }
@@ -466,11 +469,11 @@ pub fn read(item: &str) -> Option<Keyword> {
         "afflict" => positive(rest).map(Keyword::Afflict),
         "renown" => positive(rest).map(Keyword::Renown),
         "replicate" => spell_cost(rest).map(Keyword::Replicate),
-        "splice onto arcane" => spell_cost(rest).map(|cost| Keyword::Splice {
+        "splice onto arcane" => splice_mana(rest).map(|cost| Keyword::Splice {
             onto: SpliceOnto::Arcane,
             cost,
         }),
-        "splice onto instant or sorcery" => spell_cost(rest).map(|cost| Keyword::Splice {
+        "splice onto instant or sorcery" => splice_mana(rest).map(|cost| Keyword::Splice {
             onto: SpliceOnto::InstantOrSorcery,
             cost,
         }),
@@ -998,6 +1001,11 @@ fn cost(rest: &str) -> Option<Cost> {
     ManaCostX::from_str(rest).ok().map(Cost::mana)
 }
 
+/// A splice cost the engine pays: mana alone (CR 702.47a); a cost in words stays unread.
+fn splice_mana(rest: &str) -> Option<Cost> {
+    ManaCostX::from_str(rest).ok().map(Cost::mana)
+}
+
 /// The cost of a keyword paid as a spell is cast (kicker, buyback, entwine, flashback, evoke, madness): as `cost`, else
 /// after a dash any cost an ability pays, in words ("Sacrifice a creature", "{1}{U}, Pay 3 life").
 fn spell_cost(rest: &str) -> Option<Cost> {
@@ -1441,7 +1449,7 @@ mod tests {
     #[case::ripple("Ripple 4", Keyword::Ripple(4))]
     #[case::epic("Epic", Keyword::Epic)]
     #[case::banding("Banding", Keyword::Banding)]
-    #[case::bands_with_other_legendary("Bands with other legendary creatures", Keyword::BandsWithOther(Selector(vec![Pred::Supertype(Supertype::Legendary), Pred::Type(CardType::Creature)])))]
+    #[case::bands_with_other_legendary("Bands with other legendary creatures", Keyword::BandsWithOther(Selector(vec![Pred::Type(CardType::Creature), Pred::Supertype(Supertype::Legendary)])))]
     #[case::splice_onto_arcane("Splice onto Arcane {1}{R}", Keyword::Splice { onto: SpliceOnto::Arcane, cost: mana("{1}{R}") })]
     #[case::splice_onto_instants("Splice onto instant or sorcery {2}{U}", Keyword::Splice { onto: SpliceOnto::InstantOrSorcery, cost: mana("{2}{U}") })]
     #[case::demonstrate("Demonstrate", Keyword::Demonstrate)]
@@ -1749,6 +1757,8 @@ mod tests {
     #[case::bands_with_other_named_creatures("Bands with other creatures named Wolves of the Hunt")]
     #[case::splice_onto_a_made_up_kind("Splice onto Banana {1}")]
     #[case::splice_without_a_cost("Splice onto Arcane")]
+    #[case::splice_by_sacrifice("Splice onto Arcane\u{2014}Sacrifice two Mountains.")]
+    #[case::splice_paid_by_an_opponents_life("Splice onto Arcane\u{2014}An opponent gains 5 life.")]
     #[case::crew_x("Crew X")]
     #[case::dredge_x("Dredge X")]
     #[case::dredge_nothing("Dredge 0")]

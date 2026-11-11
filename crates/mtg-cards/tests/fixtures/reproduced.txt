@@ -156,6 +156,7 @@ Blaze
 Blazing Archon
 Blazing Shoal
 Blazing Sunsteel
+Blessed Breath
 Blight Mamba
 Blight Pile
 Blightwidow
@@ -300,6 +301,7 @@ Consign // Oblivion
 Consign to Dust
 Constable of the Realm
 Consuming Aetherborn
+Consuming Vortex
 Contentious Plan
 Conversion Apparatus
 Copper-Leaf Angel
@@ -350,6 +352,7 @@ Cybermen Squadron
 Cyclonic Rift
 Cytoshape
 Dalek Squadron
+Dampen Thought
 Danny Pink
 Darkblast
 Darksteel Juggernaut
@@ -389,6 +392,7 @@ Dense Canopy
 Deputized Protester
 Desert
 Desperate Ravings
+Desperate Ritual
 Determined Iteration
 Devastation Tide
 Devoted Druid
@@ -502,6 +506,8 @@ Ethersworn Sphinx
 Eureka Moment
 Evangel of Heliod
 Evercoat Ursine
+Everdream
+Evermind
 Evolutionary Leap
 Exalted Angel
 Excavation Technique
@@ -625,6 +631,7 @@ Gilt-Leaf Palace
 Ginger, Queen of Sweets
 Girder Goons
 Gisa and Geralf
+Glacial Ray
 Glassworks // Shattered Yard
 Glimpse of Freedom
 Glint-Sleeve Artisan
@@ -724,6 +731,7 @@ Heronblade Elite
 Hexavus
 Hidden Dragonslayer
 Hidden Hideout
+Hideous Laughter
 High Ground
 Highspire Artisan
 History of Benalia
@@ -831,11 +839,13 @@ Kinjalli's Sunwing
 Kinsbaile Courier
 Kirol, History Buff // Pack a Punch
 Kitchen Finks
+Kjeldoran Knight
 Klauth, Unrivaled Ancient
 Knight of Dusk's Shadow
 Knight of the Last Breath
 Knights of the Black Rose
 Knowledge Is Power
+Kodama's Might
 Kodama's Reach
 Kolaghan Skirmisher
 Kolaghan's Command
@@ -870,6 +880,7 @@ Lhurgoyf
 Licia, Sanguine Tribune
 Life of Toshiro Umezawa // Memory of Toshiro
 Life's Legacy
+Lifted by Clouds
 Light 'Em Up
 Light Up the Stage
 Lightform
@@ -1163,6 +1174,7 @@ Propeller Pioneer
 Prosperous Bandit
 Proven Combatant
 Psychic Impetus
+Psychic Puppetry
 Psychosis Crawler
 Pteramander
 Purple Dragon Punks
@@ -1338,6 +1350,7 @@ Sheer Drop
 Sheltered by Ghosts
 Shenanigans
 Shields of Velis Vel
+Shifting Borders
 Shifting Sliver
 Shiny Impetus
 Shipbreaker Kraken
@@ -1402,6 +1415,7 @@ Soul of New Phyrexia
 Soul of Zendikar
 Soul's Attendant
 Souldrinker
+Soulless Revival
 Soultether Golem
 Souvenir Snatcher
 Sower of Temptation
@@ -1421,6 +1435,8 @@ Spinerock Knoll
 Spire Golem
 Spire Winder
 Spirit of the Hearth
+Spiritual Visit
+Splicer's Skill
 Spoils of Adventure
 Spore Burst
 Spreading Insurrection
@@ -1681,6 +1697,7 @@ Village Rites
 Viridian Corrupter
 Vish Kal, Blood Arbiter
 Visionary Augmenter
+Vital Surge
 Vitality Hunter
 Vivid Crag
 Vivid Creek
@@ -1689,6 +1706,7 @@ Vivid Marsh
 Vivid Meadow
 Voice of All
 Voice of the Blessed
+Volunteer Reserves
 Vona, Butcher of Magan
 Vorel of the Hull Clade
 Vorrac Battlehorns
@@ -1701,6 +1719,7 @@ Vow of Wildness
 Vulshok Splitter
 Wakanda Forever!
 Walking Ballista
+Wall of Shields
 Wanderbrine Preacher
 Wandering Eye
 Wandertale Mentor
@@ -1716,6 +1735,7 @@ Wasteland Raider
 Wastescape Battlemage
 Weaponcraft Enthusiast
 Wear // Tear
+Wear Away
 Wedgelight Rammer
 Wei Scout
 Weigh Down

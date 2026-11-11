@@ -1,7 +1,7 @@
 {
   "oracle_id": "c027a8ef-6cdd-4c14-9d4f-b21c63312874",
   "name": "Kodama's Might",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kodama's Might",
@@ -21,12 +21,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 46, "end": 214 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{G}" } } }
       ]
     }
   ]
