@@ -1547,6 +1547,7 @@ fn pipeline_events() -> Vec<Event> {
         targets: vec![vec![target, Target::Player(player)]],
         division: vec![(target, 2)],
         optional_costs: vec![0],
+        spliced: vec![b],
         way: Some(mtg_cards::value::CastWay::Evoke),
         face: Some(1),
         spent: Some(Box::new(vec![ManaType::Red, ManaType::Green])),

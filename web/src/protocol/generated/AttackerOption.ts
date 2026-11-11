@@ -29,4 +29,9 @@ life?: Array<[AttackTarget, number]>,
  * It may be exerted as it attacks (CR 701.43): the declaration names it with `Answer::DeclareExerting`. Left out
  * while it may not.
  */
-exert?: boolean, };
+exert?: boolean, 
+/**
+ * It has banding or "bands with other" (CR 702.22c): the declaration may put it in a band with other attackers through
+ * `Answer::DeclareExerting`. Left out while it has neither.
+ */
+banding?: boolean, };

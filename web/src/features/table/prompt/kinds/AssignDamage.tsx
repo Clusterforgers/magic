@@ -23,7 +23,6 @@ import {
 import type { DamageRecipient, Trample } from '../damageSplit'
 import { combatRoleIn } from '../../selectors'
 import { markCards, useCardMarks } from '../marks'
-import { useOwnCardIds } from '../ownCards'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
@@ -150,8 +149,17 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
   )
   const objects = usePlay(useShallow((state) => blockers.map((id) => state.objectsById[id])))
   // A blocker that divides its damage among a band, or an opponent's creature a banding creature fights (CR 702.22).
-  const blocking = usePlay((state) => combatRoleIn(state, attacker) === 'blocking')
-  const own = useOwnCardIds()
+  const blocking = usePlay(
+    (state) =>
+      combatRoleIn(state, attacker) === 'blocking' &&
+      blockers.length > 1 &&
+      blockers.every((id) => ['attacking', 'blocked'].includes(combatRoleIn(state, id) ?? '')),
+  )
+  const theirs = usePlay((state) => {
+    const controller = state.objectsById[attacker]?.controller
+    const viewer = state.view?.viewer
+    return controller !== undefined && viewer !== undefined && controller !== viewer
+  })
 
   const recipients = useMemo<DamageRecipient[]>(
     () =>
@@ -217,7 +225,7 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
 
   const text = damageSentence(
     power,
-    { name: attackerName, blocking, banding: blocking || !own.includes(attacker) },
+    { name: attackerName, blocking, banding: blocking || theirs },
     labels,
     joinWords(labels),
     defender,

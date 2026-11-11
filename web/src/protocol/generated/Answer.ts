@@ -29,4 +29,9 @@ attackers: Array<[ObjectId, AttackTarget]>,
 /**
  * The attackers exerted, each offered with `AttackerOption::exert`.
  */
-exert: Array<ObjectId>, } } | { "DeclareBlockers": Array<[ObjectId, ObjectId]> } | { "AssignDamage": Array<[ObjectId, number]> } | { "Discard": Array<ObjectId> } | { "ChooseTargets": TargetChoice } | { "ChooseMode": ModeChoice } | { "ChooseNumber": NumberChoice } | { "ChooseName": NameChoice } | { "DivideAmount": DivideChoice } | { "ChooseCards": CardsChoice } | { "OrderCards": OrderChoice } | { "Scry": ScryChoice } | { "YesNo": YesNoChoice } | { "ChooseOption": OptionChoice } | { "ChooseCosts": CostsChoice } | { "OrderTriggers": TriggersChoice } | { "ChooseReplacement": ReplacementChoice } | "Undo";
+exert?: Array<ObjectId>, 
+/**
+ * The bands, each of at least two attackers that attack the same player, planeswalker or battle; one with banding
+ * or "bands with other" is offered with `AttackerOption::banding`.
+ */
+bands?: Array<Array<ObjectId>>, } } | { "DeclareBlockers": Array<[ObjectId, ObjectId]> } | { "AssignDamage": Array<[ObjectId, number]> } | { "Discard": Array<ObjectId> } | { "ChooseTargets": TargetChoice } | { "ChooseMode": ModeChoice } | { "ChooseNumber": NumberChoice } | { "ChooseName": NameChoice } | { "DivideAmount": DivideChoice } | { "ChooseCards": CardsChoice } | { "OrderCards": OrderChoice } | { "Scry": ScryChoice } | { "YesNo": YesNoChoice } | { "ChooseOption": OptionChoice } | { "ChooseCosts": CostsChoice } | { "OrderTriggers": TriggersChoice } | { "ChooseReplacement": ReplacementChoice } | "Undo";
