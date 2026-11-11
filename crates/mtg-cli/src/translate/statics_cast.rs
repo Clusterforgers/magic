@@ -47,3 +47,25 @@ pub fn cast_with_flash(ctx: &Ctx, p: &Params) -> Tr<Value> {
     }
     Ok(json!({ "MayCast": permission }))
 }
+
+/// `CastWithFlash` of the card itself from its owner's hand (`ValidCard$ Card.Self | EffectZone$ All | Caster$ You`):
+/// "You may cast this spell as though it had flash if ...", a `MayCast` rule that works from the hand; the caller adds the
+/// condition of the line. A cast of another kind (`ValidSA$ Spell.Teamwork`, a check of X or of the targets) is a gap.
+pub fn ep27_self_flash(p: &Params) -> Tr<Value> {
+    check_keys(
+        p,
+        "Static.CastWithFlash.Self",
+        &["ValidCard", "ValidSA", "Caster", "EffectZone"],
+        |key, _| key == "Mode",
+    )?;
+    if p.get("ValidSA") != Some("Spell") {
+        return unmapped("static:CastWithFlash-the-card-itself-SA");
+    }
+    if p.get("EffectZone") != Some("All") || p.get("Caster") != Some("You") {
+        return unmapped("static:CastWithFlash-the-card-itself");
+    }
+    Ok(json!({"Rule": {
+        "rule": {"MayCast": {"what": ["This"], "flash": true}},
+        "from": "Hand",
+    }}))
+}

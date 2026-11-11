@@ -16,6 +16,9 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
     if let Some(found) = super::statics_defender::rule(ctx, p) {
         return Some(found);
     }
+    if p.get("Mode") == Some("CastWithFlash") && p.get("ValidCard") == Some("Card.Self") {
+        return Some(super::statics_cast::ep27_self_flash(p));
+    }
     let mode = p.get("Mode").unwrap_or_default();
     let found = match mode {
         "CantGainLife" => players(p, mode, "ValidPlayer").map(|who| json!({"CantGainLife": who})),

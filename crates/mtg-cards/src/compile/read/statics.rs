@@ -42,7 +42,8 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 43] = [
+const TEMPLATES: [Template; 44] = [
+    super::ep27_flash::ep27_flash,
     super::w19a_flash::w19a_flash,
     super::w13b_mill_rad::w13b_tapped_for_counters,
     super::w9d_exert::w9d_exert,
@@ -1639,6 +1640,9 @@ pub(super) fn single_texts(selector: &Selector) -> Vec<String> {
 }
 
 fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) -> Vec<String> {
+    if from == ZoneKind::Hand {
+        return super::ep27_flash::ep27_flash_texts(rule, condition, from);
+    }
     // Only a card that casts itself from its graveyard words a condition here; the others are said without one.
     if matches!(from, ZoneKind::Graveyard | ZoneKind::Exile) {
         return super::c8_eg_cast_itself::c8_eg_texts(rule, condition, from);
