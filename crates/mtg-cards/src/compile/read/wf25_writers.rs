@@ -211,6 +211,12 @@ fn wf25_removed_wordings(
 fn as_itself(ability: &Ability) -> Option<(Ability, Vec<&'static str>, bool)> {
     let mut value = serde_json::to_value(ability).ok()?;
     let body = value.get_mut("Triggered")?;
+    // The objects of a batch are "those creatures", one object only where the batch is about the attached permanent.
+    if let Some(batch) = body.get("when").and_then(|when| when.get("Batch"))
+        && !batch.to_string().contains(r#""to":"Attached""#)
+    {
+        return None;
+    }
     // A limit's sentence is written apart from the head these wordings split off.
     if body.get("limit").is_some()
         || body
@@ -451,7 +457,7 @@ fn wf25_event_object_wordings(
 }
 
 /// The other printed words of a sentence about the object of the event, each tried on every wording before it.
-const REWRITES: [fn(&str) -> Option<String>; 7] = [
+const REWRITES: [fn(&str) -> Option<String>; 8] = [
     // "tap that creature and it doesn't untap during its controller's next untap step"
     |text| {
         let joined = text
@@ -505,6 +511,16 @@ const REWRITES: [fn(&str) -> Option<String>; 7] = [
     |text| {
         text.strip_prefix("Whenever a player taps a land for mana, ")
             .map(|rest| format!("Whenever a land is tapped for mana, {rest}"))
+    },
+    // "there is an additional combat phase after this phase"
+    |text| {
+        text.contains(", after this phase, there is an additional combat phase")
+            .then(|| {
+                text.replace(
+                    ", after this phase, there is an additional combat phase",
+                    ", there is an additional combat phase after this phase",
+                )
+            })
     },
 ];
 

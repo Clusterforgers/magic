@@ -44,6 +44,8 @@ const KASHI: &str = "Whenever this creature deals combat damage to a creature, t
 #[case::on_the_bottom(&trigger(DIES, r#"[{"Move":{"what":"Triggering","to":{"Library":{"place":"Bottom"}}}}]"#), "Whenever a creature is put into your graveyard from the battlefield, put that card on top of your library.", false)]
 #[case::the_other_creature(&trigger(r#"{"DealsDamage":{"source":[{"Is":"Attached"}],"to":{"Each":[{"Type":"Creature"}]}}}"#, DESTROY_IT), "Whenever enchanted creature deals damage to a creature, destroy the other creature.", true)]
 #[case::the_other_for_the_enchanted(&trigger(r#"{"DealsDamage":{"source":[{"Is":"Attached"}],"to":{"Each":[{"Type":"Creature"}]}}}"#, r#"[{"Destroy":{"what":"Attached"}}]"#), "Whenever enchanted creature deals damage to a creature, destroy the other creature.", false)]
+#[case::a_batch_of_creatures(&trigger(r#"{"Batch":{"DealsDamage":{"source":[{"Type":"Creature"}],"to":"You","combat":true}}}"#, r#"[{"Tap":{"what":"Triggering"}}]"#), "Whenever one or more creatures deal combat damage to you, tap that creature.", false)]
+#[case::another_combat(&trigger(r#"{"AttacksAlone":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#, r#"[{"Untap":{"what":"Triggering"}},{"If":{"condition":"FirstCombat","then":[{"AddPhase":{"phases":["Combat"]}}]}}]"#), "Whenever a creature you control attacks alone, untap it. If it's the first combat phase of the turn, there is an additional combat phase after this phase.", true)]
 #[case::tapped_and_held(&trigger(HITS, HELD), KASHI, true)]
 #[case::held_only(&trigger(HITS, &HELD.replace(r#"{"Tap":{"what":"Triggering"}},"#, "")), KASHI, false)]
 #[case::held_for_a_turn(&trigger(HITS, &HELD.replace("NextUntapStep", "UntilEndOfTurn")), KASHI, false)]
