@@ -94,6 +94,7 @@ const SCALAR_KEYS: &[&str] = &[
     "Hideaway",
     "Saddle",
     "Renown",
+    "Annihilator",
     "timestamp",
     "turn",
     "rule",
