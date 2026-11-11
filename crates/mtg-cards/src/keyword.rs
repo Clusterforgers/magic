@@ -186,6 +186,9 @@ pub enum Keyword {
     Escape(Cost),
     /// Rebound: a spell cast from its owner's hand is exiled as it resolves and cast free at their next upkeep (CR 702.88).
     Rebound,
+    /// Paradigm: a spell is exiled as it resolves; after its controller first resolves a spell with its name, they may cast a
+    /// copy of the exiled card free at the beginning of each of their precombat main phases.
+    Paradigm,
     /// Aftermath: the second half of a split card is cast only from a graveyard and is exiled when it leaves the stack (CR 702.127).
     Aftermath,
     /// Dash with its cost: an alternative cost for a creature spell, which gains haste and returns to its owner's hand at the next end step (CR 702.109).
@@ -520,6 +523,7 @@ impl Keyword {
         "Unearth",
         "Escape",
         "Rebound",
+        "Paradigm",
         "Aftermath",
         "Dash",
         "Bestow",
@@ -702,6 +706,7 @@ impl Keyword {
             Keyword::Unearth(_) => "Unearth",
             Keyword::Escape(_) => "Escape",
             Keyword::Rebound => "Rebound",
+            Keyword::Paradigm => "Paradigm",
             Keyword::Aftermath => "Aftermath",
             Keyword::Bestow(_) => "Bestow",
             Keyword::Ninjutsu(_) => "Ninjutsu",
@@ -950,6 +955,7 @@ mod tests {
             Keyword::Unearth(cost.clone()),
             Keyword::Escape(cost.clone()),
             Keyword::Rebound,
+            Keyword::Paradigm,
             Keyword::Aftermath,
             Keyword::Dash(cost.clone()),
             Keyword::Bestow(cost.clone()),

@@ -107,6 +107,7 @@ mod ninjutsu;
 mod offspring;
 mod outlast;
 mod overload;
+mod paradigm;
 mod partner;
 mod partner_group;
 mod partner_with;
@@ -481,6 +482,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Unearth(_) => &unearth::Unearth,
         Keyword::Escape(_) => &escape::Escape,
         Keyword::Rebound => &rebound::Rebound,
+        Keyword::Paradigm => &paradigm::Paradigm,
         Keyword::Aftermath => &aftermath::Aftermath,
         Keyword::Disturb(_) => &disturb::Disturb,
         Keyword::Bestow(_) => &bestow::Bestow,
@@ -887,6 +889,7 @@ mod tests {
             Keyword::Unearth(cost()),
             Keyword::Escape(cost()),
             Keyword::Rebound,
+            Keyword::Paradigm,
             Keyword::Aftermath,
             Keyword::Dash(cost()),
             Keyword::Bestow(cost()),
@@ -1074,6 +1077,7 @@ mod tests {
         "Keyword.Unearth",
         "Keyword.Escape",
         "Keyword.Rebound",
+        "Keyword.Paradigm",
         "Keyword.Aftermath",
         "Keyword.Dash",
         "Keyword.Bestow",
@@ -1285,6 +1289,7 @@ mod tests {
     #[case::unearth(Keyword::Unearth(Cost::mana("{B}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::escape(Keyword::Escape(Cost::mana("{B}".parse().unwrap())), Hooks::none())]
     #[case::rebound(Keyword::Rebound, Hooks::none())]
+    #[case::paradigm(Keyword::Paradigm, Hooks::none())]
     #[case::aftermath(Keyword::Aftermath, Hooks::none())]
     #[case::bestow(Keyword::Bestow(Cost::mana("{3}{G}".parse().unwrap())), Hooks::none())]
     #[case::dash(Keyword::Dash(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]

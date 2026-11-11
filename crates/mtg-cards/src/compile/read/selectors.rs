@@ -445,6 +445,9 @@ fn ward_cost(r: &mut Reader<'_>) -> Option<Cost> {
 }
 
 fn protection_from(r: &mut Reader<'_>) -> Option<Keyword> {
+    if r.static_grant && r.words("each color that's not in your commander's color identity") {
+        return Some(Keyword::Protection(outside_identity()));
+    }
     if r.words("each color") {
         return Some(Keyword::Protection(keywords::each_color()));
     }
@@ -468,6 +471,11 @@ fn protection_from(r: &mut Reader<'_>) -> Option<Keyword> {
     Some(Keyword::Protection(Selector(vec![Pred::Subtype(Subtype(
         name,
     ))])))
+}
+
+/// The sources of a color outside the commander's color identity of the controller.
+fn outside_identity() -> Selector {
+    Selector(vec![Pred::OutsideCommanderIdentity])
 }
 
 /// The objects the player the controller chose controls.
@@ -494,6 +502,9 @@ fn protection_word(quality: &Selector) -> Option<String> {
     }
     match quality.0.as_slice() {
         [Pred::ChosenColor] => Some("the chosen color".to_owned()),
+        [Pred::OutsideCommanderIdentity] => {
+            Some("each color that's not in your commander's color identity".to_owned())
+        }
         _ => keywords::kind_quality_word(quality),
     }
 }

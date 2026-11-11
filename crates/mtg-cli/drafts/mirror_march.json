@@ -1,0 +1,46 @@
+{
+  "oracle_id": "945eaa8b-0ba5-45a6-a02a-763e5bfe3af8",
+  "name": "Mirror March",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror March",
+      "oracle_fingerprint": "969b92b209ab9865c9b222e06c032a45",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": { "of": "Triggering", "except": [{ "AddKeyword": "Haste" }] }
+                        },
+                        "as": "copy"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                      }
+                    }
+                  ],
+                  "until": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

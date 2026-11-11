@@ -1,0 +1,16 @@
+{
+  "oracle_id": "925f11c3-fd32-4aa7-a130-6554b81ad3eb",
+  "name": "Necrologia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necrologia",
+      "oracle_fingerprint": "18846169ac194d82eff62e438599455a",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "PayLife": "X" }], "required": true } },
+        { "CastOnly": { "condition": { "All": ["YourTurn", { "Step": "End" }] } } },
+        { "Spell": { "effects": [{ "Draw": { "count": "X" } }] } }
+      ]
+    }
+  ]
+}

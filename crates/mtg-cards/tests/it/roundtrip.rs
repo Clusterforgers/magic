@@ -254,6 +254,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::DoctorsCompanion,
             Keyword::ChooseABackground,
             Keyword::Rebound,
+            Keyword::Paradigm,
             Keyword::Aftermath,
             Keyword::JumpStart,
             Keyword::Retrace,
@@ -1358,7 +1359,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                     except_draw_step
                 }),
                 selector().prop_map(|what| ReplaceWhen::Enters { what }),
-                selector().prop_map(|what| ReplaceWhen::Discarded { what }),
+                selector().prop_map(|what| ReplaceWhen::Discarded { what, by: None }),
                 selector().prop_map(|what| ReplaceWhen::Destroyed { what }),
                 (
                     selector(),

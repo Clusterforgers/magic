@@ -464,6 +464,12 @@ struct Described {
 
 fn token_text(token: &TokenRef) -> Option<Described> {
     match token {
+        // "a Tarmogoyf token": the card's name is the whole description.
+        TokenRef::Card(name) => Some(Described {
+            what: name.clone(),
+            name: None,
+            legendary: false,
+        }),
         TokenRef::Named(id) => {
             NAMED
                 .iter()

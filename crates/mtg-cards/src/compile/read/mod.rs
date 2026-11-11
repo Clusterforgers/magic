@@ -105,6 +105,7 @@ mod ep26_mana;
 mod ep27_flash;
 mod ep28_under;
 mod ep29_flash;
+mod ep32_discard;
 mod equip_options;
 mod evasion;
 mod event_wordings;
@@ -270,6 +271,7 @@ mod w9c_replaced;
 mod w9d_exert;
 mod wf24_token_bind;
 mod wf25_writers;
+mod wf26_writers;
 mod where_x;
 mod written_memo;
 mod zone_moves;
@@ -298,7 +300,7 @@ pub use tokens::{same_text, same_written_text};
 use super::{ClauseKind, classify};
 use crate::ability::Ability;
 use crate::cost::Cost;
-use crate::refs::Selector;
+use crate::refs::{Pred, Selector};
 use tokens::{Reader, tokenize};
 
 /// Whether a cost modifier counts the targets of its spell ("for each target beyond the first"), so that it needs the
@@ -324,8 +326,30 @@ pub fn enchant_filter(text: &str) -> Option<Selector> {
     let tokens = tokenize(&spelled);
     let mut reader = Reader::new(&tokens, false);
     reader.word("a").then_some(())?;
-    let selector = selectors::phrase(&mut reader, selectors::Form::Target)?;
-    reader.end().then_some(selector)
+    let selector = selectors::phrase(&mut reader, selectors::Form::Target);
+    match selector {
+        Some(selector) if reader.end() => Some(selector),
+        _ => wf26_enchant_either(text),
+    }
+}
+
+/// "Enchant creature or Vehicle": two kinds the phrase reader does not join, each read alone (a type and a subtype).
+fn wf26_enchant_either(text: &str) -> Option<Selector> {
+    let (first, second) = text.split_once(" or ")?;
+    let mut either = Vec::new();
+    for part in [first, second] {
+        if part.contains([',', ' ']) {
+            return None;
+        }
+        let tokens = tokenize(&format!("a {part}"));
+        let mut reader = Reader::new(&tokens, false);
+        reader.word("a").then_some(())?;
+        let Selector(preds) = selectors::phrase(&mut reader, selectors::Form::Target)?;
+        let [pred] = <[Pred; 1]>::try_from(preds).ok()?;
+        reader.end().then_some(())?;
+        either.push(pred);
+    }
+    Some(Selector(vec![Pred::AnyOf(either)]))
 }
 
 /// What an affinity counts, from the words after "Affinity for" ("artifacts", "artifact creatures", "Equipment",

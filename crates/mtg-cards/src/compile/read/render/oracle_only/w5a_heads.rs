@@ -10,7 +10,7 @@ use serde_json::{Value, json};
 use super::super::super::counters::kind_text;
 use super::super::super::selectors::{Form, phrase_text, type_name};
 use super::super::super::triggers::{article, pattern_text, player_verb, subject_text};
-use super::w4b_stand::{self, json as to_json, swapped};
+use super::w4b_stand::{self, json as to_json};
 use crate::ability::Ability;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::TriggerPattern;
@@ -47,7 +47,20 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let (Some(from), Some(to)) = (body(&from), body(&said)) else {
         return;
     };
-    let mut found = swapped(&standing, &[(&format!("{from},"), &format!("{to},"))]);
+    let swaps = [(format!("{from},"), format!("{to},"))];
+    let swaps = [(swaps[0].0.as_str(), swaps[0].1.as_str())];
+    // The recipient of the damage is named after the card: "it" no longer names the card.
+    let mut found = if matches!(
+        when,
+        TriggerPattern::DealsDamage {
+            to: Some(Ref::Each(_)),
+            ..
+        }
+    ) {
+        w4b_stand::wf26_swapped_named(&standing, &swaps)
+    } else {
+        w4b_stand::swapped(&standing, &swaps)
+    };
     if by_spell(when) {
         // What triggered it is the spell that targets, not the permanent of the stand-in.
         found = found

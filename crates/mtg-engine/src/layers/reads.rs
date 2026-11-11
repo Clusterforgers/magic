@@ -236,6 +236,7 @@ pub(crate) fn reads_of_selector(selector: &Selector) -> Traits {
         .fold(Traits::NONE, |all, pred| all.or(reads_of_pred(pred)))
 }
 
+#[allow(clippy::too_many_lines)]
 fn reads_of_pred(pred: &Pred) -> Traits {
     match pred {
         Pred::Supertype(_) => Traits::SUPERTYPES,
@@ -324,9 +325,12 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::ChosenSubtype => Traits::SUBTYPES.or(Traits::TYPES),
         Pred::ChosenAs(_) => Traits::COLORS.or(Traits::TYPES).or(Traits::SUBTYPES),
         Pred::SharesSubtype(who) => Traits::SUBTYPES.or(reads_of_ref(who)),
-        Pred::Color(_) | Pred::Colorless | Pred::ChosenColor => Traits::COLORS,
+        Pred::Color(_) | Pred::Colorless | Pred::ChosenColor | Pred::OutsideCommanderIdentity => {
+            Traits::COLORS
+        }
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
         Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) => Traits::KEYWORDS,
+        Pred::HasAbility(_) => Traits::KEYWORDS.or(Traits::RULES),
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
         Pred::Test { left, right, .. } => reads_of_amount(left).or(reads_of_amount(right)),
         Pred::Not(inner) => reads_of_pred(inner),

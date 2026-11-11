@@ -38,12 +38,16 @@ pub fn special(ctx: &Ctx, text: &str) -> Option<Tr<Value>> {
     })
 }
 
-/// `Protection from black`: a color, each color (every colored source) or everything (the empty quality, CR 702.16j).
+/// `Protection from black`: a color, each color (every colored source), each color outside the commander's identity or
+/// everything (the empty quality, CR 702.16j).
 /// Any other quality stays a gap.
 fn protection_from(color: &str) -> Option<Tr<Value>> {
     let name = match color {
         "each color" => return Some(Ok(json!({"Protection": [{"Not": "Colorless"}]}))),
         "everything" => return Some(Ok(json!({"Protection": []}))),
+        "NotCommanderColorID" => {
+            return Some(Ok(json!({"Protection": ["OutsideCommanderIdentity"]})));
+        }
         "white" => "White",
         "blue" => "Blue",
         "black" => "Black",

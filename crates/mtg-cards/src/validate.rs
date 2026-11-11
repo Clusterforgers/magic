@@ -725,6 +725,7 @@ impl<'a> Walker<'a> {
     fn pred(&mut self, pred: &Pred) {
         match pred {
             Pred::Subtype(subtype) => self.known_subtype(subtype),
+            Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
             Pred::ControlledBy(r)
             | Pred::OwnedBy(r)
             | Pred::AttackingPlayer(r)
@@ -827,6 +828,7 @@ impl<'a> Walker<'a> {
             | Pred::Supertype(_)
             | Pred::Color(_)
             | Pred::Colorless
+            | Pred::OutsideCommanderIdentity
             | Pred::Token
             | Pred::Commander
             | Pred::Spell
@@ -2594,6 +2596,13 @@ impl Walker<'_> {
                 }
             }
             TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec, false)),
+            // The named card's own rules come with it when the game loads it to conjure.
+            TokenRef::Card(name) => {
+                if name.trim().is_empty() {
+                    self.problem("a token copy of a card needs the card's name");
+                }
+                self.uses("Effect", "CreateToken.Card");
+            }
             TokenRef::Sized {
                 size,
                 toughness,
@@ -3910,7 +3919,7 @@ impl Walker<'_> {
                 inner.names.clone_from(&w.scope.names);
                 inner.numbers.clone_from(&w.scope.numbers);
                 let saved = std::mem::replace(&mut w.scope, inner);
-                w.body_checks(targets, effects, false);
+                w.body_checks(targets, effects, true);
                 w.scope = saved;
             }
             Effect::If {
@@ -4801,9 +4810,14 @@ impl Walker<'_> {
             | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Countered { what }
             | ReplaceWhen::TurnedFaceUp { what }
-            | ReplaceWhen::Discarded { what }
             | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
+            }
+            ReplaceWhen::Discarded { what, by } => {
+                self.at("what", |w| w.selector(what));
+                if let Some(by) = by {
+                    self.at("by", |w| w.reference(by, Kind::Player));
+                }
             }
             ReplaceWhen::CountersPut { on, by, .. } => {
                 if let Some(by) = by {
@@ -6952,6 +6966,25 @@ mod tests {
     )]
     fn r1g_taken_names_outlive_their_branch(#[case] ability: &str, #[case] expected: &[&str]) {
         assert_eq!(problems(ability), expected, "{ability}");
+    }
+
+    /// A reflexive trigger is an ability of its own (CR 603.12): "When you do, choose two —" is modal when the `Modal` is
+    /// the only effect of the trigger, and refused beside another effect of it.
+    #[rstest]
+    #[case::alone(r#"[{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]"#, false)]
+    #[case::beside_a_draw(r#"[{"Draw":{}},{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"GainLife":{"amount":1}}]}]}}]"#, true)]
+    fn dk25_a_reflexive_trigger_may_be_modal(#[case] effects: &str, #[case] refused: bool) {
+        let json = format!(
+            r#"{{"Triggered":{{"when":{{"Attacks":{{"what":["This"]}}}},"effects":[{{"Pay":{{"cost":[{{"Sacrifice":{{"filter":[{{"Type":"Creature"}},"Other"]}}}}],"paid":[{{"Reflexive":{{"effects":{effects}}}}}]}}}}]}}}}"#
+        );
+        let found = problems(&json);
+        assert_eq!(
+            found
+                .iter()
+                .any(|p| p.contains("`Modal` must be the only effect")),
+            refused,
+            "{found:?}"
+        );
     }
 
     /// A modal ability may choose up to a number the game decides; only a fixed choice past the modes is refused.

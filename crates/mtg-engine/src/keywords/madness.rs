@@ -28,6 +28,7 @@ impl KeywordRules for Madness {
             Ability::Replacement {
                 when: ReplaceWhen::Discarded {
                     what: Selector::this(),
+                    by: None,
                 },
                 by: ReplaceBy::MoveTo(ZoneKind::Exile),
                 condition: None,

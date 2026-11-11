@@ -1,7 +1,7 @@
 {
   "oracle_id": "ee2ab1ab-be1e-4e56-99f2-7784f7350b41",
   "name": "Obstinate Baloth",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Obstinate Baloth",
@@ -14,9 +14,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 44, "end": 190 }
+          "Replacement": {
+            "when": { "Discarded": { "what": ["This"], "by": "Opponents" } },
+            "by": { "Instead": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }] },
+            "from": "Hand"
           }
         }
       ]

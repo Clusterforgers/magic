@@ -200,6 +200,17 @@ pub enum AbilityKind {
     Triggered,
 }
 
+/// Which abilities an object has, for a predicate on what it can do ("with a mana ability").
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum HeldAbility {
+    /// Any ability at all, a keyword or one the engine leaves to the table included ("no abilities" is its negation).
+    Any,
+    /// A mana ability (CR 605.1a).
+    Mana,
+    /// An activated ability that isn't a mana ability, a loyalty ability included.
+    NonManaActivated,
+}
+
 /// A condition on one object; selectors hold a list of them that must all be true.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -264,6 +275,9 @@ pub enum Pred {
     Color(Color),
     /// Is colorless.
     Colorless,
+    /// Has a color outside the color identity of the commanders the player reading it (`You`) owns, every color when
+    /// they own none ("protection from each color that's not in your commander's color identity").
+    OutsideCommanderIdentity,
     /// Is a token.
     Token,
     /// Is a player's commander (CR 903.3): a card designated as one when the game began, whoever controls it now.
@@ -272,6 +286,9 @@ pub enum Pred {
     Spell,
     /// Is an activated or a triggered ability on the stack (a mana ability never is one).
     Ability(AbilityKind),
+    /// Has an ability of the kind ("creatures with no abilities", "an artifact with a mana ability"): the abilities it
+    /// has now on the battlefield, its printed ones elsewhere.
+    HasAbility(HeldAbility),
     /// Is tapped.
     Tapped,
     /// Is untapped.

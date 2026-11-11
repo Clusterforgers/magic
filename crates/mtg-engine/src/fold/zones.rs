@@ -65,6 +65,7 @@ pub(super) fn move_object(
     }
     (object.adventure, object.plotted) = (None, None);
     object.exiled_until = None;
+    object.exiled_from_hand = None;
     object.encoded_on = None;
     object.haunting = None;
     object.monarch_wait = None;
@@ -342,13 +343,13 @@ fn land_played(
     Ok(())
 }
 
-/// A spell with rebound that is cast from a hand is exiled by a replacement effect as it resolves (CR 702.88a), so the
-/// game has replacement effects to look for.
+/// A spell with rebound that is cast from a hand, or one with paradigm, is exiled by a replacement effect as it resolves
+/// (CR 702.88a), so the game has replacement effects to look for.
 fn note_rebound(state: &mut GameState, spell: ObjectId, from: Zone) {
-    if matches!(from, Zone::Hand(_))
-        && crate::keywords::keywords_of(state, spell)
-            .iter()
-            .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Rebound))
+    let keywords = crate::keywords::keywords_of(state, spell);
+    let has = |wanted: &mtg_cards::keyword::Keyword| keywords.contains(&wanted);
+    if (matches!(from, Zone::Hand(_)) && has(&mtg_cards::keyword::Keyword::Rebound))
+        || has(&mtg_cards::keyword::Keyword::Paradigm)
     {
         state.possible.replacements = true;
     }
@@ -507,6 +508,15 @@ fn link_haunting(state: &mut GameState, card: ObjectId, cause: &ZoneCause) {
     }
 }
 
+/// A card exiled until `by` leaves waits for it, and remembers a hand it came from to go back there (CR 610.3c).
+fn exiled_until(state: &mut GameState, card: ObjectId, by: ObjectRef, from: Zone) {
+    state.possible.linked_exile = true;
+    if let Some(object) = state.objects.get_mut(&card) {
+        object.exiled_until = Some(by);
+        object.exiled_from_hand = Some(from).filter(|from| matches!(from, Zone::Hand(_)));
+    }
+}
+
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::LandPlayed {
@@ -568,10 +578,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 object.face_down = Some(how);
             }
             if let ZoneCause::ExiledUntil { by } = cause {
-                state.possible.linked_exile = true;
-                if let Some(object) = state.objects.get_mut(object) {
-                    object.exiled_until = Some(*by);
-                }
+                exiled_until(state, *object, *by, *from);
             }
             if let ZoneCause::Encoded { by } = cause
                 && let Some(object) = state.objects.get_mut(object)
