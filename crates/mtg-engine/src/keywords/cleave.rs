@@ -26,12 +26,7 @@ pub(crate) fn cleaved(state: &GameState, id: ObjectId, way: Option<CastWay>) -> 
     if way != Some(CastWay::Cleave) {
         return None;
     }
-    state
-        .object(id)?
-        .card()
-        .rules
-        .iter()
-        .find_map(|rules| match &**rules {
+    crate::ability_reader::printed_rules(state.object(id)?.card()).find_map(|rules| match &**rules {
             Ability::Keyword(Keyword::Cleave { spell, .. }) => Some(Arc::new((**spell).clone())),
             _ => None,
         })

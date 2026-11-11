@@ -383,7 +383,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 113, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 114, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -469,8 +469,8 @@ mod tests {
         "Effect.Proliferate",
         "Effect.Goad",
         "Effect.Fight",
-        "Effect.BecomeMonarch",
         "Effect.ControlPlayer",
+        "Effect.BecomeMonarch",
         "Effect.RingTempts",
         "Effect.CreateEmblem",
         "Effect.BecomeDayNight",
