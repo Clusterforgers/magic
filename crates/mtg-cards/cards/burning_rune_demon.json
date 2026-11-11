@@ -1,7 +1,7 @@
 {
   "oracle_id": "d551fae8-6b40-4118-b9db-29d2f5dff405",
   "name": "Burning-Rune Demon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Burning-Rune Demon",
@@ -9,9 +9,36 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 7, "end": 287 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Not": { "Named": "Burning-Rune Demon" } }],
+                        "count": { "min": 2, "max": 2 },
+                        "reveal": true,
+                        "distinct": true,
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": "Opponents",
+                        "from": { "Bound": "found" },
+                        "as": "chosen",
+                        "rest_as": "rest"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "chosen" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

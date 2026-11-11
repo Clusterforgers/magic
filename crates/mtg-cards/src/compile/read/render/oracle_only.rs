@@ -197,6 +197,7 @@ mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
 mod return_this_card;
+mod rmt1_wholes;
 mod sacrifice_it;
 mod sacrifice_search;
 mod sacrifice_unless;
@@ -720,6 +721,7 @@ fn w4e_with_effects(ability: &Ability, sentence: &str) -> Vec<String> {
 /// Adds the wordings of the M to Z tail of the stored proposals (r2dge): whole abilities matched as data.
 fn add_c11g(ability: &Ability, texts: &mut Vec<String>) {
     c11g_wholes::c11g_add_wholes(ability, texts);
+    rmt1_wholes::rmt1_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of the single-wording tail of the stored proposals of the names A to L (r2dge): whole abilities.

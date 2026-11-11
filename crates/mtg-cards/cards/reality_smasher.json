@@ -1,7 +1,7 @@
 {
   "oracle_id": "17c651c7-da4e-45e9-9a64-fad3e873123d",
   "name": "Reality Smasher",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Reality Smasher",
@@ -10,9 +10,22 @@
         { "Keyword": "Trample" },
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 48, "end": 180 }
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": ["This"],
+                "by": ["Spell", { "ControlledBy": "Opponents" }]
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": [{ "Discard": {} }],
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
           }
         }
       ]

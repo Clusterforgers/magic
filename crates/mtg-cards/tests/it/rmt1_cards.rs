@@ -22,9 +22,11 @@ const PACK: &[&str] = &[
     "Colossal Grave-Reaver",
     "Diffusion Sliver",
     "Donal, Herald of Wings",
+    "Gifts Ungiven",
     "Gluntch, the Bestower",
     "Harald Unites the Elves",
     "Huatli, Poet of Unity // Roar of the Fifth People",
+    "Intuition",
     "Invasion of Arcavios // Invocation of the Founders",
     "J. Jonah Jameson",
     "Jace, Mirror Mage",
@@ -85,7 +87,19 @@ fn every_pack_card_reads_back_as_its_printed_text() {
                 .clauses
                 .iter()
                 .filter(|clause| !matches!(clause.state, ClauseState::Reads { .. }))
-                .map(|clause| format!("  {} => {:?}", clause.text, clause.state))
+                .map(|clause| match &clause.state {
+                    ClauseState::Unwritten { ability, .. } => format!(
+                        "  UNWRITTEN {:?}\n  {}",
+                        clause.text,
+                        report
+                            .rules
+                            .as_ref()
+                            .and_then(|card| card.faces[clause.face].abilities.get(*ability))
+                            .map(|it| serde_json::to_string(it).unwrap())
+                            .unwrap_or_default()
+                    ),
+                    state => format!("  {} => {state:?}", clause.text),
+                })
                 .collect();
             wrong.push(format!(
                 "{name}: {:?} {:?} strays {:?}\n{}",

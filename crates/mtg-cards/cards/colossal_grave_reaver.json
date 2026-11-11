@@ -1,7 +1,7 @@
 {
   "oracle_id": "df8e0d1b-b47c-4807-9c9b-84dcec835254",
   "name": "Colossal Grave-Reaver",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Colossal Grave-Reaver",
@@ -20,9 +20,20 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 67, "end": 187 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                  "from": "Library",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "effects": [
+              { "Choose": { "from": "Triggering", "as": "chosen" } },
+              { "Move": { "what": { "Bound": "chosen" }, "to": { "Battlefield": {} } } }
+            ]
           }
         }
       ]

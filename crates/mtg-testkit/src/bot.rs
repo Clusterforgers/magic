@@ -377,6 +377,28 @@ impl Repeats {
 /// counters), every object outside the stack with its zone, place and state, and the continuous effects. The stack,
 /// the counters of ids and timestamps and the turn's tallies are left out, so an activation that resolves to nothing
 /// leaves it as it was.
+/// The options of a choice of cards with different names, cut to the first card of each name, so any pick is legal.
+fn rmt1_one_per_name(options: &CardsOptions, state: &GameState) -> CardsOptions {
+    let mut seen: Vec<&str> = Vec::new();
+    let mut from = Vec::new();
+    for id in &options.from {
+        let name = state.object(*id).map(|object| object.card().name.as_str());
+        if name.is_none_or(|name| !seen.contains(&name)) {
+            seen.extend(name);
+            from.push(*id);
+        }
+    }
+    let max = options
+        .max
+        .min(u32::try_from(from.len()).unwrap_or(u32::MAX));
+    CardsOptions {
+        from,
+        max,
+        min: options.min.min(max),
+        ..options.clone()
+    }
+}
+
 fn observable(state: &GameState) -> u64 {
     let mut hasher = StableHasher::default();
     state.players().hash(&mut hasher);
@@ -477,6 +499,9 @@ impl RandomBot {
                     self.taxed = Taxed::Idle;
                 }
                 Answer::Priority(self.guarded_priority(options, state))
+            }
+            DecisionKind::ChooseCards(options) if options.one_per_name => {
+                self.cards(&rmt1_one_per_name(options, state))
             }
             _ => self.choose(decision),
         }

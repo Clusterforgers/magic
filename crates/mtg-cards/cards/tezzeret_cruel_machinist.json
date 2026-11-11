@@ -9,9 +9,20 @@
       "abilities": [
         { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Draw": {} }] } },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 17, "end": 124 }
+          "Loyalty": {
+            "cost": "Zero",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddType": "Creature" }, { "SetPT": { "power": 5, "toughness": 5 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
           }
         },
         {

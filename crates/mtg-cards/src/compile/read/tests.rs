@@ -209,6 +209,7 @@ mod e15b_writers;
 mod g12d_blight_cost;
 mod g9b;
 mod g9d_writers;
+mod rmt1_writers;
 // dk1b
 mod c6_blk_aura;
 mod c6_blk_draws;

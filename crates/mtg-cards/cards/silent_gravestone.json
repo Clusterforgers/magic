@@ -1,7 +1,7 @@
 {
   "oracle_id": "803815c5-12be-48b3-a101-f416c1ef9b7b",
   "name": "Silent Gravestone",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Silent Gravestone",
@@ -9,9 +9,19 @@
       "abilities": [
         { "Rule": { "rule": "GraveyardCardsUntargetable" } },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 65, "end": 142 }
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Exile": { "what": "This" } },
+                    { "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } }
+                  ]
+                }
+              },
+              { "Draw": {} }
+            ]
           }
         }
       ]
