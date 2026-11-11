@@ -148,13 +148,11 @@ fn bare_list(text: &str) -> Option<String> {
     }
     let (first_article, first) = items.first()?;
     let names: Vec<&str> = items.iter().skip(1).map(|(_, name)| *name).collect();
-    let (last, middle) = names.split_last()?;
-    let mut joined = format!("{first_article} {first}");
-    for name in middle {
-        joined.push_str(&format!(", {name}"));
-    }
+    let (final_name, between) = names.split_last()?;
     let comma = if items.len() > 2 { "," } else { "" };
-    joined.push_str(&format!("{comma} or {last}"));
+    let mut listed = vec![format!("{first_article} {first}")];
+    listed.extend(between.iter().map(|name| (*name).to_owned()));
+    let joined = format!("{}{comma} or {final_name}", listed.join(", "));
     Some(format!("{head}that's {joined}{tail}"))
 }
 
