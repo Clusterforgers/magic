@@ -14,6 +14,11 @@ use crate::compile::read::visit_block;
     ClauseKind::Triggered,
     r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"PutSticker":{"on":[{"Type":"Creature"},{"OwnedBy":"You"}]}}]}}"#
 )]
+#[case::ticket_then_sticker(
+    "When ~ enters, you get {TK}, then you may put a sticker on a nonland permanent you own.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"ticket"},"count":1}},{"May":{"effects":[{"PutSticker":{"on":[{"Not":{"Type":"Land"}},{"OwnedBy":"You"}]}}]}}]}}"#
+)]
 #[case::whenever_you_visit(
     "Whenever you visit an Attraction, you gain 1 life.",
     ClauseKind::Triggered,

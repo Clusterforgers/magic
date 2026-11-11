@@ -13,7 +13,8 @@
 //! a deck without any hashes as it did before Commander; a seat with a companion adds the line
 //! `companion` and the card's line, so a deck without one hashes as it did before the companion; a seat
 //! with an Attraction deck adds the line `attractions`, their number and one line each, the lit numbers, a
-//! tab and the card, so a deck without one hashes as before. It follows the card's serde form, so a change to any field of [`CardDefinition`], or to
+//! tab and the card, so a deck without one hashes as before; a seat with sticker sheets adds the line `stickers`, their
+//! number and one line each, so a deck without them hashes as before. It follows the card's serde form, so a change to any field of [`CardDefinition`], or to
 //! how one is written, changes the fingerprint; that includes a new field, which changes every
 //! fingerprint unless it is left out of the JSON while it holds its default (the pinned values in the
 //! tests notice). The stored text is `v1:` and the 64 lowercase hex digits of the digest. A different
@@ -81,16 +82,17 @@ impl DeckFingerprint {
         commanders: &[Arc<CardDefinition>],
         companion: Option<&Arc<CardDefinition>>,
     ) -> Result<DeckFingerprint, FingerprintError> {
-        DeckFingerprint::of_seat_all(cards, commanders, companion, &[])
+        DeckFingerprint::of_seat_all(cards, commanders, companion, &[], &[])
     }
 
-    /// Like [`DeckFingerprint::of_seat_with`], with the seat's Attraction deck. Without one it equals
-    /// [`DeckFingerprint::of_seat_with`].
+    /// Like [`DeckFingerprint::of_seat_with`], with the seat's Attraction deck and sticker sheets. Without them it
+    /// equals [`DeckFingerprint::of_seat_with`].
     pub fn of_seat_all(
         cards: &[Arc<CardDefinition>],
         commanders: &[Arc<CardDefinition>],
         companion: Option<&Arc<CardDefinition>>,
         attractions: &[AttractionCard],
+        stickers: &[Arc<CardDefinition>],
     ) -> Result<DeckFingerprint, FingerprintError> {
         let mut text = encode(cards, commanders, companion)?;
         if !attractions.is_empty() {
@@ -101,6 +103,12 @@ impl DeckFingerprint {
                 let _ = write!(text, "{:?}\t", attraction.lights.numbers());
                 write_cards(std::slice::from_ref(&attraction.card), &mut text)?;
             }
+        }
+        if !stickers.is_empty() {
+            text.push_str("stickers\n");
+            text.push_str(&stickers.len().to_string());
+            text.push('\n');
+            write_cards(stickers, &mut text)?;
         }
         Ok(DeckFingerprint(Sha256::digest(text.as_bytes()).into()))
     }

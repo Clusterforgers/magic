@@ -131,6 +131,7 @@ impl<S: EventStore> GameActor<S> {
                 player.companion = companion;
                 // The deck a seat falls back to is built in and brings no Attraction deck.
                 player.attractions = Vec::new();
+                player.stickers = Vec::new();
             }
         }
         self.push_roster();
@@ -149,6 +150,7 @@ impl<S: EventStore> GameActor<S> {
         player.commanders = deck.commanders().to_vec();
         player.companion = deck.companion().cloned();
         player.attractions = deck.attractions().to_vec();
+        player.stickers = deck.stickers().to_vec();
         decks.choose(seat.index(), deck);
     }
 
@@ -292,6 +294,7 @@ impl<S: EventStore> GameActor<S> {
                         player.commanders = deck.commanders().to_vec();
                         player.companion = deck.companion().cloned();
                         player.attractions = deck.attractions().to_vec();
+                        player.stickers = deck.stickers().to_vec();
                     }
                 }
                 self.setup.conjurable = std::sync::Arc::new(decks.conjured());

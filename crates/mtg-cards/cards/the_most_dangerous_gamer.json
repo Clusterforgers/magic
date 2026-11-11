@@ -1,34 +1,83 @@
 {
   "oracle_id": "dcb9337b-d5fd-4cd2-a41f-900d170a5ded",
   "name": "The Most Dangerous Gamer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Most Dangerous Gamer",
-      "oracle_fingerprint": "0e9a9999b0f092b1d82faa4d8eb32a99",
+      "oracle_fingerprint": "",
       "abilities": [
-        { "Keyword": "Deathtouch" },
+        {
+          "Keyword": "Deathtouch"
+        },
         {
           "Triggered": {
             "when": {
               "AnyOf": [
-                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
-                { "Attacks": { "what": ["This"] } }
+                {
+                  "ZoneChange": {
+                    "what": [
+                      "This"
+                    ],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "Attacks": {
+                    "what": [
+                      "This"
+                    ]
+                  }
+                }
               ]
             },
-            "effects": [{ "OpenAttraction": {} }]
+            "effects": [
+              {
+                "OpenAttraction": {}
+              }
+            ]
           }
         },
         {
           "Triggered": {
-            "when": { "OpenedAttraction": { "who": "You" } },
-            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+            "when": {
+              "OpenedAttraction": {
+                "who": "You"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1"
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 166, "end": 238 }
+          "Triggered": {
+            "when": {
+              "ClaimedPrize": {
+                "who": "You"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": []
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Target": 0
+                  }
+                }
+              }
+            ]
           }
         }
       ]
