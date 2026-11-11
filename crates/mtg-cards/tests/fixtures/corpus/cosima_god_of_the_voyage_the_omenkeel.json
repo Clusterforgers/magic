@@ -1,0 +1,184 @@
+{
+  "object": "card",
+  "id": "fab2fca4-a99f-4ffe-9c02-edb6e0be2358",
+  "oracle_id": "648100cd-d44a-48f8-87e4-a1d5467f348c",
+  "multiverse_ids": [
+    503657,
+    503658
+  ],
+  "mtgo_id": 87425,
+  "arena_id": 75088,
+  "tcgplayer_id": 230704,
+  "cardmarket_id": 531247,
+  "name": "Cosima, God of the Voyage // The Omenkeel",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/fab2fca4-a99f-4ffe-9c02-edb6e0be2358",
+  "scryfall_uri": "https://scryfall.com/card/khm/50/cosima-god-of-the-voyage-the-omenkeel?utm_source=api",
+  "layout": "modal_dfc",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:37:52Z",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — God // Legendary Artifact — Vehicle",
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Crew"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Cosima, God of the Voyage",
+      "mana_cost": "{2}{U}",
+      "type_line": "Legendary Creature — God",
+      "oracle_text": "At the beginning of your upkeep, you may exile Cosima. If you do, it gains \"Whenever a land you control enters, if Cosima is exiled, you may put a voyage counter on it. If you don't, return Cosima to the battlefield with X +1/+1 counters on it and draw X cards, where X is the number of voyage counters on it.\"",
+      "colors": [
+        "U"
+      ],
+      "power": "2",
+      "toughness": "4",
+      "artist": "Micah Epstein",
+      "artist_id": "957ec398-9a5e-4f54-9090-37a06d57b96c",
+      "illustration_id": "a8a804e2-d099-4a39-a9e8-283ea1c64519",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.jpg?1783928272",
+        "normal": "https://cards.scryfall.io/normal/front/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.jpg?1783928272",
+        "large": "https://cards.scryfall.io/large/front/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.jpg?1783928272",
+        "png": "https://cards.scryfall.io/png/front/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.png?1783928272",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.jpg?1783928272",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.jpg?1783928272",
+        "thumb": "https://cards.scryfall.io/thumb/front/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.webp?1783928272",
+        "grid": "https://cards.scryfall.io/grid/front/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.webp?1783928272",
+        "display": "https://cards.scryfall.io/display/front/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.webp?1783928272",
+        "art": "https://cards.scryfall.io/art/front/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.webp?1783928272",
+        "crop": "https://cards.scryfall.io/crop/front/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.webp?1783928272",
+        "jpeg": "https://cards.scryfall.io/normal/front/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.jpg?1783928272"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "The Omenkeel",
+      "mana_cost": "{1}{U}",
+      "type_line": "Legendary Artifact — Vehicle",
+      "oracle_text": "Whenever a Vehicle you control deals combat damage to a player, that player exiles that many cards from the top of their library. You may play lands from among those cards for as long as they remain exiled.\nCrew 1",
+      "colors": [
+        "U"
+      ],
+      "power": "3",
+      "toughness": "3",
+      "artist": "Micah Epstein",
+      "artist_id": "957ec398-9a5e-4f54-9090-37a06d57b96c",
+      "illustration_id": "8eb0fcf6-78ca-4662-9e20-d90a3831b6aa",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.jpg?1783928272",
+        "normal": "https://cards.scryfall.io/normal/back/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.jpg?1783928272",
+        "large": "https://cards.scryfall.io/large/back/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.jpg?1783928272",
+        "png": "https://cards.scryfall.io/png/back/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.png?1783928272",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.jpg?1783928272",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.jpg?1783928272",
+        "thumb": "https://cards.scryfall.io/thumb/back/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.webp?1783928272",
+        "grid": "https://cards.scryfall.io/grid/back/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.webp?1783928272",
+        "display": "https://cards.scryfall.io/display/back/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.webp?1783928272",
+        "art": "https://cards.scryfall.io/art/back/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.webp?1783928272",
+        "crop": "https://cards.scryfall.io/crop/back/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.webp?1783928272",
+        "jpeg": "https://cards.scryfall.io/normal/back/f/a/fab2fca4-a99f-4ffe-9c02-edb6e0be2358.jpg?1783928272"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fab2fca4-a99f-4ffe-9c02-edb6e0be2358/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A648100cd-d44a-48f8-87e4-a1d5467f348c&unique=prints",
+  "collector_number": "50",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Micah Epstein",
+  "artist_ids": [
+    "957ec398-9a5e-4f54-9090-37a06d57b96c"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 5395,
+  "penny_rank": 7653,
+  "preview": {
+    "source": "Kotaku",
+    "source_uri": "https://www.kotaku.com.au/2021/01/heres-a-brutal-god-and-his-boat-from-magics-upcoming-kaldheim-expansion/",
+    "previewed_at": "2021-01-14"
+  },
+  "prices": {
+    "usd": "1.38",
+    "usd_foil": "1.04",
+    "usd_etched": null,
+    "eur": "0.97",
+    "eur_foil": "0.76",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=503657&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCosima%252C%2BGod%2Bof%2Bthe%2BVoyage%2B%252F%252F%2BThe%2BOmenkeel",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCosima%252C%2BGod%2Bof%2Bthe%2BVoyage%2B%252F%252F%2BThe%2BOmenkeel",
+    "edhrec": "https://edhrec.com/route/?cc=Cosima%2C+God+of+the+Voyage"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F230704%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=531247&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87425?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

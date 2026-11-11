@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f6828a87-eebe-48dd-873e-251624107e38",
+  "name": "False Floor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "False Floor",
+      "oracle_fingerprint": "0aec9afc9d55d0f72f8fc4305bc726ba",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": [{ "Type": "Creature" }] } },
+            "by": "Tapped"
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "ExileSelf"],
+            "timing": "Sorcery",
+            "effects": [{ "Exile": { "what": { "Each": [{ "Type": "Creature" }, "Untapped"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

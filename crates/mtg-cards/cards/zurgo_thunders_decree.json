@@ -1,0 +1,20 @@
+{
+  "oracle_id": "393d0bf8-5f2e-4eaa-91a1-9132429a7371",
+  "name": "Zurgo, Thunder's Decree",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Zurgo, Thunder's Decree",
+      "oracle_fingerprint": "529e9eb9fcd542584d0e986920d2b4b5",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "mobilize", "amount": 2 } } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 164, "end": 251 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "84391c32-5bb7-4c36-be50-bbb5f8732156",
+  "name": "Rukarumel, Biologist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rukarumel, Biologist",
+      "oracle_fingerprint": "ef6ed48a0d7cddfd317acb87b8b4cb42",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 45, "end": 270 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Sliver",
+                      "types": ["Creature"],
+                      "subtypes": ["Sliver"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

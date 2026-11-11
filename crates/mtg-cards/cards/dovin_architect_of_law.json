@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a3386efe-d6c5-4853-a4db-61460da3364a",
+  "name": "Dovin, Architect of Law",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dovin, Architect of Law",
+      "oracle_fingerprint": "cc3a3232b332a943b39d9b4e4f500039",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [{ "GainLife": { "amount": 2 } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 120, "end": 209 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9d6ab594-aea9-4f13-8802-f3794ee45425",
+  "name": "Torgal, A Fine Hound",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Torgal, A Fine Hound",
+      "oracle_fingerprint": "e268b8cbd658669defecc711c8d42462",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 158 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

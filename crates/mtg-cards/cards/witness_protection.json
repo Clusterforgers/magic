@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a5f5e71e-83a7-468d-829a-6392b764c76e",
+  "name": "Witness Protection",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Witness Protection",
+      "oracle_fingerprint": "7aefff8a0e11bccf7ca42bde872e2bdc",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 17, "end": 232 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "efc23669-1bbb-487f-94b3-cc07f3cd35f6",
+  "name": "Teferi's Talent",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Teferi's Talent",
+      "oracle_fingerprint": "791b8d43a0b170e9b2d7a641e9a908da",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Planeswalker" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 21, "end": 202 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 203, "end": 277 }
+          }
+        }
+      ]
+    }
+  ]
+}

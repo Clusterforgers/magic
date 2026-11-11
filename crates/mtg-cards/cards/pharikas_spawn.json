@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a44955e7-f1ad-41b9-b93d-0a980ac341d8",
+  "name": "Pharika's Spawn",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pharika's Spawn",
+      "oracle_fingerprint": "60d7102187bb9f250d84eee02b30b8e1",
+      "abilities": [
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{5}{B}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 126, "end": 267 }
+          }
+        }
+      ]
+    }
+  ]
+}

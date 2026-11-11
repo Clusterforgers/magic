@@ -1,0 +1,47 @@
+{
+  "oracle_id": "ae7604bb-4818-45a3-960c-cf3d83f15964",
+  "name": "Teferi, Time Raveler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Teferi, Time Raveler",
+      "oracle_fingerprint": "cfe7077bff19b307dbb9a7ff2a2faede",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 70 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 71, "end": 150 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" }
+                      ]
+                    }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

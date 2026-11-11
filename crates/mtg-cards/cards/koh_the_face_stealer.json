@@ -1,0 +1,61 @@
+{
+  "oracle_id": "2bbb33e3-7d03-457c-92bb-b0c943615fa1",
+  "name": "Koh, the Face Stealer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Koh, the Face Stealer",
+      "oracle_fingerprint": "d30eb21280229922a3774ff010dbbb77",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Exile": {
+                        "what": { "Each": [{ "In": "Graveyard" }, { "SameCard": "Triggering" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 115, "end": 166 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 167, "end": 237 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "abbcb153-0763-44c6-964f-b4ff0eb64257",
+  "name": "Atraxa, Grand Unifier",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Atraxa, Grand Unifier",
+      "oracle_fingerprint": "e1ed307f139b7a02de51f62653f8d03a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 40, "end": 361 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "d6026309-aae9-43e7-938b-69db7af7139c",
+  "name": "Intrepid Paleontologist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Intrepid Paleontologist",
+      "oracle_fingerprint": "641ca4ca6c1e771bc1192152e67026ff",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 73, "end": 319 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "21302f37-0632-4202-9823-f08c5aec016e",
+  "name": "The Crowd Goes Wild",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Crowd Goes Wild",
+      "oracle_fingerprint": "2681373bafab11a7affa01f61bfde8c6",
+      "abilities": [
+        { "Keyword": "Assist" },
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 91, "end": 160 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 161, "end": 234 }
+          }
+        }
+      ]
+    }
+  ]
+}

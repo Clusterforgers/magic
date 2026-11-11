@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2b0b4fc1-9ad6-4259-a0a2-9a14484c246e",
+  "name": "Silver Scrutiny",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Silver Scrutiny",
+      "oracle_fingerprint": "b3eac9bde7e6d325cd3b515e2e611524",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 65 }
+          }
+        },
+        { "Spell": { "effects": [{ "Draw": { "count": "X" } }] } }
+      ]
+    }
+  ]
+}

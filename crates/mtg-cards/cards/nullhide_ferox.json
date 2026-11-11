@@ -1,0 +1,32 @@
+{
+  "oracle_id": "5b04a337-3152-481e-973f-a11dbd615f93",
+  "name": "Nullhide Ferox",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nullhide Ferox",
+      "oracle_fingerprint": "a984169bf97e27fb29dfa5fdfd6867f0",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 9, "end": 43 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 44, "end": 139 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 140, "end": 286 }
+          }
+        }
+      ]
+    }
+  ]
+}

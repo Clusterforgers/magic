@@ -1,0 +1,31 @@
+{
+  "oracle_id": "95dc1f55-9dad-4a35-ac5e-abc53d442ffb",
+  "name": "Runadi, Behemoth Caller",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Runadi, Behemoth Caller",
+      "oracle_fingerprint": "b36d0ed5441081d63cf1cbe4605146d4",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 160 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 161, "end": 236 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

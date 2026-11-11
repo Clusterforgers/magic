@@ -1,0 +1,25 @@
+{
+  "oracle_id": "622e2561-48b1-4aca-9abb-9a3c284dcceb",
+  "name": "Winding Canyons",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Winding Canyons",
+      "oracle_fingerprint": "2d292202d324bf7e038b935fdf305b4c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 14, "end": 88 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "oracle_id": "ed77fdf2-59c0-4310-9b12-80d28beeaeef",
+  "name": "Chocobo Camp",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chocobo Camp",
+      "oracle_fingerprint": "f2ed9934f0fabd287cf3b83e8f4e835c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Supertype": "Legendary" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 65, "end": 180 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}{G}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                "to": "Battlefield"
+                              }
+                            },
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": "This",
+                                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

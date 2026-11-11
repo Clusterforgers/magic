@@ -1,0 +1,23 @@
+{
+  "oracle_id": "e05efd01-0202-4bd6-bac6-c6210819d463",
+  "name": "Abby, Merciless Soldier",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Abby, Merciless Soldier",
+      "oracle_fingerprint": "a9853979c4e3e10e2449bd5342215115",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 155 }
+          }
+        },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "UnderChosenOpponent" }
+        },
+        { "Keyword": { "PartnerGroup": "Survivors" } }
+      ]
+    }
+  ]
+}
