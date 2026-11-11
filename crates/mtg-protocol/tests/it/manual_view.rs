@@ -16,7 +16,7 @@ use serde_json::Value;
 
 use crate::common::table::{Run, Table, seats};
 use crate::common::with_unique_names;
-use crate::hidden_info::{assert_clean, hidden_across, hidden_in};
+use crate::hidden_info::{assert_clean, hidden_across_events, hidden_in};
 
 fn seat(index: usize) -> PlayerId {
     PlayerId::from_index(index)
@@ -378,7 +378,7 @@ fn no_hidden_object_reaches_any_viewer_in_games_with_manual_actions(
         let events = engine.apply(answer).unwrap();
         let batches = project_events(&before, &events, &viewers, from_seq).unwrap();
         for (viewer, batch) in viewers.iter().zip(&batches) {
-            let hidden = hidden_across(&before, engine.state(), *viewer);
+            let hidden = hidden_across_events(&before, engine.state(), &events, *viewer);
             checked += hidden.len();
             assert_clean(batch, &hidden);
         }
