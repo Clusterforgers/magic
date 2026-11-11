@@ -1,4 +1,4 @@
-//! Goal: the table lists for each seat the tokens its own cards make, in any zone and hidden ones too, with their words, and never another seat's; a spectator and a seat whose cards make none get no list, and the wire leaves the field out then.
+//! Goal: the table lists for each seat the tokens its own cards in sight make (hand, battlefield, graveyard, exile, command zone), with their words, and never those of a card in its library or another seat's; a spectator and a seat whose cards in sight make none get no list, and the wire leaves the field out then.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_core::ids::PlayerId;
@@ -8,16 +8,18 @@ use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ready};
 use rstest::rstest;
 
-/// Seat 0: Abstruse Interference in the library and Angelic Sleuth on the battlefield; seat 1: islands only.
+/// Seat 0: Abstruse Interference in hand, Angelic Sleuth on the battlefield and Baron Bertram Graywater in the library;
+/// seat 1: islands only.
 fn table() -> Driver {
     let scenario = Scenario::new(2)
         .library(
             0,
-            [card("Abstruse Interference").unwrap()]
+            [card("Baron Bertram Graywater").unwrap()]
                 .into_iter()
                 .chain((0..10).map(|_| island()))
                 .collect::<Vec<_>>(),
         )
+        .hand(0, [card("Abstruse Interference").unwrap()])
         .battlefield(0, [ready(card("Angelic Sleuth").unwrap())])
         .library(1, (0..10).map(|_| island()).collect::<Vec<_>>());
     Driver::from_scenario(scenario).unwrap()
