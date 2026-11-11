@@ -56,7 +56,15 @@ fn exiling_any_number_lowers_the_cost_for_each(
     let scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
         .battlefield(0, (0..5).map(|_| ready(plains())).collect::<Vec<_>>())
-        .hand(0, [march(), white(), white(), creature("Ogre", 1, &[Color::Red], 1, 1)]);
+        .hand(
+            0,
+            [
+                march(),
+                white(),
+                white(),
+                creature("Ogre", 1, &[Color::Red], 1, 1),
+            ],
+        );
     let mut driver = Driver::from_scenario(scenario)?;
     driver.begin_cast("March")?;
     let DecisionKind::ChooseNumber(options) = &driver.decision()?.kind else {
@@ -97,13 +105,13 @@ fn counters_on(driver: &Driver, name: &str) -> u32 {
         .counters_of(&CounterKind::PlusOnePlusOne)
 }
 
-const GATHER: &str = r#"{"Activated":{"cost":"{0}","effects":[{"MoveCounters":{"from":{"Each":[{"Type":"Creature"}]},"to":"This","counter":"+1/+1","count":{"Counters":{"on":{"Each":[{"Type":"Creature"}]},"counter":"+1/+1"}}}}]}}"#;
+const GATHER: &str = r#"{"Activated":{"cost":["Tap"],"effects":[{"MoveCounters":{"from":{"Each":[{"Type":"Creature"}]},"to":"This","counter":"+1/+1","count":{"Counters":{"on":{"Each":[{"Type":"Creature"}]},"counter":"+1/+1"}}}}]}}"#;
 
 fn cannibal() -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new("Cannibal")
             .with_type(CardType::Creature)
-            .with_power_toughness(0, 0)
+            .with_power_toughness(1, 1)
             .with_rules(serde_json::from_str::<Ability>(GATHER).unwrap()),
     )
 }
@@ -124,7 +132,11 @@ fn all_counters_from_all_creatures_gather_on_one(
         )
         .battlefield(
             seats - 1,
-            vec![with_counters(ready(creature("Bear", 0, &[], 2, 2)), plus, 3)],
+            vec![with_counters(
+                ready(creature("Bear", 0, &[], 2, 2)),
+                plus,
+                3,
+            )],
         );
     let mut driver = Driver::from_scenario(scenario)?;
     driver.begin_activation("Cannibal")?;
@@ -135,13 +147,13 @@ fn all_counters_from_all_creatures_gather_on_one(
     Ok(())
 }
 
-const ANY_NUMBER: &str = r#"{"Activated":{"cost":"{0}","targets":[{"what":{"Object":[{"Type":"Creature"},"Other"]}}],"effects":[{"MoveCounters":{"from":"This","to":{"Target":0},"counter":"+1/+1","count":{"Counters":{"on":"This","counter":"+1/+1"}},"up_to":true}}]}}"#;
+const ANY_NUMBER: &str = r#"{"Activated":{"cost":["Tap"],"targets":[{"what":{"Object":[{"Type":"Creature"},"Other"]}}],"effects":[{"MoveCounters":{"from":"This","to":{"Target":0},"counter":"+1/+1","count":{"Counters":{"on":"This","counter":"+1/+1"}},"up_to":true}}]}}"#;
 
 fn bandar() -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new("Bandar")
             .with_type(CardType::Creature)
-            .with_power_toughness(0, 0)
+            .with_power_toughness(1, 1)
             .with_rules(serde_json::from_str::<Ability>(ANY_NUMBER).unwrap()),
     )
 }
@@ -154,15 +166,13 @@ fn any_number_of_counters_stops_where_the_controller_says(
     #[case] moved: u32,
     #[values(2, 3)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let scenario = Scenario::new(seats)
-        .at(1, 0, Step::Main1)
-        .battlefield(
-            0,
-            vec![
-                with_counters(ready(bandar()), CounterKind::PlusOnePlusOne, 3),
-                ready(creature("Wolf", 0, &[], 2, 2)),
-            ],
-        );
+    let scenario = Scenario::new(seats).at(1, 0, Step::Main1).battlefield(
+        0,
+        vec![
+            with_counters(ready(bandar()), CounterKind::PlusOnePlusOne, 3),
+            ready(creature("Wolf", 0, &[], 2, 2)),
+        ],
+    );
     let mut driver = Driver::from_scenario(scenario)?;
     driver.begin_activation("Bandar")?;
     if matches!(driver.decision()?.kind, DecisionKind::ChooseTargets(_)) {
@@ -203,6 +213,7 @@ fn wall(to: &str) -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new("Wall")
             .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[]))
             .with_rules(serde_json::from_str::<Ability>(&rule).unwrap()),
     )
 }

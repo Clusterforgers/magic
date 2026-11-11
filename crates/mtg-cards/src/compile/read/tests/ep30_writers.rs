@@ -64,9 +64,17 @@ const TASTE: &str =
 #[case::repeatable(r#"{"Mana":"{1}{G}"}"#, true, true)]
 #[case::paid_once(r#"{"Mana":"{1}{G}"}"#, false, false)]
 #[case::other_mana(r#"{"Mana":"{2}{G}"}"#, true, false)]
-fn ep30_mana_any_number_of_times(#[case] cost: &str, #[case] repeatable: bool, #[case] reads: bool) {
+fn ep30_mana_any_number_of_times(
+    #[case] cost: &str,
+    #[case] repeatable: bool,
+    #[case] reads: bool,
+) {
     let found = written_variants(&paid(cost, repeatable));
-    assert_eq!(found.iter().any(|w| same_text(w, TASTE)), reads, "{found:?}");
+    assert_eq!(
+        found.iter().any(|w| same_text(w, TASTE)),
+        reads,
+        "{found:?}"
+    );
 }
 
 const BANDAR: &str = "At the beginning of your upkeep, you may move any number of +1/+1 counters from ~ onto another target creature.";
@@ -89,7 +97,11 @@ const ALL_ON_IT: &str = r#"{"Counters":{"on":"This","counter":"+1/+1"}}"#;
 )]
 fn ep30_any_number_of_counters(#[case] bandar: Ability, #[case] reads: bool) {
     let found = written_variants(&bandar);
-    assert_eq!(found.iter().any(|w| same_text(w, BANDAR)), reads, "{found:?}");
+    assert_eq!(
+        found.iter().any(|w| same_text(w, BANDAR)),
+        reads,
+        "{found:?}"
+    );
 }
 
 const GLARECASTER: &str = "{5}{W}: The next time damage would be dealt to ~ and/or you this turn, that damage is dealt to any target instead.";

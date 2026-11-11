@@ -454,9 +454,14 @@ fn shield_recipients(ctx: &Ctx, by: &Value, word: &str) -> Tr<Vec<Option<Value>>
 /// Whether a shield is used up by the damage it covers: the next time, the next N damage, the next N redirected.
 fn used_up(by: &Value) -> bool {
     by.as_str() == Some("PreventNext")
-        || ["PreventUpTo", "PreventCounted", "RedirectUpTo", "InsteadNext"]
-            .iter()
-            .any(|key| by.get(key).is_some())
+        || [
+            "PreventUpTo",
+            "PreventCounted",
+            "RedirectUpTo",
+            "InsteadNext",
+        ]
+        .iter()
+        .any(|key| by.get(key).is_some())
         || by.pointer("/Redirect/next") == Some(&json!(true))
 }
 

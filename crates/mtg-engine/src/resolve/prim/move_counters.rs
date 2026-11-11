@@ -37,7 +37,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let sources: Vec<Target> = if matches!(from, Ref::Each(_)) {
         sources.filter(|source| *source != target).collect()
     } else {
-        sources.next().filter(|source| *source != target).into_iter().collect()
+        sources
+            .next()
+            .filter(|source| *source != target)
+            .into_iter()
+            .collect()
     };
     if sources.is_empty() || count <= 0 {
         return Ok(Run::events(Vec::new()));

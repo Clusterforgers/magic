@@ -1,5 +1,8 @@
 //! Goal: the pieces of ep30 translate as the card prints them. "Remove up to N counters" keeps the controller's stop
-//! (`up_to`) for counters of any kind and of one kind; "up to all" stays a gap.
+//! (`up_to`) for counters of any kind and of one kind, and "up to all" stays a gap; "move any number of" counters and
+//! moves from each of a kind of permanent (`ValidSource$`) read as such, a kind of source beside a target stays a gap; a
+//! "you may ... any number of" cost with its announced count is a repeatable additional cost whose payments the spell
+//! reads (`AdditionalPaid`); a shield used up by what it covers over two recipients is one `Union`, over three a gap.
 use rstest::rstest;
 use serde_json::json;
 
@@ -45,6 +48,71 @@ const TASTE: &str = "Name:T\nManaCost:3 G\nTypes:Sorcery\nS:Mode$ RaiseCost | Va
 #[test]
 fn ep30_mana_any_number_of_times_is_counted() {
     assert_eq!(gaps(TASTE), Vec::<String>::new());
+}
+
+fn mover(line: &str) -> String {
+    format!(
+        "Name:T\nTypes:Creature Beast\nPT:1/1\nT:Mode$ ChangesZone | Origin$ Any | Destination$ Battlefield | ValidCard$ Card.Self | Execute$ TrigMove | TriggerDescription$ When CARDNAME enters, move counters.\nSVar:TrigMove:DB$ MoveCounter | {line}\n"
+    )
+}
+
+#[rstest]
+#[case::any_number_from_others(
+    "ValidSource$ Permanent.YouCtrl+Other+counters_GE1_P1P1 | Defined$ Self | CounterType$ P1P1 | CounterNum$ Any",
+    json!({"MoveCounters": {"from": {"Each": [{"ControlledBy": "You"}, "Other"]}, "to": "This", "counter": "+1/+1", "count": {"Counters": {"on": {"Each": [{"ControlledBy": "You"}, "Other"]}, "counter": "+1/+1"}}, "up_to": true}})
+)]
+#[case::all_from_all_creatures(
+    "ValidSource$ Creature | Defined$ Self | CounterType$ P1P1 | CounterNum$ All",
+    json!({"MoveCounters": {"from": {"Each": [{"Type": "Creature"}]}, "to": "This", "counter": "+1/+1", "count": {"Counters": {"on": {"Each": [{"Type": "Creature"}]}, "counter": "+1/+1"}}}})
+)]
+fn ep30_moves_of_any_number_and_from_each(#[case] line: &str, #[case] effect: serde_json::Value) {
+    let script = mover(line);
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let found = abilities(&script);
+    assert_eq!(found[0]["Triggered"]["effects"][0], effect, "{found:?}");
+}
+
+#[test]
+fn ep30_a_kind_source_beside_a_target_stays_a_gap() {
+    let found = gaps(&mover(
+        "ValidSource$ Creature | ValidTgts$ Creature | CounterType$ P1P1 | CounterNum$ All",
+    ));
+    assert!(
+        found
+            .iter()
+            .any(|gap| gap.contains("MoveCounter.ValidSource")),
+        "{found:?}"
+    );
+}
+
+fn shield(valid_target: &str, replace: &str) -> String {
+    format!(
+        "Name:T\nTypes:Instant\nA:SP$ Effect | ValidTgts$ Any | ReplacementEffects$ ReDamage | RememberObjects$ Targeted | SpellDescription$ Damage goes elsewhere.\nSVar:ReDamage:Event$ DamageDone | ActiveZones$ Command | ValidTarget$ {valid_target} | ReplaceWith$ Split | DamageTarget$ Remembered | Description$ The next 2 damage that would be dealt to you and/or permanents you control this turn is dealt to any target instead.\nSVar:Split:DB$ ReplaceSplitDamage | DamageTarget$ Remembered | VarName$ ShieldAmount{replace}\nSVar:ShieldAmount:Number$2\n"
+    )
+}
+
+#[rstest]
+#[case::shared(" | DivideShield$ True")]
+#[case::plain("")]
+fn ep30_a_used_up_shield_over_two_recipients_is_one_union(#[case] divide: &str) {
+    let script = shield("You,Permanent.YouCtrl", divide);
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let found = abilities(&script);
+    let effects = &found[0]["Spell"]["effects"];
+    assert_eq!(effects.as_array().map(Vec::len), Some(1), "{found:?}");
+    assert_eq!(
+        effects[0]["Shield"]["when"]["Damage"]["to"],
+        json!({"Union": ["You", {"Each": [{"ControlledBy": "You"}]}]})
+    );
+}
+
+#[test]
+fn ep30_three_recipients_of_a_used_up_shield_stay_a_gap() {
+    let found = gaps(&shield("You,Creature.YouCtrl,Planeswalker.YouCtrl", ""));
+    assert!(
+        found.iter().any(|gap| gap.contains("shield-recipient")),
+        "{found:?}"
+    );
 }
 
 #[test]

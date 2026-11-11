@@ -25,7 +25,10 @@ fn counted(cost: &Cost) -> Option<(Cost, &'static str, &'static str)> {
             "exiled",
         ),
         CostItem::TapPermanents { filter, count } if count.is_one() => {
-            let noun = if filter.0.contains(&Pred::Type(mtg_core::card::CardType::Creature)) {
+            let noun = if filter
+                .0
+                .contains(&Pred::Type(mtg_core::card::CardType::Creature))
+            {
                 "creature"
             } else {
                 "permanent"

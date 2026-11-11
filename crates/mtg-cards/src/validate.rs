@@ -645,7 +645,9 @@ impl<'a> Walker<'a> {
             // Only a damage recipient reads it: a player and objects together.
             Ref::Union(parts) => {
                 if want != Kind::Either || parts.len() < 2 {
-                    self.problem("a union of references is read only as a damage recipient".to_owned());
+                    self.problem(
+                        "a union of references is read only as a damage recipient".to_owned(),
+                    );
                 }
                 for (i, part) in parts.iter().enumerate() {
                     self.at(format!("[{i}]"), |w| w.reference(part, Kind::Either));
@@ -2779,9 +2781,7 @@ impl Walker<'_> {
             | Ref::TriggeringFirst
             | Ref::Against
             | Ref::Remembered { .. }
-            | Ref::Union(_) => {
-                Kind::Either
-            }
+            | Ref::Union(_) => Kind::Either,
         }
     }
 
@@ -4434,7 +4434,9 @@ impl Walker<'_> {
                 repeatable,
             } => {
                 if *repeatable && *required {
-                    w.problem("only a cost the caster may pay is paid any number of times".to_owned());
+                    w.problem(
+                        "only a cost the caster may pay is paid any number of times".to_owned(),
+                    );
                 }
                 w.additional_cost(cost, *required);
             }
@@ -5391,9 +5393,9 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
     walker.counts_x = card.abilities().any(
         |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x()),
     );
-    walker.pays_objects = card
-        .abilities()
-        .any(|(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if picks(cost)));
+    walker.pays_objects = card.abilities().any(
+        |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if picks(cost)),
+    );
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));
     }
@@ -6891,6 +6893,14 @@ mod tests {
     #[case::kicks_without_kicker(
         r#"{"Spell":{"effects":[{"Draw":{"count":"Kicks"}}]}}"#,
         "`Kicks` needs a Kicker"
+    )]
+    #[case::ep30_payments_without_a_cost(
+        r#"{"Spell":{"effects":[{"Draw":{"count":"AdditionalPaid"}}]}}"#,
+        "`AdditionalPaid` needs an additional cost"
+    )]
+    #[case::ep30_a_union_of_players_to_draw(
+        r#"{"Spell":{"effects":[{"Draw":{"who":{"Union":["You","Opponents"]}}}]}}"#,
+        "a union of references is read only as a damage recipient"
     )]
     #[case::modal_not_alone(
         r#"{"Spell":{"effects":[{"Draw":{}},{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Draw":{}}]}]}}]}}"#,
