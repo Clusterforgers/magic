@@ -219,8 +219,8 @@ fn kind_of_targetable(what: &Targetable) -> Kind {
         Targetable::Object(_) | Targetable::PerPlayer { .. } => Kind::Object,
         Targetable::Together { what, .. }
         | Targetable::Another { what, .. }
-        | Targetable::ChosenBy { what, .. } => kind_of_targetable(what),
-        Targetable::AtRandom(what) => kind_of_targetable(what),
+        | Targetable::ChosenBy { what, .. }
+        | Targetable::AtRandom(what) => kind_of_targetable(what),
         Targetable::AnyTarget | Targetable::Either(_) => Kind::Either,
     }
 }

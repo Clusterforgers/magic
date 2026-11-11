@@ -60,7 +60,7 @@ fn at_priority_it_discards_the_hand_and_adds_three(
     driver.tap_for_mana_of("Diamond", color)?;
     let pool = driver.state().player(pid(0)).unwrap().mana().clone();
     assert_eq!((pool.get(color), pool.total()), (3, 3));
-    assert!(driver.state().zone(Zone::Hand(pid(0))).is_empty());
+    assert_eq!(driver.state().zone(Zone::Hand(pid(0))).len(), 0);
     assert_eq!(
         driver.state().zone(Zone::Graveyard(pid(0))).len(),
         hand + 1,

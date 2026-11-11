@@ -112,3 +112,22 @@ pub(super) fn ep26_two_zones_texts(
         })
         .collect()
 }
+
+/// The cost of an activated ability as the card prints it, then with "Sacrifice ~" moved last (the parts are paid in any
+/// order, CR 601.2h); exiling the card from the battlefield is "Exile ~", from the graveyard "Exile ~ from your graveyard".
+pub(super) fn ep26_cost_heads(cost: &crate::cost::Cost, from: ZoneKind) -> Option<Vec<String>> {
+    let head = super::costs::text(cost)?;
+    let at_home = |head: String| {
+        if from == ZoneKind::Battlefield {
+            head.replace("Exile ~ from your graveyard", "Exile ~")
+        } else {
+            head
+        }
+    };
+    Some(
+        std::iter::once(head)
+            .chain(ep26_sacrifice_last(cost).and_then(|c| super::costs::text(&c)))
+            .map(at_home)
+            .collect(),
+    )
+}

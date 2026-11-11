@@ -14,10 +14,10 @@ use net::{Browser, PASSWORD, TestServer, bot_config, register, request};
 use serde_json::{Value, json};
 use sqlx::PgPool;
 
-/// A Forge draft whose one differing clause says "discard X cards, where X is the number of cards in your hand".
+/// A Forge draft whose one differing clause differs only in punctuation ("..., then shuffle" against ". Then shuffle").
 const WORDING: (&str, &str) = (
-    include_str!("../../../mtg-cli/drafts/slate_of_ancestry.json"),
-    include_str!("../../../mtg-cli/drafts/fixtures/slate_of_ancestry.json"),
+    include_str!("../../../mtg-cli/drafts/knowing_half_the_battle.json"),
+    include_str!("../../../mtg-cli/drafts/fixtures/knowing_half_the_battle.json"),
 );
 
 /// A Forge draft that leaves out a clause ("can block creatures with shadow"), so it is no candidate.
@@ -112,25 +112,25 @@ async fn the_list_holds_a_wording_only_draft_and_not_one_that_drops_a_clause(poo
     let cards = list["cards"].as_array().unwrap();
     assert_eq!(cards.len(), 1, "{list}");
     let card = &cards[0];
-    assert_eq!(card["name"], "Slate of Ancestry");
+    assert_eq!(card["name"], "Knowing // Half the Battle");
     assert_eq!(card["oracle_id"], wording.oracle_id.as_str());
     assert_eq!(card["read_hash"], wording.read_hash);
-    assert_eq!(card["rule"], "discard_hand");
+    assert_eq!(card["rule"], "punctuation");
     let clause = &card["clauses"][0];
     assert!(
         clause["printed"]
             .as_str()
             .unwrap()
-            .contains("Discard your hand")
+            .contains(", then shuffle")
     );
     assert!(
         clause["engine"]
             .as_str()
             .unwrap()
-            .contains("Discard X cards")
+            .contains(". Then shuffle")
     );
-    assert_eq!(clause["rules"], json!(["discard_hand"]));
-    assert_eq!(list["rules"][0]["name"], "discard_hand");
+    assert_eq!(clause["rules"], json!(["punctuation"]));
+    assert_eq!(list["rules"][0]["name"], "punctuation");
     assert_ne!(list["rules"][0]["summary"].as_str().unwrap(), "");
 }
 

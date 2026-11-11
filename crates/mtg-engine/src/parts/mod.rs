@@ -335,18 +335,10 @@ impl Part {
     /// The part a cost item is, `None` for the items that are not one of these (`{T}`, mana, losing the source), or the
     /// name of the part whose amount the engine cannot count.
     pub(crate) fn read(item: &CostItem) -> Result<Option<Part>, &'static str> {
+        if discards_the_hand(item) {
+            return Ok(Some(Part::DiscardHand));
+        }
         let (part, x) = match item {
-            CostItem::Discard {
-                count: Amount::Count(cards),
-                filter: None,
-            } if cards.0
-                == [
-                    Pred::In(ZoneKind::Hand),
-                    Pred::OwnedBy(mtg_cards::refs::Ref::You),
-                ] =>
-            {
-                (Part::DiscardHand, false)
-            }
             CostItem::PayLife(count) => {
                 let (number, x) = amount(count, item)?;
                 (Part::Life(number), x)
@@ -827,8 +819,9 @@ impl Pick {
             Kind::ExileHand => exile_hand::candidates(payer, &self.filter),
             Kind::Reveal => reveal::candidates(payer, &self.filter),
             Kind::Tap | Kind::TapPower => tap::candidates(payer, &self.filter),
-            Kind::Return | Kind::Blight(_) => bounce::candidates(payer, &self.filter),
-            Kind::ExilePermanent => bounce::candidates(payer, &self.filter),
+            Kind::Return | Kind::Blight(_) | Kind::ExilePermanent => {
+                bounce::candidates(payer, &self.filter)
+            }
             Kind::Untap => untap::candidates(payer, &self.filter),
             Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
             Kind::ExileAny => exile::candidates_any(payer, &self.filter),
@@ -999,3 +992,9 @@ impl Pick {
 
 #[cfg(test)]
 mod tests;
+
+/// "Discard your hand": a discard counted as every card of the payer's hand, with no filter.
+fn discards_the_hand(item: &CostItem) -> bool {
+    matches!(item, CostItem::Discard { count: Amount::Count(cards), filter: None }
+        if cards.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(mtg_cards::refs::Ref::You)])
+}

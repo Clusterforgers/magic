@@ -533,6 +533,8 @@ impl ManaProduced<'_> {
 ///
 /// The plain `{T}: Add {X}` has this shape and is carried as an [`AbilityDef`]; the others (Treasure, Sol Ring, Gaea's
 /// Cradle, the painlands, the bouncelands) stay in the rules of the card.
+// Each flag is a separate fact of one ability.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, PartialEq)]
 pub struct ManaShape<'a> {
     /// What it adds each time.

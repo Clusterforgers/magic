@@ -251,12 +251,7 @@ fn activated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     if p.get("SorcerySpeed") == Some("True") || printed_sorcery {
         ability["timing"] = json!("Sorcery");
     }
-    // "Activate only as an instant": a mana ability that is no source of a payment.
-    match p.get("InstantSpeed") {
-        None | Some("False") => {}
-        Some("True") if ability["timing"].is_null() => ability["timing"] = json!("AsInstant"),
-        Some(_) => return unmapped("key:AB.InstantSpeed-shape"),
-    }
+    as_instant(p, &mut ability)?;
     if let Some(by) = by {
         if costs_the_source(&ability["cost"]) {
             return unmapped("key:AB.Activator-with-a-cost-of-the-source");
@@ -380,4 +375,15 @@ fn loyalty_ability(p: &Params, text: &str, effects: &[Value], targets: &[Value])
         ability["targets"] = Value::Array(targets.to_vec());
     }
     Ok(json!({ "Loyalty": ability }))
+}
+
+/// "Activate only as an instant" (`InstantSpeed$ True`): a mana ability that is no source of a payment; beside "as a
+/// sorcery" or with another word it is a gap.
+fn as_instant(p: &Params, ability: &mut Value) -> Tr<()> {
+    match p.get("InstantSpeed") {
+        None | Some("False") => {}
+        Some("True") if ability["timing"].is_null() => ability["timing"] = json!("AsInstant"),
+        Some(_) => return unmapped("key:AB.InstantSpeed-shape"),
+    }
+    Ok(())
 }

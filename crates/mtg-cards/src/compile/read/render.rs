@@ -1014,22 +1014,9 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } => {
-            let Some(head) = costs::text(cost) else {
+            let Some(heads) = super::ep26_mana::ep26_cost_heads(cost, *from) else {
                 return Vec::new();
             };
-            // Exiling the card from the battlefield is "Exile ~", from the graveyard "Exile ~ from your graveyard".
-            let at_home = |head: String| {
-                if *from == ZoneKind::Battlefield {
-                    head.replace("Exile ~ from your graveyard", "Exile ~")
-                } else {
-                    head
-                }
-            };
-            // The parts of a cost are paid in any order (CR 601.2h): the card prints "Sacrifice ~" last.
-            let heads: Vec<String> = std::iter::once(head)
-                .chain(super::ep26_mana::ep26_sacrifice_last(cost).and_then(|c| costs::text(&c)))
-                .map(at_home)
-                .collect();
             let tails = match condition {
                 None => restriction_texts(*timing, *limit),
                 Some(condition) => {
@@ -1988,7 +1975,6 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
         (Timing::Instant, None) => words(""),
         (Timing::Sorcery, None) => words("Activate only as a sorcery."),
         (Timing::AsInstant, None) => words("Activate only as an instant."),
-        (Timing::AsInstant, Some(_)) => Vec::new(),
         (Timing::Instant, Some(Limit::OncePerTurn)) => words("Activate only once each turn."),
         (Timing::Instant, Some(Limit::OncePerGame)) => words("Activate only once."),
         (Timing::Sorcery, Some(Limit::OncePerGame)) => vec![
@@ -2000,7 +1986,7 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
             "Activate only once each turn and only as a sorcery.".to_owned(),
         ],
         // A limit counted as a triggered ability's choice is done, which no activation has.
-        (_, Some(Limit::OncePerTurnDone)) => Vec::new(),
+        (_, Some(Limit::OncePerTurnDone)) | (Timing::AsInstant, Some(_)) => Vec::new(),
         (timing, Some(Limit::TimesPerTurn(most))) => {
             let times = match most {
                 2 => "twice".to_owned(),
