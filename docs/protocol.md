@@ -90,6 +90,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
   - At zero the server answers for the seat (a pass, no blocks, keeping the hand) through the normal path; the decision id goes stale and the events arrive as a batch, so a client drops the prompt at zero and expects them.
 - `Decision.show_after_ms` is when the client starts to show the countdown (`MTG_CLOCK_GRACE_SECS`); the clock runs from issue all the same. It follows the kind and the seat as the clock does, never whether the seat can act.
 - A seat that holds an extension spends it at the deadline instead of being answered for: it is sent the same `Decision` again (same `id`) with the new `deadline_ms`, and every seat is sent `Bank { seat, bank }`. `PlayerView.bank` is public; the engine does not know it, the server writes it into every table.
+- `PlayerView.turn_time_ms` (public) is the wall time a seat has used on its own turns, the running turn up to the send included; `turn_time_running` marks the one seat whose figure keeps growing from the moment the table arrives. Like the bank, the server writes them into every table.
 - `PlayerView.connected` is public and never stored, hashed or put in the event log, so replays do not see it. The server writes it into every snapshot and batch and sends the other seats `Presence { seat, connected, deadline_ms? }` when a seat gains its first connection or loses its last, and again for an away seat when it is issued a decision or its clock is extended. A seat is never told of itself.
 
 ### Payments

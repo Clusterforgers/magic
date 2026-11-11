@@ -24,6 +24,7 @@ import { useStable } from './useStable'
 import { useKeepInView } from './useKeepInView'
 import { defenderOutline, useDefender } from './combat/defender'
 import { LifeForecast } from './combat/LifeForecast'
+import { TurnTimeMark } from './TurnTimeMark'
 
 interface SeatTileProps {
   seat: PlayerId
@@ -116,6 +117,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
           ) : null}
           {away ? <AwayMark /> : null}
           <BankMark seat={seat} />
+          <TurnTimeMark seat={seat} />
         </span>
         <span className="flex shrink-0 items-center gap-1">
           <LifeForecast seat={seat} />

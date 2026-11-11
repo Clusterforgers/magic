@@ -19,6 +19,7 @@ use crate::bank::Banks;
 use crate::dwell::Waits;
 use crate::pace::{self, Pace, chosen_answer};
 use crate::stops::{self, Stops};
+use crate::turn_time::TurnTimes;
 use crate::windows::{self, Verdict};
 use crate::yields::Yields;
 
@@ -84,6 +85,8 @@ pub(crate) struct Step {
     pub(crate) passed: bool,
     /// The banks before the step, which come back if it cannot be persisted.
     pub(crate) banks: Banks,
+    /// The turn times before the step, which come back with the banks.
+    pub(crate) times: TurnTimes,
 }
 
 /// The decision awaiting an answer, the id the client must echo and when its clock runs out.
@@ -143,6 +146,8 @@ pub(crate) struct Running {
     waits: Waits,
     /// The extensions each seat holds; empty again when a game is resumed.
     banks: Banks,
+    /// The time each seat has used on its own turns; from zero again when a game is resumed.
+    times: TurnTimes,
     /// Whether the table played with manual cards when the game began.
     manual_play: bool,
     /// Manual actions that came while a replacement question held a batch, applied in order once it is answered.
@@ -170,6 +175,8 @@ impl Running {
     pub(crate) fn new(engine: Engine, pace: Pace) -> Running {
         let mut banks = Banks::new(engine.state().players().len(), pace.extension.is_some());
         banks.watch(engine.state());
+        let mut times = TurnTimes::new(engine.state().players().len());
+        times.watch(engine.state(), Instant::now());
         Running {
             engine,
             pending: None,
@@ -178,6 +185,7 @@ impl Running {
             pace,
             waits: Waits::fresh(pace.dwell),
             banks,
+            times,
             manual_play: false,
             deferred: VecDeque::new(),
             clock_kept: false,
@@ -197,14 +205,21 @@ impl Running {
         self.manual_play
     }
 
-    /// Writes the extensions every seat holds into `table`.
+    /// Writes the extensions every seat holds and the time it has used on its own turns into `table`.
     pub(crate) fn stamp(&self, table: &mut TableView) {
         self.banks.stamp(table);
+        self.times.stamp(table, Instant::now());
     }
 
-    /// Takes back the banks a step changed, once the step is undone.
-    pub(crate) fn restore_banks(&mut self, banks: Banks) {
+    /// Takes back the banks and turn times a step changed, once the step is undone.
+    pub(crate) fn restore_banks(&mut self, banks: Banks, times: TurnTimes) {
         self.banks = banks;
+        self.times = times;
+    }
+
+    /// Stops the turn count while no seat is connected (`paused`) and restarts it when one is.
+    pub(crate) fn pause_turn_time(&mut self, paused: bool) {
+        self.times.pause(paused, Instant::now());
     }
 
     /// The pending decision's clock has run out and the table answers for its seat: the seat used a clock.
@@ -464,7 +479,7 @@ impl Running {
     /// dwell is not sent: the seat is passed for, and a snapshot taken meanwhile must not tell it so.
     pub(crate) fn sync_messages(&self, seat: PlayerId) -> Vec<ServerMessage> {
         let mut view = StateView::for_player(self.engine.state(), seat);
-        self.banks.stamp(&mut view.table);
+        self.stamp(&mut view.table);
         let LogWindow { log, names, hosts } = self.recent_log(seat);
         let mut messages = vec![
             ServerMessage::Snapshot {
@@ -629,6 +644,7 @@ impl Running {
             let on_stack = stops::by_hand_on_stack(self.engine.state());
             let passed = self.engine.apply(answer)?;
             self.banks.watch(self.engine.state());
+            self.times.watch(self.engine.state(), Instant::now());
             stops.left(at, &passed);
             stops.resolved(&on_stack, &passed);
             events.extend(passed);
@@ -678,8 +694,10 @@ impl Running {
         let before = self.engine.state().clone();
         let checkpoint = self.engine.checkpoint();
         let banks = self.banks.clone();
+        let times = self.times.clone();
         let events = run(&mut self.engine)?;
         self.banks.watch(self.engine.state());
+        self.times.watch(self.engine.state(), Instant::now());
         let from_seq = count(self.engine.events().len() - events.len());
         Ok(Step {
             before,
@@ -690,6 +708,7 @@ impl Running {
             keep_unchanged,
             passed: false,
             banks,
+            times,
         })
     }
 }

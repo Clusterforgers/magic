@@ -8,6 +8,7 @@ import { PageShell } from '@/components/PageShell'
 import { Pill } from '@/components/Pill'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { useAuth } from '@/features/auth/context'
+import { formatTurnTime, turnTimeText } from '@/lib/turnTime'
 import { cn } from '@/lib/utils'
 import { useGame, usePlay } from './gameContext'
 import { describeResult, endKind, seatOutcomes } from './outcome'
@@ -100,6 +101,7 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
                     {entry.status}
                   </span>
                   <span className="text-muted-foreground"> · life {entry.life}</span>
+                  <TurnTotal ms={players.find((player) => player.seat === entry.seat)?.turn_time_ms} />
                 </span>
               </li>
             ))}
@@ -139,5 +141,17 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
         </div>
       </section>
     </PageShell>
+  )
+}
+
+/** A seat's time on its own turns in the list of seats, read aloud in words. */
+function TurnTotal({ ms }: { ms: number | undefined }) {
+  if (ms === undefined) return null
+  return (
+    <span data-slot="turn-total" className="text-muted-foreground">
+      {' · '}
+      <span aria-hidden="true">{formatTurnTime(ms)} on own turns</span>
+      <span className="sr-only">{turnTimeText(ms)}</span>
+    </span>
   )
 }

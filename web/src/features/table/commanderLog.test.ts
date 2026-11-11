@@ -22,6 +22,7 @@ const player = (seat: number, extra: Partial<PlayerView> = {}): PlayerView => ({
   graveyard: { count: 0, cards: [] },
   command: { count: 0, cards: [] },
   bank: 0,
+  turn_time_ms: 0,
   connected: true,
   ...extra,
 })

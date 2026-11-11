@@ -96,6 +96,8 @@ export interface PlayState {
   seatCount: number | null
   /** What this seat may know of the game; null until a Snapshot or the first batch arrives. */
   view: StateView | null
+  /** When the table of `view` arrived (`Date.now()`); a running turn time grows from it. Null until it is known. */
+  viewAt: number | null
   /** The same objects as `view.objects`, by id; the values are the very same references. */
   objectsById: Readonly<Record<ObjectId, ObjectView>>
   /** The log position of `view`, which is the `from_seq` the next batch must have; null while there is no view. */
@@ -191,6 +193,7 @@ export function initialPlayState(): PlayState {
     seat: null,
     seatCount: null,
     view: null,
+    viewAt: null,
     objectsById: {},
     seq: null,
     pending: null,

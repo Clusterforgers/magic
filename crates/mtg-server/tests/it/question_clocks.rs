@@ -716,8 +716,16 @@ async fn the_other_seats_are_sent_the_same_messages_whether_the_player_answered_
             !timed_out.seen[seat].is_empty(),
             "seat {seat} was sent something"
         );
+        // How long the seat took shows in when the messages arrive, and so in the turn times; not in what they say.
+        let said = |seen: &[ServerMessage]| -> Vec<ServerMessage> {
+            seen.iter()
+                .cloned()
+                .map(common::without_turn_time)
+                .collect()
+        };
         assert_eq!(
-            timed_out.seen[seat], promptly.seen[seat],
+            said(&timed_out.seen[seat]),
+            said(&promptly.seen[seat]),
             "seat {seat} cannot tell a timeout from an answer"
         );
     }

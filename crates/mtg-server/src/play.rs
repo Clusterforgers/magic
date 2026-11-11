@@ -142,6 +142,7 @@ impl<S: EventStore> GameActor<S> {
             keep_unchanged,
             passed,
             banks,
+            times,
         } = step;
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
@@ -187,7 +188,7 @@ impl<S: EventStore> GameActor<S> {
             Err(error) => {
                 // Without the undo the game would run ahead of its record, so stop instead.
                 running.engine.restore(checkpoint).map_err(|_| Fatal)?;
-                running.restore_banks(banks);
+                running.restore_banks(banks, times);
                 self.refuse(origin, error.into_rejection());
                 Ok(())
             }

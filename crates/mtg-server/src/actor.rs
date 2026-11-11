@@ -270,6 +270,7 @@ impl<S: EventStore> GameActor<S> {
             return;
         }
         loop {
+            self.pause_turn_time();
             let command = match self.due() {
                 None => tokio::select! {
                     biased;
@@ -392,6 +393,14 @@ impl<S: EventStore> GameActor<S> {
         // After the reply, so the client never waits for the database.
         if let Some(recorder) = &mut self.recorder {
             recorder.joined(seat).await;
+        }
+    }
+
+    /// Stops the running turn's count while no seat is connected; every change of connection passes the loop first.
+    fn pause_turn_time(&mut self) {
+        let nobody = self.seats.connected().is_empty();
+        if let Phase::Running(running) = &mut self.phase {
+            running.pause_turn_time(nobody);
         }
     }
 

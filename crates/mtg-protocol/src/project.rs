@@ -666,6 +666,8 @@ impl PlayerView {
             commander_lethal: state.commander_lethal(),
             companion: companion_view(state, viewer, seat),
             bank: 0,
+            turn_time_ms: 0,
+            turn_time_running: false,
             connected: true,
         }
     }

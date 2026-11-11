@@ -41,6 +41,7 @@ const SCALAR_KEYS: &[&str] = &[
     "lands_played",
     "mulligans",
     "bank",
+    "turn_time_ms",
     "damage",
     "casts",
     "tax",
