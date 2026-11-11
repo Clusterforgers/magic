@@ -1,7 +1,7 @@
 {
   "oracle_id": "7e8198e9-0f3b-420b-ab09-74f13f4fd548",
   "name": "Throne of Makindi",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Throne of Makindi",
@@ -20,9 +20,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 59, "end": 178 }
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 2 },
+                  "only": [{ "Spell": { "facts": ["Kicked"] } }]
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,7 +1,7 @@
 {
   "oracle_id": "70bfb805-2009-44c8-b5bd-2ca281637566",
   "name": "Obscuring Aether",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Obscuring Aether",
@@ -14,12 +14,7 @@
             "mana": "{1}"
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 58, "end": 127 }
-          }
-        }
+        { "Activated": { "cost": "{1}{G}", "effects": [{ "TurnFaceDown": { "what": "This" } }] } }
       ]
     }
   ]

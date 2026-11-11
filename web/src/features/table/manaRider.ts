@@ -63,6 +63,7 @@ const FACTS: Record<SpendFact, string> = {
   Flashback: 'with flashback',
   YourCommander: 'that is your commander',
   FaceDown: 'cast face down',
+  Kicked: 'that is kicked',
 }
 
 const lower = (text: string): string => text.toLowerCase()

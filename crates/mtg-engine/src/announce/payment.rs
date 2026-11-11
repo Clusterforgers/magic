@@ -61,8 +61,13 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
             total.spend,
         ),
         (What::Ability(ability), None) => {
-            activation_events(ctx.state, ctx.player, *ability, work.choices)
-                .map_or(Next::Drop, Next::Commit)
+            activation_events(ctx.state, ctx.player, *ability, work.choices).map_or(
+                Next::Drop,
+                |mut events| {
+                    crate::r281_mana_at_priority::r281_resolve_at_once(ctx.state, &mut events);
+                    Next::Commit(events)
+                },
+            )
         }
     }
 }

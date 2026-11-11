@@ -4331,7 +4331,7 @@ impl Walker<'_> {
         }
         if from {
             self.uses("Ability", "From");
-            // A mana ability is activated at priority from the battlefield alone.
+            // A mana ability from another zone is activated at priority.
             if ability.is_mana_ability() {
                 self.uses("Ability", "ManaAbility.From");
             }

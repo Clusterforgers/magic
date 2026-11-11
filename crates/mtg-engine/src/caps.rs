@@ -247,6 +247,8 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.AnyColor",
     "Effect.AddMana.Instead",
     "Ability.ManaAbility.Complex",
+    "Ability.ManaAbility.Other",
+    "Ability.ManaAbility.From",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
     "Effect.RemoveAllCounters",
@@ -1009,7 +1011,7 @@ mod tests {
     #[case::casting_in_place_of_an_event("ReplaceBy.Instead.Casts", false)]
     #[case::paying_in_place_of_an_event("ReplaceBy.Instead.Pays", false)]
     #[case::tapping_or_untapping("Effect.TapOrUntap", true)]
-    #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", false)]
+    #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", true)]
     #[case::states("Trigger.State", true)]
     #[case::exiling_the_source("Cost.ExileSelf", true)]
     #[case::discarding_the_source("Cost.DiscardSelf", true)]
@@ -1186,9 +1188,9 @@ mod tests {
         "Ability.ManaAbility.Complex",
         true
     )]
-    #[case::mana_abilities_the_engine_does_not_activate_at_priority(
+    #[case::mana_abilities_the_engine_activates_at_priority_and_resolves_at_once(
         "Ability.ManaAbility.Other",
-        false
+        true
     )]
     #[case::paying_or_not("Effect.Pay", true)]
     #[case::c6_eg_paying_counted_life_in_an_effect("Effect.Pay.Counted", true)]

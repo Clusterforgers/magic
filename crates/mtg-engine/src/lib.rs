@@ -136,6 +136,8 @@ pub mod player;
 pub mod player_control;
 pub mod priority;
 pub mod prohibit;
+mod r281_kicked_spend;
+mod r281_mana_at_priority;
 pub mod replace;
 pub mod resolve;
 mod restart;

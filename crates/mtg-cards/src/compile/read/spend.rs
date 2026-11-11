@@ -61,6 +61,12 @@ fn kind(r: &mut Reader<'_>) -> Option<SpendFilter> {
         filter.facts.insert(0, SpendFact::Colorless);
         return Some(filter);
     }
+    // "kicked spells", "a kicked spell".
+    if r.word("kicked") {
+        let mut filter = r.attempt(kind).unwrap_or_default();
+        filter.facts.insert(0, SpendFact::Kicked);
+        return Some(filter);
+    }
     // "outlaw spells" (CR 205.3m).
     if r.word("outlaw") {
         return Some(SpendFilter {
@@ -328,9 +334,11 @@ fn list_words(names: &[&str], last: &str) -> String {
 /// The kind of spell as the plural noun phrase reads, up to "spells": `None` when no wording of the kind exists.
 fn kind_text(filter: &SpendFilter) -> Option<String> {
     let kind = plain_kind_text(filter)?;
-    // "colorless spells", "colorless Eldrazi spells".
+    // "colorless spells", "colorless Eldrazi spells", "kicked spells".
     Some(if filter.facts.contains(&SpendFact::Colorless) {
         format!("colorless {kind}")
+    } else if filter.facts.contains(&SpendFact::Kicked) {
+        format!("kicked {kind}")
     } else {
         kind
     })
@@ -426,7 +434,10 @@ fn qualifier_text(filter: &SpendFilter) -> String {
             SpendFact::OnBattlefield => text.push_str(" on the battlefield"),
             // Colorless is written before the noun (`kind_text`), your commander alone (`ep33_spend_text`); `text` writes no
             // face-down spells.
-            SpendFact::Colorless | SpendFact::YourCommander | SpendFact::FaceDown => {}
+            SpendFact::Colorless
+            | SpendFact::Kicked
+            | SpendFact::YourCommander
+            | SpendFact::FaceDown => {}
             SpendFact::FromExile => text.push_str(" from exile"),
             SpendFact::NotFromHand => text.push_str(" from anywhere other than your hand"),
             SpendFact::Devoid => text.push_str(" with devoid"),
@@ -517,12 +528,12 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
         }
         [SpendOn::Spell(first), SpendOn::Spell(second)] => format!(
             "Spend this mana only to cast {} or {}",
-            if first.chosen_type || second.chosen_type {
+            if r281_singular(first, second) {
                 one_spell_text(first)?
             } else {
                 spells_text(first)?
             },
-            if first.chosen_type || second.chosen_type {
+            if r281_singular(first, second) {
                 one_spell_text(second)?
             } else {
                 spells_text(second)?
@@ -530,6 +541,14 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
         ),
         _ => return None,
     })
+}
+
+/// Whether two kinds of spell are named one spell at a time: "a creature spell of the chosen type or ...", "an instant
+/// or sorcery spell or a kicked spell".
+fn r281_singular(first: &SpendFilter, second: &SpendFilter) -> bool {
+    [first, second]
+        .iter()
+        .any(|filter| filter.chosen_type || filter.facts.contains(&SpendFact::Kicked))
 }
 
 /// The sentence of a rider that gives the spell's permanent counters or haste: "If that mana is spent on a creature

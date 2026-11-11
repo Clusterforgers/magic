@@ -1,0 +1,19 @@
+{
+  "oracle_id": "3ea71eed-e1ae-4e28-a4f5-44ff115949f4",
+  "name": "Overeager Apprentice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overeager Apprentice",
+      "oracle_fingerprint": "b3cef1ac69f9b96312f10e8991abdad3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }, "SacrificeSelf"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black", "Black", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

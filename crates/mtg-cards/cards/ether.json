@@ -1,0 +1,33 @@
+{
+  "oracle_id": "566533af-5e67-463f-ac33-dfcf1ec735c9",
+  "name": "Ether",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ether",
+      "oracle_fingerprint": "8f82ecf0b474afe8fff724f2bf76d938",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "ExileSelf"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Blue"] } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

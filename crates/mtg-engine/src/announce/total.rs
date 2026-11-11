@@ -87,7 +87,12 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
         sources: printed.sources,
         life: printed.life,
         help,
-        spend: spend(ctx, choices.way),
+        spend: crate::r281_kicked_spend::r281_kicked(
+            ctx.state,
+            ctx.what,
+            choices,
+            spend(ctx, choices.way),
+        ),
     })
 }
 
