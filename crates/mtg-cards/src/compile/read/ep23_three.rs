@@ -53,6 +53,7 @@ fn sacrificed_before(ability: &Ability) -> Option<(u32, String)> {
         targeting: None,
         activating: None,
         least: 0,
+        life: 0,
     } = ability
     else {
         return None;

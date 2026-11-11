@@ -32,9 +32,21 @@ pub(crate) struct Total {
     pub(crate) spend: Spend,
 }
 
+/// Works out the total cost, with the life the cost modifiers add kept for the payment of the other parts; a player
+/// whose life total is less than that life cannot pay it (CR 119.4) and the cast is taken back.
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
+    let life = modifiers::life(ctx, work.choices);
+    let short = ctx
+        .state
+        .player(ctx.player)
+        .is_none_or(|seat| i64::from(seat.life()) < i64::from(life));
+    if life > 0 && short {
+        return Some(Next::Drop);
+    }
+    work.done.modifier_life = life;
     match of(ctx, work.choices) {
-        Some(total) => {
+        Some(mut total) => {
+            total.life = total.life.saturating_add(life);
             work.total = Some(total);
             None
         }

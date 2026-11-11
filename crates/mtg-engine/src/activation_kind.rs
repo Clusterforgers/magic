@@ -165,6 +165,7 @@ fn modified_as(
                 condition,
                 activating: Some(kind),
                 least,
+                life: 0,
                 targeting,
             } = &*ability
             else {

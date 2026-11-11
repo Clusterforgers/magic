@@ -17,6 +17,7 @@ fn add_equip(ability: &Ability, texts: &mut Vec<String>) {
         condition: None,
         activating: Some(crate::ability::ActivationKind::Equip),
         least: 0,
+        life: 0,
     } = ability
     else {
         return;
@@ -49,6 +50,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         condition: None,
         activating: None,
         least: 0,
+        life,
     } = ability
     else {
         return;
@@ -75,6 +77,15 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
         _ => return,
     };
     if !per.is_one() {
+        return;
+    }
+    // "cost an additional 3 life to cast": life and no mana, of an increase.
+    if *life > 0 {
+        if *change == CostChange::Increase && mana.x() == 0 && mana.rest().symbols().is_empty() {
+            texts.push(format!(
+                "Spells {caster} that target {aim} cost an additional {life} life to cast."
+            ));
+        }
         return;
     }
     let more = match change {
