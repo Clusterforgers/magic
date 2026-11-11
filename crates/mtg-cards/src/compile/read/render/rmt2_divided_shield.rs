@@ -7,7 +7,7 @@ use crate::effect::Effect;
 use crate::modify::Duration;
 use crate::refs::Ref;
 use crate::trigger::{ReplaceBy, ReplaceWhen};
-use crate::value::{Amount, CounterKind};
+use crate::value::{Amount, Condition, CounterKind};
 
 impl Writer<'_> {
     /// The shield of each target's share of the divided amount for the turn.
@@ -32,6 +32,18 @@ impl Writer<'_> {
         let divide = spec.divide.as_ref()?;
         // "where X is the number of verse counters on ~": counters on the source, counted as the amount is divided.
         let (total, where_x) = match divide {
+            // "If this spell was kicked, prevent the next 6 damage this way instead": the total depends on the kicker.
+            Amount::When {
+                condition,
+                then,
+                otherwise,
+            } if **condition == Condition::Kicked => (
+                points_text(otherwise)?,
+                format!(
+                    ". If this spell was kicked, prevent the next {} damage this way instead",
+                    points_text(then)?
+                ),
+            ),
             Amount::Counters {
                 on: Ref::This,
                 counter: CounterKind::Other(kind),

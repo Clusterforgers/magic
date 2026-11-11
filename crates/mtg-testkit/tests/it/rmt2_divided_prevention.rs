@@ -1,4 +1,4 @@
-//! Goal: a prevention shield divided among targets (Remedy, "prevent the next 5 damage that would be dealt this turn to any number of targets, divided as you choose") prevents each target's own share and no more, a player it did not target is dealt all the damage, and a target given the whole amount keeps it whole; Serra's Hymn divides as many as its verse counters, at tables of two, three and four seats.
+//! Goal: a prevention shield divided among targets (Remedy, "prevent the next 5 damage that would be dealt this turn to any number of targets, divided as you choose") prevents each target's own share and no more, a player it did not target is dealt all the damage, and a target given the whole amount keeps it whole; Serra's Hymn divides as many as its verse counters and Pollen Remedy six when kicked and three when not, at tables of two, three and four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -9,7 +9,8 @@ use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_engine::Answer;
 use mtg_engine::choose::DivideChoice;
-use mtg_engine::decision::PayChoice;
+use mtg_engine::choose::{CostsChoice, TargetChoice};
+use mtg_engine::decision::{DecisionKind, PayChoice};
 use mtg_testkit::cards::plains;
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready, with_counters};
@@ -136,5 +137,68 @@ fn serras_hymn_divides_its_verse_counters(
     for (seat, expected) in lives {
         assert_eq!(life(&driver, *seat), *expected, "seat {seat}");
     }
+    Ok(())
+}
+
+/// Seat 0 casts Pollen Remedy, kicked or not, on seats 1 and 0 (all but 1 of the total to seat 1), then seat 1 deals 4
+/// damage to each player.
+#[rstest]
+fn pollen_remedy_divides_six_when_kicked_and_three_when_not(
+    #[values(true, false)] kicked: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let blast = spell(
+        "Blast",
+        CardType::Instant,
+        "[]",
+        r#"[{"DealDamage":{"to":"EachPlayer","amount":4}}]"#,
+    );
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .hand_named(0, ["Pollen Remedy"])
+            .hand(1, [blast])
+            .battlefield(0, [ready(plains()), ready(plains()), ready(plains())]),
+    )?;
+    let (foe, me) = (driver.target_player(1), driver.target_player(0));
+    driver.begin_cast("Pollen Remedy")?;
+    let mut total = 0;
+    for _ in 0..40 {
+        let decision = driver.decision()?.clone();
+        if matches!(decision.kind, DecisionKind::Priority(_)) {
+            break;
+        }
+        let answer = match &decision.kind {
+            DecisionKind::ChooseCosts(_) => {
+                Answer::ChooseCosts(CostsChoice::Costs(if kicked { vec![0] } else { vec![] }))
+            }
+            DecisionKind::ChooseTargets(_) => {
+                Answer::ChooseTargets(TargetChoice::Targets(vec![foe, me]))
+            }
+            DecisionKind::DivideAmount(options) => {
+                total = options.total;
+                Answer::DivideAmount(DivideChoice::Division(vec![(foe, total - 1), (me, 1)]))
+            }
+            DecisionKind::PayMana(_) => Answer::PayMana(PayChoice::Auto),
+            _ => Driver::passive_answer(&decision),
+        };
+        driver.answer(answer)?;
+    }
+    assert_eq!(total, if kicked { 6 } else { 3 });
+    while !driver.state().stack().is_empty() {
+        driver.pass()?;
+    }
+    for _ in 0..16 {
+        if driver.decision()?.player == common::pid(1) {
+            break;
+        }
+        driver.pass()?;
+    }
+    driver.cast("Blast")?;
+    while !driver.state().stack().is_empty() {
+        driver.pass()?;
+    }
+    assert_eq!(life(&driver, 0), 17);
+    let spared = i32::try_from(total).unwrap() - 1;
+    assert_eq!(life(&driver, 1), 16 + spared.min(4));
     Ok(())
 }

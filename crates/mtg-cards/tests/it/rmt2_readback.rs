@@ -19,6 +19,7 @@ const CATASTROPHE: &str = r#"{"faces":[{"abilities":[{"Spell":{"effects":[{"Eith
 const TURF: &str = r#"{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"WHO"}],"effects":[{"Rule":{"rule":{"Cant":{"who":{"Target":0},"action":"PlayLand"}},"duration":"UntilEndOfTurn"}},{"Draw":{}}]}}]}]}"#;
 const REVERB: &str = r#"{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":["Spell",{"Type":"Sorcery"}]}}],"effects":[{"Shield":{"when":{"Damage":{"source":[{"Is":{"Target":0}}]}},"by":{"Redirect":{"to":{"ControllerOf":{"Target":0}},"next":NEXT}},"duration":"UntilEndOfTurn"}}]}}]}]}"#;
 const HYMN: &str = r#"{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"May":{"effects":[{"PutCounters":{"on":"This","counter":{"Other":"verse"}}}]}}]}},{"Activated":{"cost":["SacrificeSelf"],"targets":[{"what":"AnyTarget","bounds":{"min":0,"max":null},"divide":{"Counters":{"on":"This","counter":{"Other":"KIND"}}}}],"effects":[{"Shield":{"when":{"Damage":{"to":{"Target":0}}},"by":{"PreventCounted":"Divided"},"duration":"UntilEndOfTurn"}}]}}]}]}"#;
+const POLLEN: &str = r#"{"faces":[{"abilities":[{"Keyword":{"Kicker":[{"Sacrifice":{"filter":[{"Type":"Land"}]}}]}},{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":0,"max":null},"divide":{"When":{"condition":"Kicked","then":KICKED,"otherwise":3}}}],"effects":[{"Shield":{"when":{"Damage":{"to":{"Target":0}}},"by":{"PreventCounted":"Divided"},"duration":"UntilEndOfTurn"}}]}}]}]}"#;
 const COLOR: &str = r#"{"Continuous":{"affected":{"Target":0},"mods":["AddProtectionFromChosenColor"],"duration":"UntilEndOfTurn"}}"#;
 
 fn verdict(name: &str, rules: &str) -> Verdict {
@@ -50,6 +51,8 @@ fn verdict(name: &str, rules: &str) -> Verdict {
 #[case::reverberation_not_the_next("Reverberation", REVERB.replace("NEXT", "true"), false)]
 #[case::hymn_verse_counters("Serra's Hymn", HYMN.replace("KIND", "verse"), true)]
 #[case::hymn_not_charge_counters("Serra's Hymn", HYMN.replace("KIND", "charge"), false)]
+#[case::pollen_six_when_kicked("Pollen Remedy", POLLEN.replace("KICKED", "6"), true)]
+#[case::pollen_not_five_when_kicked("Pollen Remedy", POLLEN.replace("KICKED", "5"), false)]
 fn the_rmt2_writers_read_back_the_printed_clause(
     #[case] name: &str,
     #[case] rules: String,

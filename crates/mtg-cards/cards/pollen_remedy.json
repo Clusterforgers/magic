@@ -1,7 +1,7 @@
 {
   "oracle_id": "ff52f955-98de-4f12-9ec7-f1d73e3edae9",
   "name": "Pollen Remedy",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Pollen Remedy",
@@ -9,9 +9,23 @@
       "abilities": [
         { "Keyword": { "Kicker": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }] } },
         {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 107, "end": 281 }
+          "Spell": {
+            "targets": [
+              {
+                "what": "AnyTarget",
+                "bounds": { "min": 0, "max": null },
+                "divide": { "When": { "condition": "Kicked", "then": 6, "otherwise": 3 } }
+              }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventCounted": "Divided" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]
