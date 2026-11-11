@@ -1,0 +1,44 @@
+{
+  "oracle_id": "dcbcbf42-4654-487a-acad-21f2606d229b",
+  "name": "Druid Class",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Druid Class",
+      "oracle_fingerprint": "215f673a8ebac49915e9b41f27786d16",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "AdditionalLandPlays": {} },
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 2 } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 190, "end": 404 }
+          }
+        }
+      ]
+    }
+  ]
+}

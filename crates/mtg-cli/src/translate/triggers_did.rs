@@ -21,7 +21,7 @@ enum Subject {
 use Subject::{Both, Object, Player};
 
 /// The Forge mode, the action it is and the subject keys it reads; any other key makes the line a gap.
-const MODES: [(&str, &str, Subject); 24] = [
+const MODES: [(&str, &str, Subject); 25] = [
     ("Scry", "Scried", Player("ValidPlayer")),
     ("Surveil", "Surveilled", Player("ValidPlayer")),
     ("SearchedLibrary", "SearchedLibrary", Player("ValidPlayer")),
@@ -31,6 +31,11 @@ const MODES: [(&str, &str, Subject); 24] = [
     ("Proliferate", "Proliferated", Player("ValidPlayer")),
     ("Learn", "Learned", Player("ValidPlayer")),
     ("RolledDie", "Rolled", Player("ValidPlayer")),
+    (
+        "CollectEvidence",
+        "CollectedEvidence",
+        Player("ValidPlayer"),
+    ),
     (
         "FullyUnlock",
         "FullyUnlocked",

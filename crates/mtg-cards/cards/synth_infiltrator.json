@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3d3553df-0036-47d9-b0e3-4a3261a0f73c",
+  "name": "Synth Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Synth Infiltrator",
+      "oracle_fingerprint": "adcc5fe63ec4adb6abf087a8a20f0d21",
+      "abilities": [
+        { "Keyword": "Improvise" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "except": [
+                  { "AddSubtype": "Synth" },
+                  { "AddType": "Artifact" },
+                  { "AddType": "Creature" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

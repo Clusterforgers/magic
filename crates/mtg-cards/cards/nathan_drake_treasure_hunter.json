@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ed69b907-272c-4a87-a943-06aaad976fb1",
+  "name": "Nathan Drake, Treasure Hunter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nathan Drake, Treasure Hunter",
+      "oracle_fingerprint": "aaf5b9218d75a8c532c284a525fd8ffd",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 13, "end": 162 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 163, "end": 283 }
+          }
+        }
+      ]
+    }
+  ]
+}

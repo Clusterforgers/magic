@@ -1,7 +1,7 @@
 {
   "oracle_id": "3a2bb47d-228d-499e-a34b-9e10d99e9b2c",
   "name": "Fog Bank",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fog Bank",
@@ -10,9 +10,12 @@
         { "Keyword": "Defender" },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 46, "end": 122 }
+          "Replacement": { "when": { "Damage": { "to": "This", "combat": true } }, "by": "Prevent" }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "Is": "This" }], "combat": true } },
+            "by": "Prevent"
           }
         }
       ]

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a7df5dc0-2564-4288-bc53-59affd896f79",
+  "name": "Catch // Release",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Catch",
+      "oracle_fingerprint": "3d82673cc6584181d1d67c906b4eaab8",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 0, "end": 95 }
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    },
+    {
+      "name": "Release",
+      "oracle_fingerprint": "99e0eee28b63338409b2ca5cc063587f",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 0, "end": 107 }
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "7f956a21-854e-41cc-96f9-ad774e69fa8e",
   "name": "Wiitigo",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Wiitigo",
@@ -14,9 +14,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 52, "end": 222 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "This",
+                      "selector": [
+                        { "FoughtSinceYourLastUpkeep": { "blocked": true, "was_blocked": true } }
+                      ]
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }],
+                  "otherwise": [{ "RemoveCounters": { "from": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
           }
         }
       ]

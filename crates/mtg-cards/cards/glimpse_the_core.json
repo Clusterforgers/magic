@@ -1,0 +1,63 @@
+{
+  "oracle_id": "fa44fa48-d270-4f0f-b672-d63e1c1942ce",
+  "name": "Glimpse the Core",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glimpse the Core",
+      "oracle_fingerprint": "142409929e83af0acc0f78be3068a524",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "filter": [{ "Supertype": "Basic" }, { "Subtype": "Forest" }],
+                            "as": "land"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "land" },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Subtype": "Cave" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

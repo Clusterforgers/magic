@@ -1,0 +1,22 @@
+{
+  "oracle_id": "e9ece3c6-81c2-441a-acce-c109aaa9026b",
+  "name": "Render Inert",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Render Inert",
+      "oracle_fingerprint": "e42fe73daaf243d1d9cdcc56f3eda443",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "RemoveCounters": { "from": { "Target": 0 }, "count": 5, "up_to": true } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

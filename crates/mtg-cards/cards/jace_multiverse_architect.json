@@ -1,0 +1,59 @@
+{
+  "oracle_id": "3321c134-bf5b-4f63-8035-fca0bbdfa86b",
+  "name": "Jace, Multiverse Architect",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jace, Multiverse Architect",
+      "oracle_fingerprint": "3586afbcb30f9f9a8d81a2104f809df2",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 149 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 150, "end": 231 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Planeswalker" }, { "Type": "Creature" }] },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "RevealUntil": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

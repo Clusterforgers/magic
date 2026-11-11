@@ -462,6 +462,9 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The name the cards put back are bound to.
 pub const BACK: &str = "back";
 
+/// The counter a ticket symbol stands for (CR 107.17).
+pub const TICKET: &str = "ticket";
+
 /// The rest of "venture into the dungeon" (CR 701.49) after the verb.
 fn w11d_venture(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
     r.need("into the dungeon")?;
@@ -485,6 +488,8 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         },
         "proliferate" => Effect::Proliferate { who },
         "venture" => w11d_venture(r, who)?,
+        "open" => super::un33_attractions::un33_open(r, who)?,
+        "roll" if r.word_at(0) == Some("to") => super::un33_attractions::un33_roll(r, who)?,
         "unlock" => super::dk1c5_rooms::dk1c5_unlock(r, who)?,
         "time" if r.words("travel") => Effect::TimeTravel { who },
         "learn" => Effect::Learn { who },
@@ -796,6 +801,10 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             Effect::BecomeMonarch { who }
         }
         "venture" | "ventures" => w11d_venture(r, who)?,
+        "open" | "opens" => super::un33_attractions::un33_open(r, who)?,
+        "roll" | "rolls" if r.word_at(0) == Some("to") => {
+            super::un33_attractions::un33_roll(r, who)?
+        }
         "shuffle" | "shuffles" => {
             r.need(if who == Ref::You {
                 "your library"
@@ -812,6 +821,12 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         {
             super::w6b_emblem::w6b_read(r, who)?
         }
+        // "you get {TK}{TK}": ticket counters (CR 107.17), written with their symbol.
+        "get" | "gets" if r.lookahead(costs::tickets).is_some() => Effect::PutCounters {
+            on: who,
+            counter: CounterKind::Other(TICKET.to_owned()),
+            count: r.attempt(costs::tickets)?,
+        },
         "get" | "gets" => match r.attempt(costs::energy) {
             Some(count) => Effect::PutCounters {
                 on: who,
@@ -1143,6 +1158,10 @@ pub fn returns_itself(effects: &[Effect]) -> bool {
                 ..
             },
         ] => true,
+        // "return ~ from your graveyard to the battlefield face up or face down".
+        [Effect::Either { first, second }] => {
+            super::ep33_face_down::ep33_face_up_or_down(first, second).is_some()
+        }
         _ => false,
     }
 }

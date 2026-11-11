@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4ec84bb3-796a-4074-ac9a-1bd277158896",
+  "name": "Dream Eater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Eater",
+      "oracle_fingerprint": "58aaddc62df7dff8e6fb5453e6791c55",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Surveil": { "count": 4 } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                      }
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

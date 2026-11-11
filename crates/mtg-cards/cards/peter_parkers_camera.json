@@ -1,0 +1,39 @@
+{
+  "oracle_id": "10777360-c046-43e3-ab44-9d0b926fbbf8",
+  "name": "Peter Parker's Camera",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peter Parker's Camera",
+      "oracle_fingerprint": "772379f48bb4b4309abbf15e22c8c231",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "film" }, "count": 3 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "film" } } }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopyAbility": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "a30a2b96-4a8c-4d18-b276-5005b8aff7ed",
   "name": "Tester of the Tangential",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tester of the Tangential",
@@ -9,9 +9,32 @@
       "abilities": [
         { "Keyword": { "Macro": { "name": "increment", "amount": 0 } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 161, "end": 302 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": ["Other", { "Type": "Creature" }] } }],
+                        "effects": [
+                          {
+                            "MoveCounters": {
+                              "from": "This",
+                              "to": { "Target": 0 },
+                              "counter": "+1/+1",
+                              "count": "X"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

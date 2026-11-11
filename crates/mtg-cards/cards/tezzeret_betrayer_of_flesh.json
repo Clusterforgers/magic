@@ -1,0 +1,52 @@
+{
+  "oracle_id": "5dedd5a9-bc5d-47bb-9ae1-7d683843d041",
+  "name": "Tezzeret, Betrayer of Flesh",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tezzeret, Betrayer of Flesh",
+      "oracle_fingerprint": "33a8d7e228ba1b4cfca67b5c24e5ae66",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 93 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 94, "end": 173 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 174, "end": 283 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "Tapped": { "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                        },
+                        "effects": [{ "Draw": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

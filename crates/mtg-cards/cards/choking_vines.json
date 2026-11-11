@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3b6b565e-c0b5-48f9-b3e0-4d5d4b065402",
+  "name": "Choking Vines",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Choking Vines",
+      "oracle_fingerprint": "9aff3ddf8abbd6639b1d0eb04078b5b5",
+      "abilities": [
+        { "CastOnly": { "condition": { "Step": "DeclareBlockers" } } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking"] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "BecomeBlocked": { "what": { "Target": 0 } } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

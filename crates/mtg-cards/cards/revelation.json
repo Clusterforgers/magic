@@ -1,0 +1,12 @@
+{
+  "oracle_id": "251ff4e4-3be4-424e-8dd7-eb4ede7b415c",
+  "name": "Revelation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revelation",
+      "oracle_fingerprint": "0a4fdafc5cc6bfb6e7572f64e987e015",
+      "abilities": [{ "Rule": { "rule": { "RevealHand": "EachPlayer" } } }]
+    }
+  ]
+}

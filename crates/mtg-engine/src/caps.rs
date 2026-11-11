@@ -200,6 +200,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Battlefield",
     "Effect.Move.Transformed",
     "Effect.Move.Attached",
+    "Effect.Move.FaceDown",
     "Effect.ExileUntil",
     "Effect.RevealUntil",
     "Effect.ExileTop",
@@ -247,6 +248,7 @@ const RUNS: &[&str] = &[
     "Effect.RemoveCounters",
     "Effect.RemoveAllCounters",
     "Effect.MoveCounters",
+    "Effect.SpellEntersWith",
     "Effect.MultiplyCounters",
     "Effect.PutCountersOf",
     "Effect.Tap",
@@ -260,10 +262,12 @@ const RUNS: &[&str] = &[
     "Effect.Transform",
     "Effect.Flip",
     "Effect.TurnFaceUp",
+    "Effect.TurnFaceDown",
     "Effect.Prepare",
     "Effect.Suspect",
     "Effect.Unsuspect",
     "Effect.Solve",
+    "Effect.Harness",
     "Effect.WinGame",
     "Effect.LoseGame",
     "Effect.DrawGame",
@@ -298,8 +302,13 @@ const RUNS: &[&str] = &[
     "Effect.BecomeMonarch",
     "Effect.RingTempts",
     "Effect.Venture",
+    "Effect.OpenAttraction",
+    "Effect.RollToVisit",
     "Trigger.Ventured",
     "Trigger.CompletedDungeon",
+    "Trigger.Visit",
+    "Trigger.RolledToVisit",
+    "Trigger.OpenedAttraction",
     "Trigger.DoorUnlocked",
     "Effect.UnlockDoor",
     "Condition.CompletedDungeon",
@@ -308,6 +317,7 @@ const RUNS: &[&str] = &[
     "Condition.Initiative",
     "Effect.CreateEmblem",
     "Condition.Monarch",
+    "Condition.ExtraTurn",
     "Condition.MonarchAtTurnStart",
     "Effect.BecomeDayNight",
     "Condition.IsDay",
@@ -331,6 +341,7 @@ const RUNS: &[&str] = &[
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",
+    "Rule.Duration.WhileYouControlSource",
     "Duration.WhileSourceTapped",
     "Duration.WhileHasCounter",
     "Duration.UntilPaid",
@@ -338,6 +349,9 @@ const RUNS: &[&str] = &[
     "Effect.Rule",
     "Effect.Regenerate",
     "Effect.RemoveFromCombat",
+    "Effect.BecomeBlocked",
+    "Effect.PutBeneathTop",
+    "Effect.LoseUnspentMana",
     "Effect.Shield",
     "Ability.Static",
     "Ability.Static.Defining",
@@ -368,6 +382,7 @@ const RUNS: &[&str] = &[
     "Rule.CantDraw",
     "Rule.CantSearch",
     "Rule.VoteAgain",
+    "Rule.ExtraVote",
     "Rule.SkipExtraTurns",
     "Rule.FlipTwoCoins",
     "Rule.ExtraDie",
@@ -386,6 +401,7 @@ const RUNS: &[&str] = &[
     "Rule.NoLegendRule",
     "Rule.NoLegendRuleFor",
     "Rule.UntapDuring",
+    "Rule.UntapLimit",
     "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
     "Rule.LookAtExiled",
@@ -414,6 +430,7 @@ const RUNS: &[&str] = &[
     "Rule.Cant.Transform",
     "Rule.Cant.SkipStep",
     "Rule.Cant.SkipTurn",
+    "Rule.Cant.SkipCombat",
     "Rule.Cant.Cast",
     "Rule.Cant.Attack",
     "Rule.Cant.ActivateKind",
@@ -445,11 +462,13 @@ const RUNS: &[&str] = &[
     "Mod.AddChosenSubtype",
     "Mod.SetChosenColor",
     "Mod.RemoveKeyword",
+    "Mod.RemoveKeywordKind",
     "Mod.LockKeyword",
     "Mod.GrantAbility",
     "Mod.GainAbilitiesOf",
     "Mod.LoseAbilities",
     "Mod.LoseThisAbility",
+    "Mod.LosePrinted",
     "Mod.SetController",
     "Mod.CantAttack",
     "Mod.CantAttackYou",
@@ -462,6 +481,7 @@ const RUNS: &[&str] = &[
     "Mod.MinBlockers",
     "Mod.MaxBlockers",
     "Mod.BlocksAdditional",
+    "Mod.BlocksAdditionalPer",
     "Mod.Goaded",
     "Effect.DelayedTrigger",
     "Effect.Reflexive",
@@ -483,6 +503,7 @@ const RUNS: &[&str] = &[
     "Target.PerPlayer",
     "Target.Together",
     "Target.TotalManaValue",
+    "Target.TotalPower",
     "Target.Another",
     "Target.ChosenBy",
     "Target.AtRandom",
@@ -612,6 +633,8 @@ const RUNS: &[&str] = &[
     "Amount.Largest",
     "Amount.HighestCounters",
     "Amount.StartingLife",
+    "Amount.TurnsTaken",
+    "Amount.LifeAsTurnBegan",
     "Amount.CastLastTurn",
     "Amount.TalliedLastTurn",
     "Amount.Party",
@@ -739,11 +762,13 @@ const RUNS: &[&str] = &[
     "ReplaceBy.WithCounterOf",
     "Keyword.Fabricate",
     "Keyword.Ascend",
+    "Keyword.Storied",
     "Keyword.ForMirrodin",
     "Keyword.StartYourEngines",
     "Keyword.JobSelect",
     "Keyword.EquipTo",
     "Condition.CitysBlessing",
+    "Condition.EnduringStory",
     "Condition.MaxSpeed",
     "Effect.MyriadCopies",
     "Keyword.JumpStart",
@@ -786,6 +811,9 @@ const RUNS: &[&str] = &[
     "Keyword.Recover",
     "Keyword.Ripple",
     "Keyword.Epic",
+    "Keyword.Banding",
+    "Keyword.BandsWithOther",
+    "Keyword.Splice",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
@@ -793,10 +821,12 @@ const RUNS: &[&str] = &[
     "Condition.Searched",
     "Condition.Step",
     "Condition.BeforeAttackers",
+    "Condition.AfterBlockers",
     "Condition.InCombat",
     "Condition.FirstCombat",
     "Rule.CanBeCommander",
     "Rule.AnyNumberInDeck",
+    "Rule.Draft",
     "Pred.Modified",
     "Pred.RingBearer",
     "Pred.HasAdventure",
@@ -891,6 +921,7 @@ mod tests {
     #[case::moving_to_the_battlefield("Effect.Move.Battlefield", true)]
     #[case::moving_to_the_battlefield_transformed("Effect.Move.Transformed", true)]
     #[case::moving_to_the_battlefield_attached("Effect.Move.Attached", true)]
+    #[case::moving_to_the_battlefield_face_down("Effect.Move.FaceDown", true)]
     #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", false)]
     #[case::searching("Effect.Search", true)]
     #[case::searching_several_zones("Search.Zones", true)]
@@ -983,7 +1014,7 @@ mod tests {
     #[case::continuous_for_as_long_as_the_source_is_tapped("Duration.WhileSourceTapped", true)]
     #[case::a_rule_for_as_long_as_you_control_the_source(
         "Rule.Duration.WhileYouControlSource",
-        false
+        true
     )]
     #[case::pumps("Mod.ModifyPT", true)]
     #[case::granted_keywords("Mod.AddKeyword", true)]
@@ -1043,6 +1074,7 @@ mod tests {
     #[case::no_legend_rule("Rule.NoLegendRule", true)]
     #[case::no_legend_rule_for_some("Rule.NoLegendRuleFor", true)]
     #[case::untapping_in_other_steps("Rule.UntapDuring", true)]
+    #[case::untapping_at_most_some_permanents("Rule.UntapLimit", true)]
     #[case::no_draw_step("Rule.SkipDrawStep", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]
@@ -1211,6 +1243,7 @@ mod tests {
     #[case::cant_transform("Rule.Cant.Transform", true)]
     #[case::cant_skip_step("Rule.Cant.SkipStep", true)]
     #[case::cant_skip_turn("Rule.Cant.SkipTurn", true)]
+    #[case::cant_skip_combat("Rule.Cant.SkipCombat", true)]
     #[case::cant_cast("Rule.Cant.Cast", true)]
     #[case::cant_attack("Rule.Cant.Attack", true)]
     #[case::cant_activate_kind("Rule.Cant.ActivateKind", true)]
@@ -1300,6 +1333,8 @@ mod tests {
     #[case::the_monarch("Condition.Monarch", true)]
     #[case::the_monarch_as_the_turn_began("Condition.MonarchAtTurnStart", true)]
     #[case::the_citys_blessing("Condition.CitysBlessing", true)]
+    #[case::rmt6_an_enduring_story("Condition.EnduringStory", true)]
+    #[case::rmt6_a_draft_rule("Rule.Draft", true)]
     #[case::max_speed("Condition.MaxSpeed", true)]
     #[case::becoming_day_or_night("Effect.BecomeDayNight", true)]
     #[case::it_is_day("Condition.IsDay", true)]
@@ -1448,6 +1483,9 @@ mod tests {
     #[case::recover("Keyword.Recover", true)]
     #[case::ripple("Keyword.Ripple", true)]
     #[case::epic("Keyword.Epic", true)]
+    #[case::banding("Keyword.Banding", true)]
+    #[case::bands_with_other("Keyword.BandsWithOther", true)]
+    #[case::splice("Keyword.Splice", true)]
     #[case::becoming_renowned_triggers("Trigger.BecomesRenowned", true)]
     #[case::exploiting_triggers("Trigger.Exploits", true)]
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]

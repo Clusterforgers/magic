@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e90f298f-c54b-4fe8-82db-5b9153a57712",
+  "name": "Zoyowa Lava-Tongue",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Zoyowa Lava-Tongue",
+      "oracle_fingerprint": "45a463f5a5b2a1b4c342e383c00b9248",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 11, "end": 278 }
+          }
+        }
+      ]
+    }
+  ]
+}

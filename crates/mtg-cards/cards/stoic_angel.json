@@ -1,7 +1,7 @@
 {
   "oracle_id": "b50c865b-705f-489e-9ffc-ba8060ba262f",
   "name": "Stoic Angel",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Stoic Angel",
@@ -10,9 +10,10 @@
         { "Keyword": "Flying" },
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 18, "end": 86 }
+          "Rule": {
+            "rule": {
+              "UntapLimit": { "who": "EachPlayer", "what": [{ "Type": "Creature" }], "count": 1 }
+            }
           }
         }
       ]

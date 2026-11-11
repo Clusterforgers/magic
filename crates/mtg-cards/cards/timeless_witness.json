@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a52a06aa-56fc-4845-bbcd-a54f16369b34",
+  "name": "Timeless Witness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timeless Witness",
+      "oracle_fingerprint": "e53c9023b02246db56d6f712641b93e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        { "Keyword": { "Eternalize": "{5}{G}{G}" } }
+      ]
+    }
+  ]
+}

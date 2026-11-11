@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5ce273f2-a865-4934-afd4-cf6d5c4f1a4f",
+  "name": "Nylea's Huntmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nylea's Huntmaster",
+      "oracle_fingerprint": "2a7472f16515872dac07c09c164ea9d8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": { "Devotion": ["Green"] }, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0c2abd2a-ca98-45d2-8dd1-984d2c0c266a",
+  "name": "Trickbind",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Trickbind",
+      "oracle_fingerprint": "b33a7df37c03694a685c8322613a948e",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 130, "end": 328 }
+          }
+        }
+      ]
+    }
+  ]
+}

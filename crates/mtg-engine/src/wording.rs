@@ -89,6 +89,8 @@ fn state_word(pred: &Pred) -> Option<&'static str> {
         Pred::Prepared => "prepared",
         Pred::Suspected => "suspected",
         Pred::Solved => "solved",
+        Pred::Harnessed => "harnessed",
+        Pred::FoughtSinceYourLastUpkeep { .. } => "in combat since your last upkeep",
         Pred::DoubleFaced => "double-faced",
         Pred::Transformed => "transformed",
         Pred::Paired => "paired",
@@ -137,6 +139,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             }
             Pred::AttackingPlayer(Ref::You) => tail.push("attacking you".to_owned()),
             Pred::AttackingAlone => tail.push("attacking alone".to_owned()),
+            Pred::AttackingBattle => tail.push("attacking a battle".to_owned()),
             Pred::AttackingPlayerOrPlaneswalker(Ref::You) => {
                 tail.push("attacking you or a planeswalker you control".to_owned());
             }
@@ -248,6 +251,10 @@ fn kind_of(what: &Targetable) -> (String, String) {
                     format!("with total mana value {most} or less")
                 }
                 TargetSet::TotalManaValueAtMost(_) => "with total mana value X or less".to_owned(),
+                TargetSet::TotalPowerAtMost(Amount::Fixed(most)) => {
+                    format!("with total power {most} or less")
+                }
+                TargetSet::TotalPowerAtMost(_) => "with total power X or less".to_owned(),
             };
             (head, join(&tail, &rule))
         }
@@ -533,6 +540,15 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             (format!("{name} venture{s} into the dungeon"), false)
         }
         TriggerPattern::Ventured { room: Some(_), .. } => ("you enter this room".to_owned(), false),
+        TriggerPattern::Visit {} => ("you visit this Attraction".to_owned(), true),
+        TriggerPattern::RolledToVisit { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} roll{s} to visit Attractions"), false)
+        }
+        TriggerPattern::OpenedAttraction { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} open{s} an Attraction"), false)
+        }
         TriggerPattern::DoorUnlocked {
             door: Some(_),
             fully: false,

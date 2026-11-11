@@ -16,6 +16,7 @@ pub fn effects(ctx: &mut Ctx, p: &Params, api: &str) -> Option<Tr<Vec<Value>>> {
         "WinsGame" => player_verb(ctx, p, api, "WinGame"),
         "Shuffle" => return Some(shuffle(ctx, p)),
         "Venture" => venture(p),
+        "OpenAttraction" => open_attraction(p),
         "EndTurn" => end_turn(p),
         "Amass" => amass(ctx, p),
         "Play" => return Some(super::mayplay::play(ctx, p)),
@@ -101,6 +102,19 @@ fn venture(p: &Params) -> Tr<Value> {
     match p.get("Defined") {
         None | Some("You") => Ok(json!({"Venture": {}})),
         Some(_) => super::ctx::unmapped("key:Venture.Defined"),
+    }
+}
+
+/// `OpenAttraction` (CR 701.51): the player opens `Amount$` Attractions, one by default.
+fn open_attraction(p: &Params) -> Tr<Value> {
+    only(p, "OpenAttraction", &["Defined", "Amount"])?;
+    if !matches!(p.get("Defined"), None | Some("You")) {
+        return super::ctx::unmapped("key:OpenAttraction.Defined");
+    }
+    match p.get("Amount").map(str::parse::<u32>) {
+        None | Some(Ok(1)) => Ok(json!({"OpenAttraction": {}})),
+        Some(Ok(count)) if count > 1 => Ok(json!({"OpenAttraction": {"count": count}})),
+        Some(_) => super::ctx::unmapped("key:OpenAttraction.Amount"),
     }
 }
 

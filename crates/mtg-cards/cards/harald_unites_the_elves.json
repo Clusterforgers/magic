@@ -1,0 +1,59 @@
+{
+  "oracle_id": "d0cc7e79-69dc-4f9d-9eed-1848f8ddb1be",
+  "name": "Harald Unites the Elves",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Harald Unites the Elves",
+      "oracle_fingerprint": "3c9abe08edc6455656a6ba06f2492b31",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "Subtype": "Elf" }, { "Subtype": "Tyvar" }] },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 236, "end": 355 }
+          }
+        }
+      ]
+    }
+  ]
+}

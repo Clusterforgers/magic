@@ -1,0 +1,21 @@
+{
+  "oracle_id": "34439fb2-0272-4624-aa4c-9ea439b60489",
+  "name": "Psychic Symbiont",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Symbiont",
+      "oracle_fingerprint": "20a74c70f7a653631afa4fa6dbc54e12",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

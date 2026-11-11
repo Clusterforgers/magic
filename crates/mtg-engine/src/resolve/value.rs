@@ -78,6 +78,7 @@ static NO_CHOICES: Choices = Choices {
     targets: Vec::new(),
     division: Vec::new(),
     optional_costs: Vec::new(),
+
     way: None,
     face: None,
     spent: None,
@@ -480,6 +481,7 @@ impl<'a> Scope<'a> {
             TurnTally::LifeLostMost => Tally::Lost,
             TurnTally::LandsPlayed => Tally::LandsPlayed,
             TurnTally::Scried => Tally::Scried,
+            TurnTally::AttractionsVisited => Tally::AttractionsVisited,
             TurnTally::Surveilled => Tally::Surveilled,
             TurnTally::Sacrificed => Tally::Sacrificed,
             TurnTally::Descended => Tally::Descended,
@@ -1705,10 +1707,11 @@ impl<'a> Scope<'a> {
             Pred::Saddled(named) => self.crewed_by(named, true, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
             Pred::Supertype(supertype) => {
-                seen.chars.supertypes.contains(supertype)
+                (seen.chars.supertypes.contains(supertype)
                     || seen
                         .card
-                        .is_some_and(|c| c.card().supertypes.contains(supertype))
+                        .is_some_and(|c| c.card().supertypes.contains(supertype)))
+                    && !seen.chars.supertypes_removed.contains(supertype)
                     || (*supertype == mtg_core::card::Supertype::Legendary
                         && seen.zone == Zone::Battlefield
                         && crate::ring::is_legendary_bearer(self.state, reference.id))
@@ -1737,6 +1740,19 @@ impl<'a> Scope<'a> {
             Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
             Pred::Suspected => seen.suspected,
             Pred::Solved => matches!(seen.counters, Counted::Live(held) if held.solved()),
+            Pred::Harnessed => matches!(seen.counters, Counted::Live(held) if held.harnessed()),
+            Pred::FoughtSinceYourLastUpkeep {
+                attacked,
+                blocked,
+                was_blocked,
+            } => match seen.counters {
+                Counted::Live(held) => self.state.rmt8_fought_since(
+                    self.controller,
+                    held.fought(),
+                    [*attacked, *blocked, *was_blocked],
+                ),
+                _ => false,
+            },
             Pred::DoubleFaced => double_faced(seen, false),
             Pred::Transformed => double_faced(seen, true),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
@@ -1805,6 +1821,7 @@ impl<'a> Scope<'a> {
             | Pred::AttackingPlayer(_)
             | Pred::AttackingPlaneswalkerOf(_)
             | Pred::AttackingAlone
+            | Pred::AttackingBattle
             | Pred::AttackingPlayerOrPlaneswalker(_)
             | Pred::Blocking
             | Pred::Unblocked
@@ -2031,6 +2048,19 @@ impl<'a> Scope<'a> {
             Amount::HighestCounters { who, counter } => self.highest_counters(who, counter)?,
             Amount::Party(who) => self.party(who)?,
             Amount::StartingLife(who) => self.w14b_starting_life(who)?,
+            Amount::TurnsTaken(who) => self
+                .players(who)?
+                .into_iter()
+                .map(|player| i64::from(self.state.rmt8_turns_taken(player)))
+                .max()
+                .unwrap_or(0),
+            Amount::LifeAsTurnBegan(who) => self
+                .players(who)?
+                .into_iter()
+                .filter_map(|player| self.state.rmt8_life_as_turn_began(player))
+                .map(i64::from)
+                .max()
+                .unwrap_or(0),
             Amount::CastLastTurn(who) => self.cast_last_turn(who)?,
             Amount::Mutations(of) => self.mutations(of)?,
             Amount::AdditionalPaid => i64::try_from(self.payments(OptionalKind::Additional))
@@ -2596,6 +2626,7 @@ impl<'a> Scope<'a> {
             Condition::Monarch(_) => self.state.monarch() == Some(*player),
             Condition::MonarchAtTurnStart(_) => began == Some(*player),
             Condition::MaxSpeed(_) => self.state.has_max_speed(*player),
+            Condition::EnduringStory(_) => self.state.has_enduring_story(*player),
             _ => self.state.has_citys_blessing(*player),
         }))
     }
@@ -2617,20 +2648,31 @@ impl<'a> Scope<'a> {
         matches!(self.entered_choice(), Some(Chosen::Word(chosen)) if chosen == word)
     }
 
+    /// Whether the turn is before its attackers are declared, or in combat after its blockers are declared.
+    fn rmt1_moment(&self, condition: &Condition) -> bool {
+        let step = self.state.turn().step();
+        if *condition == Condition::BeforeAttackers {
+            step < crate::turn::Step::DeclareAttackers
+        } else {
+            self.in_combat() && step >= crate::turn::Step::DeclareBlockers
+        }
+    }
+
+    /// Whether a fact of the turn holds: it is the controller's turn, or an extra turn.
+    fn turn_fact(&self, condition: &Condition) -> bool {
+        match condition {
+            Condition::ExtraTurn => self.state.turn().is_extra(),
+            _ => self.state.turn().active() == self.controller,
+        }
+    }
+
     /// Whether a condition is true now.
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
             Condition::Not(inner) => !self.holds(inner)?,
-            Condition::All(all) => {
-                let mut holds = true;
-                for inner in all {
-                    if !self.holds(inner)? {
-                        holds = false;
-                        break;
-                    }
-                }
-                holds
-            }
+            Condition::All(all) => all.iter().try_fold(true, |held, inner| {
+                Ok::<_, ResolveError>(held && self.holds(inner)?)
+            })?,
             Condition::Any(any) => {
                 let mut holds = false;
                 for inner in any {
@@ -2678,19 +2720,18 @@ impl<'a> Scope<'a> {
             | Condition::Monarch(who)
             | Condition::MonarchAtTurnStart(who)
             | Condition::CitysBlessing(who)
+            | Condition::EnduringStory(who)
             | Condition::MaxSpeed(who) => self.w11d_designation(condition, who)?,
             Condition::IsDay => self.state.day_night() == Some(DayNight::Day),
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
             Condition::NeitherDayNorNight => self.state.day_night().is_none(),
-            Condition::YourTurn => self.state.turn().active() == self.controller,
+            Condition::YourTurn | Condition::ExtraTurn => self.turn_fact(condition),
             Condition::Among(who) => self.among(who)?,
             Condition::StartingPlayer(who) => self.started(who)?,
             Condition::Step(named) => {
                 crate::triggers::step_matches(*named, self.state.turn().step())
             }
-            Condition::BeforeAttackers => {
-                self.state.turn().step() < crate::turn::Step::DeclareAttackers
-            }
+            Condition::BeforeAttackers | Condition::AfterBlockers => self.rmt1_moment(condition),
             Condition::InCombat => self.in_combat(),
             Condition::FirstCombat => self.in_combat() && self.state.turn().combats() == 1,
             Condition::Level { of, op, level } => {

@@ -166,7 +166,7 @@ pub(crate) fn dk1c5_unlockable(
                 pool,
                 &for_card(state, sources, id),
                 life,
-                &Spend::other(),
+                &Spend::special(mtg_cards::spend::SpecialAction::Unlock),
             )
             .then(|| FaceOption {
                 card: id,

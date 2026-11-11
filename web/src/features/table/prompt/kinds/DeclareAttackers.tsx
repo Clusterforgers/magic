@@ -1,5 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Check, Eraser, Swords, UsersRound, X, Zap } from 'lucide-react'
+import { Check, Eraser, Link2, Swords, Unlink, UsersRound, X, Zap } from 'lucide-react'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import type { AttackerOption, AttackTarget, ObjectId, PlayerId } from '@/protocol/generated'
 import { useDefenderStore, usePublishDefenders } from '../../combat/defender'
@@ -42,7 +42,9 @@ function aimedAt(option: AttackerOption, aim: AttackTarget | undefined): AttackT
  * written on the card. With several defenders the creature clicked in last is held: a click on a defender (a seat's
  * pod, tile or board, or the card of a planeswalker or battle) sends it there, and that defender is where the next
  * creatures go, as is the one chosen in the list of the bar; the last choice is where the next attack starts. A
- * creature a rule requires to attack starts in the attack, reads "Must attack" and cannot be taken out. Confirm sends the attack, No attack an empty one.
+ * creature a rule requires to attack starts in the attack, reads "Must attack" and cannot be taken out. With an attacker
+ * that has banding, Band starts a band: clicks on attackers pick its members, Done forms it and aims them together (CR
+ * 702.22c), and each member reads "Band". Confirm sends the attack, No attack an empty one.
  */
 export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ options }) => {
   const { id, answer, selection } = usePrompt()
@@ -77,6 +79,16 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   const [targets, setTargets] = useState<ReadonlyMap<ObjectId, AttackTarget>>(new Map())
   // The creature clicked into the attack last, which a click on a defender sends there.
   const [held, setHeld] = useState<ObjectId | null>(null)
+  // The bands formed (CR 702.22c), and the members of the band being formed while the player picks them.
+  const [formed, setFormed] = useState<readonly (readonly ObjectId[])[]>([])
+  const [building, setBuilding] = useState<readonly ObjectId[] | null>(null)
+  const bands = useMemo(
+    () =>
+      formed
+        .map((band) => band.filter((member) => selection.ids.has(member)))
+        .filter((band) => band.length > 1),
+    [formed, selection.ids],
+  )
   const pickAim = useCallback(
     (key: string): void => {
       setAimKey(key)
@@ -198,8 +210,22 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
             : { ...(label === undefined ? {} : { label }), words: `attacking ${names.long(target)}${owed}` },
       )
     }
+    // A creature in a band, or picked for the band being formed, says so.
+    for (const [members, label, words] of [
+      ...bands.map((band) => [band, 'Band', 'attacks in a band'] as const),
+      ...(building === null ? [] : [[building, 'In band', 'picked for the new band'] as const]),
+    ]) {
+      for (const member of members) {
+        const before = map.get(member)
+        map.set(member, {
+          label,
+          words: before === undefined ? words : `${before.words}; ${words}`,
+          ...(building !== null && members === building ? { cue: 'active' as const } : {}),
+        })
+      }
+    }
     return map
-  }, [declared, names, held, required, offered, aim, selection.ids, costs])
+  }, [declared, names, held, required, offered, aim, selection.ids, costs, bands, building])
 
   const aimAll = (ids: readonly ObjectId[], target: AttackTarget | undefined): void => {
     setTargets((current) => {
@@ -215,6 +241,11 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   const choose = (id: ObjectId): void => {
     if (!offered.has(id)) {
       if (walkers.includes(id)) pickTarget({ Planeswalker: id })
+      return
+    }
+    // While a band is being formed, a click on an attacker puts it in the band or takes it out.
+    if (building !== null && selection.has(id)) {
+      setBuilding(building.includes(id) ? building.filter((member) => member !== id) : [...building, id])
       return
     }
     // A creature a rule requires to attack stays in the attack.
@@ -247,6 +278,8 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   const allAt = (): void => aimAll(declaredIds, aim)
   const clear = (): void => {
     setHeld(null)
+    setFormed([])
+    setBuilding(null)
     aimAll(required, aim)
     selection.set(required)
   }
@@ -267,13 +300,39 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
       if (!next.delete(object)) next.add(object)
       return next
     })
+  // A band may form once two attackers are declared and one of them has banding or "bands with other" (CR 702.22c).
+  const mayBand =
+    declaredIds.length > 1 && declaredIds.some((object) => offered.get(object)?.banding === true)
+  const startBand = (): void => {
+    setHeld(null)
+    setBuilding([])
+  }
+  // The new band takes its members from any band they were in, and every member attacks where its first one does.
+  const formBand = (): void => {
+    if (building === null || building.length < 2) return
+    const first = declared.find((entry) => entry.object === building[0])?.target
+    aimAll(building, first)
+    setFormed((current) => [
+      ...current
+        .map((band) => band.filter((member) => !building.includes(member)))
+        .filter((band) => band.length > 1),
+      building,
+    ])
+    setBuilding(null)
+  }
   const elsewhere = aim !== undefined && declared.some(({ target }) => !sameTarget(target, aim))
   const confirm = (): void => {
     if (declared.length === 0) return
     const attackers = declared.map(({ object, target }): [ObjectId, AttackTarget] => [object, target])
     answer(
-      exerting.length > 0
-        ? { DeclareExerting: { attackers, exert: exerting } }
+      exerting.length > 0 || bands.length > 0
+        ? {
+            DeclareExerting: {
+              attackers,
+              ...(exerting.length > 0 ? { exert: exerting } : {}),
+              ...(bands.length > 0 ? { bands: bands.map((band) => [...band]) } : {}),
+            },
+          }
         : { DeclareAttackers: attackers },
     )
   }
@@ -285,18 +344,20 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   const text =
     legal.length === 0
       ? 'None of your creatures can attack. Choose No attack to go on.'
-      : cannotAim !== undefined
-        ? cannotAim
-        : missing.length > 0
-          ? `${missingCreatures.map((object) => object?.name ?? 'A creature').join(', ')} must attack if able.`
-          : declared.length > 0
-            ? `${attackSummary(
-                declared.map((entry) => entry.target),
-                names,
-              )}.${several && heldTarget !== undefined ? ` Click a player, planeswalker or battle to send ${heldCreature?.name ?? 'it'} there.` : ''}`
-            : several && aim !== undefined
-              ? `Click a creature, then the player, planeswalker or battle it attacks (${names.short(aim)} until then).`
-              : `Choose the creatures that attack${aim === undefined ? '' : ` ${names.short(aim)}`}, or choose No attack.`
+      : building !== null
+        ? `Click the attackers that attack together in a band (${building.length} picked), then Done. A band is blocked as a group.`
+        : cannotAim !== undefined
+          ? cannotAim
+          : missing.length > 0
+            ? `${missingCreatures.map((object) => object?.name ?? 'A creature').join(', ')} must attack if able.`
+            : declared.length > 0
+              ? `${attackSummary(
+                  declared.map((entry) => entry.target),
+                  names,
+                )}.${several && heldTarget !== undefined ? ` Click a player, planeswalker or battle to send ${heldCreature?.name ?? 'it'} there.` : ''}`
+              : several && aim !== undefined
+                ? `Click a creature, then the player, planeswalker or battle it attacks (${names.short(aim)} until then).`
+                : `Choose the creatures that attack${aim === undefined ? '' : ` ${names.short(aim)}`}, or choose No attack.`
   const cleared = selection.ids.size === required.length && missing.length === 0
 
   return (
@@ -361,6 +422,35 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
         disabled={cleared}
         onClick={clear}
       />
+      {building === null ? (
+        mayBand ? (
+          <BarButton
+            variant="outline"
+            icon={Link2}
+            label="Form a band"
+            word={bands.length > 0 ? `Band (${bands.length})` : 'Band'}
+            onClick={startBand}
+          />
+        ) : null
+      ) : (
+        <>
+          <BarButton
+            variant="secondary"
+            icon={Link2}
+            label="Done forming the band"
+            word="Done"
+            disabled={building.length < 2}
+            onClick={formBand}
+          />
+          <BarButton
+            variant="outline"
+            icon={Unlink}
+            label="Stop forming the band"
+            word="No band"
+            onClick={() => setBuilding(null)}
+          />
+        </>
+      )}
       {exertable.map((object, index) => {
         const name = exertableCreatures[index]?.name ?? 'creature'
         const on = exertedSet.has(object)

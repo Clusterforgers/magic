@@ -1,0 +1,21 @@
+{
+  "oracle_id": "009a4073-5946-4131-928c-c5c373745344",
+  "name": "Mindlink Mech",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mindlink Mech",
+      "oracle_fingerprint": "20e547968b945a8886f827e79fc6c188",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 7, "end": 270 }
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

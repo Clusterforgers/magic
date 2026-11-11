@@ -69,6 +69,28 @@ fn ep29_with_extra(state: &crate::state::GameState, sides: u32, dice: u32, extra
         .collect()
 }
 
+/// The dice the player rolls, in the order rolled: `dice` dice of `sides` faces, one substream of the game's random
+/// stream each, or with the extra dice of `GameRule::ExtraDie` and the lowest ignored.
+pub(crate) fn rolls(
+    state: &crate::state::GameState,
+    player: PlayerId,
+    sides: u32,
+    dice: u32,
+) -> Vec<u32> {
+    let extra = crate::rules::ep29_extra_dice(state, player);
+    if extra == 0 {
+        (0..dice)
+            .map(|at| {
+                let below = GameRng::substream(state.seed(), state.rng_index() + u64::from(at))
+                    .below(u64::from(sides));
+                u32::try_from(below).unwrap_or(0) + 1
+            })
+            .collect()
+    } else {
+        ep29_with_extra(state, sides, dice, extra)
+    }
+}
+
 /// The first player the effect names who is still in the game rolls the die: the next substream of the game's random
 /// stream gives a number from 1 to the sides, logged as `DieRolled`, and the step goes on into the first row that holds
 /// that number plus `plus`, past the effect when no row does.
@@ -93,18 +115,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Ok(Run::events(Vec::new()));
     };
-    let extra = crate::rules::ep29_extra_dice(state, player);
-    let mut rolled: Vec<u32> = if extra == 0 {
-        (0..*dice)
-            .map(|at| {
-                let below = GameRng::substream(state.seed(), state.rng_index() + u64::from(at))
-                    .below(u64::from(*sides));
-                u32::try_from(below).unwrap_or(0) + 1
-            })
-            .collect()
-    } else {
-        ep29_with_extra(state, *sides, *dice, extra)
-    };
+    let mut rolled = rolls(state, player, *sides, *dice);
     if *choose {
         match c11e_chosen_last(cx, player, &rolled)? {
             Optioned::Done(taken) => {

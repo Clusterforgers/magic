@@ -8,7 +8,7 @@
 
 mod inline;
 mod left;
-mod prim;
+pub(crate) mod prim;
 mod share;
 mod tree;
 mod value;
@@ -264,9 +264,13 @@ pub(crate) fn spell_ability(state: &GameState, id: ObjectId) -> Option<(AbilityR
     let (address, rules) = abilities_of(state, id)
         .into_iter()
         .find(|(_, rules)| matches!(**rules, Ability::Spell { .. }))?;
-    // Awaken adds a target and effects to the spell ability of its card.
+    // Awaken adds a target and effects to the spell ability of its card, and so do the cards spliced onto the spell.
     let rules = match state.object(id) {
-        Some(card) => awaken::awakened(card, rules),
+        Some(card) => crate::keywords::splice::with_spliced(
+            state,
+            awaken::awakened(card, rules),
+            card.choices().spliced(),
+        ),
         None => rules,
     };
     Some((address, rules))

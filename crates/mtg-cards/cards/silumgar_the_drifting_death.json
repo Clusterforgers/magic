@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b26c91d9-87de-45f7-a24c-bbe0cef3a35c",
+  "name": "Silumgar, the Drifting Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silumgar, the Drifting Death",
+      "oracle_fingerprint": "a78f8144384e5e334f9654077340bafb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Hexproof" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -42,6 +42,11 @@ counters?: Array<[CounterKind, number]>,
  */
 citys_blessing?: boolean, 
 /**
+ * Whether the player has an enduring story (storied), which they keep for the rest of the game; public, and left out
+ * while they do not.
+ */
+enduring_story?: boolean, 
+/**
  * The player's speed (CR 702.179), 1 to 4 with 4 max speed; public, and left out while they have none.
  */
 speed?: number, 
@@ -96,9 +101,15 @@ revealed_hand?: Array<ObjectId>,
  */
 graveyard: ZoneView, 
 /**
- * Command zone (public).
+ * Command zone (public): the commanders, the junkyard (the Attractions put there, CR 717.6a) and the rest; the
+ * face-down cards of the Attraction deck are not in it.
  */
 command: ZoneView, 
+/**
+ * The cards left in the seat's Attraction deck (CR 717.2), face down in its command zone; left out while there are
+ * none.
+ */
+attraction_deck?: number, 
 /**
  * The commanders the seat owns, wherever they are, with the times each was cast from the command zone and the tax
  * it carries; public, and left out outside Commander.

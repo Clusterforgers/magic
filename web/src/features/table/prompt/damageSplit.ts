@@ -212,3 +212,38 @@ export function labelled(names: readonly string[]): string[] {
     return `${name} (${nth} of ${total})`
   })
 }
+
+/** Whose damage the prompt divides, and why the player divides it. */
+export interface DamageSource {
+  /** The creature dealing the damage, by name. */
+  name: string
+  /** It is a blocker dividing its damage among the attackers it blocks (a band, CR 702.22k). */
+  blocking: boolean
+  /** The player divides the damage of a creature they do not control, because a banding creature fights it. */
+  banding: boolean
+}
+
+/** The live sentence of the prompt: whose damage, among which creatures, and where trample sends the rest. */
+export function damageSentence(
+  power: number,
+  source: DamageSource,
+  labels: readonly string[],
+  joined: string,
+  defender?: string,
+): string {
+  if (labels.length === 0) return `${source.name} has no blocker to assign its ${power} combat damage to.`
+  const among = source.blocking
+    ? 'the creatures it blocks'
+    : labels.length === 1
+      ? 'its blocker'
+      : 'its blockers'
+  const verb = labels.length === 1 ? 'Assign' : 'Divide'
+  const where = labels.length === 1 ? 'to' : 'among'
+  const why = source.banding ? 'Banding: ' : ''
+  return (
+    `${why}${verb} the ${power} combat damage of ${source.name} ${where} ${among}: ${joined}.` +
+    (defender === undefined
+      ? ''
+      : ` Damage not given to a blocker goes to ${defender}, once every blocker has lethal damage.`)
+  )
+}

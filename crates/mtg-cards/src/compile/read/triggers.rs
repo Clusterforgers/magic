@@ -628,6 +628,7 @@ fn draw_text(who: &Ref, first: Option<bool>) -> Option<String> {
     })
 }
 
+#[allow(clippy::too_many_lines)] // one branch for each verb
 fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let (by, third) = player(r)?;
     let verb = r.take_word()?;
@@ -697,6 +698,11 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         }
         r.need("a coin flip")?;
         Some(TriggerPattern::CoinFlipWon { who: by })
+    } else if (verb == if third { "opens" } else { "open" }
+        || verb == if third { "rolls" } else { "roll" })
+        && let Some(found) = r.attempt(|r| super::un33_attractions::un33_event(r, verb, by.clone()))
+    {
+        Some(found)
     } else if verb == if third { "rolls" } else { "roll" } {
         let highest = if r.words("one or more dice") {
             false
@@ -1190,6 +1196,8 @@ pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
         Some(no_monarch())
     } else if r.words("you have the city's blessing") {
         Some(Condition::CitysBlessing(Ref::You))
+    } else if r.words("you have an enduring story") {
+        Some(Condition::EnduringStory(Ref::You))
     } else if r.words("you've completed a dungeon") {
         Some(Condition::CompletedDungeon(Ref::You))
     } else if r.words("you have the initiative") {
@@ -1217,6 +1225,7 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
             "an opponent was the monarch as the turn began".to_owned()
         }
         Condition::CitysBlessing(Ref::You) => "you have the city's blessing".to_owned(),
+        Condition::EnduringStory(Ref::You) => "you have an enduring story".to_owned(),
         Condition::CompletedDungeon(Ref::You) => "you've completed a dungeon".to_owned(),
         Condition::Initiative(Ref::You) => "you have the initiative".to_owned(),
         condition if *condition == no_monarch() => "there is no monarch".to_owned(),
@@ -1226,6 +1235,9 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
 
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
+    if let Some(turns) = super::rmt8_conditions::condition_text(condition) {
+        return Some(turns);
+    }
     if let Some(coven) = super::w2c_counts::w2c_coven_texts(condition)
         .into_iter()
         .next()
@@ -1352,6 +1364,9 @@ pub(super) fn player_verb(by: &Ref, verb: &str) -> Option<String> {
         Ref::Opponents => format!("an opponent {verb}s"),
         Ref::EachPlayer => format!("a player {verb}s"),
         Ref::AttachedPlayer => format!("enchanted player {verb}s"),
+        other if super::rmt8_conditions::is_another_player(other) => {
+            format!("another player {verb}s")
+        }
         _ => return None,
     })
 }
@@ -1584,6 +1599,7 @@ fn player_attack_text(pattern: &TriggerPattern) -> Option<String> {
 }
 
 /// The event as the card words it, from "When" to the end of the event.
+#[allow(clippy::too_many_lines)] // one arm for each pattern
 pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
         TriggerPattern::Exerted { what } => super::w9d_exert::w9d_event_text(what),
@@ -1608,6 +1624,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         )),
         TriggerPattern::Ventured { .. } | TriggerPattern::CompletedDungeon { .. } => {
             w11d_dungeon_text(pattern)
+        }
+        TriggerPattern::OpenedAttraction { .. } | TriggerPattern::RolledToVisit { .. } => {
+            super::un33_attractions::un33_event_text(pattern)
         }
         TriggerPattern::DoorUnlocked { .. } => super::dk1c5_rooms::dk1c5_door_text(pattern),
         TriggerPattern::ZoneChange {

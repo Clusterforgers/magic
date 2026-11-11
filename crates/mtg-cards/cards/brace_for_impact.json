@@ -1,0 +1,46 @@
+{
+  "oracle_id": "f250fb94-e519-4bfa-921e-eddeeafcf76c",
+  "name": "Brace for Impact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brace for Impact",
+      "oracle_fingerprint": "2424a665a0c568f29167d4e365cb72b6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": {
+                    "PreventAnd": [
+                      {
+                        "PutCounters": {
+                          "on": "Triggering",
+                          "counter": "+1/+1",
+                          "count": "Triggering"
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

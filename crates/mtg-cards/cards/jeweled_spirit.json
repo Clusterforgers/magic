@@ -1,0 +1,43 @@
+{
+  "oracle_id": "cddf2e46-79dc-4d6f-bb67-db55d966e8e2",
+  "name": "Jeweled Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jeweled Spirit",
+      "oracle_fingerprint": "692f091788c30bc68c27683369434f23",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }], "count": 2 } }],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Artifact" }] } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": ["AddProtectionFromChosenColor"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

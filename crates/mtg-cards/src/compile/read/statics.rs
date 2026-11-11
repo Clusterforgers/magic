@@ -618,6 +618,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if r.words("you gain life rather than lose life from radiation") {
         return Some(GameRule::RadiationGainsLife(Ref::You));
     }
+    if let Some(rule) = r.attempt(super::rmt4_untap_limit::read) {
+        return Some(rule);
+    }
     if r.words("skip your draw step") {
         return Some(GameRule::SkipDrawStep(Ref::You));
     }
@@ -635,6 +638,14 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
         r.punct(',').then_some(())?;
         r.need("you may vote an additional time")?;
         Some(GameRule::VoteAgain(Ref::You))
+    }) {
+        return Some(rule);
+    }
+    if let Some(rule) = r.attempt(|r| {
+        r.need("while voting")?;
+        r.punct(',').then_some(())?;
+        r.need("you get an additional vote")?;
+        Some(GameRule::ExtraVote(Ref::You))
     }) {
         return Some(rule);
     }
@@ -983,10 +994,13 @@ pub(super) fn given_text(mods: &[Modification]) -> Option<String> {
         [Modification::GrantAbility(ability)]
             if matches!(
                 **ability,
-                Ability::Activated { .. } | Ability::Triggered { .. }
+                Ability::Activated { .. } | Ability::Triggered { .. } | Ability::Loyalty { .. }
             ) =>
         {
-            Some(format!("\"{}\"", render::ability(ability)?))
+            Some(format!(
+                "\"{}\"",
+                super::rmt7_atoms::rmt7_bracketed_loyalty(ability, render::ability(ability)?)?
+            ))
         }
         [Modification::GrantAbility(_), ..] => super::e10c_granted::e10c_given_text(mods),
         [
@@ -1524,6 +1538,9 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
 
 /// What holds for a permanent not to enter tapped, as `holds` reads it: one thing, or several joined by "or".
 pub(super) fn holds_texts(condition: &Condition) -> Vec<String> {
+    if let Some(turns) = super::rmt8_conditions::condition_text(condition) {
+        return vec![turns];
+    }
     let (list, joiner) = match condition {
         Condition::Any(list) => (list, " or "),
         Condition::All(list) => (list, " and "),
@@ -1765,8 +1782,8 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::OpponentsCantMakeSacrifice(_),
             ZoneKind::Battlefield,
         ) => super::ep24_rules::ep24_rule_texts(rule),
-        (GameRule::VoteAgain(Ref::You), ZoneKind::Battlefield) => {
-            vec!["While voting, you may vote an additional time".to_owned()]
+        (GameRule::VoteAgain(Ref::You) | GameRule::ExtraVote(Ref::You), ZoneKind::Battlefield) => {
+            vec![super::ep33_spend::ep33_vote_text(rule)]
         }
         (
             GameRule::GraveyardCardsUntargetable
@@ -1777,8 +1794,8 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
         (GameRule::Combat { .. }, ZoneKind::Battlefield) => super::r7d_statics::combat_texts(rule),
-        (GameRule::UntapDuring { .. }, ZoneKind::Battlefield) => {
-            super::e10c_granted::e10c_untap_during_texts(rule)
+        (GameRule::UntapDuring { .. } | GameRule::UntapLimit { .. }, ZoneKind::Battlefield) => {
+            super::rmt4_untap_limit::untap_rule_texts(rule)
         }
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]
@@ -1909,7 +1926,7 @@ fn static_texts(
 ) -> Vec<String> {
     // The wordings of the condition, each as the tail of the sentence; one empty tail for no condition.
     let helds: Vec<String> = condition.map(as_long_as::texts).unwrap_or_default();
-    let tails: Vec<String> = if condition.is_some() {
+    let mut tails: Vec<String> = if condition.is_some() {
         helds
             .iter()
             .map(|held| format!(" as long as {held}"))
@@ -1917,6 +1934,7 @@ fn static_texts(
     } else {
         vec![String::new()]
     };
+    tails.extend(condition.and_then(super::rmt7_atoms::rmt7_condition_tail));
     let mut subjects = subjects(affected, true);
     // "Creatures can't attack you." says no "All".
     if let [Modification::CantAttackYou(_)] = mods {
@@ -2195,6 +2213,9 @@ pub(super) fn predicate(
         }
         [more @ Modification::BlocksAdditional(_)] => {
             return super::w14c_block_capacity::w14c_blocks_additional_text(more);
+        }
+        [Modification::BlocksAdditionalPer(per)] => {
+            return super::rmt7_atoms::rmt7_blocks_per_text(per);
         }
         [Modification::MinBlockers(count @ 2..)] => {
             return Some(format!(

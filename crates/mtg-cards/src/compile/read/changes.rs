@@ -305,8 +305,8 @@ fn part_texts(mods: &[Modification], plural: bool) -> Option<(Vec<String>, Strin
                     Modification::AddKeyword(_) | Modification::AddProtectionFromChosenColor,
                     Modification::AddKeyword(_) | Modification::AddProtectionFromChosenColor
                 ) | (
-                    Modification::RemoveKeyword(_),
-                    Modification::RemoveKeyword(_)
+                    Modification::RemoveKeyword(_) | Modification::RemoveKeywordKind(_),
+                    Modification::RemoveKeyword(_) | Modification::RemoveKeywordKind(_)
                 )
             )
         };
@@ -331,17 +331,19 @@ fn part_texts(mods: &[Modification], plural: bool) -> Option<(Vec<String>, Strin
             Modification::GrantAbility(given) => {
                 parts.push(format!("{} \"{}\"", verbs.gains, render::ability(given)?));
             }
-            Modification::RemoveKeyword(_) => {
-                let kept: Vec<Modification> = group
-                    .iter()
-                    .map(|gone| match gone {
-                        Modification::RemoveKeyword(keyword) => {
-                            Modification::AddKeyword(keyword.clone())
-                        }
-                        other => other.clone(),
-                    })
-                    .collect();
-                parts.push(format!("{} {}", verbs.loses, granted_text(&kept)?));
+            Modification::LosePrinted(lost) => {
+                parts.push(format!(
+                    "{} \"{}\"",
+                    verbs.loses,
+                    super::rmt7_atoms::rmt7_quoted_lost(lost)?
+                ));
+            }
+            Modification::RemoveKeyword(_) | Modification::RemoveKeywordKind(_) => {
+                parts.push(format!(
+                    "{} {}",
+                    verbs.loses,
+                    super::rmt7_atoms::rmt7_lost_text(group)?
+                ));
             }
             Modification::AddAllCreatureTypes => {
                 parts.push(format!("{} all creature types", verbs.gains));

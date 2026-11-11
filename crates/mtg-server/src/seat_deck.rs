@@ -12,13 +12,14 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
+use mtg_engine::un33_attractions::AttractionCard;
 use mtg_protocol::SeatDeck;
 
 use crate::cards::{canonical, reprinted, with_printings};
 use crate::deck_choice::format_issues;
 use crate::demo::{self, DemoDeck};
 use crate::recipe::{
-    DeckFingerprint, DeckRef, FingerprintError, FormatKind, GameRecipe, merged_reads,
+    AttractionRef, DeckFingerprint, DeckRef, FingerprintError, FormatKind, GameRecipe, merged_reads,
 };
 
 /// The format key the table is told for a built-in deck.
@@ -30,6 +31,7 @@ pub struct ChosenDeck {
     cards: Arc<[Arc<CardDefinition>]>,
     commanders: Arc<[Arc<CardDefinition>]>,
     companion: Option<Arc<CardDefinition>>,
+    attractions: Arc<[AttractionCard]>,
     deck: DeckRef,
     fingerprint: DeckFingerprint,
     note: SeatDeck,
@@ -47,6 +49,7 @@ impl ChosenDeck {
             cards: cards.into(),
             commanders: Arc::from([]),
             companion: None,
+            attractions: Arc::from([]),
             deck: DeckRef::Demo {
                 id: deck.id.to_owned(),
             },
@@ -76,6 +79,7 @@ impl ChosenDeck {
             cards: library.into(),
             commanders: Arc::from([commander]),
             companion: None,
+            attractions: Arc::from([]),
             deck: DeckRef::Demo {
                 id: demo::commander_stand_in_id(size),
             },
@@ -116,12 +120,14 @@ impl ChosenDeck {
             cards: cards.into(),
             commanders: commanders.into(),
             companion: None,
+            attractions: Arc::from([]),
             deck: DeckRef::Oracle {
                 cards: oracle_ids,
                 commanders: commander_ids,
                 companion: None,
                 printings: Vec::new(),
                 by_hand: Vec::new(),
+                attractions: Vec::new(),
             },
             note,
             own_issues: Arc::from([]),
@@ -216,6 +222,39 @@ impl ChosenDeck {
     /// The companion the seat names, a card the game keeps outside it until the seat pays for it.
     pub fn companion(&self) -> Option<&Arc<CardDefinition>> {
         self.companion.as_ref()
+    }
+
+    /// The seat's Attraction deck (CR 717.2), top card first; empty for a deck without one.
+    pub fn attractions(&self) -> &[AttractionCard] {
+        &self.attractions
+    }
+
+    /// The deck with this Attraction deck: each card's oracle id, definition and lights. It is part of the deck's
+    /// fingerprint and the recipe keeps it; a built-in deck has no oracle ids to name it by and stays as it is.
+    pub fn with_attractions(
+        mut self,
+        cards: Vec<(String, AttractionCard)>,
+    ) -> Result<ChosenDeck, FingerprintError> {
+        if cards.is_empty() {
+            return Ok(self);
+        }
+        if let DeckRef::Oracle { attractions, .. } = &mut self.deck {
+            *attractions = cards
+                .iter()
+                .map(|(oracle_id, card)| AttractionRef {
+                    oracle_id: oracle_id.clone(),
+                    lights: card.lights.numbers(),
+                })
+                .collect();
+            self.attractions = cards.into_iter().map(|(_, card)| card).collect();
+            self.fingerprint = DeckFingerprint::of_seat_all(
+                &self.cards,
+                &self.commanders,
+                self.companion.as_ref(),
+                &self.attractions,
+            )?;
+        }
+        Ok(self)
     }
 
     /// The deck with the drafts its cards play on pinned: the `read_hash` of each card that runs on a read, by oracle id

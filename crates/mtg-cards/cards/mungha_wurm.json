@@ -1,0 +1,18 @@
+{
+  "oracle_id": "fe6ff20b-5e4d-44d5-b011-c6e512169294",
+  "name": "Mungha Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mungha Wurm",
+      "oracle_fingerprint": "2d500d87fae6702663b9d1a56c04c1d5",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "UntapLimit": { "who": "You", "what": [{ "Type": "Land" }], "count": 1 } }
+          }
+        }
+      ]
+    }
+  ]
+}

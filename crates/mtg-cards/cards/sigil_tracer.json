@@ -1,0 +1,29 @@
+{
+  "oracle_id": "532ff38d-bf52-4e99-bf1c-254074e4d625",
+  "name": "Sigil Tracer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sigil Tracer",
+      "oracle_fingerprint": "902367ff0f605c706ca3170fca4f403b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{U}" },
+              { "TapPermanents": { "filter": [{ "Subtype": "Wizard" }], "count": 2 } }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

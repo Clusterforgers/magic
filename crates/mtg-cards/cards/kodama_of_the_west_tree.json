@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d69b1e68-8d8e-460b-9eb4-6a68be886197",
+  "name": "Kodama of the West Tree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kodama of the West Tree",
+      "oracle_fingerprint": "17a0cea6157b95a88c747860aeb124b1",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Modified", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Trample" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, "Modified", { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

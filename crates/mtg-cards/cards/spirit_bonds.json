@@ -1,0 +1,64 @@
+{
+  "oracle_id": "f41ea1b5-2c31-43fa-b142-244add1efd35",
+  "name": "Spirit Bonds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit Bonds",
+      "oracle_fingerprint": "3dc132a2578db56a7d92c4d6c912e4e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{W}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, { "Sacrifice": { "filter": [{ "Subtype": "Spirit" }] } }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Subtype": "Spirit" } }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

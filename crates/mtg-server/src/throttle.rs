@@ -345,7 +345,7 @@ mod tests {
     use super::*;
     use rstest::rstest;
 
-    const WINDOW: Duration = Duration::from_secs(60);
+    const WINDOW: Duration = Duration::from_mins(1);
     /// Shorter than `WINDOW`, so a test can tell which window a counter follows.
     const CODE_WINDOW: Duration = Duration::from_secs(20);
     /// Shorter than both, so a test can tell the lobby list has a window of its own.

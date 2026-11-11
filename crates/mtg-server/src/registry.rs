@@ -505,9 +505,14 @@ impl Registry {
         let libraries = held.iter().map(|deck| deck.cards().to_vec()).collect();
         let commanders = held.iter().map(|deck| deck.commanders().to_vec()).collect();
         let companions = held.iter().map(|deck| deck.companion().cloned()).collect();
+        let attractions = held
+            .iter()
+            .map(|deck| deck.attractions().to_vec())
+            .collect();
         let mut setup = GameSetup::new(options.format.rules(), seed, libraries)
             .with_commanders(commanders)
             .with_companions(companions)
+            .with_attractions(attractions)
             .with_house_rules(options.house_rules.clone())
             .with_conjurable(conjured);
         // Legality only warns (`docs/deck-check.md`), so the engine does not judge the decks.

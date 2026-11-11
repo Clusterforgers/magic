@@ -1,0 +1,21 @@
+{
+  "oracle_id": "30c0df75-9822-4016-a52b-d2e69dd58124",
+  "name": "Galea, Kindler of Hope",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Galea, Kindler of Hope",
+      "oracle_fingerprint": "175a00efc1117ac5f990e4a57bb33865",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 65, "end": 257 }
+          }
+        }
+      ]
+    }
+  ]
+}

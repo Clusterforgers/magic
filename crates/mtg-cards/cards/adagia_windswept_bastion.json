@@ -1,0 +1,27 @@
+{
+  "oracle_id": "70d35dbd-1d91-4a2a-a643-6870d168f4f5",
+  "name": "Adagia, Windswept Bastion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Adagia, Windswept Bastion",
+      "oracle_fingerprint": "5c5b073aca231aec6be183708d6c102d",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 165, "end": 310 }
+          }
+        }
+      ]
+    }
+  ]
+}

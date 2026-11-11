@@ -1,0 +1,34 @@
+{
+  "oracle_id": "90865918-2f9a-4ab6-a881-e86f61a527cc",
+  "name": "Burnout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burnout",
+      "oracle_fingerprint": "7cee4b87c2661ebef10e0df3fe717a23",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Type": "Instant" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Color": "Blue" }] }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

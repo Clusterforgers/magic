@@ -1,0 +1,21 @@
+{
+  "oracle_id": "258921f2-df26-4d8a-ad34-8f44d0158ae7",
+  "name": "Varchild's War-Riders",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Varchild's War-Riders",
+      "oracle_fingerprint": "e0c1520b18f4ecf8aad7d0b971b3df32",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 226 }
+          }
+        },
+        { "Keyword": "Trample" },
+        { "Keyword": { "Macro": { "name": "rampage", "amount": 1 } } }
+      ]
+    }
+  ]
+}

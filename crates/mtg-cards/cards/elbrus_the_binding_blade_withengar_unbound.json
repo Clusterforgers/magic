@@ -1,0 +1,47 @@
+{
+  "oracle_id": "da5881ca-b86e-4582-ae0e-1570c59773ae",
+  "name": "Elbrus, the Binding Blade // Withengar Unbound",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Elbrus, the Binding Blade",
+      "oracle_fingerprint": "a70f3a811d7ca8011791d1cd8a3d12c4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Unattach": { "what": "This" } }, { "Transform": { "what": "This" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    },
+    {
+      "name": "Withengar Unbound",
+      "oracle_fingerprint": "430e7a95ff5dc02d4ccc96e0d3b83150",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Intimidate" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 148, "end": 231 }
+          }
+        }
+      ]
+    }
+  ]
+}

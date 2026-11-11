@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2624b5c5-ba59-4e20-8e66-e463268366e4",
+  "name": "The Death of Gwen Stacy",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Death of Gwen Stacy",
+      "oracle_fingerprint": "c00ee43be16a93d5b0ab36d3fa422d55",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 118, "end": 192 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 193, "end": 246 }
+          }
+        }
+      ]
+    }
+  ]
+}

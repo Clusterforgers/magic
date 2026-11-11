@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4fe8af73-c84a-44bd-9739-ee5c8b027874",
+  "name": "Crypt of Agadeem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crypt of Agadeem",
+      "oracle_fingerprint": "e2a0e4c5cc04f99ef9804b87c5e28098",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Black"] },
+                  "times": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "Color": "Black" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

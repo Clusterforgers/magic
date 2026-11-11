@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4716ab91-30e6-4c63-8389-a9db8f9414d8",
+  "name": "Tekuthal, Inquiry Dominus",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tekuthal, Inquiry Dominus",
+      "oracle_fingerprint": "f00feb10e3e02d9003e15d6ee82fea86",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 7, "end": 59 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 60, "end": 256 }
+          }
+        }
+      ]
+    }
+  ]
+}

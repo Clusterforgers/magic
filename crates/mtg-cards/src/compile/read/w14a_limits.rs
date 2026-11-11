@@ -31,6 +31,8 @@ pub fn w14a_limit_while_texts(rule: &GameRule, condition: &Condition) -> Vec<Str
     // unless ...".
     limits.extend(super::attack_tax::static_texts(rule));
     limits.extend(super::g11c_taxes::g11c_block_texts(rule));
+    // "As long as ~ is untapped, players can't untap more than one land during their untap steps."
+    limits.extend(super::rmt4_untap_limit::texts(rule));
     as_long_as::texts(condition)
         .iter()
         .flat_map(|held| {

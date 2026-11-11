@@ -12,6 +12,7 @@ mod annihilator;
 mod ascend;
 pub(crate) mod awaken;
 mod backup;
+pub(crate) mod banding;
 mod bargain;
 mod battle_cry;
 mod bestow;
@@ -134,10 +135,12 @@ mod shroud;
 mod skulk;
 mod soulbond;
 mod spectacle;
+pub(crate) mod splice;
 mod split_second;
 mod squad;
 mod start_your_engines;
 mod station;
+mod storied;
 mod storm;
 mod sunburst;
 pub(crate) mod suspend;
@@ -565,6 +568,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Harmonize(_) => &c9_emerge_harmonize::Harmonize,
         Keyword::ReadAhead => &w2b_read_ahead::ReadAhead,
         Keyword::Ascend => &ascend::Ascend,
+        Keyword::Storied => &storied::Storied,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::StartYourEngines => &start_your_engines::StartYourEngines,
         Keyword::JobSelect => &job_select::JobSelect,
@@ -573,6 +577,9 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Recover(_) => &recover::Recover,
         Keyword::Ripple(_) => &ripple::Ripple,
         Keyword::Epic => &epic::Epic,
+        Keyword::Banding => &banding::Banding,
+        Keyword::BandsWithOther(_) => &banding::BandsWithOther,
+        Keyword::Splice { .. } => &splice::Splice,
         Keyword::Macro { .. } => &macro_keyword::MacroKeyword,
         // The keywords before them are matched by `rules`.
         _ => &Unruled,
@@ -924,6 +931,7 @@ mod tests {
             },
             Keyword::Fabricate(1),
             Keyword::Ascend,
+            Keyword::Storied,
             Keyword::Vanishing(3),
             Keyword::Fading(3),
             Keyword::Backup {
@@ -987,6 +995,12 @@ mod tests {
             Keyword::Recover(cost()),
             Keyword::Ripple(4),
             Keyword::Epic,
+            Keyword::Banding,
+            Keyword::BandsWithOther(Selector::default()),
+            Keyword::Splice {
+                onto: mtg_cards::keyword::SpliceOnto::Arcane,
+                cost: cost(),
+            },
             Keyword::Macro {
                 name: "bushido".to_owned(),
                 amount: 2,
@@ -1107,6 +1121,9 @@ mod tests {
         "Keyword.Recover",
         "Keyword.Ripple",
         "Keyword.Epic",
+        "Keyword.Banding",
+        "Keyword.BandsWithOther",
+        "Keyword.Splice",
         "Keyword.Macro",
         "Keyword.Station",
         "Keyword.Myriad",
@@ -1123,6 +1140,7 @@ mod tests {
         "Keyword.Typecycling",
         "Keyword.Fabricate",
         "Keyword.Ascend",
+        "Keyword.Storied",
         "Keyword.ForMirrodin",
         "Keyword.StartYourEngines",
         "Keyword.JobSelect",
@@ -1300,6 +1318,8 @@ mod tests {
     #[case::recover(Keyword::Recover(Cost::mana("{R}{R}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ripple(Keyword::Ripple(4), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::epic(Keyword::Epic, Hooks::none())]
+    #[case::banding(Keyword::Banding, Hooks::none())]
+    #[case::splice(Keyword::Splice { onto: mtg_cards::keyword::SpliceOnto::Arcane, cost: Cost::mana("{1}{R}".parse().unwrap()) }, Hooks::none())]
     #[case::graft(Keyword::Graft(2), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::afflict(Keyword::Afflict(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::replicate(Keyword::Replicate(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
@@ -1331,6 +1351,7 @@ mod tests {
     #[case::decayed(Keyword::Decayed, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::fabricate(Keyword::Fabricate(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ascend(Keyword::Ascend, Hooks::none())]
+    #[case::storied(Keyword::Storied, Hooks::none())]
     #[case::start_your_engines(Keyword::StartYourEngines, Hooks::none())]
     #[case::for_mirrodin(Keyword::ForMirrodin, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::job_select(Keyword::JobSelect, Hooks { abilities: 1, ..Hooks::none() })]

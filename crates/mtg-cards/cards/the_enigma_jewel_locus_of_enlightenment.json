@@ -1,0 +1,51 @@
+{
+  "oracle_id": "c0d2bdd9-1e68-4d3a-83f8-ec2ba440a494",
+  "name": "The Enigma Jewel // Locus of Enlightenment",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Enigma Jewel",
+      "oracle_fingerprint": "2f888ee346030650717cc6ecc0f6b6b1",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "only": [{ "Ability": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 93, "end": 364 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Locus of Enlightenment",
+      "oracle_fingerprint": "d19f62fa7abc49dc33154bf3bec09086",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 149 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 150, "end": 259 }
+          }
+        }
+      ]
+    }
+  ]
+}

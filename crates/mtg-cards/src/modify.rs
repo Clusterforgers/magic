@@ -97,6 +97,8 @@ pub enum Modification {
     AddProtectionFromChosenCardType,
     /// Removes a keyword ability (layer 6).
     RemoveKeyword(Keyword),
+    /// Removes every keyword ability of the kind, whatever its parameter (layer 6): "loses all landwalk abilities".
+    RemoveKeywordKind(crate::rmt7_kinds::KeywordKind),
     /// Removes a keyword ability and the object can't have or gain it afterwards, whichever effect is newer (layer 6):
     /// "lose flying and can't have or gain flying".
     LockKeyword(Keyword),
@@ -110,6 +112,9 @@ pub enum Modification {
     /// The object loses the ability that made the effect, as the effect begins (layer 6): "~ loses this ability". Only an
     /// effect of an activated ability has it, never a static ability.
     LoseThisAbility,
+    /// The object loses the ability printed on its card that equals this one, as the effect begins (layer 6): "this
+    /// creature loses \"Prevent all damage that would be dealt to this creature.\"". Only an effect on its own source has it.
+    LosePrinted(Arc<Ability>),
     /// Changes the controller to the player (layer 2).
     SetController(Ref),
     /// The object can't attack (a restriction, no layer).
@@ -138,6 +143,9 @@ pub enum Modification {
     /// The object can block this many creatures beyond the first each combat (a restriction, no layer): "can block an
     /// additional creature each combat" (CR 509.1a).
     BlocksAdditional(u32),
+    /// The object can block an additional creature each combat for each one the amount counts, worked out as the
+    /// layers are (a restriction, no layer): "for each Equipment attached to this creature".
+    BlocksAdditionalPer(Amount),
     /// The object is goaded by the controller of the effect or ability (CR 701.15; a restriction, no layer): it attacks
     /// each combat if able and attacks a player other than the goader if able.
     Goaded,
@@ -182,9 +190,11 @@ impl Modification {
             | Modification::AddProtectionFromChosenCardType
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
+            | Modification::RemoveKeywordKind(_)
             | Modification::GrantAbility(_)
             | Modification::GainAbilitiesOf(_)
             | Modification::LoseThisAbility
+            | Modification::LosePrinted(_)
             | Modification::LoseAbilities => Some("6"),
             Modification::SetPT { .. }
             | Modification::SetPower(_)
@@ -202,6 +212,7 @@ impl Modification {
             | Modification::MinBlockers(_)
             | Modification::MaxBlockers(_)
             | Modification::BlocksAdditional(_)
+            | Modification::BlocksAdditionalPer(_)
             | Modification::Goaded => None,
         }
     }
@@ -244,6 +255,11 @@ pub enum Duration {
     /// Until the turn it makes a player skip has been skipped ("skip your next turn", CR 614.10): only the rule that a
     /// player skips a turn lasts this long.
     UntilTurnSkipped,
+    /// Until the step or combat phase its rule makes a player skip has been skipped once ("skips their next untap step",
+    /// "skips their next combat phase", CR 614.10): only the rule that a player skips a step or combat lasts this long.
+    UntilSkipped,
+    /// As `UntilSkipped`, and it also ends with the turn ("skips their next combat phase this turn").
+    UntilSkippedThisTurn,
     /// Until the card the source became when its ability exiled it is cast from exile ("until this card is cast from
     /// exile"); it lasts for good once that card leaves exile another way.
     UntilCastFromExile,
@@ -378,6 +394,8 @@ pub enum CombatQuirk {
     BlockIgnoringLandwalk,
     /// They can block creatures with shadow as though they had shadow (CR 702.28).
     BlockAsThoughShadow,
+    /// They block the creatures picked as though they had reach.
+    BlockAsThoughReach(Selector),
     /// They can block creatures with shadow as though those did not have shadow (CR 702.28).
     BlockIgnoringShadow,
     /// Tapped to crew or saddle, they count for another amount than their power.
@@ -427,6 +445,8 @@ pub enum Prohibited {
     SkipStep(Step),
     /// Skip their turns (CR 614.10).
     SkipTurn,
+    /// Skip the steps of their combat phases (CR 614.10, 506.1).
+    SkipCombat,
     /// Cast spells (CR 601): those whose card the filter selects (any when empty), and with `more_than` only once they have
     /// cast that many such spells this turn; with `unless` only while the condition does not hold for the caster.
     Cast {
@@ -632,6 +652,8 @@ pub enum GameRule {
     /// The players may vote an additional time each time they vote: "While voting, you may vote an additional time."
     /// (CR 701.38d).
     VoteAgain(Ref),
+    /// The players get an additional vote each time they vote: "While voting, you get an additional vote." (CR 701.38d).
+    ExtraVote(Ref),
     /// A player in the group who would begin an extra turn skips that turn instead (CR 500.7).
     SkipExtraTurns(Ref),
     /// A player in the group who would flip a coin flips two instead and ignores one (CR 705.3, Krark's Thumb); each such
@@ -692,6 +714,16 @@ pub enum GameRule {
         /// The players whose untap steps untap them.
         whose: Ref,
     },
+    /// The players can't untap more than `count` of their permanents the selector picks during their untap steps (CR
+    /// 502.3): "players can't untap more than one land during their untap steps".
+    UntapLimit {
+        /// The players whose untap steps are limited.
+        who: Ref,
+        /// The permanents counted, among those the untapping player controls.
+        what: Selector,
+        /// The most of them that untap.
+        count: u32,
+    },
     /// The players skip their draw steps (CR 614.10): the step does not begin on their turns.
     SkipDrawStep(Ref),
     /// The players may play additional lands each of their turns (CR 305.2).
@@ -708,6 +740,8 @@ pub enum GameRule {
     /// A deck can hold any number of cards with the card's name (CR 100.2a); it changes nothing in a game, and the rule is
     /// written without `from`.
     AnyNumberInDeck,
+    /// A booster draft rule: nothing in a game; no `from`.
+    Draft(DraftRule),
     /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
     /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
     /// the turn. `what` names the cards, not the stack object (no `Spell`).
@@ -843,6 +877,25 @@ pub enum GameRule {
     },
 }
 
+/// A rule of a booster draft; each variant is one printed sentence.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum DraftRule {
+    /// Draft it face up.
+    FaceUp,
+    /// Draft this many cards at random while face up.
+    AtRandom {
+        /// The cards drafted at random.
+        picks: u32,
+    },
+    /// Look at the next pick from the pack.
+    LookAtNextPick,
+    /// Last cards of packs go to its drafter.
+    LastCardsPassed,
+    /// Trade a card after the draft.
+    TradeAfterDraft,
+}
+
 /// How a `GameRule::ManaProduced` changes the mana of a tap.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum ManaChange {
@@ -867,7 +920,7 @@ mod tests {
     use super::*;
     use crate::ability::Timing;
     use crate::cost::Cost;
-    use crate::refs::ZoneKind;
+    use crate::refs::{Pred, ZoneKind};
     use rstest::rstest;
 
     fn granted() -> Arc<Ability> {
@@ -1085,6 +1138,10 @@ mod tests {
     #[case(
         GameRule::UntapDuring { what: Selector::this(), whose: Ref::Opponents },
         r#"{"UntapDuring":{"what":["This"],"whose":"Opponents"}}"#
+    )]
+    #[case(
+        GameRule::UntapLimit { who: Ref::EachPlayer, what: Selector(vec![Pred::Type(CardType::Land)]), count: 1 },
+        r#"{"UntapLimit":{"who":"EachPlayer","what":[{"Type":"Land"}],"count":1}}"#
     )]
     #[case(
         GameRule::TriggerAgain { cause: Some(TriggerPattern::Attacks { what: Selector::this() }), source: Some(Selector::this()) },

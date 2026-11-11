@@ -70,7 +70,9 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
         "Continuous" if p.has("RaiseMaxHandSize") => hand_size_change(ctx, p),
         "Continuous" if p.has("AdjustLandPlays") => land_plays(ctx, p),
         "Continuous" if p.get("AddKeyword") == Some("CantSearchLibrary") => cant_search(p),
-        "Continuous" if p.has("AdditionalOptionalVote") => e14c_vote_again(p),
+        "Continuous" if p.has("AdditionalOptionalVote") || p.has("AdditionalVote") => {
+            e14c_vote_again(p)
+        }
         "Continuous" if p.has("MayLookAt") && !p.has("MayPlay") => super::statics_look::look(p),
         _ => return None,
     };
@@ -416,6 +418,14 @@ fn cant_search(p: &Params) -> Tr<Value> {
 /// `Affected$ You` with `AdditionalOptionalVote$ 1`: while voting, you may vote an additional time (CR 701.38d). A
 /// vote the player must cast (`AdditionalVote$`) or more than one stays a gap.
 fn e14c_vote_again(p: &Params) -> Tr<Value> {
+    // "While voting, you get an additional vote": a vote the player casts, not one they may.
+    if p.has("AdditionalVote") {
+        keys(p, "Continuous", &["Affected", "AdditionalVote"])?;
+        return match (p.get("Affected"), p.get("AdditionalVote")) {
+            (Some("You"), Some("1")) => Ok(json!({"ExtraVote": "You"})),
+            _ => unmapped("key:Static.Continuous.AdditionalVote"),
+        };
+    }
     keys(p, "Continuous", &["Affected", "AdditionalOptionalVote"])?;
     match (p.get("Affected"), p.get("AdditionalOptionalVote")) {
         (Some("You"), Some("1")) => Ok(json!({"VoteAgain": "You"})),

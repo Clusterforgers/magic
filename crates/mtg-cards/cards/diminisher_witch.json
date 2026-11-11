@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c2283655-f6b8-4399-ba1f-68a7107f9485",
+  "name": "Diminisher Witch",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Diminisher Witch",
+      "oracle_fingerprint": "9fa7fa44791fad261fa358a26a6b046b",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 87, "end": 308 }
+          }
+        }
+      ]
+    }
+  ]
+}

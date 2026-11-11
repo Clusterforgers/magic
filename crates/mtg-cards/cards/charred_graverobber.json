@@ -1,0 +1,53 @@
+{
+  "oracle_id": "960cff3b-678c-404e-a643-ac5e91e6b50c",
+  "name": "Charred Graverobber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charred Graverobber",
+      "oracle_fingerprint": "c1d1ab468cf77397cc48b59d314b3821",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Assassin" },
+                        { "Subtype": "Mercenary" },
+                        { "Subtype": "Pirate" },
+                        { "Subtype": "Rogue" },
+                        { "Subtype": "Warlock" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{3}{B}{B}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 4 } }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": { "CastWith": "Escape" }
+          }
+        }
+      ]
+    }
+  ]
+}

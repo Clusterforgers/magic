@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c6eaa147-3566-43a9-999a-d58b877496f5",
+  "name": "Zur's Weirding",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Zur's Weirding",
+      "oracle_fingerprint": "ab7653976b9109e052f1f55e30c97f1e",
+      "abilities": [
+        { "Rule": { "rule": { "RevealHand": "EachPlayer" } } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 40, "end": 229 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -105,6 +105,8 @@ pub struct RawCard {
     pub flavor_name: Option<String>,
     /// Name printed on the card when it differs from the oracle name (Arena and MTGO names, translations).
     pub printed_name: Option<String>,
+    /// The numbers lit up on an Attraction printing (CR 717.1).
+    pub attraction_lights: Option<Vec<u32>>,
 }
 
 /// A Scryfall ruling object from the rulings bulk file.

@@ -65,7 +65,7 @@ fn wording(ctx: &Ctx<'_>, total: u32) -> String {
         ability
             .effects()
             .iter()
-            .any(|effect| matches!(effect, Effect::DealDamage { .. }))
+            .any(|effect| matches!(effect, Effect::DealDamage { .. } | Effect::Shield { .. }))
     });
     let what = if damage { "damage" } else { "counters" };
     format!("Divide {total} {what} among the targets.")

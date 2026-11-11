@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f11ec1c9-347d-4d79-aaa9-5919db5f9044",
+  "name": "Clandestine Meddler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clandestine Meddler",
+      "oracle_fingerprint": "32be249d77d4a1a7b8acb58ce829d14d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Suspect": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, "Suspected", { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [{ "Surveil": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

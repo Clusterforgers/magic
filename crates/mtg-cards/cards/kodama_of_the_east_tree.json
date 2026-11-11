@@ -1,0 +1,21 @@
+{
+  "oracle_id": "cb1afab6-b9c8-4b9c-840b-24106523a783",
+  "name": "Kodama of the East Tree",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kodama of the East Tree",
+      "oracle_fingerprint": "588f5c4972f878569b5901475f1d85fb",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 6, "end": 207 }
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

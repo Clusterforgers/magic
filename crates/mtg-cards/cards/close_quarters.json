@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c3f841c4-6e12-46fc-802a-3025182e7ff4",
+  "name": "Close Quarters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Close Quarters",
+      "oracle_fingerprint": "3d5433d14e823bd51ef7fc684615d510",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

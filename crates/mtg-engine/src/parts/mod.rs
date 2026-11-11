@@ -23,6 +23,8 @@ mod forage;
 mod life;
 pub(crate) mod mill;
 mod random;
+mod rmt5_top_shots;
+pub(crate) use rmt5_top_shots::rmt5_top_shots;
 mod reveal;
 mod sacrifice;
 mod source;
@@ -698,10 +700,17 @@ impl Part {
                 filter,
                 count,
             } => among::events(state, (player, source), filter, counter.as_ref(), *count),
-            Part::Pick(pick) => picked
-                .iter()
-                .flat_map(|object| pick.events(state, player, *object, kinds))
-                .collect(),
+            Part::Pick(pick) => {
+                let mut events: Vec<Event> = picked
+                    .iter()
+                    .flat_map(|object| pick.events(state, player, *object, kinds))
+                    .collect();
+                // The exile is the evidence collected (CR 701.59a); "whenever you collect evidence" waits for it.
+                if pick.kind == Kind::Evidence {
+                    events.push(Event::EvidenceCollected { player });
+                }
+                events
+            }
             Part::X(inner) => inner.w2f_events(state, (player, source), picked, kinds),
         }
     }

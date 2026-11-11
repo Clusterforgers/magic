@@ -12,9 +12,12 @@
 use axum::http::{HeaderMap, StatusCode};
 use mtg_cards::CardDefinition;
 use mtg_cards::deck::{DeckReport, DeckZone, Issue, IssueCode};
+use mtg_core::attraction::Lights;
 use mtg_core::house::HouseRules;
 use mtg_db::DeckId;
 use mtg_engine::format::{Commander, DeckError, FormatRules, Normal, RuleSet};
+use mtg_engine::un33_attractions::AttractionCard;
+use mtg_import::ids::OracleId;
 use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{DeckBlockedBody, DeckChoiceErrorCode, PRECON_DECK_PREFIX};
 use sqlx::types::uuid::Uuid;
@@ -220,10 +223,11 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
         library,
         commanders,
         companion,
-        reads,
+        mut reads,
         conjured,
         by_hand,
     } = assemble(source, &lines).await?;
+    let attractions = attractions_of(source, &lines, &mut reads).await?;
     let note = SeatDeck {
         name: deck.name.clone(),
         format: deck.format.clone(),
@@ -248,6 +252,7 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
         Some((id, card)) => chosen.with_companion(id, card).map_err(unreadable)?,
         None => chosen,
     };
+    let chosen = chosen.with_attractions(attractions).map_err(unreadable)?;
     Ok(chosen
         .with_own_issues(report.legality.clone())
         .with_printings(printings))
@@ -307,6 +312,62 @@ async fn assemble(source: &CardSource, lines: &[Line]) -> Result<Assembled, ApiE
         conjured,
         by_hand,
     })
+}
+
+/// The Attraction deck of `lines` (CR 717.2), one entry for each copy in line order: the card with the numbers lit up
+/// on the printing its line chose, or else on its newest paper printing. A card with no lit printing is no Attraction
+/// and stays out; the reads its cards play on join `reads`.
+async fn attractions_of(
+    source: &CardSource,
+    lines: &[Line],
+    reads: &mut Reads,
+) -> Result<Vec<(String, AttractionCard)>, ApiError> {
+    let wanted: Vec<&Line> = lines
+        .iter()
+        .filter(|line| line.zone == DeckZone::Attractions)
+        .collect();
+    if wanted.is_empty() {
+        return Ok(Vec::new());
+    }
+    let ids: Vec<OracleId> = wanted
+        .iter()
+        .map(|line| OracleId(line.oracle_id.clone()))
+        .collect();
+    let lit = source
+        .database()
+        .cards()
+        .attraction_lights(&ids)
+        .await
+        .map_err(|error| failed(&error))?;
+    let lights_of = |line: &Line| {
+        let of_card = lit
+            .iter()
+            .filter(|(card, ..)| card.as_str() == line.oracle_id);
+        line.printing_id
+            .as_deref()
+            .and_then(|chosen| {
+                of_card
+                    .clone()
+                    .find(|(_, printing, _)| printing.as_str() == chosen)
+            })
+            .or_else(|| of_card.clone().next())
+            .map(|(.., bits)| Lights(*bits))
+    };
+    let kept: Vec<(String, Lights)> = wanted
+        .iter()
+        .filter_map(|line| {
+            lights_of(line).map(|lights| (line.oracle_id.clone(), lights, line.count))
+        })
+        .flat_map(|(id, lights, count)| std::iter::repeat_n((id, lights), count as usize))
+        .collect();
+    let all: Vec<String> = kept.iter().map(|(id, _)| id.clone()).collect();
+    let (cards, pinned) = source.deck_pinned(&all).await?;
+    reads.extend(pinned);
+    Ok(kept
+        .into_iter()
+        .zip(cards)
+        .map(|((id, lights), card)| (id, AttractionCard { card, lights }))
+        .collect())
 }
 
 /// Replaces each card of `cards` (the oracle ids of `ids`, one for one) that `manual` holds with that definition.

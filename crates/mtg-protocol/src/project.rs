@@ -109,7 +109,9 @@ impl<'a> Sight<'a> {
     /// How the viewer sees the object: whole, as a face-down card that is there with no identity, or not at all.
     pub(crate) fn look(&self, object: &GameObject) -> Look {
         let id = object.id();
-        let in_view = zone_is_visible_in(self.state, object.zone(), self.viewer);
+        // A card of an Attraction deck is in no zone a seat looks into: the deck is a count.
+        let in_view = zone_is_visible_in(self.state, object.zone(), self.viewer)
+            && !self.state.in_attraction_deck(id);
         if (in_view && self.state.may_look_at(self.viewer, id))
             || self.offered.contains(&id)
             || self.state.is_shown_to(self.viewer, id)
@@ -144,6 +146,19 @@ fn zone_view(state: &GameState, viewer: PlayerId, zone: Zone) -> ZoneView {
         count: count(ids.len()),
         cards: zone_is_visible_in(state, zone, viewer).then(|| ids.to_vec()),
     }
+}
+
+/// The command zone of `seat` without the face-down cards of its Attraction deck, which `attraction_deck` counts.
+fn command_view(state: &GameState, viewer: PlayerId, seat: PlayerId) -> ZoneView {
+    let mut view = zone_view(state, viewer, Zone::Command(seat));
+    let deck = state.attraction_deck(seat);
+    if !deck.is_empty() {
+        view.count = view.count.saturating_sub(count(deck.len()));
+        if let Some(cards) = view.cards.as_mut() {
+            cards.retain(|id| !deck.contains(id));
+        }
+    }
+    view
 }
 
 /// The names of the keywords of `id`, each once, in the order the object lists them.
@@ -434,6 +449,10 @@ impl ObjectView {
             colors: chars.colors.iter().collect(),
             power: chars.power,
             toughness: chars.toughness,
+            lights: state
+                .lights(id)
+                .map(mtg_core::attraction::Lights::numbers)
+                .unwrap_or_default(),
             printed_power: card.power.filter(|_| is_token),
             printed_toughness: card.toughness.filter(|_| is_token),
             abilities: if behind {
@@ -505,6 +524,7 @@ impl ObjectView {
             colors: Vec::new(),
             power: None,
             toughness: None,
+            lights: Vec::new(),
             printed_power: None,
             printed_toughness: None,
             abilities: Vec::new(),
@@ -557,6 +577,7 @@ impl PlayerView {
                 .map(|(kind, count)| (kind.clone(), count))
                 .collect(),
             citys_blessing: state.has_citys_blessing(seat),
+            enduring_story: state.has_enduring_story(seat),
             speed: state.speed(seat),
             ring_level: state.ring_level(seat),
             ring_bearer: state.ring_bearer(seat),
@@ -576,7 +597,8 @@ impl PlayerView {
                 Vec::new()
             },
             graveyard: zone_view(state, viewer, Zone::Graveyard(seat)),
-            command: zone_view(state, viewer, Zone::Command(seat)),
+            command: command_view(state, viewer, seat),
+            attraction_deck: count(state.attraction_deck(seat).len()),
             commanders: state
                 .commanders()
                 .filter(|id| state.object(*id).is_some_and(|card| card.owner() == seat))

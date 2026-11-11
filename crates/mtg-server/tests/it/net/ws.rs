@@ -14,7 +14,7 @@ use tokio_tungstenite::tungstenite::{Error as WsError, Message};
 use tokio_tungstenite::{MaybeTlsStream, WebSocketStream, connect_async_with_config};
 
 /// No wait in a test is unbounded.
-const PATIENCE: Duration = Duration::from_secs(60);
+const PATIENCE: Duration = Duration::from_mins(1);
 
 pub type Socket = WebSocketStream<MaybeTlsStream<TcpStream>>;
 

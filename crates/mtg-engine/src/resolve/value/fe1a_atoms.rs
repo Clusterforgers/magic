@@ -50,6 +50,7 @@ impl Scope<'_> {
             Pred::AttackingPlayerOrPlaneswalker(who) => {
                 self.g13d_attacking_player_or_planeswalker(who, reference)?
             }
+            Pred::AttackingBattle => self.rmt8_attacking_battle(reference)?,
             Pred::Blocking => self
                 .state
                 .combat()
@@ -185,6 +186,23 @@ impl Scope<'_> {
     }
 
     /// Whether the creature attacks a planeswalker one of the players the reference names controls.
+    /// Whether the creature attacks a battle (CR 506.2): the permanent it attacks is a battle as the game is now.
+    fn rmt8_attacking_battle(&self, reference: ObjectRef) -> Result<bool, ResolveError> {
+        let battle = Selector(vec![Pred::Type(CardType::Battle)]);
+        for a in self.state.combat().attackers() {
+            let AttackTarget::Planeswalker(attacked) = a.target() else {
+                continue;
+            };
+            if a.object() == reference.id
+                && let Some(object) = self.state.object(attacked)
+                && self.selects(&battle, object.reference())?
+            {
+                return Ok(true);
+            }
+        }
+        Ok(false)
+    }
+
     fn g13a_attacking_planeswalker_of(
         &self,
         who: &Ref,

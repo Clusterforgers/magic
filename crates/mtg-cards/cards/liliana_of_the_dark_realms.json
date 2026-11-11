@@ -1,7 +1,7 @@
 {
   "oracle_id": "92301066-8904-41bc-84bd-4aa286cbab9c",
   "name": "Liliana of the Dark Realms",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Liliana of the Dark Realms",
@@ -80,9 +80,37 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 194, "end": 271 }
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": { "Each": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Activated": {
+                                "cost": ["Tap"],
+                                "effects": [
+                                  {
+                                    "AddMana": {
+                                      "mana": { "Fixed": ["Black", "Black", "Black", "Black"] }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

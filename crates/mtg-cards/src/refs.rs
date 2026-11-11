@@ -306,6 +306,20 @@ pub enum Pred {
     Suspected,
     /// Is solved (CR 719.3): a Case on the battlefield that has been solved.
     Solved,
+    /// Is a harnessed permanent: its ∞ ability works.
+    Harnessed,
+    /// Attacked, blocked or became blocked (as marked) since your last upkeep.
+    FoughtSinceYourLastUpkeep {
+        /// It attacked.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        attacked: bool,
+        /// It blocked.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        blocked: bool,
+        /// It became blocked.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        was_blocked: bool,
+    },
     /// Is a double-faced card (CR 712.1): a transforming or a modal double-faced card in any zone; a permanent that is a copy of one is not.
     DoubleFaced,
     /// Is transformed (CR 701.28): a transforming double-faced permanent with its back face up; a copy of one is not.
@@ -323,6 +337,8 @@ pub enum Pred {
     AttackingPlaneswalkerOf(Ref),
     /// Is the only creature attacking ("attacking alone", CR 506.5).
     AttackingAlone,
+    /// Is attacking a battle.
+    AttackingBattle,
     /// Is attacking the player or a planeswalker they control ("whenever an opponent attacks you and/or a planeswalker you
     /// control").
     AttackingPlayerOrPlaneswalker(Ref),
@@ -521,6 +537,8 @@ pub enum TargetSet {
     DifferentManaValues,
     /// Their mana values add up to at most this ("with total mana value 3 or less").
     TotalManaValueAtMost(Amount),
+    /// Their powers add up to at most this ("with total power 10 or less").
+    TotalPowerAtMost(Amount),
 }
 
 /// What a target can be.

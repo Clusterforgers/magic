@@ -1,0 +1,20 @@
+{
+  "oracle_id": "600b9ab8-36dc-4f02-b48c-091348d132ac",
+  "name": "Lich's Tomb",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lich's Tomb",
+      "oracle_fingerprint": "26ee85d79fefdcb5e86c9433a25cd275",
+      "abilities": [
+        { "Rule": { "rule": { "CantLoseGame": { "who": "You", "life_only": true } } } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 51, "end": 152 }
+          }
+        }
+      ]
+    }
+  ]
+}

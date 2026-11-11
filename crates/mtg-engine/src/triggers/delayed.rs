@@ -178,6 +178,8 @@ impl Delayed {
             | Duration::NextUntapStep
             | Duration::UntilPaid(_)
             | Duration::UntilTurnSkipped
+            | Duration::UntilSkipped
+            | Duration::UntilSkippedThisTurn
             | Duration::UntilCastFromExile => true,
         }
     }

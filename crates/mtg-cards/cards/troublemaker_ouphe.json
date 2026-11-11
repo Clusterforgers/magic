@@ -1,0 +1,31 @@
+{
+  "oracle_id": "16cdba97-73cf-44ba-9d64-f27009b829f8",
+  "name": "Troublemaker Ouphe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Troublemaker Ouphe",
+      "oracle_fingerprint": "ccd61c42ce555f4b57a55cb910cfc16d",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "AdditionalCostPaid",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

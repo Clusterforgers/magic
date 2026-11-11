@@ -6,6 +6,7 @@ import {
   costKeysWords,
   costsAnswer,
   costsSentence,
+  isSplice,
   extraCost,
   extraCostWords,
   labelPieces,
@@ -96,6 +97,23 @@ describe('the words and the answer', () => {
     [3, 'Burst Lightning: 3 optional costs chosen. Confirm, or change the choice.'],
   ])('says %i chosen', (chosen, sentence) => {
     expect(costsSentence('Burst Lightning', chosen)).toBe(sentence)
+  })
+
+  it.each<[number, string]>([
+    [0, 'Glacial Ray: choose the cards to reveal and splice onto it, or none.'],
+    [1, 'Glacial Ray: 1 card to splice. Confirm, or change the choice.'],
+    [2, 'Glacial Ray: 2 cards to splice. Confirm, or change the choice.'],
+  ])('says %i spliced', (chosen, sentence) => {
+    expect(costsSentence('Glacial Ray', chosen, true)).toBe(sentence)
+  })
+
+  it.each<[string[], boolean]>([
+    [['Splice Glacial Ray {1}{R}'], true],
+    [['Splice Glacial Ray {1}{R}', 'Splice Torrent of Stone {4}{R}'], true],
+    [['Kicker {2}'], false],
+    [[], false],
+  ])('%j are cards to splice: %s', (labels, splice) => {
+    expect(isSplice(labels.map((label, index) => ({ index, label })))).toBe(splice)
   })
 
   it.each<[number, string]>([

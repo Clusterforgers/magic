@@ -32,6 +32,14 @@ type VariantName<E> = E extends string ? E : E extends object ? keyof E : never
 const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   FirstPlayerChosen: [{ FirstPlayerChosen: { player: 1 } }, 'Bo goes first'],
   LibraryShuffled: [{ LibraryShuffled: { player: 0, order: [] } }, 'Ana shuffles their library'],
+  AttractionDeckShuffled: [
+    { AttractionDeckShuffled: { player: 0, order: [3, 4] } },
+    'Ana shuffles their Attraction deck',
+  ],
+  RolledToVisit: [
+    { RolledToVisit: { player: 1, result: 6, visited: [5, 6] } },
+    'Bo rolls 6 to visit their Attractions: 2 are visited',
+  ],
   MulliganPhaseBegan: ['MulliganPhaseBegan', 'The mulligan phase begins'],
   HandDealt: [{ HandDealt: { player: 0, cards: [1, 2, 3, 4, 5, 6, 3] } }, 'Ana is dealt 7 cards'],
   MulliganDeclared: [{ MulliganDeclared: { player: 1 } }, 'Bo decides to mulligan'],
@@ -66,6 +74,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Unpaired: [{ Unpaired: { object: 3, with: 1 } }, 'Forest is no longer paired with Grizzly Bears'],
   JoinedAttack: [{ JoinedAttack: { object: 3, target: { Player: 0 } } }, 'Forest enters attacking Ana'],
   RemovedFromCombat: [{ RemovedFromCombat: { object: 3 } }, 'Forest is removed from combat'],
+  AttackersBlocked: [{ AttackersBlocked: { attackers: [3] } }, 'Forest becomes blocked'],
   ManualAction: [
     { ManualAction: { player: 0, action: { Move: { object: 3, to: 'Graveyard' } } } },
     'Ana moves Forest to the graveyard (by hand)',
@@ -77,6 +86,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Suspected: [{ Suspected: { object: 3 } }, 'Forest becomes suspected'],
   Unsuspected: [{ Unsuspected: { object: 3 } }, 'Forest is no longer suspected'],
   Solved: [{ Solved: { object: 3 } }, 'Forest is solved'],
+  Harnessed: [{ Harnessed: { object: 3 } }, 'Forest is harnessed'],
   BecameCopy: [
     { BecameCopy: { object: 3, of: { id: 5, counter: 0 } } },
     'Forest becomes a copy of Serra Angel',
@@ -101,6 +111,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   EmblemCreated: [{ EmblemCreated: { object: 9, owner: 1 } }, 'Bo gets an emblem'],
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
+  EvidenceCollected: [{ EvidenceCollected: { player: 1 } }, 'Bo collects evidence'],
   DieRolled: [{ DieRolled: { player: 1, sides: 20, result: 14 } }, 'Bo rolls a d20: 14'],
   CoinFlipped: [
     { CoinFlipped: { player: 1, won: true, call: 'Tails', side: 'Tails' } },
@@ -112,6 +123,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   Clashed: [{ Clashed: { player: 1, opponent: 2, won: false } }, 'Bo loses a clash with Cy'],
   CitysBlessingGained: [{ CitysBlessingGained: { player: 1 } }, "Bo gets the city's blessing"],
+  EnduringStoryGained: [{ EnduringStoryGained: { player: 1 } }, 'Bo gets an enduring story'],
   SpeedChanged: [{ SpeedChanged: { player: 1, speed: 2 } }, "Bo's speed becomes 2"],
   RingTempted: [
     { RingTempted: { player: 1, level: 2, bearer: 3 } },
@@ -146,6 +158,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Forest is crewed by Grizzly Bears and Hill Giant',
   ],
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
+  TurnedFaceDown: [{ TurnedFaceDown: { object: 3, player: 1 } }, 'Bo turns Forest face down'],
   DoorUnlocked: [{ DoorUnlocked: { object: 3, door: 1, player: 1 } }, 'Bo unlocks a door of Forest'],
   Mutated: [{ Mutated: { object: 3, spell: 9, over: true, player: 1 } }, 'Bo mutates a creature over Forest'],
   CardParted: [
@@ -205,6 +218,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
       },
     },
     'Bo attacks Ana with Grizzly Bears and Hill Giant',
+  ],
+  BandFormed: [
+    { BandFormed: { player: 1, attackers: [1, 2] } },
+    'Bo bands Grizzly Bears and Hill Giant together',
   ],
   BlockersDeclared: [
     { BlockersDeclared: { player: 0, blocks: [[2, 1]] } },
@@ -407,6 +424,17 @@ const MORE: [Event, string][] = [
       ZoneChanged: {
         object: 3,
         from: { Graveyard: 0 },
+        to: 'Battlefield',
+        cause: { PutFaceDown: { by: 0 } },
+      },
+    },
+    'Forest is put onto the battlefield face down',
+  ],
+  [
+    {
+      ZoneChanged: {
+        object: 3,
+        from: { Graveyard: 0 },
         to: 'Exile',
         cause: { Haunting: { of: { id: 9, counter: 1 } } },
       },
@@ -505,6 +533,7 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   AnnouncementRewound: [{ AnnouncementRewound: { player: 1 } }, 'Bo could not finish a play'],
   HandDealt: [{ HandDealt: { player: 1, count: 7 } }, 'Bo is dealt 7 cards'],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
+  AttractionDeckShuffled: [{ AttractionDeckShuffled: { player: 1 } }, 'Bo shuffles their Attraction deck'],
   LibraryRefilled: [
     { LibraryRefilled: { player: 1, count: 5 } },
     'Bo shuffles their graveyard into their library',
@@ -837,6 +866,14 @@ describe('events with more than one shape', () => {
     [
       effect(objects(2), { RemoveKeyword: 'Flying' }, 'UntilEndOfTurn'),
       'Hill Giant loses flying until end of turn',
+    ],
+    [
+      effect(objects(2), { RemoveKeywordKind: 'Landwalk' }, 'UntilEndOfTurn'),
+      'Hill Giant loses all landwalk abilities until end of turn',
+    ],
+    [
+      effect(objects(1, 2), { RemoveKeywordKind: 'Ward' }, 'UntilEndOfTurn'),
+      'Grizzly Bears and Hill Giant lose ward until end of turn',
     ],
     [
       effect(objects(2), { LockKeyword: 'Flying' }, 'UntilEndOfTurn'),

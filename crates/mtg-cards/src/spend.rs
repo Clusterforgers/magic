@@ -77,6 +77,22 @@ pub enum SpendFact {
     Devoid,
     /// It has flashback ("spells with flashback").
     Flashback,
+    /// It is a commander its caster owns ("your commander").
+    YourCommander,
+    /// It is cast face down ("face-down spells", CR 708.4).
+    FaceDown,
+}
+
+/// A special action (CR 116.2) whose cost restricted mana may pay.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum SpecialAction {
+    /// Turning a face-down permanent face up (CR 116.2b).
+    TurnFaceUp,
+    /// Unlocking a door of a Room (CR 709.5).
+    Unlock,
+    /// Foretelling a card from a hand (CR 702.143a).
+    Foretell,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
@@ -167,6 +183,14 @@ pub struct SpendTraits {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub flashback: bool,
+    /// It is a commander its caster owns.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub your_commander: bool,
+    /// It is cast face down.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub face_down: bool,
 }
 
 impl SpendFilter {
@@ -218,6 +242,8 @@ impl SpendFilter {
                 SpendFact::NotFromHand => traits.not_from_hand,
                 SpendFact::Devoid => traits.devoid,
                 SpendFact::Flashback => traits.flashback,
+                SpendFact::YourCommander => traits.your_commander,
+                SpendFact::FaceDown => traits.face_down,
             })
     }
 }
@@ -268,6 +294,8 @@ pub enum SpendOn {
     /// Not a restriction: a spell of the kind that this mana is spent on enters with more counters or gains a keyword
     /// ("If that mana is spent on a creature spell, it gains haste until end of turn").
     Enters(Box<EntersBonus>),
+    /// Paying for a special action of the kind ("to turn permanents face up", "unlock a door").
+    Special(SpecialAction),
 }
 
 /// What a permanent spell gets when mana with the rider is spent to cast it: additional +1/+1 counters as it enters
@@ -373,6 +401,7 @@ impl SpendOn {
             SpendOn::When(rider) => rider.entry(chosen, rider.source)?,
             SpendOn::Uncounterable(filter) => SpendOn::Uncounterable(filter.resolved(chosen)?),
             SpendOn::Snow => SpendOn::Snow,
+            SpendOn::Special(action) => SpendOn::Special(*action),
             SpendOn::Enters(bonus) => SpendOn::Enters(Box::new(EntersBonus {
                 spell: bonus.spell.resolved(chosen)?,
                 ..(**bonus).clone()

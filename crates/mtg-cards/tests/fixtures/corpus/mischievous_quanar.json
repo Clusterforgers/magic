@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "dc48c2db-f5b4-4c24-a5fa-00750b7ff56f",
+  "oracle_id": "30e3e48c-98dc-4d27-b7ea-e81d39f7d24e",
+  "multiverse_ids": [
+    44403
+  ],
+  "mtgo_id": 18852,
+  "mtgo_foil_id": 18853,
+  "tcgplayer_id": 10868,
+  "cardmarket_id": 1035,
+  "name": "Mischievous Quanar",
+  "lang": "en",
+  "released_at": "2003-05-26",
+  "uri": "https://api.scryfall.com/cards/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f",
+  "scryfall_uri": "https://scryfall.com/card/scg/42/mischievous-quanar?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:14:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/c/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f.jpg?1783944885",
+    "normal": "https://cards.scryfall.io/normal/front/d/c/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f.jpg?1783944885",
+    "large": "https://cards.scryfall.io/large/front/d/c/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f.jpg?1783944885",
+    "png": "https://cards.scryfall.io/png/front/d/c/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f.png?1783944885",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/c/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f.jpg?1783944885",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/c/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f.jpg?1783944885",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/c/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f.webp?1783944885",
+    "grid": "https://cards.scryfall.io/grid/front/d/c/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f.webp?1783944885",
+    "display": "https://cards.scryfall.io/display/front/d/c/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f.webp?1783944885",
+    "art": "https://cards.scryfall.io/art/front/d/c/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f.webp?1783944885",
+    "crop": "https://cards.scryfall.io/crop/front/d/c/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f.webp?1783944885",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/c/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f.jpg?1783944885"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "{3}{U}{U}: Turn this creature face down.\nMorph {1}{U}{U} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)\nWhen this creature is turned face up, copy target instant or sorcery spell. You may choose new targets for that copy.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Morph"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "dc48c2db-f5b4-4c24-a5fa-00750b7ff56f",
+      "component": "combo_piece",
+      "name": "Mischievous Quanar",
+      "type_line": "Creature — Beast",
+      "uri": "https://api.scryfall.com/cards/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f"
+    },
+    {
+      "object": "related_card",
+      "id": "5430da88-b72e-4d64-bd3c-b21062cac1c2",
+      "component": "combo_piece",
+      "name": "Morph",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/5430da88-b72e-4d64-bd3c-b21062cac1c2"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5133c3a1-1412-4ce6-a1f0-73b695966ded",
+  "set": "scg",
+  "set_name": "Scourge",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5133c3a1-1412-4ce6-a1f0-73b695966ded",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ascg&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/scg?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dc48c2db-f5b4-4c24-a5fa-00750b7ff56f/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A30e3e48c-98dc-4d27-b7ea-e81d39f7d24e&unique=prints",
+  "collector_number": "42",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lars Grant-West",
+  "artist_ids": [
+    "21ed6499-c4d3-4965-ab02-6c7228275bec"
+  ],
+  "illustration_id": "5aded896-7471-4505-8c44-9d3d259b0a73",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13743,
+  "penny_rank": 17539,
+  "prices": {
+    "usd": "0.97",
+    "usd_foil": "12.32",
+    "usd_etched": null,
+    "eur": "0.63",
+    "eur_foil": "7.40",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=44403&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMischievous%2BQuanar",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMischievous%2BQuanar",
+    "edhrec": "https://edhrec.com/route/?cc=Mischievous+Quanar"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F10868%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=1035&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/18852?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

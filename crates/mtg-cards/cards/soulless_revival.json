@@ -1,7 +1,7 @@
 {
   "oracle_id": "5f00dcc4-38e7-4dde-96d4-f8d4c08b334a",
   "name": "Soulless Revival",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Soulless Revival",
@@ -19,12 +19,7 @@
             "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 62, "end": 233 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{1}{B}" } } }
       ]
     }
   ]

@@ -196,7 +196,7 @@ async fn run_sync(
             &progress,
         )
     });
-    let result = tokio::time::timeout(Duration::from_secs(120), task)
+    let result = tokio::time::timeout(Duration::from_mins(2), task)
         .await
         .unwrap_or_else(|_| panic!("the run hangs"))
         .unwrap_or_else(|e| panic!("the run task ends: {e}"));
@@ -229,7 +229,7 @@ async fn run_batch(
         }
         .run(&cards, &targets)
     });
-    let result = tokio::time::timeout(Duration::from_secs(300), task)
+    let result = tokio::time::timeout(Duration::from_mins(5), task)
         .await
         .unwrap_or_else(|_| panic!("the batch run hangs"))
         .unwrap_or_else(|e| panic!("the run task ends: {e}"));

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b6f8cc3b-b8f1-4b1a-8768-eddcb0631d80",
+  "name": "Eater of Virtue",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Eater of Virtue",
+      "oracle_fingerprint": "318dd77b5dea932f1609720e3bfcf2c6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "SameCard": "Triggering" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 73, "end": 316 }
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

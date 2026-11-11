@@ -1,0 +1,47 @@
+{
+  "oracle_id": "a77510ef-baf0-4cc5-b659-6aaaed0b02f4",
+  "name": "Supernatural Rescue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Supernatural Rescue",
+      "oracle_fingerprint": "0b3979ec836b16f242af6696709df59d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "In": "Hand" }, "This"] },
+            "mods": [{ "AddKeyword": "Flash" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Spirit" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Hand"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

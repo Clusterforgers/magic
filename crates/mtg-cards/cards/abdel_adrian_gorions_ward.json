@@ -1,0 +1,52 @@
+{
+  "oracle_id": "cab092f9-b7ff-43b9-935f-310869a4daf8",
+  "name": "Abdel Adrian, Gorion's Ward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abdel Adrian, Gorion's Ward",
+      "oracle_fingerprint": "58716b0a6cf085bf9b85ed64adc46ca2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Not": { "Type": "Land" } }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Exile": {
+                  "what": { "Bound": "chosen" },
+                  "as": "exiled",
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": [{ "Is": { "Bound": "exiled" } }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

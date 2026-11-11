@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c815d510-73c9-4a8b-9947-f478a2f5297d",
+  "name": "Gravestorm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gravestorm",
+      "oracle_fingerprint": "9a5caec8eaee9dc17d650ec27668b8c3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "Target": 0 },
+                  "cost": [{ "ExileFromGraveyard": { "filter": [] } }],
+                  "unpaid": [{ "May": { "effects": [{ "Draw": {} }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

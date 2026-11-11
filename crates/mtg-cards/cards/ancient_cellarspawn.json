@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b8510b34-0e5f-4639-9db1-1ba40d84b800",
+  "name": "Ancient Cellarspawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Cellarspawn",
+      "oracle_fingerprint": "09754586808de60f93262c6ce0dc9e3a",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              {
+                "AnyOf": [
+                  { "Subtype": "Demon" },
+                  { "Subtype": "Horror" },
+                  { "Subtype": "Nightmare" }
+                ]
+              },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "ManaSpent" } },
+                "op": "Lt",
+                "right": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "Difference": [
+                      { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                      { "Stat": { "of": "Triggering", "stat": "ManaSpent" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

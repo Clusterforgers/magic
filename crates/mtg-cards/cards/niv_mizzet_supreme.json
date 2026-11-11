@@ -1,0 +1,23 @@
+{
+  "oracle_id": "4c3a865a-88b1-43e0-b326-17c45670da54",
+  "name": "Niv-Mizzet, Supreme",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Niv-Mizzet, Supreme",
+      "oracle_fingerprint": "822a3e2be014bcbbf4b70289a7ccf40e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Keyword": { "HexproofFrom": [{ "Compare": { "stat": "Colors", "op": "Eq", "to": 1 } }] }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 34, "end": 243 }
+          }
+        }
+      ]
+    }
+  ]
+}

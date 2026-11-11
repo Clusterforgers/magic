@@ -325,6 +325,26 @@ pub(super) fn energy_text(amount: &Amount) -> Option<String> {
     }
 }
 
+/// The ticket symbols of a count (CR 107.17): "{TK}{TK}" for two.
+pub(super) fn tickets_text(amount: &Amount) -> Option<String> {
+    match amount {
+        Amount::Fixed(count) if *count > 0 => Some("{TK}".repeat(usize::try_from(*count).ok()?)),
+        _ => None,
+    }
+}
+
+/// A run of ticket symbols (CR 107.17): "{TK}{TK}" is two ticket counters.
+pub(super) fn tickets(r: &mut Reader<'_>) -> Option<Amount> {
+    let mut count = 0;
+    while r
+        .attempt(|r| r.symbol().filter(|symbol| *symbol == "TK"))
+        .is_some()
+    {
+        count += 1;
+    }
+    (count > 0).then_some(Amount::Fixed(count))
+}
+
 /// A run of energy symbols: "{E}{E}" is two energy, "X {E}" the number announced.
 pub(super) fn energy(r: &mut Reader<'_>) -> Option<Amount> {
     let x = r.x_free && r.word("x");
@@ -382,7 +402,7 @@ fn w9c_either_subtype(r: &mut Reader<'_>) -> Option<Selector> {
 
 /// Whether a predicate of a sacrificed permanent says what kind it is, or that it is another one.
 fn is_cost_filter(pred: &Pred) -> bool {
-    *pred == Pred::Other || describes_a_kind(pred)
+    *pred == Pred::Other || describes_a_kind(pred) || matches!(pred, Pred::Named(_))
 }
 
 /// Whether the cost takes objects out of their zones (a sacrifice, a discard, an exile), which the effects name as
@@ -583,7 +603,13 @@ fn sacrifice_text(filter: &Selector, count: &Amount) -> Option<String> {
         return None;
     };
     if *number == 1 {
-        let text = phrase_text(filter, Form::Subject)?;
+        // A token the card names: "Sacrifice a token named Wood".
+        let named = filter
+            .0
+            .contains(&Pred::Token)
+            .then(|| super::rmt7_atoms::rmt7_named_phrase(filter, Form::Subject))
+            .flatten();
+        let text = named.or_else(|| phrase_text(filter, Form::Subject))?;
         return Some(if filter.0.contains(&Pred::Other) {
             format!("Sacrifice {text}")
         } else {

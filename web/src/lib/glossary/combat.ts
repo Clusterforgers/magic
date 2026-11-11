@@ -57,6 +57,10 @@ export const COMBAT: readonly Entry[] = [
     'Banding',
     'Creatures with banding attack or block together, and their controller divides the damage dealt to them.',
   ],
+  [
+    'Bands with other',
+    'Banding among creatures of the named kind: they attack in a band together, and their controller divides the damage dealt to them.',
+  ],
   ['Bushido', 'Whenever this creature blocks or becomes blocked, it gets +N/+N until end of turn.'],
   [
     'Rampage',

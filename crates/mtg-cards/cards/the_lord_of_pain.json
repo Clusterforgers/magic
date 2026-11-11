@@ -1,7 +1,7 @@
 {
   "oracle_id": "b194f277-5045-4391-8b48-d555a6d657a7",
   "name": "The Lord of Pain",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Lord of Pain",
@@ -10,9 +10,28 @@
         { "Keyword": "Menace" },
         { "Rule": { "rule": { "CantGainLife": "Opponents" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 39, "end": 206 }
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": {} }, "nth": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "PlayerAmong": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "Among": "TriggeringPlayer" } }
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
           }
         }
       ]

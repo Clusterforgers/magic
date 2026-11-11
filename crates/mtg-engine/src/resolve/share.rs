@@ -22,7 +22,7 @@ pub(super) struct Share {
 }
 
 /// Whether the amount reads a division, directly or in a sum (the places `Divided` and `EvenShare` are allowed).
-fn reads_division(amount: &Amount) -> bool {
+pub(crate) fn reads_division(amount: &Amount) -> bool {
     match amount {
         Amount::Divided | Amount::EvenShare(_) => true,
         Amount::Sum(parts) => parts.iter().any(reads_division),

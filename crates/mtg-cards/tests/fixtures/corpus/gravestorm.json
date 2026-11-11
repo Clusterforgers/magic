@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "5e273b71-85ca-49d2-ba96-70cc0ae8d718",
+  "oracle_id": "c815d510-73c9-4a8b-9947-f478a2f5297d",
+  "multiverse_ids": [
+    29935
+  ],
+  "mtgo_id": 16763,
+  "mtgo_foil_id": 16764,
+  "tcgplayer_id": 9416,
+  "cardmarket_id": 2553,
+  "name": "Gravestorm",
+  "lang": "en",
+  "released_at": "2001-10-01",
+  "uri": "https://api.scryfall.com/cards/5e273b71-85ca-49d2-ba96-70cc0ae8d718",
+  "scryfall_uri": "https://scryfall.com/card/ody/141/gravestorm?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:20:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/e/5e273b71-85ca-49d2-ba96-70cc0ae8d718.jpg?1783945245",
+    "normal": "https://cards.scryfall.io/normal/front/5/e/5e273b71-85ca-49d2-ba96-70cc0ae8d718.jpg?1783945245",
+    "large": "https://cards.scryfall.io/large/front/5/e/5e273b71-85ca-49d2-ba96-70cc0ae8d718.jpg?1783945245",
+    "png": "https://cards.scryfall.io/png/front/5/e/5e273b71-85ca-49d2-ba96-70cc0ae8d718.png?1783945245",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/e/5e273b71-85ca-49d2-ba96-70cc0ae8d718.jpg?1783945245",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/e/5e273b71-85ca-49d2-ba96-70cc0ae8d718.jpg?1783945245",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/e/5e273b71-85ca-49d2-ba96-70cc0ae8d718.webp?1783945245",
+    "grid": "https://cards.scryfall.io/grid/front/5/e/5e273b71-85ca-49d2-ba96-70cc0ae8d718.webp?1783945245",
+    "display": "https://cards.scryfall.io/display/front/5/e/5e273b71-85ca-49d2-ba96-70cc0ae8d718.webp?1783945245",
+    "art": "https://cards.scryfall.io/art/front/5/e/5e273b71-85ca-49d2-ba96-70cc0ae8d718.webp?1783945245",
+    "crop": "https://cards.scryfall.io/crop/front/5/e/5e273b71-85ca-49d2-ba96-70cc0ae8d718.webp?1783945245",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/e/5e273b71-85ca-49d2-ba96-70cc0ae8d718.jpg?1783945245"
+  },
+  "mana_cost": "{B}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your upkeep, target opponent may exile a card from their graveyard. If that player doesn't, you may draw a card.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0d90d2d-494a-4224-bfa0-36ce5ee281b1",
+  "set": "ody",
+  "set_name": "Odyssey",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0d90d2d-494a-4224-bfa0-36ce5ee281b1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aody&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ody?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5e273b71-85ca-49d2-ba96-70cc0ae8d718/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac815d510-73c9-4a8b-9947-f478a2f5297d&unique=prints",
+  "collector_number": "141",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alex Horley-Orlandelli",
+  "artist_ids": [
+    "1631a2ad-bf03-4ab9-b86c-60da982d58a1"
+  ],
+  "illustration_id": "f569865a-daee-4e6f-b08d-6be6f0f9979c",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17299,
+  "penny_rank": 3439,
+  "prices": {
+    "usd": "6.45",
+    "usd_foil": "27.85",
+    "usd_etched": null,
+    "eur": "3.15",
+    "eur_foil": "22.78",
+    "tix": "0.56"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=29935&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGravestorm",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGravestorm",
+    "edhrec": "https://edhrec.com/route/?cc=Gravestorm"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F9416%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2553&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/16763?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

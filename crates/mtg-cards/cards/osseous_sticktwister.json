@@ -1,0 +1,20 @@
+{
+  "oracle_id": "33c3a81a-6cea-48c9-b966-67084d96e74f",
+  "name": "Osseous Sticktwister",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Osseous Sticktwister",
+      "oracle_fingerprint": "2146956cc9f88cc842d05eafc5f24774",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 9, "end": 334 }
+          }
+        }
+      ]
+    }
+  ]
+}

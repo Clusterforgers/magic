@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d297ce39-da98-4351-be9d-24f4d09bee7f",
+  "name": "Kunoros, Hound of Athreos",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kunoros, Hound of Athreos",
+      "oracle_fingerprint": "8415e22a8c9099da70fd005ab1e025d9",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 28, "end": 85 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 86, "end": 128 }
+          }
+        }
+      ]
+    }
+  ]
+}

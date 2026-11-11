@@ -1,0 +1,31 @@
+{
+  "oracle_id": "f91c860e-3feb-4a5a-b7ef-4e7d38d61c75",
+  "name": "Rewrite History",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rewrite History",
+      "oracle_fingerprint": "d896aa94c388b3c20459fc2f174daea3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "Tapped": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            },
+            "effects": [
+              { "Draw": {} },
+              { "Discard": {} },
+              { "PutCounters": { "on": "This", "counter": { "Other": "plan" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 135, "end": 305 }
+          }
+        }
+      ]
+    }
+  ]
+}

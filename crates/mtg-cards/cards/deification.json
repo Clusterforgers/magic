@@ -1,0 +1,33 @@
+{
+  "oracle_id": "8c8f93d7-d89a-401b-8764-76be71ad16e3",
+  "name": "Deification",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Deification",
+      "oracle_fingerprint": "6d782cca74b7b5fe21aacdf0907f8257",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 55 }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }, "ChosenSubtype"]
+            },
+            "mods": [{ "AddKeyword": "Hexproof" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 116, "end": 324 }
+          }
+        }
+      ]
+    }
+  ]
+}

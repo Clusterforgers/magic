@@ -1,16 +1,21 @@
 {
   "oracle_id": "699610c9-c991-4faf-b712-d015ef0799ad",
   "name": "Doc Samson, Super Psychiatrist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Doc Samson, Super Psychiatrist",
       "oracle_fingerprint": "42a535a040d339cad969ab1bec8d8d33",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 150 }
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "ControlledBy": "You" }, { "In": "Battlefield" }] },
+                "by": "You"
+              }
+            },
+            "by": { "Add": 1 }
           }
         },
         {

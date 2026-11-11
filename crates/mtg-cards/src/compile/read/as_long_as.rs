@@ -283,6 +283,20 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     if *condition == Condition::YourTurn {
         return vec!["it's your turn".to_owned()];
     }
+    // "it was cast": the permanent came from a spell, cast from anywhere by anyone (rmt4, The Tarrasque).
+    if let Condition::Matches {
+        subject: Ref::This,
+        selector,
+    } = condition
+        && let [
+            Pred::WasCast {
+                by: None,
+                from: None,
+            },
+        ] = selector.0.as_slice()
+    {
+        return vec!["it was cast".to_owned()];
+    }
     // "it has a +1/+1 counter on it": the object matches "has a counter of the kind", one counter or more.
     if let Condition::Matches { subject, selector } = condition
         && let [Pred::HasCounter(counter)] = selector.0.as_slice()

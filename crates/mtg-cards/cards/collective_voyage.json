@@ -1,0 +1,60 @@
+{
+  "oracle_id": "00f82f84-81a5-45e5-9c35-9d627a180950",
+  "name": "Collective Voyage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Collective Voyage",
+      "oracle_fingerprint": "6d444f96f794d3b504c9eb76c86bc42e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "player" },
+                        "cost": "{X}",
+                        "paid": [{ "RememberValue": { "value": "X", "slot": "paid" } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "searcher",
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "Bound": "searcher" },
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "count": {
+                          "min": 0,
+                          "max": { "Remembered": { "on": "This", "slot": "paid" } }
+                        },
+                        "as": "lands"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "lands" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": { "who": { "Bound": "searcher" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

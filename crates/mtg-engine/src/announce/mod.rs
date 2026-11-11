@@ -26,6 +26,7 @@ mod payment;
 pub(crate) mod plot;
 mod price;
 pub(crate) mod required;
+mod splice;
 pub(crate) mod suspend;
 mod targets;
 mod total;
@@ -69,7 +70,7 @@ pub(crate) enum What {
     /// A triggered ability that waits in the queue; its targets are chosen as it goes on the stack (CR 603.3d).
     Trigger(Box<PendingTrigger>),
     /// An attack declared whose cost is not paid yet (CR 508.1h); only its payment is asked (`attack_tax`).
-    Attack(Vec<(ObjectId, AttackTarget)>, Vec<ObjectId>),
+    Attack(Vec<(ObjectId, AttackTarget)>, crate::combat::AttackExtras),
     /// A block declared whose cost is not paid yet (CR 509.1d); only its payment is asked (`block_tax`).
     Block(Vec<(ObjectId, ObjectId)>),
 }
@@ -81,6 +82,8 @@ pub(crate) enum Phase {
     Face,
     /// The modes of a modal spell or ability (CR 601.2b, 700.2).
     Modes,
+    /// The cards of the hand spliced onto the spell (CR 601.2b, 702.47a).
+    Splice,
     /// The alternative cost the spell is cast for (CR 601.2b, 118.9).
     Alternative,
     /// The optional costs paid in addition (CR 601.2b, 118.8, 702.33).
@@ -106,8 +109,9 @@ pub(crate) enum Phase {
 impl Phase {
     /// The steps in the order of the rules; the announcement asks them one after the other and a step that has
     /// nothing to ask passes to the next.
-    pub(crate) const ORDER: [Phase; 11] = [
+    pub(crate) const ORDER: [Phase; 12] = [
         Phase::Modes,
+        Phase::Splice,
         Phase::Alternative,
         Phase::Optional,
         Phase::Parts,
@@ -126,6 +130,7 @@ impl Phase {
         match self {
             Phase::Face
             | Phase::Modes
+            | Phase::Splice
             | Phase::Alternative
             | Phase::Optional
             | Phase::Parts
@@ -146,6 +151,7 @@ impl Phase {
             }
             Phase::Parts => Unplayable::Cost,
             Phase::Alternative
+            | Phase::Splice
             | Phase::Optional
             | Phase::X
             | Phase::Total
@@ -160,6 +166,7 @@ impl Phase {
             // The face is settled before the steps that read the card (`announce`).
             Phase::Face => None,
             Phase::Modes => modes::run(ctx, work),
+            Phase::Splice => splice::run(ctx, work),
             Phase::Alternative => alternative::run(ctx, work),
             Phase::Optional => optional::run(ctx, work),
             Phase::Parts => parts::run(ctx, work),
@@ -191,6 +198,8 @@ pub(crate) struct Needs {
     pub(crate) price: Option<Box<Price>>,
     /// The costs of the modes of a modal spell (Spree, Tiered, Escalate).
     pub(crate) modes: Option<price::ModeCosts>,
+    /// The cards of the caster's hand that may be spliced onto the spell.
+    pub(crate) splice: Vec<crate::keywords::splice::Spliceable>,
 }
 
 /// What a resolution lets a player cast (CR 608.2g): the spell goes on the stack as part of the resolution, with no
@@ -226,6 +235,7 @@ impl Needs {
             } else {
                 None
             },
+            splice: splice::read(state, player, what),
         }
     }
 
@@ -270,6 +280,8 @@ pub(crate) struct Done {
     pub(crate) alternative: bool,
     /// The way the player picked among those offered, by position in the options.
     pub(crate) way_picked: Option<usize>,
+    /// The cards spliced onto the spell are settled.
+    pub(crate) splice: bool,
     /// The optional costs are settled.
     pub(crate) optional: bool,
     /// Once the optional costs that may be paid once are settled: how many of those that may be paid any number of
@@ -456,7 +468,7 @@ impl Pending {
         } else {
             state
         };
-        let held = rules_of(state, &self.what);
+        let held = rules_of(state, &self.what, self.choices.spliced());
         let ctx = Ctx {
             state,
             player: self.player,
@@ -500,6 +512,7 @@ impl Pending {
                 Phase::Optional
             }
             Answered::Number(_) => Phase::X,
+            Answered::Costs(_) if self.done.asked == Some(Phase::Splice) => Phase::Splice,
             Answered::Costs(_) => Phase::Optional,
             Answered::Division(_) => Phase::Division,
             Answered::Assisted(_) => Phase::Assist,
@@ -544,6 +557,15 @@ impl Pending {
             Answered::Number(number) => {
                 self.choices.x = Some(number);
                 self.done.x = true;
+            }
+            Answered::Costs(picked) if wanted == Phase::Splice => {
+                let offered = self
+                    .needs
+                    .as_ref()
+                    .map_or(&[][..], |needs| &needs.splice[..]);
+                let cards = splice::chosen(offered, &picked);
+                self.choices.set_spliced(cards);
+                self.done.splice = true;
             }
             Answered::Costs(costs) => {
                 self.choices.optional_costs = costs;
@@ -651,13 +673,13 @@ fn source_of(what: &What) -> ObjectId {
     }
 }
 
-/// The rules of the spell or ability being announced.
-fn rules_of(state: &GameState, what: &What) -> Option<Arc<Ability>> {
+/// The rules of the spell or ability being announced, with the effects of the cards `spliced` onto a spell.
+fn rules_of(state: &GameState, what: &What, spliced: &[ObjectId]) -> Option<Arc<Ability>> {
     let object = state.object(source_of(what));
     match what {
         What::Spell(spell) => object
             .and_then(|_| spell_ability(state, *spell))
-            .map(|(_, rules)| rules),
+            .map(|(_, rules)| crate::keywords::splice::with_spliced(state, rules, spliced)),
         What::Ability(address) => object.and_then(|_| ability_reader::ability(state, *address)),
         What::Trigger(waiting) => Some(Arc::clone(&waiting.rules)),
         What::Attack(..) | What::Block(_) => None,
@@ -721,7 +743,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         }
         _ => state,
     };
-    let held = rules_of(state, what);
+    let held = rules_of(state, what, choices.spliced());
     let needs: &Needs = needs
         .get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref(), granted.clone()));
     let ctx = Ctx {

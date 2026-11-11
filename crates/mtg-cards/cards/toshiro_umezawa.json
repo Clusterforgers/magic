@@ -1,0 +1,48 @@
+{
+  "oracle_id": "11838086-db2f-4588-ae18-4129c9e2b67d",
+  "name": "Toshiro Umezawa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toshiro Umezawa",
+      "oracle_fingerprint": "189fae6f66103426e13048c49853b485",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "bushido", "amount": 1 } } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Instant" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "CastFromZone": { "what": { "Target": 0 }, "as": "cast" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

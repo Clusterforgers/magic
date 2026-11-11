@@ -1,7 +1,7 @@
 {
   "oracle_id": "e83e1f99-1f9b-49fc-bdc7-5f6335e401e4",
   "name": "Blessed Breath",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Blessed Breath",
@@ -23,12 +23,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 94, "end": 262 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{W}" } } }
       ]
     }
   ]

@@ -343,7 +343,15 @@ player: PlayerId,
 /**
  * Each attacker and its target.
  */
-attackers: Array<[ObjectId, AttackTarget]>, } } | { "BlockersDeclared": { 
+attackers: Array<[ObjectId, AttackTarget]>, } } | { "BandFormed": { 
+/**
+ * The attacking player.
+ */
+player: PlayerId, 
+/**
+ * The members of the band.
+ */
+attackers: Array<ObjectId>, } } | { "BlockersDeclared": { 
 /**
  * The defending player.
  */
@@ -392,7 +400,11 @@ unpreventable?: boolean, } } | "CombatEnded" | "DamageCleared" | { "RemovedFromC
 /**
  * The creature.
  */
-object: ObjectId, } } | { "Regenerated": { 
+object: ObjectId, } } | { "AttackersBlocked": { 
+/**
+ * The attackers, each not blocked before.
+ */
+attackers: Array<ObjectId>, } } | { "Regenerated": { 
 /**
  * The permanent.
  */
@@ -694,6 +706,10 @@ object: ObjectId, } } | { "Solved": {
 /**
  * The permanent.
  */
+object: ObjectId, } } | { "Harnessed": { 
+/**
+ * The permanent.
+ */
 object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy } | { "CardCopied": CardCopy } | { "CopyCeased": { 
 /**
  * The copy.
@@ -738,6 +754,10 @@ speed: number, } } | { "CitysBlessingGained": {
 /**
  * Who got it.
  */
+player: PlayerId, } } | { "EnduringStoryGained": { 
+/**
+ * Who got it.
+ */
 player: PlayerId, } } | { "Ventured": W11dVentured } | { "DungeonCompleted": { 
 /**
  * Who completed it.
@@ -758,6 +778,10 @@ object: ObjectId, } } | { "Learned": {
 /**
  * Who learned.
  */
+player: PlayerId, } } | { "EvidenceCollected": { 
+/**
+ * Who collected it.
+ */
 player: PlayerId, } } | { "DieRolled": { 
 /**
  * Who rolled.
@@ -770,7 +794,27 @@ sides: number,
 /**
  * The number rolled, from 1 to `sides`.
  */
-result: number, } } | { "CoinFlipped": { 
+result: number, } } | { "AttractionDeckShuffled": { 
+/**
+ * Whose deck.
+ */
+player: PlayerId, 
+/**
+ * The cards, top card last.
+ */
+order: Array<ObjectId>, } } | { "RolledToVisit": { 
+/**
+ * Who rolled.
+ */
+player: PlayerId, 
+/**
+ * The number rolled.
+ */
+result: number, 
+/**
+ * The Attractions visited.
+ */
+visited: Array<ObjectId>, } } | { "CoinFlipped": { 
 /**
  * Who flipped.
  */
@@ -877,6 +921,14 @@ player: PlayerId,
 level: number, } } | { "TurnedFaceUp": { 
 /**
  * The permanent that was turned face up.
+ */
+object: ObjectId, 
+/**
+ * Its controller, who turned it.
+ */
+player: PlayerId, } } | { "TurnedFaceDown": { 
+/**
+ * The permanent that was turned face down.
  */
 object: ObjectId, 
 /**

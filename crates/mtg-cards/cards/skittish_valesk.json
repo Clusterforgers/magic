@@ -1,14 +1,17 @@
 {
   "oracle_id": "d094f78b-acec-4181-9fee-ca523fb8ccc5",
   "name": "Skittish Valesk",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Skittish Valesk",
       "oracle_fingerprint": "0d0eba9d576cc2c92ad1e8396f9e1ec4",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 97 } }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "FlipCoin": { "lose": [{ "TurnFaceDown": { "what": "This" } }] } }]
+          }
         },
         { "Keyword": { "Morph": "{5}{R}" } }
       ]

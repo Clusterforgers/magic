@@ -42,4 +42,9 @@ convoked?: Array<ObjectRef>,
 /**
  * How many counters the cost removed from the source of the ability: "for each counter removed this way" reads it.
  */
-removed?: number, };
+removed?: number, 
+/**
+ * The cards of the caster's hand revealed and spliced onto the spell (CR 702.47), in the order chosen: the spell has
+ * their effects after its own.
+ */
+spliced?: Array<ObjectId>, };

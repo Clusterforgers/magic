@@ -121,6 +121,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 Some(address) => Modification::LoseAbility(address),
                 None => continue,
             },
+            // The source's own printed ability that equals the one named; a source without it loses nothing.
+            Wanted::LosePrinted(body) => match printed_address(cx, &named, body) {
+                Some(address) => Modification::LoseAbility(address),
+                None => continue,
+            },
             other => lower(&cx.scope, other)?,
         };
         events.push(Event::EffectCreated {
@@ -218,6 +223,7 @@ fn borrowed(scope: &Scope<'_>, from: &mtg_cards::refs::Ref) -> Result<Vec<Borrow
 /// What the engine applies for a modification of the card: its amounts worked out and the player it names found in
 /// `scope`. An effect of a spell or ability does this as it begins and a static ability whenever the state changes, so
 /// both run the same modification.
+#[allow(clippy::too_many_lines)] // one arm for each kind of modification
 pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
     let amount = |amount: &Amount| -> Result<i32, ResolveError> {
         i32::try_from(scope.amount(amount)?).map_err(|_| {
@@ -240,7 +246,8 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::RemoveType(ty) => Modification::RemoveType(*ty),
         Wanted::SetTypes(types) => Modification::SetTypes(types.iter().copied().collect()),
         Wanted::AddSupertype(supertype) => Modification::AddSupertype(*supertype),
-        Wanted::RemoveSupertype(_) | Wanted::SetName(_) | Wanted::ThisAbility => {
+        Wanted::RemoveSupertype(supertype) => Modification::RemoveSupertype(*supertype),
+        Wanted::SetName(_) | Wanted::ThisAbility => {
             return Err(ResolveError::Unsupported(
                 "Mod.RemoveSupertype outside the exceptions of a copy",
             ));
@@ -272,9 +279,10 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::AddKeyword(keyword) => Modification::AddKeyword(chosen_in(scope, keyword)),
         Wanted::LockKeyword(keyword) => Modification::LockKeyword(keyword.clone()),
         Wanted::RemoveKeyword(keyword) => Modification::RemoveKeyword(keyword.clone()),
+        Wanted::RemoveKeywordKind(kind) => Modification::RemoveKeywordKind(*kind),
         Wanted::GrantAbility(granted) => Modification::GrantAbility(Arc::clone(granted)),
         Wanted::LoseAbilities => Modification::LoseAbilities,
-        Wanted::LoseThisAbility => return Err(not_resolving()),
+        Wanted::LoseThisAbility | Wanted::LosePrinted(_) => return Err(not_resolving()),
         Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
         // A reference that names several players names the first in turn order from the active player.
         Wanted::SetController(who) => {
@@ -317,12 +325,34 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::MinBlockers(count) => Modification::MinBlockers(*count),
         Wanted::MaxBlockers(count) => Modification::MaxBlockers(*count),
         Wanted::BlocksAdditional(count) => Modification::BlocksAdditional(*count),
+        Wanted::BlocksAdditionalPer(per) => Modification::BlocksAdditional(blocks_per(scope, per)?),
     })
 }
 
 /// Only the resolution of an activated ability knows which ability it is (`run`).
 fn not_resolving() -> ResolveError {
     ResolveError::Invalid("only a resolving ability loses this ability".into())
+}
+
+/// How many more creatures a block capacity counted by `per` lets the creature block, worked out now.
+fn blocks_per(scope: &Scope<'_>, per: &Amount) -> Result<u32, ResolveError> {
+    Ok(u32::try_from(scope.amount(per)?.max(0)).unwrap_or(u32::MAX))
+}
+
+/// The address of the ability printed on the source's card that equals `body`, when the effect names the source alone.
+fn printed_address(
+    cx: &Cx<'_>,
+    named: &[ObjectRef],
+    body: &mtg_cards::ability::Ability,
+) -> Option<crate::abilities::AbilityRef> {
+    let source = cx.scope.source;
+    let [only] = named else {
+        return None;
+    };
+    (only.id == source.id).then_some(())?;
+    crate::ability_reader::printed(cx.state().object(source.id)?)
+        .find(|(_, rule)| ***rule == *body)
+        .map(|(address, _)| address)
 }
 
 /// The address of the activated ability that is resolving, on the object it was activated from.

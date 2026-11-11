@@ -34,6 +34,7 @@ const IMPERATIVE: &[&str] = &[
     "amass",
     "populate",
     "venture",
+    "open",
     "conjure",
     "seek",
     "remove",

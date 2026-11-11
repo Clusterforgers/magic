@@ -117,6 +117,8 @@ pub enum CostChange {
 pub enum ActivationKind {
     /// Any activated ability that is not a mana ability.
     Any,
+    /// Any activated ability that is neither a mana ability nor a loyalty ability.
+    AnyButLoyalty,
     /// A loyalty ability of a planeswalker (CR 606).
     Loyalty,
     /// The equip ability (CR 702.6).

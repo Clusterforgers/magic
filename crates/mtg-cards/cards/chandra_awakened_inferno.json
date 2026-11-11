@@ -1,0 +1,75 @@
+{
+  "oracle_id": "7b2a600b-d6c8-45ff-a7fc-06105d27111f",
+  "name": "Chandra, Awakened Inferno",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra, Awakened Inferno",
+      "oracle_fingerprint": "3061519dd4854644ce25c61772b48e91",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "who": "Opponents",
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                        "effects": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Elemental" } }] },
+                  "amount": 3
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "DamagedBy": "This" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

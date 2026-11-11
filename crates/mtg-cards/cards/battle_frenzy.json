@@ -1,0 +1,45 @@
+{
+  "oracle_id": "0fca46ec-ec1a-4e6c-bb0e-cdb834b38c92",
+  "name": "Battle Frenzy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle Frenzy",
+      "oracle_fingerprint": "f38beadb22f022072a8bf4b2358cd869",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Color": "Green" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Color": "Green" } },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

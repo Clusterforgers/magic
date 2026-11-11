@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "53f2d2b3-6e48-413e-ad8f-9ce40c7ff167",
+  "oracle_id": "46bc0aaf-987f-4c8d-b98b-50b90f97c9a3",
+  "multiverse_ids": [
+    394551
+  ],
+  "mtgo_id": 56398,
+  "mtgo_foil_id": 56399,
+  "tcgplayer_id": 96516,
+  "cardmarket_id": 273199,
+  "name": "Dragonlord's Prerogative",
+  "lang": "en",
+  "released_at": "2015-03-27",
+  "uri": "https://api.scryfall.com/cards/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167",
+  "scryfall_uri": "https://scryfall.com/card/dtk/52/dragonlords-prerogative?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:30:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/3/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167.jpg?1783938609",
+    "normal": "https://cards.scryfall.io/normal/front/5/3/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167.jpg?1783938609",
+    "large": "https://cards.scryfall.io/large/front/5/3/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167.jpg?1783938609",
+    "png": "https://cards.scryfall.io/png/front/5/3/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167.png?1783938609",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/3/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167.jpg?1783938609",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/3/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167.jpg?1783938609",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/3/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167.webp?1783938609",
+    "grid": "https://cards.scryfall.io/grid/front/5/3/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167.webp?1783938609",
+    "display": "https://cards.scryfall.io/display/front/5/3/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167.webp?1783938609",
+    "art": "https://cards.scryfall.io/art/front/5/3/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167.webp?1783938609",
+    "crop": "https://cards.scryfall.io/crop/front/5/3/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167.webp?1783938609",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/3/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167.jpg?1783938609"
+  },
+  "mana_cost": "{4}{U}{U}",
+  "cmc": 6.0,
+  "type_line": "Instant",
+  "oracle_text": "As an additional cost to cast this spell, you may reveal a Dragon card from your hand.\nIf you revealed a Dragon card or controlled a Dragon as you cast this spell, this spell can't be countered.\nDraw four cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "7e72625f-f320-4552-a719-d11e2f1853bd",
+  "set": "dtk",
+  "set_name": "Dragons of Tarkir",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/7e72625f-f320-4552-a719-d11e2f1853bd",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adtk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dtk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/53f2d2b3-6e48-413e-ad8f-9ce40c7ff167/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A46bc0aaf-987f-4c8d-b98b-50b90f97c9a3&unique=prints",
+  "collector_number": "52",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Seb McKinnon",
+  "artist_ids": [
+    "ad4caca0-8d89-44ce-a1a6-d5ca905bd6fb"
+  ],
+  "illustration_id": "891c38e5-d4fa-4c94-991e-9b8589b6eb1a",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20128,
+  "penny_rank": 5939,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "1.48",
+    "usd_etched": null,
+    "eur": "0.31",
+    "eur_foil": "0.61",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=394551&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDragonlord%2527s%2BPrerogative",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDragonlord%2527s%2BPrerogative",
+    "edhrec": "https://edhrec.com/route/?cc=Dragonlord%27s+Prerogative"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F96516%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=273199&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/56398?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

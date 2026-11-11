@@ -1,7 +1,7 @@
 {
   "oracle_id": "bc89face-92b1-47d3-8cdb-360b7334d3b8",
   "name": "War-Trained Slasher",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "War-Trained Slasher",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Keyword": "Menace" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 73, "end": 149 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This", "AttackingBattle"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

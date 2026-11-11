@@ -303,6 +303,10 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
             };
             format!("put {what} {place} its owner's library{order}")
         }
+        Destination::BattlefieldFaceDown { under } => format!(
+            "put {what} onto the battlefield face down{}",
+            entering(ctx, false, under.as_ref(), false)
+        ),
         Destination::BattlefieldAttached { to } => {
             format!(
                 "put {what} onto the battlefield attached to {}",

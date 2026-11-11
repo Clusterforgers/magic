@@ -78,7 +78,8 @@ pub(super) fn next(
         return Next::Drop;
     }
     let paid = choices.clone();
-    suspend::pay(state, player, card, up.mana, || {
+    let spend = crate::spend::Spend::special(mtg_cards::spend::SpecialAction::TurnFaceUp);
+    suspend::pay_for(state, player, card, (up.mana, spend), || {
         events(state, player, card, &paid)
     })
 }

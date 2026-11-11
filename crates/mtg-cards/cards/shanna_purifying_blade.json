@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7677c7ce-1db3-41f5-8f86-e68718ea2d11",
+  "name": "Shanna, Purifying Blade",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Shanna, Purifying Blade",
+      "oracle_fingerprint": "7a7cec9967136b6475b4d41168271812",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 9, "end": 150 }
+          }
+        }
+      ]
+    }
+  ]
+}

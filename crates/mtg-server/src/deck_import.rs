@@ -48,6 +48,8 @@ fn zone_of(section: Section) -> Option<DeckZone> {
         Section::Sideboard => Some(DeckZone::Sideboard),
         Section::Commander => Some(DeckZone::Commander),
         Section::Companion => Some(DeckZone::Companion),
+        Section::Attractions => Some(DeckZone::Attractions),
+        Section::Stickers => Some(DeckZone::Stickers),
         Section::Maybeboard => None,
     }
 }
@@ -58,6 +60,8 @@ fn section_of(zone: DeckZone) -> Section {
         DeckZone::Sideboard => Section::Sideboard,
         DeckZone::Commander => Section::Commander,
         DeckZone::Companion => Section::Companion,
+        DeckZone::Attractions => Section::Attractions,
+        DeckZone::Stickers => Section::Stickers,
     }
 }
 

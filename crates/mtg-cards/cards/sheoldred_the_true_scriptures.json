@@ -1,0 +1,112 @@
+{
+  "oracle_id": "97652492-7906-4d79-983c-fa1dc1239eba",
+  "name": "Sheoldred // The True Scriptures",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sheoldred",
+      "oracle_fingerprint": "73caddd084b54225105eeadbac0fddc9",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "Not": "Token" }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{B}",
+            "timing": "Sorcery",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                          "op": "Ge",
+                          "right": 8
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The True Scriptures",
+      "oracle_fingerprint": "ec22f8c83667c162524bbeb73eb0a540",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "Discard": { "who": "Opponents", "count": 3 } },
+              { "Mill": { "who": "Opponents", "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              },
+              { "Exile": { "what": "This", "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

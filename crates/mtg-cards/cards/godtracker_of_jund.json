@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9be3e610-f6bf-4e79-87ca-79dde27945d0",
+  "name": "Godtracker of Jund",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Godtracker of Jund",
+      "oracle_fingerprint": "e07ded5bc91982cb4eb041e2bb6aacb5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 5 } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

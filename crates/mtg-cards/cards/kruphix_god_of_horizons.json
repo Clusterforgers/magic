@@ -1,7 +1,7 @@
 {
   "oracle_id": "b2cefcd6-4b81-479c-86ff-1695b836972c",
   "name": "Kruphix, God of Horizons",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kruphix, God of Horizons",
@@ -18,12 +18,7 @@
           }
         },
         { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 135, "end": 203 }
-          }
-        }
+        { "Rule": { "rule": { "UnspentManaBecomes": { "who": "You", "into": "Colorless" } } } }
       ]
     }
   ]

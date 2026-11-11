@@ -263,6 +263,9 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
             </>
           )}
         </dl>
+        {object.lights === undefined || object.lights.length === 0 ? null : (
+          <p data-slot="preview-lights">Lit up: {object.lights.join(', ')}</p>
+        )}
         {object.abilities.length === 0 ? (
           activated.length === 0 && manual.length === 0 ? (
             <p className="text-muted-foreground">No abilities.</p>

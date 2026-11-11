@@ -1,0 +1,47 @@
+{
+  "oracle_id": "90abb55d-5c05-453f-b4a6-c0741dc36694",
+  "name": "Combine Guildmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Combine Guildmage",
+      "oracle_fingerprint": "e3e9d71e3cf1e7373e9093eb9853dd4e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "Tap"],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  },
+                  "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "MoveCounters": {
+                  "from": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

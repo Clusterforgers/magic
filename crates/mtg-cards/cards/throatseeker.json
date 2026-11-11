@@ -1,0 +1,21 @@
+{
+  "oracle_id": "edb7bd88-971a-4fcc-9d76-d73f21a4926a",
+  "name": "Throatseeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Throatseeker",
+      "oracle_fingerprint": "041ff8c5e1b5c0e194c1cce1d3f25f46",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Subtype": "Ninja" }, "Unblocked", "Attacking", { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Lifelink" }]
+          }
+        }
+      ]
+    }
+  ]
+}

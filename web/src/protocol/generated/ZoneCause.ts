@@ -13,6 +13,10 @@ by: PlayerId, } } | { "Cloaked": {
 /**
  * The player who cloaked it and controls it.
  */
+by: PlayerId, } } | { "PutFaceDown": { 
+/**
+ * The player who controls it.
+ */
 by: PlayerId, } } | { "Hideaway": { 
 /**
  * The permanent that hides it.

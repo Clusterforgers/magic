@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6beec974-891f-4354-8621-ac403c07509a",
+  "name": "Archfiend of Spite",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Archfiend of Spite",
+      "oracle_fingerprint": "37c0ef7b1dc664a7790f7f65276edc51",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 7, "end": 182 }
+          }
+        },
+        { "Keyword": { "Madness": "{3}{B}{B}" } }
+      ]
+    }
+  ]
+}

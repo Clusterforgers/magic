@@ -1,0 +1,31 @@
+{
+  "oracle_id": "bad6a5a9-7010-418d-b042-182926aa999d",
+  "name": "Norn's Choirmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Norn's Choirmaster",
+      "oracle_fingerprint": "ab01a3ad9546443ee99d875746601991",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": ["Commander", { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                },
+                { "Attacks": { "what": ["Commander", { "ControlledBy": "You" }] } }
+              ]
+            },
+            "effects": [{ "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

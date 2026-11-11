@@ -1,0 +1,37 @@
+{
+  "oracle_id": "05d09c55-f551-4cb4-a8d2-4811dccc848d",
+  "name": "Vraska, Betrayal's Sting",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vraska, Betrayal's Sting",
+      "oracle_fingerprint": "717220f5593cd53c73d562bba418485d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 126 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }, { "Proliferate": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 176, "end": 332 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 333, "end": 452 }
+          }
+        }
+      ]
+    }
+  ]
+}

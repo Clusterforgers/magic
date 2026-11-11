@@ -1,0 +1,81 @@
+{
+  "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+  "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sephiroth, Fabled SOLDIER",
+      "oracle_fingerprint": "63d161e61072615007fd4e4fa30395b5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+                  "paid": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 4 } },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sephiroth, One-Winged Angel",
+      "oracle_fingerprint": "1bbc04e2ea5927bf860bae743d59e66f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 7, "end": 182 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [{ "Type": "Creature" }, "Other"],
+                  "count": { "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "as": "sacrificed"
+                }
+              },
+              { "Draw": { "count": { "Count": [{ "Is": { "Bound": "sacrificed" } }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

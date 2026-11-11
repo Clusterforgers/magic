@@ -1,0 +1,69 @@
+{
+  "oracle_id": "df34a6ad-ae1c-4470-8c9e-49815bba1973",
+  "name": "Dowsing Dagger // Lost Vale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dowsing Dagger",
+      "oracle_fingerprint": "89da3cab3ab9c078116979f09da7179b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Custom": {
+                      "name": "Plant",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Plant"],
+                      "power": 0,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Defender" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Transform": { "what": "This" } }] } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    },
+    {
+      "name": "Lost Vale",
+      "oracle_fingerprint": "01e944e817a6f16ad0da8bf002e92e28",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

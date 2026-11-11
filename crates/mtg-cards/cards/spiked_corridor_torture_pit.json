@@ -1,7 +1,7 @@
 {
   "oracle_id": "e49b902f-a556-4dab-8928-93caf0a3f609",
   "name": "Spiked Corridor // Torture Pit",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Spiked Corridor",
@@ -51,9 +51,15 @@
       "oracle_fingerprint": "7424b44f0a7b7aed9c9424401f6d8823",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 109 }
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "Opponents",
+                "source": [{ "ControlledBy": "You" }],
+                "combat": false
+              }
+            },
+            "by": { "Add": 2 }
           }
         }
       ]

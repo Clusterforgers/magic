@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1962d9b3-f057-4d2c-9c5b-386d9a66148a",
+  "name": "Goblin Cratermaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Cratermaker",
+      "oracle_fingerprint": "b46264ba8aaa572ea554d818019b66d4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": ["Colorless", { "Not": { "Type": "Land" } }] } }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

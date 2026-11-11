@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9839f80b-d28b-49c7-a31a-40c245af2edc",
+  "name": "Gurmag Drowner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gurmag Drowner",
+      "oracle_fingerprint": "3db35509b33e1173b9f666226066ddfa",
+      "abilities": [
+        { "Keyword": "Exploit" },
+        {
+          "Triggered": {
+            "when": { "Exploits": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

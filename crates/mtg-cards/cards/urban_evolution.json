@@ -1,0 +1,21 @@
+{
+  "oracle_id": "c715e525-fc3a-4cab-94a0-04e0a22a5013",
+  "name": "Urban Evolution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urban Evolution",
+      "oracle_fingerprint": "51d95e2d7dd9a28fe686115703b12f57",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              { "Rule": { "rule": { "AdditionalLandPlays": {} }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

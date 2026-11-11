@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5d96170f-14dd-496e-a485-bd3b9eedfe02",
+  "name": "Maddening Hex",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Maddening Hex",
+      "oracle_fingerprint": "bd792ce2adb03426f8759cee177831bc",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 15, "end": 210 }
+          }
+        }
+      ]
+    }
+  ]
+}

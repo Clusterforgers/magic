@@ -1,0 +1,12 @@
+{
+  "oracle_id": "9243bd95-5467-490d-9bd2-4d5ce1ebc589",
+  "name": "Ghosts of the Innocent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghosts of the Innocent",
+      "oracle_fingerprint": "83573f369a1314584304225c9eec0dd0",
+      "abilities": [{ "Replacement": { "when": { "Damage": {} }, "by": "Half" } }]
+    }
+  ]
+}

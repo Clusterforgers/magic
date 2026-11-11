@@ -105,7 +105,7 @@ who: Array<PlayerId>,
 /**
  * The change.
  */
-change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "OpponentsCantMakeSacrifice": Array<PlayerId> } | { "SpendManaAs": { 
+change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "ExtraVote": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "OpponentsCantMakeSacrifice": Array<PlayerId> } | { "SpendManaAs": { 
 /**
  * The players.
  */
@@ -125,7 +125,19 @@ what: unknown,
 /**
  * The players whose untap steps untap them.
  */
-whose: Array<PlayerId>, } } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
+whose: Array<PlayerId>, } } | { "UntapLimit": { 
+/**
+ * The players whose untap steps are limited.
+ */
+who: Array<PlayerId>, 
+/**
+ * The permanents counted, judged when the step untaps.
+ */
+what: unknown, 
+/**
+ * The most of them that untap.
+ */
+count: number, } } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
 /**
  * The players who may look.
  */

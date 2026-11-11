@@ -1,7 +1,7 @@
 {
   "oracle_id": "ef742509-4474-42d0-8bca-71ec2be3d4f1",
   "name": "Lifted by Clouds",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lifted by Clouds",
@@ -21,12 +21,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 48, "end": 219 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{1}{U}" } } }
       ]
     }
   ]

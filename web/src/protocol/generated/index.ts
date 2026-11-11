@@ -271,6 +271,7 @@ export type { ServerMessage } from "./ServerMessage";
 export type { SkipFirstDraw } from "./SkipFirstDraw";
 export type { Snapshot } from "./Snapshot";
 export type { Span } from "./Span";
+export type { SpecialAction } from "./SpecialAction";
 export type { SpellCopy } from "./SpellCopy";
 export type { Spend } from "./Spend";
 export type { SpendFact } from "./SpendFact";

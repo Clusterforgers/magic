@@ -1,14 +1,25 @@
 {
   "oracle_id": "d04e0975-f401-41b8-a9db-9bcf9cbbce66",
   "name": "Starting Town",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Starting Town",
       "oracle_fingerprint": "86e8c0950bf6a4c6f86423987e517a91",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 82 } }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "All": [
+                  "YourTurn",
+                  { "Compare": { "left": { "TurnsTaken": "You" }, "op": "Le", "right": 3 } }
+                ]
+              }
+            }
+          }
         },
         {
           "Activated": {

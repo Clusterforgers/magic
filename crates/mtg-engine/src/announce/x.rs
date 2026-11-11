@@ -565,6 +565,7 @@ mod tests {
             x: XCost::of(&game, PlayerId(0), &What::Spell(card), None),
             price: None,
             modes: None,
+            splice: Vec::new(),
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         match announce(&game, &mut pending) {
@@ -630,6 +631,7 @@ mod tests {
             x: Some(XCost::Mana { symbols: 1 }),
             price: None,
             modes: None,
+            splice: Vec::new(),
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         assert!(matches!(announce(&game, &mut pending), Next::Drop));
@@ -682,6 +684,7 @@ mod tests {
             x: XCost::of(&game, PlayerId(0), &What::Spell(card), None),
             price: None,
             modes: None,
+            splice: Vec::new(),
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         match announce(&game, &mut pending) {

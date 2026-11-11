@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c75bdc5f-22f2-4558-bb8f-5a53ff7ab1ac",
+  "name": "Ferocity of the Wilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ferocity of the Wilds",
+      "oracle_fingerprint": "acc675a9dec6a7391dc9e6b5326c391f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                "Attacking",
+                { "Not": { "Subtype": "Human" } },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}

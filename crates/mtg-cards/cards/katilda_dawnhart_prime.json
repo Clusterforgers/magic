@@ -1,7 +1,7 @@
 {
   "oracle_id": "6c728edd-ab67-44ce-b19d-aa98dfce68bb",
   "name": "Katilda, Dawnhart Prime",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Katilda, Dawnhart Prime",
@@ -9,9 +9,20 @@
       "abilities": [
         { "Keyword": { "Protection": [{ "Subtype": "Werewolf" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 27, "end": 113 }
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Subtype": "Human" }, { "ControlledBy": "You" }]
+            },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColorAmong": ["This"] } } }]
+                  }
+                }
+              }
+            ]
           }
         },
         {

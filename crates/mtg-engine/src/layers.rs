@@ -348,6 +348,18 @@ impl Held {
                         && !matches!(&*held.body, Ability::Keyword(named) if named == keyword)
                 });
             }
+            Modification::RemoveKeywordKind(kind) => {
+                let kind = *kind;
+                self.keywords.retain(|held| !kind.covers(held));
+                self.keep_newer_counter_keywords(stamp, |held| kind.covers(held));
+                self.abilities.retain(|held| {
+                    !held
+                        .keyword
+                        .as_ref()
+                        .is_some_and(|keyword| kind.covers(keyword))
+                        && !matches!(&*held.body, Ability::Keyword(named) if kind.covers(named))
+                });
+            }
             // The land has no ability of its rules text any more (CR 305.7); a layer 6 effect can still give one.
             Modification::LoseAbilities | Modification::SetLandTypes(_) => {
                 self.lose_abilities(matches!(modification, Modification::SetLandTypes(_)));
@@ -365,6 +377,7 @@ impl Held {
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
             | Modification::AddSupertype(_)
+            | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::GrantText(_)
@@ -666,9 +679,11 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
+        | Wanted::RemoveKeywordKind(_)
         | Wanted::LockKeyword(_)
         | Wanted::GrantAbility(_)
         | Wanted::LoseThisAbility
+        | Wanted::LosePrinted(_)
         | Wanted::GainAbilitiesOf(_)
         | Wanted::LoseAbilities => Layer::Ability,
         Wanted::SetPT { .. } if defining => Layer::PtCharacteristicDefining,
@@ -686,6 +701,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)
         | Wanted::BlocksAdditional(_)
+        | Wanted::BlocksAdditionalPer(_)
         | Wanted::Goaded => return None,
     })
 }
@@ -1394,6 +1410,11 @@ impl<'a> Pass<'a> {
             Modification::RemoveKeyword(keyword) | Modification::LockKeyword(keyword) => {
                 if let Some(held) = self.players.get_mut(&player) {
                     held.keywords.retain(|kept| kept != keyword);
+                }
+            }
+            Modification::RemoveKeywordKind(kind) => {
+                if let Some(held) = self.players.get_mut(&player) {
+                    held.keywords.retain(|kept| !kind.covers(kept));
                 }
             }
             _ => {}

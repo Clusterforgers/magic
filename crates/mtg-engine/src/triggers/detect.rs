@@ -219,6 +219,10 @@ enum Happened {
         from: Option<DayNight>,
         to: DayNight,
     },
+    /// A player rolled to visit their Attractions.
+    RolledToVisit { player: PlayerId, result: u32 },
+    /// A player opened an Attraction.
+    OpenedAttraction { player: PlayerId },
     /// A player proliferated.
     Proliferated { player: PlayerId },
     /// A player won a coin flip.
@@ -966,6 +970,12 @@ fn about_players_and_permanents(
     found: &mut Vec<Happened>,
 ) {
     match event {
+        Event::AttackersBlocked { attackers } => {
+            found.extend(attackers.iter().map(|attacker| Happened::BecameBlocked {
+                attacker: *attacker,
+                blockers: Vec::new(),
+            }));
+        }
         Event::BlockersDeclared { blocks, player } => {
             found.extend(blocks.iter().map(|(blocker, attacker)| Happened::Blocked {
                 blocker: *blocker,
@@ -1149,6 +1159,19 @@ fn about_players_and_permanents(
             to: *to,
         }),
         Event::Proliferated { player } => found.push(Happened::Proliferated { player: *player }),
+        Event::RolledToVisit { player, result, .. } => found.push(Happened::RolledToVisit {
+            player: *player,
+            result: *result,
+        }),
+        // Opening an Attraction moves the top card of the deck onto the battlefield (CR 701.51c).
+        Event::ZoneChanged {
+            object,
+            from: Zone::Command(player),
+            to: Zone::Battlefield,
+            ..
+        } if look.pre.in_attraction_deck(*object) => {
+            found.push(Happened::OpenedAttraction { player: *player });
+        }
         Event::DieRolled {
             player,
             sides,
@@ -1542,6 +1565,18 @@ fn matching_player_action(
             },
         ) => (by(who, player) && if *highest { *rolled_highest } else { *first })
             .then(|| counted(state, vec![Target::Player(*player)], 0)),
+        // A visit ability triggers for the Attraction its controller's roll lit up (CR 702.159a).
+        (TriggerPattern::Visit {}, Happened::RolledToVisit { player, result }) => {
+            (crate::characteristics::controller_of(state, scope.source.id) == Some(*player)
+                && state
+                    .lights(scope.source.id)
+                    .is_some_and(|lights| lights.lit(*result)))
+            .then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
+        (TriggerPattern::RolledToVisit { who }, Happened::RolledToVisit { player, .. })
+        | (TriggerPattern::OpenedAttraction { who }, Happened::OpenedAttraction { player }) => {
+            by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
         (TriggerPattern::W11cCrime { who }, Happened::W11cCrime { player }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
         }

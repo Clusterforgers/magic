@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1ba92b64-d821-4c24-aed6-fc90d0c63c10",
+  "name": "Wrathful Raptors",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wrathful Raptors",
+      "oracle_fingerprint": "7dbf47d27ef9ce117628cdf934ea3b3a",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 8, "end": 119 }
+          }
+        }
+      ]
+    }
+  ]
+}

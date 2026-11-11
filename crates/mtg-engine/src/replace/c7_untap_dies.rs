@@ -37,6 +37,7 @@ impl Pass<'_> {
                 let Rule::DiesInstead {
                     objects,
                     to,
+                    place,
                     countered,
                     cast,
                     leaves,
@@ -68,7 +69,12 @@ impl Pass<'_> {
                     origin,
                     object: effect.source?,
                     controller: effect.controller,
-                    action: Action::Replace(ReplaceBy::MoveTo(*to)),
+                    action: Action::Replace(place.map_or(ReplaceBy::MoveTo(*to), |place| {
+                        ReplaceBy::IntoLibrary {
+                            place,
+                            reveal: false,
+                        }
+                    })),
                     is_self: false,
                 })
             })

@@ -1,7 +1,7 @@
 {
   "oracle_id": "ad6dd363-e1b7-4df4-b9b6-4f5c1fae3bc6",
   "name": "Petting Zookeeper",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Petting Zookeeper",
@@ -9,9 +9,9 @@
       "abilities": [
         { "Keyword": "Reach" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 117 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "OpenAttraction": {} }]
           }
         }
       ]

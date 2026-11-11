@@ -1,0 +1,180 @@
+{
+  "object": "card",
+  "id": "e2c812bb-19f8-4a22-bda9-f2a6233cf700",
+  "oracle_id": "c551f007-9740-4a2a-8ef5-7be1a7afe14b",
+  "multiverse_ids": [
+    642473
+  ],
+  "mtgo_id": 119226,
+  "tcgplayer_id": 526401,
+  "cardmarket_id": 744719,
+  "name": "Altar of the Wretched // Wretched Bonemass",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/e2c812bb-19f8-4a22-bda9-f2a6233cf700",
+  "scryfall_uri": "https://scryfall.com/card/lcc/10/altar-of-the-wretched-wretched-bonemass?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T14:09:17Z",
+  "cmc": 3.0,
+  "type_line": "Artifact // Creature — Skeleton Horror",
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Craft",
+    "Transform",
+    "Mill"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Altar of the Wretched",
+      "mana_cost": "{2}{B}",
+      "type_line": "Artifact",
+      "oracle_text": "When this artifact enters, you may sacrifice a nontoken creature. If you do, draw X cards, then mill X cards, where X is that creature's power.\nCraft with one or more creatures {2}{B}{B}\n{2}{B}: Return this card from your graveyard to your hand.",
+      "colors": [
+        "B"
+      ],
+      "artist": "Helge C. Balzer",
+      "artist_id": "0c81268c-9a69-4dd5-b214-9f25e3483578",
+      "illustration_id": "77441aad-2c47-4688-bf40-5b076566e83f",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.jpg?1783951757",
+        "normal": "https://cards.scryfall.io/normal/front/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.jpg?1783951757",
+        "large": "https://cards.scryfall.io/large/front/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.jpg?1783951757",
+        "png": "https://cards.scryfall.io/png/front/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.png?1783951757",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.jpg?1783951757",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.jpg?1783951757",
+        "thumb": "https://cards.scryfall.io/thumb/front/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.webp?1783951757",
+        "grid": "https://cards.scryfall.io/grid/front/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.webp?1783951757",
+        "display": "https://cards.scryfall.io/display/front/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.webp?1783951757",
+        "art": "https://cards.scryfall.io/art/front/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.webp?1783951757",
+        "crop": "https://cards.scryfall.io/crop/front/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.webp?1783951757",
+        "jpeg": "https://cards.scryfall.io/normal/front/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.jpg?1783951757"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Wretched Bonemass",
+      "mana_cost": "",
+      "type_line": "Creature — Skeleton Horror",
+      "oracle_text": "Wretched Bonemass's power and toughness are each equal to the total power of the exiled cards used to craft it.\nThis creature has flying as long as an exiled card used to craft it has flying. The same is true for first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, menace, protection, reach, trample, and vigilance.",
+      "colors": [
+        "B"
+      ],
+      "color_indicator": [
+        "B"
+      ],
+      "power": "*",
+      "toughness": "*",
+      "artist": "Helge C. Balzer",
+      "artist_id": "0c81268c-9a69-4dd5-b214-9f25e3483578",
+      "illustration_id": "4969be69-cbdc-4201-aa50-632404bf9522",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.jpg?1783951757",
+        "normal": "https://cards.scryfall.io/normal/back/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.jpg?1783951757",
+        "large": "https://cards.scryfall.io/large/back/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.jpg?1783951757",
+        "png": "https://cards.scryfall.io/png/back/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.png?1783951757",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.jpg?1783951757",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.jpg?1783951757",
+        "thumb": "https://cards.scryfall.io/thumb/back/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.webp?1783951757",
+        "grid": "https://cards.scryfall.io/grid/back/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.webp?1783951757",
+        "display": "https://cards.scryfall.io/display/back/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.webp?1783951757",
+        "art": "https://cards.scryfall.io/art/back/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.webp?1783951757",
+        "crop": "https://cards.scryfall.io/crop/back/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.webp?1783951757",
+        "jpeg": "https://cards.scryfall.io/normal/back/e/2/e2c812bb-19f8-4a22-bda9-f2a6233cf700.jpg?1783951757"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e2c812bb-19f8-4a22-bda9-f2a6233cf700/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac551f007-9740-4a2a-8ef5-7be1a7afe14b&unique=prints",
+  "collector_number": "10",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Helge C. Balzer",
+  "artist_ids": [
+    "0c81268c-9a69-4dd5-b214-9f25e3483578"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 7530,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1965047218",
+    "previewed_at": "2023-10-31"
+  },
+  "prices": {
+    "usd": "1.85",
+    "usd_foil": "6.01",
+    "usd_etched": null,
+    "eur": "0.88",
+    "eur_foil": "1.06",
+    "tix": "0.10"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=642473&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAltar%2Bof%2Bthe%2BWretched%2B%252F%252F%2BWretched%2BBonemass",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAltar%2Bof%2Bthe%2BWretched%2B%252F%252F%2BWretched%2BBonemass",
+    "edhrec": "https://edhrec.com/route/?cc=Altar+of+the+Wretched"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F526401%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=744719&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/119226?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

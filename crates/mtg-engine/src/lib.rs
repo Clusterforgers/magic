@@ -65,6 +65,7 @@ mod prepared;
 mod preview;
 mod price;
 mod replace_dry;
+mod rmt3_skips;
 mod saga;
 mod sba;
 mod sneak;
@@ -138,6 +139,11 @@ pub mod replace;
 pub mod resolve;
 pub mod retargeted;
 mod ring;
+mod rmt4_untap_limit;
+#[cfg(test)]
+mod rmt6_pieces_tests;
+mod rmt6_storied;
+mod rmt8_turns;
 pub mod rng;
 #[cfg(test)]
 mod rule_options;
@@ -157,6 +163,7 @@ mod turn_log;
 #[cfg(test)]
 mod turn_log_tests;
 mod turn_summary;
+pub mod un33_attractions;
 pub mod w11d_dungeon;
 pub mod w15a_initiative;
 pub mod w17b_statics;

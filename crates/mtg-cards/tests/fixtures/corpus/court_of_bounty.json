@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "dcffbea4-0126-483d-87da-b20e3c0b88a7",
+  "oracle_id": "e55d9377-f89a-41e5-a094-730d6f24caf0",
+  "multiverse_ids": [
+    497740
+  ],
+  "mtgo_id": 85222,
+  "tcgplayer_id": 226871,
+  "cardmarket_id": 511150,
+  "name": "Court of Bounty",
+  "lang": "en",
+  "released_at": "2020-11-20",
+  "uri": "https://api.scryfall.com/cards/dcffbea4-0126-483d-87da-b20e3c0b88a7",
+  "scryfall_uri": "https://scryfall.com/card/cmr/220/court-of-bounty?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:46:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/c/dcffbea4-0126-483d-87da-b20e3c0b88a7.jpg?1783928799",
+    "normal": "https://cards.scryfall.io/normal/front/d/c/dcffbea4-0126-483d-87da-b20e3c0b88a7.jpg?1783928799",
+    "large": "https://cards.scryfall.io/large/front/d/c/dcffbea4-0126-483d-87da-b20e3c0b88a7.jpg?1783928799",
+    "png": "https://cards.scryfall.io/png/front/d/c/dcffbea4-0126-483d-87da-b20e3c0b88a7.png?1783928799",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/c/dcffbea4-0126-483d-87da-b20e3c0b88a7.jpg?1783928799",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/c/dcffbea4-0126-483d-87da-b20e3c0b88a7.jpg?1783928799",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/c/dcffbea4-0126-483d-87da-b20e3c0b88a7.webp?1783928799",
+    "grid": "https://cards.scryfall.io/grid/front/d/c/dcffbea4-0126-483d-87da-b20e3c0b88a7.webp?1783928799",
+    "display": "https://cards.scryfall.io/display/front/d/c/dcffbea4-0126-483d-87da-b20e3c0b88a7.webp?1783928799",
+    "art": "https://cards.scryfall.io/art/front/d/c/dcffbea4-0126-483d-87da-b20e3c0b88a7.webp?1783928799",
+    "crop": "https://cards.scryfall.io/crop/front/d/c/dcffbea4-0126-483d-87da-b20e3c0b88a7.webp?1783928799",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/c/dcffbea4-0126-483d-87da-b20e3c0b88a7.jpg?1783928799"
+  },
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, you become the monarch.\nAt the beginning of your upkeep, you may put a land card from your hand onto the battlefield. If you're the monarch, instead you may put a creature or land card from your hand onto the battlefield.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "bf7f3fc9-35f1-4b8c-b02b-494c71f31107",
+      "component": "combo_piece",
+      "name": "The Monarch",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/bf7f3fc9-35f1-4b8c-b02b-494c71f31107"
+    },
+    {
+      "object": "related_card",
+      "id": "17c4205a-959d-4da8-b228-791fa1eed07a",
+      "component": "combo_piece",
+      "name": "Court of Bounty",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/17c4205a-959d-4da8-b228-791fa1eed07a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set": "cmr",
+  "set_name": "Commander Legends",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dcffbea4-0126-483d-87da-b20e3c0b88a7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae55d9377-f89a-41e5-a094-730d6f24caf0&unique=prints",
+  "collector_number": "220",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "To grow is to triumph.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Milivoj Ćeran",
+  "artist_ids": [
+    "1eced451-4da5-42bc-b49d-70c41246581f"
+  ],
+  "illustration_id": "1f97a785-f80b-4e77-b3c8-871756a5f57a",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6585,
+  "preview": {
+    "source": "Landfall TV",
+    "source_uri": "https://www.youtube.com/watch?v=_hKve80Z2dM",
+    "previewed_at": "2020-10-31"
+  },
+  "prices": {
+    "usd": "0.81",
+    "usd_foil": "1.08",
+    "usd_etched": null,
+    "eur": "0.60",
+    "eur_foil": "1.27",
+    "tix": "1.83"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=497740&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCourt%2Bof%2BBounty",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCourt%2Bof%2BBounty",
+    "edhrec": "https://edhrec.com/route/?cc=Court+of+Bounty"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F226871%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=511150&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/85222?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

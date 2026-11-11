@@ -1,0 +1,43 @@
+{
+  "oracle_id": "4f0bcfe5-7e52-4249-a26a-482619716f18",
+  "name": "Invasion of Regatha // Disciples of the Inferno",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Invasion of Regatha",
+      "oracle_fingerprint": "bd164fb4ff4cdae22955c4578e4b3d23",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Either": ["Opponent", { "Object": [{ "Type": "Battle" }, { "Not": "This" }] }]
+                }
+              },
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              { "DealDamage": { "to": { "Target": 1 }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Disciples of the Inferno",
+      "oracle_fingerprint": "be574e42f08c9f2420b10e75381d6bed",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 93, "end": 224 }
+          }
+        }
+      ]
+    }
+  ]
+}

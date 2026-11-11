@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3bc9649c-4350-4c6a-8441-dc76a5f833af",
+  "name": "Petrified Wood-Kin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Petrified Wood-Kin",
+      "oracle_fingerprint": "3c77c3d13ecf1bf5539025289e495545",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 31, "end": 153 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 154, "end": 178 }
+          }
+        }
+      ]
+    }
+  ]
+}

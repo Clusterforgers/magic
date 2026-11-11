@@ -262,7 +262,13 @@ fn table(hand: Vec<Arc<CardDefinition>>) -> Driver {
             .library(1, vec![forest(); 8])
             .graveyard(0, [corpus("Kongming, \"Sleeping Dragon\"")])
             .battlefield(0, own)
-            .battlefield(1, [ready(free_creature("Theirs", 3, 3))]),
+            .battlefield(
+                1,
+                [
+                    ready(free_creature("Theirs", 3, 3)),
+                    ready(free_creature("Theirs Too", 2, 2)),
+                ],
+            ),
     )
     .unwrap()
 }

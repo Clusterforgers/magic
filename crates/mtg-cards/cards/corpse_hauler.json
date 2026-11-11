@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c2ba1c3b-08c7-4835-81f4-2f98843fb7b8",
+  "name": "Corpse Hauler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corpse Hauler",
+      "oracle_fingerprint": "1cd2c33139a434df5a78fb555818303b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

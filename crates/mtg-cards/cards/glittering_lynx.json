@@ -1,7 +1,7 @@
 {
   "oracle_id": "890ffe31-642f-46e3-9f09-c744351653b5",
   "name": "Glittering Lynx",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Glittering Lynx",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Replacement": { "when": { "Damage": { "to": "This" } }, "by": "Prevent" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 57, "end": 197 }
+          "Activated": {
+            "cost": "{2}",
+            "by": "Anyone",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "LosePrinted": {
+                        "Replacement": { "when": { "Damage": { "to": "This" } }, "by": "Prevent" }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

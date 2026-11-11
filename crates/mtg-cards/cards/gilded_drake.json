@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7f06c098-6482-4bf3-a9a1-110d6d5b5703",
+  "name": "Gilded Drake",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gilded Drake",
+      "oracle_fingerprint": "f608c5bdf8c39473e86549de4afea7c2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 7, "end": 243 }
+          }
+        }
+      ]
+    }
+  ]
+}

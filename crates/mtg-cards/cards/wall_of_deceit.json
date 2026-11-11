@@ -1,19 +1,14 @@
 {
   "oracle_id": "73714a40-5e8d-4aea-87fe-5aa0db53d6ff",
   "name": "Wall of Deceit",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Wall of Deceit",
       "oracle_fingerprint": "d3c0c030dfd2112abc3bc4e68916fc76",
       "abilities": [
         { "Keyword": "Defender" },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 39, "end": 73 }
-          }
-        },
+        { "Activated": { "cost": "{3}", "effects": [{ "TurnFaceDown": { "what": "This" } }] } },
         { "Keyword": { "Morph": "{U}" } }
       ]
     }

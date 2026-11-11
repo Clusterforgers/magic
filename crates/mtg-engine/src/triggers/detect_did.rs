@@ -145,6 +145,10 @@ fn learned(_: &GameState, player: PlayerId, _: ObjectId) -> Vec<Event> {
     vec![Event::Learned { player }]
 }
 
+fn evidence(_: &GameState, player: PlayerId, _: ObjectId) -> Vec<Event> {
+    vec![Event::EvidenceCollected { player }]
+}
+
 fn proliferated(_: &GameState, player: PlayerId, _: ObjectId) -> Vec<Event> {
     vec![Event::Proliferated { player }]
 }
@@ -297,6 +301,20 @@ fn count(pre: &GameState, events: &[Event]) -> Vec<crate::triggers::Triggered> {
     0
 )]
 #[case::learned(r#"{"action":"Learned","who":"You"}"#, learned, ME, "Bear", 1)]
+#[case::evidence(
+    r#"{"action":"CollectedEvidence","who":"You"}"#,
+    evidence,
+    ME,
+    "Bear",
+    1
+)]
+#[case::evidence_of_an_opponent(
+    r#"{"action":"CollectedEvidence","who":"You"}"#,
+    evidence,
+    FOE,
+    "Bear",
+    0
+)]
 #[case::proliferated(
     r#"{"action":"Proliferated","who":"Opponents"}"#,
     proliferated,
