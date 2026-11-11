@@ -222,6 +222,9 @@ pub enum TokenRef {
     Named(String),
     /// A token described by the effect.
     Custom(Box<TokenSpec>),
+    /// A token that is a copy of the card with this name ("Create a Tarmogoyf token"): the card's front face as printed,
+    /// taken from the cards the game can conjure; a name the game cannot resolve makes no token.
+    Card(String),
     /// An X/X token whose size is an amount counted as the token is created ("an X/X black Horror creature token, where X
     /// is this creature's power"); the description leaves out its power and toughness.
     Sized {

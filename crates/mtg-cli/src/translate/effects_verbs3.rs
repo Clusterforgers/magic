@@ -91,7 +91,11 @@ fn copy_spell(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
         Some(_) => return unmapped("key:CopySpellAbility.Controller"),
     };
     let what = if p.has("ValidTgts") {
-        if p.get("TargetType") != Some("Spell") {
+        if let Some(kinds) = ability_kinds(p.get("TargetType")) {
+            return copy_target_ability(ctx, p, &kinds, who.is_some());
+        }
+        // Without a kind the script targets a spell, as Forge copies spells by default.
+        if !matches!(p.get("TargetType"), None | Some("Spell")) {
             return unmapped("key:CopySpellAbility.TargetType");
         }
         let valid: Vec<&str> = p.get("ValidTgts").unwrap_or_default().split(',').collect();
@@ -176,6 +180,78 @@ fn each_target(ctx: &Ctx, p: &Params) -> Tr<Option<Value>> {
         return unmapped("key:CopySpellAbility.ChooseOnlyOne");
     }
     Ok(Some(json!(selector_any(ctx, valid)?)))
+}
+
+/// The ability kinds of `TargetType$ Activated.YouCtrl,Triggered.YouCtrl` ("target activated or triggered ability you
+/// control"): each kind and whether it says the controller; `None` for a list with a spell or another word.
+fn ability_kinds(word: Option<&str>) -> Option<Vec<(&'static str, bool)>> {
+    word?
+        .split(',')
+        .map(|kind| match kind {
+            "Activated" => Some(("Activated", false)),
+            "Activated.YouCtrl" => Some(("Activated", true)),
+            "Triggered" => Some(("Triggered", false)),
+            "Triggered.YouCtrl" => Some(("Triggered", true)),
+            _ => None,
+        })
+        .collect()
+}
+
+/// "Copy target activated or triggered ability you control": a target ability on the stack, judged by its source when
+/// `ValidTgts$` names more than any card. Kinds that disagree on the controller, another controller of the copy and a
+/// spell's words are gaps.
+fn copy_target_ability(
+    ctx: &mut Ctx,
+    p: &Params,
+    kinds: &[(&str, bool)],
+    other_controller: bool,
+) -> Tr<Value> {
+    if other_controller {
+        return unmapped("key:CopySpellAbility.Controller-of-an-ability");
+    }
+    for key in [
+        "Defined",
+        "NonLegendary",
+        "SetColor",
+        "Optional",
+        "CopyForEachCanTarget",
+        "ChooseOnlyOne",
+    ] {
+        if p.has(key) {
+            return unmapped(format!("key:CopySpellAbility.{key}-of-a-target-ability"));
+        }
+    }
+    let yours = kinds.iter().all(|(_, yours)| *yours);
+    if !yours && kinds.iter().any(|(_, yours)| *yours) {
+        return unmapped("key:CopySpellAbility.TargetType-mixed-controllers");
+    }
+    let mut any: Vec<Value> = kinds
+        .iter()
+        .map(|(kind, _)| json!({ "Ability": kind }))
+        .collect();
+    let mut selector = if any.len() == 1 {
+        any.split_off(0)
+    } else {
+        vec![json!({ "AnyOf": any })]
+    };
+    if yours {
+        selector.push(json!({"ControlledBy": "You"}));
+    }
+    match p.get("ValidTgts") {
+        Some("Card,Emblem" | "Card") => {}
+        // An emblem is a source no card selector names.
+        Some(valid) if !valid.contains("Emblem") => selector.extend(selector_any(ctx, valid)?),
+        _ => return unmapped("key:CopySpellAbility.ValidTgts-of-a-target-ability"),
+    }
+    let what = ctx.target(json!({"what": {"Object": selector}}))?;
+    let mut copy = json!({ "what": what });
+    if p.has("Amount") {
+        copy["count"] = amount(ctx, p.get("Amount").unwrap_or("1"))?;
+    }
+    if p.get("MayChooseTarget") == Some("True") {
+        copy["new_targets"] = json!(true);
+    }
+    Ok(json!({ "CopyAbility": copy }))
 }
 
 /// "Copy that ability" after an activation: the ability on the stack the activation put there (`Dealer`), never its source.

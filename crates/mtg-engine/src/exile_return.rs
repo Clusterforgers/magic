@@ -1,5 +1,5 @@
 //! Cards exiled until a permanent leaves the battlefield (CR 610.3): each returns to the battlefield under its owner's
-//! control, as a new object, once that permanent has left.
+//! control, as a new object, once that permanent has left; a card exiled from a hand returns to its owner's hand.
 
 use crate::attach;
 use crate::battle;
@@ -38,6 +38,15 @@ pub(crate) fn returns(state: &GameState) -> Vec<Event> {
 /// The events of one card coming back: the move, what it enters with and, for an Aura, the permanent it enchants.
 fn back(state: &GameState, card: &GameObject) -> Vec<Event> {
     let id = card.id();
+    // A card exiled from a hand goes back to its owner's hand (CR 610.3c).
+    if card.exiled_from_hand.is_some() {
+        return vec![Event::ZoneChanged {
+            object: id,
+            from: Zone::Exile,
+            to: Zone::Hand(card.owner()),
+            cause: ZoneCause::Moved,
+        }];
+    }
     let host = match attach::hosts_when_entering(state, card, card.owner()) {
         None => None,
         Some(hosts) => match hosts.first() {
@@ -60,7 +69,7 @@ fn back(state: &GameState, card: &GameObject) -> Vec<Event> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a card in exile linked to a permanent returns once that permanent is gone (left the battlefield, or is a new object after a flicker), not while it stays, only the card of the permanent that left returns, a card with no link or whose link was cleared by another move stays, nothing is watched in a game where no card was exiled until, and a card exiled until an opponent becomes the monarch returns once any opponent of its exiler has become it (also by the monarch leaving the game), not when its exiler holds it or leaves the battlefield.
+    //! Goal: a card in exile linked to a permanent returns once that permanent is gone (left the battlefield, or is a new object after a flicker), not while it stays, only the card of the permanent that left returns, a card with no link or whose link was cleared by another move stays, nothing is watched in a game where no card was exiled until, and a card exiled until an opponent becomes the monarch returns once any opponent of its exiler has become it (also by the monarch leaving the game), not when its exiler holds it or leaves the battlefield; a card exiled from a hand returns to its owner's hand.
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
 
@@ -114,6 +123,47 @@ mod tests {
             },
         )
         .unwrap();
+    }
+
+    /// Seat 1's hand card Bolt is exiled until seat 0's Maggot leaves; the card back goes to the hand it came from.
+    #[rstest]
+    #[case::the_exiler_leaves(true)]
+    #[case::the_exiler_stays(false)]
+    fn ep31_a_card_exiled_from_a_hand_returns_to_its_owners_hand(#[case] leaves: bool) {
+        let mut game = state(
+            vec![vec![], vec![creature("Bolt", 1, 1)]],
+            vec![vec![creature("Maggot", 1, 1)], vec![]],
+        );
+        let maggot = game
+            .object(game.zone(Zone::Battlefield)[0])
+            .unwrap()
+            .reference();
+        let bolt = game.zone(Zone::Hand(FOE))[0];
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: bolt,
+                from: Zone::Hand(FOE),
+                to: Zone::Exile,
+                cause: ZoneCause::ExiledUntil { by: maggot },
+            },
+        )
+        .unwrap();
+        if leaves {
+            leave(&mut game, maggot);
+        }
+        let events = returns(&game);
+        for event in &events {
+            apply_event(&mut game, event).unwrap();
+        }
+        let card = game.object(bolt).unwrap();
+        let (zone, waits) = if leaves {
+            (Zone::Hand(FOE), false)
+        } else {
+            (Zone::Exile, true)
+        };
+        assert_eq!(card.zone(), zone, "{events:?}");
+        assert_eq!(card.exiled_from_hand.is_some(), waits);
     }
 
     #[test]

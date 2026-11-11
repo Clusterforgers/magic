@@ -725,6 +725,7 @@ impl<'a> Walker<'a> {
     fn pred(&mut self, pred: &Pred) {
         match pred {
             Pred::Subtype(subtype) => self.known_subtype(subtype),
+            Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
             Pred::ControlledBy(r)
             | Pred::OwnedBy(r)
             | Pred::AttackingPlayer(r)
@@ -2591,6 +2592,13 @@ impl Walker<'_> {
                 }
             }
             TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec, false)),
+            // The named card's own rules come with it when the game loads it to conjure.
+            TokenRef::Card(name) => {
+                if name.trim().is_empty() {
+                    self.problem("a token copy of a card needs the card's name");
+                }
+                self.uses("Effect", "CreateToken.Card");
+            }
             TokenRef::Sized {
                 size,
                 toughness,

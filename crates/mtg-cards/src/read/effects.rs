@@ -468,6 +468,7 @@ fn game(ctx: &Ctx, effect: &Effect) -> Option<String> {
 fn token_text(ctx: &Ctx, token: &TokenRef) -> String {
     match token {
         TokenRef::Named(name) => name.clone(),
+        TokenRef::Card(name) => format!("a copy of the card {name}"),
         TokenRef::Custom(spec) => spec_text(ctx, spec),
         TokenRef::Sized {
             size,
