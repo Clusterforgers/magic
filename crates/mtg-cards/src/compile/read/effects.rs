@@ -552,6 +552,15 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
 /// What follows "sacrifice" when the card sacrifices itself: "sacrifice ~", and "sacrifice it" once the ability has
 /// spoken of the card.
 fn itself_sacrificed(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
+    // "sacrifice that permanent": the one permanent of the trigger's event, which its controller may sacrifice.
+    if r.that_permanent && who == Ref::You && r.words("that permanent") {
+        return Some(Effect::Sacrifice {
+            who,
+            filter: Selector(vec![Pred::Is(Ref::Triggering)]),
+            count: Amount::one(),
+            bind: None,
+        });
+    }
     // "When ~ enters, sacrifice it unless you pay {1}": the card, since nothing else has entered.
     let itself = r.it == Some(Ref::This) || (r.acts_itself && r.word_at(1) == Some("unless"));
     (r.source() || (itself && r.word("it"))).then_some(())?;

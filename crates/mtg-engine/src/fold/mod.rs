@@ -123,7 +123,10 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Mutated { .. }
         | Event::CardParted { .. }
         | Event::CommanderStayed { .. }
-        | Event::ObjectLeftGame { .. } => zones::apply(state, event),
+        | Event::ObjectLeftGame { .. } => {
+            zones::apply(state, event)?;
+            opening::dk26_exiled(state, event)
+        }
         Event::GameRestarted { by, kept } => {
             crate::restart::fold(state, *by, kept);
             Ok(())

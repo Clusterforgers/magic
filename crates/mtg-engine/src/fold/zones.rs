@@ -631,6 +631,9 @@ fn card_drawn(
     }
     move_object(state, object, Zone::Hand(player), Placement::Top)?;
     state.tally(player, Tally::Drawn);
+    if let Some(reference) = state.object(object).map(GameObject::reference) {
+        state.tally_object(reference, None, Tally::Dk26Drawn);
+    }
     if state.turn.step == crate::turn::Step::Draw && state.active_player() == Some(player) {
         state.tally(player, Tally::C6BlkDrawStepDrawn);
     }

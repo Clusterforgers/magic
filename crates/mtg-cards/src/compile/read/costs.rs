@@ -120,6 +120,10 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
     if r.word("mill") {
         return cards(r).map(CostItem::Mill);
     }
+    // Forage (CR 701.61): a Food sacrificed or three graveyard cards exiled, which the payer chooses as they pay.
+    if r.word("forage") {
+        return Some(CostItem::Forage);
+    }
     if r.word("put") {
         return r.attempt(blight).or_else(|| put_on_source(r));
     }
@@ -457,6 +461,7 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::Mill(count) => format!("Mill {}", cards_text(count)?),
         CostItem::DiscardRandom(count) => format!("Discard {} at random", cards_text(count)?),
         CostItem::Exert => "Exert ~".to_owned(),
+        CostItem::Forage => "Forage".to_owned(),
         CostItem::PutCounters { counter, count } => {
             format!("Put {} on ~", w2f_text(Some(counter), count)?)
         }

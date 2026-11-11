@@ -100,6 +100,8 @@ pub(crate) struct Possible {
 pub(crate) enum Tally {
     /// A card drawn.
     Drawn,
+    /// A card drawn (counted for the card as it lies in the hand it was drawn into).
+    Dk26Drawn,
     /// A card drawn by the active player in the draw step under way (cleared as each draw step begins).
     C6BlkDrawStepDrawn,
     /// A spell cast.

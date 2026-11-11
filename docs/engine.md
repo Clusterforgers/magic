@@ -182,7 +182,8 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - Events: `AbilityTriggered`, `TriggersOrdered`, `TriggerRemoved`, `DelayedTriggerCreated`, `DelayedTriggerExpired`; visibility in [protocol.md](protocol.md).
 - Evolve (CR 702.100d): +1/+1 counters put on a creature while an evolve ability of its own (an ability its keyword adds) resolves are the action `Evolved` of that creature (`rmt8_turns::evolved`); no event of its own.
 - Haunt (CR 702.55): the keyword adds "when this dies" and "when this spell card is put into a graveyard after resolving" (`TriggerPattern::ResolvedToGraveyard`), each exiling the card haunting a target creature (`ZoneCause::Haunting`, `GameObject::haunting`); the card's own ability works from exile on `Pred::HauntedBy`, judged against the creature as it last was.
-- Opening hand (CR 103.6): the opening question lists cards with `Ability::OpeningHand` (onto the battlefield) and `Ability::OpeningReveal` (revealed; each sets up a one-time delayed trigger owned by its player).
+- Opening hand (CR 103.6): the opening question lists cards with `Ability::OpeningHand` (onto the battlefield) and `Ability::OpeningReveal` (revealed; each sets up a one-time delayed trigger owned by its player). `Ability::OpeningHandWith` (Gemstone Caverns) is offered only to a player who is not the starting player when it says so, begins with its counter, and leaves its owner's seat in `Opening` with `Player::opening_exile` cards owed until a second question exiles them from the hand.
+- An attachment that becomes unattached (an unattach, a move to another host, or the attachment leaving the battlefield) triggers `TriggerPattern::Unattached`; the permanent it left is the triggering object, judged against the state before the batch.
 
 ## Combat and keywords
 

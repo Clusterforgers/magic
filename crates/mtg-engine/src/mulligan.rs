@@ -3,6 +3,7 @@
 use std::sync::Arc;
 
 use mtg_cards::ability::Ability;
+use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -10,7 +11,7 @@ use crate::answers::Outcome;
 use crate::choose::{CardsChoice, CardsOptions, check_cards};
 use crate::decision::{BottomOptions, Decision, DecisionKind, MulliganChoice, MulliganOptions};
 use crate::error::{EngineError, IllegalAnswer};
-use crate::events::Event;
+use crate::events::{Event, ZoneCause};
 use crate::flow::Progress;
 use crate::library::{Revealed, Scried};
 use crate::player::{MulliganStatus, Player};
@@ -159,6 +160,18 @@ pub(crate) fn scry_answer(
     })]))
 }
 
+/// Whether `ability` lets `player` begin the game with its card on the battlefield: a plain one, or one for a player
+/// who is not the starting player.
+fn begins_on_battlefield(state: &GameState, player: PlayerId, ability: &Ability) -> bool {
+    match ability {
+        Ability::OpeningHand => true,
+        Ability::OpeningHandWith { not_starting, .. } => {
+            !not_starting || state.first_player() != player
+        }
+        _ => false,
+    }
+}
+
 /// The cards in the hand of `player` that may begin the game on the battlefield or be revealed (CR 103.6).
 pub(crate) fn opening_cards(state: &GameState, player: PlayerId) -> Vec<ObjectId> {
     state
@@ -169,22 +182,36 @@ pub(crate) fn opening_cards(state: &GameState, player: PlayerId) -> Vec<ObjectId
             crate::ability_reader::abilities_of(state, *id)
                 .iter()
                 .any(|(_, ability)| {
-                    matches!(
-                        **ability,
-                        Ability::OpeningHand | Ability::OpeningReveal { .. }
-                    )
+                    begins_on_battlefield(state, player, ability)
+                        || matches!(**ability, Ability::OpeningReveal { .. })
                 })
         })
         .collect()
+}
+
+/// The counter `card` begins the game with and how many cards its owner then exiles from their hand (Gemstone Caverns).
+pub(crate) fn dk26_opening_riders(state: &GameState, card: ObjectId) -> (Option<CounterKind>, u32) {
+    crate::ability_reader::abilities_of(state, card)
+        .iter()
+        .find_map(|(_, ability)| match &**ability {
+            Ability::OpeningHandWith {
+                counter,
+                exile_from_hand,
+                ..
+            } => Some((counter.clone(), *exile_from_hand)),
+            _ => None,
+        })
+        .unwrap_or((None, 0))
 }
 
 /// The ability by which `card` is revealed from the opening hand, with its index, when it has no ability that puts it
 /// onto the battlefield.
 fn reveal_ability(state: &GameState, card: ObjectId) -> Option<(usize, Arc<Ability>)> {
     let abilities = crate::ability_reader::abilities_of(state, card);
+    let owner = state.object(card)?.owner();
     if abilities
         .iter()
-        .any(|(_, ability)| matches!(**ability, Ability::OpeningHand))
+        .any(|(_, ability)| begins_on_battlefield(state, owner, ability))
     {
         return None;
     }
@@ -231,11 +258,59 @@ pub(crate) fn opening_choice(
     options: &CardsOptions,
     choice: &CardsChoice,
 ) -> Result<Outcome, EngineError> {
-    if status(state, player) == Some(MulliganStatus::Opening) {
+    if status(state, player) == Some(MulliganStatus::Opening) && dk26_exile_owed(state, player) > 0
+    {
+        dk26_exile_answer(player, options, choice)
+    } else if status(state, player) == Some(MulliganStatus::Opening) {
         opening_answer(state, player, options, choice)
     } else {
         scry_answer(player, options, choice)
     }
+}
+
+/// How many cards `player` still exiles from their hand for a card that began the game on the battlefield.
+fn dk26_exile_owed(state: &GameState, player: PlayerId) -> u32 {
+    state.player(player).map_or(0, |seat| seat.opening_exile)
+}
+
+/// The question of the cards to exile from the hand after a card began the game on the battlefield ("If you do, exile a
+/// card from your hand"): exactly as many as are owed, or the whole hand when it holds fewer.
+fn dk26_exile_decision(state: &GameState, player: PlayerId) -> Option<Decision> {
+    let hand = state.zone(Zone::Hand(player)).to_vec();
+    let count = dk26_exile_owed(state, player).min(u32::try_from(hand.len()).unwrap_or(u32::MAX));
+    Some(Decision {
+        player,
+        kind: DecisionKind::ChooseCards(CardsOptions {
+            one_per_name: false,
+            source: *hand.first()?,
+            from: hand,
+            min: count,
+            max: count,
+            text: wording::DK26_OPENING_EXILE.to_owned(),
+            can_cancel: false,
+        }),
+    })
+}
+
+/// The answer to the exile question: the chosen cards go from the hand to exile.
+fn dk26_exile_answer(
+    player: PlayerId,
+    options: &CardsOptions,
+    choice: &CardsChoice,
+) -> Result<Outcome, EngineError> {
+    check_cards(options, &choice.0)?;
+    Ok(Outcome::Events(
+        choice
+            .0
+            .iter()
+            .map(|card| Event::ZoneChanged {
+                object: *card,
+                from: Zone::Hand(player),
+                to: Zone::Exile,
+                cause: ZoneCause::Exiled,
+            })
+            .collect(),
+    ))
 }
 
 /// The answer to the opening-hand question: the chosen cards that reveal are revealed and set up their delayed
@@ -265,10 +340,27 @@ pub(crate) fn opening_answer(
             events.push(Event::DelayedTriggerCreated(Box::new(created)));
         }
     }
+    // A card that begins the game with a counter on it (Gemstone Caverns) gets it as the new object on the battlefield.
+    let counters: Vec<Event> = onto_battlefield
+        .iter()
+        .filter_map(|card| {
+            let (counter, _) = dk26_opening_riders(state, *card);
+            let object = state.object(*card)?;
+            Some(Event::CountersChanged(crate::counters::CountersChanged {
+                on: crate::choose::Target::Object(crate::object::ObjectRef {
+                    id: *card,
+                    counter: object.reference().counter + 1,
+                }),
+                counter: counter?,
+                delta: 1,
+            }))
+        })
+        .collect();
     events.push(Event::OpeningCardsPlayed {
         player,
         cards: onto_battlefield,
     });
+    events.extend(counters);
     Ok(Outcome::Events(events))
 }
 
@@ -300,6 +392,9 @@ pub(crate) fn seat_decision(state: &GameState, player: PlayerId) -> Option<Decis
         MulliganStatus::Opening => {
             if !opening_turn(state, player) {
                 return None;
+            }
+            if dk26_exile_owed(state, player) > 0 {
+                return dk26_exile_decision(state, player);
             }
             let from = opening_cards(state, player);
             let text = if from

@@ -10,7 +10,7 @@ use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
 use crate::refs::{Ref, Selector, TargetSpec, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
-use crate::value::{Amount, CastWay, Condition};
+use crate::value::{Amount, CastWay, Condition, CounterKind};
 
 /// When an activated ability may be activated.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
@@ -355,6 +355,20 @@ pub enum Ability {
     /// "If this card is in your opening hand, you may begin the game with it on the battlefield." (CR 103.6): the card
     /// is asked about once its owner has kept a hand.
     OpeningHand,
+    /// "If this card is in your opening hand and you're not the starting player, you may begin the game with it on the
+    /// battlefield with a luck counter on it. If you do, exile a card from your hand." (CR 103.6): `OpeningHand` with
+    /// the conditions and riders of Gemstone Caverns.
+    OpeningHandWith {
+        /// Only a player who is not the starting player may.
+        #[serde(default, skip_serializing_if = "is_false")]
+        not_starting: bool,
+        /// The counter it begins the game with, if any.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
+        /// How many cards its owner then exiles from their hand.
+        #[serde(default, skip_serializing_if = "is_zero")]
+        exile_from_hand: u32,
+    },
     /// "You may reveal this card from your opening hand. If you do, at the beginning of the first upkeep, ..." (CR
     /// 103.6): once its owner has kept a hand they may reveal it, which sets up a delayed triggered ability that waits
     /// for `when`, triggers once and does `effects`.

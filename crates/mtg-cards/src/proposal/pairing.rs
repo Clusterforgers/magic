@@ -113,6 +113,7 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::InstantActivation { .. }
         | Ability::CastOnly { .. }
         | Ability::OpeningHand
+        | Ability::OpeningHandWith { .. }
         | Ability::OpeningReveal { .. }
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],

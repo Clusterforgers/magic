@@ -180,6 +180,13 @@ enum Happened {
     },
     /// An Aura, Equipment or Fortification became attached to a permanent.
     Attached { attachment: ObjectId, to: ObjectId },
+    /// An Aura, Equipment or Fortification stopped being attached to the permanent `from`; `left` when it left the
+    /// battlefield, which looks back (CR 603.10a).
+    Unattached {
+        attachment: ObjectId,
+        from: ObjectId,
+        left: bool,
+    },
     /// A player cycled a card, the `nth` of their turn.
     Cycled {
         player: PlayerId,
@@ -303,6 +310,7 @@ impl Happened {
                 ..
             } | Happened::Exploited { .. }
                 | Happened::PhasedOut { .. }
+                | Happened::Unattached { left: true, .. }
         ) || matches!(self, Happened::Did { action, .. } if action.looks_back())
     }
 
@@ -412,6 +420,35 @@ fn dk1c5_happened(
     }
 }
 
+/// An attachment that stopped being attached to its host with `event`, judged by its host before the batch: it is
+/// unattached, attached to another permanent, or leaves the battlefield.
+fn dk26_unattached(pre: &GameState, event: &Event) -> Option<Happened> {
+    let host = |id: ObjectId| {
+        pre.object(id)
+            .filter(|object| object.zone() == Zone::Battlefield)?
+            .permanent()?
+            .attached_to()
+            .map(|host| host.id)
+    };
+    let (attachment, left, to) = match event {
+        Event::Unattached { object } => (*object, false, None),
+        Event::Attached { object, to } => (*object, false, Some(*to)),
+        Event::CreatureDied { object, .. }
+        | Event::ZoneChanged {
+            object,
+            from: Zone::Battlefield,
+            ..
+        } => (*object, true, None),
+        _ => return None,
+    };
+    let from = host(attachment)?;
+    (to != Some(from)).then_some(Happened::Unattached {
+        attachment,
+        from,
+        left,
+    })
+}
+
 fn moved(pre: &GameState, event: &Event, post: &GameState) -> Option<Happened> {
     let owner = |object: &ObjectId| pre.object(*object).map(GameObject::owner);
     let (object, from, to, cause) = match event {
@@ -508,6 +545,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
         let look = Look::at(pre, post, events, at);
         found.extend(moved(pre, event, post));
         found.extend(dk1c5_happened(pre, post, look.earlier, event));
+        found.extend(dk26_unattached(pre, event));
         match event {
             Event::TokenCreated(token) => found.push(Happened::Created {
                 object: token.object,
@@ -2048,6 +2086,28 @@ fn matching_permanents(
                     vec![Target::Object(attachment), Target::Object(host)],
                 )
             })
+        }
+        // The permanent it left is the triggering object, while it is still one ("sacrifice that permanent").
+        (
+            TriggerPattern::Unattached { what, from },
+            Happened::Unattached {
+                attachment,
+                from: host,
+                ..
+            },
+        ) => {
+            let attachment = object(*attachment)?;
+            let host = object(*host).filter(|host| {
+                state
+                    .object(host.id)
+                    .is_some_and(|found| found.zone() == Zone::Battlefield)
+            });
+            let host_fits = match host {
+                Some(host) => picks(from, host)?,
+                None => from.is_empty(),
+            };
+            (picks(what, attachment)? && host_fits)
+                .then(|| cause(state, host.map(Target::Object).into_iter().collect()))
         }
         _ => None,
     }
