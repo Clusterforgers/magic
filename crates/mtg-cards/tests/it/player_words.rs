@@ -24,7 +24,8 @@ const TOOLING: [&str; 9] = [
 
 /// Why `text` is no wording for a player, or `None` when it is fine.
 fn tooling_in(text: &str) -> Option<String> {
-    let lower = format!(" {} ", text.to_lowercase());
+    // "Start your engines!" is a keyword's printed name, not the tooling.
+    let lower = format!(" {} ", text.to_lowercase()).replace("start your engines", "");
     if let Some(word) = TOOLING.iter().find(|word| lower.contains(**word)) {
         return Some(format!("names the tooling ({word:?})"));
     }
