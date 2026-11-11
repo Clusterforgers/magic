@@ -61,7 +61,10 @@ fn choice(
     if *kind == ValueKind::Colors {
         return colors(cx, player);
     }
-    let options = options(kind);
+    let options = match kind {
+        ValueKind::LikeChosen(name) => like_chosen(cx.scope.chosen_value(name)),
+        _ => options(kind),
+    };
     let chooser = OptionChooser {
         player,
         text: question(kind),
@@ -72,7 +75,10 @@ fn choice(
         Optioned::Done(taken) => Ok(taken
             .first()
             .and_then(|(_, index)| options.get(*index))
-            .and_then(|option| value(kind, option))),
+            .and_then(|option| value(kind, option, cx.scope.chosen_value(match kind {
+                ValueKind::LikeChosen(name) => name,
+                _ => "",
+            })))),
     })
 }
 
@@ -240,7 +246,45 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
                 |option| !matches!(option, ChoiceOption::Label(name) if left_out.contains(name)),
             )
             .collect(),
-        ValueKind::CardName(_) | ValueKind::Number(..) => Vec::new(),
+        ValueKind::BasicLandType => basic_land_types(),
+        ValueKind::ColorOrBasicLandType => Color::ALL
+            .iter()
+            .copied()
+            .map(ChoiceOption::Color)
+            .chain(basic_land_types())
+            .collect(),
+        ValueKind::CardName(_) | ValueKind::Number(..) | ValueKind::LikeChosen(_) => Vec::new(),
+    }
+}
+
+/// The five basic land types (CR 205.3i).
+fn basic_land_types() -> Vec<ChoiceOption> {
+    BASIC_LAND_TYPES
+        .iter()
+        .map(|name| ChoiceOption::Label((*name).to_owned()))
+        .collect()
+}
+
+const BASIC_LAND_TYPES: [&str; 5] = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
+
+/// The words of the kind of `chosen` other than it: what a text change writes in place of the word it replaces.
+fn like_chosen(chosen: Option<&Chosen>) -> Vec<ChoiceOption> {
+    match chosen {
+        Some(Chosen::Color(color)) => Color::ALL
+            .iter()
+            .filter(|other| *other != color)
+            .copied()
+            .map(ChoiceOption::Color)
+            .collect(),
+        Some(Chosen::LandType(kind)) => basic_land_types()
+            .into_iter()
+            .filter(|option| !matches!(option, ChoiceOption::Label(name) if *name == kind.0))
+            .collect(),
+        Some(Chosen::CreatureType(kind)) => values::creature_types()
+            .into_iter()
+            .filter(|option| !matches!(option, ChoiceOption::Label(name) if *name == kind.0))
+            .collect(),
+        _ => Vec::new(),
     }
 }
 
@@ -265,6 +309,9 @@ fn question(kind: &ValueKind) -> String {
                 .join(" or ")
         ),
         ValueKind::LandType => "Choose a land type.".to_owned(),
+        ValueKind::BasicLandType => "Choose a basic land type.".to_owned(),
+        ValueKind::ColorOrBasicLandType => "Choose a color word or a basic land type to replace.".to_owned(),
+        ValueKind::LikeChosen(_) => "Choose the word to write in its place.".to_owned(),
         ValueKind::CardName(_) => "Choose a card name.".to_owned(),
         ValueKind::Options(words) => format!("Choose {}.", words.join(" or ")),
         ValueKind::Number(..) => "Choose a number.".to_owned(),
@@ -272,14 +319,25 @@ fn question(kind: &ValueKind) -> String {
 }
 
 /// The value an option stands for.
-fn value(kind: &ValueKind, option: &ChoiceOption) -> Option<Chosen> {
+fn value(kind: &ValueKind, option: &ChoiceOption, like: Option<&Chosen>) -> Option<Chosen> {
     match (kind, option) {
+        (ValueKind::LikeChosen(_), option) => match (like?, option) {
+            (Chosen::Color(_), ChoiceOption::Color(color)) => Some(Chosen::Color(*color)),
+            (Chosen::LandType(_), ChoiceOption::Label(name)) => {
+                Some(Chosen::LandType(Subtype(name.clone())))
+            }
+            (Chosen::CreatureType(_), ChoiceOption::Label(name)) => {
+                Some(Chosen::CreatureType(Subtype(name.clone())))
+            }
+            _ => None,
+        },
+        (ValueKind::ColorOrBasicLandType, ChoiceOption::Color(color)) => Some(Chosen::Color(*color)),
+        (ValueKind::LandType | ValueKind::BasicLandType | ValueKind::ColorOrBasicLandType, ChoiceOption::Label(name)) => {
+            Some(Chosen::LandType(Subtype(name.clone())))
+        }
         (ValueKind::Color, ChoiceOption::Color(color)) => Some(Chosen::Color(*color)),
         (ValueKind::CreatureType | ValueKind::CreatureTypeExcept(_), ChoiceOption::Label(name)) => {
             Some(Chosen::CreatureType(Subtype(name.clone())))
-        }
-        (ValueKind::LandType, ChoiceOption::Label(name)) => {
-            Some(Chosen::LandType(Subtype(name.clone())))
         }
         (ValueKind::CardType | ValueKind::CardTypeOf(_), ChoiceOption::Label(name)) => {
             values::CARD_TYPES

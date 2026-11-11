@@ -553,6 +553,10 @@ pub struct TurnView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub initiative: Option<PlayerId>,
+    /// The player who controls the active player this turn (CR 722); left out while the active player controls themselves.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub controlled_by: Option<PlayerId>,
 }
 
 /// Who holds priority and who has passed in this round.

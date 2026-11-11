@@ -50,6 +50,8 @@ pub enum GivenRule {
     SwitchPowerToughness,
     /// The host's card types, subtypes or creature types change.
     ChangeTypes,
+    /// The host's text changes (CR 612).
+    ChangeText,
     /// The host's colours change.
     SetColors,
     /// The host is goaded.
@@ -129,6 +131,7 @@ impl Gives {
             | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => GivenRule::ChangeTypes,
             Modification::SetColors(_) | Modification::AddColors(_) => GivenRule::SetColors,
+            Modification::ChangeText { .. } => GivenRule::ChangeText,
             Modification::Goaded { .. } => GivenRule::Goaded,
         };
         self.rule(rule);

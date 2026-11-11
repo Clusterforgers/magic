@@ -388,6 +388,14 @@ pub enum Keyword {
     Ripple(u32),
     /// Epic (CR 702.50): no more spells for the game; the spell is copied each upkeep.
     Epic,
+    /// Cleave (CR 702.148): the spell may be cast for `cost` rather than its mana cost, and then its text reads without the
+    /// words in square brackets: `spell` is the `Spell` ability as it reads then.
+    Cleave {
+        /// The cleave cost.
+        cost: Cost,
+        /// The spell ability without the bracketed words.
+        spell: Box<Ability>,
+    },
     /// A keyword the macro table expands into abilities of existing nodes (`macros::KEYWORDS`), with its number (0 for a keyword that prints none).
     Macro {
         /// The name in the table.
@@ -579,6 +587,7 @@ impl Keyword {
         "Recover",
         "Ripple",
         "Epic",
+        "Cleave",
         "Macro",
     ];
 
@@ -772,6 +781,7 @@ impl Keyword {
             Keyword::Recover(_) => "Recover",
             Keyword::Ripple(_) => "Ripple",
             Keyword::Epic => "Epic",
+            Keyword::Cleave { .. } => "Cleave",
             Keyword::Macro { .. } => "Macro",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
@@ -1024,6 +1034,13 @@ mod tests {
             Keyword::Recover(Cost::default()),
             Keyword::Ripple(4),
             Keyword::Epic,
+            Keyword::Cleave {
+                cost: Cost::default(),
+                spell: Box::new(Ability::Spell {
+                    targets: Vec::new(),
+                    effects: Vec::new(),
+                }),
+            },
             Keyword::Macro {
                 name: "bushido".to_owned(),
                 amount: 2,

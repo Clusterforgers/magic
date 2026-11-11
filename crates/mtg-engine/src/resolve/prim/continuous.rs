@@ -9,13 +9,14 @@ use mtg_cards::refs::{Pred, Selector as PickSelector};
 use mtg_cards::value::Amount;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
-use mtg_core::ids::EffectId;
+use mtg_core::ids::{EffectId, ObjectId};
 
 use super::wrong_effect;
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
 use crate::effects::{Borrowed, ContinuousEffect, Modification, Selector};
 use crate::events::Event;
 use crate::object::{Chosen, GameObject, ObjectRef};
+use crate::text_change::TextWord;
 use crate::resolve::{Cx, ResolveError, Run, Scope};
 use crate::zones::Zone;
 
@@ -90,7 +91,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
         Optioned::Done(taken) => taken.into_iter(),
     };
-    let mut events = Vec::new();
+    let mut events = spells_taken(cx, &named, mods)?;
     // The loss of all abilities takes the first timestamp of the effect, so what the same effect gives stays whatever the
     // order of its list (CR 613.1f).
     let (lost, kept): (Vec<_>, Vec<_>) = mods
@@ -141,6 +142,42 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         });
     }
     Ok(Run::events(events))
+}
+
+/// The spells and abilities on the stack whose control the effect gains (CR 110.2): each changes controller at once, so
+/// it resolves for the new controller and a permanent spell enters under their control ("gain control of target spell").
+fn spells_taken(
+    cx: &Cx<'_>,
+    named: &[ObjectRef],
+    mods: &[Wanted],
+) -> Result<Vec<Event>, ResolveError> {
+    let Some(Wanted::SetController(who)) = mods
+        .iter()
+        .find(|wanted| matches!(wanted, Wanted::SetController(_)))
+    else {
+        return Ok(Vec::new());
+    };
+    let state = cx.state();
+    let on_stack: Vec<ObjectId> = named
+        .iter()
+        .filter(|named| {
+            state
+                .object(named.id)
+                .is_some_and(|object| object.zone() == Zone::Stack)
+        })
+        .map(|named| named.id)
+        .collect();
+    if on_stack.is_empty() {
+        return Ok(Vec::new());
+    }
+    let Some(player) = cx.scope.players(who)?.first().copied() else {
+        return Ok(Vec::new());
+    };
+    Ok(on_stack
+        .into_iter()
+        .filter(|id| state.object(*id).is_some_and(|object| object.controller() != player))
+        .map(|object| Event::SpellControlGained { object, player })
+        .collect())
 }
 
 /// What a static ability makes of the value its source chose as it entered: the creature type it adds or the colour it
@@ -262,6 +299,19 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             Some(Chosen::LandType(land)) => Modification::SetLandTypes(vec![land.clone()]),
             _ => return Err(ResolveError::Invalid("no land type was chosen".into())),
         },
+        Wanted::ChangeTextChosen { from, to } => {
+            let word = |name: &str| match scope.chosen_value(name) {
+                Some(Chosen::Color(color)) => Ok(TextWord::Color(*color)),
+                Some(Chosen::LandType(kind) | Chosen::CreatureType(kind)) => {
+                    Ok(TextWord::Subtype(kind.clone()))
+                }
+                _ => Err(ResolveError::Invalid("no word was chosen".into())),
+            };
+            Modification::ChangeText {
+                from: word(from)?,
+                to: word(to)?,
+            }
+        }
         Wanted::SetCreatureTypesChosen(name) => match scope.chosen_value(name) {
             Some(Chosen::CreatureType(kind)) => Modification::SetCreatureTypes(vec![kind.clone()]),
             _ => return Err(ResolveError::Invalid("no creature type was chosen".into())),

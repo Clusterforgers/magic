@@ -155,7 +155,7 @@ fn check_merged(state: &GameState) -> Result<(), Violation> {
 /// active player declares attackers (CR 800.4), and a player asked for priority has no triggered ability waiting for
 /// the stack, since they go on it before a player would receive priority (CR 117.5, 603.3).
 pub fn check_decision(engine: &Engine) -> Result<(), Violation> {
-    if let Some(decision) = engine.decision() {
+    if let Some(decision) = engine.decision_owned() {
         let state = engine.state();
         if !state.is_alive(decision.player) {
             return Err(Violation::Bookkeeping(format!(
@@ -392,7 +392,7 @@ fn check_legends(engine: &Engine) -> Result<(), Violation> {
     if groups.is_empty() {
         return Ok(());
     }
-    let asked = match engine.decision() {
+    let asked = match engine.decision_owned() {
         Some(Decision {
             player,
             kind: DecisionKind::ChooseCards(options),

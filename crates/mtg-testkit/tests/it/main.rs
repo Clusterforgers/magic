@@ -776,3 +776,6 @@ mod ring;
 mod tapped_for_mana;
 mod target_reductions;
 mod together_batch;
+mod tc34_player_control;
+mod tc34_text_change;
+mod tc34_cleave;

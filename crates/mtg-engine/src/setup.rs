@@ -514,6 +514,7 @@ impl GameState {
             seat_turns: std::collections::BTreeMap::new(),
             last_turn_of: None,
             monarch: None,
+            player_controls: Vec::new(),
             citys_blessing: std::collections::BTreeSet::new(),
             speeds: crate::speed::Speeds::default(),
             ring: crate::ring::Rings::new(),

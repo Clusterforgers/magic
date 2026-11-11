@@ -84,6 +84,7 @@ pub mod manual_cards;
 pub mod manual_script;
 pub mod mayhem_cards;
 pub mod miracle_cards;
+pub mod control_cards;
 pub mod monarch_cards;
 pub mod morph_cards;
 pub mod move_cards;

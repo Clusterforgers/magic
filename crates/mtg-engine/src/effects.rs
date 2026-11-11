@@ -144,6 +144,13 @@ pub enum Modification {
     LoseAbility(crate::abilities::AbilityRef),
     /// Changes the controller (layer 2).
     SetController(PlayerId),
+    /// Replaces every instance of one word of the text with another (layer 3, CR 612).
+    ChangeText {
+        /// The word replaced.
+        from: crate::text_change::TextWord,
+        /// The word written.
+        to: crate::text_change::TextWord,
+    },
     /// Sets power and toughness (layer 7b).
     SetPowerToughness {
         /// New power.
@@ -227,6 +234,7 @@ impl Modification {
     pub const fn layer(&self) -> Option<Layer> {
         Some(match self {
             Modification::SetController(_) => Layer::Control,
+            Modification::ChangeText { .. } => Layer::Text,
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
@@ -309,6 +317,9 @@ impl Modification {
                 chars.abilities.clear();
             }
             Modification::AddAllCreatureTypes => chars.all_creature_types = true,
+            Modification::ChangeText { from, to } => {
+                crate::text_change::subtypes(&mut chars.subtypes, from, to);
+            }
             Modification::SetColors(colors) => chars.colors = *colors,
             Modification::AddColors(colors) => {
                 chars.colors = colors

@@ -106,6 +106,7 @@ mod ninjutsu;
 mod offspring;
 mod outlast;
 mod overload;
+pub(crate) mod cleave;
 mod partner;
 mod partner_group;
 mod partner_with;
@@ -571,6 +572,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Recover(_) => &recover::Recover,
         Keyword::Ripple(_) => &ripple::Ripple,
         Keyword::Epic => &epic::Epic,
+        Keyword::Cleave { .. } => &cleave::Cleave,
         Keyword::Macro { .. } => &macro_keyword::MacroKeyword,
         // The keywords before them are matched by `rules`.
         _ => &Unruled,
@@ -984,6 +986,13 @@ mod tests {
             Keyword::Recover(cost()),
             Keyword::Ripple(4),
             Keyword::Epic,
+            Keyword::Cleave {
+                cost: cost(),
+                spell: Box::new(mtg_cards::ability::Ability::Spell {
+                    targets: Vec::new(),
+                    effects: Vec::new(),
+                }),
+            },
             Keyword::Macro {
                 name: "bushido".to_owned(),
                 amount: 2,
@@ -1103,6 +1112,7 @@ mod tests {
         "Keyword.Recover",
         "Keyword.Ripple",
         "Keyword.Epic",
+        "Keyword.Cleave",
         "Keyword.Macro",
         "Keyword.Station",
         "Keyword.Myriad",

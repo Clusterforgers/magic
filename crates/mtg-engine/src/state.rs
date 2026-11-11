@@ -268,6 +268,8 @@ pub struct GameState {
     pub(crate) turn: TurnState,
     /// The extra turns still to take, the latest added last: it is taken first (CR 500.7).
     pub(crate) extra_turns: Vec<ExtraTurn>,
+    /// The controls of players scheduled or under way (CR 722), oldest first.
+    pub(crate) player_controls: Vec<crate::player_control::PlayerControl>,
     pub(crate) priority: Option<PriorityState>,
     pub(crate) combat: CombatState,
     pub(crate) effects: Vec<ContinuousEffect>,
@@ -918,6 +920,10 @@ impl Hash for GameState {
             day_night.hash(state);
         }
         self.hash_turn_summaries(state);
+        // Likewise a game where no player controlled another.
+        if !self.player_controls.is_empty() {
+            self.player_controls.hash(state);
+        }
         // Likewise a game without a monarch.
         if let Some(monarch) = self.monarch {
             monarch.hash(state);

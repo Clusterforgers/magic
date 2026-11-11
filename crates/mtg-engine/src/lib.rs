@@ -128,6 +128,8 @@ pub mod manual_tokens;
 pub mod memory;
 pub mod merged;
 pub mod monarch;
+pub mod player_control;
+pub mod text_change;
 pub mod object;
 mod party;
 pub mod phasing;

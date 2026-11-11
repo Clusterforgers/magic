@@ -576,6 +576,7 @@ fn keyword_way(
         }
         Keyword::Evoke(cost) => (CastWay::Evoke, "Evoke", cost, in_hand),
         Keyword::Overload(cost) => (CastWay::Overload, "Overload", cost, in_hand),
+        Keyword::Cleave { cost, .. } => (CastWay::Cleave, "Cleave", cost, in_hand),
         Keyword::Dash(cost) => (
             CastWay::Dash,
             "Dash",
@@ -1158,6 +1159,9 @@ pub(crate) fn announceable_in(
     if way == Some(CastWay::Mutate) {
         // The creature spell has the one target of mutate and no other (CR 702.140a).
         return merged::announceable(state, player, id);
+    }
+    if let Some(rules) = crate::keywords::cleave::cleaved(state, id, way) {
+        return announceable(state, player, id, &rules) && attach::announceable(state, player, id);
     }
     way == Some(CastWay::Overload)
         || (spell_ability(state, id)

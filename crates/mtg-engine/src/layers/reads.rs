@@ -62,6 +62,8 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         Modification::LoseAbilities | Modification::LoseAbility(_) => {
             Traits::KEYWORDS.or(Traits::RULES)
         }
+        // A text change rewrites the rules, the keywords and the subtypes.
+        Modification::ChangeText { .. } => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
         Modification::SetController(_) => Traits::CONTROL,
         Modification::SetPowerToughness { .. }
         | Modification::SetPower(_)
@@ -110,6 +112,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::RemoveKeyword(_)
         | Wanted::LockKeyword(_) => Traits::KEYWORDS,
         Wanted::LoseAbilities | Wanted::LoseThisAbility => Traits::KEYWORDS.or(Traits::RULES),
+        Wanted::ChangeTextChosen { .. } => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. }
         | Wanted::SetPower(_)
@@ -161,6 +164,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetLandTypes(_)
         | Wanted::SetLandTypesChosen(_)
         | Wanted::SetCreatureTypesChosen(_)
+        | Wanted::ChangeTextChosen { .. }
         | Wanted::SetColorsChosen(_)
         | Wanted::AddChosenSubtype
         | Wanted::SetChosenColor

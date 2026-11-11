@@ -185,6 +185,8 @@ pub enum Rule {
     RevealTop(Vec<PlayerId>),
     /// The players play with their hands revealed to every seat.
     RevealHand(Vec<PlayerId>),
+    /// The rule's controller controls the players while they search their libraries (CR 722).
+    ControlSearches(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Vec<PlayerId>),
     /// The players' maximum hand size is this many cards (CR 402.2).
@@ -603,6 +605,8 @@ pub(crate) struct RulesInForce {
     spend_mana_as: Vec<(PlayerId, mtg_cards::modify::SpendAs, Option<Selector>)>,
     reveal_top: BTreeSet<PlayerId>,
     reveal_hand: BTreeSet<PlayerId>,
+    /// Who controls each player while they search their library, the latest rule last.
+    control_searches: Vec<(PlayerId, PlayerId)>,
     no_hand_limit: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
@@ -985,6 +989,9 @@ impl RulesInForce {
             }
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::RevealHand(players) => self.reveal_hand.extend(players),
+            Rule::ControlSearches(players) => self
+                .control_searches
+                .extend(players.iter().map(|player| (*player, controller))),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::MaxHandSize(_)
             | Rule::HandSizeChange(_)
@@ -1295,6 +1302,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         }
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
         GameRule::RevealHand(who) => Rule::RevealHand(scope.players(who)?),
+        GameRule::ControlSearches(who) => Rule::ControlSearches(scope.players(who)?),
         GameRule::MayCast(permission) => Rule::MayCast {
             who: scope.players(&permission.who)?,
             what: permission.what.clone(),
@@ -1459,6 +1467,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::SpendManaAs { players, .. }
         | Rule::RevealTop(players)
         | Rule::RevealHand(players)
+        | Rule::ControlSearches(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
         | Rule::NoLegendRule(players)
@@ -1616,6 +1625,7 @@ static NONE: RulesInForce = RulesInForce {
     spend_mana_as: Vec::new(),
     reveal_top: BTreeSet::new(),
     reveal_hand: BTreeSet::new(),
+    control_searches: Vec::new(),
     no_hand_limit: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
@@ -1691,6 +1701,17 @@ impl GameState {
             return None;
         }
         self.zone(Zone::Library(player)).last().copied()
+    }
+
+    /// Who controls `player` while they search their library, by the latest rule in force that says so: the one place the
+    /// answerer of a search reads this rule.
+    pub fn search_controller(&self, player: PlayerId) -> Option<PlayerId> {
+        self.rules()
+            .control_searches
+            .iter()
+            .rev()
+            .find(|(searched, by)| *searched == player && *by != player && self.is_alive(*by))
+            .map(|(_, by)| *by)
     }
 
     /// Whether a rule has `player` play with their hand revealed to every seat.
