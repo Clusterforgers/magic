@@ -979,10 +979,12 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             from: ZoneKind::Battlefield,
             targets,
             effects,
-        } => alternatives(targets, effects)
-            .iter()
-            .map(|sentences| format!("{}{}", super::un33_attractions::VISIT, spell(sentences)))
-            .collect(),
+        } => super::un33_attractions::un33_visit_texts(
+            alternatives(targets, effects)
+                .iter()
+                .map(|sentences| spell(sentences))
+                .collect(),
+        ),
         Ability::Triggered {
             when: TriggerPattern::TappedForMana { .. },
             ..

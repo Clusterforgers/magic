@@ -65,6 +65,21 @@ fn a_visit_line_is_a_visit_ability(#[case] text: &str, #[case] effects: &str) {
     );
 }
 
+#[test]
+fn a_visit_of_choices_reads_its_modes_and_writes_back_as_printed() {
+    let text = "Visit \u{2014} Choose one.\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.";
+    let read = visit_block(text, false, &Own::default()).unwrap_or_else(|| panic!("not read"));
+    assert!(matches!(
+        &read,
+        Ability::Triggered { effects, .. } if matches!(effects.as_slice(), [crate::effect::Effect::Modal { .. }])
+    ));
+    let written = render_variants(&read);
+    assert!(
+        written.iter().any(|found| same_text(found, text)),
+        "{written:?}"
+    );
+}
+
 #[rstest]
 #[case::two_of_one("Open two Attraction.", ClauseKind::Spell)]
 #[case::one_of_many("Open an Attractions.", ClauseKind::Spell)]

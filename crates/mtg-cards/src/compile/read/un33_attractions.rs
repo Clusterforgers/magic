@@ -94,6 +94,17 @@ pub(super) fn un33_event_text(pattern: &TriggerPattern) -> Option<String> {
     }
 }
 
+/// The lines of a visit ability whose effects are written as `bodies`: "Visit — " before each, and a choice of modes
+/// also as the Attractions print it, "Choose one." before the bullets in place of "Choose one —".
+pub(super) fn un33_visit_texts(bodies: Vec<String>) -> Vec<String> {
+    let mut texts: Vec<String> = bodies.iter().map(|body| format!("{VISIT}{body}")).collect();
+    texts.extend(bodies.iter().filter_map(|body| {
+        let rest = body.strip_prefix("Choose one \u{2014}")?;
+        Some(format!("{VISIT}Choose one.{rest}"))
+    }));
+    texts
+}
+
 /// Whether the clause is a visit ability.
 pub fn is_visit_line(text: &str) -> bool {
     text.starts_with(VISIT)
@@ -103,6 +114,12 @@ pub fn is_visit_line(text: &str) -> bool {
 /// the text after the dash read as a spell; `None` when the text is not read.
 pub fn un33_visit_block(text: &str, x_free: bool, own: &Own) -> Option<Ability> {
     let body = text.strip_prefix(VISIT)?;
+    // An Attraction prints its modes after "Choose one." where other cards have "Choose one —".
+    let body = match body.strip_prefix("Choose one.\n") {
+        Some(modes) => format!("Choose one \u{2014}\n{modes}"),
+        None => body.to_owned(),
+    };
+    let body = body.as_str();
     let kind = if body.starts_with("Choose ") {
         ClauseKind::Modal
     } else {
