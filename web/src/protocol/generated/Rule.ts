@@ -251,6 +251,10 @@ objects: Array<ObjectRef>,
  */
 to: unknown, 
 /**
+ * The place in its owner's library a countered spell goes to, when `to` is the library.
+ */
+place?: unknown, 
+/**
  * It covers a spell that is countered only, not one that resolves or fizzles.
  */
 countered?: boolean, 
