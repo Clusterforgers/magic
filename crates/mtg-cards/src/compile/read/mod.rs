@@ -105,6 +105,7 @@ mod ep26_mana;
 mod ep27_flash;
 mod ep28_under;
 mod ep29_flash;
+mod ep30_paid;
 mod ep32_discard;
 mod ep33_face_down;
 mod ep33_spend;

@@ -183,14 +183,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
         Destination::BattlefieldFaceDown { under } => {
-            let entry = Entry {
-                tapped: false,
-                under: entering_under(cx, under.as_ref())?,
-                transformed: false,
-                counters: &[],
-                attached_to: None,
-                face_down: true,
-            };
+            let entry = Entry::face_down(entering_under(cx, under.as_ref())?);
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
         Destination::BattlefieldAttached { to } => {
@@ -233,6 +226,20 @@ struct Entry<'a> {
     attached_to: Option<NamedHost>,
     /// Face down (CR 708.3): a 2/2 creature with nothing else that enters with nothing its card would bring.
     face_down: bool,
+}
+
+impl Entry<'_> {
+    /// A card put onto the battlefield face down under `under`, its owner when none.
+    const fn face_down(under: Option<PlayerId>) -> Self {
+        Entry {
+            tapped: false,
+            under,
+            transformed: false,
+            counters: &[],
+            attached_to: None,
+            face_down: true,
+        }
+    }
 }
 
 /// The permanent a move onto the battlefield attaches its cards to.

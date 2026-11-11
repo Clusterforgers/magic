@@ -424,14 +424,13 @@ fn qualifier_text(filter: &SpendFilter) -> String {
                 text.push_str(" that shares a creature type with your commander");
             }
             SpendFact::OnBattlefield => text.push_str(" on the battlefield"),
-            // Written before the noun (`kind_text`).
-            SpendFact::Colorless => {}
+            // Colorless is written before the noun (`kind_text`), your commander alone (`ep33_spend_text`); `text` writes no
+            // face-down spells.
+            SpendFact::Colorless | SpendFact::YourCommander | SpendFact::FaceDown => {}
             SpendFact::FromExile => text.push_str(" from exile"),
             SpendFact::NotFromHand => text.push_str(" from anywhere other than your hand"),
             SpendFact::Devoid => text.push_str(" with devoid"),
             SpendFact::Flashback => text.push_str(" with flashback"),
-            // Written by `ep33_spend_text` alone ("your commander"), or before the noun ("face-down spells").
-            SpendFact::YourCommander | SpendFact::FaceDown => {}
         }
     }
     text

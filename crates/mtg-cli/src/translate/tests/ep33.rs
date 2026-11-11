@@ -25,7 +25,7 @@ fn ep33_collect_evidence_is_did(#[case] line: &str, #[case] node: Value) {
 #[test]
 fn ep33_collect_evidence_with_another_key_is_a_gap() {
     let script = trigger("Mode$ CollectEvidence | ValidPlayer$ You | Amount$ 4");
-    assert!(!gaps(&script).is_empty());
+    assert_ne!(gaps(&script), Vec::<String>::new());
 }
 
 /// Ashcloud Phoenix's dies trigger with `part` added to its move.
@@ -61,7 +61,12 @@ fn ep33_a_face_down_move_the_engine_lacks_is_a_gap(#[case] part: &str, #[case] d
     } else {
         phoenix(part, destination)
     };
-    assert!(!gaps(&script).is_empty(), "{:?}", abilities(&script));
+    assert_ne!(
+        gaps(&script),
+        Vec::<String>::new(),
+        "{:?}",
+        abilities(&script)
+    );
 }
 
 fn pipes(amount: &str) -> String {
@@ -86,7 +91,7 @@ fn ep33_manifest_dread_repeats_the_whole_action(#[case] amount: &str, #[case] st
 #[case::a_count_amount(" | Amount$ X")]
 #[case::twice_remembered(" | Amount$ 2 | RememberManifested$ True")]
 fn ep33_manifest_dread_the_engine_lacks_is_a_gap(#[case] amount: &str) {
-    assert!(!gaps(&pipes(amount)).is_empty());
+    assert_ne!(gaps(&pipes(amount)), Vec::<String>::new());
 }
 
 fn restricted(valid: &str) -> String {
@@ -119,7 +124,7 @@ fn ep33_restricted_mana_uses(#[case] valid: &str, #[case] only: Value) {
 #[case::any_commander("Spell.IsCommander")]
 #[case::morph_up("Static.MorphUp")]
 fn ep33_restricted_mana_the_engine_lacks_is_a_gap(#[case] valid: &str) {
-    assert!(!gaps(&restricted(valid)).is_empty());
+    assert_ne!(gaps(&restricted(valid)), Vec::<String>::new());
 }
 
 /// A creature that exiles a target creature as it enters (with `keep` on that move) and returns "the exiled card"
@@ -147,7 +152,7 @@ fn ep33_the_card_exiled_with_the_source(#[case] memory: &str, #[case] keep: &str
 #[case::no_memory_written("Imprinted", "")]
 #[case::another_memory("Chosen", " | RememberChanged$ True")]
 fn ep33_the_card_exiled_with_the_source_needs_its_memory(#[case] memory: &str, #[case] keep: &str) {
-    assert!(!gaps(&crab(memory, keep)).is_empty());
+    assert_ne!(gaps(&crab(memory, keep)), Vec::<String>::new());
 }
 
 fn voting(line: &str) -> String {
@@ -170,5 +175,5 @@ fn ep33_an_additional_vote() {
 #[case::two_votes("Affected$ You | AdditionalVote$ 2")]
 #[case::opponents("Affected$ Opponent | AdditionalVote$ 1")]
 fn ep33_an_additional_vote_the_engine_lacks_is_a_gap(#[case] line: &str) {
-    assert!(!gaps(&voting(line)).is_empty());
+    assert_ne!(gaps(&voting(line)), Vec::<String>::new());
 }

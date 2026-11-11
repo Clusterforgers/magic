@@ -232,7 +232,11 @@ pub fn split_redirect(
         return unmapped("svar:missing");
     };
     let part = Params::parse(text);
-    keys(&part, &["DamageTarget", "VarName"])?;
+    keys(&part, &["DamageTarget", "VarName", "DivideShield"])?;
+    // One budget the recipients share, which the shield keeps as one (`Union`).
+    if !matches!(part.get("DivideShield"), None | Some("True")) {
+        return unmapped("key:Replacement.DamageDone.ReplaceSplitDamage.DivideShield");
+    }
     if line.has("EffectOwner") || part.get("DamageTarget") != p.get("DamageTarget") {
         return unmapped("replacement:DamageDone-redirect-target");
     }

@@ -10,6 +10,7 @@ fn of(items: Vec<CostItem>) -> Ability {
     Ability::AdditionalCost {
         cost: Cost(items),
         required: false,
+        repeatable: false,
     }
 }
 
@@ -17,6 +18,7 @@ fn must(items: Vec<CostItem>) -> Ability {
     Ability::AdditionalCost {
         cost: Cost(items),
         required: true,
+        repeatable: false,
     }
 }
 

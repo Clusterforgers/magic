@@ -64,22 +64,32 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
                 to: Ref::Target(1),
                 counter,
                 count,
+                up_to,
             },
         ] => {
+            let onto = spec_text(second)?;
             // A second target other than the first is "onto a second target permanent", which the reader reads
             // without the filter (a second target is another object, CR 115.3).
-            let onto = spec_text(second)?;
             let onto = match onto.strip_prefix("another ") {
                 Some(rest) => format!("a second {rest}"),
                 None => format!("a second {onto}"),
             };
-            Some(format!(
-                "move {} from {} onto {onto}",
+            // "Move any number of counters": the controller may stop.
+            let counters = if *up_to {
+                crate::compile::read::counters::ep30_any_number_text(
+                    counter.as_ref(),
+                    count,
+                    &Ref::Target(0),
+                )?
+            } else {
                 crate::compile::read::counters::ep21_move_text(
                     counter.as_ref(),
                     count,
-                    &Ref::Target(0)
-                )?,
+                    &Ref::Target(0),
+                )?
+            };
+            Some(format!(
+                "move {counters} from {} onto {onto}",
                 spec_text(first)?,
             ))
         }

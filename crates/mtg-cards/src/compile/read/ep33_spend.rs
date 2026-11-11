@@ -1,4 +1,4 @@
-//! Restricted mana of ep33: mana for your commander ("Spend this mana only to cast your commander"), mana that can't be
+//! Restricted mana and votes of ep33: mana for your commander ("Spend this mana only to cast your commander"), mana that can't be
 //! spent on spells ("This mana can't be spent to cast spells"), and mana for special actions alone or beside spells
 //! ("Spend this mana only to turn permanents face up", "... to foretell a card from your hand or cast an instant or
 //! sorcery spell", "... to cast an enchantment spell, unlock a door, or turn a permanent face up").
@@ -71,6 +71,17 @@ fn flush(types: &mut Vec<CardType>, phrases: &mut Vec<String>) {
         super::triggers::article(&kind)
     ));
     types.clear();
+}
+
+/// The sentence of a rule about your votes: "While voting, you may vote an additional time" (`VoteAgain`) or "While
+/// voting, you get an additional vote" (`ExtraVote`).
+pub(super) fn ep33_vote_text(rule: &crate::modify::GameRule) -> String {
+    let more = if matches!(rule, crate::modify::GameRule::ExtraVote(_)) {
+        "you get an additional vote"
+    } else {
+        "you may vote an additional time"
+    };
+    format!("While voting, {more}")
 }
 
 /// The special action as one use of a list: "turn a permanent face up".

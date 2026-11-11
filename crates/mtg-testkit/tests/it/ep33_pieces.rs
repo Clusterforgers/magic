@@ -234,7 +234,7 @@ fn ballot() -> Arc<CardDefinition> {
 fn representative(n: usize) -> Arc<CardDefinition> {
     let rule: Ability = serde_json::from_str(r#"{"Rule":{"rule":{"ExtraVote":"You"}}}"#).unwrap();
     Arc::new(
-        CardDefinition::new(&format!("Representative {n}"))
+        CardDefinition::new(format!("Representative {n}"))
             .with_type(CardType::Artifact)
             .with_rules(rule),
     )

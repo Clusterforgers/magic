@@ -1773,11 +1773,8 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::OpponentsCantMakeSacrifice(_),
             ZoneKind::Battlefield,
         ) => super::ep24_rules::ep24_rule_texts(rule),
-        (GameRule::VoteAgain(Ref::You), ZoneKind::Battlefield) => {
-            vec!["While voting, you may vote an additional time".to_owned()]
-        }
-        (GameRule::ExtraVote(Ref::You), ZoneKind::Battlefield) => {
-            vec!["While voting, you get an additional vote".to_owned()]
+        (GameRule::VoteAgain(Ref::You) | GameRule::ExtraVote(Ref::You), ZoneKind::Battlefield) => {
+            vec![super::ep33_spend::ep33_vote_text(rule)]
         }
         (
             GameRule::GraveyardCardsUntargetable

@@ -301,11 +301,12 @@ fn one_shield(
     let duration = duration(line.get("Duration"))?;
     let mut when = serde_json::Map::new();
     let mut recipients = vec![None];
+    let mut recipient_word = None;
     match (p.get("ValidTarget"), remembered) {
         (Some(word), Some(who)) if is_remembered(word) => {
             when.insert("to".into(), who.clone());
         }
-        (Some(word), _) => recipients = shield_recipients(ctx, &p, word)?,
+        (Some(word), _) => recipient_word = Some(word),
         (None, _) => {}
     }
     match (p.get("ValidSource"), remembered) {
@@ -335,9 +336,13 @@ fn one_shield(
             return unmapped("replacement:DamageDone-shield-source");
         }
         (Some(word), _) => {
-            // A script that drops "you control" from the source would apply to every player's sources.
+            // A script that drops "you control" from the source would apply to every player's sources; the recipients'
+            // own "permanents you control" are not the source's.
+            let recipients = p
+                .get("ValidTarget")
+                .map_or(0, |target| target.matches("YouCtrl").count());
             if p.get("Description")
-                .is_some_and(|text| text.contains("you control"))
+                .is_some_and(|text| text.matches("you control").count() > recipients)
                 && !word.contains("YouCtrl")
             {
                 return unmapped("replacement:DamageDone-shield-source-control");
@@ -350,6 +355,9 @@ fn one_shield(
         when.insert("combat".into(), json!(combat));
     }
     let by = shield_by(ctx, (&p, line), remembered)?;
+    if let Some(word) = recipient_word {
+        recipients = shield_recipients(ctx, &by, word)?;
+    }
     let mut shields = Vec::new();
     for recipient in recipients {
         let mut when = when.clone();
@@ -404,9 +412,10 @@ fn shield_by(ctx: &Ctx, (p, line): (&Params, &Params), remembered: Option<&Value
 }
 
 /// The recipients of a shield, one shield each: a player word, the source itself, or a group of permanents. A list is
-/// one shield for each part only for a prevention, which every part's shield applies in full (CR 615.1); a "next"
-/// shield or a redirect would be used up for each part.
-fn shield_recipients(ctx: &Ctx, p: &Params, word: &str) -> Tr<Vec<Option<Value>>> {
+/// one shield for each part when the shield applies in full to each damage event (a prevention, a scaling, a redirect of
+/// all of it, CR 615.1); a shield used up by the damage it covers (the next time, the next N damage) protects the list
+/// as one recipient (`Union`), so the parts share what it has left.
+fn shield_recipients(ctx: &Ctx, by: &Value, word: &str) -> Tr<Vec<Option<Value>>> {
     let single = |part: &str| -> Tr<Option<Value>> {
         Ok(Some(match part {
             "You" => json!("You"),
@@ -428,10 +437,32 @@ fn shield_recipients(ctx: &Ctx, p: &Params, word: &str) -> Tr<Vec<Option<Value>>
     if word == "Permanent,Player" || word == "Player,Permanent" || !word.contains(',') {
         return Ok(vec![single(word)?]);
     }
-    if p.has("ReplaceWith") {
-        return unmapped("replacement:DamageDone-shield-recipient");
+    let parts: Vec<Option<Value>> = word
+        .split(',')
+        .map(|part| single(part.trim()))
+        .collect::<Tr<_>>()?;
+    if !used_up(by) {
+        return Ok(parts);
     }
-    word.split(',').map(|part| single(part.trim())).collect()
+    let parts: Option<Vec<Value>> = parts.into_iter().collect();
+    match parts {
+        Some(parts) if parts.len() == 2 => Ok(vec![Some(json!({ "Union": parts }))]),
+        _ => unmapped("replacement:DamageDone-shield-recipient"),
+    }
+}
+
+/// Whether a shield is used up by the damage it covers: the next time, the next N damage, the next N redirected.
+fn used_up(by: &Value) -> bool {
+    by.as_str() == Some("PreventNext")
+        || [
+            "PreventUpTo",
+            "PreventCounted",
+            "RedirectUpTo",
+            "InsteadNext",
+        ]
+        .iter()
+        .any(|key| by.get(key).is_some())
+        || by.pointer("/Redirect/next") == Some(&json!(true))
 }
 
 /// The recipient and the remembered objects of an `Effect` line that has a target.

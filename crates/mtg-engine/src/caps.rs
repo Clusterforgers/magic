@@ -601,6 +601,7 @@ const RUNS: &[&str] = &[
     "Condition.ChosenWord",
     "Condition.EnteredAs",
     "Amount.Kicks",
+    "Amount.AdditionalPaid",
     "Amount.Mutations",
     "Amount.Promised",
     "Amount.ResolvedThisTurn",

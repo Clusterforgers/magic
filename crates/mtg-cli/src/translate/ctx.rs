@@ -196,6 +196,8 @@ pub struct Ctx<'a> {
     pub die_result: Option<String>,
     /// The choice of a vote whose votes `VoteNum` counts.
     pub vote_num: Option<String>,
+    /// The announced `SVar` that counts the payments of the spell's repeatable "you may" additional cost (`AdditionalPaid`).
+    pub ep30_paid: Option<String>,
     /// The keyword (`Spree`, `Tiered`, `Escalate`) whose modal spell has not yet taken its mode costs.
     pub modal_keyword: Option<&'static str>,
     /// The cost `Escalate` adds for each mode beyond the first.
@@ -263,6 +265,7 @@ impl<'a> Ctx<'a> {
             damage_open: false,
             number: None,
             vote_num: None,
+            ep30_paid: None,
             granted: false,
             printed: None,
             effect_source: false,

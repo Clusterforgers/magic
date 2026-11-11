@@ -953,6 +953,14 @@ impl Pass<'_> {
         target: Target,
     ) -> Result<bool, EngineError> {
         Ok(match (named, target) {
+            (Ref::Union(parts), _) => {
+                for part in parts {
+                    if self.includes(scope, part, target)? {
+                        return Ok(true);
+                    }
+                }
+                false
+            }
             (Ref::Each(selector), Target::Object(object)) => match self.reference(object.id) {
                 Some(reference) => scope.selects(selector, reference)?,
                 None => false,
@@ -1645,6 +1653,20 @@ impl Pass<'_> {
             .is_some_and(|wanted| wanted != self.combat_damage())
         {
             return Ok(false);
+        }
+        // Both a fixed list and a kind of object: the shield covers either (`Ref::Union`).
+        if let (Some(_), Some(each)) = (&shield.to, &shield.each) {
+            let fixed = DamageShield {
+                each: None,
+                ..shield.clone()
+            };
+            let kind = DamageShield {
+                to: None,
+                each: Some(each.clone()),
+                ..shield.clone()
+            };
+            return Ok(self.shield_covers(effect, &fixed, dealer, target)?
+                || self.shield_covers(effect, &kind, dealer, target)?);
         }
         if let Some(protected) = &shield.to {
             let hit = protected.iter().any(|named| match (named, target) {

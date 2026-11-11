@@ -401,6 +401,7 @@ fn counters(ctx: &Ctx, effect: &Effect) -> Option<String> {
             to,
             counter,
             count,
+            up_to: _,
         } => format!(
             "move {} {} counters from {} to {}",
             phrase::amount(ctx, count),

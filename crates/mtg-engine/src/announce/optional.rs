@@ -100,11 +100,12 @@ fn additional(ability: &Ability) -> Option<Printed> {
         Ability::AdditionalCost {
             cost,
             required: false,
+            repeatable,
         } => Some(Printed {
             kind: OptionalKind::Additional,
             name: "",
             cost: cost.clone(),
-            repeatable: false,
+            repeatable: *repeatable,
         }),
         _ => None,
     }

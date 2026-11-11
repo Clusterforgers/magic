@@ -1062,7 +1062,14 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } => loyalty::texts(*cost, targets, effects),
-        Ability::AdditionalCost { cost, required } => costs::additional_texts(cost, *required),
+        Ability::AdditionalCost {
+            cost,
+            required,
+            repeatable: false,
+        } => costs::additional_texts(cost, *required),
+        // "you may exile any number of ..." is written with the reduction it pays for (`ep30_paid`); mana alone stands by
+        // itself.
+        Ability::AdditionalCost { cost, .. } => super::ep30_paid::ep30_mana_texts(cost),
         _ => statics::texts(ability),
     }
 }
@@ -2373,9 +2380,19 @@ impl Writer<'_> {
                 to,
                 counter,
                 count,
+                up_to,
             } => {
-                let counters = counters::ep21_move_text(counter.as_ref(), count, from)?;
-                let from = self.counter_place(from, false)?;
+                let counters = if *up_to {
+                    counters::ep30_any_number_text(counter.as_ref(), count, from)?
+                } else {
+                    counters::ep21_move_text(counter.as_ref(), count, from)?
+                };
+                // Several objects give them up: "from other permanents you control", "from all creatures".
+                let from = match from {
+                    Ref::Each(selector) if *up_to => phrase_text(selector, Form::All)?,
+                    Ref::Each(selector) => format!("all {}", phrase_text(selector, Form::All)?),
+                    _ => self.counter_place(from, false)?,
+                };
                 format!(
                     "move {counters} from {from} onto {}",
                     self.counter_place(to, false)?
@@ -3141,10 +3158,7 @@ impl Writer<'_> {
                 super::w6b_emblem::w6b_text(&subject, *who == Ref::You, abilities)?
             }
             Effect::UnlockDoor { who } => super::dk1c5_rooms::dk1c5_unlock_text(who)?,
-            Effect::Either { first, second } => {
-                super::ep33_face_down::ep33_face_up_or_down(first, second)
-                    .or_else(|| self.dk1c5_either_text(first, second))?
-            }
+            Effect::Either { first, second } => self.dk1c5_either_text(first, second)?,
             Effect::Venture { who, undercity } => {
                 let into = if *undercity {
                     "Undercity"

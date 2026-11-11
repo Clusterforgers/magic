@@ -1064,6 +1064,13 @@ const COST_MODIFIER: [&str; 19] = [
 /// `ReduceCost` and `RaiseCost` of spells and of activated abilities.
 fn cost_modifier(ctx: &Ctx, p: &Params, change: &str) -> Tr<Value> {
     keys(p, "CostModifier", &COST_MODIFIER)?;
+    if ctx.ep30_paid.is_some()
+        && p.get("Mode") == Some("RaiseCost")
+        && p.get("Description")
+            .is_some_and(|text| text.contains("any number of"))
+    {
+        return super::ep30_paid::ep30_repeatable_cost(ctx, p);
+    }
     let (mana_cost, life) = match cost_key(ctx, p, change)? {
         CostKey::Own(ability) => return Ok(ability),
         CostKey::Mana(mana) => (Some(mana), None),

@@ -507,6 +507,7 @@ fn commander_table(seats: usize, mountains: usize) -> Scenario {
             filter: None,
         }]),
         required: true,
+        repeatable: false,
     };
     let commander: Arc<CardDefinition> = Arc::new(
         (*legend("Grim Cmd", 1, &[Color::Red], 2, 2))
