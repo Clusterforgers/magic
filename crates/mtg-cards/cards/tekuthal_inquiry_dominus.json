@@ -15,9 +15,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 60, "end": 256 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{U/P}{U/P}" },
+              {
+                "RemoveCountersAmong": {
+                  "count": 3,
+                  "from": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    "Other"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "indestructible" } } }
+            ]
           }
         }
       ]

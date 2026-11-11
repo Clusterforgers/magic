@@ -312,7 +312,7 @@ pub use un33_attractions::{is_visit_line, un33_visit_block as visit_block};
 use super::{ClauseKind, classify};
 use crate::ability::Ability;
 use crate::cost::Cost;
-use crate::refs::{Pred, Selector};
+use crate::refs::{Pred, Selector, ZoneKind};
 use tokens::{Reader, tokenize};
 
 /// Whether a cost modifier counts the targets of its spell ("for each target beyond the first"), so that it needs the
@@ -333,6 +333,13 @@ pub fn cost_in_words(text: &str) -> Option<Cost> {
 /// What an Aura may enchant, from the words after "Enchant": the objects a phrase names ("creature you control",
 /// "nonland permanent", "artifact or land", "creature, land, or planeswalker", "Forest"), when all of the text reads.
 pub fn enchant_filter(text: &str) -> Option<Selector> {
+    // "Enchant creature card in a graveyard" (Animate Dead): the kind of card, in a graveyard.
+    if let Some(kind) = text.strip_suffix(" card in a graveyard") {
+        let mut selector =
+            enchant_filter(kind).filter(|found| matches!(found.0.as_slice(), [Pred::Type(_)]))?;
+        selector.0.push(Pred::In(ZoneKind::Graveyard));
+        return Some(selector);
+    }
     // An article in front keeps a subtype at the start from being read as the capital of a sentence.
     let spelled = format!("a {}", text.replace(", or ", " or ").replace(", ", " or "));
     let tokens = tokenize(&spelled);

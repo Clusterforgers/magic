@@ -304,7 +304,8 @@ fn dk27_among_text(
     count: &Amount,
     from: &Selector,
 ) -> Option<String> {
-    if from.is_empty() || from.0.contains(&Pred::ControlledBy(Ref::You)) {
+    // One counter is "a counter from a creature you control", which the payer picks (`RemoveCounters` with `from`).
+    if from.is_empty() || from.0.contains(&Pred::ControlledBy(Ref::You)) || count.is_one() {
         return None;
     }
     let mut said = from.clone();

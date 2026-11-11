@@ -1,7 +1,7 @@
 {
   "oracle_id": "7b18cfad-a1cf-46c2-bcdd-7762c13d50e5",
   "name": "Thornvault Forager",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Thornvault Forager",
@@ -14,9 +14,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 14, "end": 141 }
+          "Activated": {
+            "cost": ["Tap", "Forage"],
+            "effects": [{ "AddMana": { "mana": { "AnyCombination": { "count": 2 } } } }]
           }
         },
         {

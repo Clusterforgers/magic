@@ -2,6 +2,7 @@
 //! "remove X counters from among creatures you control" reads as a cost of the payer's own permanents, and "you may
 //! <verb> any number of ... This spell costs {N} less to cast for each ... this way." reads as the required X cost and the
 //! spell's own reduction by X; each writes back as the printed text, and a near miss reads as something else or not at all.
+//! An enchant ability reads "a kind of card in a graveyard" and nothing near it.
 use super::*;
 use crate::compile::read::{Own, static_pair, static_pair_texts};
 
@@ -132,9 +133,41 @@ fn removing_counters_from_among_your_permanents_reads(#[case] text: &str, #[case
 fn a_cost_from_among_nothing_or_said_twice_is_not_written(#[case] json: &str) {
     assert!(
         !writes(
+            &json.replace(r#""count":"X""#, r#""count":1"#),
+            "As an additional cost to cast ~, remove a +1/+1 counter from among creatures you control."
+        ),
+        "one counter is the payer's pick of a creature: {json}"
+    );
+    assert!(
+        !writes(
             json,
             "As an additional cost to cast ~, remove X +1/+1 counters from among creatures you control."
         ),
         "{json}"
     );
+}
+
+#[test]
+fn one_counter_from_among_is_not_written_as_among() {
+    let one = TITAN_COST.replace(r#""count":"X""#, r#""count":1"#);
+    for text in [
+        "As an additional cost to cast ~, remove a +1/+1 counter from among creatures you control.",
+        "As an additional cost to cast ~, remove one +1/+1 counter from among creatures you control.",
+    ] {
+        assert!(!writes(&one, text), "{text}");
+    }
+}
+
+#[rstest]
+#[case::a_creature_card("creature card in a graveyard", true)]
+#[case::in_your_graveyard("creature card in your graveyard", false)]
+#[case::in_a_library("creature card in a library", false)]
+#[case::a_tapped_creature_card("tapped creature card in a graveyard", false)]
+fn only_a_kind_of_card_in_a_graveyard_is_enchanted_there(#[case] text: &str, #[case] there: bool) {
+    let graveyard = crate::compile::read::enchant_filter(text).is_some_and(|found| {
+        found
+            .0
+            .contains(&crate::refs::Pred::In(crate::refs::ZoneKind::Graveyard))
+    });
+    assert_eq!(graveyard, there, "{text}");
 }

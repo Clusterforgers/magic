@@ -54,6 +54,7 @@ Angelic Accord
 Angelic Ascension
 Angelic Field Marshal
 Angelic Sleuth
+Animate Dead
 Ant-Man, Elusive Avenger
 Apex Altisaur
 Aquastrand Spider
@@ -344,8 +345,8 @@ Crucible of Worlds
 Crucible of the Spirit Dragon
 Crush Contraband
 Crypt Ghast
-Cryptcaller Chariot
 Crypt of Agadeem
+Cryptcaller Chariot
 Crystal Barricade
 Crystal Quarry
 Cuboid Colony
@@ -1722,6 +1723,7 @@ Thieving Varmint
 Thinking Cap
 Thopter Fabricator
 Thorn-Thrash Viashino
+Thornvault Forager
 Thought Monitor
 Thought Reflection
 Thoughtcast
@@ -1750,8 +1752,8 @@ Time Stretch
 Time Walk
 Time Warp
 Timeless Lotus
-Tinybones, Pocket Nuisance
 Timeless Witness
+Tinybones, Pocket Nuisance
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Titania, Nature's Force

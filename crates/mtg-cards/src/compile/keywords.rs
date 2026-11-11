@@ -1657,6 +1657,10 @@ mod tests {
         "Enchant Forest",
         Keyword::Enchant(Selector(vec![Pred::Subtype(Subtype("Forest".into()))]))
     )]
+    #[case::dk27_enchant_a_card_in_a_graveyard(
+        "Enchant creature card in a graveyard",
+        Keyword::Enchant(Selector(vec![Pred::Type(CardType::Creature), Pred::In(crate::refs::ZoneKind::Graveyard)]))
+    )]
     #[case::companion(
         "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         Keyword::companion(DeckCondition::Distinct {
