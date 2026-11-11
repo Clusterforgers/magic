@@ -19,12 +19,14 @@ use crate::value::Amount;
 
 const END_OF_TURN: &str = "until end of turn";
 const NEXT_TURN: &str = "until your next turn";
+const NEXT_UPKEEP: &str = "until your next upkeep";
 
 /// The words that end a change: the duration it lasts.
 fn duration_words(duration: &Duration) -> Option<&'static str> {
     match duration {
         Duration::UntilEndOfTurn => Some(END_OF_TURN),
         Duration::UntilYourNextTurn => Some(NEXT_TURN),
+        Duration::UntilYourNextUpkeep => Some(NEXT_UPKEEP),
         Duration::WhileSourceTapped => Some(super::render::WHILE_TAPPED),
         _ => None,
     }
@@ -33,6 +35,8 @@ fn duration_words(duration: &Duration) -> Option<&'static str> {
 fn duration(r: &mut Reader<'_>) -> Option<Duration> {
     if r.words(END_OF_TURN) {
         Some(Duration::UntilEndOfTurn)
+    } else if r.words(NEXT_UPKEEP) {
+        Some(Duration::UntilYourNextUpkeep)
     } else if r.words(NEXT_TURN) {
         Some(Duration::UntilYourNextTurn)
     } else {

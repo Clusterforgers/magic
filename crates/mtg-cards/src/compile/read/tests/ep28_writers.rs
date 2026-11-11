@@ -100,6 +100,38 @@ fn ep28_a_fact_of_last_turn(#[case] ability: Ability, #[case] text: &str, #[case
     assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
 }
 
+const POLTERGEIST: &str = "Target creature gets +1/+1 until your next upkeep.";
+
+fn pumped(duration: &str) -> Ability {
+    ability(&format!(
+        r#"{{"Spell":{{"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}}],"effects":[{{"Continuous":{{"affected":{{"Target":0}},"mods":[{{"ModifyPT":{{"power":1,"toughness":1}}}}],"duration":"{duration}"}}}}]}}}}"#
+    ))
+}
+
+#[test]
+fn ep28_until_your_next_upkeep_reads_and_writes() {
+    let read = golden(POLTERGEIST, ClauseKind::Spell, false);
+    assert_eq!(read, pumped("UntilYourNextUpkeep"));
+}
+
+#[rstest]
+#[case::upkeep("UntilYourNextUpkeep", POLTERGEIST, true)]
+#[case::next_turn_is_not_upkeep("UntilYourNextTurn", POLTERGEIST, false)]
+#[case::upkeep_is_not_next_turn(
+    "UntilYourNextUpkeep",
+    "Target creature gets +1/+1 until your next turn.",
+    false
+)]
+#[case::end_of_turn("UntilEndOfTurn", POLTERGEIST, false)]
+fn ep28_until_your_next_upkeep_near_misses_differ(
+    #[case] duration: &str,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let found = written_variants(&pumped(duration));
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
 const UNDER: &str = "~ enters under the control of an opponent of your choice.";
 
 #[test]

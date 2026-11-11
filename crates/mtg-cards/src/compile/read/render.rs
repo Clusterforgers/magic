@@ -2765,7 +2765,10 @@ impl Writer<'_> {
             Effect::Continuous {
                 affected,
                 mods,
-                duration: duration @ (Duration::UntilEndOfTurn | Duration::UntilYourNextTurn),
+                duration:
+                    duration @ (Duration::UntilEndOfTurn
+                    | Duration::UntilYourNextTurn
+                    | Duration::UntilYourNextUpkeep),
             } => self.pump(affected, mods, duration)?,
             Effect::May {
                 who: Ref::You,
