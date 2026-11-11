@@ -1,0 +1,26 @@
+{
+  "oracle_id": "cbe3a4e7-5dbe-4f58-8ee6-a1762b65acfd",
+  "name": "K'rrik, Son of Yawgmoth",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "K'rrik, Son of Yawgmoth",
+      "oracle_fingerprint": "01303eb16c96d3113f4a75fac8cf3715",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 56, "end": 125 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Black" }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

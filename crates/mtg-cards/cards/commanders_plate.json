@@ -1,0 +1,21 @@
+{
+  "oracle_id": "cae166de-e681-40a0-83a8-3c17cf40e2fc",
+  "name": "Commander's Plate",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Commander's Plate",
+      "oracle_fingerprint": "eccc11ef7e9245bd55bb8b139d9f698a",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 110 }
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": ["Commander"], "cost": "{3}" } } },
+        { "Keyword": { "Equip": "{5}" } }
+      ]
+    }
+  ]
+}

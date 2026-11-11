@@ -1,0 +1,23 @@
+{
+  "oracle_id": "1f438b8f-fe23-4f3b-ab2e-f6c33676c462",
+  "name": "Opposition Agent",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Opposition Agent",
+      "oracle_fingerprint": "4657324301158391f3933ff5c3acf5bc",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 6, "end": 73 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 74, "end": 284 }
+          }
+        }
+      ]
+    }
+  ]
+}

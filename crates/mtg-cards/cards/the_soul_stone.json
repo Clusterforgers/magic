@@ -1,0 +1,32 @@
+{
+  "oracle_id": "92cfba68-12f6-4f97-9187-0f6a39656a0f",
+  "name": "The Soul Stone",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Soul Stone",
+      "oracle_fingerprint": "4fa40903c25beac6fc260c38ed382f50",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 29, "end": 138 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 139, "end": 243 }
+          }
+        }
+      ]
+    }
+  ]
+}

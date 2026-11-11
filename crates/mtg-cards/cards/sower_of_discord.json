@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c6aadaf0-eb47-4228-95e2-48e3ff7b6e2f",
+  "name": "Sower of Discord",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sower of Discord",
+      "oracle_fingerprint": "f034fba1b8619ebc99b2564cea5574c2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 51 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 52, "end": 157 }
+          }
+        }
+      ]
+    }
+  ]
+}

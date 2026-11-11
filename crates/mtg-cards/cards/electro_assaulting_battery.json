@@ -1,0 +1,48 @@
+{
+  "oracle_id": "3db16fb8-5650-4568-b975-42ad3d44ebcd",
+  "name": "Electro, Assaulting Battery",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Electro, Assaulting Battery",
+      "oracle_fingerprint": "4ae364bbbeee039a378e0ae4b6ffb430",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 63 } }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "Player" }],
+                        "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

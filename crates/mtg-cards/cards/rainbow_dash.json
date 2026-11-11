@@ -1,0 +1,27 @@
+{
+  "oracle_id": "fe0b4822-7db2-4d74-ba31-8df495fbaeb1",
+  "name": "Rainbow Dash",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rainbow Dash",
+      "oracle_fingerprint": "d4d7a8ff9f50149bd4822388eedcafd1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 14, "end": 127 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 128, "end": 238 }
+          }
+        }
+      ]
+    }
+  ]
+}

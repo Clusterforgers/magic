@@ -1,0 +1,17 @@
+{
+  "oracle_id": "278e51fe-3cd9-4c82-bd81-2164771f8611",
+  "name": "Alms Collector",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Alms Collector",
+      "oracle_fingerprint": "d66955046914bd50813a5f1e9c529107",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 6, "end": 96 } }
+        }
+      ]
+    }
+  ]
+}

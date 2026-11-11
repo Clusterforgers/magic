@@ -1,0 +1,36 @@
+{
+  "oracle_id": "95c3976c-33f3-490b-bfd3-7f1af2fe0416",
+  "name": "Chromatic Orrery",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chromatic Orrery",
+      "oracle_fingerprint": "281496afa5554501c417e1ced8b1f05e",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 55 } }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "Fixed": ["Colorless", "Colorless", "Colorless", "Colorless", "Colorless"]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 82, "end": 148 }
+          }
+        }
+      ]
+    }
+  ]
+}
