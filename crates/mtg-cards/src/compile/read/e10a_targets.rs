@@ -23,7 +23,7 @@ pub(super) fn is_total(spec: &TargetSpec) -> bool {
     matches!(
         &spec.what,
         Targetable::Together {
-            rule: TargetSet::TotalManaValueAtMost(_),
+            rule: TargetSet::TotalManaValueAtMost(_) | TargetSet::TotalPowerAtMost(_),
             ..
         }
     )
@@ -32,17 +32,21 @@ pub(super) fn is_total(spec: &TargetSpec) -> bool {
 /// The words of a specification with a most for the total mana value: the targets within its bounds, then "with total
 /// mana value 3 (or X) or less"; `None` when they cannot be said or for any other specification.
 pub(super) fn total_text(spec: &TargetSpec) -> Option<String> {
-    let Targetable::Together {
-        what,
-        rule: TargetSet::TotalManaValueAtMost(most),
-    } = &spec.what
-    else {
-        return None;
+    let (what, stat, most) = match &spec.what {
+        Targetable::Together {
+            what,
+            rule: TargetSet::TotalManaValueAtMost(most),
+        } => (what, "mana value", most),
+        Targetable::Together {
+            what,
+            rule: TargetSet::TotalPowerAtMost(most),
+        } => (what, "power", most),
+        _ => return None,
     };
-    total_words(spec, what, most)
+    total_words(spec, what, stat, most)
 }
 
-fn total_words(spec: &TargetSpec, what: &Targetable, most: &Amount) -> Option<String> {
+fn total_words(spec: &TargetSpec, what: &Targetable, stat: &str, most: &Amount) -> Option<String> {
     let most = match most {
         Amount::Fixed(n) => n.to_string(),
         Amount::X => "X".to_owned(),
@@ -66,7 +70,7 @@ fn total_words(spec: &TargetSpec, what: &Targetable, most: &Amount) -> Option<St
         ..spec.clone()
     };
     let text = spec_text(&plain)?;
-    let total = format!(" with total mana value {most} or less");
+    let total = format!(" with total {stat} {most} or less");
     // The total comes before the zone: "creature cards with total mana value 3 or less from your graveyard".
     Some(match text.rfind(" from ") {
         Some(at) => format!("{}{total}{}", &text[..at], &text[at..]),

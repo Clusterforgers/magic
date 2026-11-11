@@ -482,6 +482,7 @@ const RUNS: &[&str] = &[
     "Target.PerPlayer",
     "Target.Together",
     "Target.TotalManaValue",
+    "Target.TotalPower",
     "Target.Another",
     "Target.ChosenBy",
     "Target.AtRandom",

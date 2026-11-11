@@ -52,6 +52,7 @@ const PACK: &[&str] = &[
     "Professor Onyx",
     "Ratadrabik of Urborg",
     "Reality Smasher",
+    "Reunion of the House",
     "Saheeli, Sublime Artificer",
     "Schema Thief",
     "Scheming Symmetry",

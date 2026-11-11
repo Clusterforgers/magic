@@ -214,6 +214,18 @@ macro_rules! rmt1_card {
     "\"Forest\"",
     "\"Wastes\""
 )]
+#[case::reunion_of_the_house_0(
+    rmt1_card!("reunion_of_the_house"),
+    "Return any number of target creature cards with total power 10 or less from your graveyard to the battlefield. Exile ~.",
+    "{\"TotalPowerAtMost\":10}",
+    "{\"TotalManaValueAtMost\":10}"
+)]
+#[case::nethroi_apex_of_death_0(
+    rmt1_card!("nethroi_apex_of_death"),
+    "Whenever this creature mutates, return any number of target creature cards with total power 10 or less from your graveyard to the battlefield.",
+    "{\"TotalPowerAtMost\":10}",
+    "{\"TotalPowerAtMost\":9}"
+)]
 fn rmt1_wholes_read_back_and_near_misses_do_not(
     #[case] file: &str,
     #[case] clause: &str,

@@ -193,6 +193,9 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
                 TargetSet::TotalManaValueAtMost(most) => {
                     format!("with total mana value {} or less", amount(ctx, most))
                 }
+                TargetSet::TotalPowerAtMost(most) => {
+                    format!("with total power {} or less", amount(ctx, most))
+                }
             }
         ),
         Targetable::Another { what, .. } => {

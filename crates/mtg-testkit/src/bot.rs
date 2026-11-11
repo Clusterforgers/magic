@@ -377,6 +377,35 @@ impl Repeats {
 /// counters), every object outside the stack with its zone, place and state, and the continuous effects. The stack,
 /// the counters of ids and timestamps and the turn's tallies are left out, so an activation that resolves to nothing
 /// leaves it as it was.
+/// The picked targets that fit the total the options set ("with total power 10 or less"), the smallest values first;
+/// all of them when the options set none. The engine offers only sets whose smallest values reach the least count.
+fn rmt1_within_total(
+    options: &mtg_engine::choose::TargetOptions,
+    picked: Vec<Target>,
+) -> Vec<Target> {
+    let Some(total) = &options.total else {
+        return picked;
+    };
+    let value = |target: &Target| {
+        options
+            .legal
+            .iter()
+            .position(|legal| legal == target)
+            .and_then(|at| total.values.get(at).copied())
+            .unwrap_or(u32::MAX)
+    };
+    let mut sorted = picked;
+    sorted.sort_by_key(value);
+    let mut sum = 0u32;
+    sorted
+        .into_iter()
+        .take_while(|target| {
+            sum = sum.saturating_add(value(target));
+            sum <= total.most
+        })
+        .collect()
+}
+
 /// The options of a choice of cards with different names, cut to the first card of each name, so any pick is legal.
 fn rmt1_one_per_name(options: &CardsOptions, state: &GameState) -> CardsOptions {
     let mut seen: Vec<&str> = Vec::new();
@@ -588,9 +617,8 @@ impl RandomBot {
                 let spread =
                     usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
                 let wanted = options.min as usize + self.rng.index(spread);
-                Answer::ChooseTargets(TargetChoice::Targets(
-                    self.pick(options.c10_dice_choosable(), wanted),
-                ))
+                let picked = self.pick(options.c10_dice_choosable(), wanted);
+                Answer::ChooseTargets(TargetChoice::Targets(rmt1_within_total(options, picked)))
             }
             DecisionKind::ChooseMode(options) => self.modes(options),
             DecisionKind::ChooseNumber(options) => self.number(options),

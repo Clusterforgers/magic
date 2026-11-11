@@ -2123,7 +2123,10 @@ impl Writer<'_> {
         self.targets.first().is_some_and(|spec| match &spec.what {
             Targetable::Together {
                 what,
-                rule: TargetSet::TotalManaValueAtMost(_) | TargetSet::SameController,
+                rule:
+                    TargetSet::TotalManaValueAtMost(_)
+                    | TargetSet::TotalPowerAtMost(_)
+                    | TargetSet::SameController,
             } => wanted(what),
             // A player a fact holds for is worded as any target player is (`name_target` writes the fact).
             Targetable::PlayerAmong(_) => wanted(&Targetable::Player),

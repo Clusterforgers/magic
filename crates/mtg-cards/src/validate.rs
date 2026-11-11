@@ -2533,6 +2533,10 @@ impl Walker<'_> {
                     self.uses("Target", "TotalManaValue");
                     self.at("rule", |w| w.amount(most));
                 }
+                if let TargetSet::TotalPowerAtMost(most) = rule {
+                    self.uses("Target", "TotalPower");
+                    self.at("rule", |w| w.amount(most));
+                }
                 self.at("what", |w| w.targetable(what));
             }
             Targetable::Another { what, earlier } => {

@@ -45,6 +45,7 @@ use rstest::rstest;
 #[case("Professor Onyx")]
 #[case("Ratadrabik of Urborg")]
 #[case("Reality Smasher")]
+#[case("Reunion of the House")]
 #[case("Saheeli, Sublime Artificer")]
 #[case("Schema Thief")]
 #[case("Scheming Symmetry")]
