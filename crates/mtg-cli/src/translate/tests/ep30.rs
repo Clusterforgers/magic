@@ -61,6 +61,14 @@ fn mover(line: &str) -> String {
     "ValidSource$ Permanent.YouCtrl+Other+counters_GE1_P1P1 | Defined$ Self | CounterType$ P1P1 | CounterNum$ Any",
     json!({"MoveCounters": {"from": {"Each": [{"ControlledBy": "You"}, "Other"]}, "to": "This", "counter": "+1/+1", "count": {"Counters": {"on": {"Each": [{"ControlledBy": "You"}, "Other"]}, "counter": "+1/+1"}}, "up_to": true}})
 )]
+#[case::any_number_of_any_kind_onto_a_target(
+    "ValidTgts$ Creature | Source$ Self | CounterType$ Any | CounterNum$ Any",
+    json!({"MoveCounters": {"from": "This", "to": {"Target": 0}, "count": {"AnyCounters": "This"}, "up_to": true}})
+)]
+#[case::all_of_a_kind_onto_a_target(
+    "ValidTgts$ Creature | Source$ Self | CounterType$ P1P1 | CounterNum$ All",
+    json!({"MoveCounters": {"from": "This", "to": {"Target": 0}, "counter": "+1/+1", "count": {"Counters": {"on": "This", "counter": "+1/+1"}}}})
+)]
 #[case::all_from_all_creatures(
     "ValidSource$ Creature | Defined$ Self | CounterType$ P1P1 | CounterNum$ All",
     json!({"MoveCounters": {"from": {"Each": [{"Type": "Creature"}]}, "to": "This", "counter": "+1/+1", "count": {"Counters": {"on": {"Each": [{"Type": "Creature"}]}, "counter": "+1/+1"}}}})
