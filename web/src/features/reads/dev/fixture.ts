@@ -175,8 +175,27 @@ export const READ_QUEUE: ReadQueue = {
   })),
 }
 
+/** A name far wider than the review's list, which the list must cut short. */
+export const LONG_NAME = 'Asmoranomardicadaistinaculdacar, Who Wanders the Endless Hallways of Forgotten Lore'
+
+/** How many cards the long deck holds to read. */
+export const LONG_COUNT = 55
+
+/** The long deck: the fixture's cards again under new ids until there are `LONG_COUNT`, the second named `LONG_NAME`. */
+function longCards(): ReadCard[] {
+  const base = Object.values(READ_CARDS)
+  return Array.from({ length: LONG_COUNT }, (_, at) => {
+    const value = base[at % base.length] as ReadCard
+    if (at < base.length) return value
+    const id = `f0000000-0000-4000-8001-${String(at).padStart(12, '0')}`
+    return { ...value, oracle_id: id, name: at === base.length ? LONG_NAME : `${value.name} ${at}` }
+  })
+}
+
 /** What the fixture server does differently. */
 export interface ReadFixtureOptions {
+  /** The deck holds `LONG_COUNT` cards to read, one named `LONG_NAME`. */
+  long?: boolean
   /** The deck has nothing left to read. */
   empty?: boolean
   /** The list never arrives. */
@@ -193,7 +212,19 @@ const never = new Promise<never>(() => undefined)
 
 /** An in-memory read server over the fixture cards: verdicts change the card as the real server would. */
 export function fixtureReadsApi(options: ReadFixtureOptions = {}): ReadsApi {
-  const cards = new Map(Object.entries(READ_CARDS).map(([id, value]) => [id, structuredClone(value)]))
+  const all = options.long === true ? longCards() : Object.values(READ_CARDS)
+  const cards = new Map(all.map((value) => [value.oracle_id, structuredClone(value)]))
+  const deck: ReadQueue =
+    options.long === true
+      ? {
+          title: READ_QUEUE.title,
+          cards: all.map((value, at) => ({
+            ...(READ_QUEUE.cards[at % READ_QUEUE.cards.length] as ReadQueue['cards'][number]),
+            oracle_id: value.oracle_id,
+            name: value.name,
+          })),
+        }
+      : READ_QUEUE
   const wait = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, options.delayMs ?? 0))
   return {
     async queue(target) {
@@ -203,10 +234,10 @@ export function fixtureReadsApi(options: ReadFixtureOptions = {}): ReadsApi {
       if (options.listFails === 'not_found') throw new DeckError('not_found', 404, 'not found')
       const queue =
         target === null
-          ? { ...READ_QUEUE, title: '' }
+          ? { ...deck, title: '' }
           : 'mine' in target
-            ? { title: '', cards: READ_QUEUE.cards.filter((card) => card.in_decks) }
-            : READ_QUEUE
+            ? { title: '', cards: deck.cards.filter((card) => card.in_decks) }
+            : deck
       return options.empty === true ? { ...queue, cards: [] } : structuredClone(queue)
     },
     async get(oracleId) {
