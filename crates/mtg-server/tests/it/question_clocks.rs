@@ -28,7 +28,7 @@ const DEFAULT: Pace = Pace {
     auto_pass: true,
     response: Some(Duration::from_secs(10)),
     blocks: Some(Duration::from_secs(45)),
-    think: Some(Duration::from_secs(60)),
+    think: Some(Duration::from_mins(1)),
     active: None,
     extension: None,
     grace: std::time::Duration::ZERO,

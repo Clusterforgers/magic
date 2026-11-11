@@ -2942,6 +2942,19 @@ impl Writer<'_> {
         ))
     }
 
+    /// "that player loses all unspent mana", "you lose all unspent mana".
+    fn rmt1_unspent(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::LoseUnspentMana { who } = effect else {
+            return None;
+        };
+        let (subject, verb) = match who {
+            Ref::You => ("you".to_owned(), "lose"),
+            Ref::Target(0) if self.named => ("that player".to_owned(), "loses"),
+            other => (self.object(other)?, "loses"),
+        };
+        Some(format!("{subject} {verb} all unspent mana"))
+    }
+
     /// {1} paid X times is "{X}" (r5b).
     fn r5b_x_payment(&mut self, effect: &Effect) -> Option<String> {
         let Effect::Pay {
@@ -2979,6 +2992,7 @@ impl Writer<'_> {
             .or_else(|| self.left_combat(effect))
             .or_else(|| self.rmt1_become_blocked(effect))
             .or_else(|| self.rmt1_beneath(effect))
+            .or_else(|| self.rmt1_unspent(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| super::ep33_face_down::ep33_put_face_down(effect))
             .or_else(|| mass_moves::text(effect))

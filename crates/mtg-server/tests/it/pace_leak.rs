@@ -195,7 +195,7 @@ async fn play_requesting(
         handle.send(seat(n), ClientMessage::Ready).await.unwrap();
     }
     let watcher = 1 - holder;
-    while since.elapsed() < Duration::from_secs(60) && !finished(&tapes[watcher]) {
+    while since.elapsed() < Duration::from_mins(1) && !finished(&tapes[watcher]) {
         tokio::time::sleep(Duration::from_millis(5)).await;
     }
     let status = handle.status().await.unwrap();

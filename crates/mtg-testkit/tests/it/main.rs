@@ -544,6 +544,7 @@ mod rmt1_become_blocked;
 mod rmt1_beneath;
 mod rmt1_smoke;
 mod rmt1_total_power;
+mod rmt1_unspent;
 mod rmt2_countered_library;
 mod rmt2_divided_prevention;
 mod rmt2_held_down;

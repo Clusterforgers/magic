@@ -1,0 +1,26 @@
+{
+  "oracle_id": "48207d1c-448a-4e1b-974a-642dfea75933",
+  "name": "Mana Short",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Short",
+      "oracle_fingerprint": "831f92e9f90c7989193d224bf0228b6a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }] }
+                }
+              },
+              { "LoseUnspentMana": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

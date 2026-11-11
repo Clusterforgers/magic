@@ -3935,6 +3935,7 @@ impl Walker<'_> {
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::RemoveFromCombat { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::BecomeBlocked { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::LoseUnspentMana { who } => w.at("who", |w| w.reference(who, Kind::Player)),
             Effect::PutBeneathTop { what, below } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("below", |w| w.amount(below));

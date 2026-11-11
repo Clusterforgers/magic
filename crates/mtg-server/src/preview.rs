@@ -83,7 +83,7 @@ mod tests {
             spend(&mut limits, 0, second, 50),
             PREVIEWS_PER_SECOND as usize
         );
-        let later = base + Duration::from_secs(60);
+        let later = base + Duration::from_mins(1);
         assert_eq!(spend(&mut limits, 0, later, 50), PREVIEW_BURST as usize);
     }
 
