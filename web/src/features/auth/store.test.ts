@@ -473,7 +473,7 @@ describe("the admin's accounts", () => {
   const BO = { username: 'Bo_new', password: 'another long passphrase' }
 
   async function asAdmin(script: AccountsScript = {}) {
-    const made = setup({ admin: ADA.username, signedIn: ADA.username, closed: true, ...script })
+    const made = setup({ admins: [ADA.username], signedIn: ADA.username, closed: true, ...script })
     await made.state().start()
     return made
   }
@@ -481,7 +481,7 @@ describe("the admin's accounts", () => {
   it('carries the admin flag from who-am-I, and only for the admin', async () => {
     const admin = await asAdmin()
     expect(admin.state().user).toMatchObject({ username: ADA.username, is_admin: true })
-    const other = setup({ admin: 'someone_else', signedIn: ADA.username })
+    const other = setup({ admins: ['someone_else'], signedIn: ADA.username })
     await other.state().start()
     expect(other.state().user).toMatchObject({ is_admin: false })
   })
@@ -495,7 +495,7 @@ describe("the admin's accounts", () => {
   })
 
   it('asks the server for nothing unless the signed-in account is the admin', async () => {
-    const { state, server } = setup({ admin: 'someone_else', signedIn: ADA.username })
+    const { state, server } = setup({ admins: ['someone_else'], signedIn: ADA.username })
     await state().start()
     const before = server.calls.length
     await state().loadAccounts()
@@ -603,7 +603,7 @@ describe("the admin's accounts", () => {
     })
 
     it('asks the server for nothing unless the signed-in account is the admin', async () => {
-      const { state, server } = setup({ admin: 'someone_else', signedIn: ADA.username })
+      const { state, server } = setup({ admins: ['someone_else'], signedIn: ADA.username })
       await state().start()
       const before = server.calls.length
       expect(await state().resetAccountPassword('id-x', 'a fresh passphrase')).toMatchObject({

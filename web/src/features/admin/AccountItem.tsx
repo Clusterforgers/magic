@@ -20,8 +20,8 @@ type Panel = 'none' | 'password' | 'remove'
 
 /**
  * One account of the list. A friend's row offers "New password" (a form under the row, then the new credentials once)
- * and "Remove" (a question first); the admin's own row offers neither, since its password changes in Account settings
- * and nothing makes another admin.
+ * and "Remove" (a question first); an admin's row offers neither, since its password changes in Account settings
+ * and only the server setting makes or unmakes an admin.
  */
 export function AccountItem({ account, now, onRemoved }: AccountItemProps) {
   const [panel, setPanel] = useState<Panel>('none')

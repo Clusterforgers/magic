@@ -13,7 +13,7 @@ id: string,
  */
 username: string, 
 /**
- * Whether this is the admin account, the only one that makes accounts; read from the database on every
+ * Whether this is an admin account, one of those that make accounts; read from the database on every
  * request, so the client may show an Accounts page on it but the server stays the judge.
  */
 is_admin: boolean, };

@@ -366,7 +366,7 @@ export function createAuthStore({ api = accountsApi, initial }: AuthDeps = {}): 
 
 const OFFLINE = new AccountError('accounts_unavailable', 503, 'This page has no accounts.')
 const NOT_SIGNED_IN = new AccountError('unauthenticated', 401, 'Sign in to do that.')
-const NOT_ADMIN = new AccountError('forbidden', 403, 'Only the admin can do that.')
+const NOT_ADMIN = new AccountError('forbidden', 403, 'Only an admin can do that.')
 
 /** A client that has no accounts: what a page without a provider (a test) talks to. */
 export const offlineAccounts: AccountsApi = {

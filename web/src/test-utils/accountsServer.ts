@@ -17,8 +17,8 @@ export interface AccountsScript {
   games?: MyGame[]
   /** `register` answers 403 `registration_closed`, and `GET /api/auth/options` says registering is closed. */
   closed?: boolean
-  /** The username (ignoring case) that is the admin: its answers carry `is_admin` and it may use `/api/admin/users`. */
-  admin?: string
+  /** The usernames (ignoring case) that are admins: their answers carry `is_admin` and they may use `/api/admin/users`. */
+  admins?: string[]
   /** The server has no database: every account call is 503 `accounts_unavailable`. */
   unavailable?: boolean
   /** After this many failed logins the server answers 429 with `Retry-After` (900 seconds). */
@@ -112,7 +112,7 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
   const find = (name: string): string | undefined =>
     [...users.keys()].find((known) => known.toLowerCase() === name.toLowerCase())
   const isAdmin = (name: string): boolean =>
-    script.admin !== undefined && name.toLowerCase() === script.admin.toLowerCase()
+    (script.admins ?? []).some((admin) => admin.toLowerCase() === name.toLowerCase())
   const view = (name: string) => ({ id: idOf(name), username: name, is_admin: isAdmin(name) })
   const unavailable = () => authError(503, 'accounts_unavailable', 'this server has no accounts')
   const body = (call: FetchCall): unknown =>

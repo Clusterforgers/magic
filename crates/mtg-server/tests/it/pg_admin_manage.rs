@@ -47,7 +47,7 @@ async fn world(pool: &PgPool, change: impl FnOnce(&mut ServerConfig)) -> World {
     }
     drop(first);
     let server = start_with(pool, |config| {
-        config.auth.admin = Some(ADMIN.to_owned());
+        config.auth.admins = vec![ADMIN.to_owned()];
         change(config);
     })
     .await;
