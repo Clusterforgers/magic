@@ -1,0 +1,68 @@
+{
+  "oracle_id": "f07f3bf0-e1c8-4a24-87c7-1d6d0b5bd242",
+  "name": "Sasaya, Orochi Ascendant // Sasaya's Essence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sasaya, Orochi Ascendant",
+      "oracle_fingerprint": "90c8cec13f5ae88c074f0b9162658e94",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              {
+                "RevealFromHand": {
+                  "filter": [],
+                  "count": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Type": "Land" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                      },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [{ "Flip": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sasaya's Essence",
+      "oracle_fingerprint": "7e5907bab542b443c8d851cda4f6be9f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }], "by": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Land" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": "Triggering" } },
+                      { "SharesName": "Triggering" }
+                    ]
+                  },
+                  "as": "land",
+                  "effects": [{ "AddMana": { "mana": "OfTapped" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

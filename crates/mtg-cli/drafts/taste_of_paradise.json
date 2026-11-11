@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c9a20d03-b90a-43df-8ab4-ff0b38c90a08",
+  "name": "Taste of Paradise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taste of Paradise",
+      "oracle_fingerprint": "3ba10fd901394e26d5fed4053ffd83b0",
+      "abilities": [
+        { "AdditionalCost": { "cost": "{1}{G}", "repeatable": true } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Sum": [3, { "Times": { "by": 3, "of": "AdditionalPaid" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

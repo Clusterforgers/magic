@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ce8ec966-ecff-425e-944c-36dc8d4aef23",
+  "name": "Axgard Artisan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Axgard Artisan",
+      "oracle_fingerprint": "014ffa59a6052f793bfe7394df856fd3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
+            "limit": "OncePerTurn",
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

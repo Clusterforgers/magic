@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e81da4a7-4b03-4107-b7d9-4b635faa615d",
+  "name": "Lich's Mirror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lich's Mirror",
+      "oracle_fingerprint": "6d44b8d3fab099b3f451167e7fd594cf",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "LoseGame": {} },
+            "by": {
+              "Instead": [
+                {
+                  "Move": {
+                    "what": {
+                      "Each": [
+                        { "OwnedBy": "You" },
+                        {
+                          "AnyOf": [
+                            { "In": "Hand" },
+                            { "In": "Graveyard" },
+                            { "In": "Battlefield" }
+                          ]
+                        }
+                      ]
+                    },
+                    "to": { "Library": { "place": "Shuffled" } }
+                  }
+                },
+                { "Draw": { "count": 7 } },
+                { "SetLife": { "amount": 20 } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

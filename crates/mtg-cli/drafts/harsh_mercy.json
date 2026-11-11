@@ -1,0 +1,51 @@
+{
+  "oracle_id": "dcd65c9b-4aaa-42af-869f-de179ae57c9f",
+  "name": "Harsh Mercy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harsh Mercy",
+      "oracle_fingerprint": "ae6b8049b49164ca6d8c38e2416f8b3a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "who": { "Bound": "each" },
+                        "kind": "CreatureType",
+                        "as": "chosen"
+                      }
+                    },
+                    {
+                      "Remember": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "ChosenAs": "chosen" }] },
+                        "slot": "spared"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Remembered": { "on": "This", "slot": "spared" } } } }
+                    ]
+                  },
+                  "regenerate": false
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

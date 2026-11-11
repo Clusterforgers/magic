@@ -1,0 +1,56 @@
+{
+  "oracle_id": "bdc3ff35-f8d8-477d-b042-94a9f8ed7243",
+  "name": "Veiled Crocodile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veiled Crocodile",
+      "oracle_fingerprint": "691946856c93c6636add2b77ad11f29a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "When": {
+                        "condition": {
+                          "Compare": { "left": { "LowestHand": "You" }, "op": "Eq", "right": 0 }
+                        },
+                        "then": 0,
+                        "otherwise": { "LowestHand": "Opponents" }
+                      }
+                    },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["This", { "Type": "Enchantment" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetCreatureTypes": ["Crocodile"] },
+                    { "SetTypes": ["Creature"] }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

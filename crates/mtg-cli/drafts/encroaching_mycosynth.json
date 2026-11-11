@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1f0bb053-4967-4289-b2b1-f6309f2eca7d",
+  "name": "Encroaching Mycosynth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Encroaching Mycosynth",
+      "oracle_fingerprint": "ee96d3e28a823f8085b8588838e0f78d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    { "Type": "Artifact" },
+                    { "Type": "Battle" },
+                    { "Type": "Creature" },
+                    { "Type": "Enchantment" },
+                    { "Type": "Planeswalker" }
+                  ]
+                },
+                { "Not": { "Type": "Land" } },
+                { "ControlledBy": "You" },
+                {
+                  "AnyOf": [
+                    { "In": "Battlefield" },
+                    { "In": "Stack" },
+                    { "In": "Hand" },
+                    { "In": "Library" },
+                    { "In": "Graveyard" },
+                    { "In": "Exile" },
+                    { "In": "Command" }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "AddType": "Artifact" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "3affd37a-d4f6-488a-b30f-8e824b640687",
+  "name": "Ral and the Implicit Maze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ral and the Implicit Maze",
+      "oracle_fingerprint": "27582f2362b7ddaa6f4434aa353b250d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Discard": {} }],
+                  "paid": [
+                    { "ExileTop": { "count": 2, "as": "impulse" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "impulse" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [{ "CreateToken": { "token": { "Card": "Spellgorger Weird" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

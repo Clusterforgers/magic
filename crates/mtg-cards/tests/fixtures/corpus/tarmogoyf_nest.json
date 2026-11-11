@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "1a906132-19ab-4b7c-95de-08f8a5fa3aea",
+  "oracle_id": "29fede1b-e379-46d4-93e9-a589c896add6",
+  "multiverse_ids": [
+    665394
+  ],
+  "mtgo_id": 127439,
+  "tcgplayer_id": 553671,
+  "cardmarket_id": 773179,
+  "name": "Tarmogoyf Nest",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/1a906132-19ab-4b7c-95de-08f8a5fa3aea",
+  "scryfall_uri": "https://scryfall.com/card/m3c/120/tarmogoyf-nest?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:56:45Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/a/1a906132-19ab-4b7c-95de-08f8a5fa3aea.jpg?1783911405",
+    "normal": "https://cards.scryfall.io/normal/front/1/a/1a906132-19ab-4b7c-95de-08f8a5fa3aea.jpg?1783911405",
+    "large": "https://cards.scryfall.io/large/front/1/a/1a906132-19ab-4b7c-95de-08f8a5fa3aea.jpg?1783911405",
+    "png": "https://cards.scryfall.io/png/front/1/a/1a906132-19ab-4b7c-95de-08f8a5fa3aea.png?1783911405",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/a/1a906132-19ab-4b7c-95de-08f8a5fa3aea.jpg?1783911405",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/a/1a906132-19ab-4b7c-95de-08f8a5fa3aea.jpg?1783911405",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/a/1a906132-19ab-4b7c-95de-08f8a5fa3aea.webp?1783911405",
+    "grid": "https://cards.scryfall.io/grid/front/1/a/1a906132-19ab-4b7c-95de-08f8a5fa3aea.webp?1783911405",
+    "display": "https://cards.scryfall.io/display/front/1/a/1a906132-19ab-4b7c-95de-08f8a5fa3aea.webp?1783911405",
+    "art": "https://cards.scryfall.io/art/front/1/a/1a906132-19ab-4b7c-95de-08f8a5fa3aea.webp?1783911405",
+    "crop": "https://cards.scryfall.io/crop/front/1/a/1a906132-19ab-4b7c-95de-08f8a5fa3aea.webp?1783911405",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/a/1a906132-19ab-4b7c-95de-08f8a5fa3aea.jpg?1783911405"
+  },
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Kindred Enchantment — Lhurgoyf Aura",
+  "oracle_text": "Enchant land\nEnchanted land has \"{1}{G}, {T}: Create a Tarmogoyf token.\" (It's a {1}{G} Lhurgoyf creature with \"Tarmogoyf's power is equal to the number of card types among cards in all graveyards and its toughness is equal to that number plus 1.\")",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "1a906132-19ab-4b7c-95de-08f8a5fa3aea",
+      "component": "combo_piece",
+      "name": "Tarmogoyf Nest",
+      "type_line": "Kindred Enchantment — Lhurgoyf Aura",
+      "uri": "https://api.scryfall.com/cards/1a906132-19ab-4b7c-95de-08f8a5fa3aea"
+    },
+    {
+      "object": "related_card",
+      "id": "f26e1f55-284c-4540-bf5c-ebc7ab9687ab",
+      "component": "token",
+      "name": "Tarmogoyf",
+      "type_line": "Token Creature — Lhurgoyf",
+      "uri": "https://api.scryfall.com/cards/f26e1f55-284c-4540-bf5c-ebc7ab9687ab"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f5e00721-cf99-43ba-bf16-b22d56d12c73",
+  "set": "m3c",
+  "set_name": "Modern Horizons 3 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f5e00721-cf99-43ba-bf16-b22d56d12c73",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am3c&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m3c?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1a906132-19ab-4b7c-95de-08f8a5fa3aea/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A29fede1b-e379-46d4-93e9-a589c896add6&unique=prints",
+  "collector_number": "120",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Filipe Pagliuso",
+  "artist_ids": [
+    "64c537b4-a864-4051-9a24-fbdd22cb40b4"
+  ],
+  "illustration_id": "a7a65e33-2839-41d3-9fbd-a37de9a9532a",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8414,
+  "penny_rank": 5063,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": null,
+    "tix": "0.14"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=665394&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTarmogoyf%2BNest",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTarmogoyf%2BNest",
+    "edhrec": "https://edhrec.com/route/?cc=Tarmogoyf+Nest"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F553671%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=773179&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/127439?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

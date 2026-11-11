@@ -1,0 +1,192 @@
+{
+  "object": "card",
+  "id": "f487b582-e73f-4325-939f-95fc5a9aba49",
+  "oracle_id": "cf5bd3a4-3899-4c25-ad1f-f1778c1d9c60",
+  "multiverse_ids": [
+    607102,
+    607103
+  ],
+  "mtgo_id": 109976,
+  "arena_id": 84338,
+  "tcgplayer_id": 490798,
+  "cardmarket_id": 704343,
+  "name": "Rona, Herald of Invasion // Rona, Tolarian Obliterator",
+  "lang": "en",
+  "released_at": "2023-04-21",
+  "uri": "https://api.scryfall.com/cards/f487b582-e73f-4325-939f-95fc5a9aba49",
+  "scryfall_uri": "https://scryfall.com/card/mom/75/rona-herald-of-invasion-rona-tolarian-obliterator?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:30:31Z",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Wizard // Legendary Creature — Phyrexian Wizard",
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Transform",
+    "Trample"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Rona, Herald of Invasion",
+      "mana_cost": "{1}{U}",
+      "type_line": "Legendary Creature — Human Wizard",
+      "oracle_text": "Whenever you cast a legendary spell, untap Rona.\n{T}: Draw a card, then discard a card.\n{5}{B/P}: Transform Rona. Activate only as a sorcery. ({B/P} can be paid with either {B} or 2 life.)",
+      "colors": [
+        "U"
+      ],
+      "power": "1",
+      "toughness": "3",
+      "artist": "Victor Adame Minguez",
+      "artist_id": "bd8f7368-5b10-4554-b6b8-d052c6aca89f",
+      "illustration_id": "4fcfd98b-c06f-432e-95ab-6c0bbaafd7f1",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.jpg?1783917031",
+        "normal": "https://cards.scryfall.io/normal/front/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.jpg?1783917031",
+        "large": "https://cards.scryfall.io/large/front/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.jpg?1783917031",
+        "png": "https://cards.scryfall.io/png/front/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.png?1783917031",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.jpg?1783917031",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.jpg?1783917031",
+        "thumb": "https://cards.scryfall.io/thumb/front/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.webp?1783917031",
+        "grid": "https://cards.scryfall.io/grid/front/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.webp?1783917031",
+        "display": "https://cards.scryfall.io/display/front/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.webp?1783917031",
+        "art": "https://cards.scryfall.io/art/front/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.webp?1783917031",
+        "crop": "https://cards.scryfall.io/crop/front/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.webp?1783917031",
+        "jpeg": "https://cards.scryfall.io/normal/front/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.jpg?1783917031"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Rona, Tolarian Obliterator",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Phyrexian Wizard",
+      "oracle_text": "Trample\nWhenever a source deals damage to Rona, that source's controller exiles a card from their hand at random. If it's a land card, you may put it onto the battlefield under your control. Otherwise, you may cast it without paying its mana cost.",
+      "colors": [
+        "B",
+        "U"
+      ],
+      "color_indicator": [
+        "B",
+        "U"
+      ],
+      "power": "5",
+      "toughness": "5",
+      "flavor_text": "\"At last, I am *compleat*.\"",
+      "artist": "Victor Adame Minguez",
+      "artist_id": "bd8f7368-5b10-4554-b6b8-d052c6aca89f",
+      "illustration_id": "9f8472b4-76d3-41e7-9fba-fec9efe5a02b",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.jpg?1783917031",
+        "normal": "https://cards.scryfall.io/normal/back/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.jpg?1783917031",
+        "large": "https://cards.scryfall.io/large/back/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.jpg?1783917031",
+        "png": "https://cards.scryfall.io/png/back/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.png?1783917031",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.jpg?1783917031",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.jpg?1783917031",
+        "thumb": "https://cards.scryfall.io/thumb/back/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.webp?1783917031",
+        "grid": "https://cards.scryfall.io/grid/back/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.webp?1783917031",
+        "display": "https://cards.scryfall.io/display/back/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.webp?1783917031",
+        "art": "https://cards.scryfall.io/art/back/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.webp?1783917031",
+        "crop": "https://cards.scryfall.io/crop/back/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.webp?1783917031",
+        "jpeg": "https://cards.scryfall.io/normal/back/f/4/f487b582-e73f-4325-939f-95fc5a9aba49.jpg?1783917031"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "392f7315-dc53-40a3-a2cc-5482dbd498b3",
+  "set": "mom",
+  "set_name": "March of the Machine",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/392f7315-dc53-40a3-a2cc-5482dbd498b3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amom&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mom?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f487b582-e73f-4325-939f-95fc5a9aba49/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acf5bd3a4-3899-4c25-ad1f-f1778c1d9c60&unique=prints",
+  "collector_number": "75",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Victor Adame Minguez",
+  "artist_ids": [
+    "bd8f7368-5b10-4554-b6b8-d052c6aca89f"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 3517,
+  "penny_rank": 2099,
+  "preview": {
+    "source": "Jack Torrance",
+    "source_uri": "https://www.facebook.com/photo/?fbid=673495908117241&set=pcb.673495958117236",
+    "previewed_at": "2023-04-03"
+  },
+  "prices": {
+    "usd": "1.85",
+    "usd_foil": "2.44",
+    "usd_etched": null,
+    "eur": "1.37",
+    "eur_foil": "1.50",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=607102&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRona%252C%2BHerald%2Bof%2BInvasion%2B%252F%252F%2BRona%252C%2BTolarian%2BObliterator",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRona%252C%2BHerald%2Bof%2BInvasion%2B%252F%252F%2BRona%252C%2BTolarian%2BObliterator",
+    "edhrec": "https://edhrec.com/route/?cc=Rona%2C+Herald+of+Invasion"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F490798%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=704343&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/109976?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

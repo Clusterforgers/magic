@@ -1,0 +1,68 @@
+{
+  "oracle_id": "de691eed-d90b-48f9-bae4-f982767f2bfd",
+  "name": "Arcum's Whistle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcum's Whistle",
+      "oracle_fingerprint": "e0f16c821d3338d1ced30e0d165d59b6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "condition": "BeforeAttackers",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Subtype": "Wall" } },
+                    { "ControlledBy": "ActivePlayer" },
+                    { "Not": "SummoningSick" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "unpaid": [
+                    {
+                      "Rule": {
+                        "rule": { "MustAttack": { "Target": 0 } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "If": {
+                              "condition": {
+                                "Not": {
+                                  "Matches": {
+                                    "subject": { "Target": 0 },
+                                    "selector": ["AttackedThisTurn"]
+                                  }
+                                }
+                              },
+                              "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

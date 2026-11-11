@@ -1,0 +1,38 @@
+{
+  "oracle_id": "b7aa0625-c691-4219-b099-3798b349d09c",
+  "name": "Stromgald Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stromgald Spy",
+      "oracle_fingerprint": "fd8c9872153507cd06ff0a1d82305726",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Rule": {
+                        "rule": { "RevealHand": "Defending" },
+                        "duration": "WhileSourceOnBattlefield"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

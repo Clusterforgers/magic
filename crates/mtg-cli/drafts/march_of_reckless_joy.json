@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3b3ecaf2-7e95-4b62-9bc0-a61985508808",
+  "name": "March of Reckless Joy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "March of Reckless Joy",
+      "oracle_fingerprint": "9df4e60f362a92ca1d7971067a7c8758",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromHand": { "filter": [{ "Color": "Red" }] } }],
+            "repeatable": true
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "per": "AdditionalPaid"
+          }
+        },
+        { "Spell": { "effects": [{ "ExileTop": { "count": "X", "as": "exiled" } }] } }
+      ]
+    }
+  ]
+}

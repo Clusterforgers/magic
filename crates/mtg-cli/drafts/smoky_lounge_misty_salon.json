@@ -1,0 +1,55 @@
+{
+  "oracle_id": "4f70b0ee-c24c-45fa-b878-9ba69266344f",
+  "name": "Smoky Lounge // Misty Salon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smoky Lounge",
+      "oracle_fingerprint": "6560f75d9b8d2eeed4cce2e7614723d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red", "Red"] },
+                  "only": [{ "Spell": { "subtypes": ["Room"] } }, "OtherCosts"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Misty Salon",
+      "oracle_fingerprint": "7010f076a6e3df0a76c348bd1fa58465",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Doors": [{ "Subtype": "Room" }, { "ControlledBy": "You" }] },
+                      "token": {
+                        "name": "Spirit",
+                        "colors": ["Blue"],
+                        "types": ["Creature"],
+                        "subtypes": ["Spirit"],
+                        "abilities": [{ "Keyword": "Flying" }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

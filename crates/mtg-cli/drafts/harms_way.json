@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4c34a882-3786-4d3c-9ca4-04fa85d5e51b",
+  "name": "Harm's Way",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harm's Way",
+      "oracle_fingerprint": "1d13c5067ac13c0b995b5c0d9ec99ed5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "Choose": { "from": { "Each": [] }, "as": "source" } },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Union": ["You", { "Each": [{ "ControlledBy": "You" }] }] },
+                      "source": [{ "Is": { "Bound": "source" } }]
+                    }
+                  },
+                  "by": { "RedirectUpTo": { "most": 2, "to": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "a81fd70c-c2bc-4863-97a0-facde86f024c",
+  "name": "March of Burgeoning Life",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "March of Burgeoning Life",
+      "oracle_fingerprint": "ec6b83ceaae1b9a34ddc71b88fb304d5",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExileFromHand": { "filter": [{ "Color": "Green" }] } }],
+            "repeatable": true
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "per": "AdditionalPaid"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Lt", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Type": "Creature" }, { "SharesName": { "Target": 0 } }],
+                  "as": "card"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
