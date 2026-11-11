@@ -561,6 +561,7 @@ impl ObjectView {
             power: None,
             toughness: None,
             lights: Vec::new(),
+            stickers: Vec::new(),
             printed_power: None,
             printed_toughness: None,
             abilities: Vec::new(),
