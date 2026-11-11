@@ -807,7 +807,7 @@ fn repeat_built(ctx: &mut Ctx, p: &Params, sub: &str) -> Tr<Vec<Value>> {
     }
     let Some(max) = p.get("MaxRepeat") else {
         if p.has("RepeatOptional") {
-            return Ok(vec![super::ep25_repeat::until_stopped(effects)]);
+            return Ok(vec![super::ep25_repeat::until_stopped(&effects)]);
         }
         return unmapped("key:Repeat.no-MaxRepeat");
     };

@@ -44,7 +44,7 @@ pub fn asking(mut built: Vec<Value>, ask: Option<Value>) -> Vec<Value> {
 }
 
 /// The repeat of a body that ends only when the caster stops: no check and no bound but [`MOST_PASSES`].
-pub fn until_stopped(effects: Vec<Value>) -> Value {
+pub fn until_stopped(effects: &[Value]) -> Value {
     json!({"RepeatWhile": {
         "condition": {"Compare": {"left": 0, "op": "Eq", "right": 0}},
         "effects": effects,

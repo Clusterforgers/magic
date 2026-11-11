@@ -69,7 +69,10 @@ fn the_life_is_paid_with_the_cast(
     #[case] life: i32,
 ) -> Result<(), ScriptError> {
     let driver = cast(seats, caster, at, 20)?;
-    assert!(names(driver.state(), Zone::Hand(pid(caster))).is_empty());
+    assert_eq!(
+        names(driver.state(), Zone::Hand(pid(caster))),
+        Vec::<String>::new()
+    );
     driver.expect_life(caster, life)
 }
 
