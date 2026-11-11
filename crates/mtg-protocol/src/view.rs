@@ -464,6 +464,7 @@ pub struct CompanionView {
 
 /// One seat as a viewer sees it.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[allow(clippy::struct_excessive_bools)] // independent public facts of a seat
 pub struct PlayerView {
     /// The seat.
     pub seat: PlayerId,
@@ -567,6 +568,14 @@ pub struct PlayerView {
     /// Clock extensions the seat holds (public). The engine does not know them: the server fills them in, and a view
     /// made from the engine state alone says 0.
     pub bank: u8,
+    /// Wall milliseconds the seat has used on turns of its own this game, the running turn up to the send included
+    /// (public). A turn runs from its start to the next turn's start; time while no seat is connected does not count.
+    /// The server fills it in and a view made from the engine state alone says 0.
+    pub turn_time_ms: u64,
+    /// Whether `turn_time_ms` keeps growing from the send on (the seat's turn runs and is counted); left out otherwise.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub turn_time_running: bool,
     /// Whether a client is connected to the seat right now (public, like the lobby's `connected`). The engine does not
     /// know it: the server fills it in, and a view made from the engine state alone says true. Never stored or hashed.
     pub connected: bool,

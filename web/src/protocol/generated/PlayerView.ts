@@ -141,6 +141,16 @@ companion?: CompanionView,
  */
 bank: number, 
 /**
+ * Wall milliseconds the seat has used on turns of its own this game, the running turn up to the send included
+ * (public). A turn runs from its start to the next turn's start; time while no seat is connected does not count.
+ * The server fills it in and a view made from the engine state alone says 0.
+ */
+turn_time_ms: number, 
+/**
+ * Whether `turn_time_ms` keeps growing from the send on (the seat's turn runs and is counted); left out otherwise.
+ */
+turn_time_running?: boolean, 
+/**
  * Whether a client is connected to the seat right now (public, like the lobby's `connected`). The engine does not
  * know it: the server fills it in, and a view made from the engine state alone says true. Never stored or hashed.
  */

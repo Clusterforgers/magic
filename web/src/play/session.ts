@@ -339,6 +339,7 @@ export function createSession(deps: SessionDeps): Session {
       const objectsById = view.objects === state.view?.objects ? state.objectsById : indexById(view.objects)
       return {
         view,
+        viewAt: Date.now(),
         objectsById,
         // The history is the latest events: a pass or a resolution in it decides, else what was held stays.
         byHand: owesByHand(state.byHand, message.log ?? [], state.seat, state.objectsById, objectsById),
@@ -379,6 +380,7 @@ export function createSession(deps: SessionDeps): Session {
     }
     setState({
       view,
+      viewAt: Date.now(),
       objectsById,
       seq: batch.from_seq + batch.events.length,
       byHand: owesByHand(state.byHand, batch.events, state.seat, state.objectsById, objectsById),

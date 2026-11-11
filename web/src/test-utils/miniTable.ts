@@ -61,6 +61,7 @@ const seat = (id: PlayerId, hand: ObjectId[] | null): PlayerView => ({
   graveyard: zone([]),
   command: zone([]),
   bank: 0,
+  turn_time_ms: 0,
   connected: true,
 })
 

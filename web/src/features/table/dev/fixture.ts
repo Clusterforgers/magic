@@ -323,6 +323,8 @@ export function buildFixture(options: FixtureOptions): Fixture {
     ...(seat === 1 ? { attraction_deck: 9 } : {}),
     ...commanderDamage(seat, seats, cards, objects),
     bank: 0,
+    // A chess-clock tally per seat, past an hour at many seats; standing still, so the table starts no timer.
+    turn_time_ms: 125_000 + seat * 437_000,
     connected: true,
   }))
 

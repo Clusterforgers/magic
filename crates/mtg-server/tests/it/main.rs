@@ -93,6 +93,7 @@ mod stops;
 mod store_contract;
 mod store_failures;
 mod timer_bank;
+mod turn_time;
 mod tutorial;
 mod un33_attraction_recipe;
 mod un34_sticker_recipe;

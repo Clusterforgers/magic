@@ -1,4 +1,4 @@
-// Goal: the game over screen says the result in words and in a picture for every ending (a win, a loss, a draw, a concession, a result with no board to read), celebrates only a win with a burst that is decoration, fits the window under the header with only the list of seats scrolling, and offers the ways on: a new game, the Play page and, for an account, My games.
+// Goal: the game over screen says the result in words and in a picture for every ending (a win, a loss, a draw, a concession, a result with no board to read), celebrates only a win with a burst that is decoration, gives each seat's time on its own turns, fits the window under the header with only the list of seats scrolling, and offers the ways on: a new game, the Play page and, for an account, My games.
 import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { useIsFitWindow } from '@/components/appChrome'
@@ -38,6 +38,7 @@ function endedGame({ result, lost = {}, seats = 2, me = 0, board = true }: Endin
     seat,
     lost: lost[seat] ?? null,
     life: lost[seat] === undefined ? 14 : 0,
+    turn_time_ms: 725_000 + seat * 3_000_000,
   }))
   session.store.setState({
     ...initialPlayState(),
@@ -134,6 +135,14 @@ describe('the result', () => {
     const rows = within(screen.getByRole('list', { name: 'How each seat finished' })).getAllByRole('listitem')
     expect(rows[0]).toHaveTextContent('Winner')
     expect(rows[1]).toHaveTextContent('Lost: conceded')
+  })
+
+  it('gives every seat its time on its own turns, in figures and in words', async () => {
+    await renderInRouter(shown(endedGame({ result: { Winner: 0 }, lost: { 1: 'ZeroLife' } })))
+    const rows = within(screen.getByRole('list', { name: 'How each seat finished' })).getAllByRole('listitem')
+    expect(rows[0]).toHaveTextContent('12:05 on own turns')
+    expect(rows[0]).toHaveTextContent('Time used on own turns: 12 minutes 5 seconds')
+    expect(rows[1]).toHaveTextContent('1:02:05 on own turns')
   })
 
   it('lists no seats when the page never saw the board, and still offers the way on', async () => {

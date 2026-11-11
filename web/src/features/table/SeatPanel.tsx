@@ -34,6 +34,7 @@ import { PlayerEffectChips } from './PlayerEffectChips'
 import { CompanionChip } from './CompanionChip'
 import { StickerSheetsChip } from './StickerSheetsChip'
 import { ZoneButton } from './ZoneButton'
+import { TurnTimeMark } from './TurnTimeMark'
 
 interface SeatPanelProps {
   seat: PlayerId
@@ -170,6 +171,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       ) : null}
       {away ? <AwayMark /> : null}
       <BankMark seat={seat} />
+      <TurnTimeMark seat={seat} />
     </div>
   )
 

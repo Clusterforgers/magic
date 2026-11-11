@@ -187,6 +187,19 @@ pub async fn send_windows(handle: &GameHandle, seat: PlayerId, windows: &SeatWin
         .unwrap();
 }
 
+/// `message` with every seat's turn time set to 0: wall time at the send, which a leak test sets aside with the arrival.
+pub fn without_turn_time(mut message: ServerMessage) -> ServerMessage {
+    let table = match &mut message {
+        ServerMessage::Events(batch) => Some(&mut *batch.table),
+        ServerMessage::Snapshot { state, .. } => Some(&mut state.table),
+        _ => None,
+    };
+    for player in table.into_iter().flat_map(|table| table.players.iter_mut()) {
+        player.turn_time_ms = 0;
+    }
+    message
+}
+
 /// A hand-driven client: it reads what the server sends and sends whatever the test wants.
 pub struct Client {
     pub seat: PlayerId,
