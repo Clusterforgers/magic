@@ -7,7 +7,10 @@ import { CHIP } from './PodParts'
 
 /** The words a screen reader hears for the chip: the sheets and how many stickers are left on them. */
 export function stickerSheetsWords(sheets: StickerSheetView[]): string {
-  const left = sheets.reduce((all, sheet) => all + sheet.stickers.filter((sticker) => !sticker.used).length, 0)
+  const left = sheets.reduce(
+    (all, sheet) => all + sheet.stickers.filter((sticker) => !sticker.used).length,
+    0,
+  )
   const noun = sheets.length === 1 ? 'sticker sheet' : 'sticker sheets'
   return `${sheets.length} ${noun}, ${left} ${left === 1 ? 'sticker' : 'stickers'} left: ${sheets.map((sheet) => sheet.name).join(', ')}`
 }
