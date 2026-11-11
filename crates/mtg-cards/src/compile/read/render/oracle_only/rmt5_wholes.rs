@@ -5,7 +5,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`; the lines of one spell joined by a newline).
-const RMT5_WHOLES: [(&str, &str); 101] = [
+const RMT5_WHOLES: [(&str, &str); 103] = [
     // artificers_hex
     (
         r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"HasAttached":[{"Is":"Attached"}]}]},"op":"Ge","right":1}},"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"HasAttached":[{"Is":"Attached"}]}]}}}]}}"#,
@@ -516,6 +516,16 @@ Draw a card.",
     (
         r#"{"Triggered":{"when":{"Batch":{"Tapped":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},"effects":[{"Draw":{}},{"Discard":{}},{"PutCounters":{"on":"This","counter":{"Other":"plan"}}}]}}"#,
         r"Whenever one or more creatures you control become tapped, draw a card, then discard a card and put a plan counter on this enchantment.",
+    ),
+    // kaito_dancing_shadow
+    (
+        r#"{"Loyalty":{"cost":{"Plus":1},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":1}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":["CantAttack","CantBlock"],"duration":"UntilYourNextTurn"}}]}}"#,
+        r"+1: Up to one target creature can't attack or block until your next turn.",
+    ),
+    // ring_of_maruf
+    (
+        r#"{"Activated":{"cost":[{"Mana":"{5}"},"Tap","ExileSelf"],"effects":[{"Shield":{"when":{"Draw":{}},"by":{"InsteadNext":[{"Search":{"zone":"Outside","filter":[{"OwnedBy":"You"}],"as":"found"}},{"Move":{"what":{"Bound":"found"},"to":"Hand"}}]},"duration":"UntilEndOfTurn"}}]}}"#,
+        r"{5}, {T}, Exile this artifact: The next time you would draw a card this turn, instead put a card you own from outside the game into your hand.",
     ),
 ];
 

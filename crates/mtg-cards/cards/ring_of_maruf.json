@@ -1,0 +1,38 @@
+{
+  "oracle_id": "c79b9187-cbfe-43a0-bdc8-4f7e0d215607",
+  "name": "Ring of Ma'rûf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ring of Ma'rûf",
+      "oracle_fingerprint": "88b2d87974acedf0e18bfa9d36b571b5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap", "ExileSelf"],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Draw": {} },
+                  "by": {
+                    "InsteadNext": [
+                      {
+                        "Search": {
+                          "zone": "Outside",
+                          "filter": [{ "OwnedBy": "You" }],
+                          "as": "found"
+                        }
+                      },
+                      { "Move": { "what": { "Bound": "found" }, "to": "Hand" } }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
