@@ -1,4 +1,4 @@
-// Goal: the page moves from lobby to the table when the game starts however the state arrives, keeps the table under a reconnect message, and ends on a result screen that says who won, a draw or a concession, with the way to a new game and no connection notice.
+// Goal: the page moves from lobby to the table when the game starts however the state arrives, keeps the table under a reconnect message, and ends on a result screen that says who won, a draw or a concession, with the way to a new game and no connection notice, and celebrates the winner on every seat from the real end-of-game messages.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { GameResult, LossReason, StateView } from '@/protocol/generated'
@@ -203,5 +203,49 @@ describe('game over', () => {
     h.join(1)
     h.deliver({ type: 'GameOver', result: { Winner: 0 } })
     expect(screen.getByRole('heading', { name: 'Seat 1 won' })).toBeInTheDocument()
+  })
+})
+
+describe('the win celebration, from the server’s own end of game', () => {
+  const pieces = () => document.querySelectorAll('[data-slot="win-piece"]')
+  const banner = () => document.querySelector('[data-slot="win-banner"]')
+
+  it.each([
+    ['the winner, after the recorded game', 0, 'You won', true],
+    ['the loser, after the recorded game', 1, 'You lost', false],
+  ])('greets %s', async (_who, seat, headline, burst) => {
+    const h = await renderGame()
+    h.join(seat)
+    h.deliver(...lateJoin.raw.slice(1))
+    await h.settle()
+    expect(lateJoin.messages.at(-1)).toEqual({ type: 'GameOver', result: { Winner: 0 } })
+    expect(screen.getByRole('heading', { level: 1, name: headline })).toBeInTheDocument()
+    expect(pieces().length > 0).toBe(burst)
+    if (burst) expect(banner()).toBeNull()
+    else expect(banner()).toHaveTextContent('Seat 1 won')
+  })
+
+  it.each([
+    // A seat that leaves a running game concedes, so this is also the last opponent leaving.
+    ['the winner whose last opponent conceded', 0, 'Conceded', true],
+    ['the seat that conceded', 1, 'Conceded', false],
+    ['the winner whose last opponent ran out of life', 0, 'ZeroLife', true],
+  ] as const)('greets %s', async (_who, seat, reason, burst) => {
+    await finishedGame(seat, 1, reason, { Winner: 0 })
+    expect(pieces().length > 0).toBe(burst)
+    if (burst) expect(banner()).toBeNull()
+    else expect(banner()).toHaveTextContent('Ana won')
+    // The celebration never stands in the way of the ways on.
+    const ways = screen.getByRole('link', { name: 'Create another game' })
+    expect(ways.closest('[aria-hidden="true"]')).toBeNull()
+    for (const piece of pieces()) expect(piece.closest('.pointer-events-none')).not.toBeNull()
+  })
+
+  it('celebrates no one after a draw', async () => {
+    const h = await renderGame()
+    h.join()
+    h.deliver({ type: 'GameOver', result: 'Draw' })
+    expect(pieces()).toHaveLength(0)
+    expect(banner()).toBeNull()
   })
 })
