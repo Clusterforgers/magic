@@ -66,6 +66,8 @@ pub(crate) enum Kind {
     Untap,
     /// A permanent the payer controls returns to its owner's hand.
     Return,
+    /// A permanent the payer controls is exiled.
+    ExilePermanent,
     /// A permanent the payer controls loses a counter of the kind its filter names.
     Counter,
     /// A card in any player's graveyard is exiled.
@@ -173,6 +175,7 @@ const fn counted(item: &CostItem) -> &'static str {
         CostItem::RevealFromHand { .. } => "Cost.RevealFromHand.Counted",
         CostItem::TapPermanents { .. } => "Cost.TapPermanents.Counted",
         CostItem::ReturnToHand { .. } => "Cost.ReturnToHand.Counted",
+        CostItem::ExilePermanents { .. } => "Cost.ExilePermanents.Counted",
         _ => "Cost",
     }
 }
@@ -419,6 +422,9 @@ impl Part {
             CostItem::RevealFromHand { filter, count } => pick(Kind::Reveal, filter, count, item)?,
             CostItem::TapPermanents { filter, count } => pick(Kind::Tap, filter, count, item)?,
             CostItem::ReturnToHand { filter, count } => pick(Kind::Return, filter, count, item)?,
+            CostItem::ExilePermanents { filter, count } => {
+                pick(Kind::ExilePermanent, filter, count, item)?
+            }
             _ => match read_more(item)? {
                 Some(found) => found,
                 None => return Ok(None),
@@ -529,6 +535,7 @@ impl Part {
                 Kind::Tap => "Cost.TapPermanents",
                 Kind::TapPower => "Cost.TapPower",
                 Kind::Return => "Cost.ReturnToHand",
+                Kind::ExilePermanent => "Cost.ExilePermanents",
                 Kind::Untap => "Cost.UntapPermanents",
                 Kind::Counter => "Cost.RemoveCounters",
             },
@@ -799,6 +806,7 @@ impl Pick {
             Kind::Reveal => reveal::candidates(payer, &self.filter),
             Kind::Tap | Kind::TapPower => tap::candidates(payer, &self.filter),
             Kind::Return | Kind::Blight(_) => bounce::candidates(payer, &self.filter),
+            Kind::ExilePermanent => bounce::candidates(payer, &self.filter),
             Kind::Untap => untap::candidates(payer, &self.filter),
             Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
             Kind::ExileAny => exile::candidates_any(payer, &self.filter),
@@ -812,9 +820,12 @@ impl Pick {
         found.retain(|id| match self.kind {
             Kind::Sacrifice => crate::prohibit::may_sacrifice(payer.state, payer.player, *id),
             Kind::Discard => crate::prohibit::may_discard(payer.state, payer.player, *id),
-            Kind::Exile | Kind::ExileHand | Kind::ExileAny | Kind::Craft | Kind::Behold(true) => {
-                crate::prohibit::may_exile(payer.state, *id)
-            }
+            Kind::Exile
+            | Kind::ExileHand
+            | Kind::ExileAny
+            | Kind::ExilePermanent
+            | Kind::Craft
+            | Kind::Behold(true) => crate::prohibit::may_exile(payer.state, *id),
             _ => true,
         });
         found
@@ -901,6 +912,7 @@ impl Pick {
             Kind::Tap => tap::text(&self.filter, self.count),
             Kind::TapPower => tap::power_text(&self.filter, self.count),
             Kind::Return => bounce::text(&self.filter, self.count),
+            Kind::ExilePermanent => bounce::exile_text(&self.filter, self.count),
             Kind::Untap => untap::text(&self.filter, self.count),
             Kind::Counter => c11c_counter_picks::c11c_text(&self.filter, self.count),
             Kind::ExileAny => exile::text_any(&self.filter, self.count),
@@ -946,7 +958,9 @@ impl Pick {
         match self.kind {
             Kind::Sacrifice => sacrifice::event(state, object),
             Kind::Discard => Some(discard::event(player, object)),
-            Kind::Exile | Kind::ExileHand | Kind::Craft => exile_hand::event(state, object),
+            Kind::Exile | Kind::ExileHand | Kind::Craft | Kind::ExilePermanent => {
+                exile_hand::event(state, object)
+            }
             Kind::Reveal => Some(reveal::event(player, object)),
             Kind::Tap | Kind::TapPower => Some(tap::event(object)),
             Kind::Return => bounce::event(state, object),

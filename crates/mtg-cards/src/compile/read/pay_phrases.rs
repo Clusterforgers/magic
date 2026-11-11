@@ -49,6 +49,7 @@ pub(super) fn phrase(cost: &Cost) -> Option<String> {
             | CostItem::ExileFromHand { .. }
             | CostItem::RevealFromHand { .. }
             | CostItem::ReturnToHand { .. },
+            CostItem::ExilePermanents { .. },
         ] => lower(&costs::text(cost)?),
         _ => None,
     }

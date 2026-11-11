@@ -212,6 +212,8 @@ fn cost_item() -> impl Strategy<Value = CostItem> {
         }),
         (leaf_selector(), simple_amount())
             .prop_map(|(filter, count)| CostItem::ReturnToHand { filter, count }),
+        (leaf_selector(), simple_amount())
+            .prop_map(|(filter, count)| CostItem::ExilePermanents { filter, count }),
     ]
 }
 

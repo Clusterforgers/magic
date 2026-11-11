@@ -111,6 +111,7 @@ fn is_fixed(item: &CostItem) -> bool {
         | CostItem::ExileFromHand { count, .. }
         | CostItem::RevealFromHand { count, .. }
         | CostItem::ReturnToHand { count, .. }
+        | CostItem::ExilePermanents { count, .. }
         | CostItem::Behold { count, .. }
         | CostItem::ExiledToGraveyard { count, .. }
         | CostItem::ToLibrary { count, .. } => fixed(count),
@@ -153,6 +154,7 @@ fn amount_is_x(item: &CostItem) -> bool {
         | CostItem::ExileFromHand { count, .. }
         | CostItem::RevealFromHand { count, .. }
         | CostItem::ReturnToHand { count, .. }
+        | CostItem::ExilePermanents { count, .. }
         | CostItem::Behold { count, .. }
         | CostItem::ExiledToGraveyard { count, .. }
         | CostItem::ToLibrary { count, .. } => *count == Amount::X,
@@ -1381,6 +1383,7 @@ impl<'a> Walker<'a> {
                     | CostItem::UntapPermanents { filter, count }
                     | CostItem::RevealFromHand { filter, count }
                     | CostItem::ReturnToHand { filter, count }
+                    | CostItem::ExilePermanents { filter, count }
                     | CostItem::Behold { filter, count, .. }
                     | CostItem::ExiledToGraveyard { filter, count }
                     | CostItem::ToLibrary { filter, count, .. }
@@ -1695,6 +1698,7 @@ impl<'a> Walker<'a> {
                     | CostItem::TapPermanents { .. }
                     | CostItem::TapPower { .. }
                     | CostItem::ReturnToHand { .. }
+                    | CostItem::ExilePermanents { .. }
                     | CostItem::DamageToYou(_)
                     | CostItem::Unattach
                     | CostItem::ExileTop(_)
@@ -5101,6 +5105,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::ExileFromHand { .. }
                 | CostItem::RevealFromHand { .. }
                 | CostItem::ReturnToHand { .. }
+                | CostItem::ExilePermanents { .. }
                 | CostItem::TapPermanents { .. }
                 | CostItem::TapPower { .. }
                 | CostItem::CollectEvidence(_)

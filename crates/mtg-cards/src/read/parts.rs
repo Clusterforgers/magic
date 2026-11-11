@@ -103,6 +103,9 @@ fn cost_item(ctx: &Ctx, item: &CostItem) -> String {
                 taken(ctx, count, filter)
             )
         }
+        CostItem::ExilePermanents { filter, count } => {
+            format!("exile {} you control", taken(ctx, count, filter))
+        }
         CostItem::RemoveCounters {
             counter,
             count,

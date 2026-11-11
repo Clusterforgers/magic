@@ -468,8 +468,9 @@ fn take(out: &mut FaceOut, result: Tr<Vec<Value>>) {
 
 /// Whether an ability reads `Paid` (what the cost took) though its cost takes no objects: the rules refuse that.
 fn reads_paid_without_objects(value: &Value) -> bool {
-    const TAKES: [&str; 6] = [
+    const TAKES: [&str; 7] = [
         "Sacrifice",
+        "ExilePermanents",
         "Discard",
         "ExileFromGraveyard",
         "ExileFromHand",

@@ -195,6 +195,13 @@ fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
     }
     let (form, count) = how_many(r)?;
     let mut filter = phrase(r, form)?;
+    // "Exile a creature you control": a permanent of the battlefield.
+    if without(&mut filter, &Pred::ControlledBy(Ref::You)).is_some() {
+        return Some(CostItem::ExilePermanents {
+            filter: kinds_only(filter)?,
+            count,
+        });
+    }
     let from_hand = without(&mut filter, &Pred::In(ZoneKind::Hand)).is_some();
     if !from_hand {
         without(&mut filter, &Pred::In(ZoneKind::Graveyard))?;
@@ -462,6 +469,11 @@ fn item_text(item: &CostItem) -> Option<String> {
             let mut said = filter.clone();
             said.0
                 .extend([Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
+            format!("Exile {}", taken_text(&said, count)?)
+        }
+        CostItem::ExilePermanents { filter, count } => {
+            let mut said = filter.clone();
+            said.0.push(Pred::ControlledBy(Ref::You));
             format!("Exile {}", taken_text(&said, count)?)
         }
         CostItem::RevealFromHand { filter, count } => {

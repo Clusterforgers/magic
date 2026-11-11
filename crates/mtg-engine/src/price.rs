@@ -88,6 +88,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::TapPower { .. } => "Cost.TapPower",
         CostItem::ExileFromGraveyard { .. } => "Cost.ExileFromGraveyard",
         CostItem::ReturnToHand { .. } => "Cost.ReturnToHand",
+        CostItem::ExilePermanents { .. } => "Cost.ExilePermanents",
         CostItem::ExileFromHand { .. } => "Cost.ExileFromHand",
         CostItem::RevealFromHand { .. } => "Cost.RevealFromHand",
         CostItem::OneOf(_) => "Cost.OneOf",

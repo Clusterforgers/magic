@@ -168,6 +168,8 @@ fn item(ctx: &Ctx, word: &str) -> Tr<Value> {
         "Discard" => discard(ctx, number, what),
         "Exile" | "ExileFromGrave" if on_self => Ok(json!("ExileSelf")),
         "ExileFromGrave" => zone_cost(ctx, "ExileFromGraveyard", number, what),
+        // "Exile a creature you control": a permanent of the payer.s battlefield.
+        "Exile" => zone_cost(ctx, "ExilePermanents", number, what),
         // "Exile it" in a death trigger: the card the permanent became, in whichever graveyard it went to.
         "ExileAnyGrave" if number == "1" && what == "Card.TriggeredNewCard" => {
             let card = super::triggered::remembered_by_event(

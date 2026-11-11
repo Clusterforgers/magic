@@ -1,4 +1,4 @@
-//! Goal: the pieces of ep26 translate as the card prints them: a target chosen at random (`TargetsAtRandom$ True`) on any verb that reads targets, over players, opponents and objects; a random number of random targets stays a gap.
+//! Goal: the pieces of ep26 translate as the card prints them: a target chosen at random (`TargetsAtRandom$ True`) on any verb that reads targets, over players, opponents and objects; a random number of random targets stays a gap. Exiling permanents you control as a cost (`Exile<N/Type>`); a count "or more" or a total stays a gap.
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -47,4 +47,30 @@ fn ep26_other_random_targets_stay_gaps(#[case] line: &str) {
         found.iter().any(|gap| gap.contains("TargetsAtRandom")),
         "{line}: {found:?}"
     );
+}
+
+fn cost(script: &str) -> Value {
+    abilities(script)
+        .first()
+        .and_then(|found| found.get("Activated"))
+        .and_then(|body| body.get("cost"))
+        .cloned()
+        .unwrap_or_default()
+}
+
+#[rstest]
+#[case::a_creature("Exile<1/Creature>", json!({"filter": [{"Type": "Creature"}]}))]
+#[case::two_artifacts("Exile<2/Artifact>", json!({"filter": [{"Type": "Artifact"}], "count": 2}))]
+fn ep26_exile_a_permanent_you_control_as_a_cost(#[case] part: &str, #[case] body: Value) {
+    let script = activated(&format!("GainLife | Cost$ {part} | LifeAmount$ 3"));
+    assert_eq!(gaps(&script), Vec::<String>::new(), "{part}");
+    assert_eq!(cost(&script), json!([{"ExilePermanents": body}]));
+}
+
+#[rstest]
+#[case::one_or_more("Exile<1+/Artifact.Other>")]
+#[case::a_total("Exile<1/Artifact.Other+withTotalCMCEQX>")]
+fn ep26_other_exile_costs_stay_gaps(#[case] part: &str) {
+    let script = activated(&format!("GainLife | Cost$ {part} | LifeAmount$ 3"));
+    assert!(!gaps(&script).is_empty(), "{part}");
 }
