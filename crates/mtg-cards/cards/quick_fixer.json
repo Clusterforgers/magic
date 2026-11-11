@@ -1,7 +1,7 @@
 {
   "oracle_id": "a4f50771-4a10-4d5d-a7c4-0e24c873a0ae",
   "name": "Quick Fixer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Quick Fixer",
@@ -9,9 +9,9 @@
       "abilities": [
         { "Keyword": "Menace" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 147 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "OpenAttraction": {} }]
           }
         }
       ]
