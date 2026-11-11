@@ -21,6 +21,83 @@ pub(super) fn wf26_wordings(
     wf26_kinship_wordings(ability, written, texts);
     wf26_chosen_wordings(ability, written, texts);
     wf26_top_or_bottom_wordings(ability, written, texts);
+    wf26_boast_wordings(ability, written, texts);
+    let those: Vec<String> = texts.iter().filter_map(|text| those_named(text)).collect();
+    for text in those {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
+}
+
+/// "Boast — {1}{W}: Untap ~." (CR 702.142): an ability activated only if the card attacked this turn and only once each
+/// turn, written from its twin without the two limits.
+fn wf26_boast_wordings(
+    ability: &Ability,
+    written: fn(&Ability) -> Vec<String>,
+    texts: &mut Vec<String>,
+) {
+    let Ok(mut value) = serde_json::to_value(ability) else {
+        return;
+    };
+    let Some(body) = value.get_mut("Activated").and_then(Value::as_object_mut) else {
+        return;
+    };
+    let attacked =
+        serde_json::json!({ "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } });
+    if body.get("condition") != Some(&attacked)
+        || body.get("limit").and_then(Value::as_str) != Some("OncePerTurn")
+        || body.contains_key("timing")
+    {
+        return;
+    }
+    body.remove("condition");
+    body.remove("limit");
+    let Ok(twin) = serde_json::from_value::<Ability>(value) else {
+        return;
+    };
+    let mut found = Vec::new();
+    for text in written(&twin) {
+        let wording = format!("Boast \u{2014} {text}");
+        if !texts.contains(&wording) && !found.contains(&wording) && !text.contains("Activate ") {
+            found.push(wording);
+        }
+    }
+    texts.extend(found);
+}
+
+/// The plural nouns of objects "each of those ..." may name.
+const PLURALS: [&str; 6] = [
+    "creatures",
+    "permanents",
+    "artifacts",
+    "lands",
+    "planeswalkers",
+    "enchantments",
+];
+
+/// "Tap up to two target creatures. Put a stun counter on each of them." as "... on each of those creatures": "them"
+/// names the group named last, and "those" with its noun the same group.
+fn those_named(text: &str) -> Option<String> {
+    const THEM: &str = " each of them";
+    let at = text.find(THEM)?;
+    if text[at + THEM.len()..].contains(THEM) {
+        return None;
+    }
+    let words: Vec<&str> = text[..at]
+        .split(|c: char| !c.is_alphanumeric() && c != '~')
+        .filter(|word| !word.is_empty())
+        .collect();
+    let last = words.iter().rev().find(|word| {
+        PLURALS.contains(word)
+            || matches!(
+                **word,
+                "them" | "they" | "cards" | "players" | "opponents" | "tokens" | "it" | "~"
+            )
+    })?;
+    PLURALS
+        .contains(last)
+        .then(|| text.replacen(THEM, &format!(" each of those {last}"), 1))
 }
 
 /// "Target opponent reveals their hand. You choose a nonland card from it. That player discards that card.", "Target

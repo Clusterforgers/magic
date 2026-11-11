@@ -160,3 +160,33 @@ fn wf26_the_card_that_cant_be_regenerated_is_it(
 ) {
     assert_eq!(reads(json, clause), same, "{clause}");
 }
+
+const STUNNED: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":2}}],"effects":[{"Tap":{"what":{"Target":0}}},{"PutCounters":{"on":{"Target":0},"counter":{"Other":"stun"}}}]}}"#;
+const STALL: &str =
+    "Tap up to two target creatures. Put a stun counter on each of those creatures.";
+
+#[rstest]
+#[case::those_creatures(STUNNED, STALL, true)]
+#[case::those_lands(STUNNED, &STALL.replace("those creatures", "those lands"), false)]
+#[case::those_of_another_target(&STUNNED.replace(r#"{"PutCounters":{"on":{"Target":0}"#, r#"{"PutCounters":{"on":"This""#), STALL, false)]
+#[case::those_permanents(&STUNNED.replace(r#"[{"Type":"Creature"}]"#, "[]"), "Tap up to two target permanents. Put a stun counter on each of those permanents.", true)]
+fn wf26_each_of_those(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+    assert_eq!(reads(json, clause), same, "{clause}");
+}
+
+const BRAGGART: &str = r#"{"Activated":{"cost":"{1}{W}","condition":{"Matches":{"subject":"This","selector":["AttackedThisTurn"]}},"limit":"OncePerTurn","effects":[{"Untap":{"what":"This"}}]}}"#;
+const BOAST: &str = "Boast \u{2014} {1}{W}: Untap ~.";
+const DRAKE: &str = r#"{"Activated":{"cost":[{"Mana":"{1}"},{"DiscardRandom":1}],"effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":2,"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}"#;
+const RANDOM: &str = "{1}, Discard a card at random: ~ gets +2/+0 until end of turn.";
+
+#[rstest]
+#[case::boast(BRAGGART, BOAST, true)]
+#[case::boast_without_the_attack(&BRAGGART.replace(r#""condition":{"Matches":{"subject":"This","selector":["AttackedThisTurn"]}},"#, ""), BOAST, false)]
+#[case::boast_without_the_limit(&BRAGGART.replace(r#""limit":"OncePerTurn","#, ""), BOAST, false)]
+#[case::boast_once_a_game(&BRAGGART.replace("OncePerTurn", "OncePerGame"), BOAST, false)]
+#[case::random_discard(DRAKE, RANDOM, true)]
+#[case::chosen_discard(&DRAKE.replace(r#"{"DiscardRandom":1}"#, r#"{"Discard":{}}"#), RANDOM, false)]
+#[case::two_at_random(&DRAKE.replace(r#"{"DiscardRandom":1}"#, r#"{"DiscardRandom":2}"#), RANDOM, false)]
+fn wf26_activation_costs(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+    assert_eq!(reads(json, clause), same, "{clause}");
+}
