@@ -152,7 +152,10 @@ fn dk25_necrologia_draws_x_for_x_life_in_its_casters_end_step(
     if !castable {
         return Ok(());
     }
-    let life = driver.state().player(PlayerId(0)).map(|p| p.life());
+    let life = driver
+        .state()
+        .player(PlayerId(0))
+        .map(mtg_engine::player::Player::life);
     loop {
         match driver.decision().ok().map(|d| d.kind.clone()) {
             Some(DecisionKind::ChooseNumber(_)) => {
@@ -170,7 +173,10 @@ fn dk25_necrologia_draws_x_for_x_life_in_its_casters_end_step(
     }
     let x_life = i32::try_from(x).unwrap();
     assert_eq!(
-        driver.state().player(PlayerId(0)).map(|p| p.life()),
+        driver
+            .state()
+            .player(PlayerId(0))
+            .map(mtg_engine::player::Player::life),
         life.map(|life| life - x_life)
     );
     assert_eq!(

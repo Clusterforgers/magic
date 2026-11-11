@@ -170,7 +170,6 @@ impl GameState {
 pub(crate) fn dk25_identity(state: &GameState, player: PlayerId) -> mtg_core::color::ColorSet {
     state
         .commanders()
-        .into_iter()
         .filter_map(|id| state.object(id))
         .filter(|object| object.owner() == player)
         .flat_map(|object| object.card().color_identity().iter())
