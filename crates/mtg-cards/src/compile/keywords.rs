@@ -469,15 +469,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "afflict" => positive(rest).map(Keyword::Afflict),
         "renown" => positive(rest).map(Keyword::Renown),
         "replicate" => spell_cost(rest).map(Keyword::Replicate),
-        "splice onto arcane" => splice_mana(rest).map(|cost| Keyword::Splice {
-            onto: SpliceOnto::Arcane,
-            cost,
-        }),
-        "splice onto instant or sorcery" => splice_mana(rest).map(|cost| Keyword::Splice {
-            onto: SpliceOnto::InstantOrSorcery,
-            cost,
-        }),
-        "bands with other" => super::read::affinity_filter(rest).map(Keyword::BandsWithOther),
+        name if SPLICE_OR_BAND.contains(&name) => splice_or_band(name, rest),
         "backup" => positive(rest).map(backup),
         "crew" => positive(rest).map(Keyword::Crew),
         "saddle" => positive(rest).map(Keyword::Saddle),
@@ -1001,9 +993,23 @@ fn cost(rest: &str) -> Option<Cost> {
     ManaCostX::from_str(rest).ok().map(Cost::mana)
 }
 
-/// A splice cost the engine pays: mana alone (CR 702.47a); a cost in words stays unread.
-fn splice_mana(rest: &str) -> Option<Cost> {
-    ManaCostX::from_str(rest).ok().map(Cost::mana)
+/// The keywords [`splice_or_band`] reads.
+const SPLICE_OR_BAND: [&str; 3] = [
+    "splice onto arcane",
+    "splice onto instant or sorcery",
+    "bands with other",
+];
+
+/// Splice with its cost, which the engine pays in mana alone (CR 702.47a; a cost in words stays unread), or "bands with
+/// other" with its quality (CR 702.22b).
+fn splice_or_band(name: &str, rest: &str) -> Option<Keyword> {
+    let onto = match name {
+        "splice onto arcane" => SpliceOnto::Arcane,
+        "splice onto instant or sorcery" => SpliceOnto::InstantOrSorcery,
+        _ => return super::read::affinity_filter(rest).map(Keyword::BandsWithOther),
+    };
+    let cost = ManaCostX::from_str(rest).ok().map(Cost::mana)?;
+    Some(Keyword::Splice { onto, cost })
 }
 
 /// The cost of a keyword paid as a spell is cast (kicker, buyback, entwine, flashback, evoke, madness): as `cost`, else

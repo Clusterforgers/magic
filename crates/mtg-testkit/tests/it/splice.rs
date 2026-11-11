@@ -125,8 +125,8 @@ fn a_spliced_card_adds_its_effect_and_stays_in_the_hand(
             driver
                 .state()
                 .object(**id)
-                .and_then(|object| object.permanent())
-                .is_some_and(|permanent| permanent.tapped())
+                .and_then(mtg_engine::object::GameObject::permanent)
+                .is_some_and(mtg_engine::object::PermanentState::tapped)
         })
         .count();
     assert_eq!(tapped, if spliced { 3 } else { 1 });

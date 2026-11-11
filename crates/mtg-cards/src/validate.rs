@@ -1871,6 +1871,7 @@ impl<'a> Walker<'a> {
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {

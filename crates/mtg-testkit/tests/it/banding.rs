@@ -227,12 +227,14 @@ fn a_band_the_rules_do_not_allow_is_refused(
 ) {
     let mut driver = start(&table(2, &[first, second], &[WALL]));
     let result = driver.attack_in_bands(&[(first.0, 1), (second.0, 1)], &[&[first.0, second.0]]);
-    match (allowed, result) {
-        (true, Ok(_)) => {}
-        (
-            false,
-            Err(ScriptError::Engine(EngineError::Illegal(IllegalAnswer::NotOffered("band")))),
-        ) => {}
-        (_, other) => panic!("allowed {allowed}: {other:?}"),
-    }
+    let refused = matches!(
+        result,
+        Err(ScriptError::Engine(EngineError::Illegal(
+            IllegalAnswer::NotOffered("band")
+        )))
+    );
+    assert!(
+        result.is_ok() == allowed && refused != allowed,
+        "allowed {allowed}: {result:?}"
+    );
 }

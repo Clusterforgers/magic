@@ -208,7 +208,7 @@ mod tests {
                 Some((SpliceOnto::Arcane, mana("{1}"))),
             ),
         );
-        assert!(spliceable(&game, ME, card).is_empty());
+        assert_eq!(spliceable(&game, ME, card), Vec::new());
     }
 
     #[test]
@@ -223,7 +223,7 @@ mod tests {
                 Some((SpliceOnto::Arcane, life)),
             ),
         );
-        assert!(spliceable(&game, ME, cast).is_empty());
+        assert_eq!(spliceable(&game, ME, cast), Vec::new());
     }
 
     #[test]
