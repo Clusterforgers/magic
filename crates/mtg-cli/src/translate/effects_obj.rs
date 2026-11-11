@@ -1791,31 +1791,46 @@ fn remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "ValidTgts",
             "TargetMin",
             "TargetMax",
+            "UpTo",
         ],
     )?;
     let from = subject(ctx, p, "Self", None)?;
+    // "Remove up to N counters": the controller may stop before a number; "up to all" is no number.
+    let up_to = match p.get("UpTo") {
+        None | Some("False") => false,
+        Some("True") if !matches!(p.get("CounterNum"), None | Some("All" | "Any")) => true,
+        Some(_) => return unmapped("key:RemoveCounter.UpTo"),
+    };
     if matches!(p.get("CounterType"), Some("ALL" | "All"))
         && matches!(p.get("CounterNum"), None | Some("All"))
     {
         return Ok(json!({"RemoveAllCounters": {"from": from}}));
     }
+    let mut removal = serde_json::Map::new();
+    removal.insert("from".into(), from.clone());
     // Counters of any kinds, picked one at a time by the controller (CR 122.1).
     if p.get("CounterType") == Some("Any") {
         if matches!(p.get("CounterNum"), Some("All" | "Any")) {
             return unmapped("key:RemoveCounter.Any-number");
         }
         let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
-        return Ok(json!({"RemoveCounters": {"from": from, "count": count}}));
+        removal.insert("count".into(), count);
+    } else {
+        let Some(kind) = p.get("CounterType").and_then(kind_word) else {
+            return unmapped("key:RemoveCounter.CounterType");
+        };
+        // Every counter of the kind: as many as the object holds as the step resolves.
+        let count = match p.get("CounterNum") {
+            Some("All") => json!({"Counters": {"on": from, "counter": kind}}),
+            other => amount(ctx, other.unwrap_or("1"))?,
+        };
+        removal.insert("counter".into(), kind);
+        removal.insert("count".into(), count);
     }
-    let Some(kind) = p.get("CounterType").and_then(kind_word) else {
-        return unmapped("key:RemoveCounter.CounterType");
-    };
-    // Every counter of the kind: as many as the object holds as the step resolves.
-    let count = match p.get("CounterNum") {
-        Some("All") => json!({"Counters": {"on": from, "counter": kind}}),
-        other => amount(ctx, other.unwrap_or("1"))?,
-    };
-    Ok(json!({"RemoveCounters": {"from": from, "counter": kind, "count": count}}))
+    if up_to {
+        removal.insert("up_to".into(), json!(true));
+    }
+    Ok(json!({ "RemoveCounters": removal }))
 }
 
 /// The counter a `CounterType$` word names: the upper-case Forge names, a keyword counter written as the keyword
