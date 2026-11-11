@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "WITH updated AS (\n                   UPDATE users SET is_admin = (username_key = ANY($1::text[]))\n                   RETURNING username, username_key, is_admin\n               )\n               SELECT username FROM updated WHERE is_admin ORDER BY username_key",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "username",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "username"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "TextArray"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "cabd877fdfeadfbea54e2441b07c5e8c97cfbbaa6672fb3ee1c80361870974f7"
+}

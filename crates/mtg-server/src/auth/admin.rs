@@ -2,9 +2,9 @@
 //! `POST /api/admin/users/{id}/password` sets an account's password and `DELETE /api/admin/users/{id}`
 //! removes an account, and `GET /api/auth/options` tells a visitor whether registering is open.
 //!
-//! The admin is the one account `MTG_ADMIN_USERNAME` names ([`Auth::sync_admin`] marks it at start).
+//! The admins are the accounts `MTG_ADMIN_USERNAMES` names ([`Auth::sync_admin`] marks them at start).
 //! Every admin request reads the flag from the database for the session's account, so a demotion
-//! takes effect on the next request and neither the cookie nor the client says who is the admin.
+//! takes effect on the next request and neither the cookie nor the client says who is an admin.
 //! The checks run in a fixed order, all before the body is read: 503 `accounts_unavailable`, 401
 //! `unauthenticated`, 403 `forbidden`; the routes that name an account then answer 404
 //! `unknown_account` and 409 `admin_account`.
@@ -29,29 +29,32 @@ use crate::server::AppState;
 use crate::user_id::UserId;
 
 impl Auth {
-    /// Marks the account `MTG_ADMIN_USERNAME` names as the admin and clears the flag of every other
-    /// account, in one statement. An unset name demotes everyone; a name that belongs to no account
-    /// yet changes nothing else (the owner registers first, then names the account). A server
-    /// without a database has no accounts and does nothing.
+    /// Marks the accounts `MTG_ADMIN_USERNAMES` names as admins and clears the flag of every other
+    /// account, in one statement. No names demote everyone; a name that belongs to no account yet
+    /// promotes nobody and logs a warning (the owner registers first, then names the account). A
+    /// server without a database has no accounts and does nothing.
     pub(crate) async fn sync_admin(&self) -> Result<(), AccountError> {
         let Some(accounts) = &self.accounts else {
             return Ok(());
         };
-        let admins = accounts.set_admin(self.config.admin.as_deref()).await?;
-        match (self.config.admin.is_some(), admins) {
-            (false, _) => {
-                tracing::info!("no admin account is configured; nobody can make accounts");
+        let named = &self.config.admins;
+        let marked = accounts.set_admins(named).await?;
+        if named.is_empty() {
+            tracing::info!("no admin account is configured; nobody can make accounts");
+        }
+        for name in named {
+            if !marked.iter().any(|admin| admin.eq_ignore_ascii_case(name)) {
+                tracing::warn!(name, "an admin name belongs to no account yet");
             }
-            (true, 0) => tracing::warn!(
-                "MTG_ADMIN_USERNAME names no account yet; nobody can make accounts until it exists"
-            ),
-            (true, _) => tracing::info!("the admin account is marked"),
+        }
+        if !marked.is_empty() {
+            tracing::info!(admins = ?marked, "the admin accounts are marked");
         }
         Ok(())
     }
 
     /// The signed-in admin, or the error to send: 503 on a server without accounts, 401 without a
-    /// valid session, 403 `forbidden` for an account that is not the admin.
+    /// valid session, 403 `forbidden` for an account that is not an admin.
     async fn require_admin(&self, headers: &HeaderMap) -> Result<User, ApiError> {
         let user = self.require_user(headers).await?;
         if user.is_admin {
@@ -60,7 +63,7 @@ impl Auth {
             Err(failure(
                 StatusCode::FORBIDDEN,
                 AuthErrorCode::Forbidden,
-                "only the admin can do that",
+                "only an admin can do that",
             ))
         }
     }
@@ -178,7 +181,7 @@ fn unknown_account() -> ApiError {
     )
 }
 
-/// The 409 for the admin's account, which neither the admin routes nor Account settings delete.
+/// The 409 for an admin account, which neither the admin routes nor Account settings delete.
 pub(super) fn admin_cannot_be_deleted() -> ApiError {
     failure(
         StatusCode::CONFLICT,
@@ -191,7 +194,7 @@ fn admin_password_is_in_settings() -> ApiError {
     failure(
         StatusCode::CONFLICT,
         AuthErrorCode::AdminAccount,
-        "this is the admin account; change its password under Account settings",
+        "this is an admin account; change its password under Account settings",
     )
 }
 
@@ -243,7 +246,7 @@ pub(crate) async fn reset_password(
     Ok(StatusCode::NO_CONTENT)
 }
 
-/// `DELETE /api/admin/users/{id}`: removes an account that is not the admin's, in the transaction
+/// `DELETE /api/admin/users/{id}`: removes an account that is not an admin.s, in the transaction
 /// of [`Accounts::delete_user`], then takes it out of the live games as `DELETE /api/auth/account`
 /// does. It counts against the admin's budget.
 pub(crate) async fn remove_account(

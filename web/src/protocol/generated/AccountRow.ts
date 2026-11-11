@@ -17,6 +17,6 @@ username: string,
  */
 created_at: string, 
 /**
- * Whether this is the admin account.
+ * Whether this is an admin account.
  */
 is_admin: boolean, };

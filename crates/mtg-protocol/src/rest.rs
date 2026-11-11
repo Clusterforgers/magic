@@ -146,7 +146,7 @@ pub struct UserView {
     pub id: String,
     /// The username as it was registered.
     pub username: String,
-    /// Whether this is the admin account, the only one that makes accounts; read from the database on every
+    /// Whether this is an admin account, one of those that make accounts; read from the database on every
     /// request, so the client may show an Accounts page on it but the server stays the judge.
     pub is_admin: bool,
 }
@@ -169,7 +169,7 @@ pub struct AccountRow {
     pub username: String,
     /// When the account was made, as `YYYY-MM-DDTHH:MM:SSZ` (UTC).
     pub created_at: String,
-    /// Whether this is the admin account.
+    /// Whether this is an admin account.
     pub is_admin: bool,
 }
 
