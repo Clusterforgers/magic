@@ -149,6 +149,16 @@ fn zone_view(state: &GameState, viewer: PlayerId, zone: Zone) -> ZoneView {
     }
 }
 
+/// The stickers on the object, each in its words.
+fn sticker_texts(state: &GameState, id: ObjectId) -> Vec<String> {
+    state
+        .stickers_on(id)
+        .iter()
+        .filter_map(|at| state.sticker(*at))
+        .map(mtg_engine::un34_stickers::sticker_text)
+        .collect()
+}
+
 /// The sticker sheets `seat` plays with, each sticker with its words, cost and whether it is used.
 fn sticker_sheets(state: &GameState, seat: PlayerId) -> Vec<StickerSheetView> {
     state
@@ -445,11 +455,8 @@ impl ObjectView {
         let printed = object.kind() != ObjectKind::Ability;
         let is_token = object.kind() == ObjectKind::Token && !behind;
         // A name sticker adds its words to the name the table reads (layer 3).
-        let stickered = if behind || chars.name_words.is_empty() {
-            card.name.clone()
-        } else {
-            mtg_engine::un34_stickers::name_with(&chars.name_words, &card.name)
-        };
+        let words: &[String] = if behind { &[] } else { &chars.name_words };
+        let stickered = mtg_engine::un34_stickers::name_with(words, &card.name);
         let name = shown_name(state, sight.viewer, object, &stickered);
         // An ability on the stack tells whether its source's card is owed when it resolves wherever it names the source,
         // so a client holds the seat across batches without the source in its view.
@@ -483,12 +490,7 @@ impl ObjectView {
                 .lights(id)
                 .map(mtg_core::attraction::Lights::numbers)
                 .unwrap_or_default(),
-            stickers: state
-                .stickers_on(id)
-                .iter()
-                .filter_map(|at| state.sticker(*at))
-                .map(mtg_engine::un34_stickers::sticker_text)
-                .collect(),
+            stickers: sticker_texts(state, id),
             printed_power: card.power.filter(|_| is_token),
             printed_toughness: card.toughness.filter(|_| is_token),
             abilities: if behind {
