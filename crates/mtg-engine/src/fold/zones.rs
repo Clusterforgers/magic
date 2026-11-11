@@ -346,8 +346,7 @@ fn land_played(
 /// (CR 702.88a), so the game has replacement effects to look for.
 fn note_rebound(state: &mut GameState, spell: ObjectId, from: Zone) {
     let keywords = crate::keywords::keywords_of(state, spell);
-    let has =
-        |wanted: &mtg_cards::keyword::Keyword| keywords.iter().any(|keyword| *keyword == wanted);
+    let has = |wanted: &mtg_cards::keyword::Keyword| keywords.contains(&wanted);
     if (matches!(from, Zone::Hand(_)) && has(&mtg_cards::keyword::Keyword::Rebound))
         || has(&mtg_cards::keyword::Keyword::Paradigm)
     {

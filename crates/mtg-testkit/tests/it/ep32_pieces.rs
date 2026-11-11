@@ -72,7 +72,7 @@ fn a_discard_an_opponent_causes_puts_the_card_onto_the_battlefield(
     #[values(0, 2)] counters: u32,
     #[values(true, false)] by_an_opponent: bool,
 ) -> Result<(), ScriptError> {
-    let actor = if by_an_opponent { 0 } else { 1 };
+    let actor = usize::from(!by_an_opponent);
     let scenario = Scenario::new(seats)
         .at(1, actor, Step::Main1)
         .battlefield(actor, vec![ready(hammer())])

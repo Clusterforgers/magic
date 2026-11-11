@@ -9,6 +9,13 @@ use super::amount::counter_kind;
 use super::ctx::{Ctx, Tr, check_keys, unmapped};
 use crate::forge::script::Params;
 
+/// The lines about the card's own move that read a key of their own: entering under an opponent's control
+/// (`Layer$ Control`) and a discard by an opponent (`Discard$`); `None` for any other line.
+pub fn ep32_own_moves(ctx: &mut Ctx, p: &Params, condition: Option<&Value>) -> Option<Tr<Value>> {
+    super::ep28_under::ep28_under_opponent(ctx, p, condition)
+        .or_else(|| ep32_discarded(ctx, p, condition))
+}
+
 /// The line of a card's discard by an opponent; `None` for a line that is no discard.
 pub fn ep32_discarded(ctx: &mut Ctx, p: &Params, condition: Option<&Value>) -> Option<Tr<Value>> {
     p.has("Discard").then(|| discarded(ctx, p, condition))
