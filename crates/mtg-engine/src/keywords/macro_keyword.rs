@@ -14,10 +14,15 @@ pub(super) struct MacroKeyword;
 
 impl KeywordRules for MacroKeyword {
     fn adds_abilities(&self, keyword: &Keyword) -> Vec<Ability> {
-        let Keyword::Macro { name, amount } = keyword else {
-            return Vec::new();
-        };
-        macros::keyword_abilities(name, *amount).unwrap_or_default()
+        match keyword {
+            Keyword::Macro { name, amount } => {
+                macros::keyword_abilities(name, *amount).unwrap_or_default()
+            }
+            Keyword::MacroX { name, x } => {
+                macros::keyword_abilities_of(name, x).unwrap_or_default()
+            }
+            _ => Vec::new(),
+        }
     }
 }
 

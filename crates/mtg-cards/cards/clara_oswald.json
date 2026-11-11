@@ -14,9 +14,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 126, "end": 224 }
+          "Rule": {
+            "rule": {
+              "TriggerAgain": { "source": [{ "Subtype": "Doctor" }, { "ControlledBy": "You" }] }
+            }
           }
         },
         { "Keyword": "DoctorsCompanion" }

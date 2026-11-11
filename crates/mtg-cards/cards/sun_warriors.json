@@ -1,16 +1,18 @@
 {
   "oracle_id": "513a2fca-fea4-434e-9b25-b0c0d7f322b2",
   "name": "Sun Warriors",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sun Warriors",
       "oracle_fingerprint": "5d5e658c01d9220a13640505dd741e39",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 144 }
+          "Keyword": {
+            "MacroX": {
+              "name": "firebending",
+              "x": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            }
           }
         },
         {

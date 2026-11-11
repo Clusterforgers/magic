@@ -1,0 +1,40 @@
+{
+  "oracle_id": "1c6f95fd-f8d0-4d22-aa21-29e5c70b2f85",
+  "name": "Nemesis Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nemesis Trap",
+      "oracle_fingerprint": "cb4bef057a9572f10f91959b44db227d",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "Color": "White" }, "Attacking"] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": "{B}{B}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "as": "copy" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

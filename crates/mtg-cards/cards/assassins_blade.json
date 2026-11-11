@@ -1,0 +1,32 @@
+{
+  "oracle_id": "76da2150-34b9-4483-99df-131e1c5468d5",
+  "name": "Assassin's Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assassin's Blade",
+      "oracle_fingerprint": "0dc6eb8f1aa79949f0f2a49131ba2b2e",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "All": [{ "Step": "DeclareAttackers" }, { "AttackedThisCombat": "You" }]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }, "Attacking"]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

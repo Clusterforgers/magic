@@ -78,6 +78,10 @@ pub(crate) enum Doing {
     Exile { object: ObjectId },
     /// `object` transforms.
     Transform { object: ObjectId },
+    /// `object` untaps.
+    Untap { object: ObjectId },
+    /// `object` moves onto the battlefield from another zone.
+    EnterBattlefield { object: ObjectId },
     /// The turn of `player` skips `step`.
     SkipStep { player: PlayerId, step: Step },
     /// The turn of `player` is skipped.
@@ -197,7 +201,9 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
             state.object(object).map(GameObject::owner),
             Some(object),
         ),
-        (Prohibited::Transform, Doing::Transform { object }) => {
+        (Prohibited::Transform, Doing::Transform { object })
+        | (Prohibited::Untap, Doing::Untap { object })
+        | (Prohibited::EnterBattlefield, Doing::EnterBattlefield { object }) => {
             covers(who, holder(state, object), Some(object))
         }
         (Prohibited::SkipStep(skipped), Doing::SkipStep { player, step }) => {
@@ -409,6 +415,9 @@ fn doings(state: &GameState, event: &Event) -> Vec<Doing> {
             if *to == Zone::Exile {
                 found.push(Doing::Exile { object: *object });
             }
+            if *to == Zone::Battlefield {
+                found.push(Doing::EnterBattlefield { object: *object });
+            }
         }
         Event::CardDiscarded { player, object } => {
             found.push(Doing::Discard {
@@ -437,6 +446,7 @@ fn doings(state: &GameState, event: &Event) -> Vec<Doing> {
             });
         }
         Event::Transformed { object, .. } => found.push(Doing::Transform { object: *object }),
+        Event::PermanentUntapped { object } => found.push(Doing::Untap { object: *object }),
         _ => {}
     }
     found

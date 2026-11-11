@@ -2009,6 +2009,7 @@ fn static_texts(
                 "Enchanted land",
                 "Enchanted artifact",
                 "Enchanted permanent",
+                "Enchanted planeswalker",
             ]
             .map(|subject| (subject.to_owned(), false)),
         );

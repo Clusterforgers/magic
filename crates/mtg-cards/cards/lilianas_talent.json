@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8c55039d-1303-420c-8547-ebdffb63bf89",
+  "name": "Liliana's Talent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana's Talent",
+      "oracle_fingerprint": "28f0d745b5f093183a3ed2c7c43e0d10",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Planeswalker" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Loyalty": {
+                    "cost": { "Minus": 8 },
+                    "effects": [
+                      {
+                        "Move": {
+                          "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                          "to": { "Battlefield": { "under": "You" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "Type": "Creature" }], "to": "Attached" } },
+            "effects": [{ "Destroy": { "what": "Dealer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

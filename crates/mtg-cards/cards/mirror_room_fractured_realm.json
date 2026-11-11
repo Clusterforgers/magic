@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e7a1c21b-5966-4ce0-a925-0b3cb3c3db00",
+  "name": "Mirror Room // Fractured Realm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Room",
+      "oracle_fingerprint": "1814daf69ceb188e10a2468a6236ef95",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": { "Target": 0 }, "except": [{ "AddSubtype": "Reflection" }] }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fractured Realm",
+      "oracle_fingerprint": "cc55465f1c13948dd747b2c99238b324",
+      "abilities": [{ "Rule": { "rule": { "TriggerAgain": {} } } }]
+    }
+  ]
+}

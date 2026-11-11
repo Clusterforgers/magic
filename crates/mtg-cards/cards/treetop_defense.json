@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f215d0f9-a53e-431a-a70d-9dc4e3caa41e",
+  "name": "Treetop Defense",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treetop Defense",
+      "oracle_fingerprint": "447c9b5aad15cfc622ccd180c56e16f7",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "All": [{ "Step": "DeclareAttackers" }, { "AttackedThisCombat": "You" }]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Reach" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

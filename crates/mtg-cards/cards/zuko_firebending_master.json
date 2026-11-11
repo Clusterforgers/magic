@@ -1,23 +1,50 @@
 {
   "oracle_id": "33db6dc8-2c88-4a7f-8d4d-3bc9fb6544b2",
   "name": "Zuko, Firebending Master",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Zuko, Firebending Master",
-      "oracle_fingerprint": "76d9a3d5bf742ddab89b79fab55181b2",
+      "oracle_fingerprint": "",
       "abilities": [
-        { "Keyword": "FirstStrike" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 13, "end": 164 }
+          "Keyword": "FirstStrike"
+        },
+        {
+          "Keyword": {
+            "MacroX": {
+              "name": "firebending",
+              "x": {
+                "Counters": {
+                  "on": "You",
+                  "counter": {
+                    "Other": "experience"
+                  }
+                }
+              }
+            }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 165, "end": 236 }
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "by": "You"
+              }
+            },
+            "if": {
+              "AtTrigger": "InCombat"
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "You",
+                  "counter": {
+                    "Other": "experience"
+                  }
+                }
+              }
+            ]
           }
         }
       ]

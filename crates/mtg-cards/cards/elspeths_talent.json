@@ -1,0 +1,64 @@
+{
+  "oracle_id": "969b81d2-e95b-4a3f-9548-9394e3a6727e",
+  "name": "Elspeth's Talent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elspeth's Talent",
+      "oracle_fingerprint": "28e0a5689b89f9e56e6fd9d311a53eae",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Planeswalker" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Loyalty": {
+                    "cost": { "Plus": 1 },
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Soldier",
+                              "colors": ["White"],
+                              "types": ["Creature"],
+                              "subtypes": ["Soldier"],
+                              "power": 1,
+                              "toughness": 1
+                            }
+                          },
+                          "count": 3
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Did": { "action": "ActivatedLoyalty", "who": "You", "what": [{ "Is": "Attached" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

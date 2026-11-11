@@ -122,19 +122,19 @@
   "textless": false,
   "booster": true,
   "story_spotlight": false,
-  "edhrec_rank": 7445,
+  "edhrec_rank": 7425,
   "preview": {
     "source": "Giga",
     "source_uri": "https://www.giga.de/entertainment/magic-the-gathering-2-exklusive-aetherdrift-preview-karten--01JJ799J7CZ8BT45SQSVSE5K62",
     "previewed_at": "2025-01-22"
   },
   "prices": {
-    "usd": "2.91",
-    "usd_foil": "4.46",
+    "usd": "3.37",
+    "usd_foil": "4.29",
     "usd_etched": null,
-    "eur": "5.40",
-    "eur_foil": "6.41",
-    "tix": "0.97"
+    "eur": "5.46",
+    "eur_foil": "6.89",
+    "tix": "1.00"
   },
   "related_uris": {
     "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=690646&printed=false",

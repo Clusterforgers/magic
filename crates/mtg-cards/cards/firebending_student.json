@@ -1,7 +1,7 @@
 {
   "oracle_id": "1ad3be51-f68b-46d6-b58e-400b50e384f1",
   "name": "Firebending Student",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Firebending Student",
@@ -9,9 +9,8 @@
       "abilities": [
         { "Keyword": "Prowess" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 93, "end": 223 }
+          "Keyword": {
+            "MacroX": { "name": "firebending", "x": { "Stat": { "of": "This", "stat": "Power" } } }
           }
         }
       ]

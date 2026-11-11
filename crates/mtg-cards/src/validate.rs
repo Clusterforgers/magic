@@ -1335,6 +1335,8 @@ impl<'a> Walker<'a> {
             Condition::AfterBlockers => self.uses("Condition", "AfterBlockers"),
             Condition::InCombat => self.uses("Condition", "InCombat"),
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
+            Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
+            Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
             Condition::NewlyControlled(what) => {
                 self.uses("Condition", "NewlyControlled");
@@ -1878,6 +1880,19 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// A macro keyword with X: the table names it with a number, and its expansion is walked as written.
+    fn keyword_macro_x(&mut self, name: &str, x: &Amount) {
+        let Some(abilities) = crate::macros::keyword_abilities_of(name, x) else {
+            self.problem(format!("`{name}` is not a keyword macro with a number"));
+            return;
+        };
+        let saved = std::mem::take(&mut self.scope);
+        for ability in &abilities {
+            self.ability(ability);
+        }
+        self.scope = saved;
+    }
+
     /// A companion condition may only ask about the card itself, since the deck check reads it from the card alone.
     fn companion(&mut self, condition: &crate::companion::DeckCondition) {
         for pred in condition.unreadable() {
@@ -2043,6 +2058,7 @@ impl<'a> Walker<'a> {
             Keyword::Fabricate(0) => self.problem("fabricate needs a number of at least 1"),
             Keyword::Afterlife(0) => self.problem("afterlife needs a number of at least 1"),
             Keyword::Macro { name, amount } => self.keyword_macro(name, *amount),
+            Keyword::MacroX { name, x } => self.keyword_macro_x(name, x),
             Keyword::Companion(condition) => self.companion(condition),
             Keyword::PartnerWith(name) => {
                 self.names

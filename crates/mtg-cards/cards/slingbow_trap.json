@@ -1,0 +1,44 @@
+{
+  "oracle_id": "66ce0ae5-7000-4e4a-891f-f571f0e58cd7",
+  "name": "Slingbow Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slingbow Trap",
+      "oracle_fingerprint": "a93274cbf3efdf7ad96ddc59b624cd03",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Color": "Black" },
+                    { "HasKeyword": "Flying" },
+                    "Attacking"
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "cost": "{G}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Attacking", { "HasKeyword": "Flying" }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "oracle_id": "82fa14d8-5019-4e1b-a86c-923d9292b87a",
   "name": "Frozen in Ice",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Frozen in Ice",
@@ -14,12 +14,8 @@
             "effects": [{ "Tap": { "what": "Attached" } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 64, "end": 129 }
-          }
-        }
+        { "Static": { "affected": "Attached", "mods": ["LoseAbilities"] } },
+        { "Rule": { "rule": { "Cant": { "who": "Attached", "action": "Untap" } } } }
       ]
     }
   ]

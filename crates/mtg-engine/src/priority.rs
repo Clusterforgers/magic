@@ -303,7 +303,15 @@ fn source_turns(state: &GameState, object: &GameObject, price: &Price) -> bool {
     let sick = keywords::sick_for_abilities(state, object.id())
         && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
     let ready = if price.untap {
-        permanent.tapped() && !price.tap
+        // A permanent that can't become untapped can't pay {Q}.
+        permanent.tapped()
+            && !price.tap
+            && !crate::prohibit::forbidden(
+                state,
+                crate::prohibit::Doing::Untap {
+                    object: object.id(),
+                },
+            )
     } else {
         !permanent.tapped()
     };

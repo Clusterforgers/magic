@@ -451,6 +451,10 @@ pub enum Prohibited {
     Exile,
     /// Transform (CR 701.28).
     Transform,
+    /// Become untapped, by an untap step, an effect or a {Q} cost.
+    Untap,
+    /// Enter the battlefield from the zone they are in (CR 400.6): the move does not happen, and the card stays where it is.
+    EnterBattlefield,
     /// Skip the step on their turns (CR 614.10); the cleanup step is never skipped.
     SkipStep(Step),
     /// Skip their turns (CR 614.10).

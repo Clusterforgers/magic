@@ -1,0 +1,56 @@
+{
+  "oracle_id": "3c83ea11-7141-41a2-ba77-1ed2722dfe74",
+  "name": "Lure of Prey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lure of Prey",
+      "oracle_fingerprint": "edc8a4987f2ed68386928228f72ab329",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "EachPlayer",
+                    "filter": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "Type": "Creature" },
+                            { "Color": "Green" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a129423d-c886-4120-96f7-c2517ea7eb83",
+  "name": "Fire Lord Zuko",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fire Lord Zuko",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {
+          "Keyword": {
+            "MacroX": {
+              "name": "firebending",
+              "x": {
+                "Stat": {
+                  "of": "This",
+                  "stat": "Power"
+                }
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": {
+              "start": 132,
+              "end": 274
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

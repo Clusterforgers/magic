@@ -1,0 +1,63 @@
+{
+  "oracle_id": "968f0edb-b81f-465a-84b2-f077af61e51b",
+  "name": "Vivien's Talent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivien's Talent",
+      "oracle_fingerprint": "776d1c2aca6270f2e3e479cad580bfc6",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Planeswalker" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Loyalty": {
+                    "cost": { "Plus": 1 },
+                    "effects": [
+                      { "LookAtTop": { "count": 4, "as": "top" } },
+                      {
+                        "Choose": {
+                          "from": {
+                            "Each": [
+                              { "In": "Library" },
+                              { "Is": { "Bound": "top" } },
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }
+                            ]
+                          },
+                          "count": { "min": 0, "max": 1 },
+                          "as": "kept2"
+                        }
+                      },
+                      { "Reveal": { "what": { "Bound": "kept2" } } },
+                      { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+                      {
+                        "Move": {
+                          "what": { "Bound": "top" },
+                          "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Attached", "counter": "loyalty" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

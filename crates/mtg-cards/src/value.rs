@@ -1387,6 +1387,13 @@ pub enum Condition {
     InCombat,
     /// The turn is in the first combat phase it has had: "if it's the first combat phase of the turn" (CR 500.8).
     FirstCombat,
+    /// A player the reference names was attacked in the combat phase in progress, directly or through a planeswalker
+    /// they control or a battle they protect (CR 506.2); an attacker that left combat still counts: "if you've been
+    /// attacked this step" in the declare attackers step.
+    AttackedThisCombat(Ref),
+    /// The player could cast a sorcery now (CR 307.1): their own turn, a main phase and an empty stack ("can cast
+    /// spells only any time they could cast a sorcery").
+    SorceryTiming,
     /// The referenced Class compares to the level this way (CR 716.2): a Class that has gained no level is level 1.
     Level {
         /// The Class read; `This` for the Class with the ability.
