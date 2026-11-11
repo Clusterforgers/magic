@@ -248,7 +248,7 @@ fn a_visit_that_claims_the_prize_triggers_the_prize_and_the_fans(
     );
     assert_eq!(
         driver.state().player(pid(0)).unwrap().life(),
-        life + 2 * 1 + 2 * 2,
+        life + 2 + 2 * 2,
         "the fan gains 1 for each visit and 2 for each prize"
     );
     for seat in 1..seats {

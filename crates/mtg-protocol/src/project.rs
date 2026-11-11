@@ -426,6 +426,7 @@ impl ObjectView {
         })
     }
 
+    #[allow(clippy::too_many_lines)]
     fn with_attachments(
         state: &GameState,
         sight: &Sight<'_>,
