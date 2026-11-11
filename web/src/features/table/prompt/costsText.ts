@@ -19,8 +19,16 @@ export function costKeysWords(count: number): string {
   return 'Press 1 to 9, or 0, to take one of the first ten costs or leave it.'
 }
 
-/** The live sentence: who asks, and what a player with no wish to pay more does. */
-export function costsSentence(asker: string, chosen: number): string {
+/** Whether the costs offered are cards of the hand to splice onto the spell (CR 702.47), as the engine labels them. */
+export const isSplice = (optional: readonly OptionalCost[]): boolean =>
+  optional.length > 0 && optional.every((cost) => cost.label.startsWith('Splice '))
+
+/** The live sentence: who asks, and what a player with no wish to pay more does; for splice, the cards to splice. */
+export function costsSentence(asker: string, chosen: number, splice = false): string {
+  if (splice) {
+    if (chosen === 0) return `${asker}: choose the cards to reveal and splice onto it, or none.`
+    return `${asker}: ${chosen === 1 ? '1 card' : `${chosen} cards`} to splice. Confirm, or change the choice.`
+  }
   if (chosen === 0) return `${asker}: choose the optional costs to pay, or none.`
   return `${asker}: ${chosen === 1 ? '1 optional cost' : `${chosen} optional costs`} chosen. Confirm, or change the choice.`
 }

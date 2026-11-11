@@ -343,7 +343,15 @@ player: PlayerId,
 /**
  * Each attacker and its target.
  */
-attackers: Array<[ObjectId, AttackTarget]>, } } | { "BlockersDeclared": { 
+attackers: Array<[ObjectId, AttackTarget]>, } } | { "BandFormed": { 
+/**
+ * The attacking player.
+ */
+player: PlayerId, 
+/**
+ * The members of the band.
+ */
+attackers: Array<ObjectId>, } } | { "BlockersDeclared": { 
 /**
  * The defending player.
  */

@@ -1873,6 +1873,7 @@ impl<'a> Walker<'a> {
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
@@ -1935,6 +1936,7 @@ impl<'a> Walker<'a> {
             | Keyword::Encore(cost)
             | Keyword::Foretell(cost)
             | Keyword::Plot(cost)
+            | Keyword::Splice { cost, .. }
             | Keyword::Awaken { cost, .. }
             | Keyword::Prototype { cost, .. }
             | Keyword::Suspend { cost, .. } => {
@@ -1949,6 +1951,7 @@ impl<'a> Walker<'a> {
             Keyword::Protection(quality)
             | Keyword::HexproofFrom(quality)
             | Keyword::Landwalk(quality)
+            | Keyword::BandsWithOther(quality)
             | Keyword::Affinity(quality) => {
                 self.selector(quality);
             }

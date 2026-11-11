@@ -1,7 +1,7 @@
 {
   "oracle_id": "8d3c4e50-6709-42f9-97e7-3165ee501684",
   "name": "Psychic Puppetry",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Psychic Puppetry",
@@ -13,12 +13,7 @@
             "effects": [{ "May": { "effects": [{ "TapOrUntap": { "what": { "Target": 0 } } }] } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 39, "end": 207 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{U}" } } }
       ]
     }
   ]

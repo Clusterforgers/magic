@@ -202,6 +202,11 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "is_zero_u32")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
     pub removed: u32,
+    /// The cards of the caster's hand revealed and spliced onto the spell (CR 702.47), in the order chosen: the spell has
+    /// their effects after its own.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub spliced: Vec<ObjectId>,
 }
 
 /// Whether a number of counters is 0, so serialization can leave it out.
@@ -234,6 +239,20 @@ impl Choices {
         self.cost_taken
             .as_deref()
             .map_or(&[], |taken| &taken.convoked)
+    }
+
+    /// The cards spliced onto the spell (`CostTaken::spliced`).
+    pub fn spliced(&self) -> &[ObjectId] {
+        self.cost_taken
+            .as_deref()
+            .map_or(&[], |taken| &taken.spliced)
+    }
+
+    /// Records the cards spliced onto the spell; none leaves the choices as they are.
+    pub(crate) fn set_spliced(&mut self, cards: Vec<ObjectId>) {
+        if !cards.is_empty() {
+            self.cost_taken.get_or_insert_with(Box::default).spliced = cards;
+        }
     }
 
     /// The permanents and cards picked for the parts of the cost that take them, one list for each such part.

@@ -790,6 +790,9 @@ const RUNS: &[&str] = &[
     "Keyword.Recover",
     "Keyword.Ripple",
     "Keyword.Epic",
+    "Keyword.Banding",
+    "Keyword.BandsWithOther",
+    "Keyword.Splice",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
@@ -1452,6 +1455,9 @@ mod tests {
     #[case::recover("Keyword.Recover", true)]
     #[case::ripple("Keyword.Ripple", true)]
     #[case::epic("Keyword.Epic", true)]
+    #[case::banding("Keyword.Banding", true)]
+    #[case::bands_with_other("Keyword.BandsWithOther", true)]
+    #[case::splice("Keyword.Splice", true)]
     #[case::becoming_renowned_triggers("Trigger.BecomesRenowned", true)]
     #[case::exploiting_triggers("Trigger.Exploits", true)]
     #[case::replacing_destruction("ReplaceWhen.Destroyed", true)]

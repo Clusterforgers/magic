@@ -377,6 +377,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CardDiscarded { .. }
         | Event::Cycled { .. }
         | Event::AttackersDeclared { .. }
+        | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }
         | Event::DamageDealt { .. }

@@ -214,6 +214,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     },
     'Bo attacks Ana with Grizzly Bears and Hill Giant',
   ],
+  BandFormed: [
+    { BandFormed: { player: 1, attackers: [1, 2] } },
+    'Bo bands Grizzly Bears and Hill Giant together',
+  ],
   BlockersDeclared: [
     { BlockersDeclared: { player: 0, blocks: [[2, 1]] } },
     'Ana declares blockers: Hill Giant blocks Grizzly Bears',

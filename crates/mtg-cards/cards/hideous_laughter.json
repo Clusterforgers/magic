@@ -1,7 +1,7 @@
 {
   "oracle_id": "e9022d1c-2f5c-4a1f-a44e-0e4f9651e729",
   "name": "Hideous Laughter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hideous Laughter",
@@ -20,12 +20,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 43, "end": 217 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{3}{B}{B}" } } }
       ]
     }
   ]

@@ -173,7 +173,9 @@ pub fn apply_answer(
             }
             (
                 DecisionKind::DeclareAttackers(options),
-                Answer::DeclareExerting { attackers, exert },
+                Answer::DeclareExerting {
+                    attackers, exert, ..
+                },
             ) => smaller_attack(options, attackers).map(|smaller| {
                 let exert = exert
                     .iter()
@@ -196,7 +198,11 @@ pub fn w11a_declaration(attackers: Attack, exert: Vec<ObjectId>) -> Answer {
     if exert.is_empty() {
         Answer::DeclareAttackers(attackers)
     } else {
-        Answer::DeclareExerting { attackers, exert }
+        Answer::DeclareExerting {
+            attackers,
+            exert,
+            bands: Vec::new(),
+        }
     }
 }
 

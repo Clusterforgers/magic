@@ -78,6 +78,15 @@ impl DamageForm {
     }
 }
 
+/// What an attack declaration names besides the attackers: the creatures exerted (CR 701.43) and the bands (CR 702.22c).
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub(crate) struct AttackExtras {
+    /// The attackers exerted.
+    pub(crate) exert: Vec<ObjectId>,
+    /// The bands, each of two or more attackers.
+    pub(crate) bands: Vec<Vec<ObjectId>>,
+}
+
 /// An attacking creature and its blockers.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Attacker {
@@ -136,6 +145,10 @@ pub struct CombatState {
     pub(crate) blockers_declared: Vec<PlayerId>,
     /// The creatures that left combat this turn and what each was attacking, for an ability that takes the place of one.
     pub(crate) left: Vec<(ObjectId, AttackTarget)>,
+    /// The bands of attackers (CR 702.22c), each of the members still attacking.
+    pub(crate) bands: Vec<Vec<ObjectId>>,
+    /// How the blockers that block several attackers divided their combat damage, each (blocker, damage per attacker).
+    pub(crate) blocker_assignments: Vec<(ObjectId, Vec<(ObjectId, u32)>)>,
 }
 
 impl CombatState {
@@ -175,6 +188,22 @@ impl CombatState {
         })
     }
 
+    /// The band the attacker `id` is in (CR 702.22c).
+    pub fn band_of(&self, id: ObjectId) -> Option<&[ObjectId]> {
+        self.bands
+            .iter()
+            .find(|band| band.contains(&id))
+            .map(Vec::as_slice)
+    }
+
+    /// How the blocker `id` divided its combat damage among the attackers it blocks, once it has.
+    pub(crate) fn blocker_assignment(&self, id: ObjectId) -> Option<&[(ObjectId, u32)]> {
+        self.blocker_assignments
+            .iter()
+            .find(|(blocker, _)| *blocker == id)
+            .map(|(_, shares)| shares.as_slice())
+    }
+
     /// Whether `id` is an attacker or one of the creatures blocking an attacker.
     pub(crate) fn contains(&self, id: ObjectId) -> bool {
         self.attackers
@@ -194,6 +223,16 @@ impl CombatState {
             if let Some(assignment) = &mut attacker.assignment {
                 assignment.retain(|(b, _)| *b != id);
             }
+        }
+        // A creature removed from combat leaves its band (CR 702.22f).
+        for band in &mut self.bands {
+            band.retain(|member| *member != id);
+        }
+        self.bands.retain(|band| band.len() > 1);
+        self.blocker_assignments
+            .retain(|(blocker, _)| *blocker != id);
+        for (_, shares) in &mut self.blocker_assignments {
+            shares.retain(|(attacker, _)| *attacker != id);
         }
     }
 
@@ -238,6 +277,7 @@ impl CombatState {
         for attacker in &mut self.attackers {
             attacker.assignment = None;
         }
+        self.blocker_assignments.clear();
     }
 }
 
@@ -402,6 +442,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
                 .unwrap_or(allowed);
             Some(AttackerOption {
                 exert: crate::w11a_exert::w11a_may_exert(state, object),
+                banding: crate::keywords::banding::may_band(state, object),
                 ..AttackerOption::free(object, defenders)
             })
         })

@@ -391,6 +391,19 @@ pub enum Keyword {
     Ripple(u32),
     /// Epic (CR 702.50): no more spells for the game; the spell is copied each upkeep.
     Epic,
+    /// Banding (CR 702.22): the creature may attack in a band with other creatures, and the player who controls a banding
+    /// creature in a fight divides the combat damage of the creatures it blocks or is blocked by.
+    Banding,
+    /// "Bands with other [quality]" (CR 702.22b): banding among creatures of the quality only.
+    BandsWithOther(Selector),
+    /// Splice onto a kind of spell with its cost (CR 702.47): as such a spell is cast, its caster may reveal this card from
+    /// their hand and pay the cost to add the card's effects to that spell.
+    Splice {
+        /// The spells it may be spliced onto.
+        onto: SpliceOnto,
+        /// The splice cost.
+        cost: Cost,
+    },
     /// A keyword the macro table expands into abilities of existing nodes (`macros::KEYWORDS`), with its number (0 for a keyword that prints none).
     Macro {
         /// The name in the table.
@@ -398,6 +411,15 @@ pub enum Keyword {
         /// The number printed after the name.
         amount: u32,
     },
+}
+
+/// The spells a card with splice may be spliced onto (CR 702.47a).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum SpliceOnto {
+    /// Arcane spells.
+    Arcane,
+    /// Instant and sorcery spells.
+    InstantOrSorcery,
 }
 
 /// What a promised gift is (CR 702.174).
@@ -583,6 +605,9 @@ impl Keyword {
         "Recover",
         "Ripple",
         "Epic",
+        "Banding",
+        "Bands with other",
+        "Splice",
         "Macro",
     ];
 
@@ -777,6 +802,9 @@ impl Keyword {
             Keyword::Recover(_) => "Recover",
             Keyword::Ripple(_) => "Ripple",
             Keyword::Epic => "Epic",
+            Keyword::Banding => "Banding",
+            Keyword::BandsWithOther(_) => "Bands with other",
+            Keyword::Splice { .. } => "Splice",
             Keyword::Macro { .. } => "Macro",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
@@ -1030,6 +1058,12 @@ mod tests {
             Keyword::Recover(Cost::default()),
             Keyword::Ripple(4),
             Keyword::Epic,
+            Keyword::Banding,
+            Keyword::BandsWithOther(Selector::default()),
+            Keyword::Splice {
+                onto: SpliceOnto::Arcane,
+                cost: Cost::default(),
+            },
             Keyword::Macro {
                 name: "bushido".to_owned(),
                 amount: 2,

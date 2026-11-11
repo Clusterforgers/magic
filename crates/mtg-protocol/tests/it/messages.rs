@@ -1526,6 +1526,7 @@ fn w2f_cost_taken(
         }],
         convoked: vec![mtg_engine::object::ObjectRef { id: a, counter: 1 }],
         removed: 3,
+        spliced: vec![b],
     }
 }
 
