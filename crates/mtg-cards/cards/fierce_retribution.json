@@ -1,0 +1,32 @@
+{
+  "oracle_id": "83094dd2-b8e9-4753-a8a0-657b446def60",
+  "name": "Fierce Retribution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fierce Retribution",
+      "oracle_fingerprint": "650869d9f983d67f1622eddf12096079",
+      "abilities": [
+        {
+          "Keyword": {
+            "Cleave": {
+              "cost": "{5}{W}",
+              "spell": {
+                "Spell": {
+                  "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                  "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

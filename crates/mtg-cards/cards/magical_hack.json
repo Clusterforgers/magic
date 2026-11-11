@@ -1,0 +1,29 @@
+{
+  "oracle_id": "cba229fa-9035-405b-b091-3798898a37ee",
+  "name": "Magical Hack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magical Hack",
+      "oracle_fingerprint": "78143c9a1aafd688f3f895341d69c0c5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "AnyOf": ["Spell", { "In": "Battlefield" }] }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "BasicLandType", "as": "from" } },
+              { "ChooseValue": { "kind": { "LikeChosen": "from" }, "as": "to" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ChangeTextChosen": { "from": "from", "to": "to" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

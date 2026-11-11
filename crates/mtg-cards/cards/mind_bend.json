@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d8377869-f8f7-4b4b-93ad-3ad3c4826b1a",
+  "name": "Mind Bend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mind Bend",
+      "oracle_fingerprint": "8486decf9a3beeb69dc4bb1d9fac00fa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "ColorOrBasicLandType", "as": "from" } },
+              { "ChooseValue": { "kind": { "LikeChosen": "from" }, "as": "to" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ChangeTextChosen": { "from": "from", "to": "to" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

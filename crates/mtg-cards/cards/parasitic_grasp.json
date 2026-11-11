@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d9763c75-75f7-4766-8cca-84c899796e3c",
+  "name": "Parasitic Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parasitic Grasp",
+      "oracle_fingerprint": "b685664ee16c13fa300b27d4bbc07610",
+      "abilities": [
+        {
+          "Keyword": {
+            "Cleave": {
+              "cost": "{1}{B}{B}",
+              "spell": {
+                "Spell": {
+                  "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+                    { "GainLife": { "amount": 3 } }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Human" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

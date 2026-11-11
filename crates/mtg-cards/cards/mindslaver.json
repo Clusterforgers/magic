@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a806f4ee-f48a-46c3-8772-5aaabebe4c7e",
+  "name": "Mindslaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindslaver",
+      "oracle_fingerprint": "49a6e0126876db0a5e9efa487bb522d0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "ControlPlayer": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

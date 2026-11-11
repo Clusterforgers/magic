@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c5ab6dc9-34af-434f-ae8e-b2389ee6c5ae",
+  "name": "Artificial Evolution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Artificial Evolution",
+      "oracle_fingerprint": "2a585965a0b2b97de5829e57c1d489fd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "AnyOf": ["Spell", { "In": "Battlefield" }] }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "from" } },
+              { "ChooseValue": { "kind": { "CreatureTypeExcept": ["Wall"] }, "as": "to" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ChangeTextChosen": { "from": "from", "to": "to" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

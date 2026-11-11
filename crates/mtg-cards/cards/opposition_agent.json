@@ -8,12 +8,10 @@
       "oracle_fingerprint": "4657324301158391f3933ff5c3acf5bc",
       "abilities": [
         { "Keyword": "Flash" },
-        {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 6, "end": 73 } }
-        },
+        { "Rule": { "rule": { "ControlSearches": "Opponents" } } },
         {
           "Manual": {
-            "reason": "you apply this clause by hand",
+            "reason": "you apply this static ability by hand",
             "span": { "start": 74, "end": 284 }
           }
         }
