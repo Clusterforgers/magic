@@ -113,6 +113,7 @@ fn number(
                 can_cancel: false,
                 cost: None,
                 per_x: 0,
+                secret: false,
             }),
         })),
         [(who, Choice::Number(number))] if *who == player && (low..=high).contains(number) => {

@@ -18,6 +18,7 @@ pub mod cost_more;
 pub mod count;
 pub mod ctx;
 mod damaged_way;
+mod dk27_numbers;
 mod e14f_turn_up;
 mod e15b_entering;
 mod e15f_words;

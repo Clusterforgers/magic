@@ -95,6 +95,7 @@ mod remember;
 mod turn_up;
 // dk1b
 mod dk1c5_unlock;
+mod dk27_numbers;
 mod g12b_counters_of;
 #[cfg(test)]
 mod move_attached;
@@ -308,6 +309,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::FlipCoin { .. } => flip_coin::run(cx, effect),
         Effect::Clash { .. } => w9b_clash::run(cx, effect),
         Effect::Vote { .. } => vote::run(cx, effect),
+        Effect::ChooseNumbers { .. } => dk27_numbers::run(cx, effect),
         Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
         Effect::VillainousChoice { .. } => w2d_villainous::run(cx, effect),
         Effect::Either { .. } | Effect::OneOf { .. } => choice_of_lists(cx, effect),

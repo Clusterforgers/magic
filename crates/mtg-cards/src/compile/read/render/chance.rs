@@ -45,6 +45,9 @@ impl Writer<'_> {
         if let Some(found) = self.ep22_flips(effects) {
             return Some(found);
         }
+        if let Some(found) = super::super::dk27_numbers::dk27_numbers_text(effects) {
+            return Some(found);
+        }
         match effects.first()? {
             Effect::FlipCoin {
                 who,

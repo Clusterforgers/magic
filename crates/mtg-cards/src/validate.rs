@@ -3712,6 +3712,23 @@ impl Walker<'_> {
                 secret,
                 bind,
             } => w.vote(options, *secret, bind.as_deref()),
+            Effect::ChooseNumbers {
+                who,
+                min,
+                bind,
+                highest,
+                lowest,
+                ..
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("min", |w| w.amount(min));
+                if bind == highest || bind == lowest || highest == lowest {
+                    w.problem("the highest number and the players of each end have names of their own");
+                }
+                w.at("as", |w| w.bind(bind, Kind::Value));
+                w.at("highest", |w| w.bind(highest, Kind::Player));
+                w.at("lowest", |w| w.bind(lowest, Kind::Player));
+            }
             Effect::MultiplyCounters { on, factor, .. } => {
                 w.at("on", |w| w.reference(on, Kind::Either));
                 if *factor < 2 {

@@ -37,4 +37,8 @@ cost?: ManaCost,
 /**
  * The generic mana each 1 of X adds to `cost` (2 for `{X}{X}`); left out while 0.
  */
-per_x?: number, };
+per_x?: number, 
+/**
+ * The number is chosen face down ("secretly chooses a number"): the other seats learn it when all are revealed.
+ */
+secret?: boolean, };

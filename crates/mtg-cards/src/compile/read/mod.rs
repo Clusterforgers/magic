@@ -78,6 +78,7 @@ mod dk1a_attached;
 mod dk1c5_rooms;
 mod dk1d_by_paying;
 mod dk27_batches;
+mod dk27_numbers;
 mod dk27_pairs;
 mod draws;
 mod e10a_targets;

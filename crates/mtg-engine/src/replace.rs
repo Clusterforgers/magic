@@ -3336,6 +3336,7 @@ impl Pass<'_> {
                     can_cancel: false,
                     cost: None,
                     per_x: 0,
+                    secret: false,
                 }),
             })),
             Some((who, Choice::Number(number)))

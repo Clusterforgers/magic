@@ -503,6 +503,7 @@ const RUNS: &[&str] = &[
     "Effect.Modal.OnceEver",
     "Effect.Modal.AllIf",
     "Effect.Vote",
+    "Effect.ChooseNumbers",
     "Effect.Let",
     "Effect.Bind",
     "Effect.Modal.Who",

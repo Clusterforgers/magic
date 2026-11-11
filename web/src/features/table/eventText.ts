@@ -578,6 +578,7 @@ function describeChoice(choice: Choice, n: EventNames): string {
   if ('YesNo' in choice) return choice.YesNo ? 'answers yes' : 'answers no'
   if ('Option' in choice) return `chooses option ${choice.Option + 1}`
   if ('Vote' in choice) return `votes for option ${choice.Vote + 1}`
+  if ('SecretNumber' in choice) return `secretly chooses ${choice.SecretNumber}`
   return 'chooses which effect applies first'
 }
 
