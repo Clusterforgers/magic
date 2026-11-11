@@ -156,7 +156,7 @@ async fn run(
             &progress,
         )
     });
-    let report = tokio::time::timeout(Duration::from_secs(60), task)
+    let report = tokio::time::timeout(Duration::from_mins(1), task)
         .await
         .unwrap_or_else(|_| panic!("the run hangs"))
         .unwrap_or_else(|e| panic!("the run task ends: {e}"))
@@ -182,7 +182,7 @@ fn saved(dir: &Path) -> Vec<String> {
 #[case::two_retries(2)]
 #[tokio::test(flavor = "multi_thread")]
 async fn a_stalled_server_is_tried_once_more_per_retry_and_then_times_out(#[case] retries: u32) {
-    let server = start(|seen: &Seen| chat_reply(seen, "{}").after(Duration::from_secs(60))).await;
+    let server = start(|seen: &Seen| chat_reply(seen, "{}").after(Duration::from_mins(1))).await;
     let client = client(&server, Duration::from_millis(300), retries);
     let started = std::time::Instant::now();
     let error = tokio::task::spawn_blocking(move || client.complete(&request()))
@@ -204,7 +204,7 @@ async fn a_request_that_stalled_once_is_answered_by_the_retry() {
     let server = start(move |seen: &Seen| {
         let reply = chat_reply(seen, "{}");
         if flag.swap(false, Ordering::SeqCst) {
-            reply.after(Duration::from_secs(60))
+            reply.after(Duration::from_mins(1))
         } else {
             reply
         }
@@ -228,7 +228,7 @@ async fn a_card_that_times_out_is_a_failure_the_run_goes_past_and_resume_asks_ag
     let server = start(move |seen: &Seen| {
         let reply = chat_reply(seen, FLYING);
         if flag.load(Ordering::SeqCst) && card_in(seen) == "Drake 00" {
-            reply.after(Duration::from_secs(60))
+            reply.after(Duration::from_mins(1))
         } else {
             reply
         }

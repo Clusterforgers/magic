@@ -402,7 +402,7 @@ mod tests {
         for user in [ann.id, bob.id] {
             let digest = TokenDigest::of(&format!("session-of-{user}"));
             accounts
-                .start_session(&digest, user, Duration::from_secs(60))
+                .start_session(&digest, user, Duration::from_mins(1))
                 .await
                 .unwrap();
         }

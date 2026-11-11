@@ -21,7 +21,7 @@ use rstest::rstest;
 
 const RESPONSE: Duration = Duration::from_secs(10);
 const BLOCKS: Duration = Duration::from_secs(45);
-const THINK: Duration = Duration::from_secs(60);
+const THINK: Duration = Duration::from_mins(1);
 
 /// The server defaults: auto-pass on, 10 s to respond, 45 s to block, 60 s to think.
 const DEFAULT: Pace = Pace {
@@ -258,7 +258,7 @@ async fn the_active_player_is_never_on_a_clock() {
     assert!(options.can_act);
 
     let status = handle.status().await.unwrap();
-    tokio::time::advance(Duration::from_secs(3600)).await;
+    tokio::time::advance(Duration::from_hours(1)).await;
     assert_eq!(
         quiet(&handle).await,
         status,
@@ -457,7 +457,7 @@ async fn clocks_can_be_switched_off() {
     let (_, _, left) = clocked(&mut clients[1]).await;
     assert_eq!(left, None);
     let status = handle.status().await.unwrap();
-    tokio::time::advance(Duration::from_secs(3600)).await;
+    tokio::time::advance(Duration::from_hours(1)).await;
     assert_eq!(quiet(&handle).await, status);
 }
 
@@ -484,7 +484,7 @@ async fn the_opening_decisions_run_on_the_think_clock_unless_it_is_switched_off(
     assert!(matches!(decision.kind, DecisionKind::Mulligan(_)));
     assert_eq!(left, None);
 
-    tokio::time::advance(Duration::from_secs(3600)).await;
+    tokio::time::advance(Duration::from_hours(1)).await;
     assert_eq!(quiet(&handle).await, status);
 }
 

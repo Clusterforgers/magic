@@ -308,7 +308,7 @@ pub(crate) fn router(state: AppState) -> Router {
         // A page of a listed origin reads the list's tag and how long to wait after a 429.
         .expose_headers([ETAG, RETRY_AFTER])
         .allow_credentials(true)
-        .max_age(Duration::from_secs(600));
+        .max_age(Duration::from_mins(10));
     Router::new()
         .route("/healthz", get(api::healthz))
         .route("/api/demo-decks", get(api::decks))

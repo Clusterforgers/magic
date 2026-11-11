@@ -16,7 +16,7 @@ use crate::progress::Progress;
 pub const DEFAULT_BASE: &str = "https://api.anthropic.com";
 
 /// The longest wait between two tries.
-const MAX_WAIT: Duration = Duration::from_secs(60);
+const MAX_WAIT: Duration = Duration::from_mins(1);
 
 /// Time beyond the client timeout after which a request is dropped by force, so that nothing a connection does can hang a run.
 const DEADLINE_GRACE: Duration = Duration::from_secs(5);
@@ -76,7 +76,7 @@ impl Default for HttpConfig {
             base_url: DEFAULT_BASE.to_owned(),
             attempts: 4,
             backoff: Duration::from_secs(2),
-            timeout: Duration::from_secs(300),
+            timeout: Duration::from_mins(5),
         }
     }
 }

@@ -20,14 +20,14 @@ use uuid::Uuid;
 /// Limits no test trips by accident; the throttle tests set their own.
 fn roomy_limits() -> AttemptLimits {
     AttemptLimits {
-        window: Duration::from_secs(600),
+        window: Duration::from_mins(10),
         login_per_ip: 10_000,
         login_per_username: 10_000,
         register_per_ip: 10_000,
         admin_creates_per_account: 10_000,
-        code_window: Duration::from_secs(600),
+        code_window: Duration::from_mins(10),
         code_misses_per_ip: 10_000,
-        lobby_window: Duration::from_secs(600),
+        lobby_window: Duration::from_mins(10),
         lobby_requests_per_ip: 10_000,
         precon_requests_per_ip: 10_000,
         favourite_writes_per_user: 10_000,

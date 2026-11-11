@@ -333,7 +333,7 @@ async fn a_lobby_older_than_the_retention_rule_is_retired_but_an_old_running_gam
     let (running, _, _) = started(&registry, 2, 7, 3).await;
     let fresh = registry.create(&requests(2)).await.unwrap().id;
     drop(registry);
-    let old = Retention::default().lobby_after + Duration::from_secs(60);
+    let old = Retention::default().lobby_after + Duration::from_mins(1);
     for game in [stale, running] {
         sqlx::query(
             "UPDATE games SET created_at = now() - make_interval(secs => $2) WHERE id = $1",

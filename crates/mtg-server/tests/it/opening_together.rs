@@ -13,7 +13,7 @@ use mtg_protocol::{ClientMessage, DecisionId, ServerMessage};
 use mtg_server::{Dwell, EventStore, GameConfig, GameHandle, Pace, spawn_game_with};
 use rstest::rstest;
 
-const THINK: Duration = Duration::from_secs(60);
+const THINK: Duration = Duration::from_mins(1);
 
 const PACE: Pace = Pace {
     auto_pass: true,

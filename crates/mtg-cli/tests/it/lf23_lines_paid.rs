@@ -363,7 +363,7 @@ async fn run(
             }
         }
     });
-    let result = tokio::time::timeout(Duration::from_secs(120), task)
+    let result = tokio::time::timeout(Duration::from_mins(2), task)
         .await
         .unwrap_or_else(|_| panic!("the run hangs"))
         .unwrap();
