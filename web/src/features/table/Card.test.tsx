@@ -331,7 +331,7 @@ describe('the preview', () => {
     await user.hover(must(container.querySelector<HTMLElement>(`button[data-object-id="${attacker}"]`)))
     expect(
       screen.getByTestId('card-preview').querySelector('[data-slot="preview-lights"]'),
-    ).toHaveTextContent('Lit up: 2, 6')
+    ).toHaveTextContent('2, 6')
     await user.unhover(must(container.querySelector<HTMLElement>(`button[data-object-id="${attacker}"]`)))
     await user.hover(firstCard(container))
     expect(screen.getByTestId('card-preview').querySelector('[data-slot="preview-lights"]')).toBeNull()
