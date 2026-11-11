@@ -96,7 +96,10 @@ fn table(seats: usize) -> Scenario {
             ],
         );
     for seat in 1..seats {
-        scenario = scenario.battlefield(seat, [ready(creature(&format!("Foe {seat}"), "Goblin", None))]);
+        scenario = scenario.battlefield(
+            seat,
+            [ready(creature(&format!("Foe {seat}"), "Goblin", None))],
+        );
     }
     scenario
 }
@@ -182,7 +185,9 @@ fn a_creature_type_changes_in_the_rules_and_on_the_type_line(
     change(&mut driver, "Evolution", on, &["Goblin", "Elf"])?;
     assert_eq!(size(&driver, "Gob"), gob);
     assert_eq!(size(&driver, "Elfie"), elfie);
-    let gob_types = characteristics(driver.state(), driver.id_of("Gob")?).unwrap().subtypes;
+    let gob_types = characteristics(driver.state(), driver.id_of("Gob")?)
+        .unwrap()
+        .subtypes;
     assert_eq!(gob_types.contains(&Subtype("Elf".into())), on == "Gob");
     // The other seats' Goblins follow the lord's text, not their own.
     for seat in 1..seats {
@@ -199,9 +204,15 @@ fn a_change_until_end_of_turn_ends_with_the_turn(
 ) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(table(seats))?;
     change(&mut driver, "Spray", "Knight", &["Black", "White"])?;
-    assert_eq!(keywords(&driver, "Knight"), r#"[{"Protection":[{"Color":"White"}]}]"#);
+    assert_eq!(
+        keywords(&driver, "Knight"),
+        r#"[{"Protection":[{"Color":"White"}]}]"#
+    );
     driver.idle_until(2, Step::Upkeep)?;
-    assert_eq!(keywords(&driver, "Knight"), r#"[{"Protection":[{"Color":"Black"}]}]"#);
+    assert_eq!(
+        keywords(&driver, "Knight"),
+        r#"[{"Protection":[{"Color":"Black"}]}]"#
+    );
     replays(&driver);
     Ok(())
 }

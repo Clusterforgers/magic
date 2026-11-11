@@ -66,6 +66,11 @@ impl Commanders {
         }
     }
 
+    /// The commanders of a restarted game (CR 727.3): the same cards with no casts, damage or choices counted.
+    pub(crate) fn restarted(&self) -> Commanders {
+        Commanders::of(self.names.clone())
+    }
+
     /// Whether the game has a commander.
     pub(crate) fn any(&self) -> bool {
         !self.ids.is_empty()

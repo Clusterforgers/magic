@@ -16,8 +16,8 @@ use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
 use crate::effects::{Borrowed, ContinuousEffect, Modification, Selector};
 use crate::events::Event;
 use crate::object::{Chosen, GameObject, ObjectRef};
-use crate::text_change::TextWord;
 use crate::resolve::{Cx, ResolveError, Run, Scope};
+use crate::text_change::TextWord;
 use crate::zones::Zone;
 
 /// The colours a player may choose, in the order of the five-colour wheel.
@@ -175,7 +175,11 @@ fn spells_taken(
     };
     Ok(on_stack
         .into_iter()
-        .filter(|id| state.object(*id).is_some_and(|object| object.controller() != player))
+        .filter(|id| {
+            state
+                .object(*id)
+                .is_some_and(|object| object.controller() != player)
+        })
         .map(|object| Event::SpellControlGained { object, player })
         .collect())
 }

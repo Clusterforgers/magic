@@ -32,7 +32,9 @@ pub(crate) fn shuffled(state: &GameState, offset: u64, mut cards: Vec<ObjectId>)
 /// Events that pick the first player, shuffle every library and open the mulligan phase.
 pub(crate) fn pregame(state: &GameState) -> Vec<Event> {
     let seats = state.players().len();
-    let first = PlayerId::from_index(GameRng::substream(state.seed, state.rng_index).index(seats));
+    let first = crate::restart::starting_player(state).unwrap_or_else(|| {
+        PlayerId::from_index(GameRng::substream(state.seed, state.rng_index).index(seats))
+    });
     let mut events = vec![Event::FirstPlayerChosen { player: first }];
     // A companion is revealed before the libraries are shuffled, the first player's first (CR 702.139a).
     events.extend(crate::companions::reveals(state, first));
@@ -383,15 +385,18 @@ pub(crate) fn next(state: &GameState) -> Progress {
                 .collect(),
         );
     }
-    Progress::Events(vec![
-        Event::MulliganPhaseEnded,
+    // The cards a restart kept in exile enter once the opening is over, before the first turn (CR 727).
+    let mut events = crate::restart::kept_enter(state);
+    events.insert(0, Event::MulliganPhaseEnded);
+    events.extend([
         Event::TurnBegan {
             number: 1,
             active: state.first_player(),
             extra: false,
         },
         Event::StepBegan { step: Step::Untap },
-    ])
+    ]);
+    Progress::Events(events)
 }
 
 /// Turns a keep-or-mulligan choice into an event.

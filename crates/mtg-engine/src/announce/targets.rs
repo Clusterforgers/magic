@@ -42,7 +42,10 @@ pub(super) fn specs(ctx: &Ctx<'_>, choices: &Choices) -> Vec<TargetSpec> {
     if let What::Spell(spell) = ctx.what
         && let Some(cleaved) = crate::keywords::cleave::cleaved(ctx.state, *spell, choices.way)
     {
-        return announced_specs(&cleaved, modes).into_iter().cloned().collect();
+        return announced_specs(&cleaved, modes)
+            .into_iter()
+            .cloned()
+            .collect();
     }
     ctx.ability.map_or_else(Vec::new, |ability| {
         announced_specs(ability, modes)

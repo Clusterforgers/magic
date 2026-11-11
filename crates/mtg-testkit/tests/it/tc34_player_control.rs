@@ -6,9 +6,9 @@ use mtg_engine::characteristics::controller_of;
 use mtg_engine::choose::CardsChoice;
 use mtg_engine::choose::YesNoChoice;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
+use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_engine::replay;
 use mtg_testkit::cards::{burn, free_creature, mountain};
 use mtg_testkit::control_cards::{mindslave, search_watcher, spell_thief, tutor};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
@@ -56,9 +56,12 @@ fn search(driver: &mut Driver, seat: usize) -> Result<usize, ScriptError> {
             let owned = driver.engine().decision_owned().unwrap().player.index();
             assert_eq!(owned, seat);
             for card in &options.from {
-                assert!(driver.state().is_shown_to(decision.player, *card) || {
-                    mtg_engine::sight::offered_to(driver.state(), decision.player).contains(card)
-                });
+                assert!(
+                    driver.state().is_shown_to(decision.player, *card) || {
+                        mtg_engine::sight::offered_to(driver.state(), decision.player)
+                            .contains(card)
+                    }
+                );
             }
             driver.answer(Answer::ChooseCards(CardsChoice(vec![options.from[0]])))?;
             settle(driver)?;
@@ -91,7 +94,11 @@ fn the_controller_answers_the_controlled_turn_and_no_other(
     }
     // Seat 0 casts seat 1's tutor and answers its search; the card goes to seat 1's hand.
     assert_eq!(search(&mut driver, 1)?, 0);
-    assert!(names(driver.state(), Zone::Hand(pid(1))).iter().any(|name| name.starts_with("Card 1.")));
+    assert!(
+        names(driver.state(), Zone::Hand(pid(1)))
+            .iter()
+            .any(|name| name.starts_with("Card 1."))
+    );
     // The next turn is not controlled.
     driver.idle_until(3, Step::Main1)?;
     assert_ne!(driver.state().turn().active(), pid(1));
@@ -137,7 +144,8 @@ fn a_rule_controls_opponents_while_they_search(
     assert_eq!(driver.decision()?.player, pid(searcher));
     assert!(
         names(driver.state(), Zone::Hand(pid(searcher)))
-            .iter().any(|name| name.starts_with(&format!("Card {searcher}.")))
+            .iter()
+            .any(|name| name.starts_with(&format!("Card {searcher}.")))
     );
     replays(&driver);
     Ok(())

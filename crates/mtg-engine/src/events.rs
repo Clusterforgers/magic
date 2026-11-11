@@ -162,6 +162,15 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         extra_turn: bool,
     },
+    /// The game restarted (CR 727): every card goes back to its owner's library (a commander to the command zone), tokens
+    /// and other objects cease to exist, the players start over and the opening runs again with `by` as the starting
+    /// player; `kept` stays in exile and enters the battlefield under `by`'s control once the opening is over.
+    GameRestarted {
+        /// The player whose effect restarted the game.
+        by: PlayerId,
+        /// The exiled cards left out of the new game.
+        kept: Vec<ObjectId>,
+    },
     /// Phases were added after the current one (CR 500.8): each is the step it begins with, in the order they begin,
     /// before any phase added earlier.
     PhasesAdded {
@@ -1186,6 +1195,7 @@ impl Event {
             | Event::RuleExpired { .. }
             | Event::ShieldUsed { .. }
             | Event::FirstPlayerChosen { .. }
+            | Event::GameRestarted { .. }
             | Event::MulliganPhaseBegan
             | Event::MulliganDeclared { .. }
             | Event::MulliganKept { .. }

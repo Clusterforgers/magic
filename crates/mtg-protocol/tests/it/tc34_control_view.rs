@@ -24,8 +24,10 @@ fn the_controller_sees_the_controlled_hand_for_that_turn(#[values(2, 3, 4)] seat
         .at(1, 0, Step::Main1)
         .hand(0, [mindslave("Mindslave", false)]);
     for n in 0..seats {
-        scenario = scenario
-            .library(n, (0..5).map(|k| free_creature(&format!("Deep {n}.{k}"), 1, 1)));
+        scenario = scenario.library(
+            n,
+            (0..5).map(|k| free_creature(&format!("Deep {n}.{k}"), 1, 1)),
+        );
     }
     for n in 1..seats {
         scenario = scenario.hand(n, [free_creature(&format!("Secret {n}"), 1, 1)]);

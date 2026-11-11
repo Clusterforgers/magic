@@ -1,8 +1,8 @@
 //! The wordings `tc34_control` reads: a player controlled during their next turn, a text change of the one target and
-//! a spell taken.
+//! a spell taken, and a restart of the game.
 
 use super::Writer;
-use crate::compile::read::tc34_control::{FROM, TO, spell_or_permanent};
+use crate::compile::read::tc34_control::{FROM, TO, kept_out, spell_or_permanent};
 use crate::effect::{Effect, NewTargets, ValueKind};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Pred, Ref, Targetable};
@@ -137,5 +137,16 @@ impl Writer<'_> {
             ),
             3,
         ))
+    }
+
+    /// "restart the game, leaving in exile all non-Aura permanent cards exiled with ~. Then put those cards onto the
+    /// battlefield under your control".
+    pub(super) fn tc34_restart(effect: &Effect) -> Option<String> {
+        let Effect::RestartGame { keep } = effect else {
+            return None;
+        };
+        (*keep == kept_out()).then(|| {
+            "restart the game, leaving in exile all non-Aura permanent cards exiled with ~. Then put those cards onto the battlefield under your control".to_owned()
+        })
     }
 }

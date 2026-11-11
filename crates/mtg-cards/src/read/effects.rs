@@ -456,6 +456,10 @@ fn game(ctx: &Ctx, effect: &Effect) -> Option<String> {
             &format!("{} extra", phrase::counted(ctx, count, "turn")),
         ),
         Effect::BecomeMonarch { who } => act(ctx, who, "become", "the monarch"),
+        Effect::RestartGame { keep } => format!(
+            "restart the game, leaving in exile each {}, then put those cards onto the battlefield under your control",
+            phrase::selector(ctx, keep)
+        ),
         Effect::ControlPlayer { who, extra_turn } => {
             let then = if *extra_turn {
                 ", then that player takes an extra turn"
@@ -708,6 +712,10 @@ mod tests {
 
     #[rstest]
     #[case::draw(r#"{"Draw":{}}"#, "draw a card")]
+    #[case::restart_game(
+        r#"{"RestartGame":{"keep":[{"ExiledWith":"This"}]}}"#,
+        "restart the game, leaving in exile each permanent exiled with this, then put those cards onto the battlefield under your control"
+    )]
     #[case::control_player(
         r#"{"ControlPlayer":{"who":"Opponents","extra_turn":true}}"#,
         "you control each opponent during that player's next turn, then that player takes an extra turn"

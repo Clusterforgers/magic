@@ -148,8 +148,16 @@ mod tests {
 
     #[rstest]
     #[case::mana_is_no_word(r#"{"Activated":{"cost":[{"Mana":"{B}"}, "Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Black"]}}}]}}"#, BLACK, GREEN)]
-    #[case::another_kind(r#"{"Static":{"affected":{"Each":[{"Color":"Black"}]},"mods":[{"AddKeyword":"Flying"}]}}"#, BLACK, land("Island"))]
-    #[case::the_same_word(r#"{"Static":{"affected":{"Each":[{"Color":"Black"}]},"mods":[{"AddKeyword":"Flying"}]}}"#, BLACK, BLACK)]
+    #[case::another_kind(
+        r#"{"Static":{"affected":{"Each":[{"Color":"Black"}]},"mods":[{"AddKeyword":"Flying"}]}}"#,
+        BLACK,
+        land("Island")
+    )]
+    #[case::the_same_word(
+        r#"{"Static":{"affected":{"Each":[{"Color":"Black"}]},"mods":[{"AddKeyword":"Flying"}]}}"#,
+        BLACK,
+        BLACK
+    )]
     #[case::no_instance(r#"{"Keyword":"Flying"}"#, BLACK, GREEN)]
     fn nothing_else_changes(#[case] before: &str, #[case] from: TextWord, #[case] to: TextWord) {
         let body = rules(before);
@@ -157,8 +165,18 @@ mod tests {
     }
 
     #[rstest]
-    #[case::landwalk(r#"{"Landwalk":[{"Subtype":"Swamp"}]}"#, land("Swamp"), land("Island"), r#"{"Landwalk":[{"Subtype":"Island"}]}"#)]
-    #[case::protection(r#"{"Protection":[{"Color":"Black"}]}"#, BLACK, GREEN, r#"{"Protection":[{"Color":"Green"}]}"#)]
+    #[case::landwalk(
+        r#"{"Landwalk":[{"Subtype":"Swamp"}]}"#,
+        land("Swamp"),
+        land("Island"),
+        r#"{"Landwalk":[{"Subtype":"Island"}]}"#
+    )]
+    #[case::protection(
+        r#"{"Protection":[{"Color":"Black"}]}"#,
+        BLACK,
+        GREEN,
+        r#"{"Protection":[{"Color":"Green"}]}"#
+    )]
     fn a_keyword_reads_the_new_word(
         #[case] before: &str,
         #[case] from: TextWord,

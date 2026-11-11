@@ -1,6 +1,7 @@
 //! A player controlled during their next turn (CR 722): "You control target player during that player's next turn.",
 //! "you gain control of target opponent during that player's next turn. After that turn, that player takes an extra
-//! turn."; and a text change (CR 612): "Change the text of target spell or permanent by replacing all instances of one
+//! turn."; a restart of the game (CR 727): "Restart the game, leaving in exile all non-Aura permanent cards exiled with
+//! ~. Then put those cards onto the battlefield under your control."; and a text change (CR 612): "Change the text of target spell or permanent by replacing all instances of one
 //! color word with another[ or one basic land type with another][ until end of turn]." with "The new creature type
 //! can't be Wall." after a creature type; and a spell taken: "Gain control of target spell. You may choose new targets
 //! for it." The writer's side is `render/tc34_control.rs`.
@@ -10,6 +11,7 @@ use super::tokens::Reader;
 use crate::effect::{Effect, NewTargets, ValueKind};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_core::card::{CardType, Subtype};
 
 /// "gain control of target spell. You may choose new targets for it." (Aethersnatch, Commandeer): the spell changes
 /// controller for good and its new controller may choose new targets.
@@ -147,4 +149,38 @@ pub(super) fn tc34_text_change(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             duration,
         },
     ])
+}
+
+/// The cards a restart leaves in exile: "non-Aura permanent cards exiled with ~".
+pub(super) fn kept_out() -> Selector {
+    Selector(vec![
+        Pred::In(ZoneKind::Exile),
+        Pred::ExiledWith(Ref::This),
+        Pred::Not(Box::new(Pred::Subtype(Subtype("Aura".to_owned())))),
+        Pred::AnyOf(
+            [
+                CardType::Artifact,
+                CardType::Battle,
+                CardType::Creature,
+                CardType::Enchantment,
+                CardType::Land,
+                CardType::Planeswalker,
+            ]
+            .into_iter()
+            .map(Pred::Type)
+            .collect(),
+        ),
+    ])
+}
+
+/// "restart the game, leaving in exile all non-Aura permanent cards exiled with ~. Then put those cards onto the
+/// battlefield under your control" (Karn Liberated).
+pub(super) fn tc34_restart(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("restart the game")?;
+    r.punct(',').then_some(())?;
+    r.need("leaving in exile all non-aura permanent cards exiled with")?;
+    r.source().then_some(())?;
+    r.punct('.').then_some(())?;
+    r.need("then put those cards onto the battlefield under your control")?;
+    Some(vec![Effect::RestartGame { keep: kept_out() }])
 }

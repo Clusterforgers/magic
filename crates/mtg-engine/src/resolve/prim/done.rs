@@ -72,6 +72,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Fight { .. }
         | Effect::BecomeMonarch { .. }
         | Effect::ControlPlayer { .. }
+        | Effect::RestartGame { .. }
         | Effect::RingTempts { .. }
         | Effect::CreateEmblem { .. }
         | Effect::BecomeDayNight { .. }

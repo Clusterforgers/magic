@@ -692,6 +692,11 @@ impl InvariantChecker {
     /// Starts from the initial state of `setup`.
     pub fn new(setup: &GameSetup) -> Result<Self, Violation> {
         let shadow = GameState::from_setup(setup).map_err(|e| Violation::Fold(e.to_string()))?;
+        Ok(Self::from_shadow(setup, shadow))
+    }
+
+    /// Starts from `shadow`, a state of the game `setup` began, with every expectation read from it.
+    fn from_shadow(setup: &GameSetup, shadow: GameState) -> Self {
         let expected_damage = shadow
             .objects()
             .filter_map(|o| Some((o.id(), o.permanent()?.damage())))
@@ -728,7 +733,7 @@ impl InvariantChecker {
             .objects()
             .filter_map(|o| Some((o.id(), o.permanent()?.attached_player()?)))
             .collect();
-        Ok(InvariantChecker {
+        InvariantChecker {
             setup: setup.clone(),
             expected_attached,
             expected_enchanted,
@@ -750,7 +755,7 @@ impl InvariantChecker {
             replacing: false,
             announcing: false,
             since_full: 0,
-        })
+        }
     }
 
     /// [`observe`](Self::observe) for a live engine, with the checks that depend on the decision it stands at.
@@ -886,6 +891,20 @@ impl InvariantChecker {
 
     #[allow(clippy::too_many_lines)]
     fn observe_event(&mut self, event: &Event) -> Result<(), Violation> {
+        // A restart starts the game over (CR 727): every expectation is read from the new game again.
+        if matches!(event, Event::GameRestarted { .. }) {
+            apply_event(&mut self.shadow, event)
+                .map_err(|e| Violation::Fold(format!("{event:?}: {e}")))?;
+            let fresh = Self::from_shadow(&self.setup, self.shadow.clone());
+            *self = InvariantChecker {
+                events_seen: self.events_seen,
+                full_every: self.full_every,
+                replacing: self.replacing,
+                announcing: self.announcing,
+                ..fresh
+            };
+            return Ok(());
+        }
         // An ability ceases to exist when its resolution ends, and the fold removes it, so look first.
         let ability_ends = matches!(event, Event::ResolutionEnded { object, .. }
             if self.shadow.object(*object).is_some_and(|o| o.kind() == ObjectKind::Ability));

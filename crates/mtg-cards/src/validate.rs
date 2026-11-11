@@ -3279,6 +3279,7 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
+            Effect::RestartGame { keep } => w.at("keep", |w| w.selector(keep)),
             Effect::Fight { what, with } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
@@ -4631,7 +4632,9 @@ impl Walker<'_> {
                 });
                 self.scope = saved;
             }
-            GameRule::NoLegendRule(who) | GameRule::ControlSearches(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::NoLegendRule(who) | GameRule::ControlSearches(who) => {
+                self.at(tag, |w| w.reference(who, Kind::Player))
+            }
             GameRule::NoLegendRuleFor(what) | GameRule::AbilitiesAsThoughHaste(what) => {
                 self.at(tag, |w| w.selector(what));
             }

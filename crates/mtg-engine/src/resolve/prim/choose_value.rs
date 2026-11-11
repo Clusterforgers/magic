@@ -75,10 +75,16 @@ fn choice(
         Optioned::Done(taken) => Ok(taken
             .first()
             .and_then(|(_, index)| options.get(*index))
-            .and_then(|option| value(kind, option, cx.scope.chosen_value(match kind {
-                ValueKind::LikeChosen(name) => name,
-                _ => "",
-            })))),
+            .and_then(|option| {
+                value(
+                    kind,
+                    option,
+                    cx.scope.chosen_value(match kind {
+                        ValueKind::LikeChosen(name) => name,
+                        _ => "",
+                    }),
+                )
+            })),
     })
 }
 
@@ -310,7 +316,9 @@ fn question(kind: &ValueKind) -> String {
         ),
         ValueKind::LandType => "Choose a land type.".to_owned(),
         ValueKind::BasicLandType => "Choose a basic land type.".to_owned(),
-        ValueKind::ColorOrBasicLandType => "Choose a color word or a basic land type to replace.".to_owned(),
+        ValueKind::ColorOrBasicLandType => {
+            "Choose a color word or a basic land type to replace.".to_owned()
+        }
         ValueKind::LikeChosen(_) => "Choose the word to write in its place.".to_owned(),
         ValueKind::CardName(_) => "Choose a card name.".to_owned(),
         ValueKind::Options(words) => format!("Choose {}.", words.join(" or ")),
@@ -331,10 +339,13 @@ fn value(kind: &ValueKind, option: &ChoiceOption, like: Option<&Chosen>) -> Opti
             }
             _ => None,
         },
-        (ValueKind::ColorOrBasicLandType, ChoiceOption::Color(color)) => Some(Chosen::Color(*color)),
-        (ValueKind::LandType | ValueKind::BasicLandType | ValueKind::ColorOrBasicLandType, ChoiceOption::Label(name)) => {
-            Some(Chosen::LandType(Subtype(name.clone())))
+        (ValueKind::ColorOrBasicLandType, ChoiceOption::Color(color)) => {
+            Some(Chosen::Color(*color))
         }
+        (
+            ValueKind::LandType | ValueKind::BasicLandType | ValueKind::ColorOrBasicLandType,
+            ChoiceOption::Label(name),
+        ) => Some(Chosen::LandType(Subtype(name.clone()))),
         (ValueKind::Color, ChoiceOption::Color(color)) => Some(Chosen::Color(*color)),
         (ValueKind::CreatureType | ValueKind::CreatureTypeExcept(_), ChoiceOption::Label(name)) => {
             Some(Chosen::CreatureType(Subtype(name.clone())))

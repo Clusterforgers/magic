@@ -193,13 +193,31 @@ fn a_plain_wheel_binds_nothing(#[case] text: &str, #[case] bind: Option<String>)
 }
 
 #[rstest]
-#[case::a_player("{T}: Target player exiles a card from their graveyard.", "Player")]
-#[case::an_opponent("{T}: Target opponent exiles a card from their graveyard.", "Opponent")]
+#[case::a_player(
+    "{T}: Target player exiles a card from their graveyard.",
+    "Player",
+    ZoneKind::Graveyard
+)]
+#[case::an_opponent(
+    "{T}: Target opponent exiles a card from their graveyard.",
+    "Opponent",
+    ZoneKind::Graveyard
+)]
 #[case::with_a_cost(
     "{2}, {T}: Target player exiles a card from their graveyard.",
-    "Player"
+    "Player",
+    ZoneKind::Graveyard
 )]
-fn a_player_exiles_a_card_of_their_own_graveyard(#[case] text: &str, #[case] target: &str) {
+#[case::from_their_hand(
+    "{T}: Target player exiles a card from their hand.",
+    "Player",
+    ZoneKind::Hand
+)]
+fn a_player_exiles_a_card_of_their_own_graveyard_or_hand(
+    #[case] text: &str,
+    #[case] target: &str,
+    #[case] zone: ZoneKind,
+) {
     let Ability::Activated {
         targets, effects, ..
     } = golden(text, ClauseKind::Activated, false)
@@ -217,7 +235,7 @@ fn a_player_exiles_a_card_of_their_own_graveyard(#[case] text: &str, #[case] tar
             Effect::Choose {
                 who: Ref::Target(0),
                 from: Ref::Each(Selector(vec![
-                    Pred::In(ZoneKind::Graveyard),
+                    Pred::In(zone),
                     Pred::OwnedBy(Ref::Target(0)),
                 ])),
                 count: Bounds::default(),
@@ -236,7 +254,7 @@ fn a_player_exiles_a_card_of_their_own_graveyard(#[case] text: &str, #[case] tar
 
 #[rstest]
 #[case::your_own("{T}: Exile a card from your graveyard.")]
-#[case::a_hand("{T}: Target player exiles a card from their hand.")]
+#[case::a_library("{T}: Target player exiles a card from their library.")]
 #[case::two_cards("{T}: Target player exiles two cards from their graveyard.")]
 #[case::any_graveyard("{T}: Target player exiles a card from a graveyard.")]
 #[case::your_graveyard("{T}: Target player exiles a card from your graveyard.")]

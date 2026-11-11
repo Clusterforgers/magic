@@ -1,4 +1,4 @@
-//! Goal: the wordings of a player controlled during their next turn (Mindslaver, Worst Fears, Emrakul, the Promised End), of opponents controlled while they search (Opposition Agent), of a spell taken (Aethersnatch, Commandeer) and of a text change (Sleight of Mind, Magical Hack, Mind Bend, Crystal Spray, Trait Doctoring, Artificial Evolution) read into the DSL, write back as the card's own text, and leave the near-misses to the table.
+//! Goal: the wordings of a player controlled during their next turn (Mindslaver, Worst Fears, Emrakul, the Promised End), of opponents controlled while they search (Opposition Agent), of a spell taken (Aethersnatch, Commandeer), of a restart of the game (Karn Liberated) and of a text change (Sleight of Mind, Magical Hack, Mind Bend, Crystal Spray, Trait Doctoring, Artificial Evolution) read into the DSL, write back as the card's own text, and leave the near-misses to the table.
 use super::*;
 
 const PLAYER: &str = r#""targets":[{"what":"Player"}]"#;
@@ -48,6 +48,19 @@ fn mindslaver_controls_a_player_and_emrakul_adds_the_extra_turn() {
         json.contains(r#""targets":[{"what":"Opponent"}]"#),
         "{json}"
     );
+}
+
+#[test]
+fn karn_restarts_the_game_keeping_what_it_exiled() {
+    let read = golden(
+        "Restart the game, leaving in exile all non-Aura permanent cards exiled with ~. Then put those cards onto the battlefield under your control.",
+        ClauseKind::Spell,
+        false,
+    );
+    let json = serde_json::to_string(&read).unwrap();
+    assert!(json.contains(r#"{"RestartGame":{"keep":["#), "{json}");
+    assert!(json.contains(r#"{"ExiledWith":"This"}"#), "{json}");
+    assert!(json.contains(r#""Aura""#), "{json}");
 }
 
 #[test]
@@ -127,6 +140,13 @@ fn a_spell_is_taken(#[case] text: &str) {
 )]
 #[case::some_instances(
     "Change the text of target permanent by replacing one instance of one color word with another."
+)]
+#[case::a_restart_keeping_nothing("Restart the game.")]
+#[case::a_restart_keeping_cards_not_exiled_with_it(
+    "Restart the game, leaving in exile all non-Aura permanent cards. Then put those cards onto the battlefield under your control."
+)]
+#[case::a_restart_keeping_them_in_exile(
+    "Restart the game, leaving in exile all non-Aura permanent cards exiled with ~."
 )]
 #[case::the_new_type_may_be_a_wall(
     "Change the text of target spell or permanent by replacing all instances of one creature type with another. The new creature type can be Wall."

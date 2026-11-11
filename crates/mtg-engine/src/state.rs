@@ -338,6 +338,8 @@ pub struct GameState {
     pub(crate) notes: Vec<(crate::object::ObjectRef, String)>,
     /// What each source remembers by slot (`Effect::Remember`); ends with the source.
     pub(crate) memory: crate::memory::Memory,
+    /// The restart under way (CR 727): who restarted the game and the cards that enter after the opening.
+    pub(crate) restart: Option<crate::restart::Restart>,
 }
 
 impl GameState {
@@ -878,6 +880,10 @@ impl Hash for GameState {
         // Likewise a game in which nothing was remembered.
         if !self.memory.is_empty() {
             self.memory.hash(state);
+        }
+        // Likewise a game that was never restarted.
+        if let Some(restart) = &self.restart {
+            restart.hash(state);
         }
         // Likewise a game that counted nothing this turn.
         if !self.tallies.players.is_empty() {

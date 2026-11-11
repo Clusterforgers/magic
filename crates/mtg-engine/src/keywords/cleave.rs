@@ -22,12 +22,18 @@ pub(super) struct Cleave;
 impl KeywordRules for Cleave {}
 
 /// The spell ability `id` reads when it is cast in `way`: the cleaved one for a cast for its cleave cost, else none.
-pub(crate) fn cleaved(state: &GameState, id: ObjectId, way: Option<CastWay>) -> Option<Arc<Ability>> {
+pub(crate) fn cleaved(
+    state: &GameState,
+    id: ObjectId,
+    way: Option<CastWay>,
+) -> Option<Arc<Ability>> {
     if way != Some(CastWay::Cleave) {
         return None;
     }
-    crate::ability_reader::printed_rules(state.object(id)?.card()).find_map(|rules| match &**rules {
+    crate::ability_reader::printed_rules(state.object(id)?.card()).find_map(
+        |rules| match &**rules {
             Ability::Keyword(Keyword::Cleave { spell, .. }) => Some(Arc::new((**spell).clone())),
             _ => None,
-        })
+        },
+    )
 }

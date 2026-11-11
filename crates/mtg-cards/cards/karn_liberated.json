@@ -1,0 +1,62 @@
+{
+  "oracle_id": "0ca233f4-1b7f-4807-ab6e-2b1f5439b3db",
+  "name": "Karn Liberated",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karn Liberated",
+      "oracle_fingerprint": "d7d6e0e43d79f37f5b298cf1323094f0",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 4 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "exiled_card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "exiled_card" } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 14 },
+            "effects": [
+              {
+                "RestartGame": {
+                  "keep": [
+                    { "In": "Exile" },
+                    { "ExiledWith": "This" },
+                    { "Not": { "Subtype": "Aura" } },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

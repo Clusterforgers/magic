@@ -3337,6 +3337,9 @@ impl Writer<'_> {
         if matches!(effect, Effect::ControlPlayer { .. }) {
             return self.tc34_control_player(effect);
         }
+        if matches!(effect, Effect::RestartGame { .. }) {
+            return Self::tc34_restart(effect);
+        }
         if let Effect::ExtraTurn { who, .. } = effect {
             let subject = self.player(who)?;
             return super::turns::effect_text(effect, Some(&subject));

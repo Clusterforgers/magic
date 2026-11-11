@@ -34,10 +34,10 @@ use crate::characteristics::{Characteristics, base};
 use crate::effects::{ContinuousEffect, Layer, Modification, Selector};
 use crate::events::Event;
 use crate::land_types;
-use crate::text_change::TextWord;
 use crate::object::{GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::resolve::{Scope, lower, zone_kind};
 use crate::state::GameState;
+use crate::text_change::TextWord;
 use crate::zones::Zone;
 
 mod reads;

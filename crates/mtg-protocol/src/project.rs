@@ -105,7 +105,8 @@ impl<'a> Sight<'a> {
     /// Whether the viewer reads the rules of the object: not those of a card in another seat's hand or library, even one
     /// a reveal showed them.
     pub(crate) fn reads_rules_of(&self, object: &GameObject) -> bool {
-        !matches!(object.zone(), Zone::Hand(_) | Zone::Library(_)) || self.state.sees_for(self.viewer, object.owner())
+        !matches!(object.zone(), Zone::Hand(_) | Zone::Library(_))
+            || self.state.sees_for(self.viewer, object.owner())
     }
 
     /// How the viewer sees the object: whole, as a face-down card that is there with no identity, or not at all.
