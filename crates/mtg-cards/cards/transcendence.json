@@ -1,7 +1,7 @@
 {
   "oracle_id": "f9279f8f-3d19-4f5b-b194-cb8c65313b7e",
   "name": "Transcendence",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Transcendence",
@@ -9,15 +9,19 @@
       "abilities": [
         { "Rule": { "rule": { "CantLoseGame": { "who": "You", "life_only": true } } } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 51, "end": 100 }
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": { "Compare": { "left": { "Life": "You" }, "op": "Ge", "right": 20 } }
+              }
+            },
+            "effects": [{ "LoseGame": {} }]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 101, "end": 213 }
+          "Triggered": {
+            "when": { "LifeLost": { "who": "You" } },
+            "effects": [{ "GainLife": { "amount": { "Times": { "by": 2, "of": "Triggering" } } } }]
           }
         }
       ]

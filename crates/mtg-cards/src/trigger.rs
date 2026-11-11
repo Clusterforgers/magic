@@ -540,6 +540,13 @@ pub enum TriggerPattern {
         /// Only a die that rolls its number of faces.
         #[serde(default, skip_serializing_if = "crate::effect::is_false")]
         highest: bool,
+        /// Only a die whose result is one of these, once for each such die ("whenever you roll a 1 or 2"); any when
+        /// empty. `Triggering` as an amount is then the result.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        results: Vec<u32>,
+        /// The results are worded as natural results ("whenever you roll a natural 20"); no effect modifies a roll.
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        natural: bool,
     },
     /// A player wins a coin flip ("whenever you win a coin flip", CR 705.2); `Triggering` is that player.
     CoinFlipWon {

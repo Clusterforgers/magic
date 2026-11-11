@@ -1,0 +1,27 @@
+{
+  "id": "c733e915-aead-4f82-92d0-37eabbfd0017",
+  "oracle_id": "018627e1-ba32-4452-b3d1-6c2a39759aff",
+  "name": "Complaints Clerk",
+  "lang": "en",
+  "layout": "normal",
+  "set": "unf",
+  "collector_number": "7",
+  "rarity": "uncommon",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Sloth Beast Employee",
+  "oracle_text": "When this creature enters, open an Attraction. (Put the top card of your Attraction deck onto the battlefield.)\nWhenever you roll a 1, create a 1/1 white Clown Robot artifact creature token.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Open an Attraction"
+  ]
+}

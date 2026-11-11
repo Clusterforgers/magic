@@ -712,13 +712,21 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     {
         Some(found)
     } else if verb == if third { "rolls" } else { "roll" } {
+        if let Some(found) = r.attempt(|r| super::r289_rolls::r289_rolled_result(r, by.clone())) {
+            return Some(found);
+        }
         let highest = if r.words("one or more dice") {
             false
         } else {
             r.need("a die's highest natural result")?;
             true
         };
-        Some(TriggerPattern::DiceRolled { who: by, highest })
+        Some(TriggerPattern::DiceRolled {
+            who: by,
+            highest,
+            results: Vec::new(),
+            natural: false,
+        })
     } else if verb == if third { "bolsters" } else { "bolster" } {
         Some(TriggerPattern::Bolstered { who: by })
     } else if verb == if third { "amasses" } else { "amass" } {
@@ -1663,7 +1671,20 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::CoinFlipWon { who } => {
             Some(format!("Whenever {} a coin flip", player_verb(who, "win")?))
         }
-        TriggerPattern::DiceRolled { who, highest } => c11e_rolled_text(who, *highest),
+        TriggerPattern::DiceRolled {
+            who,
+            highest,
+            results,
+            natural,
+        } => {
+            if results.is_empty() && !*natural {
+                c11e_rolled_text(who, *highest)
+            } else if *highest {
+                None
+            } else {
+                super::r289_rolls::r289_rolled_result_text(who, results, *natural)
+            }
+        }
         TriggerPattern::Amassed { .. }
         | TriggerPattern::Expend { .. }
         | TriggerPattern::W11cCrime { .. }

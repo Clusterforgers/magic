@@ -1,0 +1,27 @@
+{
+  "id": "76cf0b50-155f-4e65-9e48-88b378ad93a1",
+  "oracle_id": "53b17c51-a216-484f-80df-3904284df0ea",
+  "name": "Chandra's Firemaw",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m21",
+  "collector_number": "333",
+  "rarity": "rare",
+  "released_at": "2020-07-03",
+  "digital": false,
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Hellion",
+  "oracle_text": "Haste\nWhen this creature enters, you may search your library and/or graveyard for a card named Chandra, Flame's Catalyst, reveal it, and put it into your hand. If you search your library this way, shuffle.",
+  "power": "4",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste"
+  ]
+}

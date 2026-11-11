@@ -1,0 +1,25 @@
+{
+  "id": "b537c4e3-88d1-430d-b4c8-16e0716d1927",
+  "oracle_id": "9171248e-045e-4ed4-aa06-eea3ae3d8df0",
+  "name": "Rowan's Stalwarts",
+  "lang": "en",
+  "layout": "normal",
+  "set": "eld",
+  "collector_number": "307",
+  "rarity": "rare",
+  "released_at": "2019-10-04",
+  "digital": false,
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "When this creature enters, you may search your library and/or graveyard for a card named Rowan, Fearless Sparkmage, reveal it, and put it into your hand. If you search your library this way, shuffle.",
+  "power": "5",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

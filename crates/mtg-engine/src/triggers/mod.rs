@@ -27,6 +27,8 @@ mod detect_nth;
 mod detect_turn_nth;
 mod life_floor;
 mod queue;
+#[cfg(test)]
+mod r289_dice;
 mod reads_x;
 mod state;
 mod w11c_crime;

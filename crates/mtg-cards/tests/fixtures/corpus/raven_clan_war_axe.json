@@ -1,0 +1,27 @@
+{
+  "id": "01de51d1-bbea-407c-b19e-dfef7fce1510",
+  "oracle_id": "d306de95-a80e-4e85-b7d2-36c6ea769b15",
+  "name": "Raven Clan War-Axe",
+  "lang": "en",
+  "layout": "normal",
+  "set": "acr",
+  "collector_number": "297",
+  "rarity": "rare",
+  "released_at": "2024-07-05",
+  "digital": false,
+  "mana_cost": "{1}{R}{W}",
+  "cmc": 3.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "When this Equipment enters, you may search your library and/or graveyard for a card named Eivor, Battle-Ready, reveal it, and put it into your hand. If you search your library this way, shuffle.\nEquipped creature gets +2/+0 and has trample.\nEquip {2}",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Equip"
+  ]
+}

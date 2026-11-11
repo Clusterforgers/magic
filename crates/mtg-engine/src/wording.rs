@@ -625,12 +625,25 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} win{s} a coin flip"), false)
         }
-        TriggerPattern::DiceRolled { who: by, highest } => {
+        TriggerPattern::DiceRolled {
+            who: by,
+            highest,
+            results,
+            natural,
+        } => {
             let (name, s) = who(by);
-            let what = if *highest {
-                "a die's highest natural result"
+            let numbers = results
+                .iter()
+                .map(u32::to_string)
+                .collect::<Vec<_>>()
+                .join(" or ");
+            let natural = if *natural { "natural " } else { "" };
+            let what = if !results.is_empty() {
+                format!("a {natural}{numbers}")
+            } else if *highest {
+                "a die's highest natural result".to_owned()
             } else {
-                "one or more dice"
+                "one or more dice".to_owned()
             };
             (format!("{name} roll{s} {what}"), false)
         }

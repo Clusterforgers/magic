@@ -1,0 +1,27 @@
+{
+  "id": "d67e4c42-a44f-456b-87e7-21ca56dc4630",
+  "oracle_id": "b3f6e68e-9490-4719-8d2e-d1ec22a96132",
+  "name": "Teferi's Wavecaster",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m21",
+  "collector_number": "327",
+  "rarity": "rare",
+  "released_at": "2020-07-03",
+  "digital": false,
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Creature — Merfolk Wizard",
+  "oracle_text": "Flash\nWhen this creature enters, you may search your library and/or graveyard for a card named Teferi, Timeless Voyager, reveal it, and put it into your hand. If you search your library this way, shuffle.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flash"
+  ]
+}

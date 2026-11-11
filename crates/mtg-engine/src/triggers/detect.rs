@@ -248,6 +248,7 @@ enum Happened {
         player: PlayerId,
         first: bool,
         highest: bool,
+        result: u32,
     },
     /// A creature explored.
     Explored { object: ObjectId, player: PlayerId },
@@ -1240,6 +1241,7 @@ fn about_players_and_permanents(
             player: *player,
             first: c11e_first_die(look.earlier, *player),
             highest: result == sides,
+            result: *result,
         }),
         Event::Clashed {
             player, won: true, ..
@@ -1617,14 +1619,30 @@ fn matching_player_action(
             && (!*fully || *last))
             .then(|| counted(state, vec![Target::Player(*player)], 0)),
         (
-            TriggerPattern::DiceRolled { who, highest },
+            TriggerPattern::DiceRolled {
+                who,
+                highest,
+                results,
+                ..
+            },
             Happened::DiceRolled {
                 player,
                 first,
                 highest: rolled_highest,
+                result,
             },
-        ) => (by(who, player) && if *highest { *rolled_highest } else { *first })
-            .then(|| counted(state, vec![Target::Player(*player)], 0)),
+        ) => (by(who, player)
+            && if !results.is_empty() {
+                results.contains(result)
+            } else if *highest {
+                *rolled_highest
+            } else {
+                *first
+            })
+        .then(|| {
+            let amount = if results.is_empty() { 0 } else { *result };
+            counted(state, vec![Target::Player(*player)], amount)
+        }),
         // A visit ability triggers for the Attraction its controller's roll lit up (CR 702.159a).
         (TriggerPattern::Visit {}, Happened::RolledToVisit { player, result }) => {
             (crate::characteristics::controller_of(state, scope.source.id) == Some(*player)

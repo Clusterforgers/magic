@@ -326,6 +326,7 @@ Commandeer
 Commander's Insignia
 Commander's Plate
 Commence the Endgame
+Complaints Clerk
 Composer of Spring
 Conclave Sledge-Captain
 Conclave Tribunal
@@ -420,6 +421,7 @@ Deceit
 Decorum Dissertation
 Decree of Justice
 Decree of Pain
+Dee Kay, Finder of the Lost
 Deekah, Fractal Theorist
 Deep Analysis
 Deep Forest Hermit
@@ -534,6 +536,7 @@ Edge Rover
 Eel Umbra
 Eiganjo Dynastorian // Replenish
 Eiganjo Free-Riders
+Eivor, Battle-Ready
 Elder Deep-Fiend
 Elder Owyn Lyons
 Eldrazi Conscription

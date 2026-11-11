@@ -1,0 +1,23 @@
+{
+  "id": "a30b8c40-39ac-423f-b7da-845a16cd1b63",
+  "oracle_id": "71c5718f-580d-4993-8492-81b7a557d10c",
+  "name": "Gideon's Resolve",
+  "lang": "en",
+  "layout": "normal",
+  "set": "akh",
+  "collector_number": "272",
+  "rarity": "rare",
+  "released_at": "2017-04-28",
+  "digital": false,
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "When this enchantment enters, you may search your library and/or graveyard for a card named Gideon, Martial Paragon, reveal it, and put it into your hand. If you search your library this way, shuffle.\nCreatures you control get +1/+1.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

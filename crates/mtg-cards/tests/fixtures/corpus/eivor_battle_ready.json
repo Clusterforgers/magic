@@ -1,0 +1,30 @@
+{
+  "id": "4242961d-87e8-4dd2-bdea-5d765a5cf136",
+  "oracle_id": "1b4a07bd-5345-4520-bd05-b5173e08135c",
+  "name": "Eivor, Battle-Ready",
+  "lang": "en",
+  "layout": "normal",
+  "set": "acr",
+  "collector_number": "274",
+  "rarity": "mythic",
+  "released_at": "2024-07-05",
+  "digital": false,
+  "mana_cost": "{3}{R}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Assassin Warrior",
+  "oracle_text": "Vigilance (Attacking doesn't cause this creature to tap.)\nHaste (This creature can attack as soon as it comes under your control.)\nWhenever Eivor attacks, it deals damage equal to the number of Equipment you control to each opponent.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Haste"
+  ]
+}
