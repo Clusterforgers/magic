@@ -169,7 +169,7 @@ mod tests {
             assert_eq!(object.card().power, Some(2));
         }
         // A face-down permanent is passed over the next time.
-        assert!(turned_down(&game, json).is_empty());
+        assert_eq!(turned_down(&game, json), [] as [crate::events::Event; 0]);
     }
 
     #[rstest]

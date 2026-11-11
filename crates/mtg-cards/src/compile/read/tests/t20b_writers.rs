@@ -148,7 +148,7 @@ fn a_replacement_the_writers_cannot_say_is_not_written(#[case] json: &str) {
 )]
 fn a_condition_on_a_replacement_is_said_with_its_event(#[case] json: &str) {
     let texts = written_variants(&ability(json));
-    assert!(!texts.is_empty());
+    assert_ne!(texts, [] as [std::string::String; 0]);
     assert!(
         texts
             .iter()

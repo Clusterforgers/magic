@@ -223,6 +223,7 @@ fn borrowed(scope: &Scope<'_>, from: &mtg_cards::refs::Ref) -> Result<Vec<Borrow
 /// What the engine applies for a modification of the card: its amounts worked out and the player it names found in
 /// `scope`. An effect of a spell or ability does this as it begins and a static ability whenever the state changes, so
 /// both run the same modification.
+#[allow(clippy::too_many_lines)] // one arm for each kind of modification
 pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
     let amount = |amount: &Amount| -> Result<i32, ResolveError> {
         i32::try_from(scope.amount(amount)?).map_err(|_| {
