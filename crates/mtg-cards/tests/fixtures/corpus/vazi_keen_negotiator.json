@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "551a6ff5-0f6e-4925-98c7-4d426358e959",
+  "oracle_id": "7446c013-63b0-402b-b8b9-dd25ccc553df",
+  "multiverse_ids": [
+    559571
+  ],
+  "tcgplayer_id": 269116,
+  "cardmarket_id": 652140,
+  "name": "Vazi, Keen Negotiator",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/551a6ff5-0f6e-4925-98c7-4d426358e959",
+  "scryfall_uri": "https://scryfall.com/card/ncc/92/vazi-keen-negotiator?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:15:40Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/5/551a6ff5-0f6e-4925-98c7-4d426358e959.jpg?1783923340",
+    "normal": "https://cards.scryfall.io/normal/front/5/5/551a6ff5-0f6e-4925-98c7-4d426358e959.jpg?1783923340",
+    "large": "https://cards.scryfall.io/large/front/5/5/551a6ff5-0f6e-4925-98c7-4d426358e959.jpg?1783923340",
+    "png": "https://cards.scryfall.io/png/front/5/5/551a6ff5-0f6e-4925-98c7-4d426358e959.png?1783923340",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/5/551a6ff5-0f6e-4925-98c7-4d426358e959.jpg?1783923340",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/5/551a6ff5-0f6e-4925-98c7-4d426358e959.jpg?1783923340",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/5/551a6ff5-0f6e-4925-98c7-4d426358e959.webp?1783923340",
+    "grid": "https://cards.scryfall.io/grid/front/5/5/551a6ff5-0f6e-4925-98c7-4d426358e959.webp?1783923340",
+    "display": "https://cards.scryfall.io/display/front/5/5/551a6ff5-0f6e-4925-98c7-4d426358e959.webp?1783923340",
+    "art": "https://cards.scryfall.io/art/front/5/5/551a6ff5-0f6e-4925-98c7-4d426358e959.webp?1783923340",
+    "crop": "https://cards.scryfall.io/crop/front/5/5/551a6ff5-0f6e-4925-98c7-4d426358e959.webp?1783923340",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/5/551a6ff5-0f6e-4925-98c7-4d426358e959.jpg?1783923340"
+  },
+  "mana_cost": "{2}{B}{R}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Advisor",
+  "oracle_text": "Haste\n{T}: Target opponent creates X Treasure tokens, where X is the number of Treasure tokens you created this turn.\nWhenever an opponent casts a spell or activates an ability, if mana from a Treasure was spent to cast it or activate it, put a +1/+1 counter on target creature, then draw a card.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Treasure",
+    "Haste"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "93116d98-2dad-4b80-a3af-9e36e34da6d4",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/93116d98-2dad-4b80-a3af-9e36e34da6d4"
+    },
+    {
+      "object": "related_card",
+      "id": "fa1f1295-0b9c-45ac-beec-0850b970cd33",
+      "component": "combo_piece",
+      "name": "Vazi, Keen Negotiator",
+      "type_line": "Legendary Creature — Human Advisor",
+      "uri": "https://api.scryfall.com/cards/fa1f1295-0b9c-45ac-beec-0850b970cd33"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c51de34b-d4d6-4179-a432-573744ded119",
+  "set": "ncc",
+  "set_name": "New Capenna Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c51de34b-d4d6-4179-a432-573744ded119",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ancc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ncc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/551a6ff5-0f6e-4925-98c7-4d426358e959/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7446c013-63b0-402b-b8b9-dd25ccc553df&unique=prints",
+  "collector_number": "92",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "riveteers",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "José Parodi",
+  "artist_ids": [
+    "4aac5bf3-5a92-40f6-a0c3-6edc7373cc71"
+  ],
+  "illustration_id": "17ae675f-cc44-42c7-a825-3056ff57b866",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 14943,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": "0.41",
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": "0.25",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=559571&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVazi%252C%2BKeen%2BNegotiator",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVazi%252C%2BKeen%2BNegotiator",
+    "edhrec": "https://edhrec.com/route/?cc=Vazi%2C+Keen+Negotiator"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F269116%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=652140&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Vazi%2C+Keen+Negotiator&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

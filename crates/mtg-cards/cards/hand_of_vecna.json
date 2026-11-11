@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3b7f0dd3-5b4c-4ac0-a43a-ddc62a44663e",
+  "name": "Hand of Vecna",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hand of Vecna",
+      "oracle_fingerprint": "64e9aa6ea3097e29e8d3a9f02206000d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 171 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 172, "end": 216 }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0004ebd0-dfd6-4276-b4a6-de0003e94237",
+  "name": "Static Orb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Static Orb",
+      "oracle_fingerprint": "66f9b02b72e4d7d497be346d0a2ae83d",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "UntapLimit": { "who": "EachPlayer", "what": [], "count": 2 } },
+            "condition": { "Matches": { "subject": "This", "selector": ["Untapped"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8aa97d25-cd51-4ceb-b7eb-af64f0914a8c",
+  "name": "Smoke",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smoke",
+      "oracle_fingerprint": "7986827c8dfab44cafe1bc3731c52078",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "UntapLimit": { "who": "EachPlayer", "what": [{ "Type": "Creature" }], "count": 1 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

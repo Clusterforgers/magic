@@ -1,0 +1,26 @@
+{
+  "oracle_id": "3c307122-bc18-41f1-87d5-ae6b3ca9b8b9",
+  "name": "Timeline Culler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Timeline Culler",
+      "oracle_fingerprint": "1fe496226e49478d4a61a2178b3afc08",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 6, "end": 72 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 73, "end": 285 }
+          }
+        }
+      ]
+    }
+  ]
+}

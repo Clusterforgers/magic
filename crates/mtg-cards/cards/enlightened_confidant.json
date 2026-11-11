@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a139eb7f-3853-490c-a839-35d0e5aed7b5",
+  "name": "Enlightened Confidant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Enlightened Confidant",
+      "oracle_fingerprint": "4fa94c5561ac8e829cbe273eda76f022",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 9, "end": 240 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -338,6 +338,7 @@ const RUNS: &[&str] = &[
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",
+    "Rule.Duration.WhileYouControlSource",
     "Duration.WhileSourceTapped",
     "Duration.WhileHasCounter",
     "Duration.UntilPaid",
@@ -397,6 +398,7 @@ const RUNS: &[&str] = &[
     "Rule.NoLegendRule",
     "Rule.NoLegendRuleFor",
     "Rule.UntapDuring",
+    "Rule.UntapLimit",
     "Rule.SkipDrawStep",
     "Rule.LookAtTopAnyTime",
     "Rule.LookAtExiled",
@@ -1001,7 +1003,7 @@ mod tests {
     #[case::continuous_for_as_long_as_the_source_is_tapped("Duration.WhileSourceTapped", true)]
     #[case::a_rule_for_as_long_as_you_control_the_source(
         "Rule.Duration.WhileYouControlSource",
-        false
+        true
     )]
     #[case::pumps("Mod.ModifyPT", true)]
     #[case::granted_keywords("Mod.AddKeyword", true)]
@@ -1061,6 +1063,7 @@ mod tests {
     #[case::no_legend_rule("Rule.NoLegendRule", true)]
     #[case::no_legend_rule_for_some("Rule.NoLegendRuleFor", true)]
     #[case::untapping_in_other_steps("Rule.UntapDuring", true)]
+    #[case::untapping_at_most_some_permanents("Rule.UntapLimit", true)]
     #[case::no_draw_step("Rule.SkipDrawStep", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]

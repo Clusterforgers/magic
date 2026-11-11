@@ -1,0 +1,30 @@
+{
+  "oracle_id": "50ace222-57f1-477f-9e06-155d7b403512",
+  "name": "Realm-Scorcher Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Realm-Scorcher Hellkite",
+      "oracle_fingerprint": "56a0f5f5ea24fa536e548ad49c5feeba",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "AdditionalCostPaid",
+            "effects": [{ "AddMana": { "mana": { "AnyCombination": { "count": 4 } } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

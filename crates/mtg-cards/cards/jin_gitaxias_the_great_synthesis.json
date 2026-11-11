@@ -1,0 +1,83 @@
+{
+  "oracle_id": "b70c3adb-64ba-49ea-bcf6-6406a58cb453",
+  "name": "Jin-Gitaxias // The Great Synthesis",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jin-Gitaxias",
+      "oracle_fingerprint": "c9a03de3489a6cb5e65db7c1c0a9f30d",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Not": { "Type": "Creature" } },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "timing": "Sorcery",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Great Synthesis",
+      "oracle_fingerprint": "28626fcddd21779b5b9fb0cf324aea72",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 68, "end": 193 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Subtype": "Phyrexian" } }]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 258, "end": 413 }
+          }
+        }
+      ]
+    }
+  ]
+}

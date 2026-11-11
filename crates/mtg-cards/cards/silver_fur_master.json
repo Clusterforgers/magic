@@ -1,0 +1,33 @@
+{
+  "oracle_id": "60ec735d-c9be-4776-beb7-f603ae22edbf",
+  "name": "Silver-Fur Master",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Silver-Fur Master",
+      "oracle_fingerprint": "b29cebe2c076b24127905874c143efb9",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{U}{B}" } },
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 148, "end": 206 }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Ninja" }, { "Subtype": "Rogue" }] },
+                { "Type": "Creature" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

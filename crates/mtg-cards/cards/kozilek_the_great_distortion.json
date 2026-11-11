@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4c1c1537-e519-4e2f-9bc2-d34b289d4487",
+  "name": "Kozilek, the Great Distortion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kozilek, the Great Distortion",
+      "oracle_fingerprint": "017834441c061ec69898905cf19625f1",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 105 }
+          }
+        },
+        { "Keyword": "Menace" },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 113, "end": 186 }
+          }
+        }
+      ]
+    }
+  ]
+}

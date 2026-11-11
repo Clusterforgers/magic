@@ -3884,7 +3884,7 @@ impl Walker<'_> {
                     w.problem(E15G_PAID_ONLY);
                 }
                 w.rule(rule);
-                // Only the layers end an effect when the source changes controller.
+                // A rule ends when the layers give its source to another player (`RuleEffect::is_active`).
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Rule", "Duration.WhileYouControlSource");
                 }
@@ -4705,7 +4705,8 @@ impl Walker<'_> {
             }
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
-            | GameRule::UntapDuring { .. } => self.rule_option(&tag, rule),
+            | GameRule::UntapDuring { .. }
+            | GameRule::UntapLimit { .. } => self.rule_option(&tag, rule),
         }
     }
 
@@ -4771,6 +4772,10 @@ impl Walker<'_> {
             GameRule::UntapDuring { what, whose } => self.at(tag, |w| {
                 w.at("what", |w| w.selector(what));
                 w.at("whose", |w| w.reference(whose, Kind::Player));
+            }),
+            GameRule::UntapLimit { who, what, .. } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.selector(what));
             }),
             _ => {}
         }

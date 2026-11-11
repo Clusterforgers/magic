@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ecd3ddd7-2fa8-466b-9319-ae51c744a05f",
+  "name": "Magnanimous Magistrate",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Magnanimous Magistrate",
+      "oracle_fingerprint": "3150c2e33c59b334648efbb90922ac8c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "reprieve" }, "count": 5 } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 56, "end": 281 }
+          }
+        }
+      ]
+    }
+  ]
+}

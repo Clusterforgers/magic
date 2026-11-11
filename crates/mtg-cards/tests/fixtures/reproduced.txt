@@ -154,6 +154,7 @@ Bladed Bracers
 Blasphemous Act
 Blast Zone
 Blastoderm
+Blatant Thievery
 Blaze
 Blazing Archon
 Blazing Shoal
@@ -255,6 +256,7 @@ Chandra, Awakened Inferno
 Changeling Outcast
 Changing Loyalty
 Charmbreaker Devils
+Charred Graverobber
 Chartooth Cougar
 Chemister's Insight
 Chief Engineer
@@ -358,6 +360,7 @@ Cyclonic Rift
 Cytoshape
 Dalek Squadron
 Dampen Thought
+Damping Field
 Danny Pink
 Darkblast
 Darksteel Juggernaut
@@ -438,6 +441,7 @@ Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
 Dreadship Reef
+Dream Chisel
 Dream's Grip
 Dreamtail Heron
 Dreg Mangler
@@ -621,6 +625,7 @@ Gemhide Sliver
 Gemrazer
 General's Enforcer
 Generous Ent
+Genesis Hydra
 Genesis Storm
 Genesis Wave
 Germination Practicum
@@ -629,6 +634,7 @@ Getaway Car
 Ghalta, Primal Hunger
 Ghave, Guru of Spores
 Ghired, Conclave Exile
+Ghitu Fire
 Ghost Quarter
 Ghostblade Eidolon
 Ghostly Dancers
@@ -775,6 +781,7 @@ Illicit Shipment
 Illusion Spinners
 Illustrious Wanderglyph
 Ilysian Caryatid
+Imi Statue
 Immoral Bargain
 Imperial Hellkite
 Imperious Oligarch
@@ -798,6 +805,7 @@ Into the Roil
 Into the Time Vortex
 Intrepid Rabbit
 Invading Manticore
+Invasion of Segovia // Caetus, Sea Tyrant of Segovia
 Invisible Force Field
 Invisible Stalker
 Iridescent Vinelasher
@@ -903,6 +911,7 @@ Light 'Em Up
 Light Up the Stage
 Lightform
 Lightning Bolt
+Lightning, Security Sergeant
 Lignify
 Liliana's Standard Bearer
 Lion Sash
@@ -1036,6 +1045,7 @@ Mother of Runes
 Muddle the Mixture
 Mukotai Ambusher
 Mulldrifter
+Mungha Wurm
 Murderous Cut
 Murmuring Bosk
 Muscle Sliver
@@ -1434,6 +1444,7 @@ Slip Through Space
 Slitherhead
 Sluiceway Scorpion
 Smell Fear
+Smoke
 Smuggler's Buggy
 Smuggler's Copter
 Snake Umbra
@@ -1499,6 +1510,7 @@ Sticky Fingers
 Stinkdrinker Bandit
 Stitch in Time
 Stitched Drake
+Stoic Angel
 Stoke the Flames
 Stolen Identity
 Stonecoil Serpent
@@ -1599,6 +1611,7 @@ Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
 The Celestus
+The Dalek Emperor
 The Gaffer
 The Locust God
 The Modern Age // Vector Glider
@@ -1733,6 +1746,7 @@ Vesuva
 Veteran's Powerblade
 Viashino Weaponsmith
 Vibranium Strike Gauntlets
+Vigean Hydropon
 Village Pillagers
 Village Rites
 Viridian Corrupter
@@ -1805,6 +1819,7 @@ Winds of Rath
 Winged Boots
 Winged Words
 Wings of the Guard
+Winter Moon
 Wipe Away
 Wirewood Channeler
 Withering Boon

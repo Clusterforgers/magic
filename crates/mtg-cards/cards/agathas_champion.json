@@ -1,0 +1,28 @@
+{
+  "oracle_id": "debdfab7-454f-4fec-9ee8-aa5b570ea7fb",
+  "name": "Agatha's Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Agatha's Champion",
+      "oracle_fingerprint": "d7d96bade3ffe32bf9bd09f3cddbe082",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "AdditionalCostPaid",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

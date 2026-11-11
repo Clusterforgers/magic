@@ -1,0 +1,26 @@
+{
+  "oracle_id": "57098671-016e-4adb-ba7d-ab2dd2bc34e3",
+  "name": "Valleymaker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Valleymaker",
+      "oracle_fingerprint": "ba098e847f494646c05e6f5720a16739",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Subtype": "Mountain" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 76, "end": 145 }
+          }
+        }
+      ]
+    }
+  ]
+}

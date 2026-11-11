@@ -401,6 +401,7 @@ mod reveal;
 mod reveal_cast_writers;
 mod reveal_until;
 mod riot;
+mod rmt4_writers;
 mod sample_af2_writers;
 mod sample_af_writers;
 mod sample_ba_writers;

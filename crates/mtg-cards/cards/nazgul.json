@@ -1,0 +1,32 @@
+{
+  "oracle_id": "48a62778-7c11-486f-a0e1-020c283a7ef9",
+  "name": "Nazgûl",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nazgûl",
+      "oracle_fingerprint": "f403d9f27b5ac98d02c292e9eaae924b",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 11, "end": 58 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 59, "end": 136 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 137, "end": 183 }
+          }
+        }
+      ]
+    }
+  ]
+}

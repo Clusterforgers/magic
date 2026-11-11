@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2380fd04-6d19-4f5a-8a9e-c17d9ae09fb6",
+  "name": "Case of the Locked Hothouse",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Case of the Locked Hothouse",
+      "oracle_fingerprint": "8e47f2ed84e2b31c01e1934da81d9800",
+      "abilities": [
+        { "Rule": { "rule": { "AdditionalLandPlays": {} } } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 55, "end": 154 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 155, "end": 312 }
+          }
+        }
+      ]
+    }
+  ]
+}
