@@ -3332,6 +3332,7 @@ impl Writer<'_> {
             .or_else(|| super::g12f_taxes::g12f_x_tax_text(effect))
             .or_else(|| super::w14a_limits::w14a_block_limit_each_text(effect))
             .or_else(|| super::g10d_spell_costs::g10d_spell_cost_text(effect))
+            .or_else(|| super::ep26_mana::ep26_next_spell_text(effect))
             .or_else(|| super::w14a_wanderer::w14a_keep_one_text(effect))
             .or_else(|| super::c7_untap::c7_untap_dies_text(effect))
             .or_else(|| super::turns::effect_text(effect, None))

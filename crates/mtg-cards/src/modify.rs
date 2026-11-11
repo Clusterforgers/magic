@@ -473,6 +473,9 @@ pub enum SpellBenefit {
     Free,
     /// It has the keyword while it is cast: convoke, improvise or affinity, which help pay for it.
     Keyword(Keyword),
+    /// It can't be countered (CR 101.2) for as long as it is on the stack: "the next spell you cast this turn can't be
+    /// countered".
+    Uncounterable,
 }
 
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and

@@ -422,7 +422,7 @@ fn spell_cast(
         )));
     }
     expect_in(state, object, from)?;
-    crate::rules::spend_next_spells(state, player, object);
+    let uncounterable = crate::rules::spend_next_spells(state, player, object);
     if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, choices.way) {
         state.tally_object(source, None, Tally::C11bOnceUsed);
     }
@@ -433,6 +433,9 @@ fn spell_cast(
         !crate::priority::sorcery_timing(state, player) || state.resolving().is_some();
     move_object(state, object, Zone::Stack, Placement::Top)?;
     set_controller(state, object, player);
+    if uncounterable {
+        crate::rules::uncounterable_from_now(state, player, object);
+    }
     let instant_or_sorcery = state.objects.get(&object).is_some_and(|spell| {
         spell.card().is_type(CardType::Instant) || spell.card().is_type(CardType::Sorcery)
     });

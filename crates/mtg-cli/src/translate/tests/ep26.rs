@@ -1,4 +1,4 @@
-//! Goal: the pieces of ep26 translate as the card prints them: a target chosen at random (`TargetsAtRandom$ True`) on any verb that reads targets, over players, opponents and objects; a random number of random targets stays a gap. Exiling permanents you control as a cost (`Exile<N/Type>`); a count "or more" or a total stays a gap. Mana of the colours of the imprinted card or of the cards exiled with the source; an imprint without its exile or another memory stays a gap. A mana ability activated only as an instant (`InstantSpeed$ True`); another word or both speeds stay gaps.
+//! Goal: the pieces of ep26 translate as the card prints them: a target chosen at random (`TargetsAtRandom$ True`) on any verb that reads targets, over players, opponents and objects; a random number of random targets stays a gap. Exiling permanents you control as a cost (`Exile<N/Type>`); a count "or more" or a total stays a gap. Mana of the colours of the imprinted card or of the cards exiled with the source; an imprint without its exile or another memory stays a gap. A mana ability activated only as an instant (`InstantSpeed$ True`); another word or both speeds stay gaps. The next spell that can't be countered this turn (a static `SpellCast` delayed trigger with a `CantHappen` counter replacement); another turn, memory, spell ability or event stays a gap.
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -146,4 +146,54 @@ fn ep26_a_mana_ability_activated_only_as_an_instant(#[case] speed: &str, #[case]
 #[case::both(" | InstantSpeed$ True | SorcerySpeed$ True")]
 fn ep26_other_speeds_stay_gaps(#[case] speed: &str) {
     assert!(!gaps(&diamond(speed)).is_empty(), "{speed}");
+}
+
+const ANTI_MAGIC: &str = "Event$ Counter | ValidCard$ Card.IsRemembered | ValidSA$ Spell | Layer$ CantHappen | Description$ x";
+
+fn insist(valid: &str, trigger: &str, effect: &str, replacement: &str) -> String {
+    format!(
+        "Name:T\nTypes:Sorcery\nA:SP$ DelayedTrigger | Mode$ SpellCast{valid} | ValidActivatingPlayer$ You | Execute$ DBEffect{trigger} | Static$ True | SpellDescription$ x\nSVar:DBEffect:DB$ Effect | ReplacementEffects$ AntiMagic | RememberObjects$ TriggeredCard{effect}\nSVar:AntiMagic:{replacement}\n"
+    )
+}
+
+fn spell_effects(script: &str) -> Value {
+    abilities(script)
+        .first()
+        .and_then(|found| found.pointer("/Spell/effects"))
+        .cloned()
+        .unwrap_or_default()
+}
+
+const STACK: &str = " | ForgetOnMoved$ Stack";
+const TURN: &str = " | ThisTurn$ True";
+
+#[rstest]
+#[case::any_spell("", json!({"benefit": "Uncounterable"}))]
+#[case::a_creature_spell(" | ValidCard$ Creature", json!({"benefit": "Uncounterable", "what": [{"Type": "Creature"}]}))]
+fn ep26_the_next_spell_cannot_be_countered(#[case] valid: &str, #[case] rule: Value) {
+    let script = insist(valid, TURN, STACK, ANTI_MAGIC);
+    assert_eq!(gaps(&script), Vec::<String>::new(), "{valid}");
+    assert_eq!(
+        spell_effects(&script),
+        json!([{"Rule": {"rule": {"NextSpell": rule}, "duration": "UntilEndOfTurn"}}])
+    );
+}
+
+#[rstest]
+#[case::any_turn(insist("", "", STACK, ANTI_MAGIC))]
+#[case::kept_after_the_stack(insist("", TURN, "", ANTI_MAGIC))]
+#[case::countered_by_abilities(insist(
+    "",
+    TURN,
+    STACK,
+    "Event$ Counter | ValidCard$ Card.IsRemembered | Layer$ CantHappen"
+))]
+#[case::another_event(insist(
+    "",
+    TURN,
+    STACK,
+    "Event$ Destroy | ValidCard$ Card.IsRemembered | ValidSA$ Spell | Layer$ CantHappen"
+))]
+fn ep26_other_next_spell_shields_stay_gaps(#[case] script: String) {
+    assert!(!gaps(&script).is_empty(), "{script}");
 }

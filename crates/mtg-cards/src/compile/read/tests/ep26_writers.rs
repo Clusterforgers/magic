@@ -1,4 +1,4 @@
-//! Goal: the writers of ep26 write the card's words and nothing near them: a target "chosen at random" ("deals 2 damage to any target chosen at random", "deals 2 damage to target opponent chosen at random") reads back only when the rules draw it, and a target the controller chooses does not read as one drawn at random. "Exile a creature you control" as a cost reads back and is read by the compiler; a graveyard, another type, another count or a sacrifice does not. Mana of any of the exiled card's colors (an imprint) and of the exiled cards' colors (every card exiled with it), and several targets "from graveyards"; another slot, zone or source does not read back. "Discard your hand, Sacrifice ~: ... Activate only as an instant." in either order of the cost; another timing, one card or another zone does not.
+//! Goal: the writers of ep26 write the card's words and nothing near them: a target "chosen at random" ("deals 2 damage to any target chosen at random", "deals 2 damage to target opponent chosen at random") reads back only when the rules draw it, and a target the controller chooses does not read as one drawn at random. "Exile a creature you control" as a cost reads back and is read by the compiler; a graveyard, another type, another count or a sacrifice does not. Mana of any of the exiled card's colors (an imprint) and of the exiled cards' colors (every card exiled with it), and several targets "from graveyards"; another slot, zone or source does not read back. "Discard your hand, Sacrifice ~: ... Activate only as an instant." in either order of the cost; another timing, one card or another zone does not. "The next (creature, instant or sorcery) spell you cast this turn can't be countered."; another kind, duration or benefit does not.
 use super::*;
 
 fn activated(target: &str, effect: &str) -> Ability {
@@ -160,6 +160,40 @@ const LED: &str =
 #[case::one_card(diamond(r#"["SacrificeSelf",{"Discard":{}}]"#, AS_INSTANT), LED, false)]
 #[case::the_graveyard(diamond(r#"["SacrificeSelf",{"Discard":{"count":{"Count":[{"In":"Graveyard"},{"OwnedBy":"You"}]}}}]"#, AS_INSTANT), LED, false)]
 fn ep26_discard_your_hand_as_an_instant_writes_as_printed(
+    #[case] ability: Ability,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let found = written_variants(&ability);
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
+fn next_spell(what: &str, benefit: &str, duration: &str) -> Ability {
+    ability(&format!(
+        r#"{{"Spell":{{"effects":[{{"Rule":{{"duration":"{duration}","rule":{{"NextSpell":{{"benefit":{benefit}{what}}}}}}}}}]}}}}"#
+    ))
+}
+
+const UNCOUNTERABLE: &str = r#""Uncounterable""#;
+const CREATURES: &str = r#","what":[{"Type":"Creature"}]"#;
+const SPELLS: &str = r#","what":[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}]"#;
+const INSIST: &str = "The next creature spell you cast this turn can't be countered.";
+const OVERMASTER: &str = "The next instant or sorcery spell you cast this turn can't be countered.";
+const VILLAGE: &str = "The next spell you cast this turn can't be countered.";
+
+#[rstest]
+#[case::insist(next_spell(CREATURES, UNCOUNTERABLE, "UntilEndOfTurn"), INSIST, true)]
+#[case::overmaster(next_spell(SPELLS, UNCOUNTERABLE, "UntilEndOfTurn"), OVERMASTER, true)]
+#[case::village(next_spell("", UNCOUNTERABLE, "UntilEndOfTurn"), VILLAGE, true)]
+#[case::insist_of_every_spell(next_spell("", UNCOUNTERABLE, "UntilEndOfTurn"), INSIST, false)]
+#[case::village_of_creatures(
+    next_spell(CREATURES, UNCOUNTERABLE, "UntilEndOfTurn"),
+    VILLAGE,
+    false
+)]
+#[case::village_forever(next_spell("", UNCOUNTERABLE, "Forever"), VILLAGE, false)]
+#[case::village_with_flash(next_spell("", r#""Flash""#, "UntilEndOfTurn"), VILLAGE, false)]
+fn ep26_a_next_spell_that_cannot_be_countered_writes_as_printed(
     #[case] ability: Ability,
     #[case] text: &str,
     #[case] reads: bool,

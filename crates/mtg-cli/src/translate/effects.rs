@@ -1273,6 +1273,9 @@ fn cost_of(ctx: &Ctx, text: &str) -> Tr<Value> {
 
 /// `DelayedTrigger` at a step ("at the beginning of the next end step, ..."): the part named by `Execute$` happens then.
 fn delayed(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    if super::ep26_next_spell::ep26_is_uncounterable_next(ctx, p) {
+        return super::ep26_next_spell::ep26_uncounterable_next(ctx, p);
+    }
     // "Its controller" is named before the trigger is set up: the spell it is about is gone when the trigger fires.
     let mut out = Vec::new();
     let outer = ctx.delayed_remembered.take();

@@ -244,6 +244,7 @@ mod ep24_unspent_mana;
 mod ep26_exile_costs;
 mod ep26_exiled_colors;
 mod ep26_instant_mana;
+mod ep26_next_uncounterable;
 mod ep26_random_targets;
 mod equip_to;
 mod equipment;

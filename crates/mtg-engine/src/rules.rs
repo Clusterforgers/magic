@@ -863,7 +863,9 @@ impl RulesInForce {
         let (free, flash) = match benefit {
             SpellBenefit::Free => (true, false),
             SpellBenefit::Flash => (false, true),
-            SpellBenefit::Cost { .. } | SpellBenefit::Keyword(_) => return,
+            SpellBenefit::Cost { .. } | SpellBenefit::Keyword(_) | SpellBenefit::Uncounterable => {
+                return;
+            }
         };
         if let Some(source) = source {
             self.casts.push(Cast {
@@ -1739,10 +1741,10 @@ pub(crate) fn fold_used(state: &mut GameState, id: EffectId, left: u32) -> Resul
 }
 
 /// Ends the `NextSpell` rules the cast of `spell` by `player` spends (the card is judged where it is cast from, as the
-/// announcement judged it).
-pub(crate) fn spend_next_spells(state: &mut GameState, player: PlayerId, spell: ObjectId) {
+/// announcement judged it), and says whether one of them keeps the spell from being countered.
+pub(crate) fn spend_next_spells(state: &mut GameState, player: PlayerId, spell: ObjectId) -> bool {
     let Some(target) = state.object(spell).map(GameObject::reference) else {
-        return;
+        return false;
     };
     let spent: Vec<EffectId> = state
         .rule_effects
@@ -1760,9 +1762,38 @@ pub(crate) fn spend_next_spells(state: &mut GameState, player: PlayerId, spell: 
             .then_some(effect.id)
         })
         .collect();
+    let uncounterable = state.rule_effects.iter().any(|effect| {
+        spent.contains(&effect.id)
+            && matches!(
+                effect.rule,
+                Rule::NextSpell {
+                    benefit: mtg_cards::modify::SpellBenefit::Uncounterable,
+                    ..
+                }
+            )
+    });
     state
         .rule_effects
         .retain(|effect| !spent.contains(&effect.id));
+    uncounterable
+}
+
+/// The spell `spell` on the stack can't be countered from now on, as a `NextSpell` rule its cast spent said: a rule of its
+/// own that names the spell, and so no other object once it leaves the stack.
+pub(crate) fn uncounterable_from_now(state: &mut GameState, player: PlayerId, spell: ObjectId) {
+    let Some(named) = state.object(spell).map(GameObject::reference) else {
+        return;
+    };
+    let effect = RuleEffect {
+        id: EffectId(state.next_effect),
+        rule: Rule::CantBeCountered(vec![named]),
+        duration: Duration::Forever,
+        source: Some(named),
+        controller: player,
+        turn: state.turn().number(),
+    };
+    state.next_effect += 1;
+    state.rule_effects.push(effect);
 }
 
 /// Folds `RuleExpired`: the change leaves the state.
