@@ -104,6 +104,21 @@ fn ep30_any_number_of_counters(#[case] bandar: Ability, #[case] reads: bool) {
     );
 }
 
+/// "Move any number of counters" reads as a move of every counter there that the controller may stop.
+#[test]
+fn ep30_any_number_of_counters_reads_as_a_stoppable_move() {
+    let read = clause(
+        "Move any number of counters from target creature onto ~.",
+        ClauseKind::Spell,
+        false,
+    );
+    let json = serde_json::to_string(&read).unwrap_or_default();
+    assert!(
+        json.contains(r#""count":{"AnyCounters":{"Target":0}},"up_to":true"#),
+        "{json}"
+    );
+}
+
 const GLARECASTER: &str = "{5}{W}: The next time damage would be dealt to ~ and/or you this turn, that damage is dealt to any target instead.";
 
 fn glarecaster(to: &str) -> Ability {
