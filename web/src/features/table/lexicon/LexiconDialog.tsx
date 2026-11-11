@@ -44,7 +44,7 @@ function LinkedText({ term, onOpen }: { term: Term; onOpen: (title: string) => v
  * by name or by what it does and filtered by kind. A term named in another's text opens it.
  */
 export function LexiconDialog() {
-  const { open, query, kind } = useStore(lexiconStore)
+  const { open, query, kind, held } = useStore(lexiconStore)
   const list = useRef<HTMLUListElement>(null)
   const matching = searchTerms(query)
   const found = kind === 'all' ? matching : matching.filter((term) => term.kind === kind)
@@ -55,7 +55,8 @@ export function LexiconDialog() {
     if (list.current !== null) list.current.scrollTop = 0
   }
   return (
-    <Dialog open={open} onOpenChange={setLexiconOpen}>
+    // Held by a tour, it is modeless, so the tour's card beside it takes presses.
+    <Dialog open={open} onOpenChange={setLexiconOpen} modal={!held}>
       <DialogContent
         data-slot="lexicon"
         className="h-[min(85dvh,52rem)] max-w-2xl grid-rows-[auto_auto_auto_minmax(0,1fr)] gap-3 overflow-hidden p-4 sm:p-6"

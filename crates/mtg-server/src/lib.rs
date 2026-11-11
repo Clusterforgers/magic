@@ -130,6 +130,7 @@ mod session;
 mod stops;
 mod store;
 mod throttle;
+pub mod tutorial;
 mod user_id;
 mod windows;
 mod ws;

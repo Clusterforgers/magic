@@ -30,7 +30,8 @@ use crate::images::{self, Images};
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
 use crate::{
-    api, bulk_reads, decks, favourites, fix_marks, lobbies, my_games, precon_api, prefs, reads, ws,
+    api, bulk_reads, decks, favourites, fix_marks, lobbies, my_games, precon_api, prefs, reads,
+    tutorial, ws,
 };
 
 struct Inner {
@@ -348,6 +349,7 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/precons", get(precon_api::list))
         .route("/api/precons/{code}", get(precon_api::get_one))
         .route("/api/games", post(api::create_game))
+        .route("/api/tutorial", post(tutorial::start))
         .route(
             "/api/games/{id}",
             get(api::game)

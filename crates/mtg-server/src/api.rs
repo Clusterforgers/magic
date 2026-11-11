@@ -115,6 +115,15 @@ impl ApiError {
         )
     }
 
+    /// A failure of the server itself; the details stay in its log.
+    pub(crate) fn internal() -> ApiError {
+        ApiError::new(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "internal",
+            "the request could not be completed",
+        )
+    }
+
     pub(crate) fn forbidden_origin() -> ApiError {
         ApiError::new(
             StatusCode::FORBIDDEN,
@@ -525,6 +534,7 @@ fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
         held: Some(held),
         house_rules: body.house_rules.clone(),
         format,
+        pace: None,
     };
     Ok((seats, options))
 }

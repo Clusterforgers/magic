@@ -2,8 +2,8 @@
 import { act, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderTable } from '@/test-utils/tableHarness'
-import { GAP, MARGIN, placeCard, spotlight } from './tourPlace'
-import type { Box } from './tourPlace'
+import { GAP, MARGIN, placeCard, spotlight } from '@/components/tour/tourPlace'
+import type { Box } from '@/components/tour/tourPlace'
 import { endTour, moveTour, startTour, TOUR_SEEN_KEY, tourSeen, tourStore } from './tourStore'
 import { TOUR } from './tourSteps'
 

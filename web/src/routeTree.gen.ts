@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as DecksRouteImport } from './routes/decks'
 import { Route as GamesRouteImport } from './routes/games'
+import { Route as LearnRouteImport } from './routes/learn'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NewRouteImport } from './routes/new'
 import { Route as PreconsRouteImport } from './routes/precons'
@@ -53,6 +54,11 @@ const DecksRoute = DecksRouteImport.update({
 const GamesRoute = GamesRouteImport.update({
   id: '/games',
   path: '/games',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnRoute = LearnRouteImport.update({
+  id: '/learn',
+  path: '/learn',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -166,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/accounts': typeof AccountsRoute
   '/decks': typeof DecksRoute
   '/games': typeof GamesRoute
+  '/learn': typeof LearnRoute
   '/login': typeof LoginRoute
   '/new': typeof NewRoute
   '/precons': typeof PreconsRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByTo {
   '/accounts': typeof AccountsRoute
   '/decks': typeof DecksRoute
   '/games': typeof GamesRoute
+  '/learn': typeof LearnRoute
   '/login': typeof LoginRoute
   '/new': typeof NewRoute
   '/precons': typeof PreconsRoute
@@ -221,6 +229,7 @@ export interface FileRoutesById {
   '/accounts': typeof AccountsRoute
   '/decks': typeof DecksRoute
   '/games': typeof GamesRoute
+  '/learn': typeof LearnRoute
   '/login': typeof LoginRoute
   '/new': typeof NewRoute
   '/precons': typeof PreconsRoute
@@ -250,6 +259,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/decks'
     | '/games'
+    | '/learn'
     | '/login'
     | '/new'
     | '/precons'
@@ -277,6 +287,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/decks'
     | '/games'
+    | '/learn'
     | '/login'
     | '/new'
     | '/precons'
@@ -304,6 +315,7 @@ export interface FileRouteTypes {
     | '/accounts'
     | '/decks'
     | '/games'
+    | '/learn'
     | '/login'
     | '/new'
     | '/precons'
@@ -332,6 +344,7 @@ export interface RootRouteChildren {
   AccountsRoute: typeof AccountsRoute
   DecksRoute: typeof DecksRoute
   GamesRoute: typeof GamesRoute
+  LearnRoute: typeof LearnRoute
   LoginRoute: typeof LoginRoute
   NewRoute: typeof NewRoute
   PreconsRoute: typeof PreconsRoute
@@ -383,6 +396,13 @@ declare module '@tanstack/react-router' {
       path: '/games'
       fullPath: '/games'
       preLoaderRoute: typeof GamesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn': {
+      id: '/learn'
+      path: '/learn'
+      fullPath: '/learn'
+      preLoaderRoute: typeof LearnRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -540,6 +560,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountsRoute: AccountsRoute,
   DecksRoute: DecksRoute,
   GamesRoute: GamesRoute,
+  LearnRoute: LearnRoute,
   LoginRoute: LoginRoute,
   NewRoute: NewRoute,
   PreconsRoute: PreconsRoute,
