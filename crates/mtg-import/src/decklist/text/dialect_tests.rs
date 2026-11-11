@@ -154,6 +154,7 @@ proptest! {
         let left_out: u64 = copies[cut..].iter().map(|&n| u64::from(n)).sum();
         prop_assert!(deck.errors.is_empty());
         prop_assert_eq!(deck.card_count(Main), kept);
-        prop_assert_eq!(deck.ignored.iter().map(|s| s.count).sum::<u64>(), left_out);
+        prop_assert_eq!(deck.card_count(Section::Stickers), left_out);
+        prop_assert!(deck.ignored.is_empty());
     }
 }
