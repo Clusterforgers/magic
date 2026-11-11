@@ -192,7 +192,7 @@ fn the_steps_are_listed_in_the_order_of_the_rules() {
         ['b', 'b', 'b', 'b', 'b', 'b', 'c', 'd', 'e', 'f', 'f', 'g']
     );
     assert_eq!(Phase::ORDER[0], Phase::Modes);
-    assert_eq!(Phase::ORDER[10], Phase::Payment);
+    assert_eq!(Phase::ORDER[11], Phase::Payment);
     let mut seen = Phase::ORDER.to_vec();
     seen.dedup();
     assert_eq!(seen.len(), Phase::ORDER.len(), "each step once");
