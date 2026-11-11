@@ -1,7 +1,7 @@
 {
   "oracle_id": "b6a64b19-e312-4e98-91bd-3bedca84eed3",
   "name": "Snake Cult Initiation",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Snake Cult Initiation",
@@ -9,9 +9,9 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 17, "end": 197 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": { "Macro": { "name": "poisonous", "amount": 3 } } }]
           }
         }
       ]

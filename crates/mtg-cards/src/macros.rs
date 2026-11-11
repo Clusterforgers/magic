@@ -54,6 +54,10 @@ pub const KEYWORDS: &[Entry] = &[
              "condition":{"Compare":{"left":{"Tallied":{"who":"Opponents","what":"DamageTaken"}},"op":"Ge","right":1}}}}]"#,
     },
     Entry {
+        name: "poisonous",
+        template: r#"[{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"PutCounters":{"on":"Triggering","counter":"poison","count":$N}}]}}]"#,
+    },
+    Entry {
         name: "training",
         template: r#"[{"Triggered":{"when":{"Attacks":{"what":["This"]}},
              "if":{"Compare":{"left":{"Count":["Attacking",{"Compare":{"stat":"Power","op":"Gt","to":{"Stat":{"of":"This","stat":"Power"}}}}]},"op":"Ge","right":1}},
@@ -244,6 +248,7 @@ mod tests {
     #[case::firebending("firebending", 2)]
     #[case::soulshift("soulshift", 3)]
     #[case::bloodthirst("bloodthirst", 2)]
+    #[case::poisonous("poisonous", 3)]
     #[case::amplify("amplify", 3)]
     #[case::tribute("tribute", 2)]
     fn a_keyword_carries_its_number(#[case] name: &str, #[case] amount: u32) {
