@@ -97,3 +97,114 @@ fn ep33_face_down_near_misses_differ(
     let found = written_variants(&ability);
     assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
 }
+
+const PIPES: &str = "When ~ enters, manifest dread twice.";
+
+/// The four steps of manifest dread by `who`, their names numbered `n`.
+fn dread(n: u32, who: &str) -> String {
+    format!(
+        r#"{{"LookAtTop":{{"who":{who},"count":2,"as":"looked{n}"}}}},{{"Choose":{{"who":{who},"from":{{"Bound":"looked{n}"}},"as":"kept{n}","rest_as":"rest{n}"}}}},{{"Move":{{"what":{{"Bound":"rest{n}"}},"to":"Graveyard"}}}},{{"Manifest":{{"who":{who}}}}}"#
+    )
+}
+
+fn enters(effects: &str) -> Ability {
+    ability(&format!(
+        r#"{{"Triggered":{{"when":{{"ZoneChange":{{"what":["This"],"to":"Battlefield"}}}},"effects":[{effects}]}}}}"#
+    ))
+}
+
+const YOU: &str = r#""You""#;
+
+#[rstest]
+#[case::twice(enters(&format!("{},{}", dread(1, YOU), dread(2, YOU))), PIPES, true)]
+#[case::once(enters(&dread(1, YOU)), PIPES, false)]
+#[case::three_times(
+    enters(&format!("{},{},{}", dread(1, YOU), dread(2, YOU), dread(3, YOU))),
+    PIPES,
+    false
+)]
+#[case::by_an_opponent(
+    enters(&format!("{},{}", dread(1, YOU), dread(2, r#""Opponents""#))),
+    PIPES,
+    false
+)]
+#[case::then_a_draw(
+    enters(&format!("{},{},{{\"Draw\":{{}}}}", dread(1, YOU), dread(2, YOU))),
+    PIPES,
+    false
+)]
+fn ep33_manifest_dread_twice_near_misses_differ(
+    #[case] ability: Ability,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let found = written_variants(&ability);
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
+/// "{T}: Add {U}." with the uses of the mana.
+fn mana(only: &str) -> Ability {
+    ability(&format!(
+        r#"{{"Activated":{{"cost":["Tap"],"effects":[{{"AddMana":{{"mana":{{"Fixed":["Blue"]}},"only":{only}}}}}]}}}}"#
+    ))
+}
+
+const LOTUS: &str = "{T}: Add {U}. Spend this mana only to cast your commander.";
+const TURBINE: &str = "{T}: Add {U}. This mana can't be spent to cast spells.";
+const ZEALOT: &str = "{T}: Add {U}. Spend this mana only to turn permanents face up.";
+const HARBINGER: &str = "{T}: Add {U}. Spend this mana only to foretell a card from your hand or cast an instant or sorcery spell.";
+const PEEPER: &str = "{T}: Add {U}. Spend this mana only to cast an enchantment spell, unlock a door, or turn a permanent face up.";
+
+#[rstest]
+#[case::lotus(r#"[{"Spell":{"facts":["YourCommander"]}}]"#, LOTUS, true)]
+#[case::lotus_creature(
+    r#"[{"Spell":{"types":["Creature"],"facts":["YourCommander"]}}]"#,
+    LOTUS,
+    false
+)]
+#[case::lotus_not_owned(r#"[{"Spell":{"facts":["NotOwned"]}}]"#, LOTUS, false)]
+#[case::turbine(r#"[{"Ability":{}},"OtherCosts"]"#, TURBINE, true)]
+#[case::turbine_abilities_only(r#"[{"Ability":{}}]"#, TURBINE, false)]
+#[case::turbine_other_costs_only(r#"["OtherCosts"]"#, TURBINE, false)]
+#[case::zealot(r#"[{"Special":"TurnFaceUp"}]"#, ZEALOT, true)]
+#[case::zealot_unlock(r#"[{"Special":"Unlock"}]"#, ZEALOT, false)]
+#[case::harbinger(
+    r#"[{"Special":"Foretell"},{"Spell":{"types":["Instant"]}},{"Spell":{"types":["Sorcery"]}}]"#,
+    HARBINGER,
+    true
+)]
+#[case::harbinger_instants_only(
+    r#"[{"Special":"Foretell"},{"Spell":{"types":["Instant"]}}]"#,
+    HARBINGER,
+    false
+)]
+#[case::harbinger_any_spell(r#"[{"Special":"Foretell"},{"Spell":{}}]"#, HARBINGER, false)]
+#[case::harbinger_red_instants(
+    r#"[{"Special":"Foretell"},{"Spell":{"types":["Instant"],"colors":["Red"]}},{"Spell":{"types":["Sorcery"]}}]"#,
+    HARBINGER,
+    false
+)]
+#[case::peeper(
+    r#"[{"Spell":{"types":["Enchantment"]}},{"Special":"Unlock"},{"Special":"TurnFaceUp"}]"#,
+    PEEPER,
+    true
+)]
+#[case::peeper_without_unlock(
+    r#"[{"Spell":{"types":["Enchantment"]}},{"Special":"TurnFaceUp"}]"#,
+    PEEPER,
+    false
+)]
+#[case::peeper_foretell(
+    r#"[{"Spell":{"types":["Enchantment"]}},{"Special":"Unlock"},{"Special":"Foretell"}]"#,
+    PEEPER,
+    false
+)]
+#[case::face_down_spells(r#"[{"Spell":{"facts":["FaceDown"]}}]"#, ZEALOT, false)]
+fn ep33_restricted_mana_near_misses_differ(
+    #[case] only: &str,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let found = written_variants(&mana(only));
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}

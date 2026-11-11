@@ -947,7 +947,7 @@ pub(crate) fn can_foretell(
             pool,
             &for_card(state, sources, id),
             life,
-            &Spend::other(),
+            &Spend::special(mtg_cards::spend::SpecialAction::Foretell),
         )
 }
 
@@ -1030,7 +1030,7 @@ pub(crate) fn can_turn_up(
             pool,
             &for_card(state, sources, id),
             life,
-            &Spend::other(),
+            &Spend::special(mtg_cards::spend::SpecialAction::TurnFaceUp),
         )
 }
 

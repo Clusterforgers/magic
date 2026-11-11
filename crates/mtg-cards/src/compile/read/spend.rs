@@ -430,6 +430,8 @@ fn qualifier_text(filter: &SpendFilter) -> String {
             SpendFact::NotFromHand => text.push_str(" from anywhere other than your hand"),
             SpendFact::Devoid => text.push_str(" with devoid"),
             SpendFact::Flashback => text.push_str(" with flashback"),
+            // Written by `ep33_spend_text` alone ("your commander"), or before the noun ("face-down spells").
+            SpendFact::YourCommander | SpendFact::FaceDown => {}
         }
     }
     text
@@ -456,6 +458,23 @@ fn one_spell_text(filter: &SpendFilter) -> Option<String> {
 
 /// The sentence the uses are written as, with its capital and no period; `None` for uses the readers do not write.
 pub(super) fn text(only: &[SpendOn]) -> Option<String> {
+    if let Some(text) = super::ep33_spend::ep33_spend_text(only) {
+        return Some(text);
+    }
+    // The facts no other wording says are left to `ep33_spend_text`.
+    let unsaid = |filter: &SpendFilter| {
+        filter
+            .facts
+            .iter()
+            .any(|fact| matches!(fact, SpendFact::YourCommander | SpendFact::FaceDown))
+    };
+    if only.iter().any(|on| match on {
+        SpendOn::Spell(filter) | SpendOn::Ability(filter) => unsaid(filter),
+        SpendOn::Special(_) => true,
+        _ => false,
+    }) {
+        return None;
+    }
     Some(match only {
         [SpendOn::Enters(bonus)] => enters_text(bonus)?,
         [SpendOn::CostWithX] => "Spend this mana only on costs that contain {X}".to_owned(),

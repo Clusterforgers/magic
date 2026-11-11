@@ -61,6 +61,8 @@ const FACTS: Record<SpendFact, string> = {
   NotFromHand: 'cast from anywhere other than your hand',
   Devoid: 'with devoid',
   Flashback: 'with flashback',
+  YourCommander: 'that is your commander',
+  FaceDown: 'cast face down',
 }
 
 const lower = (text: string): string => text.toLowerCase()

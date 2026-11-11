@@ -38,6 +38,17 @@ pub(super) fn pay(
     cost: ManaCost,
     events: impl FnOnce() -> Option<Vec<Event>>,
 ) -> Next {
+    pay_for(state, player, card, (cost, Spend::other()), events)
+}
+
+/// As [`pay`], for a special action that restricted mana may pay for as `spend` says ("to turn permanents face up").
+pub(super) fn pay_for(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+    (cost, spend): (ManaCost, Spend),
+    events: impl FnOnce() -> Option<Vec<Event>>,
+) -> Next {
     if cost.mana_value() == 0 {
         return events().map_or(Next::Drop, Next::Commit);
     }
@@ -48,7 +59,7 @@ pub(super) fn pay(
         cost,
         mana_options(state, player),
         Offered::default(),
-        Spend::other(),
+        spend,
         true,
         0,
     );

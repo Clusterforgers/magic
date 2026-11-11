@@ -404,7 +404,14 @@ const MORE: [Event, string][] = [
     'Forest is cloaked',
   ],
   [
-    { ZoneChanged: { object: 3, from: { Graveyard: 0 }, to: 'Battlefield', cause: { PutFaceDown: { by: 0 } } } },
+    {
+      ZoneChanged: {
+        object: 3,
+        from: { Graveyard: 0 },
+        to: 'Battlefield',
+        cause: { PutFaceDown: { by: 0 } },
+      },
+    },
     'Forest is put onto the battlefield face down',
   ],
   [

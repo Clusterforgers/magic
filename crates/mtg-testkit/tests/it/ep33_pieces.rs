@@ -1,4 +1,4 @@
-//! Goal: the engine pieces of ep33 play by the rules at tables of two and three seats. A card an effect returns to the battlefield face down (`Destination::BattlefieldFaceDown`) is a 2/2 creature with no name under the player the move names, only that player looks at it, and it is turned face up for its morph cost and never for its mana cost; a face-down card that has no morph stays face down.
+//! Goal: the engine pieces of ep33 play by the rules at tables of two and three seats. A card an effect returns to the battlefield face down (`Destination::BattlefieldFaceDown`) is a 2/2 creature with no name under the player the move names, only that player looks at it, and it is turned face up for its morph cost and never for its mana cost; a face-down card that has no morph stays face down. Mana for turning permanents face up, or for any cost but a spell's, pays the morph cost and mana for another special action or for spells does not; mana for "your commander" casts the commander and no other spell.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -128,5 +128,89 @@ fn a_card_returned_face_down_is_a_hidden_2_2_turned_up_only_for_its_morph(
         assert_eq!(object.face_down(), None);
         assert_eq!(object.card().name, "Phoenix");
     }
+    Ok(())
+}
+
+/// An artifact with "{T}: Add {C}{C}{C}" whose mana may be spent only on `only` (a JSON list of uses).
+fn restricted_source(name: &str, only: &str) -> Arc<CardDefinition> {
+    let rule: Ability = serde_json::from_str(&format!(
+        r#"{{"Activated":{{"cost":["Tap"],"effects":[{{"AddMana":{{"mana":{{"Fixed":["Colorless","Colorless","Colorless"]}},"only":{only}}}}}]}}}}"#
+    ))
+    .unwrap();
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Artifact)
+            .with_rules(rule),
+    )
+}
+
+/// The morph Phoenix comes back face down with only `source` to pay its morph {1}: mana for turning permanents face up
+/// pays it, as does mana for any cost but a spell's; mana for unlocking a door or for spells does not.
+#[rstest]
+#[case::turning_face_up(r#"[{"Special":"TurnFaceUp"}]"#, true)]
+#[case::other_costs(r#"[{"Ability":{}},"OtherCosts"]"#, true)]
+#[case::unlocking(r#"[{"Special":"Unlock"}]"#, false)]
+#[case::foretelling(r#"[{"Special":"Foretell"}]"#, false)]
+#[case::creature_spells(r#"[{"Spell":{"types":["Creature"]}}]"#, false)]
+fn mana_for_turning_permanents_face_up_turns_one_up(
+    #[case] only: &str,
+    #[case] turns: bool,
+    #[values(2, 3)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(seats).at(1, 0, Step::Main1).battlefield(
+        0,
+        vec![
+            ready(phoenix(true, r#"{"under":"You"}"#)),
+            ready(restricted_source("Zealot", only)),
+        ],
+    );
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_activation("Phoenix")?;
+    settle(&mut driver)?;
+    let id = face_down(&driver)[0];
+    assert_eq!(turnable(&driver), if turns { vec![id] } else { vec![] });
+    if turns {
+        driver.answer(Answer::Priority(PriorityAction::TurnFaceUp(id)))?;
+        crate::common::casting::pay(&mut driver)?;
+        assert_eq!(driver.state().object(id).unwrap().face_down(), None);
+    }
+    Ok(())
+}
+
+/// A commander and a creature of the same cost, with only mana for "your commander": the commander is cast with it, the
+/// other creature is not.
+#[rstest]
+fn mana_for_your_commander_casts_only_the_commander(
+    #[values(2, 3)] seats: usize,
+) -> Result<(), ScriptError> {
+    let commander = Arc::new(
+        CardDefinition::new("Cmd")
+            .with_type(CardType::Creature)
+            .with_supertype(mtg_core::card::Supertype::Legendary)
+            .with_mana_cost(cost(3, &[]))
+            .with_power_toughness(2, 2),
+    );
+    let scenario = Scenario::new(seats)
+        .format(Arc::new(mtg_engine::format::Commander))
+        .commanders(0, [commander])
+        .hand(0, [mtg_testkit::cards::creature("Bear", 3, &[], 2, 2)])
+        .battlefield(
+            0,
+            vec![ready(restricted_source(
+                "Lotus",
+                r#"[{"Spell":{"facts":["YourCommander"]}}]"#,
+            ))],
+        )
+        .at(1, 0, Step::Main1);
+    let driver = Driver::from_scenario(scenario)?;
+    let DecisionKind::Priority(options) = &driver.decision()?.kind else {
+        panic!("seat 0 has priority");
+    };
+    let names: Vec<String> = options
+        .castable
+        .iter()
+        .map(|id| driver.state().object(*id).unwrap().card().name.clone())
+        .collect();
+    assert_eq!(names, ["Cmd"]);
     Ok(())
 }

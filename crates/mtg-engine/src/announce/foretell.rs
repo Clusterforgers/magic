@@ -17,7 +17,8 @@ pub(super) fn next(state: &GameState, player: PlayerId, card: ObjectId) -> Next 
     if events(state, card).is_none() || state.turn().active() != player {
         return Next::Drop;
     }
-    suspend::pay(state, player, card, cost, || events(state, card))
+    let spend = crate::spend::Spend::special(mtg_cards::spend::SpecialAction::Foretell);
+    suspend::pay_for(state, player, card, (cost, spend), || events(state, card))
 }
 
 /// The events of foretelling `card`: it moves from the hand to exile, face down. They come between the life and the mana
