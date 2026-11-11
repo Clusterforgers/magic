@@ -370,6 +370,7 @@ Deathcap Cultivator
 Deathleaper, Terror Weapon
 Debris Field Crusher
 Debtors' Transport
+Decorum Dissertation
 Decree of Justice
 Decree of Pain
 Deekah, Fractal Theorist
@@ -605,6 +606,7 @@ General's Enforcer
 Generous Ent
 Genesis Storm
 Genesis Wave
+Germination Practicum
 Gerrard's Wisdom
 Getaway Car
 Ghalta, Primal Hunger
@@ -1224,6 +1226,7 @@ Replication Technique
 Rescue Skiff
 Reshape
 Resplendent Angel
+Restoration Seminar
 Retaliation
 Retreat to Coralhelm
 Revel Ruiner

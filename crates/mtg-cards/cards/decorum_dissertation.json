@@ -1,7 +1,7 @@
 {
   "oracle_id": "f4c57454-d36f-4f38-b7ac-76477a516c3e",
   "name": "Decorum Dissertation",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Decorum Dissertation",
@@ -16,12 +16,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 48, "end": 247 }
-          }
-        }
+        { "Keyword": "Paradigm" }
       ]
     }
   ]
