@@ -1,0 +1,27 @@
+{
+  "oracle_id": "da363da1-aecf-4d49-8e77-8dc56981a741",
+  "name": "Emergency Eject",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emergency Eject",
+      "oracle_fingerprint": "01e7bf486c5416842645ca43b346e0ca",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": { "Named": "lander" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

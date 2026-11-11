@@ -1,0 +1,30 @@
+{
+  "oracle_id": "003d9c17-5d5c-469f-ad87-d78faf55e025",
+  "name": "Seedship Agrarian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seedship Agrarian",
+      "oracle_fingerprint": "f83545e4f513e641117ee9325819444e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [{ "CreateToken": { "token": { "Named": "lander" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

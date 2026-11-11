@@ -61,7 +61,11 @@ const PUPA: &str = r#"{"Static":{"affected":"Attached","mods":["DoesntUntap"],"c
 #[case::other_counter(&untap(r#"{"Each":["This",{"HasCounter":{"Other":"ice"}}]}"#), "~ doesn't untap during your untap step if it has a depletion counter on it.", false)]
 #[case::hourglass(&untap(r#"{"Each":[{"HasCounter":{"Other":"hourglass"}}]}"#), "Each permanent with an hourglass counter on it doesn't untap during its controller's untap step.", true)]
 #[case::asleep(&untap(r#"{"Each":[{"Type":"Creature"},{"Is":"Attached"},{"HasCounter":{"Other":"sleep"}}]}"#), "Enchanted creature doesn't untap during its controller's untap step if it has a sleep counter on it.", true)]
-#[case::aura_counter(PUPA, "Enchanted creature doesn't untap during your untap step if this Aura has a pupa counter on it.", true)]
+#[case::aura_counter(
+    PUPA,
+    "Enchanted creature doesn't untap during your untap step if this Aura has a pupa counter on it.",
+    true
+)]
 #[case::creature_counter(&PUPA.replace(r#"["This","#, r#"[{"Is":"Attached"},"#), "Enchanted creature doesn't untap during your untap step if this Aura has a pupa counter on it.", false)]
 #[case::while_you_control(
     r#"{"Static":{"affected":"Attached","mods":["DoesntUntap"],"condition":{"Compare":{"left":{"Count":[{"Supertype":"Snow"},"Other",{"ControlledBy":"You"}]},"op":"Ge","right":1}}}}"#,
@@ -93,7 +97,11 @@ const ARMORER: &str = r#"{"Static":{"affected":"This","mods":["CantBeBlocked"],"
 #[case::every_type(&attached(r#"[{"ModifyPT":{"power":3,"toughness":0}},"AddAllCreatureTypes"]"#), "Equipped creature gets +3/+0 and is every creature type.", true)]
 #[case::without_every_type(&attached(r#"[{"ModifyPT":{"power":3,"toughness":0}}]"#), "Equipped creature gets +3/+0 and is every creature type.", false)]
 #[case::every_type_and_reach(&attached(r#"[{"ModifyPT":{"power":2,"toughness":2}},{"AddKeyword":"Reach"},"AddAllCreatureTypes"]"#), "Enchanted creature gets +2/+2, has reach, and is every creature type.", true)]
-#[case::defending(ARMORER, "~ can't be blocked as long as defending player controls three or more artifacts.", true)]
+#[case::defending(
+    ARMORER,
+    "~ can't be blocked as long as defending player controls three or more artifacts.",
+    true
+)]
 #[case::defending_for_you(&ARMORER.replace("Defending", "You"), "~ can't be blocked as long as defending player controls three or more artifacts.", false)]
 #[case::defending_two(&ARMORER.replace(r#""right":3"#, r#""right":2"#), "~ can't be blocked as long as defending player controls three or more artifacts.", false)]
 fn wf27_statics(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
@@ -177,8 +185,116 @@ const RED_SPELL: &str = r#"{"Compare":{"left":{"Tally":{"event":"SpellCast","who
 #[case::cast_only_after_none(&format!(r#"{{"CastOnly":{{"condition":{}}}}}"#, ANOTHER.replace(r#""Ge","right":1"#, r#""Eq","right":0"#)), "Cast ~ only if you've cast another spell this turn.", false)]
 #[case::costs_less(&format!(r#"{{"CostModifier":{{"applies_to":["This"],"change":"Reduce","mana":"{{2}}","condition":{ANOTHER}}}}}"#), "~ costs {2} less to cast if you've cast another spell this turn.", true)]
 #[case::costs_more(&format!(r#"{{"CostModifier":{{"applies_to":["This"],"change":"Increase","mana":"{{2}}","condition":{ANOTHER}}}}}"#), "~ costs {2} less to cast if you've cast another spell this turn.", false)]
-#[case::before_blockers(r#"{"CastOnly":{"condition":{"Any":[{"Step":"BeginCombat"},{"Step":"DeclareAttackers"}]}}}"#, "Cast ~ only during combat before blockers are declared.", true)]
-#[case::after_blockers(r#"{"CastOnly":{"condition":{"Any":[{"Step":"BeginCombat"},{"Step":"DeclareAttackers"}]}}}"#, "Cast ~ only during combat after blockers are declared.", false)]
+#[case::before_blockers(
+    r#"{"CastOnly":{"condition":{"Any":[{"Step":"BeginCombat"},{"Step":"DeclareAttackers"}]}}}"#,
+    "Cast ~ only during combat before blockers are declared.",
+    true
+)]
+#[case::after_blockers(
+    r#"{"CastOnly":{"condition":{"Any":[{"Step":"BeginCombat"},{"Step":"DeclareAttackers"}]}}}"#,
+    "Cast ~ only during combat after blockers are declared.",
+    false
+)]
 fn wf27_casts(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+    assert_eq!(reads(json, clause), same, "{clause}");
+}
+
+const HESITATION: &str = r#"{"Triggered":{"when":{"SpellCast":{}},"effects":[{"Counter":{"what":"Triggering"}},{"Sacrifice":{"filter":["This"]}}]}}"#;
+const SACRIFICE_AND_COUNTER: &str =
+    "When a player casts a spell, sacrifice ~ and counter that spell.";
+
+#[rstest]
+#[case::counter_first(HESITATION, SACRIFICE_AND_COUNTER, true)]
+#[case::sacrifice_first(&HESITATION.replace(r#"[{"Counter":{"what":"Triggering"}},{"Sacrifice":{"filter":["This"]}}]"#, r#"[{"Sacrifice":{"filter":["This"]}},{"Counter":{"what":"Triggering"}}]"#), SACRIFICE_AND_COUNTER, true)]
+#[case::then(
+    HESITATION,
+    "When a player casts a spell, sacrifice ~, then counter that spell.",
+    false
+)]
+#[case::counter_only(&HESITATION.replace(r#",{"Sacrifice":{"filter":["This"]}}"#, ""), SACRIFICE_AND_COUNTER, false)]
+#[case::another_spell(&HESITATION.replace(r#"{"what":"Triggering"}"#, r#"{"what":{"Target":0}}"#), SACRIFICE_AND_COUNTER, false)]
+#[case::opponents(&HESITATION.replace(r#""SpellCast":{}"#, r#""SpellCast":{"by":"Opponents"}"#), "When an opponent casts a spell, sacrifice ~ and counter that spell.", true)]
+fn wf27_sacrifice_and_counter(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+    assert_eq!(reads(json, clause), same, "{clause}");
+}
+
+const LANDER: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Lander","types":["Artifact"],"subtypes":["Lander"],"abilities":[{"Activated":{"cost":[{"Mana":"{2}"},"Tap","SacrificeSelf"],"effects":[{"Search":{"filter":[{"Type":"Land"},{"Supertype":"Basic"}],"as":"found"}},{"Move":{"what":{"Bound":"found"},"to":{"Battlefield":{"tapped":true}}}},{"Shuffle":{}}]}}]}}}}]}}"#;
+const A_LANDER: &str = "When ~ enters, create a Lander token.";
+
+#[rstest]
+#[case::lander(LANDER, A_LANDER, true)]
+#[case::named_lander(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"CreateToken":{"token":{"Named":"lander"}}}]}}"#, A_LANDER, true)]
+#[case::untapped_land(&LANDER.replace(r#"{"tapped":true}"#, "{}"), A_LANDER, false)]
+#[case::dearer(&LANDER.replace("{2}", "{3}"), A_LANDER, false)]
+#[case::any_land(&LANDER.replace(r#",{"Supertype":"Basic"}"#, ""), A_LANDER, false)]
+fn wf27_predefined_tokens(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+    assert_eq!(reads(json, clause), same, "{clause}");
+}
+
+fn kicked(then: i64, otherwise: i64) -> String {
+    format!(r#"{{"When":{{"condition":"Kicked","then":{then},"otherwise":{otherwise}}}}}"#)
+}
+
+const GROWTH: &str = "Target creature gets +2/+2 until end of turn. If this spell was kicked, that creature gets +5/+5 until end of turn instead.";
+const LESSON: &str = "~ deals 2 damage to target creature. If this spell was kicked, it deals 5 damage to that creature instead.";
+
+fn growth(power: &str, toughness: &str) -> String {
+    format!(
+        r#"{{"Spell":{{"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}}],"effects":[{{"Continuous":{{"affected":{{"Target":0}},"mods":[{{"ModifyPT":{{"power":{power},"toughness":{toughness}}}}}],"duration":"UntilEndOfTurn"}}}}]}}}}"#
+    )
+}
+
+fn lesson(amount: &str) -> String {
+    format!(
+        r#"{{"Spell":{{"targets":[{{"what":{{"Object":[{{"Type":"Creature"}}]}}}}],"effects":[{{"DealDamage":{{"to":{{"Target":0}},"amount":{amount}}}}}]}}}}"#
+    )
+}
+
+#[rstest]
+#[case::growth(&growth(&kicked(5, 2), &kicked(5, 2)), GROWTH, true)]
+#[case::growth_swapped(&growth(&kicked(2, 5), &kicked(2, 5)), GROWTH, false)]
+#[case::growth_power_only(&growth(&kicked(5, 2), "2"), GROWTH, false)]
+#[case::lesson(&lesson(&kicked(5, 2)), LESSON, true)]
+#[case::lesson_short(&lesson(&kicked(5, 2)), "~ deals 2 damage to target creature. If this spell was kicked, it deals 5 damage instead.", true)]
+#[case::lesson_more(&lesson(&kicked(6, 2)), LESSON, false)]
+#[case::lesson_always(&lesson("5"), LESSON, false)]
+#[case::discards(r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Discard":{"who":{"Target":0},"count":{"When":{"condition":"Kicked","then":3,"otherwise":2}}}}]}}"#, "Target player discards two cards. If this spell was kicked, that player discards three cards instead.", true)]
+#[case::added_only(&growth(&kicked(1, 0), &kicked(1, 0)), "Target creature gets +0/+0 until end of turn. If this spell was kicked, that creature gets +1/+1 until end of turn instead.", false)]
+fn wf27_kicked_amounts(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+    assert_eq!(reads(json, clause), same, "{clause}");
+}
+
+const BOMBARDIERS: &str = r#"{"Activated":{"cost":[{"Sacrifice":{"filter":[{"AnyOf":[{"Type":"Creature"},{"Type":"Artifact"}]},"Other"]}}],"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"Sum":[{"Stat":{"of":"Paid","stat":"ManaValue"}},2]}}}]}}"#;
+const SACRIFICED: &str = "Sacrifice another creature or artifact: ~ deals damage equal to 2 plus the sacrificed permanent's mana value to any target.";
+const EYE: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Draw":{}},{"ChooseValue":{"kind":"Color","as":"chosen"}},{"Continuous":{"affected":"This","mods":[{"SetColorsChosen":"chosen"}],"duration":"Forever"}}]}}"#;
+const CHOSEN: &str = "When ~ enters, draw a card, then choose a color. ~ becomes the chosen color.";
+const FIVE: &str = r#"{"Activated":{"cost":[{"Mana":"{3}"},"Tap"],"condition":{"Compare":{"left":{"Distinct":{"of":[{"ControlledBy":"You"}],"stat":"Colors"}},"op":"Eq","right":5}},"effects":[{"Draw":{}}]}}"#;
+const FIVE_COLORS: &str =
+    "{3}, {T}: Draw a card. Activate only if there are five colors among permanents you control.";
+const KIRIN: &str = r#"{"Triggered":{"when":{"SpellCast":{"what":[{"AnyOf":[{"Subtype":"Spirit"},{"Subtype":"Arcane"}]}],"by":"You"}},"targets":[{"what":"Player"}],"effects":[{"Reveal":{"what":{"Each":[{"OwnedBy":{"Target":0}},{"In":"Hand"}]}}},{"Discard":{"who":{"Target":0},"count":{"Count":[{"In":"Hand"},{"OwnedBy":{"Target":0}},{"Compare":{"stat":"ManaValue","op":"Eq","to":{"Stat":{"of":"Triggering","stat":"ManaValue"}}}}]},"filter":[{"Compare":{"stat":"ManaValue","op":"Eq","to":{"Stat":{"of":"Triggering","stat":"ManaValue"}}}}]}}]}}"#;
+const KIRIN_TEXT: &str = "Whenever you cast a Spirit or Arcane spell, target player reveals their hand and discards all cards with that spell's mana value.";
+const RANGERS: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"Compare":{"stat":"Power","op":"Lt","to":{"Stat":{"of":"This","stat":"Power"}}}}]},"bounds":{"min":0,"max":1}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"SetController":"You"}],"duration":"WhileYouControlSource"}},{"RingTempts":{}}]}}"#;
+const RANGERS_TEXT: &str = "When ~ enters, gain control of up to one target creature with lesser power for as long as you control ~. Then the Ring tempts you.";
+const VOID: &str = r#"{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{2}","condition":{"Compare":{"left":{"When":{"condition":{"Any":[{"Compare":{"left":{"Tallied":{"who":"EachPlayer","what":"NonlandPermanentsLeft"}},"op":"Ge","right":1}},{"Compare":{"left":{"Tallied":{"who":"EachPlayer","what":"SpellsWarped"}},"op":"Ge","right":1}}]},"then":1,"otherwise":0}},"op":"Ge","right":1}}}}"#;
+const VOID_TEXT: &str = "~ costs {2} less to cast if a nonland permanent left the battlefield this turn or a spell was warped this turn.";
+
+#[rstest]
+#[case::sacrificed(BOMBARDIERS, SACRIFICED, true)]
+#[case::sacrificed_plus_three(&BOMBARDIERS.replace("},2]", "},3]"), SACRIFICED, false)]
+#[case::sacrificed_power(&BOMBARDIERS.replace(r#""stat":"ManaValue""#, r#""stat":"Power""#), SACRIFICED, false)]
+#[case::chosen_color(EYE, CHOSEN, true)]
+#[case::chosen_color_until_end_of_turn(&EYE.replace("Forever", "UntilEndOfTurn"), CHOSEN, false)]
+#[case::chosen_creature_type(&EYE.replace(r#""kind":"Color""#, r#""kind":"CreatureType""#), CHOSEN, false)]
+#[case::five_colors(FIVE, FIVE_COLORS, true)]
+#[case::four_colors(&FIVE.replace(r#""right":5"#, r#""right":4"#), FIVE_COLORS, false)]
+#[case::opponents_colors(&FIVE.replace(r#""ControlledBy":"You""#, r#""ControlledBy":"Opponents""#), FIVE_COLORS, false)]
+#[case::that_spell(KIRIN, KIRIN_TEXT, true)]
+#[case::that_spell_or_less(&KIRIN.replace(r#""op":"Eq""#, r#""op":"Le""#), KIRIN_TEXT, false)]
+#[case::lesser_power(RANGERS, RANGERS_TEXT, true)]
+#[case::greater_power(&RANGERS.replace(r#""op":"Lt""#, r#""op":"Gt""#), RANGERS_TEXT, false)]
+#[case::until_end_of_turn(&RANGERS.replace("WhileYouControlSource", "UntilEndOfTurn"), RANGERS_TEXT, false)]
+#[case::void(VOID, VOID_TEXT, true)]
+#[case::void_without_warp(&VOID.replace("SpellsWarped", "SpellsCast"), VOID_TEXT, false)]
+fn wf27_leftovers(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
     assert_eq!(reads(json, clause), same, "{clause}");
 }

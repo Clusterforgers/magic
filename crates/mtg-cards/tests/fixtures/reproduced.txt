@@ -129,6 +129,7 @@ Battle Sliver
 Battlefield Forge
 Baxter Building
 Baxter, Fly in the Ointment
+Beamsaw Prospector
 Bear Umbra
 Beast Within
 Beastmaster Ascension
@@ -141,6 +142,8 @@ Bighorner Rancher
 Bilious Skulldweller
 Binding the Old Gods
 Biomass Mutation
+Biomechan Engineer
+Biotech Specialist
 Bird Admirer // Wing Shredder
 Bitter Triumph
 Black Dragon Gate
@@ -355,6 +358,7 @@ Darkblast
 Darksteel Juggernaut
 Darksteel Mutation
 Darksteel Splicer
+Dauntless Scrapbot
 Dauthi Horror
 Dauthi Marauder
 Dawn to Dusk
@@ -459,6 +463,7 @@ Echo Inspector
 Echo Mage
 Echo Storm
 Echoes of the Kin Tree
+Edge Rover
 Eel Umbra
 Eiganjo Dynastorian // Replenish
 Elder Deep-Fiend
@@ -474,6 +479,7 @@ Eliminate the Competition
 Elven Ambush
 Elvish Aberration
 Elvish Rejuvenator
+Emergency Eject
 Emmara Tandris
 Empowered Autogenerator
 Empyrial Plate
@@ -589,6 +595,7 @@ Fury Storm
 Gadwick, the Wizened
 Gaea's Cradle
 Gaea's Might
+Galactic Wayfarer
 Galadhrim Brigade
 Gallifrey Falls // No More
 Galvanic Iteration
@@ -625,6 +632,7 @@ Gilt-Leaf Palace
 Ginger, Queen of Sweets
 Girder Goons
 Gisa and Geralf
+Glacier Godmaw
 Glassworks // Shattered Yard
 Glimpse of Freedom
 Glint-Sleeve Artisan
@@ -1279,6 +1287,7 @@ Sagu Mauler
 Saheeli's Artistry
 Saiba Cryptomancer
 Saltcrusted Steppe
+Sami's Curiosity
 Samurai's Katana
 Sanctum Weaver
 Sandcrafter Mage
@@ -1314,6 +1323,7 @@ Second Harvest
 Secret Rendezvous
 Seedglaive Mentor
 Seeds of Renewal
+Seedship Agrarian
 Seekers' Squire
 Seize the Day
 Seraph of the Sword

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "86746a84-3e8a-44b4-8494-60cbee9816b5",
+  "name": "Galactic Wayfarer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galactic Wayfarer",
+      "oracle_fingerprint": "75e461b7c3d92b2ffbd79140d4ca1dc7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "lander" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
