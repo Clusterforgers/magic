@@ -902,6 +902,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Suspected' in event) return line(`${n.card(event.Suspected.object)} becomes suspected`)
   if ('Unsuspected' in event) return line(`${n.card(event.Unsuspected.object)} is no longer suspected`)
   if ('Solved' in event) return line(`${n.card(event.Solved.object)} is solved`)
+  if ('Harnessed' in event) return line(`${n.card(event.Harnessed.object)} is harnessed`)
   if ('BecameCopy' in event) {
     const { object, of } = event.BecameCopy
     return line(`${n.card(object)} becomes a copy of ${n.card(of.id)}`)
@@ -1005,6 +1006,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('TurnedFaceUp' in event)
     return line(`${n.seat(event.TurnedFaceUp.player)} turns ${n.card(event.TurnedFaceUp.object)} face up`)
+  if ('TurnedFaceDown' in event)
+    return line(
+      `${n.seat(event.TurnedFaceDown.player)} turns ${n.card(event.TurnedFaceDown.object)} face down`,
+    )
   if ('DoorUnlocked' in event) {
     const { player, object, door } = event.DoorUnlocked
     return line(`${n.seat(player)} unlocks ${n.door?.(object, door) ?? `a door of ${n.card(object)}`}`)

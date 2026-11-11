@@ -1,14 +1,20 @@
 {
   "oracle_id": "df032801-fccf-4bff-aa88-d01650b6c81e",
   "name": "Phyrexian Purge",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Phyrexian Purge",
       "oracle_fingerprint": "b718b3ac2fa7dd287eb9dbb60494035a",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 53 } }
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{0}",
+            "per": { "TargetCount": 0 },
+            "life": 3
+          }
         },
         {
           "Spell": {

@@ -1,7 +1,7 @@
 {
   "oracle_id": "032a5616-bbaf-4659-86c4-43edf29b9788",
   "name": "Muck Drubb",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Muck Drubb",
@@ -9,9 +9,18 @@
       "abilities": [
         { "Keyword": "Flash" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 120 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", "SingleTarget", { "Targeting": [{ "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "ChangeTargets": { "what": { "Target": 0 }, "to": "One", "onto": "This" } }
+            ]
           }
         },
         { "Keyword": { "Madness": "{2}{B}" } }

@@ -1740,6 +1740,19 @@ impl<'a> Scope<'a> {
             Pred::Prepared => matches!(seen.counters, Counted::Live(held) if held.prepared()),
             Pred::Suspected => seen.suspected,
             Pred::Solved => matches!(seen.counters, Counted::Live(held) if held.solved()),
+            Pred::Harnessed => matches!(seen.counters, Counted::Live(held) if held.harnessed()),
+            Pred::FoughtSinceYourLastUpkeep {
+                attacked,
+                blocked,
+                was_blocked,
+            } => match seen.counters {
+                Counted::Live(held) => self.state.rmt8_fought_since(
+                    self.controller,
+                    held.fought(),
+                    [*attacked, *blocked, *was_blocked],
+                ),
+                _ => false,
+            },
             Pred::DoubleFaced => double_faced(seen, false),
             Pred::Transformed => double_faced(seen, true),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
@@ -1808,6 +1821,7 @@ impl<'a> Scope<'a> {
             | Pred::AttackingPlayer(_)
             | Pred::AttackingPlaneswalkerOf(_)
             | Pred::AttackingAlone
+            | Pred::AttackingBattle
             | Pred::AttackingPlayerOrPlaneswalker(_)
             | Pred::Blocking
             | Pred::Unblocked
@@ -2034,6 +2048,19 @@ impl<'a> Scope<'a> {
             Amount::HighestCounters { who, counter } => self.highest_counters(who, counter)?,
             Amount::Party(who) => self.party(who)?,
             Amount::StartingLife(who) => self.w14b_starting_life(who)?,
+            Amount::TurnsTaken(who) => self
+                .players(who)?
+                .into_iter()
+                .map(|player| i64::from(self.state.rmt8_turns_taken(player)))
+                .max()
+                .unwrap_or(0),
+            Amount::LifeAsTurnBegan(who) => self
+                .players(who)?
+                .into_iter()
+                .filter_map(|player| self.state.rmt8_life_as_turn_began(player))
+                .map(i64::from)
+                .max()
+                .unwrap_or(0),
             Amount::CastLastTurn(who) => self.cast_last_turn(who)?,
             Amount::Mutations(of) => self.mutations(of)?,
             Amount::AdditionalPaid => i64::try_from(self.payments(OptionalKind::Additional))

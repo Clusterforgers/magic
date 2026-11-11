@@ -188,6 +188,9 @@ fn counted(condition: &Condition) -> Option<&CounterKind> {
 
 /// The condition as the card words it, after "if", one text for each wording.
 pub fn condition_texts(condition: &Condition) -> Vec<String> {
+    if let Some(turns) = super::rmt8_conditions::condition_text(condition) {
+        return vec![turns];
+    }
     if let Some(paid) = triggers::cost_paid_text(condition, true) {
         return vec![paid];
     }

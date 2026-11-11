@@ -731,6 +731,11 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// A permanent became harnessed: its ∞ ability works from now on.
+    Harnessed {
+        /// The permanent.
+        object: ObjectId,
+    },
     /// A permanent became a copy of another object (CR 707.2), with the copiable values of the copy effect.
     BecameCopy(BecameCopy),
     /// A spell was copied (CR 707.10): the copy is put on the stack above it, not cast.
@@ -945,6 +950,13 @@ pub enum Event {
     /// abilities from now on. The counter of a megamorph is the event before it.
     TurnedFaceUp {
         /// The permanent that was turned face up.
+        object: ObjectId,
+        /// Its controller, who turned it.
+        player: PlayerId,
+    },
+    /// A permanent was turned face down by an effect (CR 708.2a): it is a face-down 2/2 from now on.
+    TurnedFaceDown {
+        /// The permanent that was turned face down.
         object: ObjectId,
         /// Its controller, who turned it.
         player: PlayerId,
@@ -1329,6 +1341,7 @@ impl Event {
             | Event::Suspected { object }
             | Event::Unsuspected { object }
             | Event::Solved { object }
+            | Event::Harnessed { object }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
             | Event::PermanentPhasedOut { object, .. }
@@ -1350,6 +1363,7 @@ impl Event {
             | Event::Crewed { object, .. }
             | Event::ClassLevelGained { object, .. }
             | Event::TurnedFaceUp { object, .. }
+            | Event::TurnedFaceDown { object, .. }
             | Event::DoorUnlocked { object, .. }
             | Event::Adapted { object, .. }
             | Event::Bolstered { object, .. }

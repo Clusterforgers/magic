@@ -1,7 +1,7 @@
 {
   "oracle_id": "92cfba68-12f6-4f97-9187-0f6a39656a0f",
   "name": "The Soul Stone",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Soul Stone",
@@ -15,15 +15,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 29, "end": 138 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{6}{B}" },
+              "Tap",
+              { "ExilePermanents": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [{ "Harness": { "what": "This" } }]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 139, "end": 243 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Matches": { "subject": "This", "selector": ["Harnessed"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
           }
         }
       ]

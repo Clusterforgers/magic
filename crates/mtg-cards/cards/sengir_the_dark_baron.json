@@ -1,7 +1,7 @@
 {
   "oracle_id": "f49f84f9-616e-495b-8d87-4de7941f230e",
   "name": "Sengir, the Dark Baron",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sengir, the Dark Baron",
@@ -21,9 +21,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 73, "end": 179 }
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "LostGame",
+                "who": {
+                  "PlayersWhere": { "who": "EachPlayer", "test": { "Not": { "Among": "Asker" } } }
+                }
+              }
+            },
+            "effects": [{ "GainLife": { "amount": { "LifeAsTurnBegan": "TriggeringPlayer" } } }]
           }
         },
         { "Keyword": "Partner" }

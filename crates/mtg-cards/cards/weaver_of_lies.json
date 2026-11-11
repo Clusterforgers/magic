@@ -1,7 +1,7 @@
 {
   "oracle_id": "bb2fca84-fc19-4c04-b146-1059aa975535",
   "name": "Weaver of Lies",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Weaver of Lies",
@@ -9,9 +9,23 @@
       "abilities": [
         { "Keyword": { "Morph": "{4}{U}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 120, "end": 250 }
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [{ "HasKeywordNamed": "Morph" }, { "HasKeywordNamed": "Megamorph" }]
+                    },
+                    "Other"
+                  ]
+                },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [{ "TurnFaceDown": { "what": { "Target": 0 } } }]
           }
         }
       ]

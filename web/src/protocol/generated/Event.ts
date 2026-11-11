@@ -706,6 +706,10 @@ object: ObjectId, } } | { "Solved": {
 /**
  * The permanent.
  */
+object: ObjectId, } } | { "Harnessed": { 
+/**
+ * The permanent.
+ */
 object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy } | { "CardCopied": CardCopy } | { "CopyCeased": { 
 /**
  * The copy.
@@ -917,6 +921,14 @@ player: PlayerId,
 level: number, } } | { "TurnedFaceUp": { 
 /**
  * The permanent that was turned face up.
+ */
+object: ObjectId, 
+/**
+ * Its controller, who turned it.
+ */
+player: PlayerId, } } | { "TurnedFaceDown": { 
+/**
+ * The permanent that was turned face down.
  */
 object: ObjectId, 
 /**

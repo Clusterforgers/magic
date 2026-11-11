@@ -162,6 +162,11 @@ pub(super) fn did_happened(
         Event::EvidenceCollected { player } => {
             found.push(did(Action::CollectedEvidence, Some(*player), None));
         }
+        Event::CountersChanged(changed) => {
+            if let Some(object) = crate::rmt8_turns::evolved(pre, post, changed) {
+                found.push(of(Action::Evolved, object));
+            }
+        }
         _ => {}
     }
     found.extend(from_found(fresh, &of));

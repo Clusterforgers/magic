@@ -314,6 +314,12 @@ pub struct GameState {
     pub(crate) seat_turns: BTreeMap<PlayerId, crate::turn_summary::TurnSummary>,
     /// The seat whose turn ended last.
     pub(crate) last_turn_of: Option<PlayerId>,
+    /// How many turns each player has begun this game (`rmt8_turns`).
+    pub(crate) rmt8_turns: BTreeMap<PlayerId, u32>,
+    /// Each player's life total as the current turn began (`rmt8_turns`).
+    pub(crate) rmt8_lives: BTreeMap<PlayerId, i32>,
+    /// The turns each player's two latest upkeeps began in, the earlier first (`rmt8_turns`).
+    pub(crate) rmt8_upkeeps: BTreeMap<PlayerId, [u32; 2]>,
     /// The monarch (CR 724): at most one player, from the first card that makes one.
     pub(crate) monarch: Option<PlayerId>,
     /// The players who have the city's blessing (CR 702.131), for the rest of the game.
@@ -926,6 +932,9 @@ impl Hash for GameState {
             day_night.hash(state);
         }
         self.hash_turn_summaries(state);
+        self.rmt8_turns.hash(state);
+        self.rmt8_lives.hash(state);
+        self.rmt8_upkeeps.hash(state);
         // Likewise a game without a monarch.
         if let Some(monarch) = self.monarch {
             monarch.hash(state);

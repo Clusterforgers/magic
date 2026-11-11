@@ -161,6 +161,10 @@ pub struct Designations {
     pub(crate) suspected: bool,
     /// It is a solved Case (CR 719.3): its "Solved" abilities work.
     pub(crate) solved: bool,
+    /// It is harnessed: its ∞ ability works.
+    pub(crate) harnessed: bool,
+    /// The turns it last attacked, blocked and became blocked in (0 for never), as this object.
+    pub(crate) fought: [u32; 3],
     /// The level a Class has reached (CR 716.2); 0 until a level ability resolves, which reads as level 1.
     pub(crate) level: u32,
     /// How many permanents it devoured as it entered (CR 702.82).
@@ -364,6 +368,16 @@ impl PermanentState {
     /// not.
     pub const fn solved(&self) -> bool {
         self.designations.solved
+    }
+
+    /// The turns the permanent last attacked, blocked and became blocked in, as this object (0 for never).
+    pub const fn fought(&self) -> [u32; 3] {
+        self.designations.fought
+    }
+
+    /// Whether the permanent is harnessed; a permanent that leaves the battlefield is a new object and is not.
+    pub const fn harnessed(&self) -> bool {
+        self.designations.harnessed
     }
 
     /// The level of a Class (CR 716.2): 1 as it enters, higher once its level abilities resolve; a permanent that

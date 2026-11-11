@@ -483,6 +483,10 @@ impl GameState {
                 (Stage::Turns, (turn, active, step), first)
             }
         };
+        let lives = players
+            .iter()
+            .map(|player| (player.id(), player.life()))
+            .collect();
         let mut game = GameState {
             format: Arc::clone(&setup.format),
             house_rules: setup.house_rules.clone(),
@@ -539,6 +543,9 @@ impl GameState {
             result: None,
             day_night: None,
             seat_turns: std::collections::BTreeMap::new(),
+            rmt8_turns: crate::rmt8_turns::turns_before(turn.0, first_player, seats),
+            rmt8_lives: lives,
+            rmt8_upkeeps: std::collections::BTreeMap::new(),
             last_turn_of: None,
             monarch: None,
             citys_blessing: std::collections::BTreeSet::new(),

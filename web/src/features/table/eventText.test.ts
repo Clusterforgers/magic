@@ -86,6 +86,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   Suspected: [{ Suspected: { object: 3 } }, 'Forest becomes suspected'],
   Unsuspected: [{ Unsuspected: { object: 3 } }, 'Forest is no longer suspected'],
   Solved: [{ Solved: { object: 3 } }, 'Forest is solved'],
+  Harnessed: [{ Harnessed: { object: 3 } }, 'Forest is harnessed'],
   BecameCopy: [
     { BecameCopy: { object: 3, of: { id: 5, counter: 0 } } },
     'Forest becomes a copy of Serra Angel',
@@ -157,6 +158,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Forest is crewed by Grizzly Bears and Hill Giant',
   ],
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
+  TurnedFaceDown: [{ TurnedFaceDown: { object: 3, player: 1 } }, 'Bo turns Forest face down'],
   DoorUnlocked: [{ DoorUnlocked: { object: 3, door: 1, player: 1 } }, 'Bo unlocks a door of Forest'],
   Mutated: [{ Mutated: { object: 3, spell: 9, over: true, player: 1 } }, 'Bo mutates a creature over Forest'],
   CardParted: [

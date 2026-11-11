@@ -143,6 +143,7 @@ mod rmt4_untap_limit;
 #[cfg(test)]
 mod rmt6_pieces_tests;
 mod rmt6_storied;
+mod rmt8_turns;
 pub mod rng;
 #[cfg(test)]
 mod rule_options;
