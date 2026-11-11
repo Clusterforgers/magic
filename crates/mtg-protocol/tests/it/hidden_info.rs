@@ -1663,10 +1663,13 @@ fn a_card_revealed_into_a_hand_is_known_to_every_seat_and_the_rest_stay_hidden(
     #[values(2, 3, 4)] seats: usize,
 ) {
     let narset = mtg_testkit::corpus::card("Narset, Parter of Veils").unwrap();
-    let Some(mtg_cards::ability::Ability::Loyalty { effects, .. }) =
-        narset.rules.first().map(|rule| (**rule).clone())
+    let Some(mtg_cards::ability::Ability::Loyalty { effects, .. }) = narset
+        .rules
+        .iter()
+        .map(|rule| (**rule).clone())
+        .find(|rule| matches!(rule, mtg_cards::ability::Ability::Loyalty { .. }))
     else {
-        panic!("Narset's −2 is her first rule")
+        panic!("Narset has a loyalty ability")
     };
     let spell = mtg_cards::CardDefinition::new("Peek")
         .with_type(mtg_core::card::CardType::Sorcery)
