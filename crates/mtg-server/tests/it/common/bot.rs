@@ -186,7 +186,8 @@ impl Bot {
             | ServerMessage::AutoChoices { .. }
             | ServerMessage::AutoYields { .. }
             | ServerMessage::Bank { .. }
-            | ServerMessage::Presence { .. } => {}
+            | ServerMessage::Presence { .. }
+            | ServerMessage::Deciding { .. } => {}
             ServerMessage::GameOver { result } => return Progress::Over(result),
             ServerMessage::Forecast { .. } => {
                 panic!("a bot never previews, so it is sent no forecast")

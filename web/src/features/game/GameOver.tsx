@@ -13,6 +13,7 @@ import { useGame, usePlay } from './gameContext'
 import { describeResult, endKind, seatOutcomes } from './outcome'
 import type { EndKind } from './outcome'
 import { seatName } from './useGameInfo'
+import { WinBurst } from './WinBurst'
 
 /** The picture of each ending: a trophy for a win, crossed swords for a loss, a handshake, a flag for a concession. */
 const ICON: Record<EndKind, LucideIcon> = {
@@ -58,9 +59,13 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
     <PageShell className="flex min-h-0 flex-1 flex-col gap-6 sm:py-6">
       <section aria-labelledby="over-title" data-end={kind} className="flex min-h-0 flex-1 flex-col gap-6">
         <header className="flex shrink-0 items-start gap-4">
-          <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
-            <Icon aria-hidden="true" className="size-6" />
-          </span>
+          {kind === 'won' ? (
+            <WinBurst />
+          ) : (
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
+              <Icon aria-hidden="true" className="size-6" />
+            </span>
+          )}
           <div className="min-w-0">
             <p className="text-sm font-medium text-muted-foreground">{EYEBROW[kind]}</p>
             <h1

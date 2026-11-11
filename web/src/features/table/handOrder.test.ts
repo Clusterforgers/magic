@@ -1,8 +1,16 @@
-// Goal: the hand's auto sorts put lands, creatures and other spells in their groups by mana value and name, a custom order keeps its places while new cards follow at the end and gone cards drop out, and a move or a stored order out of range changes nothing.
+// Goal: the hand's auto sorts put each card in the first of the account's type groups it belongs to, each group by mana value and name, a custom order keeps its places while new cards follow at the end and gone cards drop out, and a move or a stored order out of range changes nothing.
 import { describe, expect, it } from 'vitest'
 import type { CardType } from '@/protocol/generated'
-import { handGroup, mergeCustom, moveCard, parseCustom, sortHand } from './handOrder'
-import type { HandFacts, HandSort } from './handOrder'
+import {
+  DEFAULT_HAND_SORT,
+  handGroup,
+  mergeCustom,
+  moveCard,
+  moveGroup,
+  parseCustom,
+  sortHand,
+} from './handOrder'
+import type { HandFacts, HandGroup, HandSort } from './handOrder'
 
 const CARDS: Record<number, HandFacts> = {
   1: { types: ['Instant'], manaValue: 1, name: 'Shock' },
@@ -16,26 +24,61 @@ const CARDS: Record<number, HandFacts> = {
 }
 const facts = (id: number) => CARDS[id]
 
+const DEFAULT = DEFAULT_HAND_SORT.groups
+const SPELLS_FIRST: HandGroup[] = [
+  'Instant',
+  'Sorcery',
+  'Creature',
+  'Land',
+  'Artifact',
+  'Enchantment',
+  'Planeswalker',
+  'Battle',
+]
+const sort = (by: HandSort['by'], groups: readonly HandGroup[] = DEFAULT): HandSort => ({
+  by,
+  groups: [...groups],
+})
+
 describe('sortHand', () => {
-  it.each<[HandSort, number[], number[]]>([
-    ['drawn', [1, 2, 3, 4], [1, 2, 3, 4]],
-    ['types', [1, 2, 3, 4, 5, 6, 7, 8], [5, 7, 2, 6, 3, 4, 1, 8]],
-    ['mana', [1, 2, 3, 4, 5, 6, 7, 8], [5, 7, 2, 4, 6, 1, 3, 8]],
-    ['types', [], []],
-    // An unknown card sorts as a spell of mana value 0 with no name, ahead of the known spells, in server order.
-    ['types', [1, 99, 98, 2], [2, 99, 98, 1]],
-  ])('%s sorts %j as %j', (sort, ids, want) => {
-    expect(sortHand(ids, facts, sort)).toEqual(want)
+  it.each<[string, HandSort, number[], number[]]>([
+    ['as drawn', sort('Drawn'), [1, 2, 3, 4], [1, 2, 3, 4]],
+    ['by type in the starting order', sort('Groups'), [1, 2, 3, 4, 5, 6, 7, 8], [5, 7, 2, 6, 3, 8, 1, 4]],
+    [
+      'by type, spells first',
+      sort('Groups', SPELLS_FIRST),
+      [1, 2, 3, 4, 5, 6, 7, 8],
+      [1, 4, 5, 6, 3, 7, 2, 8],
+    ],
+    ['by mana value', sort('ManaValue'), [1, 2, 3, 4, 5, 6, 7, 8], [5, 7, 2, 4, 6, 1, 3, 8]],
+    ['an empty hand', sort('Groups'), [], []],
+    // An unknown card sorts after every group, with mana value 0 and no name, in server order.
+    ['unknown cards', sort('Groups'), [1, 99, 98, 2], [2, 1, 99, 98]],
+  ])('%s', (_, how, ids, want) => {
+    expect(sortHand(ids, facts, how)).toEqual(want)
   })
 
-  it.each<[CardType[], number]>([
-    [['Land'], 0],
-    [['Land', 'Creature'], 0],
-    [['Artifact', 'Creature'], 1],
-    [['Planeswalker'], 2],
-    [['Battle'], 2],
-  ])('%j is group %i', (types, group) => {
-    expect(handGroup(types)).toBe(group)
+  it.each<[CardType[], readonly HandGroup[], number]>([
+    [['Land'], DEFAULT, 0],
+    [['Land', 'Creature'], DEFAULT, 0],
+    [['Land', 'Creature'], SPELLS_FIRST, 2],
+    [['Artifact', 'Creature'], DEFAULT, 1],
+    [['Artifact', 'Creature'], ['Land', 'Artifact', 'Creature'], 1],
+    [['Planeswalker'], DEFAULT, 4],
+    [['Kindred' as CardType], DEFAULT, 8],
+  ])('%j among %j is group %i', (types, groups, group) => {
+    expect(handGroup(types, groups)).toBe(group)
+  })
+})
+
+describe('moveGroup', () => {
+  it.each<[number, number, HandGroup[]]>([
+    [1, 0, ['Creature', 'Land', 'Artifact']],
+    [0, 2, ['Creature', 'Artifact', 'Land']],
+    [0, 3, ['Land', 'Creature', 'Artifact']],
+    [-1, 0, ['Land', 'Creature', 'Artifact']],
+  ])('moves %i to %i', (from, to, want) => {
+    expect(moveGroup(['Land', 'Creature', 'Artifact'], from, to)).toEqual(want)
   })
 })
 

@@ -126,6 +126,8 @@ export interface TileFacts {
   enchanted?: readonly string[]
   /** The counters on the player in words ("3 rad counters"); none by default. */
   counters?: readonly string[]
+  /** The effects on the player (emblems, rules in force) by their labels; none by default. */
+  effects?: readonly string[]
   /** What the seat shows to every seat, in words ("revealed 2 cards"); left out while it shows nothing. */
   revealed?: string | undefined
 }
@@ -144,6 +146,7 @@ export function tileName(facts: TileFacts): string {
     facts.revealed ?? null,
     ...(facts.commander ?? []),
     ...(facts.enchanted ?? []),
+    ...(facts.effects ?? []),
     facts.active ? 'active turn' : null,
     facts.priority ? 'has priority' : null,
     facts.eliminated ? 'eliminated' : null,

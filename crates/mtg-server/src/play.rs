@@ -276,6 +276,11 @@ impl<S: EventStore> GameActor<S> {
                 },
             );
         }
+        if let Phase::Running(running) = &mut self.phase
+            && let Some(seats) = running.deciding_news()
+        {
+            self.seats.broadcast(&ServerMessage::Deciding { seats });
+        }
         let result = match &self.phase {
             Phase::Running(running) => running.engine.result(),
             Phase::Lobby { .. } => None,

@@ -7,6 +7,7 @@ import type { LossReason } from "./LossReason";
 import type { ManaPool } from "./ManaPool";
 import type { MulliganStatus } from "./MulliganStatus";
 import type { ObjectId } from "./ObjectId";
+import type { PlayerEffect } from "./PlayerEffect";
 import type { PlayerId } from "./PlayerId";
 import type { ZoneView } from "./ZoneView";
 
@@ -56,6 +57,10 @@ ring_bearer?: ObjectId,
  * The Auras that enchant the player, in id order; public, and left out while there are none.
  */
 enchanted_by?: Array<ObjectId>, 
+/**
+ * The rules in force on the player and the keywords the player has; public, and left out while there are none.
+ */
+effects?: Array<PlayerEffect>, 
 /**
  * Mulligans taken.
  */

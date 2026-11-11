@@ -75,12 +75,12 @@ function renderPreview(words: [ObjectView, ...ActivatedView[]][], offered: Abili
     must(table.container.querySelector<HTMLElement>(`button[data-object-id="${id}"]`))
   const preview = () => screen.getByTestId('card-preview')
   const list = (): HTMLElement | null => preview().querySelector('[data-slot="preview-activated"]')
-  const lines = (): string[] =>
-    [...(list()?.querySelectorAll('li') ?? [])].map((item) => (item.firstChild?.textContent ?? '').trim())
-  const now = (): string[] =>
-    [...(list()?.querySelectorAll('li[data-now]') ?? [])].map((item) =>
-      (item.firstChild?.textContent ?? '').trim(),
-    )
+  // An ability line keeps the card's words in `data-text`; its symbols are pictures.
+  const text = (item: Element): string =>
+    item.querySelector<HTMLElement>('[data-text]')?.dataset.text ??
+    (item.firstChild?.textContent ?? '').trim()
+  const lines = (): string[] => [...(list()?.querySelectorAll('li') ?? [])].map((item) => text(item))
+  const now = (): string[] => [...(list()?.querySelectorAll('li[data-now]') ?? [])].map((item) => text(item))
   return { ...table, card, preview, list, lines, now }
 }
 

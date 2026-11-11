@@ -1,4 +1,4 @@
-//! Goal: account preferences are one row per account that reads back as saved, default when absent (the own declare attackers and postcombat main stops pinned), an empty stop list kept as saved, replaced by a later save, private per account, refused by the database when the stops are no array, and removed with the account's transaction.
+//! Goal: account preferences are one row per account that reads back as saved, default when absent (the own declare attackers and postcombat main stops pinned), an empty stop list and a hand sort or none kept as saved, replaced by a later save, private per account, refused by the database when the stops are no array, and removed with the account's transaction.
 
 #![allow(clippy::unwrap_used)]
 
@@ -25,6 +25,7 @@ fn prefs(on: bool) -> StoredPrefs {
         auto_assign_damage: !on,
         auto_smart_stops: on,
         auto_yields: json!([{"name": "Pinger", "text": "{T}: deal 1 damage"}]),
+        hand_sort: on.then(|| json!({"by": "Groups", "groups": ["Land", "Artifact", "Creature"]})),
     }
 }
 
