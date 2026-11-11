@@ -1124,6 +1124,24 @@ fn mixed_zones(ctx: &Ctx, alternatives: &[&str]) -> Tr<Option<Vec<Value>>> {
     Ok(Some(vec![json!({"AnyOf": parts})]))
 }
 
+/// A target player a fact of the turn holds for (`Player.LostLifeThisTurn`, `Opponent.attackedWithCreaturesThisTurn`):
+/// a `PlayerAmong` of the players for whom it holds; another property is no such target.
+fn ep28_player_among(word: &str) -> Option<Value> {
+    let (head, prop) = word.split_once('.')?;
+    let who = match head {
+        "Player" => "EachPlayer",
+        "Opponent" => "Opponents",
+        _ => return None,
+    };
+    let tally = match prop {
+        "LostLifeThisTurn" => "LifeLost",
+        "attackedWithCreaturesThisTurn" => "Attackers",
+        _ => return None,
+    };
+    let test = json!({"Compare": {"left": {"Tallied": {"who": "You", "what": tally}}, "op": "Ge", "right": 1}});
+    Some(json!({"PlayerAmong": {"PlayersWhere": {"who": who, "test": test}}}))
+}
+
 /// Whether the card text says "target player" and names no opponent anywhere outside reminder text.
 fn player_printed(oracle: &str) -> bool {
     let text = super::oracle::normalise(oracle, "");
@@ -1140,7 +1158,10 @@ fn target_what(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
         return Ok(json!({"PerPlayer": {"players": players, "what": what}}));
     }
     let alternatives: Vec<&str> = valid.split(',').collect();
-    let players = |word: &str| matches!(word, "Any" | "Player" | "Opponent" | "Player.Opponent");
+    let players = |word: &str| {
+        matches!(word, "Any" | "Player" | "Opponent" | "Player.Opponent")
+            || ep28_player_among(word).is_some()
+    };
     if alternatives.iter().all(|word| !players(word)) {
         if matches!(zone, None | Some("Battlefield"))
             && let Some(preds) = mixed_zones(ctx, &alternatives)?
@@ -1157,7 +1178,10 @@ fn target_what(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
             // A script may target an opponent where the card says "target player" (Aggressive Sabotage).
             "Opponent" | "Player.Opponent" if player_printed(ctx.oracle) => json!("Player"),
             "Opponent" | "Player.Opponent" => json!("Opponent"),
-            other => json!({"Object": selector_in(ctx, other, zone)?}),
+            other => match ep28_player_among(other) {
+                Some(among) => among,
+                None => json!({"Object": selector_in(ctx, other, zone)?}),
+            },
         });
     }
     match kinds.as_slice() {

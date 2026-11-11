@@ -2125,6 +2125,8 @@ impl Writer<'_> {
                 what,
                 rule: TargetSet::TotalManaValueAtMost(_) | TargetSet::SameController,
             } => wanted(what),
+            // A player a fact holds for is worded as any target player is (`name_target` writes the fact).
+            Targetable::PlayerAmong(_) => wanted(&Targetable::Player),
             what => wanted(what),
         })
     }
@@ -2678,6 +2680,7 @@ impl Writer<'_> {
     }
 
     /// An effect as a sentence without its first capital and its period.
+    #[allow(clippy::too_many_lines)]
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
             Effect::DealDamage { .. } if unpreventable(effect) => self.g11b_hard(effect)?,
@@ -2763,7 +2766,10 @@ impl Writer<'_> {
             Effect::Continuous {
                 affected,
                 mods,
-                duration: duration @ (Duration::UntilEndOfTurn | Duration::UntilYourNextTurn),
+                duration:
+                    duration @ (Duration::UntilEndOfTurn
+                    | Duration::UntilYourNextTurn
+                    | Duration::UntilYourNextUpkeep),
             } => self.pump(affected, mods, duration)?,
             Effect::May {
                 who: Ref::You,

@@ -698,6 +698,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::DayIfNeither
         | ReplaceBy::EntersPrepared
         | ReplaceBy::ChooseWord(_)
+        | ReplaceBy::UnderChosenOpponent
         | ReplaceBy::Riot
         | ReplaceBy::WithCounterOf(_)
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
@@ -729,6 +730,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::WithCounterOf(_)
                 | ReplaceBy::EntersPrepared
                 | ReplaceBy::ChooseWord(_)
+                | ReplaceBy::UnderChosenOpponent
         )
     )
 }
@@ -2614,6 +2616,7 @@ impl Pass<'_> {
     }
 
     /// Changes how the card enters: tapped, with counters, with a choice made, or with life paid.
+    #[allow(clippy::too_many_lines)]
     fn enter(
         &mut self,
         at: usize,
@@ -2697,6 +2700,11 @@ impl Pass<'_> {
                     Asked::Got(chosen) => chosen,
                 };
                 self.w2b_remember(at, object, controller, chosen);
+            }
+            ReplaceBy::UnderChosenOpponent => {
+                if let Asked::Ask(decision) = self.ep28_under(at, source, object, controller)? {
+                    return Ok(Applied::Ask(decision));
+                }
             }
             ReplaceBy::AsCopy {
                 of,
@@ -3364,6 +3372,7 @@ mod umbra;
 
 #[cfg(test)]
 mod ep21_plus;
+mod ep28_under;
 mod r6f_redirect;
 mod w13a_moved;
 mod w5d_instead;

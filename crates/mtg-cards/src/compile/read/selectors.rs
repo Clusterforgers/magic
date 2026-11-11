@@ -1953,6 +1953,7 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
             | Targetable::PerPlayer { .. }
             | Targetable::ChosenBy { .. } => return None,
             Targetable::Another { what, .. } => return another_text(what),
+            Targetable::PlayerAmong(among) => return super::r9w_players::r9w_target_text(among),
         });
     }
     if is_total(spec) {

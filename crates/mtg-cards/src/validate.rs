@@ -215,7 +215,7 @@ impl Kind {
 
 fn kind_of_targetable(what: &Targetable) -> Kind {
     match what {
-        Targetable::Player | Targetable::Opponent => Kind::Player,
+        Targetable::Player | Targetable::Opponent | Targetable::PlayerAmong(_) => Kind::Player,
         Targetable::Object(_) | Targetable::PerPlayer { .. } => Kind::Object,
         Targetable::Together { what, .. }
         | Targetable::Another { what, .. }
@@ -1075,6 +1075,17 @@ impl<'a> Walker<'a> {
             Amount::HighestCounters { who, .. } => self.player_amount("HighestCounters", who),
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
             Amount::CastLastTurn(who) => self.player_amount("CastLastTurn", who),
+            Amount::TalliedLastTurn { who, what } => {
+                if matches!(
+                    what,
+                    TurnTally::CountersPut
+                        | TurnTally::DamageDealtTo
+                        | TurnTally::DungeonsCompleted
+                ) {
+                    self.problem("last turn is kept for the counts of players only");
+                }
+                self.player_amount("TalliedLastTurn", who);
+            }
             Amount::Party(who) => self.player_amount("Party", who),
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),
             Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
@@ -2543,6 +2554,10 @@ impl Walker<'_> {
             Targetable::AtRandom(what) => {
                 self.uses("Target", "AtRandom");
                 self.at("what", |w| w.targetable(what));
+            }
+            Targetable::PlayerAmong(among) => {
+                self.uses("Target", "PlayerAmong");
+                self.at("among", |w| w.reference(among, Kind::Player));
             }
             Targetable::AnyTarget | Targetable::Player | Targetable::Opponent => {}
         }
@@ -4996,6 +5011,7 @@ impl Walker<'_> {
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);
@@ -5060,6 +5076,7 @@ impl Walker<'_> {
             | ReplaceBy::WithCounterOf(_)
             | ReplaceBy::EntersPrepared
             | ReplaceBy::ChooseWord(_)
+            | ReplaceBy::UnderChosenOpponent
                 if !enters =>
             {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");

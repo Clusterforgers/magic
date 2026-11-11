@@ -1028,6 +1028,9 @@ pub enum ReplaceBy {
     /// As the permanent enters, its controller chooses one of these words ("choose Khans or Dragons"), which
     /// `Condition::EnteredAs` reads for as long as it stays.
     ChooseWord(Vec<String>),
+    /// The permanent enters under the control of an opponent its controller chooses as it enters ("~ enters under the
+    /// control of an opponent of your choice"); under its controller's own control when there is no opponent.
+    UnderChosenOpponent,
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.

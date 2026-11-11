@@ -231,7 +231,7 @@ fn who(by: &Ref) -> (&'static str, &'static str) {
 fn kind_of(what: &Targetable) -> (String, String) {
     match what {
         Targetable::AnyTarget => ("target".to_owned(), String::new()),
-        Targetable::Player => ("player".to_owned(), String::new()),
+        Targetable::Player | Targetable::PlayerAmong(_) => ("player".to_owned(), String::new()),
         Targetable::Opponent => ("opponent".to_owned(), String::new()),
         Targetable::Object(selector) => phrase(selector),
         Targetable::PerPlayer { players, what } => {
