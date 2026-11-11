@@ -527,7 +527,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
     // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
     if matches!(ability, Ability::CostModifier { life, .. } if *life > 0) {
-        texts.retain(|text| text.contains(" life to "));
+        texts.retain(|text| text.contains(" life to ") || text.contains(" life more to "));
     }
     texts
 }
@@ -1742,6 +1742,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Transform { .. }
                 | Effect::Flip { .. }
                 | Effect::TurnFaceUp { .. }
+                | Effect::TurnFaceDown { .. }
                 | Effect::CopySpell { .. }
                 | Effect::ChangeTargets {
                     to: NewTargets::Another | NewTargets::One,
@@ -3040,9 +3041,20 @@ impl Writer<'_> {
         (!steps.is_empty()).then(|| join_list(&steps))
     }
 
+    /// "turn ~ face down", "harness ~": the keyword actions of pack rmt8 on an object.
+    fn rmt8_action(&mut self, effect: &Effect, what: &Ref) -> Option<String> {
+        let object = self.object(what)?;
+        Some(match effect {
+            Effect::TurnFaceDown { .. } => format!("turn {object} face down"),
+            Effect::Harness { .. } => format!("harness {object}"),
+            _ => return None,
+        })
+    }
+
     /// "surveil 2", "proliferate", "transform ~", "you become the monarch", "return ~ from your graveyard to the
     /// battlefield", "if there are five or more charge counters on ~, transform ~": a keyword action, a designation,
     /// the card returning itself or an effect on a condition.
+    #[allow(clippy::too_many_lines)]
     fn keyword_action(&mut self, effect: &Effect) -> Option<String> {
         if let Some(text) = Self::card_returning_itself(effect) {
             return Some(text);
@@ -3095,6 +3107,9 @@ impl Writer<'_> {
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
             Effect::Flip { what } => format!("flip {}", self.object(what)?),
             Effect::TurnFaceUp { what } => format!("turn {} face up", self.object(what)?),
+            Effect::TurnFaceDown { what } | Effect::Harness { what } => {
+                self.rmt8_action(effect, what)?
+            }
             Effect::Prepare { .. } => super::prepare::becomes_prepared_text(effect)?,
             Effect::If {
                 condition: Condition::Not(_),

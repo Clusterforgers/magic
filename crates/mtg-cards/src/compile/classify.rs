@@ -99,9 +99,11 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     if is_chapter(head) || head.starts_with("To solve \u{2014} ") {
         return ClauseKind::Triggered;
     }
-    let body = head
-        .get(ability_word_len(head).unwrap_or(0)..)
-        .unwrap_or(head);
+    // An Infinity Stone's "∞ — A" works while the stone is harnessed: A's own kind (the glyph is no ability word).
+    let body = head.strip_prefix("\u{221e} \u{2014} ").unwrap_or_else(|| {
+        head.get(ability_word_len(head).unwrap_or(0)..)
+            .unwrap_or(head)
+    });
     if is_loyalty(body) {
         ClauseKind::Loyalty
     } else if is_triggered(body) && !(spell && r6e_delayed(body)) {

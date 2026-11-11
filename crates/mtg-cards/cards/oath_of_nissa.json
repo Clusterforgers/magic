@@ -1,7 +1,7 @@
 {
   "oracle_id": "c4efdbab-711d-4269-9b24-b05d36f7e5c7",
   "name": "Oath of Nissa",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Oath of Nissa",
@@ -43,9 +43,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 226, "end": 309 }
+          "Rule": {
+            "rule": {
+              "SpendManaAs": {
+                "who": "You",
+                "spend_as": "AnyColor",
+                "spells": [{ "Type": "Planeswalker" }]
+              }
+            }
           }
         }
       ]

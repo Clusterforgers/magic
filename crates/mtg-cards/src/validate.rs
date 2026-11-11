@@ -746,7 +746,6 @@ impl<'a> Walker<'a> {
             | Pred::Crewed(r)
             | Pred::Saddled(r)
             | Pred::DamagedBy(r)
-            | Pred::AttachedTo(r)
             | Pred::PairedWith(r)
             | Pred::SameCard(r) => {
                 self.reference(r, Kind::Object);
@@ -756,6 +755,8 @@ impl<'a> Walker<'a> {
                 self.uses("Keyword", &tag_of(keyword));
             }
             Pred::HasKeyword(keyword) => self.keyword(keyword),
+            // An Aura is attached to a permanent, or to a player it enchants ("Curses attached to you").
+            Pred::AttachedTo(r) => self.reference(r, Kind::Either),
             Pred::ChosenAs(name) => self.chosen_as(name),
             Pred::Named(name) => self
                 .names
@@ -838,6 +839,8 @@ impl<'a> Walker<'a> {
             | Pred::Prepared
             | Pred::Suspected
             | Pred::Solved
+            | Pred::Harnessed
+            | Pred::FoughtSinceYourLastUpkeep { .. }
             | Pred::DoubleFaced
             | Pred::Transformed
             | Pred::Paired
@@ -848,6 +851,7 @@ impl<'a> Walker<'a> {
             | Pred::AttackedThisTurn
             | Pred::Attacking
             | Pred::AttackingAlone
+            | Pred::AttackingBattle
             | Pred::Blocking
             | Pred::Unblocked
             | Pred::HasCounter(_)
@@ -1074,6 +1078,8 @@ impl<'a> Walker<'a> {
             }
             Amount::HighestCounters { who, .. } => self.player_amount("HighestCounters", who),
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
+            Amount::TurnsTaken(who) => self.player_amount("TurnsTaken", who),
+            Amount::LifeAsTurnBegan(who) => self.player_amount("LifeAsTurnBegan", who),
             Amount::CastLastTurn(who) => self.player_amount("CastLastTurn", who),
             Amount::TalliedLastTurn { who, what } => {
                 if matches!(
@@ -3261,10 +3267,12 @@ impl Walker<'_> {
             | Effect::Transform { what }
             | Effect::Flip { what }
             | Effect::TurnFaceUp { what }
+            | Effect::TurnFaceDown { what }
             | Effect::Prepare { what }
             | Effect::Suspect { what }
             | Effect::Unsuspect { what }
             | Effect::Solve { what }
+            | Effect::Harness { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
             => w.at("what", |w| w.reference(what, Kind::Object)),

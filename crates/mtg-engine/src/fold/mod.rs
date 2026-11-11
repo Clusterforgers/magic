@@ -27,6 +27,8 @@ mod p12_arrived;
 #[cfg(test)]
 mod r3d_atoms;
 mod resolution;
+#[cfg(test)]
+mod rmt8_atoms;
 pub(crate) use resolution::step_done;
 #[cfg(test)]
 mod tests;
@@ -134,7 +136,11 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::RemovedFromCombat { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
-        | Event::DamageCleared => combat::apply(state, event),
+        | Event::DamageCleared => {
+            combat::apply(state, event)?;
+            crate::rmt8_turns::mark_fought(state, event);
+            Ok(())
+        }
         Event::AbilityPutOnStack(_)
         | Event::AbilityActivated { .. }
         | Event::ResolutionBegan { .. }
@@ -185,6 +191,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Suspected { object } => set_suspected(state, *object, true),
         Event::Unsuspected { object } => set_suspected(state, *object, false),
         Event::Solved { object } => set_solved(state, *object),
+        Event::Harnessed { object } => crate::rmt8_turns::set_harnessed(state, *object),
         Event::Crewed { .. } => tally_crewed(state, event),
         // The change follows as events of its own; the action restarts the round, so the other seats see it, and a look
         // by hand records what the seat learned.
@@ -336,6 +343,7 @@ fn begin_turn(
     } else {
         state.turn.regular = active;
     }
+    state.rmt8_count_turn(active);
     state.turn.number = number;
     state.turn.active = active;
     state.turn.extra = extra;
@@ -389,6 +397,9 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             // A phase added after the current one begins as its entry says, and the entry is spent (CR 500.8).
             if state.turn.ahead.first() == Some(step) {
                 state.turn.ahead.remove(0);
+            }
+            if *step == Step::Upkeep {
+                state.rmt8_mark_upkeep();
             }
             if *step == Step::BeginCombat {
                 state.turn.combats += 1;
@@ -470,6 +481,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Devoured { object, count } => w7e_set_devoured(state, *object, *count)?,
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
+        Event::TurnedFaceDown { object, .. } => crate::rmt8_turns::turn_face_down(state, *object)?,
         Event::DoorUnlocked { object, door, .. } => unlock(state, *object, *door)?,
         Event::ManaAdded {
             player,

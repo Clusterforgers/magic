@@ -197,6 +197,7 @@ mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
 mod return_this_card;
+mod rmt8_wordings;
 mod sacrifice_it;
 mod sacrifice_search;
 mod sacrifice_unless;
@@ -483,6 +484,7 @@ fn add_e17a(ability: &Ability, texts: &mut Vec<String>) {
 pub(super) fn add_last(ability: &Ability, texts: &mut Vec<String>) {
     add_e17a(ability, texts);
     f29_wordings::add(ability, texts);
+    rmt8_wordings::add(ability, texts);
 }
 
 /// Adds the wordings of fix pass 9 and of round 7 (r7c), a search of your library and/or graveyard, and fix20's

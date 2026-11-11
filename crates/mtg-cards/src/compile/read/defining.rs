@@ -330,6 +330,9 @@ pub(super) fn value_text(amount: &Amount) -> Option<String> {
 }
 
 pub(super) fn counting_text(amount: &Amount) -> Option<String> {
+    if let Some(text) = super::rmt8_conditions::amount_text(amount) {
+        return Some(text);
+    }
     if let Some(text) = super::r11w_tallies::said(amount) {
         return Some(text);
     }

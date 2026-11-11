@@ -62,6 +62,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Transform { .. }
         | Effect::Flip { .. }
         | Effect::TurnFaceUp { .. }
+        | Effect::TurnFaceDown { .. }
+        | Effect::Harness { .. }
         | Effect::Prepare { .. }
         | Effect::Suspect { .. }
         | Effect::Unsuspect { .. }

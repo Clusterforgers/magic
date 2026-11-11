@@ -89,6 +89,8 @@ fn state_word(pred: &Pred) -> Option<&'static str> {
         Pred::Prepared => "prepared",
         Pred::Suspected => "suspected",
         Pred::Solved => "solved",
+        Pred::Harnessed => "harnessed",
+        Pred::FoughtSinceYourLastUpkeep { .. } => "in combat since your last upkeep",
         Pred::DoubleFaced => "double-faced",
         Pred::Transformed => "transformed",
         Pred::Paired => "paired",
@@ -137,6 +139,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             }
             Pred::AttackingPlayer(Ref::You) => tail.push("attacking you".to_owned()),
             Pred::AttackingAlone => tail.push("attacking alone".to_owned()),
+            Pred::AttackingBattle => tail.push("attacking a battle".to_owned()),
             Pred::AttackingPlayerOrPlaneswalker(Ref::You) => {
                 tail.push("attacking you or a planeswalker you control".to_owned());
             }

@@ -567,6 +567,12 @@ pub enum Amount {
     },
     /// The life total the players the reference names began the game with (the least of them).
     StartingLife(Ref),
+    /// How many turns the players the reference names have begun this game, the current one included (the most of
+    /// them): "your first, second, or third turn of the game" is your turn while this is 3 or less.
+    TurnsTaken(Ref),
+    /// The life total the players the reference names had as the turn began (the most of them): "that player's life
+    /// total as the turn began".
+    LifeAsTurnBegan(Ref),
     /// The most spells one of the players the reference names cast during the previous turn ("no spells were cast last turn":
     /// `EachPlayer`, equal to 0; "a player cast two or more spells last turn": at least 2); 0 before any turn has ended.
     CastLastTurn(Ref),
@@ -785,6 +791,8 @@ enum Tagged {
         counter: CounterKind,
     },
     StartingLife(Ref),
+    TurnsTaken(Ref),
+    LifeAsTurnBegan(Ref),
     CastLastTurn(Ref),
     TalliedLastTurn {
         who: Ref,
@@ -917,6 +925,8 @@ enum TaggedRef<'a> {
         counter: &'a CounterKind,
     },
     StartingLife(&'a Ref),
+    TurnsTaken(&'a Ref),
+    LifeAsTurnBegan(&'a Ref),
     CastLastTurn(&'a Ref),
     TalliedLastTurn {
         who: &'a Ref,
@@ -1019,6 +1029,8 @@ impl From<Tagged> for Amount {
             Tagged::Largest { who, of } => Amount::Largest { who, of },
             Tagged::HighestCounters { who, counter } => Amount::HighestCounters { who, counter },
             Tagged::StartingLife(who) => Amount::StartingLife(who),
+            Tagged::TurnsTaken(who) => Amount::TurnsTaken(who),
+            Tagged::LifeAsTurnBegan(who) => Amount::LifeAsTurnBegan(who),
             Tagged::CastLastTurn(who) => Amount::CastLastTurn(who),
             Tagged::TalliedLastTurn { who, what } => Amount::TalliedLastTurn { who, what },
             Tagged::Party(who) => Amount::Party(who),
@@ -1117,6 +1129,8 @@ impl Serialize for Amount {
                 TaggedRef::HighestCounters { who, counter }.serialize(serializer)
             }
             Amount::StartingLife(who) => TaggedRef::StartingLife(who).serialize(serializer),
+            Amount::TurnsTaken(who) => TaggedRef::TurnsTaken(who).serialize(serializer),
+            Amount::LifeAsTurnBegan(who) => TaggedRef::LifeAsTurnBegan(who).serialize(serializer),
             Amount::CastLastTurn(who) => TaggedRef::CastLastTurn(who).serialize(serializer),
             Amount::TalliedLastTurn { who, what } => {
                 TaggedRef::TalliedLastTurn { who, what: *what }.serialize(serializer)

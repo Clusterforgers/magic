@@ -92,6 +92,7 @@ mod one_of;
 mod pair;
 mod reflexive;
 mod remember;
+mod rmt8_turn_down;
 mod turn_up;
 // dk1b
 mod dk1c5_unlock;
@@ -236,6 +237,8 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Transform { .. } => transform::run(cx, effect),
         Effect::Flip { .. } => flip::run(cx, effect),
         Effect::TurnFaceUp { .. } => turn_up::run(cx, effect),
+        Effect::TurnFaceDown { .. } => rmt8_turn_down::run(cx, effect),
+        Effect::Harness { .. } => rmt8_turn_down::harness(cx, effect),
         Effect::Prepare { .. } => prepare::run(cx, effect),
         Effect::Suspect { .. } | Effect::Unsuspect { .. } | Effect::Solve { .. } => {
             suspect::run(cx, effect)
@@ -340,7 +343,7 @@ mod tests {
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
         {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"MultiplyCounters":{"on":"This"}}, {"PutCountersOf":{"on":"This","of":"This"}}, {"Tap":{"what":"This"}},
-        {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"LoseGame":{}}, {"DrawGame":{}}, {"SetLife":{"amount":20}}, {"ExchangeLife":{"with":"Opponents"}}, {"RemoveDamage":{"what":"This"}}, {"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}, {"SeparatePiles":{"what":"This","chooser":"Opponents","as":"pile_a","rest_as":"pile_b"}}, {"AddPhase":{"phases":["Combat","Main"]}},
+        {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"TurnFaceDown":{"what":"This"}}, {"Harness":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"LoseGame":{}}, {"DrawGame":{}}, {"SetLife":{"amount":20}}, {"ExchangeLife":{"with":"Opponents"}}, {"RemoveDamage":{"what":"This"}}, {"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}, {"SeparatePiles":{"what":"This","chooser":"Opponents","as":"pile_a","rest_as":"pile_b"}}, {"AddPhase":{"phases":["Combat","Main"]}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Seek":{"filter":[]}}, {"Venture":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
@@ -381,7 +384,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 113, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 115, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -453,6 +456,8 @@ mod tests {
         "Effect.MyriadCopies",
         "Effect.Transform",
         "Effect.Flip",
+        "Effect.TurnFaceDown",
+        "Effect.Harness",
         "Effect.Prepare",
         "Effect.WinGame",
         "Effect.LoseGame",

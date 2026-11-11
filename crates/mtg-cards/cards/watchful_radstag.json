@@ -1,7 +1,7 @@
 {
   "oracle_id": "572afa0f-9e82-4899-b622-a7554625b9f4",
   "name": "Watchful Radstag",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Watchful Radstag",
@@ -9,9 +9,9 @@
       "abilities": [
         { "Keyword": "Evolve" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 155, "end": 222 }
+          "Triggered": {
+            "when": { "Did": { "action": "Evolved", "what": ["This"] } },
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "This" } } } }]
           }
         }
       ]

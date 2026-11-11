@@ -188,6 +188,7 @@ mod replacements;
 mod restrictions;
 mod reveal;
 mod reveal_until;
+mod rmt8_conditions;
 mod selectors;
 mod shortened;
 mod soulbond;

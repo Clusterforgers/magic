@@ -236,6 +236,7 @@ pub(crate) fn reads_of_selector(selector: &Selector) -> Traits {
         .fold(Traits::NONE, |all, pred| all.or(reads_of_pred(pred)))
 }
 
+#[allow(clippy::too_many_lines)]
 fn reads_of_pred(pred: &Pred) -> Traits {
     match pred {
         Pred::Supertype(_) => Traits::SUPERTYPES,
@@ -252,6 +253,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Prepared
         | Pred::Suspected
         | Pred::Solved
+        | Pred::Harnessed
+        | Pred::FoughtSinceYourLastUpkeep { .. }
         | Pred::DoubleFaced
         | Pred::Transformed
         | Pred::Paired
@@ -263,6 +266,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::AttackedThisTurn
         | Pred::Attacking
         | Pred::AttackingAlone
+        | Pred::AttackingBattle
         | Pred::Blocking
         | Pred::Unblocked
         | Pred::In(_)
@@ -393,6 +397,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Tallied { who, .. }
         | Amount::CommanderColors(who)
         | Amount::StartingLife(who)
+        | Amount::TurnsTaken(who)
+        | Amount::LifeAsTurnBegan(who)
         | Amount::CastLastTurn(who)
         | Amount::TalliedLastTurn { who, .. }
         | Amount::HighestCounters { who, .. }

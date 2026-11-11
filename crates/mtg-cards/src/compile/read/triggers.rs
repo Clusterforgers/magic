@@ -1226,6 +1226,9 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
 
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
+    if let Some(turns) = super::rmt8_conditions::condition_text(condition) {
+        return Some(turns);
+    }
     if let Some(coven) = super::w2c_counts::w2c_coven_texts(condition)
         .into_iter()
         .next()
@@ -1352,6 +1355,9 @@ pub(super) fn player_verb(by: &Ref, verb: &str) -> Option<String> {
         Ref::Opponents => format!("an opponent {verb}s"),
         Ref::EachPlayer => format!("a player {verb}s"),
         Ref::AttachedPlayer => format!("enchanted player {verb}s"),
+        other if super::rmt8_conditions::is_another_player(other) => {
+            format!("another player {verb}s")
+        }
         _ => return None,
     })
 }

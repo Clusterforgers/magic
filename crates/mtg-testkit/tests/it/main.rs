@@ -536,6 +536,7 @@ mod restriction_fuzz;
 mod reveal_until;
 mod reveal_until_fuzz;
 mod riot;
+mod rmt8_mechanics;
 mod rules_fuzz;
 mod rules_games;
 mod runed_crown;

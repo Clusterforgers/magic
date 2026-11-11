@@ -254,6 +254,10 @@ pub(super) fn r7e_did_text(pattern: &TriggerPattern) -> Option<String> {
     if *action == Action::Transformed && what.0 == [Pred::This] {
         return Some("When ~ transforms into ~".to_owned());
     }
+    // "Whenever this creature evolves" (CR 702.100d): no pattern of its own stands for it.
+    if *action == Action::Evolved {
+        return Some(format!("Whenever {} evolves", subject_text(what)?));
+    }
     if *action == Action::Exiled
         && let [rest @ .., Pred::In(ZoneKind::Battlefield)] = what.0.as_slice()
     {
@@ -338,6 +342,7 @@ pub(super) fn r7e_did_happening(pattern: &TriggerPattern) -> Option<(Selector, S
         Action::BecameRenowned => "becomes renowned",
         Action::BecameMonstrous => "becomes monstrous",
         Action::Adapted => "adapts",
+        Action::Evolved => "evolves",
         Action::TurnedFaceUp => "is turned face up",
         _ => return None,
     };

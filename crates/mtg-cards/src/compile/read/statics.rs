@@ -1522,6 +1522,9 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
 
 /// What holds for a permanent not to enter tapped, as `holds` reads it: one thing, or several joined by "or".
 pub(super) fn holds_texts(condition: &Condition) -> Vec<String> {
+    if let Some(turns) = super::rmt8_conditions::condition_text(condition) {
+        return vec![turns];
+    }
     let (list, joiner) = match condition {
         Condition::Any(list) => (list, " or "),
         Condition::All(list) => (list, " and "),

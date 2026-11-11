@@ -39,6 +39,7 @@ mod r6e;
 mod read_sheet;
 mod read_tier;
 mod reminder_cards;
+mod rmt8_wordings;
 mod roundtrip;
 mod transform_cards;
 mod vocabulary;
