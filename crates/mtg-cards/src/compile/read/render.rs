@@ -2738,6 +2738,14 @@ impl Writer<'_> {
             } => self.returned_to_hand(what).or_else(|| self.moved(effect))?,
             Effect::AddMana { .. } => self.mana_added_by(effect)?,
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
+            // "you get {TK}{TK}": tickets are counters on the player too (CR 107.17).
+            Effect::PutCounters {
+                on: Ref::You,
+                counter: CounterKind::Other(ticket),
+                count,
+            } if ticket == super::effects::TICKET => {
+                format!("you get {}", costs::tickets_text(count)?)
+            }
             Effect::PutCounters { count, .. } if gets_energy(effect) => {
                 format!("you get {}", costs::energy_text(count)?)
             }

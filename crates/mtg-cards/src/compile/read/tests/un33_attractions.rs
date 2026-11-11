@@ -1,4 +1,4 @@
-//! Goal: the Attraction wordings (open an Attraction, open a number of them, roll to visit your Attractions, the two "whenever you" events and the visit ability "Visit — ...") read into the DSL and write back as the card's own text, and every near miss stays with the table.
+//! Goal: the Attraction and ticket wordings (open an Attraction, open a number of them, roll to visit your Attractions, the two "whenever you" events, the visit ability "Visit — ..." and "you get {TK}") read into the DSL and write back as the card's own text, and every near miss stays with the table.
 use super::*;
 
 use crate::compile::read::visit_block;
@@ -28,6 +28,16 @@ use crate::compile::read::visit_block;
     "Whenever you roll to visit your Attractions, you gain 1 life.",
     ClauseKind::Triggered,
     r#"{"Triggered":{"when":{"RolledToVisit":{"who":"You"}},"effects":[{"GainLife":{"amount":1}}]}}"#
+)]
+#[case::one_ticket(
+    "{G}, {T}: You get {TK}.",
+    ClauseKind::Activated,
+    r#"{"Activated":{"cost":[{"Mana":"{G}"},"Tap"],"effects":[{"PutCounters":{"on":"You","counter":{"Other":"ticket"},"count":1}}]}}"#
+)]
+#[case::two_tickets(
+    "Whenever ~ deals combat damage to a player, you get {TK}{TK}.",
+    ClauseKind::Triggered,
+    r#"{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"PutCounters":{"on":"You","counter":{"Other":"ticket"},"count":2}}]}}"#
 )]
 fn the_attraction_wordings_read(#[case] text: &str, #[case] kind: ClauseKind, #[case] json: &str) {
     reads_as(text, kind, false, json);

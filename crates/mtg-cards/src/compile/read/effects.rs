@@ -462,6 +462,9 @@ fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The name the cards put back are bound to.
 pub const BACK: &str = "back";
 
+/// The counter a ticket symbol stands for (CR 107.17).
+pub const TICKET: &str = "ticket";
+
 /// The rest of "venture into the dungeon" (CR 701.49) after the verb.
 fn w11d_venture(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
     r.need("into the dungeon")?;
@@ -818,6 +821,12 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         {
             super::w6b_emblem::w6b_read(r, who)?
         }
+        // "you get {TK}{TK}": ticket counters (CR 107.17), written with their symbol.
+        "get" | "gets" if r.lookahead(costs::tickets).is_some() => Effect::PutCounters {
+            on: who,
+            counter: CounterKind::Other(TICKET.to_owned()),
+            count: r.attempt(costs::tickets)?,
+        },
         "get" | "gets" => match r.attempt(costs::energy) {
             Some(count) => Effect::PutCounters {
                 on: who,

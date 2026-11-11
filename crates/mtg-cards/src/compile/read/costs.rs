@@ -325,6 +325,26 @@ pub(super) fn energy_text(amount: &Amount) -> Option<String> {
     }
 }
 
+/// The ticket symbols of a count (CR 107.17): "{TK}{TK}" for two.
+pub(super) fn tickets_text(amount: &Amount) -> Option<String> {
+    match amount {
+        Amount::Fixed(count) if *count > 0 => Some("{TK}".repeat(usize::try_from(*count).ok()?)),
+        _ => None,
+    }
+}
+
+/// A run of ticket symbols (CR 107.17): "{TK}{TK}" is two ticket counters.
+pub(super) fn tickets(r: &mut Reader<'_>) -> Option<Amount> {
+    let mut count = 0;
+    while r
+        .attempt(|r| r.symbol().filter(|symbol| *symbol == "TK"))
+        .is_some()
+    {
+        count += 1;
+    }
+    (count > 0).then_some(Amount::Fixed(count))
+}
+
 /// A run of energy symbols: "{E}{E}" is two energy, "X {E}" the number announced.
 pub(super) fn energy(r: &mut Reader<'_>) -> Option<Amount> {
     let x = r.x_free && r.word("x");
