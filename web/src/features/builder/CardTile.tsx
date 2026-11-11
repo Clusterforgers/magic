@@ -40,7 +40,12 @@ export function CardTile({ line, format, room, check, outside = null, actions, f
       className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start gap-1"
     >
       <div className="relative">
-        <HoverPicture oracleId={card.oracle_id} name={card.name} className="block">
+        <HoverPicture
+          oracleId={card.oracle_id}
+          name={card.name}
+          info={{ typeLine: card.type_line, count, support: check.support }}
+          className="block"
+        >
           <button
             type="button"
             aria-haspopup="dialog"

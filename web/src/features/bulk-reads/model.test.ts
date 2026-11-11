@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import type { BulkCard, BulkReads } from '@/protocol/generated'
 import { wordDiff } from './diff'
-import { bulkLinkText, groupByRule, wordingOnly } from './model'
+import { groupByRule, wordingOnly } from './model'
 
 const changed = (pieces: { text: string; changed: boolean }[]) =>
   pieces.filter((piece) => piece.changed).map((piece) => piece.text.trim())
@@ -56,6 +56,5 @@ describe('groupByRule', () => {
   it('counts in words', () => {
     expect(wordingOnly(1, 'approved')).toBe('1 card approved')
     expect(wordingOnly(3, 'approved')).toBe('3 cards approved')
-    expect(bulkLinkText(12)).toBe('12 wording-only, approve in bulk')
   })
 })

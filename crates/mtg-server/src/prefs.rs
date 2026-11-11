@@ -7,7 +7,9 @@ use axum::extract::{Request, State};
 use axum::http::{HeaderMap, StatusCode};
 use mtg_db::{PrefsRepo, StoredPrefs};
 use mtg_protocol::AutoChoices;
-use mtg_protocol::rest::{DeckErrorCode, MAX_AUTO_YIELDS, MAX_DEFAULT_STOPS, UserPrefs};
+use mtg_protocol::rest::{
+    DeckErrorCode, HAND_GROUPS, HandSort, MAX_AUTO_YIELDS, MAX_DEFAULT_STOPS, UserPrefs,
+};
 use sqlx::types::uuid::Uuid;
 
 use crate::api::{ApiError, read_json_limited};
@@ -60,6 +62,18 @@ fn checked(mut prefs: UserPrefs) -> Result<UserPrefs, ApiError> {
             "auto_yields holds at most {MAX_AUTO_YIELDS} abilities"
         )));
     }
+    let mut groups = prefs.hand_sort.groups.clone();
+    groups.sort();
+    groups.dedup();
+    if groups.len() != prefs.hand_sort.groups.len() {
+        return Err(ApiError::invalid("hand_sort names a group twice"));
+    }
+    // A group left out follows the named ones in the starting order, so every stored sort names all of them.
+    let missing: Vec<_> = HAND_GROUPS
+        .into_iter()
+        .filter(|group| !prefs.hand_sort.groups.contains(group))
+        .collect();
+    prefs.hand_sort.groups.extend(missing);
     prefs.auto_yields.sort();
     prefs.auto_yields.dedup();
     prefs.default_stops.sort();
@@ -98,6 +112,10 @@ fn read(stored: StoredPrefs) -> UserPrefs {
             smart_stops: stored.auto_smart_stops,
         },
         auto_yields: serde_json::from_value(stored.auto_yields).unwrap_or_default(),
+        hand_sort: stored
+            .hand_sort
+            .and_then(|value| serde_json::from_value(value).ok())
+            .unwrap_or_default(),
     }
 }
 
@@ -122,6 +140,10 @@ pub(crate) async fn put(
         auto_smart_stops: prefs.auto_choices.smart_stops,
         auto_yields: serde_json::to_value(&prefs.auto_yields)
             .map_err(|_| ApiError::unavailable())?,
+        hand_sort: (prefs.hand_sort != HandSort::default())
+            .then(|| serde_json::to_value(&prefs.hand_sort))
+            .transpose()
+            .map_err(|_| ApiError::unavailable())?,
     };
     s.repo
         .put(s.user, &stored)
@@ -132,8 +154,9 @@ pub(crate) async fn put(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an account that saved nothing has its own declare attackers and postcombat main pinned, a saved empty list stays empty, and only lasting stops at steps with priority are stored, each side and step once and in order, and at most the limit.
+    //! Goal: an account that saved nothing has its own declare attackers and postcombat main pinned, a saved empty list stays empty, and only lasting stops at steps with priority are stored, each side and step once and in order, and at most the limit; a hand sort names each group once, is completed with the groups it left out, and reads back as stored.
     use mtg_engine::turn::Step;
+    use mtg_protocol::rest::{HandGroup, HandSortBy};
     use mtg_protocol::{AutoYield, Stop, StopSide};
 
     use super::*;
@@ -148,6 +171,7 @@ mod tests {
             end_turn_by_hand: false,
             auto_choices: AutoChoices::default(),
             auto_yields: Vec::new(),
+            hand_sort: HandSort::default(),
         }
     }
 
@@ -209,5 +233,51 @@ mod tests {
         let mut many = prefs(Vec::new());
         many.auto_yields = (0..=MAX_AUTO_YIELDS).map(|n| key(&n.to_string())).collect();
         assert!(checked(many).is_err());
+    }
+
+    #[rstest::rstest]
+    #[case::all_named(HAND_GROUPS.to_vec(), HAND_GROUPS.to_vec())]
+    #[case::lands_then_artifacts(
+        vec![HandGroup::Land, HandGroup::Artifact],
+        vec![
+            HandGroup::Land,
+            HandGroup::Artifact,
+            HandGroup::Creature,
+            HandGroup::Enchantment,
+            HandGroup::Planeswalker,
+            HandGroup::Battle,
+            HandGroup::Instant,
+            HandGroup::Sorcery,
+        ]
+    )]
+    #[case::none_named(Vec::new(), HAND_GROUPS.to_vec())]
+    fn a_hand_sort_is_completed_with_the_groups_it_left_out(
+        #[case] named: Vec<HandGroup>,
+        #[case] stored: Vec<HandGroup>,
+    ) {
+        let mut body = prefs(Vec::new());
+        body.hand_sort = HandSort {
+            by: HandSortBy::Groups,
+            groups: named,
+        };
+        let got = checked(body).unwrap();
+        assert_eq!(got.hand_sort.groups, stored);
+        let row = StoredPrefs {
+            hand_sort: Some(serde_json::to_value(&got.hand_sort).unwrap()),
+            ..StoredPrefs::default()
+        };
+        assert_eq!(read(row).hand_sort, got.hand_sort);
+    }
+
+    #[test]
+    fn a_hand_sort_that_names_a_group_twice_is_refused_and_a_bad_row_reads_as_the_default() {
+        let mut body = prefs(Vec::new());
+        body.hand_sort.groups = vec![HandGroup::Land, HandGroup::Land];
+        assert!(checked(body).is_err());
+        let row = StoredPrefs {
+            hand_sort: Some(serde_json::json!({"by": "Sideways"})),
+            ..StoredPrefs::default()
+        };
+        assert_eq!(read(row).hand_sort, HandSort::default());
     }
 }

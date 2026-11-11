@@ -18,6 +18,9 @@ import { playerCounterChips } from './playerCounters'
 import { RevealedFigure } from './RevealedChip'
 import { revealedLabel, revealedOf } from './revealed'
 import { exileOf, holdsPriority, isActiveSeat, playerOf } from './selectors'
+import { PlayerEffectChips } from './PlayerEffectChips'
+import { seatEffects } from './playerEffects'
+import { useStable } from './useStable'
 import { useKeepInView } from './useKeepInView'
 import { defenderOutline, useDefender } from './combat/defender'
 import { LifeForecast } from './combat/LifeForecast'
@@ -51,6 +54,9 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
   const chips = useCommanderChips(seat)
   const enchants = useEnchantChips(seat)
   const defender = useDefender(seat)
+  const effects = usePlay(
+    useStable((state) => (player === undefined ? [] : seatEffects(player, state.objectsById, name))),
+  )
   if (player === undefined) return null
   const eliminated = player.lost !== null
   const away = !eliminated && !player.connected
@@ -78,6 +84,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
           commander: [...chips.tax, ...chips.damage].map((chip) => chip.words),
           enchanted: enchants.map((chip) => chip.words),
           counters: playerCounterChips(player).map((chip) => chip.words),
+          effects: effects.map((effect) => effect.label),
           revealed: shown.length === 0 ? undefined : revealedLabel(shown.length).toLowerCase(),
         }) +
         (defender.state === 'chosen'
@@ -135,6 +142,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         ))}
         <TaxChips chips={chips.tax} density="tile" />
         <EnchantChips chips={enchants} density="tile" />
+        <PlayerEffectChips owner={name} player={player} density="tile" />
         <LiveManaPool pool={player.mana} className="shrink-0 flex-nowrap text-xs" />
         <UntappedSources seat={seat} className="shrink-0 flex-nowrap" />
         {eliminated ? (

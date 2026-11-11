@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { PencilIcon, Trash2Icon } from 'lucide-react'
+import { memo } from 'react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { CardPicture } from '@/features/cards/CardPicture'
 import { timeSince } from '@/lib/timeSince'
@@ -23,16 +24,17 @@ interface DeckRowProps {
 /**
  * One deck of the list: its name (a link to the builder), the marker beside it (an icon and a word, or "Changed since
  * the last check"), format, card count and age, a line that says what the state means for this deck, and the actions
- * Edit, Export and Delete.
+ * Edit, Export and Delete. Memoised: a dialog opening over the list draws no row again.
  */
-export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
+export const DeckRow = memo(function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
   const note = checkNote(deck)
   const link = unvalidatedLink(deck.summary.counts)
   return (
     <li
       data-deck={deck.id}
       data-state={deck.state}
-      className="surface grid gap-3 p-4 sm:grid-cols-[1fr_auto] sm:items-center"
+      // A row out of view is neither laid out nor painted until it scrolls near; it keeps the height it last had.
+      className="surface grid gap-3 p-4 [contain-intrinsic-size:auto_14rem] [content-visibility:auto] sm:grid-cols-[1fr_auto] sm:items-center"
     >
       <div className="grid min-w-0 gap-1">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -86,8 +88,8 @@ export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
         )}
         {hasUnvalidated(deck.summary.counts) ? (
           <Link
-            to="/decks/$deckId/unvalidated"
-            params={{ deckId: deck.id }}
+            to="/review"
+            search={{ deck: deck.id }}
             aria-label={`${link} in ${deck.name}`}
             className="w-fit text-sm text-muted-foreground underline-offset-4 hover:underline"
           >
@@ -120,4 +122,4 @@ export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
       </div>
     </li>
   )
-}
+})

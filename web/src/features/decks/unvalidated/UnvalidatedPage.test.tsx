@@ -1,4 +1,4 @@
-// Goal: the not-validated page ("Cards to check") names its two jobs, offers a Read button for the cards that wait, lists each card the game does not run whole once, the cards of most decks first, with its picture, state, decks and each unread clause quoted beside its reason; arranges them by card or by deck, offers to play a card by hand in each deck that holds it, narrows them to a state, copies them as text in the exact format, and says it plainly while loading, when empty, when a deck or the whole list could not be checked and when card texts could not be read.
+// Goal: the not-validated page ("Cards to check") names its two jobs, offers a Review button for the cards that wait, lists each card the game does not run whole once, the cards of most decks first, with its picture, state, decks and each unread clause quoted beside its reason; arranges them by card or by deck, offers to play a card by hand in each deck that holds it, narrows them to a state, copies them as text in the exact format, and says it plainly while loading, when empty, when a deck or the whole list could not be checked and when card texts could not be read.
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -371,9 +371,9 @@ describe('the drafts that wait for a read', () => {
         .getAllByRole('button')
         .map((button) => button.textContent),
     ).toEqual(['All (3)', 'To read (1)', 'Partial (1)', 'Manual (1)', 'Stale (1)'])
-    const read = screen.getByRole('link', { name: 'Read 1 card' })
-    expect(read).toHaveAttribute('data-read-path', '/read?mine=true')
-    expect(read).toHaveAttribute('href', '/read?mine=true')
+    const read = screen.getByRole('link', { name: 'Review 1 card' })
+    expect(read).toHaveAttribute('data-read-path', '/review?mine=true')
+    expect(read).toHaveAttribute('href', '/review?mine=true')
     await user.click(within(filter).getByRole('button', { name: 'To read (1)' }))
     expect(cardNames(await settled())).toEqual(['Rhystic Study'])
   })
@@ -381,9 +381,9 @@ describe('the drafts that wait for a read', () => {
   it('reads the one deck when the list is of one deck', async () => {
     await renderPage({ decks: WAITERS, deckId: 'deck-w' })
     await settled()
-    expect(screen.getByRole('link', { name: 'Read 1 card' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Review 1 card' })).toHaveAttribute(
       'data-read-path',
-      '/read?deck=deck-w',
+      '/review?deck=deck-w',
     )
   })
 

@@ -7,7 +7,7 @@ use mtg_engine::forecast::CombatForecast;
 use mtg_engine::manual::ManualAction;
 use mtg_engine::state::GameResult;
 use mtg_engine::turn::Step;
-use mtg_engine::{Answer, Decision};
+use mtg_engine::{Answer, Decision, DecisionKind};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -486,4 +486,110 @@ pub enum ServerMessage {
         #[ts(optional)]
         deadline_ms: Option<u64>,
     },
+    /// Who the game waits for now and what each of them decides; empty when it waits for nobody.
+    ///
+    /// Public: sent to every connected client whenever the list changes, and to a client that joins after its snapshot.
+    /// Only the seat and the kind of each decision, never its options. A priority window the table passes for a seat
+    /// that cannot act reads as that seat's priority, as the table view shows it. Never stored.
+    Deciding {
+        /// The seats asked now, in the order the server asks them, each with the kind of its decision.
+        seats: Vec<DecidingView>,
+    },
+}
+
+/// A seat the game waits for and the kind of decision it faces.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct DecidingView {
+    /// The seat asked.
+    pub seat: PlayerId,
+    /// What it decides.
+    pub kind: DecisionName,
+}
+
+impl DecidingView {
+    /// The public part of `decision`: its seat and kind.
+    #[must_use]
+    pub const fn of(decision: &Decision) -> DecidingView {
+        DecidingView {
+            seat: decision.player,
+            kind: DecisionName::of(&decision.kind),
+        }
+    }
+}
+
+/// The kind of a decision without its options, named as the variant of `DecisionKind`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub enum DecisionName {
+    /// Keep or mulligan.
+    Mulligan,
+    /// Put cards on the bottom after a mulligan.
+    BottomCards,
+    /// Act or pass with priority.
+    Priority,
+    /// Pay a mana cost.
+    PayMana,
+    /// Declare attackers.
+    DeclareAttackers,
+    /// Declare blockers.
+    DeclareBlockers,
+    /// Assign combat damage.
+    AssignDamage,
+    /// Discard cards.
+    Discard,
+    /// Choose targets.
+    ChooseTargets,
+    /// Choose modes.
+    ChooseMode,
+    /// Choose a number.
+    ChooseNumber,
+    /// Name a card.
+    ChooseName,
+    /// Divide an amount.
+    DivideAmount,
+    /// Choose cards.
+    ChooseCards,
+    /// Put cards in order.
+    OrderCards,
+    /// Scry.
+    Scry,
+    /// Answer yes or no.
+    YesNo,
+    /// Choose an option.
+    ChooseOption,
+    /// Choose optional or alternative costs.
+    ChooseCosts,
+    /// Order triggered abilities.
+    OrderTriggers,
+    /// Choose which replacement effect applies first.
+    ChooseReplacement,
+}
+
+impl DecisionName {
+    /// The name of `kind`.
+    #[must_use]
+    pub const fn of(kind: &DecisionKind) -> DecisionName {
+        match kind {
+            DecisionKind::Mulligan(_) => DecisionName::Mulligan,
+            DecisionKind::BottomCards(_) => DecisionName::BottomCards,
+            DecisionKind::Priority(_) => DecisionName::Priority,
+            DecisionKind::PayMana(_) => DecisionName::PayMana,
+            DecisionKind::DeclareAttackers(_) => DecisionName::DeclareAttackers,
+            DecisionKind::DeclareBlockers(_) => DecisionName::DeclareBlockers,
+            DecisionKind::AssignDamage(_) => DecisionName::AssignDamage,
+            DecisionKind::Discard(_) => DecisionName::Discard,
+            DecisionKind::ChooseTargets(_) => DecisionName::ChooseTargets,
+            DecisionKind::ChooseMode(_) => DecisionName::ChooseMode,
+            DecisionKind::ChooseNumber(_) => DecisionName::ChooseNumber,
+            DecisionKind::ChooseName(_) => DecisionName::ChooseName,
+            DecisionKind::DivideAmount(_) => DecisionName::DivideAmount,
+            DecisionKind::ChooseCards(_) => DecisionName::ChooseCards,
+            DecisionKind::OrderCards(_) => DecisionName::OrderCards,
+            DecisionKind::Scry(_) => DecisionName::Scry,
+            DecisionKind::YesNo(_) => DecisionName::YesNo,
+            DecisionKind::ChooseOption(_) => DecisionName::ChooseOption,
+            DecisionKind::ChooseCosts(_) => DecisionName::ChooseCosts,
+            DecisionKind::OrderTriggers(_) => DecisionName::OrderTriggers,
+            DecisionKind::ChooseReplacement(_) => DecisionName::ChooseReplacement,
+        }
+    }
 }

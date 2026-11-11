@@ -16,6 +16,7 @@ import {
   saveAutoYields,
   saveEndTurnByHand,
 } from './flowPrefs'
+import { DEFAULT_HAND_SORT, fullGroups } from './handSort'
 import { usePrefsSync } from './usePrefsSync'
 
 const upkeep = { side: 'Own', step: 'Upkeep', keep: true } as const
@@ -26,12 +27,14 @@ const held: UserPrefs = {
   end_turn_by_hand: true,
   auto_choices: auto,
   auto_yields: [warden],
+  hand_sort: { by: 'Groups', groups: fullGroups(['Land', 'Artifact', 'Creature']) },
 }
 const none: UserPrefs = {
   default_stops: [...DEFAULT_STOPS],
   end_turn_by_hand: false,
   auto_choices: { order_triggers: false, assign_damage: false, smart_stops: false },
   auto_yields: [],
+  hand_sort: DEFAULT_HAND_SORT,
 }
 
 function fakeApi(load: () => Promise<UserPrefs>) {
@@ -57,6 +60,7 @@ describe('usePrefsSync', () => {
     const { rerender } = renderHook(({ on }) => usePrefsSync(on, api), { initialProps: { on: true } })
     await waitFor(() => expect(flowPrefs().endTurnByHand).toBe(true))
     expect(flowPrefs().defaultStops).toEqual([upkeep])
+    expect(flowPrefs().handSort).toEqual(held.hand_sort)
 
     act(() => saveEndTurnByHand(false))
     await waitFor(() => expect(saved).toEqual([{ ...held, end_turn_by_hand: false }]))
@@ -72,6 +76,7 @@ describe('usePrefsSync', () => {
       endTurnByHand: false,
       autoChoices: none.auto_choices,
       autoYields: [],
+      handSort: DEFAULT_HAND_SORT,
     })
   })
 

@@ -152,7 +152,7 @@ describe('choosing the opponent to focus', () => {
     expect(tile(container, 4)).toHaveAttribute('aria-current', 'true')
   })
 
-  it('reaches the tiles with Tab, after home, the keyword glossary and the table menu of the top bar', async () => {
+  it('reaches the tiles with Tab, after home, the help menu and the table menu of the top bar', async () => {
     const { container, user } = renderTable({ fixture: buildFixture({ seats: 5, permanents: 2 }) })
     await user.tab()
     expect(screen.getByRole('link', { name: 'Home' })).toHaveFocus()
@@ -160,7 +160,7 @@ describe('choosing the opponent to focus', () => {
     await user.tab()
     expect(document.activeElement).toHaveAttribute('data-slot', 'stop')
     await user.tab()
-    expect(screen.getByRole('button', { name: 'Keyword glossary' })).toHaveFocus()
+    expect(screen.getByRole('button', { name: 'Help' })).toHaveFocus()
     await user.tab()
     expect(screen.getByRole('button', { name: 'Table menu' })).toHaveFocus()
     await user.tab()

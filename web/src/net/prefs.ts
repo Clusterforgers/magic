@@ -3,7 +3,7 @@
  * the signed-in account and replace them. The answer is the generated `UserPrefs`, checked at runtime; a failure
  * rejects with `PrefsError`. Every request carries the session cookie (`credentials: 'include'`).
  */
-import type { AutoChoices, AutoYield, Stop, UserPrefs } from '@/protocol/generated'
+import type { AutoChoices, AutoYield, HandSort, Stop, UserPrefs } from '@/protocol/generated'
 import type { Fetch } from './api'
 import { isFlag, isListOf, isRecord, isText } from './check'
 
@@ -59,13 +59,19 @@ function isAutoYield(value: unknown): value is AutoYield {
   return isRecord(value) && isText(value.name) && isText(value.text)
 }
 
+/** A sort: what it orders by and its groups, as text; `play/handSort` reads the names. */
+function isHandSort(value: unknown): value is HandSort {
+  return isRecord(value) && isText(value.by) && isListOf(value.groups, isText)
+}
+
 function readPrefs(body: unknown): UserPrefs | null {
   if (
     !isRecord(body) ||
     !isListOf(body.default_stops, isStop) ||
     !isFlag(body.end_turn_by_hand) ||
     !isAutoChoices(body.auto_choices) ||
-    (body.auto_yields !== undefined && !isListOf(body.auto_yields, isAutoYield))
+    (body.auto_yields !== undefined && !isListOf(body.auto_yields, isAutoYield)) ||
+    (body.hand_sort !== undefined && !isHandSort(body.hand_sort))
   )
     return null
   return {
@@ -73,6 +79,8 @@ function readPrefs(body: unknown): UserPrefs | null {
     end_turn_by_hand: body.end_turn_by_hand,
     auto_choices: { ...body.auto_choices, smart_stops: body.auto_choices.smart_stops ?? false },
     auto_yields: body.auto_yields === undefined ? [] : body.auto_yields,
+    // An older server sends none: as drawn, every group in the starting order (filled in by the reader of the sort).
+    hand_sort: body.hand_sort ?? { by: 'Drawn', groups: [] },
   }
 }
 

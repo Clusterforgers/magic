@@ -180,6 +180,18 @@ export function identityOfCards(cards: readonly Pick<PreviewCard, 'identity'>[])
   return COLOURS.filter((letter) => all.has(letter))
 }
 
+/** The mean mana value of the spells in `cards` per copy, lands left out; null when there are no spells. */
+export function averageManaValue(cards: readonly PreviewCard[]): number | null {
+  let copies = 0
+  let sum = 0
+  for (const card of cards) {
+    if (kindOf(card.typeLine) === 'land') continue
+    copies += card.count
+    sum += card.manaValue * card.count
+  }
+  return copies === 0 ? null : sum / copies
+}
+
 /** Copies of the lands in `cards`. */
 export const landCopies = (cards: readonly PreviewCard[]): number =>
   copiesOf(cards.filter((card) => kindOf(card.typeLine) === 'land'))

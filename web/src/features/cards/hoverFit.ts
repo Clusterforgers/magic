@@ -1,43 +1,65 @@
-/** Pure fit of the hover picture: how wide it draws and where it stands beside the element that was hovered. */
+/** Pure fit of the hover preview outside the table: which side of the window it docks at and how wide its picture draws. */
+import { dockOf } from '@/features/table/preview'
 
-/** The width the picture had before it was zoomed, in px: the least it draws at. */
+/** The least width the picture draws at, in px. */
 export const HOVER_FLOOR_PX = 244
-/** The widest the picture draws: twice the floor. */
-export const HOVER_CEILING_PX = 488
-/** The gap between the element and the picture, and between the picture and the window's edge, in px. */
+/** The widest the picture draws, in px: the table preview's ceiling. */
+export const HOVER_CEILING_PX = 480
+/** The gap between the hovered element and the panel, in px. */
 export const HOVER_GAP_PX = 12
-export const HOVER_EDGE_PX = 8
+/** The distance of the panel from the window's side and bottom, in px. */
+export const HOVER_EDGE_PX = 12
+/** The distance of the panel from the top of the window, below the top bar, in px. */
+export const HOVER_TOP_PX = 64
+/** The panel's padding on both sides, in px (`p-3`). */
+export const HOVER_PADDING_PX = 24
+/** The height the lines under the picture keep (name, type line, support), in px. */
+export const HOVER_TEXT_PX = 112
 
-/** The box of the hovered element and the window, in viewport px. */
+/** The box of the hovered element in viewport px. */
 export interface HoverBox {
   left: number
   right: number
   top: number
+  bottom?: number
 }
 
-/** Where the picture stands (`left`, `top`) and how wide it is. */
+/** Where the panel stands and how wide its picture draws. */
 export interface HoverFit {
+  /** The side of the window the panel docks at, away from the hovered element as the table's preview does. */
+  dock: 'left' | 'right'
+  /** The panel's distance from the left of the window, in px. */
   left: number
+  /** The panel's distance from the top of the window, in px. */
   top: number
+  /** The picture's width in px; the panel is `HOVER_PADDING_PX` wider. */
   width: number
+  /** The tallest the panel grows, in px; what is taller scrolls out of sight. */
+  maxHeight: number
 }
 
 /**
- * The picture beside the element, on the side with the room: the right one unless the left has more and the right
- * cannot hold the picture. It grows to twice its old width as far as the window's height and the room allow, never
- * below the old width, and stays inside the window in height.
+ * The preview docks at the side of the window away from the hovered element, below the top bar, as the table's card
+ * preview does (`dockOf`). Its picture grows from the floor to the ceiling as far as the window's height (with the
+ * lines under it) and the room between the element and that side allow, never below the floor, and never wider than
+ * the window.
  */
 export function hoverFit(box: HoverBox, viewport: { width: number; height: number }): HoverFit {
-  const right = viewport.width - (box.right + HOVER_GAP_PX) - HOVER_EDGE_PX
-  const left = box.left - HOVER_GAP_PX - HOVER_EDGE_PX
-  const tall = ((viewport.height - HOVER_EDGE_PX * 2) * 5) / 7
-  const width = Math.floor(Math.max(HOVER_FLOOR_PX, Math.min(HOVER_CEILING_PX, tall, Math.max(right, left))))
-  const height = (width * 7) / 5
-  const onRight = right >= width || (left < width && right >= left)
-  const at = onRight ? box.right + HOVER_GAP_PX : Math.max(HOVER_EDGE_PX, box.left - width - HOVER_GAP_PX)
-  const top = Math.min(
-    Math.max(HOVER_EDGE_PX, box.top - height / 3),
-    Math.max(HOVER_EDGE_PX, viewport.height - height - HOVER_EDGE_PX),
-  )
-  return { left: at, top, width }
+  const height = Math.max(0, (box.bottom ?? box.top) - box.top)
+  const side = dockOf({ left: box.left, top: box.top, width: box.right - box.left, height }, viewport)
+  const dock =
+    side === 'left' || (side !== 'right' && box.left + (box.right - box.left) / 2 > viewport.width / 2)
+      ? 'left'
+      : 'right'
+  const maxHeight = Math.max(0, viewport.height - HOVER_TOP_PX - HOVER_EDGE_PX)
+  const tall = ((maxHeight - HOVER_PADDING_PX - HOVER_TEXT_PX) * 5) / 7
+  const room =
+    (dock === 'right' ? viewport.width - box.right : box.left) -
+    HOVER_GAP_PX -
+    HOVER_EDGE_PX -
+    HOVER_PADDING_PX
+  const across = viewport.width - HOVER_EDGE_PX * 2 - HOVER_PADDING_PX
+  const width = Math.floor(Math.min(across, Math.max(HOVER_FLOOR_PX, Math.min(HOVER_CEILING_PX, tall, room))))
+  const left = dock === 'right' ? viewport.width - HOVER_EDGE_PX - width - HOVER_PADDING_PX : HOVER_EDGE_PX
+  return { dock, left: Math.max(HOVER_EDGE_PX, left), top: HOVER_TOP_PX, width, maxHeight }
 }

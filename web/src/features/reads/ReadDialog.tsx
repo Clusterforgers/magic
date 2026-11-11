@@ -34,6 +34,7 @@ export function ReadDialog({ oracleId, name, onClose }: ReadDialogProps) {
             api={api}
             oracleId={oracleId}
             named={false}
+            picture={false}
             verdictClassName="sticky -bottom-6 -mx-6 -mb-6 border-t bg-popover px-6 py-4"
           />
         )}

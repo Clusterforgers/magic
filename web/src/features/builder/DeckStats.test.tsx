@@ -1,16 +1,11 @@
-// Goal: the deck pane shows how many cards are played by hand, opens the stats (support counts, lands and spells, colours, mana curve, types) and the list of cards played by hand with their reasons and states worst first, says what blocks saving in the save bar, and shows the stats and that list as the Stats part under the lg breakpoint.
+// Goal: the deck pane says how many cards are played by hand; its Stats tab shows the figures (lands, spells, average mana value, colour identity), the support counts, colours, mana curve and types; its Played by hand tab lists those cards with their reasons and states worst first; the save bar says what blocks saving; under lg the Show switch keeps to Search and Deck.
 import { screen, within } from '@testing-library/react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { cardHit } from '@/features/decks/fakeDecks'
 import { checked, ENTRIES } from './checkedDeck'
 import { deckPane, MOUNTAIN, renderBuilder, searchBox } from './renderBuilder'
 
 const pane = () => within(deckPane())
-
-// jsdom has no layout, so it has no scrollIntoView; the summary brings the list into view with it.
-beforeEach(() => {
-  Element.prototype.scrollIntoView = vi.fn()
-})
 
 describe('the summary of the deck', () => {
   it('says how many cards are played by hand and how many cannot be played at all', async () => {
@@ -28,27 +23,29 @@ describe('the summary of the deck', () => {
 
   it('opens the list of cards played by hand from the summary', async () => {
     const { user } = await renderBuilder({ view: checked() })
-    expect(pane().getByRole('button', { name: /^Played by hand/ })).toHaveAttribute('aria-expanded', 'false')
+    expect(pane().getByRole('tab', { name: /^Played by hand/ })).toHaveAttribute('aria-selected', 'false')
     await user.click(pane().getByRole('button', { name: /cards played by hand/ }))
-    expect(pane().getByRole('button', { name: /^Played by hand/ })).toHaveAttribute('aria-expanded', 'true')
+    expect(pane().getByRole('tab', { name: /^Played by hand/ })).toHaveAttribute('aria-selected', 'true')
     expect(pane().getByRole('list', { name: 'Cards played by hand' })).toBeVisible()
   })
 })
 
 describe('the stats', () => {
-  it('stay closed with a line of lands and spells until they are opened', async () => {
+  it('open on their tab with the lands, the spells, the average mana value and the colour identity as figures', async () => {
     const { user } = await renderBuilder({ view: checked() })
-    const open = pane().getByRole('button', { name: /^Stats/ })
-    expect(open).toHaveTextContent('20 lands, 8 spells')
-    expect(open).toHaveAttribute('aria-expanded', 'false')
-    await user.click(open)
-    expect(open).toHaveAttribute('aria-expanded', 'true')
-    expect(deckPane().querySelector('[data-slot="deck-stats-panel"]')).toBeVisible()
+    expect(deckPane().querySelector('[data-slot="deck-stats-panel"]')).toBeNull()
+    await user.click(pane().getByRole('tab', { name: /^Stats/ }))
+    const figures = deckPane().querySelector<HTMLElement>('[data-slot="deck-figures"]') as HTMLElement
+    const value = (label: string) => within(figures).getByText(label).nextElementSibling
+    expect(value('Lands')).toHaveTextContent(/^20$/)
+    expect(value('Spells')).toHaveTextContent(/^8$/)
+    expect(value('Average mana value')).toHaveTextContent(/^\d+\.\d\d$/)
+    expect(within(figures).getByRole('img', { name: /^Color identity: / })).toBeInTheDocument()
   })
 
   it('count the copies by support state, by colour and by type, and draw the mana curve of the spells', async () => {
     const { user } = await renderBuilder({ view: checked() })
-    await user.click(pane().getByRole('button', { name: /^Stats/ }))
+    await user.click(pane().getByRole('tab', { name: /^Stats/ }))
     const panel = within(
       deckPane().querySelector<HTMLElement>('[data-slot="deck-stats-panel"]') as HTMLElement,
     )
@@ -69,7 +66,6 @@ describe('the stats', () => {
     expect(
       panel.getByRole('list', { name: 'Cards by type' }).querySelector('[data-kind="land"]'),
     ).toHaveTextContent('20')
-    expect(panel.getByText('20 lands, 8 spells')).toBeInTheDocument()
     expect(panel.getByRole('img', { name: 'Color identity: Black, Red and Green' })).toBeInTheDocument()
   })
 })
@@ -77,7 +73,7 @@ describe('the stats', () => {
 describe('the cards played by hand', () => {
   it('are listed with their reasons, the worst state first, and the cards the game cannot play apart', async () => {
     const { user } = await renderBuilder({ view: checked() })
-    await user.click(pane().getByRole('button', { name: /^Played by hand/ }))
+    await user.click(pane().getByRole('tab', { name: /^Played by hand/ }))
     const hand = pane().getByRole('list', { name: 'Cards played by hand' })
     expect(
       within(hand)
@@ -98,7 +94,7 @@ describe('the cards played by hand', () => {
 
   it('open the card preview from the name', async () => {
     const { user } = await renderBuilder({ view: checked() })
-    await user.click(pane().getByRole('button', { name: /^Played by hand/ }))
+    await user.click(pane().getByRole('tab', { name: /^Played by hand/ }))
     const hand = pane().getByRole('list', { name: 'Cards played by hand' })
     await user.click(within(hand).getByRole('button', { name: /^Giant Growth/ }))
     expect(await screen.findByRole('dialog')).toBeInTheDocument()
@@ -108,7 +104,7 @@ describe('the cards played by hand', () => {
     const { user } = await renderBuilder({
       view: checked([{ card: MOUNTAIN, count: 24, support: 'verified' }]),
     })
-    await user.click(pane().getByRole('button', { name: /^Played by hand/ }))
+    await user.click(pane().getByRole('tab', { name: /^Played by hand/ }))
     expect(pane().getByText('Every card runs whole.')).toBeInTheDocument()
   })
 
@@ -121,7 +117,7 @@ describe('the cards played by hand', () => {
     })
     await user.type(searchBox(), 'Stranger')
     await user.click(await screen.findByRole('button', { name: 'Add Stranger to main deck' }))
-    await user.click(pane().getByRole('button', { name: /^Played by hand/ }))
+    await user.click(pane().getByRole('tab', { name: /^Played by hand/ }))
     expect(await pane().findByText('Stranger')).toBeInTheDocument()
   })
 })
@@ -157,23 +153,17 @@ describe('the save bar', () => {
 })
 
 describe('the Show switch under lg', () => {
-  it('has a Stats part that shows the stats and the cards played by hand, opened', async () => {
+  it('switches between the search and the deck, whose tabs hold the stats', async () => {
     const { user } = await renderBuilder({ view: checked() })
-    expect(deckPane()).toHaveAttribute('data-part', 'deck')
     const show = screen.getByRole('group', { name: 'Show' })
-    await user.click(within(show).getByRole('button', { name: 'Stats' }))
-    expect(within(show).getByRole('button', { name: 'Stats' })).toHaveAttribute('aria-pressed', 'true')
-    expect(deckPane()).toHaveAttribute('data-part', 'stats')
-    expect(pane().getByRole('button', { name: /^Stats/ })).toHaveAttribute('aria-expanded', 'true')
-    expect(pane().getByRole('button', { name: /^Played by hand/ })).toHaveAttribute('aria-expanded', 'true')
-    await user.click(within(show).getByRole('button', { name: /^Deck/ }))
-    expect(deckPane()).toHaveAttribute('data-part', 'deck')
-  })
-
-  it('is reached from the summary of the cards played by hand', async () => {
-    const { user } = await renderBuilder({ view: checked() })
+    expect(
+      within(show)
+        .getAllByRole('button')
+        .map((button) => button.textContent),
+    ).toEqual(['Search', 'Deck 30'])
+    await user.click(within(show).getByRole('button', { name: 'Search' }))
     await user.click(pane().getByRole('button', { name: /cards played by hand/ }))
-    expect(deckPane()).toHaveAttribute('data-part', 'stats')
-    expect(Element.prototype.scrollIntoView).toHaveBeenCalled()
+    expect(within(show).getByRole('button', { name: /^Deck/ })).toHaveAttribute('aria-pressed', 'true')
+    expect(deckPane()).toHaveAttribute('data-view', 'hand')
   })
 })

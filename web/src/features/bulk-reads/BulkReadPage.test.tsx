@@ -1,11 +1,10 @@
-// Goal: the bulk read screen lists the wording-only cards grouped by rule, every one checked, marks the words that differ, approves exactly the checked cards in one press, says which drafts changed meanwhile, and the read page links to it only while such cards wait.
+// Goal: the bulk read screen lists the wording-only cards grouped by rule, every one checked, marks the words that differ, approves exactly the checked cards in one press, and says which drafts changed meanwhile.
 import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
 import type { BulkReadsApi } from '@/net/bulkReads'
 import { renderInRouter } from '@/test-utils/router'
-import { BulkLink } from './BulkLink'
 import { BulkReadPage } from './BulkReadPage'
 import { BULK_CARDS, fixtureBulkReadsApi } from './dev/fixture'
 import type { BulkFixtureOptions } from './dev/fixture'
@@ -82,17 +81,5 @@ describe('BulkReadPage', () => {
     await renderPage({ empty: true })
     expect(await screen.findByText('Nothing to approve in bulk')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Approve/ })).toBeNull()
-  })
-})
-
-describe('BulkLink', () => {
-  it('links to the bulk screen with the count, and hides while nothing waits', async () => {
-    const { unmount } = await renderInRouter(<BulkLink api={fixtureBulkReadsApi()} />)
-    expect(
-      await screen.findByRole('link', { name: `${BULK_CARDS.length} wording-only, approve in bulk` }),
-    ).toHaveAttribute('href', '/read/bulk')
-    unmount()
-    await renderInRouter(<BulkLink api={fixtureBulkReadsApi({ empty: true })} />)
-    await waitFor(() => expect(screen.queryByRole('link')).toBeNull())
   })
 })

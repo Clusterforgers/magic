@@ -35,7 +35,16 @@ function Marked({ pieces, label }: { pieces: Piece[]; label: string }) {
   )
 }
 
-function CardRow({ card, checked, onToggle }: { card: BulkCard; checked: boolean; onToggle: () => void }) {
+/** One card of a bulk approval: its checkbox and name beside each differing clause, the changed words marked. */
+export function BulkCardRow({
+  card,
+  checked,
+  onToggle,
+}: {
+  card: BulkCard
+  checked: boolean
+  onToggle: () => void
+}) {
   const id = `bulk-${card.oracle_id}`
   return (
     <li className="grid gap-2 border-t border-border px-3 py-2 first:border-t-0 md:grid-cols-[1.25rem_12rem_minmax(0,1fr)_minmax(0,1fr)] md:gap-4">
@@ -112,7 +121,7 @@ function RuleGroup({
       </div>
       <ul>
         {cards.map((card) => (
-          <CardRow
+          <BulkCardRow
             key={card.oracle_id}
             card={card}
             checked={chosen.has(card.oracle_id)}

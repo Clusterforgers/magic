@@ -77,6 +77,8 @@ export interface ActivatedLine {
   text: string
   /** True while the prompt offers it (`CardNote.usable`). */
   now: boolean
+  /** The keyword the ability is written under (`Equip {1}`), whose reminder holds the cost and effect. */
+  keyword?: string
 }
 
 /**
@@ -95,6 +97,7 @@ export function activatedLines(object: ObjectView, usable: readonly string[] = [
           ? full
           : `${entry.keyword} (${full})`
     const now = entry.ability !== undefined && usable.includes(abilityKey(entry.ability))
-    return [{ key: `${index}-${text}`, text, now }]
+    const keyword = entry.unworded === true ? undefined : entry.keyword
+    return [{ key: `${index}-${text}`, text, now, ...(keyword === undefined ? {} : { keyword }) }]
   })
 }

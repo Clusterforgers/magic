@@ -14,6 +14,7 @@ import {
   describeMulligan,
   priorityText,
   STEP_LABEL,
+  WAIT_PHRASE,
   waitingOn,
   waitingText,
 } from './turnText'
@@ -248,6 +249,74 @@ describe('waitingOn', () => {
         }),
       ),
     ).toEqual(over)
+  })
+
+  it.each(NAMES_OF_KINDS)(
+    "names the other seat and its %s decision as the server tells it, over the table's priority",
+    (kind) => {
+      const state: PlayState = {
+        ...quiet((view) => {
+          view.priority = { holder: 1, passed: [] }
+        }),
+        deciding: [{ seat: 2, kind }],
+      }
+      expect(waitingOn(state)).toEqual({ kind: 'others', seats: [2], what: kind })
+      expect(waitingText(waitingOn(state), name)).toBe(`Waiting for Cy ${WAIT_PHRASE[kind]}`)
+    },
+  )
+
+  it.each(NAMES_OF_KINDS)("puts this seat's own pending %s decision before the others'", (kind) => {
+    const state: PlayState = {
+      ...base,
+      pending: { id: 3, decision: { player: 0, kind: KINDS[kind] } },
+      deciding: [
+        { seat: 0, kind },
+        { seat: 1, kind: 'Mulligan' },
+      ],
+    }
+    expect(waitingOn(state)).toEqual({ kind: 'you', label: DECISION_LABEL[kind] })
+  })
+
+  it('waits for the seats still deciding together, once each and never for this one', () => {
+    const state: PlayState = {
+      ...base,
+      pending: null,
+      deciding: [
+        { seat: 0, kind: 'Mulligan' },
+        { seat: 2, kind: 'Mulligan' },
+        { seat: 3, kind: 'Mulligan' },
+      ],
+    }
+    expect(waitingText(waitingOn(state), name)).toBe('Waiting for Cy and Dee to keep or mulligan')
+  })
+
+  it('names the seats without a deed when they decide different things or a kind it does not know', () => {
+    const mixed: PlayState = {
+      ...base,
+      pending: null,
+      deciding: [
+        { seat: 1, kind: 'Mulligan' },
+        { seat: 2, kind: 'BottomCards' },
+      ],
+    }
+    expect(waitingText(waitingOn(mixed), name)).toBe('Waiting for Bo and Cy')
+    const unknown = { ...base, pending: null, deciding: [{ seat: 1, kind: 'Foretell' as DecisionName }] }
+    expect(waitingText(waitingOn(unknown), name)).toBe('Waiting for Bo')
+  })
+
+  it('has nothing to wait for when the server asks only this seat and its decision has not arrived', () => {
+    const state: PlayState = { ...base, pending: null, deciding: [{ seat: 0, kind: 'Priority' }] }
+    expect(waitingOn(state)).toEqual({ kind: 'idle', label: 'Waiting for the game' })
+  })
+
+  it('says the game is over even while the last word named a seat', () => {
+    const state: PlayState = {
+      ...quiet((view) => {
+        view.result = 'Draw'
+      }),
+      deciding: [{ seat: 1, kind: 'Priority' }],
+    }
+    expect(waitingOn(state)).toEqual({ kind: 'idle', label: 'The game is over' })
   })
 
   it('has nothing to wait for before there is a view', () => {

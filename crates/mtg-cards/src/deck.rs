@@ -365,14 +365,23 @@ fn judge(
             && let Some(facts) = facts
             && let Some(read) = library.draft_state(&facts.printed, caps)
         {
-            drafts.insert(id.clone(), (read, differs_of(library, &facts.printed)));
+            drafts.insert(
+                id.clone(),
+                (read, library.read_differs(&facts.printed, caps)),
+            );
         }
     }
     (supports, drafts)
 }
 
-/// The clauses a card's draft marked as differing reads back as other text, from its read sheet.
-pub fn differs_of(library: &Library, printed: &PrintedCard) -> Vec<ReadDiffers> {
+/// The clauses a card's draft marked as differing reads back as other text, from its read sheet (kept per library by
+/// [`Library::read_differs`]).
+pub fn differs_of(library: &Library, printed: &PrintedCard, caps: &Caps) -> Vec<ReadDiffers> {
+    library.read_differs(printed, caps)
+}
+
+/// What [`differs_of`] answers, worked out again.
+pub(crate) fn differs_now(library: &Library, printed: &PrintedCard) -> Vec<ReadDiffers> {
     let Some(draft) = library
         .draft(&printed.oracle_id)
         .filter(|draft| draft.differs)

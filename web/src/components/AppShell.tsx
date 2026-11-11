@@ -19,22 +19,23 @@ const TAB =
   "relative inline-flex h-11 items-center border-b-2 whitespace-nowrap border-transparent px-2 text-sm font-medium sm:px-3 text-muted-foreground transition-colors duration-fast ease-out hover:text-foreground aria-[current='page']:border-primary aria-[current='page']:text-foreground sm:h-14"
 
 /**
- * "Cards to check": the cards of the account's decks that wait for a read or a fix, with a count of those to read
+ * "Review cards": the cards of the account's decks that wait for a read or a check, with a count of those to read
  * (hidden at none). Under `lg` the words give way to the icon, so the tabs fit a phone's row.
  */
-function CardsToCheckTab({ account }: { account: string | null }) {
+function ReviewTab({ account }: { account: string | null }) {
   const toRead = useToReadCount(account)
   const badge = toRead > 99 ? '99+' : String(toRead)
   return (
     <Link
-      to="/decks/unvalidated"
+      to="/review"
+      search={{ mine: true }}
       className={cn(TAB, 'gap-2')}
-      aria-label={toRead > 0 ? `Cards to check, ${toRead} ${TO_READ}` : 'Cards to check'}
-      title="Cards to check"
-      data-slot="cards-to-check"
+      aria-label={toRead > 0 ? `Review cards, ${toRead} ${TO_READ}` : 'Review cards'}
+      title="Review cards"
+      data-slot="review-cards"
     >
       <ListChecksIcon aria-hidden="true" className="size-4 shrink-0 lg:hidden" />
-      <span className="hidden lg:inline">Cards to check</span>
+      <span className="hidden lg:inline">Review cards</span>
       {toRead > 0 ? (
         <span
           aria-hidden="true"
@@ -83,7 +84,7 @@ function ShellHeader() {
               <Link to="/games" className={TAB}>
                 My games
               </Link>
-              <CardsToCheckTab account={account} />
+              <ReviewTab account={account} />
             </>
           ) : null}
           <Link

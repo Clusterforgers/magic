@@ -6,6 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { CardPicture } from '@/features/cards/CardPicture'
 import { describeDeckError } from '@/features/decks/errors'
 import { cn } from '@/lib/utils'
 import type { ReadsApi } from '@/net/reads'
@@ -35,6 +36,8 @@ interface ReadCardViewProps {
   heading?: 'h2' | 'h3'
   /** Whether the card's name is drawn: off where a dialog title already names it. */
   named?: boolean
+  /** Whether the card's picture is drawn beside its rules: off in a dialog over the table, which shows the card already. */
+  picture?: boolean
   /** Classes of the verdict bar: a dialog keeps it stuck to its foot while the clauses scroll. */
   verdictClassName?: string
 }
@@ -123,7 +126,7 @@ function VerdictBar({ card, ready, sending, send, reload, keys, className }: Ver
           }}
         >
           <CheckIcon aria-hidden="true" />
-          Correct
+          Reads right
           <Kbd aria-hidden="true">C</Kbd>
         </Button>
         <Button
@@ -136,7 +139,7 @@ function VerdictBar({ card, ready, sending, send, reload, keys, className }: Ver
           }}
         >
           <XIcon aria-hidden="true" />
-          Wrong
+          Reads wrong
           <Kbd aria-hidden="true">W</Kbd>
         </Button>
       </div>
@@ -172,7 +175,7 @@ function VerdictBar({ card, ready, sending, send, reload, keys, className }: Ver
                 Cancel
               </Button>
               <Button type="submit" size="sm" aria-disabled={!live}>
-                Send: wrong
+                Send: reads wrong
               </Button>
             </div>
           </div>
@@ -214,6 +217,7 @@ export function ReadCardView({
   keys = true,
   heading: Heading = 'h2',
   named = true,
+  picture = true,
   verdictClassName,
 }: ReadCardViewProps) {
   const { load, sending, send, reload } = useReadCard(api, oracleId, onJudged)
@@ -249,8 +253,8 @@ export function ReadCardView({
   const { card } = load
   const counts = countsLine(card)
   const differs = differsCount(card)
-  return (
-    <article data-slot="read-card" data-oracle-id={card.oracle_id} className="grid gap-4">
+  const body = (
+    <>
       <header className="grid gap-1">
         <div className="flex flex-wrap items-center gap-2">
           <BookOpenIcon aria-hidden="true" className="size-5 shrink-0 text-support-read" />
@@ -279,6 +283,32 @@ export function ReadCardView({
         keys={keys}
         className={verdictClassName}
       />
+    </>
+  )
+  if (!picture) {
+    return (
+      <article data-slot="read-card" data-oracle-id={card.oracle_id} className="grid gap-4">
+        {body}
+      </article>
+    )
+  }
+  return (
+    <article
+      data-slot="read-card"
+      data-oracle-id={card.oracle_id}
+      className="grid gap-4 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:items-start md:gap-6"
+    >
+      <div data-slot="review-picture" className="mx-auto w-32 md:sticky md:top-4 md:w-full">
+        <CardPicture
+          oracleId={card.oracle_id}
+          name={card.name}
+          size="normal"
+          alt=""
+          eager
+          className="w-full"
+        />
+      </div>
+      <div className="grid min-w-0 gap-4">{body}</div>
     </article>
   )
 }

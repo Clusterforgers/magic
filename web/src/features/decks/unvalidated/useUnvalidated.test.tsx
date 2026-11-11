@@ -1,4 +1,4 @@
-// Goal: the loader checks only the saved decks whose summary holds a card that is not Verified, four at a time, names a deck whose check failed without losing the others, tells a ended session and a server without decks apart from other failures, reads one deck in one call, and asks again on reload.
+// Goal: the loader checks only the saved decks whose summary holds a card that is not Verified, four at a time, names a deck whose check failed without losing the others, tells a ended session and a server without decks apart from other failures, reads one deck in one call, asks nothing for no deck, and asks again on reload.
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { DeckError } from '@/net/decks'
@@ -13,6 +13,17 @@ const flaggedItem = (id: string) =>
     name: `Deck ${id}`,
     summary: summary({ counts: counts({ manual: 2, verified: 98 }) }),
   })
+
+describe('useUnvalidated, no deck', () => {
+  it('asks nothing and holds no card', async () => {
+    const api = fixtureDecksApi()
+    const { result } = renderHook(() => useUnvalidated(api, { kind: 'none' }))
+    await waitFor(() =>
+      expect(result.current.state).toEqual({ status: 'ready', decks: [], failed: [], saved: 0 }),
+    )
+    expect(api.asked).toEqual([])
+  })
+})
 
 describe('useUnvalidated, every deck', () => {
   it('checks the decks that hold a flagged card and not the one that runs whole', async () => {

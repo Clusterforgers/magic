@@ -1,4 +1,4 @@
-// Goal: each row of the deck list links to the builder at the address of its own deck, by its name and by an Edit button whose name says which deck, and following the link changes the address to the builder's; a deck that holds a card the game does not run whole links to its list of those cards, and the page header links to the list of every deck.
+// Goal: each row of the deck list links to the builder at the address of its own deck, by its name and by an Edit button whose name says which deck, and following the link changes the address to the builder's; a deck that holds a card the game does not run whole links to the review of its cards, and the page header links to the review of every deck.
 import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { counts, deckIn, deckItem, summary } from './fakeDecks'
@@ -49,35 +49,32 @@ describe('the rows', () => {
       { manual: 7, unplayable: 1, verified: 92 },
       'Show the 7 cards played by hand and 1 unplayable card',
     ],
-  ])(
-    'link a deck with %s to the list of its cards that are not validated, in the words of the count',
-    async (_, held, words) => {
-      const flagged = deckIn('manual_play', {
-        id: 'deck-9',
-        name: 'Chaos',
-        summary: summary({ counts: counts(held) }),
-      })
-      const { user, router } = await renderDecks({
-        decks: [flagged, deckItem({ id: 'deck-1', name: 'Whole' })],
-      })
-      await screen.findByRole('list', { name: 'Your decks' })
-      expect(screen.getByRole('link', { name: `${words} in Chaos` })).toHaveAttribute(
-        'href',
-        '/decks/deck-9/unvalidated',
-      )
-      expect(screen.queryByRole('link', { name: /^Show the .* in Whole$/ })).toBeNull()
-      await user.click(screen.getByRole('link', { name: `${words} in Chaos` }))
-      await waitFor(() => expect(router.state.location.pathname).toBe('/decks/deck-9/unvalidated'))
-    },
-  )
+  ])('link a deck with %s to the review of its cards, in the words of the count', async (_, held, words) => {
+    const flagged = deckIn('manual_play', {
+      id: 'deck-9',
+      name: 'Chaos',
+      summary: summary({ counts: counts(held) }),
+    })
+    const { user, router } = await renderDecks({
+      decks: [flagged, deckItem({ id: 'deck-1', name: 'Whole' })],
+    })
+    await screen.findByRole('list', { name: 'Your decks' })
+    expect(screen.getByRole('link', { name: `${words} in Chaos` })).toHaveAttribute(
+      'href',
+      '/review?deck=deck-9',
+    )
+    expect(screen.queryByRole('link', { name: /^Show the .* in Whole$/ })).toBeNull()
+    await user.click(screen.getByRole('link', { name: `${words} in Chaos` }))
+    await waitFor(() => expect(router.state.location.href).toBe('/review?deck=deck-9'))
+  })
 
-  it('link the page header to the list of every deck', async () => {
+  it('link the page header to the review of every deck', async () => {
     const { user, router } = await renderDecks({ decks: DECKS })
     await screen.findByRole('list', { name: 'Your decks' })
-    const link = screen.getByRole('link', { name: 'Cards to check' })
-    expect(link).toHaveAttribute('href', '/decks/unvalidated')
+    const link = screen.getByRole('link', { name: 'Review cards' })
+    expect(link).toHaveAttribute('href', '/review?mine=true')
     await user.click(link)
-    await waitFor(() => expect(router.state.location.pathname).toBe('/decks/unvalidated'))
+    await waitFor(() => expect(router.state.location.href).toBe('/review?mine=true'))
   })
 
   it('give Edit the size of the other row buttons: 32 px, and 44 px under a coarse pointer', async () => {
