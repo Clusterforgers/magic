@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b713e49f-1b13-42d1-91f2-cc7a579e7614",
+  "name": "Nihil Spellbomb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nihil Spellbomb",
+      "oracle_fingerprint": "5ca23c76c543a353b849e292713f04b8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Pay": { "cost": "{B}", "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

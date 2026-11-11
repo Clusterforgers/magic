@@ -1,0 +1,23 @@
+{
+  "oracle_id": "9495b2b4-21bf-488b-a64e-74592bb277d9",
+  "name": "Schema Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Schema Thief",
+      "oracle_fingerprint": "2aea5ca7f69d28e6997c60bafa3d501c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

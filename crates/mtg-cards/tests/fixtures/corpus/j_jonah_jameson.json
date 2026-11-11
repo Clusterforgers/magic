@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "9ee905d6-b647-4eb1-a8d9-89add9bafc31",
+  "oracle_id": "de861715-fd0b-493e-9a7c-c470a23044c0",
+  "multiverse_ids": [],
+  "resource_id": "F94116B4934E449E7439541F006BCA8821AC3199286FA0036A192F627E30CC05",
+  "mtgo_id": 153403,
+  "arena_id": 97899,
+  "tcgplayer_id": 651140,
+  "cardmarket_id": 845845,
+  "name": "J. Jonah Jameson",
+  "lang": "en",
+  "released_at": "2025-09-26",
+  "uri": "https://api.scryfall.com/cards/9ee905d6-b647-4eb1-a8d9-89add9bafc31",
+  "scryfall_uri": "https://scryfall.com/card/spm/81/j-jonah-jameson?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:15:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/e/9ee905d6-b647-4eb1-a8d9-89add9bafc31.jpg?1783905336",
+    "normal": "https://cards.scryfall.io/normal/front/9/e/9ee905d6-b647-4eb1-a8d9-89add9bafc31.jpg?1783905336",
+    "large": "https://cards.scryfall.io/large/front/9/e/9ee905d6-b647-4eb1-a8d9-89add9bafc31.jpg?1783905336",
+    "png": "https://cards.scryfall.io/png/front/9/e/9ee905d6-b647-4eb1-a8d9-89add9bafc31.png?1783905336",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/e/9ee905d6-b647-4eb1-a8d9-89add9bafc31.jpg?1783905336",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/e/9ee905d6-b647-4eb1-a8d9-89add9bafc31.jpg?1783905336",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/e/9ee905d6-b647-4eb1-a8d9-89add9bafc31.webp?1783905336",
+    "grid": "https://cards.scryfall.io/grid/front/9/e/9ee905d6-b647-4eb1-a8d9-89add9bafc31.webp?1783905336",
+    "display": "https://cards.scryfall.io/display/front/9/e/9ee905d6-b647-4eb1-a8d9-89add9bafc31.webp?1783905336",
+    "art": "https://cards.scryfall.io/art/front/9/e/9ee905d6-b647-4eb1-a8d9-89add9bafc31.webp?1783905336",
+    "crop": "https://cards.scryfall.io/crop/front/9/e/9ee905d6-b647-4eb1-a8d9-89add9bafc31.webp?1783905336",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/e/9ee905d6-b647-4eb1-a8d9-89add9bafc31.jpg?1783905336"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Citizen",
+  "oracle_text": "When J. Jonah Jameson enters, suspect up to one target creature. (A suspected creature has menace and can't block.)\nWhenever a creature you control with menace attacks, create a Treasure token.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Suspect",
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d52efeb3-661d-45e9-97c3-af167f889684",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/d52efeb3-661d-45e9-97c3-af167f889684"
+    },
+    {
+      "object": "related_card",
+      "id": "c81a2ecf-837c-44a9-81d4-476763f89107",
+      "component": "combo_piece",
+      "name": "J. Jonah Jameson",
+      "type_line": "Legendary Creature — Human Citizen",
+      "uri": "https://api.scryfall.com/cards/c81a2ecf-837c-44a9-81d4-476763f89107"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a1c7b891-9e96-434c-9994-be58b62b27f1",
+  "set": "spm",
+  "set_name": "Marvel's Spider-Man",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a1c7b891-9e96-434c-9994-be58b62b27f1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aspm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/spm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9ee905d6-b647-4eb1-a8d9-89add9bafc31/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ade861715-fd0b-493e-9a7c-c470a23044c0&unique=prints",
+  "collector_number": "81",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"The photos are garbage, Parker! I'll buy them all.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Paolo Rivera",
+  "artist_ids": [
+    "2ea03ab2-57c0-4106-b970-712abb35de31"
+  ],
+  "illustration_id": "196a2e62-9163-4a79-bd3e-475bd5898f8e",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 8985,
+  "penny_rank": 12169,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.26",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJ.%2BJonah%2BJameson",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJ.%2BJonah%2BJameson",
+    "edhrec": "https://edhrec.com/route/?cc=J.+Jonah+Jameson"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F651140%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=845845&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/153403?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

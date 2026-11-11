@@ -1,0 +1,30 @@
+{
+  "oracle_id": "913e6182-706a-4872-8c8a-e146b0ae0738",
+  "name": "Sword of Hearth and Home",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sword of Hearth and Home",
+      "oracle_fingerprint": "26c37ac36e1a4af2b04cf3f06c9484f6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": { "Protection": [{ "Color": "Green" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "White" }] } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 75, "end": 293 }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

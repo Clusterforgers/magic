@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e5a95145-dc29-4bfc-bb14-b7a269268366",
+  "name": "Tezzeret, Cruel Machinist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tezzeret, Cruel Machinist",
+      "oracle_fingerprint": "582f84bc0dfcc3f4fc14ecc6eb41e13a",
+      "abilities": [
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Draw": {} }] } },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 17, "end": 124 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 125, "end": 231 }
+          }
+        }
+      ]
+    }
+  ]
+}

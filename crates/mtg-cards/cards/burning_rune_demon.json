@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d551fae8-6b40-4118-b9db-29d2f5dff405",
+  "name": "Burning-Rune Demon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Burning-Rune Demon",
+      "oracle_fingerprint": "9588a757c39356076ccc6f3ec8ef957a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 7, "end": 287 }
+          }
+        }
+      ]
+    }
+  ]
+}

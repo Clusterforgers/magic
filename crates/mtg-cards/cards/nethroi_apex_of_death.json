@@ -1,0 +1,22 @@
+{
+  "oracle_id": "66bef5a7-79b7-4a9c-98dc-8670f867f04c",
+  "name": "Nethroi, Apex of Death",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nethroi, Apex of Death",
+      "oracle_fingerprint": "904d39f0cd04254a0ea03927fded113b",
+      "abilities": [
+        { "Keyword": { "Mutate": "{4}{B}{B}{G/W}" } },
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 216, "end": 358 }
+          }
+        }
+      ]
+    }
+  ]
+}

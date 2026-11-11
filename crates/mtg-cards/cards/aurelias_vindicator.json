@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4f452ce7-1166-4810-afed-ea5e156a6f52",
+  "name": "Aurelia's Vindicator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aurelia's Vindicator",
+      "oracle_fingerprint": "2ef0c7c98c63871c3090abd015929ef2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Ward": "{2}" } },
+        { "Keyword": { "Disguise": "{X}{3}{W}" } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 46, "end": 180 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 181, "end": 271 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -266,6 +266,7 @@ Circuitous Route
 Citadel Gate
 Citanul Hierophants
 Clan Defiance
+Clandestine Meddler
 Clash of Titans
 Clever Concealment
 Clever Lumimancer
@@ -392,6 +393,7 @@ Desperate Ravings
 Determined Iteration
 Devastation Tide
 Devoted Druid
+Diffusion Sliver
 Dimir Infiltrator
 Dina, Soul Steeper
 Dire Fleet Interloper
@@ -411,6 +413,7 @@ Dog Umbra
 Dokuchi Shadow-Walker
 Domesticated Hydra
 Dominate
+Donal, Herald of Wings
 Doom Blade
 Doom Whisperer
 Door of Destinies
@@ -785,6 +788,7 @@ It's Clobberin' Time!
 Ivory Mask
 Ixalli's Lorekeeper
 Izzet Charm
+J. Jonah Jameson
 Jace Beleren
 Jace's Archivist
 Jack-o'-Lantern
@@ -829,6 +833,7 @@ Kindred Discovery
 Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
+Kirol, Attentive First-Year
 Kirol, History Buff // Pack a Punch
 Kitchen Finks
 Klauth, Unrivaled Ancient
@@ -844,6 +849,7 @@ Kongming, "Sleeping Dragon"
 Kor Firewalker
 Korozda Guildmage
 Korozda Monitor
+Koth, Fire of Resistance
 Kozilek's Translator
 Krenko's Enforcer
 Krenko, Tin Street Kingpin
@@ -980,6 +986,7 @@ Mirelurk Queen
 Mirran Bardiche
 Mirri, Weatherlight Duelist
 Mirror Image
+Mirror Sheen
 Mirrorweave
 Mishra's Workshop
 Mistmeadow Skulk
@@ -1036,6 +1043,7 @@ Nighthawk Scavenger
 Nightmare
 Nightscape Familiar
 Nightveil Sprite
+Nihil Spellbomb
 Ninja Pizza
 Ninja of the Deep Hours
 Ninja of the New Moon
@@ -1108,6 +1116,7 @@ Perch Protection
 Persist
 Personal Sanctuary
 Pestilent Syphoner
+Peter Parker's Camera
 Phantasmal Image
 Phantom Nantuko
 Phantom Nishoba
@@ -1298,6 +1307,7 @@ Saw It Coming
 Sawtusk Demolisher
 Scatter to the Winds
 Scavenging Ooze
+Schema Thief
 Scheming Aspirant
 Scorn-Blade Berserker
 Scrabbling Claws
@@ -1345,6 +1355,7 @@ Shu Cavalry
 Sickening Shoal
 Siege Smash
 Siege Wurm
+Sigil Tracer
 Sigiled Paladin
 Sigiled Sentinel
 Silent Arbiter
@@ -1435,6 +1446,7 @@ Stalwart Pathlighter
 Star Whale
 Starlit Sanctum
 Starscape Cleric
+Start the TARDIS
 Steady Progress
 Steam Vents
 Steampath Charger
@@ -1648,6 +1660,7 @@ Universal Surveillance
 Unstable Molecule Suit
 Up the Beanstalk
 Urabrask the Hidden
+Ursine Champion
 Urza's Incubator
 Urza's Mine
 Urza's Power Plant

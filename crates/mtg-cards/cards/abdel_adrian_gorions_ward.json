@@ -1,0 +1,20 @@
+{
+  "oracle_id": "cab092f9-b7ff-43b9-935f-310869a4daf8",
+  "name": "Abdel Adrian, Gorion's Ward",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Abdel Adrian, Gorion's Ward",
+      "oracle_fingerprint": "58716b0a6cf085bf9b85ed64adc46ca2",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 203 }
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

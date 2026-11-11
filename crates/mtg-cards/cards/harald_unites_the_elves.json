@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d0cc7e79-69dc-4f9d-9eed-1848f8ddb1be",
+  "name": "Harald Unites the Elves",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Harald Unites the Elves",
+      "oracle_fingerprint": "3c9abe08edc6455656a6ba06f2492b31",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 89, "end": 185 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 236, "end": 355 }
+          }
+        }
+      ]
+    }
+  ]
+}

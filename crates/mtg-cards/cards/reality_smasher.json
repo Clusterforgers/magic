@@ -1,0 +1,21 @@
+{
+  "oracle_id": "17c651c7-da4e-45e9-9a64-fad3e873123d",
+  "name": "Reality Smasher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Reality Smasher",
+      "oracle_fingerprint": "da573100cdbe196b0121d935c1467b75",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 48, "end": 180 }
+          }
+        }
+      ]
+    }
+  ]
+}

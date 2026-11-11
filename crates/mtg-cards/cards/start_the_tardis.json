@@ -1,0 +1,23 @@
+{
+  "oracle_id": "31b72bcc-2f45-4ff8-8e4b-27c020ff0e32",
+  "name": "Start the TARDIS",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Start the TARDIS",
+      "oracle_fingerprint": "eff934ad346c6c31107b134f861f5f4c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Surveil": { "count": 2 } },
+              { "Draw": {} },
+              { "May": { "effects": [{ "Planechase": { "act": "Planeswalk" } }] } }
+            ]
+          }
+        },
+        { "Keyword": "JumpStart" }
+      ]
+    }
+  ]
+}

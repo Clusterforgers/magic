@@ -1,0 +1,45 @@
+{
+  "oracle_id": "1c9f2b6e-a0eb-493e-8c43-3a14f6d95a53",
+  "name": "Donal, Herald of Wings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Donal, Herald of Wings",
+      "oracle_fingerprint": "540b462a079c3c9204e831c96510744e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Not": { "Supertype": "Legendary" } },
+                  { "Type": "Creature" },
+                  { "HasKeyword": "Flying" }
+                ],
+                "by": "You"
+              }
+            },
+            "limit": "OncePerTurnDone",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CopySpell": {
+                        "what": "Triggering",
+                        "except": [
+                          { "SetPT": { "power": 1, "toughness": 1 } },
+                          { "AddSubtype": "Spirit" }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

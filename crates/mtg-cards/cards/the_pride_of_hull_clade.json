@@ -1,0 +1,33 @@
+{
+  "oracle_id": "bbd7b756-bbee-451e-9446-06019791cb36",
+  "name": "The Pride of Hull Clade",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Pride of Hull Clade",
+      "oracle_fingerprint": "c075d61c04e1007aa1c576c3ab3b58ed",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Total": {
+                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "stat": "Toughness"
+              }
+            }
+          }
+        },
+        { "Keyword": "Defender" },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 101, "end": 319 }
+          }
+        }
+      ]
+    }
+  ]
+}

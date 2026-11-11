@@ -1,0 +1,41 @@
+{
+  "oracle_id": "3a30089d-cd2d-49be-9b06-7a2454117692",
+  "name": "Aminatou, the Fateshifter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aminatou, the Fateshifter",
+      "oracle_fingerprint": "871d7047b636ef6aaec27fc596dc0005",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "back"
+                }
+              },
+              { "Move": { "what": { "Bound": "back" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 72, "end": 169 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 170, "end": 322 }
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

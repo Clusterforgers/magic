@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ab655810-f67e-4576-9174-35b16f5e3235",
+  "name": "Saheeli, Sublime Artificer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Saheeli, Sublime Artificer",
+      "oracle_fingerprint": "beb5b31316f1711fd6a64534c735e58d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Servo",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Servo"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 93, "end": 265 }
+          }
+        }
+      ]
+    }
+  ]
+}

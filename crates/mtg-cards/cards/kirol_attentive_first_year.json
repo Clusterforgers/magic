@@ -1,0 +1,23 @@
+{
+  "oracle_id": "3a272fa9-5f28-43a4-95de-10cb511f1b43",
+  "name": "Kirol, Attentive First-Year",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kirol, Attentive First-Year",
+      "oracle_fingerprint": "57b7caf853e6de34e34e46d190e9b143",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }], "count": 2 } }],
+            "limit": "OncePerTurn",
+            "targets": [
+              { "what": { "Object": [{ "Ability": "Triggered" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "CopyAbility": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}
