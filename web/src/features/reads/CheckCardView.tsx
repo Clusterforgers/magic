@@ -4,7 +4,7 @@ import { Kbd } from '@/components/Kbd'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { useCardDetail } from '@/features/builder/useCardDetail'
-import { CardPicture } from '@/features/cards/CardPicture'
+import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import type { ByHandApi } from '@/features/decks/byHand'
 import { PlayByHand } from '@/features/decks/PlayByHand'
 import { LineMarksList } from '@/features/decks/preview/LineMarks'
@@ -105,14 +105,16 @@ export function CheckCardView({ card, byHand, checked, onChecked, keys = true }:
       className="grid gap-4 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:items-start md:gap-6"
     >
       <div data-slot="review-picture" className="mx-auto w-32 md:sticky md:top-4 md:w-full">
-        <CardPicture
-          oracleId={card.oracleId}
-          name={card.name}
-          size="normal"
-          alt=""
-          eager
-          className="w-full"
-        />
+        <HoverPicture pin oracleId={card.oracleId} name={card.name} className="w-full">
+          <CardPicture
+            oracleId={card.oracleId}
+            name={card.name}
+            size="normal"
+            alt=""
+            eager
+            className="w-full"
+          />
+        </HoverPicture>
       </div>
       <div className="grid min-w-0 gap-4">
         <header className="grid gap-1">

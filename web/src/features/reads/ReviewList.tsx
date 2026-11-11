@@ -2,6 +2,7 @@ import { BookOpenIcon, CheckIcon, HandIcon, TriangleAlertIcon, XIcon } from 'luc
 import type { LucideIcon } from 'lucide-react'
 import type { Ref } from 'react'
 import { Kbd } from '@/components/Kbd'
+import { HoverPicture } from '@/features/cards/CardPicture'
 import { cn } from '@/lib/utils'
 import type { ReadTarget } from '@/lib/toRead'
 import { allInDecks, rankText } from './model'
@@ -45,43 +46,45 @@ function Row({
   const differs = item.kind === 'read' ? item.card.differs : 0
   return (
     <li>
-      <button
-        type="button"
-        aria-current={current ? 'true' : undefined}
-        data-item={item.id}
-        data-tone={state.tone}
-        onClick={onPick}
-        className={cn(
-          'grid w-full grid-cols-1 gap-0.5 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent',
-          current ? 'bg-accent font-medium' : null,
-          outcome === undefined ? null : 'text-muted-foreground',
-        )}
-      >
-        <span className="flex items-center gap-1.5">
-          <Icon aria-hidden="true" className={cn('size-4 shrink-0', className)} />
-          <span className="min-w-0 flex-1 truncate text-foreground">{item.name}</span>
-          {rank === null ? null : (
-            <span
-              title="Popularity rank"
-              className="shrink-0 text-xs font-normal text-muted-foreground tabular-nums"
-            >
-              {rank}
-            </span>
+      <HoverPicture oracleId={item.id} name={item.name} className="w-full">
+        <button
+          type="button"
+          aria-current={current ? 'true' : undefined}
+          data-item={item.id}
+          data-tone={state.tone}
+          onClick={onPick}
+          className={cn(
+            'grid w-full grid-cols-1 gap-0.5 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent',
+            current ? 'bg-accent font-medium' : null,
+            outcome === undefined ? null : 'text-muted-foreground',
           )}
-        </span>
-        <span className="flex flex-wrap items-center gap-x-1 pl-5.5 text-xs font-normal text-muted-foreground">
-          {state.words}
-          {item.kind === 'read' && item.card.in_decks && !allInDecks(target) ? (
-            <span>· in your decks</span>
-          ) : null}
-          {differs === 0 || outcome !== undefined ? null : (
-            <>
-              <TriangleAlertIcon aria-hidden="true" className="size-3 text-support-partial" />
-              {differs === 1 ? '1 clause differs' : `${differs} clauses differ`}
-            </>
-          )}
-        </span>
-      </button>
+        >
+          <span className="flex items-center gap-1.5">
+            <Icon aria-hidden="true" className={cn('size-4 shrink-0', className)} />
+            <span className="min-w-0 flex-1 truncate text-foreground">{item.name}</span>
+            {rank === null ? null : (
+              <span
+                title="Popularity rank"
+                className="shrink-0 text-xs font-normal text-muted-foreground tabular-nums"
+              >
+                {rank}
+              </span>
+            )}
+          </span>
+          <span className="flex flex-wrap items-center gap-x-1 pl-5.5 text-xs font-normal text-muted-foreground">
+            {state.words}
+            {item.kind === 'read' && item.card.in_decks && !allInDecks(target) ? (
+              <span>· in your decks</span>
+            ) : null}
+            {differs === 0 || outcome !== undefined ? null : (
+              <>
+                <TriangleAlertIcon aria-hidden="true" className="size-3 text-support-partial" />
+                {differs === 1 ? '1 clause differs' : `${differs} clauses differ`}
+              </>
+            )}
+          </span>
+        </button>
+      </HoverPicture>
     </li>
   )
 }

@@ -10,7 +10,7 @@ export interface Anchor {
   height: number
 }
 
-/** The card on show. A pinned preview (from a click or tap) stays until dismissed; hover and focus come and go. */
+/** The card on show. A pinned preview (from a click or tap) stays until dismissed; hover and focus come and go beside no pin. */
 export interface PreviewTarget {
   id: ObjectId
   anchor: Anchor
@@ -41,7 +41,7 @@ export function dockOf(anchor: Anchor, viewport: Viewport): Dock {
 export interface PreviewStore {
   get(): PreviewTarget | null
   subscribe(listener: () => void): () => void
-  /** Hover or keyboard focus on a card. */
+  /** Hover or keyboard focus on a card; ignored while a card is pinned, so a pin stays until it is closed. */
   show(id: ObjectId, anchor: Anchor): void
   /** The pointer left or focus moved off a card; a pinned preview stays. */
   hide(id: ObjectId): void
@@ -69,7 +69,7 @@ export function createPreviewStore(): PreviewStore {
       }
     },
     show(id, anchor) {
-      if (target?.pinned === true && target.id === id) return
+      if (target?.pinned === true) return
       set({ id, anchor, pinned: false })
     },
     hide(id) {

@@ -1,5 +1,5 @@
 import { ShieldCheckIcon } from 'lucide-react'
-import { CardPicture } from '@/features/cards/CardPicture'
+import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { DraftNote } from '@/features/decks/DraftNote'
 import { ClauseList } from '@/features/decks/unvalidated/ClauseList'
 import { clauseLines } from '@/features/decks/unvalidated/model'
@@ -44,14 +44,22 @@ function Entry({
       data-support={support}
       className={cn('flex gap-3 rounded-lg border border-l-4 p-2', supportEdge(support))}
     >
-      <CardPicture
+      <HoverPicture
+        pin
         oracleId={card.oracle_id}
         name={card.name}
-        size="small"
-        alt=""
-        quiet
-        className="w-12 sm:w-16"
-      />
+        info={{ typeLine: card.type_line, count, support, reasons }}
+        className="shrink-0 self-start"
+      >
+        <CardPicture
+          oracleId={card.oracle_id}
+          name={card.name}
+          size="small"
+          alt=""
+          quiet
+          className="w-12 sm:w-16"
+        />
+      </HoverPicture>
       <div className="grid min-w-0 flex-1 content-start gap-1">
         <div className="flex items-start gap-2">
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1">

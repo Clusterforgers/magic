@@ -99,11 +99,13 @@ describe('the preview store', () => {
     expect(store.get()).toBeNull()
   })
 
-  it('lets hovering another card take over from a pinned one', () => {
+  it('keeps a pinned card while another card is hovered, focused and left', () => {
     const store = createPreviewStore()
     store.pin(1, a)
     store.show(2, a)
-    expect(store.get()).toEqual({ id: 2, anchor: a, pinned: false })
+    expect(store.get()).toEqual({ id: 1, anchor: a, pinned: true })
+    store.hide(2)
+    expect(store.get()).toEqual({ id: 1, anchor: a, pinned: true })
   })
 
   it('pins a different card without unpinning it first', () => {
