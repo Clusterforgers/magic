@@ -550,6 +550,7 @@ Enigma Thief
 Enraged Revolutionary
 Enthusiastic Study
 Entity Tracker
+Entomber Exarch
 Entrancing Melody
 Entreat the Angels
 Entreat the Dead
