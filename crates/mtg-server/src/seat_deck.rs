@@ -278,7 +278,10 @@ impl ChosenDeck {
             return Ok(self);
         }
         if let DeckRef::Oracle { stickers, .. } = &mut self.deck {
-            *stickers = sheets.iter().map(|(oracle_id, _)| oracle_id.clone()).collect();
+            *stickers = sheets
+                .iter()
+                .map(|(oracle_id, _)| oracle_id.clone())
+                .collect();
             self.stickers = sheets.into_iter().map(|(_, sheet)| sheet).collect();
             self.fingerprint = DeckFingerprint::of_seat_all(
                 &self.cards,

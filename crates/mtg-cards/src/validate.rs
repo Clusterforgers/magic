@@ -4371,6 +4371,7 @@ impl Walker<'_> {
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn ability(&mut self, ability: &Ability) {
         let tag = tag_of(ability);
         if !matches!(ability, Ability::Keyword(_)) {

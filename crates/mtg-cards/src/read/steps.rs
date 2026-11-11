@@ -245,6 +245,28 @@ fn cost_modifier(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
     gate(&ctx, "while", condition.as_ref(), depth, out);
 }
 
+/// A sticker of a sheet: what it does and its ticket cost, and the ability of an ability sticker under it.
+fn sticker_steps(sticker: &crate::ability::Sticker, depth: u8, out: &mut Vec<Step>) {
+    let tickets = match sticker.tickets() {
+        0 => String::new(),
+        count => format!(" for {count} tickets"),
+    };
+    let what = match sticker {
+        crate::ability::Sticker::Name { words, .. } => {
+            format!("the name gains \"{words}\"")
+        }
+        crate::ability::Sticker::Ability { .. } => "the permanent has this ability".to_owned(),
+        crate::ability::Sticker::PowerToughness {
+            power, toughness, ..
+        } => format!("the power and toughness become {power}/{toughness}"),
+        crate::ability::Sticker::Art {} => "an art sticker".to_owned(),
+    };
+    out.push(Step::new(depth, format!("sticker{tickets}: {what}")));
+    if let crate::ability::Sticker::Ability { ability, .. } = sticker {
+        ability_into(ability, depth.saturating_add(1), out);
+    }
+}
+
 /// The abilities about the cost of casting a spell, and the keywords and clauses left to the table.
 fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
     let ctx = Ctx::none();
@@ -288,25 +310,7 @@ fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
             depth,
             "may begin the game on the battlefield if in the opening hand".to_owned(),
         )),
-        Ability::Sticker(sticker) => {
-            let tickets = match sticker.tickets() {
-                0 => String::new(),
-                count => format!(" for {count} tickets"),
-            };
-            let what = match sticker {
-                crate::ability::Sticker::Name { words, .. } => {
-                    format!("the name gains \"{words}\"")
-                }
-                crate::ability::Sticker::Ability { .. } => "the permanent has this ability".to_owned(),
-                crate::ability::Sticker::PowerToughness {
-                    power, toughness, ..
-                } => format!("the power and toughness become {power}/{toughness}"),
-                crate::ability::Sticker::Art {} => "an art sticker".to_owned(),
-            };
-            out.push(Step::new(depth, format!("sticker{tickets}: {what}")));
-            if let crate::ability::Sticker::Ability { ability, .. } = sticker {
-                ability_into(ability, depth.saturating_add(1), out);
-            }
+        Ability::Sticker(sticker) => sticker_steps(sticker, depth, out),
         }
         Ability::OpeningReveal {
             when,

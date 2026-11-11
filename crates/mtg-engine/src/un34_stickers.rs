@@ -155,18 +155,16 @@ pub(crate) fn affordable(state: &GameState, player: PlayerId) -> Vec<(StickerAt,
         .sticker_sheets(player)
         .into_iter()
         .flat_map(|(sheet, card)| {
-            stickers_of(card)
-                .enumerate()
-                .map(move |(sticker, found)| {
-                    (
-                        StickerAt {
-                            player,
-                            sheet,
-                            sticker,
-                        },
-                        found,
-                    )
-                })
+            stickers_of(card).enumerate().map(move |(sticker, found)| {
+                (
+                    StickerAt {
+                        player,
+                        sheet,
+                        sticker,
+                    },
+                    found,
+                )
+            })
         })
         .filter(|(at, sticker)| !state.sticker_used(*at) && sticker.tickets() <= tickets)
         .collect()
@@ -177,8 +175,9 @@ pub(crate) fn affordable(state: &GameState, player: PlayerId) -> Vec<(StickerAt,
 pub fn sticker_text(sticker: &Sticker) -> String {
     let what = match sticker {
         Sticker::Name { words, .. } => format!("\u{201c}{words}\u{201d}"),
-        Sticker::Ability { ability, .. } => mtg_cards::compile::render_ability(ability)
-            .unwrap_or_else(|| "an ability".to_owned()),
+        Sticker::Ability { ability, .. } => {
+            mtg_cards::compile::render_ability(ability).unwrap_or_else(|| "an ability".to_owned())
+        }
         Sticker::PowerToughness {
             power, toughness, ..
         } => format!("{power}/{toughness}"),
@@ -186,7 +185,10 @@ pub fn sticker_text(sticker: &Sticker) -> String {
     };
     match sticker.tickets() {
         0 => what,
-        count => format!("{what} ({})", "{TK}".repeat(usize::try_from(count).unwrap_or(0))),
+        count => format!(
+            "{what} ({})",
+            "{TK}".repeat(usize::try_from(count).unwrap_or(0))
+        ),
     }
 }
 
@@ -334,10 +336,12 @@ mod tests {
 
     fn sheet(at: usize) -> Arc<CardDefinition> {
         Arc::new(
-            CardDefinition::new(format!("Sheet {at}")).with_rules(Ability::Sticker(Sticker::Name {
-                words: format!("Word{at}"),
-                tickets: 0,
-            })),
+            CardDefinition::new(format!("Sheet {at}")).with_rules(Ability::Sticker(
+                Sticker::Name {
+                    words: format!("Word{at}"),
+                    tickets: 0,
+                },
+            )),
         )
     }
 
@@ -366,7 +370,13 @@ mod tests {
         for seed in 0..32 {
             let mut game = game(sheets, seed);
             let events = choices(&game, 1);
-            let [Event::StickerSheetsChosen { player, sheets: chosen }] = events.as_slice() else {
+            let [
+                Event::StickerSheetsChosen {
+                    player,
+                    sheets: chosen,
+                },
+            ] = events.as_slice()
+            else {
                 panic!("{events:?}");
             };
             assert_eq!(*player, PlayerId(0));
