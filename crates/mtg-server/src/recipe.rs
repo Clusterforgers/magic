@@ -1084,6 +1084,7 @@ mod tests {
             companion: None,
             printings: Vec::new(),
             by_hand: by_hand.iter().map(|id| (*id).to_owned()).collect(),
+            attractions: Vec::new(),
         }
     }
 

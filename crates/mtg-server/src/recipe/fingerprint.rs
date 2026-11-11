@@ -21,6 +21,7 @@
 //! another version does not decode and its game fails with that reason instead of going unchecked.
 
 use std::fmt;
+use std::fmt::Write as _;
 use std::str::FromStr;
 use std::sync::Arc;
 
@@ -97,7 +98,7 @@ impl DeckFingerprint {
             text.push_str(&attractions.len().to_string());
             text.push('\n');
             for attraction in attractions {
-                text.push_str(&format!("{:?}\t", attraction.lights.numbers()));
+                let _ = write!(text, "{:?}\t", attraction.lights.numbers());
                 write_cards(std::slice::from_ref(&attraction.card), &mut text)?;
             }
         }

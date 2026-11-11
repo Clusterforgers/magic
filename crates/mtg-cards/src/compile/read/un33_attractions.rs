@@ -96,7 +96,7 @@ pub(super) fn un33_event_text(pattern: &TriggerPattern) -> Option<String> {
 
 /// The lines of a visit ability whose effects are written as `bodies`: "Visit — " before each, and a choice of modes
 /// also as the Attractions print it, "Choose one." before the bullets in place of "Choose one —".
-pub(super) fn un33_visit_texts(bodies: Vec<String>) -> Vec<String> {
+pub(super) fn un33_visit_texts(bodies: &[String]) -> Vec<String> {
     let mut texts: Vec<String> = bodies.iter().map(|body| format!("{VISIT}{body}")).collect();
     texts.extend(bodies.iter().filter_map(|body| {
         let rest = body.strip_prefix("Choose one \u{2014}")?;

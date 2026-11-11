@@ -958,6 +958,7 @@ fn e15g_that_spell(when: &TriggerPattern, texts: impl Iterator<Item = String>) -
     out
 }
 
+#[allow(clippy::too_many_lines)] // one arm for each shape of ability
 fn ability_texts(ability: &Ability) -> Vec<String> {
     match ability {
         Ability::Spell { targets, effects } => alternatives(targets, effects)
@@ -980,10 +981,10 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } => super::un33_attractions::un33_visit_texts(
-            alternatives(targets, effects)
+            &alternatives(targets, effects)
                 .iter()
                 .map(|sentences| spell(sentences))
-                .collect(),
+                .collect::<Vec<_>>(),
         ),
         Ability::Triggered {
             when: TriggerPattern::TappedForMana { .. },
@@ -3066,6 +3067,7 @@ impl Writer<'_> {
     /// "surveil 2", "proliferate", "transform ~", "you become the monarch", "return ~ from your graveyard to the
     /// battlefield", "if there are five or more charge counters on ~, transform ~": a keyword action, a designation,
     /// the card returning itself or an effect on a condition.
+    #[allow(clippy::too_many_lines)] // one arm for each keyword action
     fn keyword_action(&mut self, effect: &Effect) -> Option<String> {
         if let Some(text) = Self::card_returning_itself(effect) {
             return Some(text);

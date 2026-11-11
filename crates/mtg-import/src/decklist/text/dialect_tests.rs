@@ -101,7 +101,7 @@ fn the_attraction_deck_and_the_sticker_sheets_are_parts_of_the_deck(
     let deck = parse_text(input, options(format));
     assert!(deck.errors.is_empty(), "{:?}", deck.errors);
     assert_eq!(sections(&deck), expected);
-    assert!(deck.ignored.is_empty());
+    assert_eq!(deck.ignored.len(), 0, "{:?}", deck.ignored);
 }
 
 #[rstest]

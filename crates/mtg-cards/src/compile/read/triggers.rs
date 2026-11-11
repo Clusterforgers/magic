@@ -628,6 +628,7 @@ fn draw_text(who: &Ref, first: Option<bool>) -> Option<String> {
     })
 }
 
+#[allow(clippy::too_many_lines)] // one branch for each verb
 fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let (by, third) = player(r)?;
     let verb = r.take_word()?;
@@ -1589,6 +1590,7 @@ fn player_attack_text(pattern: &TriggerPattern) -> Option<String> {
 }
 
 /// The event as the card words it, from "When" to the end of the event.
+#[allow(clippy::too_many_lines)] // one arm for each pattern
 pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     match pattern {
         TriggerPattern::Exerted { what } => super::w9d_exert::w9d_event_text(what),

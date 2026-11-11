@@ -157,6 +157,8 @@ fn split_faces(
 impl TryFrom<RawCard> for CardRecord {
     type Error = InvalidRecord;
 
+    // One binding and one field for every part of the record.
+    #[allow(clippy::too_many_lines)]
     fn try_from(raw: RawCard) -> Result<Self, Self::Error> {
         let RawCard {
             id,

@@ -96,7 +96,7 @@ fn opened_attractions_are_visited_as_the_precombat_main_phase_begins(
         "each visit draws a card"
     );
     for seat in 1..seats {
-        assert!(driver.state().attraction_deck(pid(seat)).is_empty());
+        assert_eq!(driver.state().attraction_deck(pid(seat)).len(), 0);
     }
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
@@ -107,7 +107,7 @@ fn opened_attractions_are_visited_as_the_precombat_main_phase_begins(
 fn no_attraction_no_roll() -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(table(2, &[2]))?;
     driver.pass_until(Step::Main1)?;
-    assert!(rolls(&driver).is_empty());
+    assert_eq!(rolls(&driver), []);
     Ok(())
 }
 
