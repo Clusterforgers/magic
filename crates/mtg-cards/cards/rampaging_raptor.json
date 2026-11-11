@@ -1,0 +1,35 @@
+{
+  "oracle_id": "450a07f5-709c-48a6-aaa8-ddbd7da4fd2e",
+  "name": "Rampaging Raptor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rampaging Raptor",
+      "oracle_fingerprint": "ae6b13b8d7463f69b9417e5890aebd7b",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 67, "end": 227 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "ad645324-204a-49d2-b128-f98eee7c9bb9",
+  "name": "Militant Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Militant Angel",
+      "oracle_fingerprint": "fa54550610643174821a88eb253563ec",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  },
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": {
+                              "Tally": {
+                                "event": "Attacked",
+                                "who": "Asker",
+                                "filter": [{ "DidThisTurn": { "event": "Attacked", "to": "You" } }]
+                              }
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

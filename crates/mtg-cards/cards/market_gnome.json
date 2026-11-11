@@ -1,0 +1,25 @@
+{
+  "oracle_id": "12fa17b2-158e-4d53-897f-81111f912b00",
+  "name": "Market Gnome",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Market Gnome",
+      "oracle_fingerprint": "2934984faa15538dc2e6807f3a201f22",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "GainLife": { "amount": 1 } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 58, "end": 181 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "5cf4fee3-3059-4ca4-a47d-0848410b294d",
+  "oracle_id": "416608a1-89a4-44ce-8fd0-fab6b023d3d4",
+  "multiverse_ids": [],
+  "mtgo_id": 117316,
+  "tcgplayer_id": 513290,
+  "cardmarket_id": 731972,
+  "name": "Malik, Grim Manipulator",
+  "lang": "en",
+  "released_at": "2023-09-08",
+  "uri": "https://api.scryfall.com/cards/5cf4fee3-3059-4ca4-a47d-0848410b294d",
+  "scryfall_uri": "https://scryfall.com/card/slx/23/malik-grim-manipulator?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:58:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/c/5cf4fee3-3059-4ca4-a47d-0848410b294d.jpg?1783915138",
+    "normal": "https://cards.scryfall.io/normal/front/5/c/5cf4fee3-3059-4ca4-a47d-0848410b294d.jpg?1783915138",
+    "large": "https://cards.scryfall.io/large/front/5/c/5cf4fee3-3059-4ca4-a47d-0848410b294d.jpg?1783915138",
+    "png": "https://cards.scryfall.io/png/front/5/c/5cf4fee3-3059-4ca4-a47d-0848410b294d.png?1783915138",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/c/5cf4fee3-3059-4ca4-a47d-0848410b294d.jpg?1783915138",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/c/5cf4fee3-3059-4ca4-a47d-0848410b294d.jpg?1783915138",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/c/5cf4fee3-3059-4ca4-a47d-0848410b294d.webp?1783915138",
+    "grid": "https://cards.scryfall.io/grid/front/5/c/5cf4fee3-3059-4ca4-a47d-0848410b294d.webp?1783915138",
+    "display": "https://cards.scryfall.io/display/front/5/c/5cf4fee3-3059-4ca4-a47d-0848410b294d.webp?1783915138",
+    "art": "https://cards.scryfall.io/art/front/5/c/5cf4fee3-3059-4ca4-a47d-0848410b294d.webp?1783915138",
+    "crop": "https://cards.scryfall.io/crop/front/5/c/5cf4fee3-3059-4ca4-a47d-0848410b294d.webp?1783915138",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/c/5cf4fee3-3059-4ca4-a47d-0848410b294d.jpg?1783915138"
+  },
+  "mana_cost": "{2}{R}{W}{B}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Rogue",
+  "oracle_text": "When Malik, Grim Manipulator enters, you and target opponent each secretly choose a creature that player controls. Then those choices are revealed, and that player sacrifices those creatures.\nWhenever an opponent sacrifices a creature, you create a Treasure token.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "0bb11342-bc1d-4eea-b0b0-94799be2602a",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/0bb11342-bc1d-4eea-b0b0-94799be2602a"
+    },
+    {
+      "object": "related_card",
+      "id": "5cf4fee3-3059-4ca4-a47d-0848410b294d",
+      "component": "combo_piece",
+      "name": "Malik, Grim Manipulator",
+      "type_line": "Legendary Creature — Human Rogue",
+      "uri": "https://api.scryfall.com/cards/5cf4fee3-3059-4ca4-a47d-0848410b294d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "3c318e12-9152-4300-a096-4f58a6438897",
+  "set": "slx",
+  "set_name": "Universes Within",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/3c318e12-9152-4300-a096-4f58a6438897",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aslx&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/slx?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5cf4fee3-3059-4ca4-a47d-0848410b294d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A416608a1-89a4-44ce-8fd0-fab6b023d3d4&unique=prints",
+  "collector_number": "23",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Joshua Raphael",
+  "artist_ids": [
+    "553b2a73-780f-414b-b2d7-3b7888821082"
+  ],
+  "illustration_id": "5892fc90-c093-476e-b9a7-832d5c7e75de",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 13353,
+  "penny_rank": 4655,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=68247hXvosA",
+    "previewed_at": "2023-08-20"
+  },
+  "prices": {
+    "usd": "5.02",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "3.71",
+    "eur_foil": null,
+    "tix": "0.48"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMalik%252C%2BGrim%2BManipulator",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMalik%252C%2BGrim%2BManipulator",
+    "edhrec": "https://edhrec.com/route/?cc=Malik%2C+Grim+Manipulator"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F513290%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=731972&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/117316?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

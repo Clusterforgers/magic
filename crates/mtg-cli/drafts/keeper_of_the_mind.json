@@ -1,0 +1,33 @@
+{
+  "oracle_id": "45393fba-b1cc-4db7-b7e0-3851bf421a65",
+  "name": "Keeper of the Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keeper of the Mind",
+      "oracle_fingerprint": "eec800d428a5b4ce73e624478d55ae44",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                      "op": "Ge",
+                      "right": { "Sum": [{ "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }, 2] }
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -95,6 +95,17 @@ pub fn ep24_color_among(ctx: &Ctx, valid: &str) -> Tr<Value> {
         preds.push(json!({"In": "Graveyard"}));
         return Ok(json!(preds));
     }
+    // "Any of the exiled card's colors": the card an imprint remembers, or every card exiled with the source.
+    if valid == "Defined.Imprinted" {
+        let Some(imprinted) = super::memory::slot_ref_loose(ctx, super::memory::Slot::Imprinted)
+        else {
+            return unmapped("key:ManaReflected.Imprinted-without-a-change");
+        };
+        return Ok(json!([{"Is": imprinted}, {"In": "Exile"}]));
+    }
+    if valid == "Defined.ExiledWith" {
+        return Ok(json!([{"ExiledWith": "This"}, {"In": "Exile"}]));
+    }
     if valid.is_empty() || valid.starts_with("Defined.") {
         return unmapped("key:ManaReflected.Is-Defined");
     }

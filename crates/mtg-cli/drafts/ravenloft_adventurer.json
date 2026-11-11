@@ -1,0 +1,56 @@
+{
+  "oracle_id": "1822f924-51ba-4f81-92cc-6c5d741a33f9",
+  "name": "Ravenloft Adventurer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravenloft Adventurer",
+      "oracle_fingerprint": "8d3542ad1ffddfcd4d74df7aca50fa97",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "TakeInitiative": {} }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": {
+              "Instead": [
+                { "Exile": { "what": "Triggering", "as": "exiled" } },
+                { "PutCounters": { "on": { "Bound": "exiled" }, "counter": { "Other": "hit" } } }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": { "CompletedDungeon": "You" },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Defending",
+                  "amount": {
+                    "Count": [
+                      { "In": "Exile" },
+                      { "OwnedBy": "Defending" },
+                      { "HasCounter": { "Other": "hit" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

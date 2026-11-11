@@ -1,0 +1,44 @@
+{
+  "oracle_id": "dcd97730-b793-4c0c-b158-625ac3656b4a",
+  "name": "Taskmaster, Mercenary Mimic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taskmaster, Mercenary Mimic",
+      "oracle_fingerprint": "4e7f5bdd12c21b838b39488a186525f9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Creature" }] },
+                    { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Target": 0 },
+                  "except": [
+                    { "SetName": "Taskmaster, Mercenary Mimic" },
+                    { "AddSupertype": "Legendary" },
+                    { "SetTypes": ["Creature"] },
+                    { "SetCreatureTypes": ["Human", "Mercenary", "Villain"] }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

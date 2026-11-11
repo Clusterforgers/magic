@@ -1,0 +1,118 @@
+{
+  "oracle_id": "24591330-d038-478f-b89d-b7b66c0b5cc3",
+  "name": "Elspeth Resplendent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elspeth Resplendent",
+      "oracle_fingerprint": "8e5799ee832cdf466ffd7f5988bb7d28",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "OneOf": {
+                  "options": [
+                    [{ "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "flying" } } }],
+                    [
+                      {
+                        "PutCounters": {
+                          "on": { "Target": 0 },
+                          "counter": { "Other": "first strike" }
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "lifelink" } }
+                      }
+                    ],
+                    [
+                      {
+                        "PutCounters": {
+                          "on": { "Target": 0 },
+                          "counter": { "Other": "vigilance" }
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              { "LookAtTop": { "count": 7, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept" },
+                  "to": { "Battlefield": { "counters": [[{ "Other": "shield" }, 1]] } }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 5
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4469ff35-54ec-4ff5-bc19-3808ae0f711b",
+  "name": "Wildgrowth Archaic",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wildgrowth Archaic",
+      "oracle_fingerprint": "a877ebe8055a67a23d45458defc70a74",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "ColorsSpent" } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 115, "end": 269 }
+          }
+        }
+      ]
+    }
+  ]
+}

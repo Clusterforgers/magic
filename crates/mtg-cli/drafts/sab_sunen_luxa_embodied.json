@@ -1,0 +1,61 @@
+{
+  "oracle_id": "07e15387-f346-4fa0-b556-d1c52d4acc07",
+  "name": "Sab-Sunen, Luxa Embodied",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sab-Sunen, Luxa Embodied",
+      "oracle_fingerprint": "43c5c7a49bab3de12e2eb6fc14bdd104",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack", "CantBlock"],
+            "condition": {
+              "Compare": {
+                "left": { "AnyCounters": "This" },
+                "op": "Ne",
+                "right": {
+                  "Times": {
+                    "by": 2,
+                    "of": { "Quotient": { "of": { "AnyCounters": "This" }, "by": 2, "up": false } }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "AnyCounters": "This" },
+                      "op": "Ne",
+                      "right": {
+                        "Times": {
+                          "by": 2,
+                          "of": {
+                            "Quotient": { "of": { "AnyCounters": "This" }, "by": 2, "up": false }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

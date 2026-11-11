@@ -1,0 +1,25 @@
+{
+  "oracle_id": "96a4e515-2b4e-4c2d-aa1a-963597484723",
+  "name": "Tsabo's Web",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tsabo's Web",
+      "oracle_fingerprint": "30e564a9eb8141bb9bf94d3f938296e0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 40, "end": 151 }
+          }
+        }
+      ]
+    }
+  ]
+}

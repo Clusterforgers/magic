@@ -1,0 +1,19 @@
+{
+  "oracle_id": "26f87a39-29ed-4649-b5d8-204f6a40a41d",
+  "name": "Earnest Fellowship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earnest Fellowship",
+      "oracle_fingerprint": "45e4c869c40d3aba657878d63b05fb35",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": [{ "AddKeyword": { "Protection": [{ "SharesColor": "Affected" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "oracle_id": "9aff3d55-e25d-4f06-a783-c3aa9eb9fd50",
+  "name": "Eladamri, Korvecdal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eladamri, Korvecdal",
+      "oracle_fingerprint": "1fdc0b294981ee964819e2efd05fb131",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": { "rule": { "MayCast": { "what": [{ "Type": "Creature" }], "from": "Library" } } }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{G}" },
+              "Tap",
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Untapped"],
+                  "count": 2
+                }
+              }
+            ],
+            "condition": "YourTurn",
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "as": "card"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "card" } } },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "Is": { "Bound": "card" } },
+                            { "Type": "Creature" }
+                          ]
+                        },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ],
+                  "second": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Type": "Creature" }
+                          ]
+                        },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

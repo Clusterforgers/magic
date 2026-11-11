@@ -1,0 +1,37 @@
+{
+  "oracle_id": "35fe3c61-8eaa-465d-ac34-63efda72fef2",
+  "name": "Scrambleverse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrambleverse",
+      "oracle_fingerprint": "b21c24e430b27e77d8cfb206d1e0b097",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Bind": { "what": { "Each": [{ "Not": { "Type": "Land" } }] }, "as": "perms" } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "perms" },
+                  "as": "perm",
+                  "effects": [
+                    { "ChooseAtRandom": { "from": "EachPlayer", "as": "player" } },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "perm" },
+                        "mods": [{ "SetController": { "Bound": "player" } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Untap": { "what": { "Bound": "perms" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

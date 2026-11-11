@@ -1,0 +1,48 @@
+{
+  "oracle_id": "40f664d8-4c73-44aa-8fb1-d38771a42520",
+  "name": "Mysterio, Master of Illusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mysterio, Master of Illusion",
+      "oracle_fingerprint": "ed1fe1b32045593c28774e10e66200af",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Illusion Villain",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Illusion", "Villain"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Subtype": "Villain" },
+                      { "Not": "Token" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "tokens"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "tokens" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

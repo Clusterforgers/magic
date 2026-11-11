@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4a480736-4cdc-4e3a-a8cb-d1c726982f9f",
+  "name": "Basandra, Battle Seraph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basandra, Battle Seraph",
+      "oracle_fingerprint": "9daf6988f69eea66ffcb6d08e292fd02",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": { "rule": { "CantCastSpells": { "who": "EachPlayer" } }, "condition": "InCombat" }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": { "rule": { "MustAttack": { "Target": 0 } }, "duration": "UntilEndOfTurn" }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

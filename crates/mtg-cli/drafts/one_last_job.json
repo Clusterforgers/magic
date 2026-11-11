@@ -1,0 +1,86 @@
+{
+  "oracle_id": "55cba59c-932c-4295-87dc-9179fbdfbd53",
+  "name": "One Last Job",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "One Last Job",
+      "oracle_fingerprint": "01c72b83636b28e91dad5df97e7ff94b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 3 },
+                  "mode_costs": ["{2}", "{1}", "{1}"],
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "as": "host"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "BattlefieldAttached": { "to": { "Bound": "host" } } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

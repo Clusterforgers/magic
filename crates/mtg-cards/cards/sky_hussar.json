@@ -1,0 +1,30 @@
+{
+  "oracle_id": "21b41dd6-bff7-4e3d-aa28-551a30194225",
+  "name": "Sky Hussar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sky Hussar",
+      "oracle_fingerprint": "fbfe7198cbc0b78b49a4dfe7ba444ace",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 67, "end": 241 }
+          }
+        }
+      ]
+    }
+  ]
+}

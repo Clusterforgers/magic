@@ -1,0 +1,114 @@
+{
+  "oracle_id": "fb34e487-f7a9-48ad-8f42-00295a80a160",
+  "name": "Dead Ringers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dead Ringers",
+      "oracle_fingerprint": "1c358874ff043e761df5f59f7e1eba3b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Target": 0 },
+                              "selector": [{ "Color": "White" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Target": 0 },
+                              "selector": [{ "Color": "White" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Target": 0 },
+                              "selector": [{ "Color": "Blue" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Target": 0 },
+                              "selector": [{ "Color": "Blue" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Target": 0 },
+                              "selector": [{ "Color": "Red" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Target": 0 },
+                              "selector": [{ "Color": "Red" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "Any": [
+                          {
+                            "CountOf": {
+                              "subject": { "Target": 0 },
+                              "selector": [{ "Color": "Green" }],
+                              "op": "Eq",
+                              "right": 0
+                            }
+                          },
+                          {
+                            "CountOf": {
+                              "subject": { "Target": 0 },
+                              "selector": [{ "Color": "Green" }],
+                              "op": "Eq",
+                              "right": 2
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

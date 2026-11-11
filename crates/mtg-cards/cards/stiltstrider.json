@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9c0d7d7d-5513-4e2b-b834-1ff999ab24f5",
+  "name": "Stiltstrider",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Stiltstrider",
+      "oracle_fingerprint": "8111a6da53b0dc04ab05e86a68d1bb97",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 108 }
+          }
+        }
+      ]
+    }
+  ]
+}

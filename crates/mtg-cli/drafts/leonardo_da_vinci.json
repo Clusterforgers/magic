@@ -1,0 +1,79 @@
+{
+  "oracle_id": "92a287a0-b3cc-4040-a530-fb71510cfc67",
+  "name": "Leonardo da Vinci",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leonardo da Vinci",
+      "oracle_fingerprint": "8d0bccb7fe05e4ca962b69285b6db288",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{U}{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Thopter" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "toughness": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "effects": [
+              { "Draw": {} },
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Type": "Artifact" }]
+                    }
+                  },
+                  "then": [
+                    { "Exile": { "what": { "Bound": "discarded" }, "as": "exiled" } },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "CopyOf": {
+                                  "of": { "Bound": "exiled" },
+                                  "except": [
+                                    { "SetPT": { "power": 0, "toughness": 2 } },
+                                    { "AddSubtype": "Thopter" },
+                                    { "AddType": "Artifact" },
+                                    { "AddType": "Creature" },
+                                    { "AddKeyword": "Flying" }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "oracle_id": "fe1b0b19-0994-4bc7-ab6c-d1419d274f40",
+  "name": "Search the City",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Search the City",
+      "oracle_fingerprint": "bf07f53db332598730ec0e2b089ff9e4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "ExileTop": { "count": 5, "as": "exiled" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [
+                      { "SharesName": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+                    ],
+                    "by": "You"
+                  }
+                },
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "who": "You",
+                    "what": [
+                      { "SharesName": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+                    ]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "ExiledWith": "This" },
+                            { "In": "Exile" },
+                            { "SharesName": "Triggering" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "Sacrifice": { "filter": ["This"] } },
+                    { "If": { "condition": "Performed", "then": [{ "ExtraTurn": {} }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

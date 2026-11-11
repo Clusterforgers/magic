@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b2f6a75e-5637-41a8-a32b-56666716492d",
+  "name": "Protean Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Protean Raider",
+      "oracle_fingerprint": "ad5216e4dd09e4dcdfb5389623ba9d91",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "AsCopy": { "of": [{ "Type": "Creature" }] } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                "op": "Gt",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

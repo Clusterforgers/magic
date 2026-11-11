@@ -212,6 +212,8 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
             targetable(ctx, what, plural),
             who(ctx, chooser)
         ),
+        Targetable::AtRandom(what) => format!("{} chosen at random", targetable(ctx, what, plural)),
+        Targetable::PlayerAmong(among) => noun(&format!("player among {}", who(ctx, among))),
     }
 }
 
@@ -555,6 +557,7 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::UntilEndOfCombat => "until end of combat".to_owned(),
         Duration::UntilYourNextTurn => "until your next turn".to_owned(),
         Duration::UntilYourNextEndStep => "until your next end step".to_owned(),
+        Duration::UntilYourNextUpkeep => "until your next upkeep".to_owned(),
         Duration::UntilEndOfYourNextTurn => "until the end of your next turn".to_owned(),
         Duration::WhileSourceOnBattlefield => "while this stays on the battlefield".to_owned(),
         Duration::WhileYouControlSource => "while you control this".to_owned(),

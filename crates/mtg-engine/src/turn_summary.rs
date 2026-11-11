@@ -1,15 +1,20 @@
-//! What each seat's latest turn held, kept when the turn ends: the spells every player cast during it. The turn's own counts
-//! are cleared as the next turn begins; "last turn" reads this summary of the turn that just ended.
+//! What each seat's latest turn held, kept when the turn ends: the spells every player cast during it and each count of
+//! every player. The turn's own counts are cleared as the next turn begins; "last turn" reads this summary of the turn
+//! that just ended.
+
+use std::collections::BTreeMap;
 
 use mtg_core::ids::PlayerId;
 
 use crate::state::{GameState, Tally};
 
-/// One finished turn: how many spells each player cast during it, by seat.
+/// One finished turn: how many spells each player cast during it, by seat, and what each player counted in it.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default)]
 pub struct TurnSummary {
     /// Spells cast, indexed by seat.
     pub(crate) cast: Vec<u32>,
+    /// The counts of each player during the turn ("if you lost life last turn").
+    pub(crate) tallies: BTreeMap<(PlayerId, Tally), u32>,
 }
 
 impl GameState {
@@ -18,8 +23,18 @@ impl GameState {
         let cast = (0..self.players.len())
             .map(|seat| self.tallied(PlayerId::from_index(seat), Tally::Cast))
             .collect();
-        self.seat_turns.insert(active, TurnSummary { cast });
+        let tallies = self.tallies.players.clone();
+        self.seat_turns
+            .insert(active, TurnSummary { cast, tallies });
         self.last_turn_of = Some(active);
+    }
+
+    /// How many events of the kind the player had during the turn that ended last; 0 before any turn has ended.
+    pub(crate) fn tallied_last_turn(&self, player: PlayerId, kind: Tally) -> u32 {
+        self.last_turn_of
+            .and_then(|seat| self.seat_turns.get(&seat))
+            .and_then(|summary| summary.tallies.get(&(player, kind)).copied())
+            .unwrap_or(0)
     }
 
     /// Adds the summaries to the hash; a game no turn has ended in hashes as it did before they existed.

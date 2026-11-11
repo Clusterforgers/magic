@@ -1,0 +1,19 @@
+{
+  "oracle_id": "21b76a94-d9f3-4c34-ab24-7e89321b04f0",
+  "name": "Obeka, Brute Chronologist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obeka, Brute Chronologist",
+      "oracle_fingerprint": "aac7d30f0c9b94ae7d6fba7b052fcbc0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "May": { "who": "ActivePlayer", "effects": ["EndTurn"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

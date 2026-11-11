@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ca16b32c-3f1e-4f8d-821a-064f922c45d8",
+  "name": "Scrying Glass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrying Glass",
+      "oracle_fingerprint": "55bb8fd2d6dd6374f78e75f387c3739c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "Number": [1, 100] }, "as": "number" } },
+              { "ChooseValue": { "kind": "Color", "as": "color" } },
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                      "selector": [{ "ChosenAs": "color" }],
+                      "op": "Eq",
+                      "right": { "ChosenAs": "number" }
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

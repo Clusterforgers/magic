@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ed198c68-c219-469f-b133-737b060cfbfc",
+  "name": "Repel the Abominable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repel the Abominable",
+      "oracle_fingerprint": "31b623a2eb63a2dfea1214be29fd7f77",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [
+                        { "Not": { "Subtype": "Human" } },
+                        { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }] }
+                      ]
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

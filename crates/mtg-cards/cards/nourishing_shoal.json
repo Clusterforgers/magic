@@ -1,0 +1,28 @@
+{
+  "oracle_id": "2aa0e0e5-cb6d-4518-8eff-d29f935486e0",
+  "name": "Nourishing Shoal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nourishing Shoal",
+      "oracle_fingerprint": "9ca49b8e5836c5c06c672c4559c12779",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              {
+                "ExileFromHand": {
+                  "filter": [
+                    { "Color": "Green" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Spell": { "effects": [{ "GainLife": { "amount": "X" } }] } }
+      ]
+    }
+  ]
+}

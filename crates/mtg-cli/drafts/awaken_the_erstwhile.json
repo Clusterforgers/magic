@@ -1,0 +1,54 @@
+{
+  "oracle_id": "06fa6719-aa4f-4857-8029-e42d01232645",
+  "name": "Awaken the Erstwhile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Awaken the Erstwhile",
+      "oracle_fingerprint": "b0c12a2c36900d6e83162021e4cd0cf3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Discard": {
+                        "who": { "Bound": "player" },
+                        "count": {
+                          "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }]
+                        },
+                        "as": "discarded"
+                      }
+                    },
+                    {
+                      "CreateToken": {
+                        "who": { "Bound": "player" },
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "count": {
+                          "Count": [{ "In": "Graveyard" }, { "Is": { "Bound": "discarded" } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

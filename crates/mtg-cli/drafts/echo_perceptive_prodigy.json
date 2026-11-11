@@ -1,0 +1,31 @@
+{
+  "oracle_id": "1091c83a-a4b9-457f-a69a-9a44a7e10759",
+  "name": "Echo, Perceptive Prodigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echo, Perceptive Prodigy",
+      "oracle_fingerprint": "20a3fe34970d10b99385371f5df610a8",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "ControlledBy": "You" },
+                    { "Type": "Creature" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopyAbility": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

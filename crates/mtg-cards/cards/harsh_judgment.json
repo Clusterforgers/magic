@@ -1,0 +1,22 @@
+{
+  "oracle_id": "1fa272bf-8759-4750-b40b-8e2f6972d570",
+  "name": "Harsh Judgment",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Harsh Judgment",
+      "oracle_fingerprint": "1300d2884dad5de82770490e03348712",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 44, "end": 168 }
+          }
+        }
+      ]
+    }
+  ]
+}

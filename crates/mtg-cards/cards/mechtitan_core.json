@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f1eb489d-104c-4801-b6d2-3f1a7ee73a75",
+  "name": "Mechtitan Core",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mechtitan Core",
+      "oracle_fingerprint": "34085b047d6acf546e7002fabf024db1",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 382 }
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

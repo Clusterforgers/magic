@@ -1,0 +1,78 @@
+{
+  "oracle_id": "d18c40cd-0f38-498b-8882-10381a831751",
+  "name": "Celestial Judgment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celestial Judgment",
+      "oracle_fingerprint": "c1a6918850a180935f2502e0aa8825be",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }] },
+                  "as": "c",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Remembered": { "on": "This", "slot": "kept" } },
+                            "selector": [
+                              {
+                                "Compare": {
+                                  "stat": "Power",
+                                  "op": "Eq",
+                                  "to": { "Stat": { "of": { "Bound": "c" }, "stat": "Power" } }
+                                }
+                              }
+                            ],
+                            "op": "Eq",
+                            "right": 0
+                          }
+                        },
+                        "then": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  {
+                                    "Compare": {
+                                      "stat": "Power",
+                                      "op": "Eq",
+                                      "to": { "Stat": { "of": { "Bound": "c" }, "stat": "Power" } }
+                                    }
+                                  }
+                                ]
+                              },
+                              "as": "pick"
+                            }
+                          },
+                          { "Remember": { "what": { "Bound": "pick" }, "slot": "kept" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Remembered": { "on": "This", "slot": "kept" } } } }
+                    ]
+                  }
+                }
+              },
+              { "Forget": { "slot": "kept" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "3dfb006f-6620-4602-ac3c-d40a5a15a981",
+  "name": "The Council of Four",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Council of Four",
+      "oracle_fingerprint": "26174821916b6ce90ef1ba34f818f8af",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "Drew": { "who": { "PlayersWhere": { "who": "EachPlayer", "test": "YourTurn" } } }
+                },
+                "nth": 2
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": {
+                    "by": { "PlayersWhere": { "who": "EachPlayer", "test": "YourTurn" } }
+                  }
+                },
+                "nth": 2
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

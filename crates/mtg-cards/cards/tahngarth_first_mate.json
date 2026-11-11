@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1a8a41a1-6fc5-4dc8-bd28-9bf404c777d7",
+  "name": "Tahngarth, First Mate",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tahngarth, First Mate",
+      "oracle_fingerprint": "cf0274c74c88a49d1480fe88c2351a03",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": [{ "MaxBlockers": 1 }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 54, "end": 331 }
+          }
+        }
+      ]
+    }
+  ]
+}

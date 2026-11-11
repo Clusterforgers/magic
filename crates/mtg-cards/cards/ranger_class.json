@@ -1,0 +1,72 @@
+{
+  "oracle_id": "d1586808-efc2-469a-8384-ba4acf231e69",
+  "name": "Ranger Class",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ranger Class",
+      "oracle_fingerprint": "72d9a04c45891d991d71b4b7286a640b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "LookAtTopAnyTime": "You" },
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 3 } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Type": "Creature" }], "from": "Library" } },
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 3 } }
+          }
+        }
+      ]
+    }
+  ]
+}

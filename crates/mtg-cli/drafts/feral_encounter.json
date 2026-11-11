@@ -1,0 +1,48 @@
+{
+  "oracle_id": "5a8196ef-24ee-40b6-97d1-8a2257180f86",
+  "name": "Feral Encounter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feral Encounter",
+      "oracle_fingerprint": "836f662df5baf86c88b5d1558b8a48ee",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Exile": { "what": { "Bound": "kept" }, "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "what": [{ "Is": { "Bound": "exiled" } }], "from": "Exile" }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

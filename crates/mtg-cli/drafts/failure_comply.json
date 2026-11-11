@@ -1,0 +1,44 @@
+{
+  "oracle_id": "ed8184f8-f6a7-4f97-9f4e-bf72077af754",
+  "name": "Failure // Comply",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Failure",
+      "oracle_fingerprint": "fa23c3539c362973396a6eab5229d06b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Comply",
+      "oracle_fingerprint": "9901ebb4b0c9ec63ba28442977e3ebe9",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": "Opponents",
+                      "action": { "Cast": { "filter": [{ "ChosenAs": "name" }] } }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "45154dc6-ff0a-4e99-8528-689757d1778e",
+  "name": "Meandering Towershell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meandering Towershell",
+      "oracle_fingerprint": "062262a0a98e76c7c47f488f26595f69",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "towershell" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "DeclareAttackers", "whose": "You" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "towershell" },
+                        "to": { "Battlefield": { "tapped": true, "under": "You" } },
+                        "as": "returned"
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Bound": "returned" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

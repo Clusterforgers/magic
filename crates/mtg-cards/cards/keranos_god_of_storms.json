@@ -1,0 +1,29 @@
+{
+  "oracle_id": "2bd6f13a-ae02-426d-8f99-c20c5c08cf55",
+  "name": "Keranos, God of Storms",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Keranos, God of Storms",
+      "oracle_fingerprint": "2258499f7d8fbde005d812d183b7be89",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["Blue", "Red"] }, "op": "Lt", "right": 7 }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 102, "end": 293 }
+          }
+        }
+      ]
+    }
+  ]
+}

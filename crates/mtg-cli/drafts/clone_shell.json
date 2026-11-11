@@ -1,0 +1,45 @@
+{
+  "oracle_id": "94ab7d13-bcd7-419f-9e68-bd8e7ef66d42",
+  "name": "Clone Shell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clone Shell",
+      "oracle_fingerprint": "7f345db149068d859b7d2c95c9480f9a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "card", "rest_as": "rest" } },
+              { "ExileHidden": { "what": { "Bound": "card" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Reveal": { "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }, { "Type": "Creature" }]
+                  },
+                  "to": { "Battlefield": { "under": "You" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

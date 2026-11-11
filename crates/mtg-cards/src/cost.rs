@@ -137,6 +137,14 @@ pub enum CostItem {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// Exile permanents the payer controls that match ("Exile a creature you control").
+    ExilePermanents {
+        /// Which permanents may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
     /// Exile cards from the payer's hand that match ("Exile a red card from your hand").
     ExileFromHand {
         /// Which cards may be chosen.
@@ -262,6 +270,7 @@ impl CostItem {
             | CostItem::ExileFromHand { count, .. }
             | CostItem::RevealFromHand { count, .. }
             | CostItem::ReturnToHand { count, .. }
+            | CostItem::ExilePermanents { count, .. }
             | CostItem::Behold { count, .. }
             | CostItem::ExiledToGraveyard { count, .. }
             | CostItem::ToLibrary { count, .. } => Some(count),
@@ -299,6 +308,7 @@ impl Cost {
             | CostItem::ExileFromHand { count, .. }
             | CostItem::RevealFromHand { count, .. }
             | CostItem::ReturnToHand { count, .. }
+            | CostItem::ExilePermanents { count, .. }
             | CostItem::Behold { count, .. }
             | CostItem::ExiledToGraveyard { count, .. }
             | CostItem::ToLibrary { count, .. } => *count == Amount::X,

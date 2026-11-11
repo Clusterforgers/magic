@@ -1,0 +1,47 @@
+{
+  "oracle_id": "11ed8209-2184-4416-a8f0-72de00599574",
+  "name": "Glen Elendra's Answer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glen Elendra's Answer",
+      "oracle_fingerprint": "51c124605d66caf3e74d7470244b348c",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Counter": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  },
+                  "as": "countered"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Faerie",
+                      "colors": ["Blue", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Faerie"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": { "CountOf": { "of": { "Bound": "countered" }, "filter": [] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

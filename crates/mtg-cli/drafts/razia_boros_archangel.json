@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d830a136-6fb9-42e7-81f1-97e1d713ee82",
+  "name": "Razia, Boros Archangel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razia, Boros Archangel",
+      "oracle_fingerprint": "3fbfd7b48ca80254ce46da6850118a2b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Another": { "what": { "Object": [{ "Type": "Creature" }] }, "earlier": [0] }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "RedirectUpTo": { "most": 3, "to": { "Target": 1 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

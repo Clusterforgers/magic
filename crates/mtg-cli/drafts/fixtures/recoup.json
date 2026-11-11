@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "77ac0e4e-71ae-4a4b-aa73-64079bd50308",
+  "oracle_id": "f80d151c-7489-4189-8c5b-6d2a730d238e",
+  "multiverse_ids": [
+    368517
+  ],
+  "mtgo_id": 48075,
+  "mtgo_foil_id": 48076,
+  "tcgplayer_id": 67857,
+  "cardmarket_id": 260831,
+  "name": "Recoup",
+  "lang": "en",
+  "released_at": "2013-03-15",
+  "uri": "https://api.scryfall.com/cards/77ac0e4e-71ae-4a4b-aa73-64079bd50308",
+  "scryfall_uri": "https://scryfall.com/card/ddk/63/recoup?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:54:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/7/77ac0e4e-71ae-4a4b-aa73-64079bd50308.jpg?1783940064",
+    "normal": "https://cards.scryfall.io/normal/front/7/7/77ac0e4e-71ae-4a4b-aa73-64079bd50308.jpg?1783940064",
+    "large": "https://cards.scryfall.io/large/front/7/7/77ac0e4e-71ae-4a4b-aa73-64079bd50308.jpg?1783940064",
+    "png": "https://cards.scryfall.io/png/front/7/7/77ac0e4e-71ae-4a4b-aa73-64079bd50308.png?1783940064",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/7/77ac0e4e-71ae-4a4b-aa73-64079bd50308.jpg?1783940064",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/7/77ac0e4e-71ae-4a4b-aa73-64079bd50308.jpg?1783940064",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/7/77ac0e4e-71ae-4a4b-aa73-64079bd50308.webp?1783940064",
+    "grid": "https://cards.scryfall.io/grid/front/7/7/77ac0e4e-71ae-4a4b-aa73-64079bd50308.webp?1783940064",
+    "display": "https://cards.scryfall.io/display/front/7/7/77ac0e4e-71ae-4a4b-aa73-64079bd50308.webp?1783940064",
+    "art": "https://cards.scryfall.io/art/front/7/7/77ac0e4e-71ae-4a4b-aa73-64079bd50308.webp?1783940064",
+    "crop": "https://cards.scryfall.io/crop/front/7/7/77ac0e4e-71ae-4a4b-aa73-64079bd50308.webp?1783940064",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/7/77ac0e4e-71ae-4a4b-aa73-64079bd50308.jpg?1783940064"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Target sorcery card in your graveyard gains flashback until end of turn. The flashback cost is equal to its mana cost. (Mana cost includes color.)\nFlashback {3}{R} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flashback"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "529a5259-8a88-4baf-86a0-cd88098c3ce7",
+  "set": "ddk",
+  "set_name": "Duel Decks: Sorin vs. Tibalt",
+  "set_type": "duel_deck",
+  "set_uri": "https://api.scryfall.com/sets/529a5259-8a88-4baf-86a0-cd88098c3ce7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Addk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ddk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/77ac0e4e-71ae-4a4b-aa73-64079bd50308/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af80d151c-7489-4189-8c5b-6d2a730d238e&unique=prints",
+  "collector_number": "63",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dave Dorman",
+  "artist_ids": [
+    "9235458b-ce92-45bd-a430-a72ecd8e6176"
+  ],
+  "illustration_id": "30ba4505-6bbc-412a-a329-d714c043ca29",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 13200,
+  "penny_rank": 1691,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.30",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=368517&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRecoup",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRecoup",
+    "edhrec": "https://edhrec.com/route/?cc=Recoup"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F67857%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=260831&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/48075?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

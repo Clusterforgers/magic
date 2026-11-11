@@ -1,0 +1,50 @@
+{
+  "oracle_id": "3b6cf935-3b99-4371-a797-6f40b89adeeb",
+  "name": "Dreams of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreams of the Dead",
+      "oracle_fingerprint": "6d6b2ebbd7e7104ecd9110cb45a8c71e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "White" }, { "Color": "Black" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": { "CumulativeUpkeep": "{2}" } },
+                    {
+                      "GrantAbility": {
+                        "Replacement": {
+                          "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                          "by": { "MoveTo": "Exile" }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

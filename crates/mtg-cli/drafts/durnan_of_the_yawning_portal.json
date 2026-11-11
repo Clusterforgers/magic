@@ -1,0 +1,48 @@
+{
+  "oracle_id": "21d3858f-441d-4bb2-888e-8b147ecad7e9",
+  "name": "Durnan of the Yawning Portal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Durnan of the Yawning Portal",
+      "oracle_fingerprint": "6991c805c43b219eddb690b6c4906020",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Exile": { "what": { "Bound": "kept" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Exile", "only": { "Bound": "kept" } } },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

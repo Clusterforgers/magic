@@ -1,0 +1,56 @@
+{
+  "oracle_id": "0b23d9aa-d4ed-4ccf-8810-4a4d11d6fb9c",
+  "name": "Lively Dirge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lively Dirge",
+      "oracle_fingerprint": "d787ffbe7b2c68110715b3da0bec176a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "mode_costs": ["{1}", "{2}"],
+                  "modes": [
+                    {
+                      "effects": [
+                        { "Search": { "filter": [], "as": "card" } },
+                        { "Move": { "what": { "Bound": "card" }, "to": "Graveyard" } },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Together": {
+                              "what": {
+                                "Object": [
+                                  { "Type": "Creature" },
+                                  { "OwnedBy": "You" },
+                                  { "In": "Graveyard" }
+                                ]
+                              },
+                              "rule": { "TotalManaValueAtMost": 4 }
+                            }
+                          },
+                          "bounds": { "min": 0, "max": 2 }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

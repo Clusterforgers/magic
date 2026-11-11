@@ -1,0 +1,75 @@
+{
+  "oracle_id": "d17bfa94-5046-46ae-80af-be5d1d35af13",
+  "name": "Lord Xander, the Collector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord Xander, the Collector",
+      "oracle_fingerprint": "3248acaf70b0cecf0789b9ca16ee550f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Half": {
+                      "of": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                      "up": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Mill": {
+                  "who": "Defending",
+                  "count": {
+                    "Half": {
+                      "of": { "Count": [{ "In": "Library" }, { "OwnedBy": "Defending" }] },
+                      "up": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "count": {
+                    "Half": {
+                      "of": {
+                        "Count": [
+                          { "Not": { "Type": "Land" } },
+                          { "ControlledBy": { "Target": 0 } }
+                        ]
+                      },
+                      "up": false
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

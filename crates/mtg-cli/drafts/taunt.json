@@ -1,0 +1,40 @@
+{
+  "oracle_id": "24cf7fad-233b-49fd-b2a1-a29e3e30041c",
+  "name": "Taunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taunt",
+      "oracle_fingerprint": "6716cfdc2a025e85c6fe9ad46bb7e3dd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": { "Target": 0 } } },
+                  "effects": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MustAttackPlayers": {
+                            "who": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            "players": "You"
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

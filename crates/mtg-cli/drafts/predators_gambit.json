@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4a1f94c0-6858-4296-a4a6-27d2201ed7f4",
+  "name": "Predator's Gambit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Predator's Gambit",
+      "oracle_fingerprint": "5c6ae40a52cf07a764fabcefae0d28bd",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Intimidate" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": { "ControllerOf": "Attached" } },
+                    { "Not": { "Is": "Attached" } }
+                  ]
+                },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

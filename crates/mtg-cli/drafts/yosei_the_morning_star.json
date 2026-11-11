@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5c2d0ead-8bfc-4ca7-9b38-2fc07af1c1d5",
+  "name": "Yosei, the Morning Star",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yosei, the Morning Star",
+      "oracle_fingerprint": "111d229a284ea62bd77f926d4c907d79",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": { "Object": [{ "ControlledBy": { "Target": 0 } }] },
+                "bounds": { "min": 0, "max": 5 }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b175e826-09e8-4fae-9f2e-b902f95b282d",
+  "name": "The Mind Stone",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Mind Stone",
+      "oracle_fingerprint": "08f0961319cda092c661726204064dcf",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 29, "end": 108 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 109, "end": 275 }
+          }
+        }
+      ]
+    }
+  ]
+}

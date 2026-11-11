@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ba9e129d-a3cf-431c-93af-f2e4902d40a0",
+  "name": "Whirlwind Denial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whirlwind Denial",
+      "oracle_fingerprint": "b8ca3d280be2381474a68a1693f9d41a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                      { "ControlledBy": "Opponents" },
+                      { "In": "Stack" }
+                    ]
+                  },
+                  "as": "it",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Bound": "it" } },
+                        "cost": "{4}",
+                        "unpaid": [{ "Counter": { "what": { "Bound": "it" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

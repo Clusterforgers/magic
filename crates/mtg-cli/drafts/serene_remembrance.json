@@ -1,0 +1,43 @@
+{
+  "oracle_id": "f980c8b4-4cd7-42d2-82d5-96e3275b2647",
+  "name": "Serene Remembrance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serene Remembrance",
+      "oracle_fingerprint": "c4e4e3f7948fac8b5f7a593f8bd0fe3d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "In": "Graveyard" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } },
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

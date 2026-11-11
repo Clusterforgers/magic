@@ -1,0 +1,20 @@
+{
+  "oracle_id": "338ad8c4-c89f-4e78-be28-7224fac0fd0f",
+  "name": "Kemba's Legion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kemba's Legion",
+      "oracle_fingerprint": "1f88069f262e0c3608be924620d8ff22",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 10, "end": 114 }
+          }
+        }
+      ]
+    }
+  ]
+}

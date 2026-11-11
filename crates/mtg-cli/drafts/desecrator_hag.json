@@ -1,0 +1,43 @@
+{
+  "oracle_id": "264e60a3-3191-497d-ab06-1411e668b4aa",
+  "name": "Desecrator Hag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desecrator Hag",
+      "oracle_fingerprint": "1557eb5a747ef0fe9c482a695de0170d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" },
+                      {
+                        "GreatestAmong": {
+                          "stat": "Power",
+                          "group": [
+                            { "Type": "Creature" },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

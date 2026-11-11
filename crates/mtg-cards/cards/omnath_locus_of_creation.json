@@ -1,0 +1,61 @@
+{
+  "oracle_id": "cd133d30-51ff-4114-a7d7-029345f0f0d7",
+  "name": "Omnath, Locus of Creation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Omnath, Locus of Creation",
+      "oracle_fingerprint": "2b7071f220d4e5e4d2d20098f20d6e95",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 1 } },
+                  "then": [{ "GainLife": { "amount": 4 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [
+                    { "AddMana": { "mana": { "Fixed": ["Red", "Green", "White", "Blue"] } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 3 } },
+                  "then": [
+                    { "DealDamage": { "to": "Opponents", "amount": 4 } },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [{ "Type": "Planeswalker" }, { "Not": { "ControlledBy": "You" } }]
+                        },
+                        "amount": 4
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

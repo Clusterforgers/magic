@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6053a192-fcf9-4b06-9f46-e84eaadaa882",
+  "name": "Solfatara",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solfatara",
+      "oracle_fingerprint": "9c07e1053f796c75f8dca165fbe25ec9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": "PlayLand" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

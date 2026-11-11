@@ -1,0 +1,52 @@
+{
+  "oracle_id": "b34080fe-69d1-4cc9-9feb-c37762f26a23",
+  "name": "Immortal Obligation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Immortal Obligation",
+      "oracle_fingerprint": "06f6055504a88a2cb41fe866d75f7847",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": {
+                    "Battlefield": {
+                      "under": { "OwnerOf": { "Target": 0 } },
+                      "counters": [[{ "Other": "duty" }, 1]]
+                    }
+                  }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    "Goaded",
+                    { "CantAttackYou": "Both" },
+                    { "CanBlockOnly": [{ "Not": { "ControlledBy": "You" } }] }
+                  ],
+                  "duration": { "WhileHasCounter": { "Other": "duty" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

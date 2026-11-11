@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4f31eea0-61b9-467d-8393-0ab9f1b6e882",
+  "name": "Insatiable Frugivore",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Insatiable Frugivore",
+      "oracle_fingerprint": "8ed59dec2e42bf971f26a693b500edd7",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 131 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}{B}" },
+              { "Sacrifice": { "filter": [{ "Subtype": "Food" }], "count": "X" } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": "X", "toughness": 0 } },
+                    { "AddKeyword": "Menace" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

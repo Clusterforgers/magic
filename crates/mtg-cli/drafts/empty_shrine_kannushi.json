@@ -1,0 +1,25 @@
+{
+  "oracle_id": "39a32629-8b05-4539-9ce7-1a6e467d0064",
+  "name": "Empty-Shrine Kannushi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Empty-Shrine Kannushi",
+      "oracle_fingerprint": "44a35dd987d0e026da598d7b9068560d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Protection": [{ "SharesColor": { "Each": [{ "ControlledBy": "You" }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

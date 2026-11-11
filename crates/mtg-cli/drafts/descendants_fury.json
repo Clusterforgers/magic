@@ -1,0 +1,59 @@
+{
+  "oracle_id": "97079964-7a2e-42c5-ad4a-9015c18a1e97",
+  "name": "Descendants' Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Descendants' Fury",
+      "oracle_fingerprint": "37895a2251761a4b04d557b669028e50",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Is": "Triggering" }], "as": "sacrificed" } },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "RevealUntil": {
+                              "filter": [
+                                { "Type": "Creature" },
+                                { "SharesSubtype": { "Bound": "sacrificed" } }
+                              ],
+                              "as": "found",
+                              "revealed_as": "revealed"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                          {
+                            "Move": {
+                              "what": { "Bound": "revealed" },
+                              "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9ffb5615-124e-4848-9e0d-120851bd50e5",
+  "name": "Corpseweft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corpseweft",
+      "oracle_fingerprint": "a6c177d4ec303c366222987a326930dd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}" },
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }], "count": "X" } },
+              { "XAtLeast": 1 }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Times": { "by": 2, "of": "X" } },
+                      "token": {
+                        "name": "Zombie Horror",
+                        "colors": ["Black"],
+                        "types": ["Creature"],
+                        "subtypes": ["Zombie", "Horror"]
+                      }
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

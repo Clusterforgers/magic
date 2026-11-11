@@ -1,0 +1,54 @@
+{
+  "oracle_id": "be2075af-1cd8-42fe-a29b-a0fd2b047a44",
+  "name": "Lozhan, Dragons' Legacy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lozhan, Dragons' Legacy",
+      "oracle_fingerprint": "68dc0f7736bb3a690289813679707782",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Adventure" }, { "Subtype": "Dragon" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    "Player",
+                    {
+                      "Object": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Creature" },
+                            { "Type": "Planeswalker" },
+                            { "Type": "Battle" }
+                          ]
+                        },
+                        { "Not": "Commander" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

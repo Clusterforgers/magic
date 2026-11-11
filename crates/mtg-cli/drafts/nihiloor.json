@@ -1,0 +1,87 @@
+{
+  "oracle_id": "148271de-3351-41a1-bcf5-3ecaadc51540",
+  "name": "Nihiloor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nihiloor",
+      "oracle_fingerprint": "5d8d102a590a5fa7a4e2eddf5207f30e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Untapped"]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "tapped"
+                      }
+                    },
+                    { "Tap": { "what": { "Bound": "tapped" } } },
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": { "Bound": "opponent" } },
+                                {
+                                  "Compare": {
+                                    "stat": "Power",
+                                    "op": "Le",
+                                    "to": {
+                                      "Stat": { "of": { "Bound": "tapped" }, "stat": "Power" }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "SetController": "You" }],
+                              "duration": "WhileYouControlSource"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "OwnedBy": "Opponents" }
+                ]
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": 2 } },
+              { "LoseLife": { "who": { "OwnerOf": "Triggering" }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

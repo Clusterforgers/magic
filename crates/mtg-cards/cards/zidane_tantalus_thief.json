@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f267fb54-1881-464c-81af-9e03c3f3b41d",
+  "name": "Zidane, Tantalus Thief",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Zidane, Tantalus Thief",
+      "oracle_fingerprint": "7391337ef5f7d61a651639489a49e89d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }, { "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 149, "end": 237 }
+          }
+        }
+      ]
+    }
+  ]
+}

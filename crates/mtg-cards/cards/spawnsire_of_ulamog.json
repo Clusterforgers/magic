@@ -1,0 +1,49 @@
+{
+  "oracle_id": "b90d2f4d-b4ea-40af-aea0-1ab4234ab80f",
+  "name": "Spawnsire of Ulamog",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spawnsire of Ulamog",
+      "oracle_fingerprint": "03c2c20d547723c72195b903d7e051ad",
+      "abilities": [
+        { "Keyword": { "Annihilator": 1 } },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Spawn",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Spawn"],
+                      "power": 0,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["SacrificeSelf"],
+                            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 209, "end": 323 }
+          }
+        }
+      ]
+    }
+  ]
+}

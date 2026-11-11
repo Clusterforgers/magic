@@ -1,0 +1,62 @@
+{
+  "oracle_id": "416608a1-89a4-44ce-8fd0-fab6b023d3d4",
+  "name": "Malik, Grim Manipulator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malik, Grim Manipulator",
+      "oracle_fingerprint": "05bee8b0e4049a28cd626a72fccae6f4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "yours"
+                }
+              },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "theirs"
+                }
+              },
+              {
+                "Reveal": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "Is": { "Bound": "yours" } }, { "Is": { "Bound": "theirs" } }] }
+                    ]
+                  }
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    { "AnyOf": [{ "Is": { "Bound": "yours" } }, { "Is": { "Bound": "theirs" } }] }
+                  ],
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Is": { "Bound": "yours" } }, { "Is": { "Bound": "theirs" } }] }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

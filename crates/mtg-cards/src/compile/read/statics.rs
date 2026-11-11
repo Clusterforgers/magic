@@ -42,7 +42,9 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 43] = [
+const TEMPLATES: [Template; 46] = [
+    super::ep29_flash::ep29_flash,
+    super::ep27_flash::ep27_flash,
     super::w19a_flash::w19a_flash,
     super::w13b_mill_rad::w13b_tapped_for_counters,
     super::w9d_exert::w9d_exert,
@@ -62,6 +64,7 @@ const TEMPLATES: [Template; 43] = [
     as_entering,
     super::day_night::starts_the_day,
     super::prepare::enters_prepared,
+    super::ep28_under::enters_under_opponent,
     super::w14a_limits::w14a_limit_while,
     rule,
     super::player_keywords::ability,
@@ -521,11 +524,39 @@ pub(super) fn one_kind(r: &mut Reader<'_>) -> Option<Selector> {
     }))
 }
 
+/// The wordings of "the players play with their hands revealed", by the players it names.
+const EP27_HANDS: [(&str, Ref); 3] = [
+    ("play with your hand revealed", Ref::You),
+    (
+        "your opponents play with their hands revealed",
+        Ref::Opponents,
+    ),
+    ("players play with their hands revealed", Ref::EachPlayer),
+];
+
+/// "Players play with their hands revealed.", "Your opponents play with ...", "Play with your hand revealed."
+fn ep27_hand_revealed(r: &mut Reader<'_>) -> Option<Ref> {
+    EP27_HANDS
+        .iter()
+        .find(|(text, _)| r.words(text))
+        .map(|(_, who)| who.clone())
+}
+
+/// The sentence of a `RevealHand` rule; none for players it has no wording for.
+fn ep27_hand_revealed_text(who: &Ref) -> Option<String> {
+    let (text, _) = EP27_HANDS.iter().find(|(_, named)| named == who)?;
+    let mut chars = text.chars();
+    let first = chars.next()?;
+    Some(first.to_uppercase().chain(chars).collect())
+}
+
 /// "~ can't be countered.", "~ attacks each combat if able.", "All creatures attack each combat if able.",
 /// "Play with the top card of your library revealed."
 fn rule(r: &mut Reader<'_>) -> Option<Ability> {
     let rule = if r.words("play with the top card of your library revealed") {
         GameRule::RevealTop(Ref::You)
+    } else if let Some(who) = r.attempt(ep27_hand_revealed) {
+        GameRule::RevealHand(who)
     } else if r
         .attempt(|r| {
             (r.words("a deck can have any number of cards named") && r.source()).then_some(())
@@ -1380,10 +1411,14 @@ pub fn texts(ability: &Ability) -> Vec<String> {
         .collect()
 }
 
+#[allow(clippy::too_many_lines)]
 fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> {
     match (by, condition) {
         (ReplaceBy::Tapped, None) => vec!["~ enters tapped".to_owned()],
         (ReplaceBy::EntersPrepared, None) => vec!["~ enters prepared".to_owned()],
+        (ReplaceBy::UnderChosenOpponent, None) => {
+            vec![super::ep28_under::UNDER_OPPONENT.to_owned()]
+        }
         (ReplaceBy::Tapped, Some(Condition::Not(held))) => holds_texts(held)
             .into_iter()
             .map(|held| format!("~ enters tapped unless {held}"))
@@ -1638,7 +1673,39 @@ pub(super) fn single_texts(selector: &Selector) -> Vec<String> {
         .collect()
 }
 
+/// The wordings of a card's flash permission from its hand and of the revealed cards of hands and libraries.
+fn ep27_rule_texts(
+    rule: &GameRule,
+    condition: Option<&Condition>,
+    from: ZoneKind,
+) -> Option<Vec<String>> {
+    match (rule, from) {
+        (_, ZoneKind::Hand) => {
+            let mut texts = super::ep27_flash::ep27_flash_texts(rule, condition, from);
+            texts.extend(super::ep29_flash::ep29_flash_texts(rule, condition));
+            Some(texts)
+        }
+        (GameRule::RevealHand(who), ZoneKind::Battlefield) if condition.is_none() => {
+            Some(ep27_hand_revealed_text(who).into_iter().collect())
+        }
+        (GameRule::RevealTop(Ref::You), ZoneKind::Battlefield) if condition.is_none() => {
+            Some(vec![
+                "Play with the top card of your library revealed".to_owned(),
+            ])
+        }
+        (GameRule::RadiationGainsLife(Ref::You), ZoneKind::Battlefield) if condition.is_none() => {
+            Some(vec![
+                "You gain life rather than lose life from radiation".to_owned(),
+            ])
+        }
+        _ => None,
+    }
+}
+
 fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) -> Vec<String> {
+    if let Some(texts) = ep27_rule_texts(rule, condition, from) {
+        return texts;
+    }
     // Only a card that casts itself from its graveyard words a condition here; the others are said without one.
     if matches!(from, ZoneKind::Graveyard | ZoneKind::Exile) {
         return super::c8_eg_cast_itself::c8_eg_texts(rule, condition, from);
@@ -1656,17 +1723,11 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         (GameRule::CantBeCountered(Ref::Each(_)), ZoneKind::Battlefield) => {
             super::c11h_rules::c11h_cant_be_countered_texts(rule)
         }
-        (GameRule::RevealTop(Ref::You), ZoneKind::Battlefield) => {
-            vec!["Play with the top card of your library revealed".to_owned()]
-        }
         (GameRule::NoMaxHandSize(Ref::You), ZoneKind::Battlefield) => {
             vec!["You have no maximum hand size".to_owned()]
         }
         (GameRule::NoMaxHandSize(Ref::EachPlayer), ZoneKind::Battlefield) => {
             vec!["Players have no maximum hand size".to_owned()]
-        }
-        (GameRule::RadiationGainsLife(Ref::You), ZoneKind::Battlefield) => {
-            vec!["You gain life rather than lose life from radiation".to_owned()]
         }
         (GameRule::SkipDrawStep(Ref::You), ZoneKind::Battlefield) => {
             vec!["Skip your draw step".to_owned()]
@@ -1686,7 +1747,10 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         }
         (GameRule::CantGainLife(who), ZoneKind::Battlefield) => life_gain::rule_sentences(who),
         (
-            GameRule::CantSearch(_) | GameRule::SkipExtraTurns(_) | GameRule::FlipTwoCoins(_),
+            GameRule::CantSearch(_)
+            | GameRule::SkipExtraTurns(_)
+            | GameRule::FlipTwoCoins(_)
+            | GameRule::ExtraDie(_),
             ZoneKind::Battlefield,
         ) => super::c4_rules::texts(rule),
         (
@@ -2105,6 +2169,9 @@ pub(super) fn predicate(
 ) -> Option<String> {
     if let Some(lost) = super::lost_abilities::text(mods, plural) {
         return Some(lost);
+    }
+    if let Some(blocks) = super::wf25_writers::wf25_predicate(mods, conditional) {
+        return Some(blocks);
     }
     match mods {
         [Modification::CantAttack, Modification::CantBlock] => {

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b2ae0968-28ed-4ebb-a4e8-69ff6e6a6f1d",
+  "name": "Death or Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death or Glory",
+      "oracle_fingerprint": "ecdc12b93a811b6cf48c40596656b6ee",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "SeparatePiles": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "chooser": "Opponents",
+                  "as": "chosen",
+                  "rest_as": "other"
+                }
+              },
+              { "Exile": { "what": { "Bound": "chosen" } } },
+              { "Move": { "what": { "Bound": "other" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

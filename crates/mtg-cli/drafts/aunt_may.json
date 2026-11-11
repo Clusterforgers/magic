@@ -1,0 +1,34 @@
+{
+  "oracle_id": "bdb769b5-c861-4ec1-ad6b-e2a56ca05fd1",
+  "name": "Aunt May",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aunt May",
+      "oracle_fingerprint": "faa56e0d8759cc0b43a95a0e4241049e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": 1 } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Triggering", "selector": [{ "Subtype": "Spider" }] }
+                  },
+                  "then": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "a8e6655c-e63f-4a60-98f6-9d5bf8631488",
+  "name": "Puca's Mischief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Puca's Mischief",
+      "oracle_fingerprint": "f5ce06e82ed92d797eaaf7d2c30b08ce",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    { "ControlledBy": "Opponents" },
+                    {
+                      "Test": {
+                        "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                        "op": "Le",
+                        "right": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ExchangeControl": {
+                        "what": [{ "Target": 0 }, { "Target": 1 }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

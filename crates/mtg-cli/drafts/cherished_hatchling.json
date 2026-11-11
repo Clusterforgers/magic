@@ -1,0 +1,62 @@
+{
+  "oracle_id": "bd7111bc-9b8f-4c4b-b61c-7841a857ce6b",
+  "name": "Cherished Hatchling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cherished Hatchling",
+      "oracle_fingerprint": "b82e8bd23531861db52945ed7be8c734",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "what": [{ "Subtype": "Dinosaur" }], "flash": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": [{ "Subtype": "Dinosaur" }], "by": "You" } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                                "targets": [
+                                  { "what": { "Object": [{ "Type": "Creature" }, "Other"] } }
+                                ],
+                                "effects": [
+                                  {
+                                    "May": {
+                                      "effects": [
+                                        { "Fight": { "what": "This", "with": { "Target": 0 } } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

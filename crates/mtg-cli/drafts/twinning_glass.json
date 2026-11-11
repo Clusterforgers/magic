@@ -1,0 +1,49 @@
+{
+  "oracle_id": "907baed5-499b-4f20-bbb9-8f5bead37c30",
+  "name": "Twinning Glass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twinning Glass",
+      "oracle_fingerprint": "48851482533eef7b8789e9a9de671afe",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Mana": "{1}" }],
+            "effects": [
+              {
+                "CastFromZone": {
+                  "what": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      {
+                        "SharesName": {
+                          "Each": [
+                            { "DidThisTurn": { "event": "SpellCast" } },
+                            {
+                              "AnyOf": [
+                                { "In": "Stack" },
+                                { "In": "Battlefield" },
+                                { "In": "Graveyard" },
+                                { "In": "Exile" },
+                                { "In": "Hand" },
+                                { "In": "Library" },
+                                { "In": "Command" }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "free": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

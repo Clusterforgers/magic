@@ -1,0 +1,56 @@
+{
+  "oracle_id": "8c4d7cbc-9cfc-4f0a-8844-e458ab806056",
+  "name": "Elite Spellbinder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elite Spellbinder",
+      "oracle_fingerprint": "0e33327ba29dcea3dde54fa36beb0651",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtHand": { "of": { "Target": 0 } } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Target": 0 } },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "who": { "OwnerOf": { "Bound": "exiled" } },
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" },
+                            "play": true,
+                            "additional": "{2}"
+                          }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

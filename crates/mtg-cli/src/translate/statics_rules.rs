@@ -16,6 +16,9 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
     if let Some(found) = super::statics_defender::rule(ctx, p) {
         return Some(found);
     }
+    if p.get("Mode") == Some("CastWithFlash") && p.get("ValidCard") == Some("Card.Self") {
+        return Some(super::statics_cast::ep27_self_flash(p));
+    }
     let mode = p.get("Mode").unwrap_or_default();
     let found = match mode {
         "CantGainLife" => players(p, mode, "ValidPlayer").map(|who| json!({"CantGainLife": who})),
@@ -440,6 +443,42 @@ pub fn skip_extra_turns(p: &Params) -> Tr<Value> {
         Some(_) => return unmapped("replacement:BeginTurn-player"),
     };
     Ok(json!({"Rule": {"rule": {"SkipExtraTurns": who}}}))
+}
+
+/// `Event$ RollDice` whose chain adds one die and one ignored roll (`ReplaceCount$Number/Plus.1`, then
+/// `ReplaceCount$Ignore/Plus.1`) for the controller: "If you would roll one or more dice, instead roll that many dice plus
+/// one and ignore the lowest roll", an `ExtraDie` rule. Another player, a count of sides, a chosen roll to ignore or any
+/// other step stays a gap.
+pub fn ep29_extra_die(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    check_keys(
+        p,
+        "Replacement.RollDice",
+        &["Event", "ActiveZones", "ValidPlayer", "ReplaceWith"],
+        |key, _| key == "Description",
+    )?;
+    if p.get("ActiveZones") != Some("Battlefield") || p.get("ValidPlayer") != Some("You") {
+        return unmapped("replacement:RollDice");
+    }
+    let plus = Params::parse(
+        p.get("ReplaceWith")
+            .and_then(|name| ctx.svar(name))
+            .unwrap_or(""),
+    );
+    let ignore = Params::parse(
+        plus.get("SubAbility")
+            .and_then(|name| ctx.svar(name))
+            .unwrap_or(""),
+    );
+    let step = |part: &Params, name: &str| {
+        part.get("DB") == Some("ReplaceEffect")
+            && part.get("VarName") == Some(name)
+            && part.get("VarValue") == Some(&format!("ReplaceCount${name}/Plus.1"))
+            && part.get("VarType").is_none()
+    };
+    if !step(&plus, "Number") || !step(&ignore, "Ignore") || ignore.get("SubAbility").is_some() {
+        return unmapped("replacement:RollDice");
+    }
+    Ok(json!({"Rule": {"rule": {"ExtraDie": "You"}}}))
 }
 
 /// `IgnoreLegendRule`: the legend rule stops for every player, or for the controller when `ValidCard$` is "permanents you

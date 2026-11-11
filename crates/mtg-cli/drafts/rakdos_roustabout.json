@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c696d82e-6dee-4766-bc08-33af00f61717",
+  "name": "Rakdos Roustabout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakdos Roustabout",
+      "oracle_fingerprint": "1226a3b39a91bcf16fcacb9053774635",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"] } },
+            "effects": [{ "DealDamage": { "to": "Against", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

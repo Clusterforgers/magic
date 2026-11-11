@@ -222,6 +222,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("mobilize", Params::Number),
     ("firebending", Params::Number),
     ("ingest", Params::None),
+    ("increment", Params::None),
     ("saddle", Params::Number),
     ("saddled", Params::None),
     ("station", Params::None),
@@ -1202,6 +1203,7 @@ mod tests {
     #[case::training("training", "training", 0)]
     #[case::unleash("Unleash", "unleash", 0)]
     #[case::ingest("Ingest", "ingest", 0)]
+    #[case::wf25_increment("Increment", "increment", 0)]
     fn a_keyword_of_the_macro_table_reads_with_its_number(
         #[case] item: &str,
         #[case] name: &str,
@@ -1223,6 +1225,7 @@ mod tests {
     #[case::a_cost("Mobilize {2}")]
     #[case::soulshift_without("Soulshift")]
     #[case::a_number_on_flanking("Flanking 1")]
+    #[case::wf25_a_number_on_increment("Increment 1")]
     fn a_macro_keyword_without_a_number_reads_as_no_keyword(#[case] item: &str) {
         assert_eq!(read(item), None);
     }

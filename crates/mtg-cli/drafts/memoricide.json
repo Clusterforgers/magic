@@ -1,0 +1,89 @@
+{
+  "oracle_id": "deeb942b-cf50-43f7-90a9-bdce4e42123a",
+  "name": "Memoricide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memoricide",
+      "oracle_fingerprint": "59f4f68d643c8cea925eafc58e5a1045",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": { "CardName": [{ "Not": { "Type": "Land" } }] },
+                  "as": "name"
+                }
+              },
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "zone": "Graveyard",
+                  "filter": [{ "ChosenAs": "name" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "ChosenAs": "name" },
+                        { "OwnedBy": { "Target": 0 } },
+                        { "In": "Graveyard" }
+                      ]
+                    }
+                  },
+                  "as": "found_graveyard"
+                }
+              },
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "zone": "Hand",
+                  "filter": [{ "ChosenAs": "name" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "ChosenAs": "name" },
+                        { "OwnedBy": { "Target": 0 } },
+                        { "In": "Hand" }
+                      ]
+                    }
+                  },
+                  "as": "found_hand"
+                }
+              },
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [{ "ChosenAs": "name" }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "ChosenAs": "name" },
+                        { "OwnedBy": { "Target": 0 } },
+                        { "In": "Library" }
+                      ]
+                    }
+                  },
+                  "as": "found_library"
+                }
+              },
+              {
+                "Together": {
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "found_graveyard" } } },
+                    { "Exile": { "what": { "Bound": "found_hand" } } },
+                    { "Exile": { "what": { "Bound": "found_library" } } }
+                  ]
+                }
+              },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

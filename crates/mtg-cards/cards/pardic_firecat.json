@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c6498ec5-fbbc-472a-9b40-5481e49efe79",
+  "name": "Pardic Firecat",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pardic Firecat",
+      "oracle_fingerprint": "9af0398006d6666d0b1536f3df492364",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 113 }
+          }
+        }
+      ]
+    }
+  ]
+}

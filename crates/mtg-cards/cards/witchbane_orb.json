@@ -1,0 +1,17 @@
+{
+  "oracle_id": "7411a8f4-b736-482f-886e-5fa671e94e0d",
+  "name": "Witchbane Orb",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Witchbane Orb",
+      "oracle_fingerprint": "88f22e76b63f4762d8c3d970e4da6983",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 62 } }
+        },
+        { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } }
+      ]
+    }
+  ]
+}

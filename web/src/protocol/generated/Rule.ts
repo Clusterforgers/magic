@@ -105,7 +105,7 @@ who: Array<PlayerId>,
 /**
  * The change.
  */
-change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "OpponentsCantMakeSacrifice": Array<PlayerId> } | { "SpendManaAs": { 
+change: unknown, } } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "VoteAgain": Array<PlayerId> } | { "SkipExtraTurns": Array<PlayerId> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "OpponentsCantMakeSacrifice": Array<PlayerId> } | { "SpendManaAs": { 
 /**
  * The players.
  */
@@ -117,7 +117,7 @@ spend_as: unknown,
 /**
  * The spells it is for; everything when absent.
  */
-spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "AbilitiesAsThoughHaste": unknown } | { "UntapDuring": { 
+spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "AbilitiesAsThoughHaste": unknown } | { "UntapDuring": { 
 /**
  * The permanents, judged when the step untaps.
  */
@@ -265,7 +265,11 @@ who: Array<PlayerId>,
 /**
  * The players who can't win.
  */
-winless: Array<PlayerId>, } } | { "CantCastSpells": { 
+winless: Array<PlayerId>, 
+/**
+ * Only the loss for having 0 or less life does not happen (CR 704.5a).
+ */
+life_only?: boolean, } } | { "CantCastSpells": { 
 /**
  * The players who can't cast spells.
  */

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8dac693b-c5c5-4d80-9739-a3b95949a213",
+  "name": "Graceful Antelope",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Graceful Antelope",
+      "oracle_fingerprint": "f39d7e6922c33462063ee04cbf9a2959",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Plains" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 91, "end": 231 }
+          }
+        }
+      ]
+    }
+  ]
+}

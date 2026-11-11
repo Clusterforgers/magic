@@ -1,0 +1,58 @@
+{
+  "oracle_id": "5c22447b-7a7f-4a27-8d3b-1bb664ea94c3",
+  "name": "Biting-Palm Ninja",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biting-Palm Ninja",
+      "oracle_fingerprint": "d474552c8402db10eaf95e79cb62ddf6",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{2}{B}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "menace" }, "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "RemoveCounters": { "from": "This", "counter": { "Other": "menace" } } },
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "Reveal": {
+                              "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] }
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "In": "Hand" },
+                                  { "OwnedBy": "Triggering" },
+                                  { "Not": { "Type": "Land" } }
+                                ]
+                              },
+                              "as": "card"
+                            }
+                          },
+                          { "Exile": { "what": { "Bound": "card" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

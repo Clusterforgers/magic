@@ -1,0 +1,30 @@
+{
+  "oracle_id": "2676d0c3-0a24-4e93-ae80-8f3fe03da483",
+  "name": "War Historian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "War Historian",
+      "oracle_fingerprint": "3ccbcd95178146cbc84ade8815b958f0",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Matches": {
+                "subject": "This",
+                "selector": [
+                  {
+                    "DidThisTurn": { "event": "Attacked", "to": { "Each": [{ "Type": "Battle" }] } }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

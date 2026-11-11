@@ -1,0 +1,58 @@
+{
+  "oracle_id": "5cc4ee18-675e-4707-b658-ec746a1c03d8",
+  "name": "Thought Hemorrhage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Hemorrhage",
+      "oracle_fingerprint": "bdccd5e5e93c069c8d3753d2514f0700",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": { "CardName": [{ "Not": { "Type": "Land" } }] },
+                  "as": "name"
+                }
+              },
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Times": {
+                      "by": 3,
+                      "of": {
+                        "Count": [
+                          { "In": "Hand" },
+                          { "OwnedBy": { "Target": 0 } },
+                          { "ChosenAs": "name" }
+                        ]
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "OwnedBy": { "Target": 0 } },
+                      { "ChosenAs": "name" },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Hand" }, { "In": "Library" }] }
+                    ]
+                  }
+                }
+              },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

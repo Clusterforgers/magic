@@ -1,0 +1,42 @@
+{
+  "oracle_id": "88782913-bfba-4300-b26c-405e6a45537c",
+  "name": "Skeleton Scavengers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skeleton Scavengers",
+      "oracle_fingerprint": "76b504dc981ca9c1fd63bb2ac6a41848",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Changed": {
+                  "change": "Increase",
+                  "mana": "{1}",
+                  "per": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                }
+              }
+            ],
+            "effects": [
+              { "Regenerate": { "what": "This" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "Did": { "action": "Regenerated", "what": ["This"] } },
+                  "this_turn": true,
+                  "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

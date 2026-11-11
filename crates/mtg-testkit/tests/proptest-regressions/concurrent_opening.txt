@@ -1,0 +1,7 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 765f543fae1458eb4c658b487050a9aaf96b8cdab882737017b08fe08ae31cbc # shrinks to (seats, scripts) = (2, [Script { mulligans: [], rotate: 0 }, Script { mulligans: [], rotate: 0 }]), picks = [], commander = true, seed = 903

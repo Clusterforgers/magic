@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5b7ccdd2-40aa-4619-a147-0792dc02b2e5",
+  "name": "Martha Jones",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martha Jones",
+      "oracle_fingerprint": "32ed1c2092eff84cff906d2e7998e30a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }], "by": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "AnyOf": ["This", { "Is": { "Target": 0 } }] }] },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

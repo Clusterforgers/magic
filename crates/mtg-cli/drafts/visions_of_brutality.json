@@ -1,0 +1,24 @@
+{
+  "oracle_id": "66553485-4e9d-4049-9e80-3ac903f8127a",
+  "name": "Visions of Brutality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Visions of Brutality",
+      "oracle_fingerprint": "0c0e6c9ca8fe4b586c027b9373ede522",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [{ "Is": "Attached" }] } } },
+            "effects": [
+              { "LoseLife": { "who": { "ControllerOf": "Dealer" }, "amount": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

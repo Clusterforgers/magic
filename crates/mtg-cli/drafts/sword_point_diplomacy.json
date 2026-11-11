@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ac5585ce-2959-4eaf-af56-5dca8cdfb2d6",
+  "name": "Sword-Point Diplomacy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword-Point Diplomacy",
+      "oracle_fingerprint": "1bafdbf6cf86a01850845432e10076ad",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "top" },
+                  "as": "card",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": "Opponents",
+                        "cost": [{ "PayLife": 3 }],
+                        "unpaid": [{ "Move": { "what": { "Bound": "card" }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Exile": { "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,160 @@
+{
+  "object": "card",
+  "id": "ab34e869-be7a-4632-95b3-5f200b4edcca",
+  "oracle_id": "cc504f00-f177-4def-956d-92a2217438bb",
+  "multiverse_ids": [
+    652207
+  ],
+  "mtgo_id": 132489,
+  "tcgplayer_id": 539421,
+  "cardmarket_id": 757688,
+  "name": "Three Dog, Galaxy News DJ",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/ab34e869-be7a-4632-95b3-5f200b4edcca",
+  "scryfall_uri": "https://scryfall.com/card/pip/120/three-dog-galaxy-news-dj?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/b/ab34e869-be7a-4632-95b3-5f200b4edcca.jpg?1783912383",
+    "normal": "https://cards.scryfall.io/normal/front/a/b/ab34e869-be7a-4632-95b3-5f200b4edcca.jpg?1783912383",
+    "large": "https://cards.scryfall.io/large/front/a/b/ab34e869-be7a-4632-95b3-5f200b4edcca.jpg?1783912383",
+    "png": "https://cards.scryfall.io/png/front/a/b/ab34e869-be7a-4632-95b3-5f200b4edcca.png?1783912383",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/b/ab34e869-be7a-4632-95b3-5f200b4edcca.jpg?1783912383",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/b/ab34e869-be7a-4632-95b3-5f200b4edcca.jpg?1783912383",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/b/ab34e869-be7a-4632-95b3-5f200b4edcca.webp?1783912383",
+    "grid": "https://cards.scryfall.io/grid/front/a/b/ab34e869-be7a-4632-95b3-5f200b4edcca.webp?1783912383",
+    "display": "https://cards.scryfall.io/display/front/a/b/ab34e869-be7a-4632-95b3-5f200b4edcca.webp?1783912383",
+    "art": "https://cards.scryfall.io/art/front/a/b/ab34e869-be7a-4632-95b3-5f200b4edcca.webp?1783912383",
+    "crop": "https://cards.scryfall.io/crop/front/a/b/ab34e869-be7a-4632-95b3-5f200b4edcca.webp?1783912383",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/b/ab34e869-be7a-4632-95b3-5f200b4edcca.jpg?1783912383"
+  },
+  "mana_cost": "{1}{R}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Bard",
+  "oracle_text": "Whenever you attack, you may pay {2} and sacrifice an Aura attached to Three Dog. When you sacrifice an Aura this way, for each other attacking creature you control, create a token that's a copy of that Aura attached to that creature.",
+  "power": "1",
+  "toughness": "5",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "78c43047-87f6-4382-874e-02e9628647bd",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/78c43047-87f6-4382-874e-02e9628647bd"
+    },
+    {
+      "object": "related_card",
+      "id": "93ef2bb3-ecb7-43c6-b4ed-982983c3060d",
+      "component": "combo_piece",
+      "name": "Three Dog, Galaxy News DJ",
+      "type_line": "Legendary Creature — Human Bard",
+      "uri": "https://api.scryfall.com/cards/93ef2bb3-ecb7-43c6-b4ed-982983c3060d"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ab34e869-be7a-4632-95b3-5f200b4edcca/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acc504f00-f177-4def-956d-92a2217438bb&unique=prints",
+  "collector_number": "120",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"You're listening to Galaxy News Radio, bringing you the truth, no matter how bad it hurts.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Elizabeth Peiró",
+  "artist_ids": [
+    "154beecd-b9b8-4795-950c-de8de7434c43"
+  ],
+  "illustration_id": "36778345-8022-46dd-92d2-300bde3df676",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 12013,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.41",
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": "0.37",
+    "tix": "0.24"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652207&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThree%2BDog%252C%2BGalaxy%2BNews%2BDJ",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThree%2BDog%252C%2BGalaxy%2BNews%2BDJ",
+    "edhrec": "https://edhrec.com/route/?cc=Three+Dog%2C+Galaxy+News+DJ"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F539421%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=757688&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132489?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

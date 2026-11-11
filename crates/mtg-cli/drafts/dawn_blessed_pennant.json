@@ -1,0 +1,52 @@
+{
+  "oracle_id": "311eef28-21e9-44fa-96df-d281f0a9ba34",
+  "name": "Dawn-Blessed Pennant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawn-Blessed Pennant",
+      "oracle_fingerprint": "729397438031c7b6df206f2a12c896ba",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "ChooseWord": [
+                "Elemental",
+                "Elf",
+                "Faerie",
+                "Giant",
+                "Goblin",
+                "Kithkin",
+                "Merfolk",
+                "Treefolk"
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "ControlledBy": "You" }, "ChosenSubtype"],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }, "ChosenSubtype"] }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

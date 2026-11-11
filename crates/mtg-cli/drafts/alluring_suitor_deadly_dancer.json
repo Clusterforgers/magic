@@ -1,0 +1,62 @@
+{
+  "oracle_id": "e98e8129-3e0e-45cc-b00c-1387cc592023",
+  "name": "Alluring Suitor // Deadly Dancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alluring Suitor",
+      "oracle_fingerprint": "de91a29b4e58fb140a4f0e3bb61deeb7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 2
+              }
+            },
+            "if": {
+              "CountOf": {
+                "subject": {
+                  "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Attacking"]
+                },
+                "selector": [],
+                "op": "Eq",
+                "right": 2
+              }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Deadly Dancer",
+      "oracle_fingerprint": "30c58f4a043db80e84aadee14a045306",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red"] }, "lasts": "Turn" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}{R}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "AnyOf": ["This", { "Is": { "Target": 0 } }] }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

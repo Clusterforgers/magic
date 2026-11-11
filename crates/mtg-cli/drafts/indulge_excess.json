@@ -1,0 +1,71 @@
+{
+  "oracle_id": "abcb5b99-bf5e-402f-97a2-abb1ab39dd72",
+  "name": "Indulge // Excess",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indulge",
+      "oracle_fingerprint": "3f535dfb0c9a53ad5310b18dcf46d8c1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Citizen",
+                            "colors": ["Green", "White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Citizen"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "tapped": true,
+                        "attacking": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Excess",
+      "oracle_fingerprint": "e5b6535bdf001e1e7080020b1e225a1f",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "DidThisTurn": { "event": "Damaged", "to": "EachPlayer", "combat": true } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

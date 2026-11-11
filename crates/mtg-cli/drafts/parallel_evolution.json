@@ -1,0 +1,35 @@
+{
+  "oracle_id": "963cfdbe-775c-4267-a617-66f10e9d7f4f",
+  "name": "Parallel Evolution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parallel Evolution",
+      "oracle_fingerprint": "624c6f6f0300e6ad747f7145787c498a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Bind": { "what": { "Each": [{ "Type": "Creature" }, "Token"] }, "as": "tokens" } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "tokens" },
+                  "as": "tok",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "who": { "ControllerOf": { "Bound": "tok" } },
+                        "token": { "CopyOf": { "of": { "Bound": "tok" } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{G}{G}{G}" } }
+      ]
+    }
+  ]
+}

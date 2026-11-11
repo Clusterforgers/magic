@@ -47,19 +47,19 @@
                       "effects": [
                         {
                           "Move": {
-                            "what": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                            "what": { "Bound": "exiled" },
                             "to": { "Battlefield": {} },
-                            "as": "moved2"
+                            "as": "returned"
                           }
                         },
-                        { "Exile": { "what": { "Bound": "moved2" }, "as": "exiled3" } },
+                        { "Exile": { "what": { "Bound": "returned" }, "as": "exiled_again" } },
                         {
                           "DelayedTrigger": {
                             "when": { "StepBegins": { "step": "End" } },
                             "effects": [
                               {
                                 "Move": {
-                                  "what": { "Bound": "exiled3" },
+                                  "what": { "Bound": "exiled_again" },
                                   "to": { "Battlefield": {} }
                                 }
                               }

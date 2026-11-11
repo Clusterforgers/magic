@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b06ebf74-4042-4c8f-a70b-98ba9e74e6ed",
+  "name": "Inniaz, the Gale Force",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Inniaz, the Gale Force",
+      "oracle_fingerprint": "9b4f8d8a437764c11e51997ed7ec79c2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}{W/U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Attacking", { "HasKeyword": "Flying" }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 122, "end": 291 }
+          }
+        }
+      ]
+    }
+  ]
+}

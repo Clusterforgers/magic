@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a69265b2-0e37-4d86-866e-e4a923233b4d",
+  "name": "Expropriate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expropriate",
+      "oracle_fingerprint": "35598a38a45a1d652e8e10ed2abdb1a1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Vote": { "options": { "Named": ["time", "money"] } } },
+              { "ExtraTurn": { "count": { "Players": { "Bound": "time" } } } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "money" },
+                  "as": "voter",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "OwnedBy": { "Bound": "voter" } }] },
+                        "as": "stolen"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "stolen" },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

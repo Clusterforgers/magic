@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3b9d587c-39d2-44a2-9802-e4217ed389c0",
+  "name": "Ludevic, Necro-Alchemist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ludevic, Necro-Alchemist",
+      "oracle_fingerprint": "b10b69b64fecd8ca01fb5be11fb1fd4a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "who": "ActivePlayer",
+                        "effects": [{ "Draw": { "who": "ActivePlayer" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

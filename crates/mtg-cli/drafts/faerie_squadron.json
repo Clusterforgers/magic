@@ -1,0 +1,27 @@
+{
+  "oracle_id": "109f7a7d-dc08-4c8f-8065-93c620a9194e",
+  "name": "Faerie Squadron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Squadron",
+      "oracle_fingerprint": "acfe845faffb22cda4e5892d7d7dcc06",
+      "abilities": [
+        { "Keyword": { "Kicker": "{3}{U}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 2,
+                "mods": [{ "AddKeyword": "Flying" }]
+              }
+            },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "0a0a051c-59ed-4286-b842-a34da7ef15d5",
+  "name": "Asinine Antics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Asinine Antics",
+      "oracle_fingerprint": "a0e5a5e0c4fec029a431ec9bda38a7f4",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "flash": true, "additional": "{2}" } },
+            "from": "Hand"
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Cursed Role",
+                            "types": ["Enchantment"],
+                            "subtypes": ["Aura", "Role"],
+                            "abilities": [
+                              { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                              {
+                                "Static": {
+                                  "affected": "Attached",
+                                  "mods": [{ "SetPT": { "power": 1, "toughness": 1 } }]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "as": "role"
+                      }
+                    },
+                    { "Attach": { "what": { "Bound": "role" }, "to": { "Bound": "creature" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

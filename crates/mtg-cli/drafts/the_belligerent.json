@@ -1,0 +1,29 @@
+{
+  "oracle_id": "9a0c9023-9431-4f98-b167-ab4c7215319c",
+  "name": "The Belligerent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Belligerent",
+      "oracle_fingerprint": "e32eaae66557db0995dddb1b07a1630b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              { "Rule": { "rule": { "LookAtTopAnyTime": "You" }, "duration": "UntilEndOfTurn" } },
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Library", "play": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

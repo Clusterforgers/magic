@@ -1,0 +1,47 @@
+{
+  "oracle_id": "10d33e95-3e5d-447e-ba4a-acd3c33b4045",
+  "name": "Torch the Tower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Torch the Tower",
+      "oracle_fingerprint": "9b62fda8da1cbcfb8f6ca6a91418f6a6",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }, { "Scry": {} }],
+                  "otherwise": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "DamagedBy": "This" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

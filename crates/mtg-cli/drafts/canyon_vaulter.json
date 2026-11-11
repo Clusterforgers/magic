@@ -1,0 +1,44 @@
+{
+  "oracle_id": "829e121f-d2fa-40ef-afc7-9b2072a949d7",
+  "name": "Canyon Vaulter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canyon Vaulter",
+      "oracle_fingerprint": "811dd5c51298edfd254a20952a916116",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "BecomesSaddled": { "what": [{ "Subtype": "Mount" }] } },
+                { "BecomesCrewed": { "what": [{ "Subtype": "Vehicle" }] } }
+              ]
+            },
+            "if": {
+              "All": [
+                "YourTurn",
+                { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] },
+                {
+                  "Any": [
+                    { "Matches": { "subject": "This", "selector": [{ "Saddled": "Triggering" }] } },
+                    { "Matches": { "subject": "This", "selector": [{ "Crewed": "Triggering" }] } }
+                  ]
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

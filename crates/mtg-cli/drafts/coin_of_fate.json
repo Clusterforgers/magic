@@ -1,0 +1,47 @@
+{
+  "oracle_id": "e43b478b-4cb8-42b1-a5b0-0b1421b84852",
+  "name": "Coin of Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coin of Fate",
+      "oracle_fingerprint": "b834520ccb78f89a2f9b69c78e724394",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}{W}" },
+              "Tap",
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }], "count": 2 } },
+              "SacrificeSelf"
+            ],
+            "effects": [
+              {
+                "Choose": { "who": "Opponents", "from": "Paid", "as": "chosen", "rest_as": "other" }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "chosen" },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "other" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "BecomeMonarch": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

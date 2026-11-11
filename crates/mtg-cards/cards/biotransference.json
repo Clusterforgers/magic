@@ -1,0 +1,57 @@
+{
+  "oracle_id": "5443557e-440f-4fdd-a29b-7740d7cec085",
+  "name": "Biotransference",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biotransference",
+      "oracle_fingerprint": "5a73a2b23da73deced8b270f9fb16229",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                {
+                  "AnyOf": [
+                    { "In": "Battlefield" },
+                    { "In": "Stack" },
+                    { "In": "Hand" },
+                    { "In": "Library" },
+                    { "In": "Graveyard" },
+                    { "In": "Exile" },
+                    { "In": "Command" }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "AddType": "Artifact" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Artifact" }], "by": "You" } },
+            "effects": [
+              { "LoseLife": { "amount": 1 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Necron Warrior",
+                      "colors": ["Black"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Necron", "Warrior"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

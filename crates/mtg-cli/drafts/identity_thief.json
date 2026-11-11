@@ -1,0 +1,46 @@
+{
+  "oracle_id": "a200daec-983c-4ea6-ae98-1c963b50fbb1",
+  "name": "Identity Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Identity Thief",
+      "oracle_fingerprint": "64e7c5f2a83bd9ac43bfac6105f5f90f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "Not": "Token" }] } }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Exile": { "what": { "Target": 0 }, "as": "exiled" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Departed": { "Target": 0 } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

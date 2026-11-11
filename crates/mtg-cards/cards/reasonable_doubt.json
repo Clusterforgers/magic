@@ -1,0 +1,31 @@
+{
+  "oracle_id": "020503f5-0915-4cd5-a617-1c7bde045e10",
+  "name": "Reasonable Doubt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reasonable Doubt",
+      "oracle_fingerprint": "f99f9e39c29de727ec5d62ea9df04ce5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": ["Spell"] } },
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{2}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              },
+              { "Suspect": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

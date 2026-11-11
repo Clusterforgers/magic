@@ -1,0 +1,74 @@
+{
+  "oracle_id": "3e5cd60f-8fef-4152-a957-0a803997b3da",
+  "name": "Invoke Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invoke Justice",
+      "oracle_fingerprint": "a916307b9d96dac37d88fc1541ef71cf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              },
+              { "what": "Player" }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                          { "ControlledBy": { "Target": 1 } }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                            { "ControlledBy": { "Target": 1 } }
+                          ]
+                        },
+                        "as": "recipient"
+                      }
+                    },
+                    { "PutCounters": { "on": { "Bound": "recipient" }, "counter": "+1/+1" } }
+                  ],
+                  "most": 4,
+                  "times": 4
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

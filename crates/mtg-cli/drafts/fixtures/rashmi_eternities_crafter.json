@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "e553935f-d8d8-4b98-ab4a-5a2eea3f3626",
+  "oracle_id": "01a79429-7d57-4a51-9815-a20905ed4707",
+  "multiverse_ids": [
+    676104
+  ],
+  "mtgo_id": 131087,
+  "tcgplayer_id": 577844,
+  "cardmarket_id": 788970,
+  "name": "Rashmi, Eternities Crafter",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/e553935f-d8d8-4b98-ab4a-5a2eea3f3626",
+  "scryfall_uri": "https://scryfall.com/card/dsc/231/rashmi-eternities-crafter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:26:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/5/e553935f-d8d8-4b98-ab4a-5a2eea3f3626.jpg?1783909591",
+    "normal": "https://cards.scryfall.io/normal/front/e/5/e553935f-d8d8-4b98-ab4a-5a2eea3f3626.jpg?1783909591",
+    "large": "https://cards.scryfall.io/large/front/e/5/e553935f-d8d8-4b98-ab4a-5a2eea3f3626.jpg?1783909591",
+    "png": "https://cards.scryfall.io/png/front/e/5/e553935f-d8d8-4b98-ab4a-5a2eea3f3626.png?1783909591",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/5/e553935f-d8d8-4b98-ab4a-5a2eea3f3626.jpg?1783909591",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/5/e553935f-d8d8-4b98-ab4a-5a2eea3f3626.jpg?1783909591",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/5/e553935f-d8d8-4b98-ab4a-5a2eea3f3626.webp?1783909591",
+    "grid": "https://cards.scryfall.io/grid/front/e/5/e553935f-d8d8-4b98-ab4a-5a2eea3f3626.webp?1783909591",
+    "display": "https://cards.scryfall.io/display/front/e/5/e553935f-d8d8-4b98-ab4a-5a2eea3f3626.webp?1783909591",
+    "art": "https://cards.scryfall.io/art/front/e/5/e553935f-d8d8-4b98-ab4a-5a2eea3f3626.webp?1783909591",
+    "crop": "https://cards.scryfall.io/crop/front/e/5/e553935f-d8d8-4b98-ab4a-5a2eea3f3626.webp?1783909591",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/5/e553935f-d8d8-4b98-ab4a-5a2eea3f3626.jpg?1783909591"
+  },
+  "mana_cost": "{2}{G}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Elf Druid",
+  "oracle_text": "Whenever you cast your first spell each turn, reveal the top card of your library. You may cast it without paying its mana cost if it's a spell with lesser mana value. If you don't cast it, put it into your hand.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e553935f-d8d8-4b98-ab4a-5a2eea3f3626/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A01a79429-7d57-4a51-9815-a20905ed4707&unique=prints",
+  "collector_number": "231",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Magali Villeneuve",
+  "artist_ids": [
+    "9e6a55ae-be4d-4c23-a2a5-135737ffd879"
+  ],
+  "illustration_id": "d8456044-b8e2-40d2-891a-2c760609f564",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3660,
+  "penny_rank": 8460,
+  "prices": {
+    "usd": "0.39",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.73",
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=676104&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRashmi%252C%2BEternities%2BCrafter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRashmi%252C%2BEternities%2BCrafter",
+    "edhrec": "https://edhrec.com/route/?cc=Rashmi%2C+Eternities+Crafter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F577844%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=788970&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/131087?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

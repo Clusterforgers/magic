@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0b64da77-ca1c-427b-b48b-b919f0fe08e9",
+  "name": "Gregor, Shrewd Magistrate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gregor, Shrewd Magistrate",
+      "oracle_fingerprint": "989ebddc40ff8bfa8d8abd0879107cf6",
+      "abilities": [
+        { "Keyword": "Skulk" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Draw": { "count": { "Stat": { "of": "This", "stat": "Power" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

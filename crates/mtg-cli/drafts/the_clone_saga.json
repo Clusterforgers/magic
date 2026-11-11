@@ -1,0 +1,62 @@
+{
+  "oracle_id": "0f0282c6-aceb-4879-8ec8-482d0501204a",
+  "name": "The Clone Saga",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Clone Saga",
+      "oracle_fingerprint": "42b1bb42bd4f9e900657714b0e833bd2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Surveil": { "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CopySpell": {
+                        "what": "Triggering",
+                        "except": [{ "RemoveSupertype": "Legendary" }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Type": "Creature" }, { "ChosenAs": "name" }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

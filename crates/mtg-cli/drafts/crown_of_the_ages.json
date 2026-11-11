@@ -1,0 +1,42 @@
+{
+  "oracle_id": "0b772ef2-b760-400b-8e5b-f4b98e6c935d",
+  "name": "Crown of the Ages",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crown of the Ages",
+      "oracle_fingerprint": "315423e8adb400add4f5ad84c6f68688",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{4}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Subtype": "Aura" },
+                    { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "HasAttached": [{ "Is": { "Target": 0 } }] } }
+                    ]
+                  },
+                  "as": "creature"
+                }
+              },
+              { "Attach": { "what": { "Target": 0 }, "to": { "Bound": "creature" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

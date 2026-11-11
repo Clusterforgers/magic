@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0903b941-82f1-4d3e-9717-29ab7d0c8cef",
+  "name": "Weathered Sentinels",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Weathered Sentinels",
+      "oracle_fingerprint": "f09cc397cbb02186368eab4f4ece8cfb",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 36, "end": 143 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 3 } },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

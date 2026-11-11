@@ -1,0 +1,52 @@
+{
+  "oracle_id": "27a4b633-5a62-4d8c-8cc6-44959c311de9",
+  "name": "Cryptek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cryptek",
+      "oracle_fingerprint": "5d659fa769809b9f3a66807a2ff73d0a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Type": "Creature" },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": "Triggering",
+                        "to": { "Battlefield": { "tapped": true, "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

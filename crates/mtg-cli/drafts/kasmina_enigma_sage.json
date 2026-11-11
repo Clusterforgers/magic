@@ -1,0 +1,62 @@
+{
+  "oracle_id": "06425cb9-d157-4155-a727-78656df12458",
+  "name": "Kasmina, Enigma Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kasmina, Enigma Sage",
+      "oracle_fingerprint": "93b4f6fb37d0b087cdd60bf76afce7ac",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Planeswalker" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "GainAbilitiesOf": "This" }]
+          }
+        },
+        { "Loyalty": { "cost": { "Plus": 2 }, "effects": [{ "Scry": {} }] } },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "fractal"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "fractal" }, "counter": "+1/+1", "count": "X" } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "SharesColor": "This" }
+                  ],
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" } } },
+              { "Shuffle": {} },
+              { "CastFromZone": { "what": { "Bound": "card" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

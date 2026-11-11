@@ -1,0 +1,38 @@
+{
+  "oracle_id": "75719f87-ce1a-40d6-ac5a-5ebf0c936c84",
+  "name": "Blitzball",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blitzball",
+      "oracle_fingerprint": "75e436b92e4dcde5644d0ad731a9ca99",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Supertype": "Legendary" },
+                    { "DidThisTurn": { "event": "Damaged", "to": "Opponents", "combat": true } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

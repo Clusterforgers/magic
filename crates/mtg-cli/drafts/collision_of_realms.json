@@ -1,0 +1,73 @@
+{
+  "oracle_id": "40cbf2c0-041a-44df-a775-580012caab67",
+  "name": "Collision of Realms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Collision of Realms",
+      "oracle_fingerprint": "0cb34377835edc8ec7daf60e593a77f5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Not": "Token" }] },
+                  "as": "nontoken"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "nontoken" },
+                            "selector": [{ "OwnedBy": { "Bound": "p" } }],
+                            "op": "Gt",
+                            "right": 0
+                          }
+                        },
+                        "then": [
+                          {
+                            "RevealUntil": {
+                              "who": { "Bound": "p" },
+                              "filter": [{ "Type": "Creature" }],
+                              "as": "found",
+                              "revealed_as": "revealed"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "found" },
+                              "to": { "Battlefield": { "under": { "Bound": "p" } } }
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "revealed" },
+                              "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

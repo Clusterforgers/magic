@@ -1,0 +1,53 @@
+{
+  "oracle_id": "2f921740-de98-4276-8196-47a38a1e4591",
+  "name": "Necromantic Summons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necromantic Summons",
+      "oracle_fingerprint": "016be490b9c322e2a4249707cb231221",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "under": "You", "counters": [["+1/+1", 2]] } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

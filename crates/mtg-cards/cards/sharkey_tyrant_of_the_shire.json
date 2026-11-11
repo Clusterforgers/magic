@@ -1,0 +1,35 @@
+{
+  "oracle_id": "93a476c0-c77e-43b0-8695-ada40368a002",
+  "name": "Sharkey, Tyrant of the Shire",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sharkey, Tyrant of the Shire",
+      "oracle_fingerprint": "430f5efcad608cf336abf3cc7348d02b",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }] },
+                "action": { "Activate": [] }
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 102, "end": 192 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 193, "end": 255 }
+          }
+        }
+      ]
+    }
+  ]
+}

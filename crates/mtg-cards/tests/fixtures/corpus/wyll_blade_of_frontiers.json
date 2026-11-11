@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "5e9d4562-964d-48ce-b03f-7cb491fa040d",
+  "oracle_id": "4fb254cf-b60c-4a3e-b753-4213cb572837",
+  "multiverse_ids": [
+    563091
+  ],
+  "mtgo_id": 100442,
+  "tcgplayer_id": 272818,
+  "cardmarket_id": 659392,
+  "name": "Wyll, Blade of Frontiers",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/5e9d4562-964d-48ce-b03f-7cb491fa040d",
+  "scryfall_uri": "https://scryfall.com/card/clb/208/wyll-blade-of-frontiers?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:05:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/e/5e9d4562-964d-48ce-b03f-7cb491fa040d.jpg?1783922724",
+    "normal": "https://cards.scryfall.io/normal/front/5/e/5e9d4562-964d-48ce-b03f-7cb491fa040d.jpg?1783922724",
+    "large": "https://cards.scryfall.io/large/front/5/e/5e9d4562-964d-48ce-b03f-7cb491fa040d.jpg?1783922724",
+    "png": "https://cards.scryfall.io/png/front/5/e/5e9d4562-964d-48ce-b03f-7cb491fa040d.png?1783922724",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/e/5e9d4562-964d-48ce-b03f-7cb491fa040d.jpg?1783922724",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/e/5e9d4562-964d-48ce-b03f-7cb491fa040d.jpg?1783922724",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/e/5e9d4562-964d-48ce-b03f-7cb491fa040d.webp?1783922724",
+    "grid": "https://cards.scryfall.io/grid/front/5/e/5e9d4562-964d-48ce-b03f-7cb491fa040d.webp?1783922724",
+    "display": "https://cards.scryfall.io/display/front/5/e/5e9d4562-964d-48ce-b03f-7cb491fa040d.webp?1783922724",
+    "art": "https://cards.scryfall.io/art/front/5/e/5e9d4562-964d-48ce-b03f-7cb491fa040d.webp?1783922724",
+    "crop": "https://cards.scryfall.io/crop/front/5/e/5e9d4562-964d-48ce-b03f-7cb491fa040d.webp?1783922724",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/e/5e9d4562-964d-48ce-b03f-7cb491fa040d.jpg?1783922724"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Warlock",
+  "oracle_text": "If you would roll one or more dice, instead roll that many dice plus one and ignore the lowest roll.\nWhenever you roll one or more dice, put a +1/+1 counter on Wyll.\nChoose a Background (You can have a Background as a second commander.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Choose a background"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5e9d4562-964d-48ce-b03f-7cb491fa040d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4fb254cf-b60c-4a3e-b753-4213cb572837&unique=prints",
+  "collector_number": "208",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mads Ahm",
+  "artist_ids": [
+    "a32a7590-85a9-4676-ac68-7797259312b6"
+  ],
+  "illustration_id": "6ba1cd9a-6776-4d52-8759-78d8079c50fd",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 4262,
+  "preview": {
+    "source": "ComicBook.com",
+    "source_uri": "https://comicbook.com/gaming/news/magic-commander-legends-battle-for-baldurs-gate-spoilers-preview-wyll-blade-of-frontiers/",
+    "previewed_at": "2022-05-20"
+  },
+  "prices": {
+    "usd": "0.46",
+    "usd_foil": "0.76",
+    "usd_etched": null,
+    "eur": "0.47",
+    "eur_foil": "0.69",
+    "tix": "0.72"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563091&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWyll%252C%2BBlade%2Bof%2BFrontiers",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWyll%252C%2BBlade%2Bof%2BFrontiers",
+    "edhrec": "https://edhrec.com/route/?cc=Wyll%2C+Blade+of+Frontiers"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272818%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=659392&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100442?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

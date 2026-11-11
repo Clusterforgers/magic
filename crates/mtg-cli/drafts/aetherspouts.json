@@ -1,0 +1,50 @@
+{
+  "oracle_id": "48369aec-a991-4bef-8554-01c84302b063",
+  "name": "Aetherspouts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aetherspouts",
+      "oracle_fingerprint": "d8c2620e6f09701518d6c2c2b21e0e54",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, "Attacking"] },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "OwnerOf": { "Bound": "creature" } },
+                        "options": [
+                          [
+                            {
+                              "Move": {
+                                "what": { "Bound": "creature" },
+                                "to": { "Library": { "place": "Top" } }
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Move": {
+                                "what": { "Bound": "creature" },
+                                "to": { "Library": { "place": "Bottom" } }
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "da2f3dd5-a943-447b-8c76-8f69f06cefa4",
+  "oracle_id": "ffd469b4-413d-49f5-a873-e3f654240b31",
+  "multiverse_ids": [
+    497696
+  ],
+  "mtgo_id": 85134,
+  "tcgplayer_id": 227173,
+  "cardmarket_id": 514035,
+  "name": "Explosion of Riches",
+  "lang": "en",
+  "released_at": "2020-11-20",
+  "uri": "https://api.scryfall.com/cards/da2f3dd5-a943-447b-8c76-8f69f06cefa4",
+  "scryfall_uri": "https://scryfall.com/card/cmr/176/explosion-of-riches?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:46:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/a/da2f3dd5-a943-447b-8c76-8f69f06cefa4.jpg?1783928818",
+    "normal": "https://cards.scryfall.io/normal/front/d/a/da2f3dd5-a943-447b-8c76-8f69f06cefa4.jpg?1783928818",
+    "large": "https://cards.scryfall.io/large/front/d/a/da2f3dd5-a943-447b-8c76-8f69f06cefa4.jpg?1783928818",
+    "png": "https://cards.scryfall.io/png/front/d/a/da2f3dd5-a943-447b-8c76-8f69f06cefa4.png?1783928818",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/a/da2f3dd5-a943-447b-8c76-8f69f06cefa4.jpg?1783928818",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/a/da2f3dd5-a943-447b-8c76-8f69f06cefa4.jpg?1783928818",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/a/da2f3dd5-a943-447b-8c76-8f69f06cefa4.webp?1783928818",
+    "grid": "https://cards.scryfall.io/grid/front/d/a/da2f3dd5-a943-447b-8c76-8f69f06cefa4.webp?1783928818",
+    "display": "https://cards.scryfall.io/display/front/d/a/da2f3dd5-a943-447b-8c76-8f69f06cefa4.webp?1783928818",
+    "art": "https://cards.scryfall.io/art/front/d/a/da2f3dd5-a943-447b-8c76-8f69f06cefa4.webp?1783928818",
+    "crop": "https://cards.scryfall.io/crop/front/d/a/da2f3dd5-a943-447b-8c76-8f69f06cefa4.webp?1783928818",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/a/da2f3dd5-a943-447b-8c76-8f69f06cefa4.jpg?1783928818"
+  },
+  "mana_cost": "{5}{R}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Draw a card, then each other player may draw a card. Whenever a card is drawn this way, Explosion of Riches deals 5 damage to target opponent chosen at random from among your opponents.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set": "cmr",
+  "set_name": "Commander Legends",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/da2f3dd5-a943-447b-8c76-8f69f06cefa4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Affd469b4-413d-49f5-a873-e3f654240b31&unique=prints",
+  "collector_number": "176",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"You've got how much gold there?\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Seaman",
+  "artist_ids": [
+    "b9c49463-6f55-4039-9d32-c02a658af100"
+  ],
+  "illustration_id": "313e86ac-6d8c-41e5-8c42-83c7e13fdc91",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13514,
+  "prices": {
+    "usd": "0.13",
+    "usd_foil": "0.20",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.14",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=497696&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DExplosion%2Bof%2BRiches",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DExplosion%2Bof%2BRiches",
+    "edhrec": "https://edhrec.com/route/?cc=Explosion+of+Riches"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F227173%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=514035&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/85134?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

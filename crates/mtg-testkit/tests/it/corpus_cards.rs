@@ -33,6 +33,17 @@ const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Auspicious Starrix", Partial, 1),
     ("Aven Mindcensor", Partial, 2),
     ("Bebop, Skull & Crossbones", Partial, 2),
+    ("Blazing Shoal", Partial, 1),
+    ("Conflagrate", Partial, 1),
+    ("Indulgent Tormentor", Partial, 1),
+    ("Jack-o'-Lantern", Partial, 1),
+    ("Molt Tender", Partial, 1),
+    ("Nourishing Shoal", Partial, 1),
+    ("Pili-Pala", Partial, 1),
+    ("Sickening Shoal", Partial, 1),
+    ("Skirge Familiar", Partial, 1),
+    ("Wizard's Rockets", Partial, 2),
+    ("Yurlok of Scorch Thrash", Partial, 1),
 ];
 
 /// The abilities a Verified card carries: those of its file the engine runs, the mana ability each basic land type gives and

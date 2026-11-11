@@ -1,0 +1,62 @@
+{
+  "oracle_id": "63193ad4-bbd2-4cc3-98e2-9f6b985e8ae7",
+  "name": "Oft-Nabbed Goat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oft-Nabbed Goat",
+      "oracle_fingerprint": "9852a7da52ca036e4eaece17a9a1eb53",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "timing": "Sorcery",
+            "by": "Opponents",
+            "effects": [
+              { "Draw": {} },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "-1/-1" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "Triggering", "counter": "-1/-1" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Draw": {
+                  "who": { "OwnerOf": "Triggering" },
+                  "count": { "Counters": { "on": "Triggering", "counter": "-1/-1" } }
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "Among": { "OwnerOf": "Triggering" } } }
+                    }
+                  },
+                  "amount": { "Counters": { "on": "Triggering", "counter": "-1/-1" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "88d42e0e-3921-4873-a53b-146220341f76",
+  "name": "Descent into Madness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Descent into Madness",
+      "oracle_fingerprint": "0883533b6614138f97893937315fd684",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "despair" } } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "In": "Battlefield" }, { "In": "Hand" }] },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "count": {
+                          "min": { "Counters": { "on": "This", "counter": { "Other": "despair" } } },
+                          "max": { "Counters": { "on": "This", "counter": { "Other": "despair" } } }
+                        },
+                        "as": "chosen"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "chosen" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

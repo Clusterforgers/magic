@@ -1,0 +1,51 @@
+{
+  "oracle_id": "c85ba59f-2851-4c75-86db-da798334850c",
+  "name": "Cultural Exchange",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cultural Exchange",
+      "oracle_fingerprint": "8ecc509441d9c532f7596f43b4b94dc9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Another": { "what": "Player", "earlier": [0] } } }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                    }
+                  },
+                  "as": "first"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 1 } }] },
+                  "count": {
+                    "min": { "Count": [{ "Is": { "Bound": "first" } }] },
+                    "max": { "Count": [{ "Is": { "Bound": "first" } }] }
+                  },
+                  "as": "second"
+                }
+              },
+              {
+                "ExchangeControl": {
+                  "what": [{ "Bound": "first" }, { "Bound": "second" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "4921dac2-4adf-4ac4-b1f4-d53385afd802",
+  "name": "Turtle Tracks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turtle Tracks",
+      "oracle_fingerprint": "2630319a2a593b7a3fd494000d0221a3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player", "bounds": { "min": 0, "max": { "Players": "EachPlayer" } } }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Search": {
+                              "who": { "Bound": "player" },
+                              "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                              "as": "their_land"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "their_land" },
+                              "to": { "Battlefield": { "under": { "Bound": "player" } } }
+                            }
+                          },
+                          { "Shuffle": { "who": { "Bound": "player" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "oracle_id": "6cd03270-54cc-43e1-9b86-70c76960c841",
+  "name": "Wernog, Rider's Chaplain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wernog, Rider's Chaplain",
+      "oracle_fingerprint": "ba5733a15e7094eb8e0575fdce4f4994",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield" } }
+              ]
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "Bound": "opp" },
+                        "options": [
+                          [
+                            {
+                              "CreateToken": {
+                                "who": { "Bound": "opp" },
+                                "token": { "Named": "clue" }
+                              }
+                            },
+                            {
+                              "Bind": {
+                                "what": { "Bound": "opp" },
+                                "as": "investigated",
+                                "adds": true
+                              }
+                            }
+                          ],
+                          [{ "LoseLife": { "who": { "Bound": "opp" }, "amount": 1 } }]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": { "Named": "clue" },
+                  "count": { "Sum": [1, { "Players": { "Bound": "investigated" } }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "PartnerGroup": "Friends forever" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "oracle_id": "831623c9-8279-439e-a42b-ac47cacdb058",
+  "name": "Tolarian Contempt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tolarian Contempt",
+      "oracle_fingerprint": "0770bacac6297a362eb41fe92246ec6e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "counter": { "Other": "rejection" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [{ "Type": "Creature" }, { "HasCounter": { "Other": "rejection" } }]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "OwnerOf": { "Bound": "creature" } },
+                        "options": [
+                          [
+                            {
+                              "Move": {
+                                "what": { "Bound": "creature" },
+                                "to": { "Library": { "place": "Top" } }
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Move": {
+                                "what": { "Bound": "creature" },
+                                "to": { "Library": { "place": "Bottom" } }
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

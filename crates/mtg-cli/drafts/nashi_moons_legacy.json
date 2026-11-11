@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ffa6c14e-3d8e-47a2-b102-d37538d60ef6",
+  "name": "Nashi, Moon's Legacy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nashi, Moon's Legacy",
+      "oracle_fingerprint": "2be37051bd8d89104e9c3d523d67abd8",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": { "Ward": "{1}" } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Supertype": "Legendary" }, { "Subtype": "Rat" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "CopyCard": { "what": { "Bound": "exiled" }, "as": "copy" } },
+              { "CastFromZone": { "what": { "Bound": "copy" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

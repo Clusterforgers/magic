@@ -1,0 +1,52 @@
+{
+  "oracle_id": "8f1c1bd6-8420-4de2-81f4-5faa419da301",
+  "name": "Discovery // Dispersal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Discovery",
+      "oracle_fingerprint": "ab361593fff5d545773b5cdc7e696d07",
+      "abilities": [{ "Spell": { "effects": [{ "Surveil": { "count": 2 } }, { "Draw": {} }] } }]
+    },
+    {
+      "name": "Dispersal",
+      "oracle_fingerprint": "650f34353c6c97d993dffc80d1d5c3dd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "opp" },
+                        "from": {
+                          "Each": [
+                            { "Not": { "Type": "Land" } },
+                            { "ControlledBy": { "Bound": "opp" } },
+                            {
+                              "GreatestAmong": {
+                                "stat": "ManaValue",
+                                "group": [{ "ControlledBy": { "Bound": "opp" } }]
+                              }
+                            }
+                          ]
+                        },
+                        "as": "returned"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } },
+                    { "Discard": { "who": { "Bound": "opp" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

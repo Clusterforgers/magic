@@ -1,0 +1,20 @@
+{
+  "oracle_id": "40b872b5-3ec2-4fcc-b152-91966f67c2be",
+  "name": "Ravager Wurm",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ravager Wurm",
+      "oracle_fingerprint": "bf6b51ccb5554dbdc9204bc8fb7ada04",
+      "abilities": [
+        { "Keyword": "Riot" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 74, "end": 252 }
+          }
+        }
+      ]
+    }
+  ]
+}

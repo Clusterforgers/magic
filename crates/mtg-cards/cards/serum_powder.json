@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4e734493-9cb8-4409-8a30-cc15d519a27e",
+  "name": "Serum Powder",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Serum Powder",
+      "oracle_fingerprint": "785bead8e0a280e20d4fe36ff69bd2ff",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 14, "end": 194 }
+          }
+        }
+      ]
+    }
+  ]
+}

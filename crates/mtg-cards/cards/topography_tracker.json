@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0171861e-98d5-4e58-834f-899d8ad7acea",
+  "name": "Topography Tracker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Topography Tracker",
+      "oracle_fingerprint": "dfa08b55dd0d96d5e40c2c874d8c216e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "map" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 171, "end": 256 }
+          }
+        }
+      ]
+    }
+  ]
+}

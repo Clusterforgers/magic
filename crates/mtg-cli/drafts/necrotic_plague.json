@@ -1,0 +1,63 @@
+{
+  "oracle_id": "9d637892-26d7-46f1-bd7d-89bda523f649",
+  "name": "Necrotic Plague",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necrotic Plague",
+      "oracle_fingerprint": "c266f501b2b91fd62996613561c2a492",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                    "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": { "ControllerOf": "Triggering" },
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "Not": { "ControlledBy": { "ControllerOf": "Triggering" } } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "BattlefieldAttached": { "to": { "Target": 0 } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

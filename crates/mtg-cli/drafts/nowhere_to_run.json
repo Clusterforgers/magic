@@ -1,0 +1,41 @@
+{
+  "oracle_id": "da82ca96-a613-4d00-9e6b-1fece4fc23d0",
+  "name": "Nowhere to Run",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nowhere to Run",
+      "oracle_fingerprint": "bbdc5b0c139dc021212fac948b18deaa",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "IgnoreHexproof": {
+                "by": "EachPlayer",
+                "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

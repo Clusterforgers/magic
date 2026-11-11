@@ -1,0 +1,42 @@
+{
+  "oracle_id": "769c511c-37ce-4a9d-85f8-1ba91c2daf82",
+  "name": "Havoc Eater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Havoc Eater",
+      "oracle_fingerprint": "e81429bc2c48d7f3bedde813d437df8f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Goad": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Total": {
+                      "of": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

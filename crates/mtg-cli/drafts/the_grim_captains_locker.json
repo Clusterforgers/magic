@@ -1,0 +1,39 @@
+{
+  "oracle_id": "29931e18-9dac-46fe-b9a4-72d838d79882",
+  "name": "The Grim Captain's Locker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Grim Captain's Locker",
+      "oracle_fingerprint": "49be27a5482243476ca0778c582be694",
+      "abilities": [
+        { "Activated": { "cost": ["Tap"], "effects": [{ "Surveil": {} }] } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "mods": [
+                    {
+                      "AddKeyword": {
+                        "Escape": [
+                          { "Mana": "{3}{B}" },
+                          { "ExileFromGraveyard": { "filter": ["Other"], "count": 4 } }
+                        ]
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

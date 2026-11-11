@@ -1,0 +1,67 @@
+{
+  "oracle_id": "3b21abb0-9a58-4e62-9650-4b04ce2bfb12",
+  "name": "Dack Fayden, Helping Hand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dack Fayden, Helping Hand",
+      "oracle_fingerprint": "055984d1fa84b1fc7704140fc05f9439",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Creature" }],
+                  "count": { "Players": "Opponents" },
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} },
+              {
+                "Continuous": {
+                  "affected": { "Arrived": { "of": { "Bound": "found" }, "zone": "Battlefield" } },
+                  "mods": ["Goaded"],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            {
+                              "Is": {
+                                "Arrived": { "of": { "Bound": "found" }, "zone": "Battlefield" }
+                              }
+                            },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "as": "perm"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "perm" },
+                        "mods": [{ "SetController": { "Bound": "opp" } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

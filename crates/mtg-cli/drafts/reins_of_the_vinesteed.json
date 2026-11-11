@@ -1,0 +1,53 @@
+{
+  "oracle_id": "db616096-ce15-4c32-b8ff-0fda4dd3b0de",
+  "name": "Reins of the Vinesteed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reins of the Vinesteed",
+      "oracle_fingerprint": "da4fffaa87aea32818ddd88283686b6c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, { "SharesSubtype": "Triggering" }]
+                        },
+                        "as": "host"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": { "BattlefieldAttached": { "to": { "Bound": "host" } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

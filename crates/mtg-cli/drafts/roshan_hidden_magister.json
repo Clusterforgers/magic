@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f60b21c1-d192-4a02-9b1f-a08e9e08a84a",
+  "name": "Roshan, Hidden Magister",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Roshan, Hidden Magister",
+      "oracle_fingerprint": "91d77123f80cec1e9c832a4bae819e7a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                "Other",
+                {
+                  "AnyOf": [
+                    { "ControlledBy": "You" },
+                    {
+                      "Not": { "AnyOf": [{ "Not": { "OwnedBy": "You" } }, { "In": "Battlefield" }] }
+                    }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "AddSubtype": "Assassin" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "FaceDown", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": [{ "ControlledBy": "You" }] } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

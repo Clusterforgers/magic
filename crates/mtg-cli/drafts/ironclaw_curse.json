@@ -1,0 +1,38 @@
+{
+  "oracle_id": "51708bd1-23db-4597-84a7-f36abd93c537",
+  "name": "Ironclaw Curse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ironclaw Curse",
+      "oracle_fingerprint": "7e0709182cea5f073b9e8610b2700ee6",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": -1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "CanBlockOnly": [
+                  {
+                    "Compare": {
+                      "stat": "Power",
+                      "op": "Lt",
+                      "to": { "Stat": { "of": "Attached", "stat": "Toughness" } }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "oracle_id": "93a0e938-b916-47ec-9803-369e885e253c",
+  "name": "Future Sight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Future Sight",
+      "oracle_fingerprint": "cc08baed647cdf709b31280bda91e86b",
+      "abilities": [
+        { "Rule": { "rule": { "RevealTop": "You" } } },
+        { "Rule": { "rule": { "MayCast": { "from": "Library", "play": true } } } }
+      ]
+    }
+  ]
+}

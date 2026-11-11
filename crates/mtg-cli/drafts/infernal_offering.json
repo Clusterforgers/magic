@@ -1,0 +1,83 @@
+{
+  "oracle_id": "348201c4-79de-4278-9896-d8b1567cc5cc",
+  "name": "Infernal Offering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Offering",
+      "oracle_fingerprint": "bbc24f445f4175f4119e67a500350a65",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "opp" } },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }], "as": "mine" } },
+              {
+                "Sacrifice": {
+                  "who": { "Bound": "opp" },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "theirs"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "mine" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "theirs" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": { "who": { "Bound": "opp" }, "count": 2 } }]
+                }
+              },
+              { "Choose": { "from": "Opponents", "as": "opp2" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "as": "c1"
+                }
+              },
+              { "Move": { "what": { "Bound": "c1" }, "to": { "Battlefield": {} } } },
+              {
+                "Choose": {
+                  "who": { "Bound": "opp2" },
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Bound": "opp2" } }
+                    ]
+                  },
+                  "as": "c2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "c2" },
+                  "to": { "Battlefield": { "under": { "Bound": "opp2" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

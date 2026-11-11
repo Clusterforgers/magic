@@ -81,7 +81,13 @@ fn may_flash_cost_is_a_way_to_cast_for_the_cost_and_the_extra(
             "{found}"
         );
     } else {
-        assert_eq!(gaps(&text), vec!["keyword:MayFlashCost-cost".to_owned()]);
+        // A card with X or a cost that is not mana alone is cast through a permission of its own (ep29).
+        assert!(gaps(&text).is_empty(), "{:?}", gaps(&text));
+        let found = serde_json::to_string(&abilities(&text)).unwrap();
+        assert!(
+            found.contains("MayCast") && found.contains("additional"),
+            "{found}"
+        );
     }
 }
 

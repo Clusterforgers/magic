@@ -1,0 +1,21 @@
+{
+  "oracle_id": "17b1094f-be67-465c-a91e-4010113bb352",
+  "name": "Hellkite Hatchling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellkite Hatchling",
+      "oracle_fingerprint": "084dbd0f39d85d09952af2a6de945d52",
+      "abilities": [
+        { "Keyword": { "Devour": { "counters": 1, "of": [{ "Type": "Creature" }] } } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Trample" }],
+            "condition": { "Compare": { "left": "Devoured", "op": "Ge", "right": 1 } }
+          }
+        }
+      ]
+    }
+  ]
+}

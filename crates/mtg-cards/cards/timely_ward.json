@@ -1,0 +1,18 @@
+{
+  "oracle_id": "8e589dca-d31e-4d2f-81b1-18e5f9198795",
+  "name": "Timely Ward",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Timely Ward",
+      "oracle_fingerprint": "d29b09946426d74185a8f3298de5699c",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 73 } }
+        },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Indestructible" }] } }
+      ]
+    }
+  ]
+}

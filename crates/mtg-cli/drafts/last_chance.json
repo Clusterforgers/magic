@@ -1,0 +1,34 @@
+{
+  "oracle_id": "360039a5-1cbd-4ee3-8f94-21b5348e106a",
+  "name": "Last Chance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Last Chance",
+      "oracle_fingerprint": "4ff2666e8799fe2ff0d0c5fe40a6fc24",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExtraTurn": {} },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                        "this_turn": true,
+                        "effects": [{ "LoseGame": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

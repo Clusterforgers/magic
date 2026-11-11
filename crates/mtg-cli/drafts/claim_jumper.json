@@ -1,0 +1,83 @@
+{
+  "oracle_id": "18f0cd0b-3e4f-4637-a62e-75dd1b2f3fce",
+  "name": "Claim Jumper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Claim Jumper",
+      "oracle_fingerprint": "c30b5fb2e84b663ee5b9ec2eb688dcc5",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Largest": {
+                    "who": "Opponents",
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Gt",
+                "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Search": { "filter": [{ "Subtype": "Plains" }], "as": "land" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Largest": {
+                          "who": "Opponents",
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Search": { "filter": [{ "Subtype": "Plains" }], "as": "land2" } },
+                          {
+                            "Move": {
+                              "what": { "Bound": "land2" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

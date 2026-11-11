@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "24f01503-03d3-4d74-b9d0-b973f7d66094",
+  "oracle_id": "65b61373-835a-4b22-90d1-d019446e98f7",
+  "multiverse_ids": [
+    413600
+  ],
+  "mtgo_id": 60995,
+  "mtgo_foil_id": 60996,
+  "tcgplayer_id": 118730,
+  "cardmarket_id": 290362,
+  "name": "Jetting Glasskite",
+  "lang": "en",
+  "released_at": "2016-06-10",
+  "uri": "https://api.scryfall.com/cards/24f01503-03d3-4d74-b9d0-b973f7d66094",
+  "scryfall_uri": "https://scryfall.com/card/ema/58/jetting-glasskite?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:13:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/4/24f01503-03d3-4d74-b9d0-b973f7d66094.jpg?1783937612",
+    "normal": "https://cards.scryfall.io/normal/front/2/4/24f01503-03d3-4d74-b9d0-b973f7d66094.jpg?1783937612",
+    "large": "https://cards.scryfall.io/large/front/2/4/24f01503-03d3-4d74-b9d0-b973f7d66094.jpg?1783937612",
+    "png": "https://cards.scryfall.io/png/front/2/4/24f01503-03d3-4d74-b9d0-b973f7d66094.png?1783937612",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/4/24f01503-03d3-4d74-b9d0-b973f7d66094.jpg?1783937612",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/4/24f01503-03d3-4d74-b9d0-b973f7d66094.jpg?1783937612",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/4/24f01503-03d3-4d74-b9d0-b973f7d66094.webp?1783937612",
+    "grid": "https://cards.scryfall.io/grid/front/2/4/24f01503-03d3-4d74-b9d0-b973f7d66094.webp?1783937612",
+    "display": "https://cards.scryfall.io/display/front/2/4/24f01503-03d3-4d74-b9d0-b973f7d66094.webp?1783937612",
+    "art": "https://cards.scryfall.io/art/front/2/4/24f01503-03d3-4d74-b9d0-b973f7d66094.webp?1783937612",
+    "crop": "https://cards.scryfall.io/crop/front/2/4/24f01503-03d3-4d74-b9d0-b973f7d66094.webp?1783937612",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/4/24f01503-03d3-4d74-b9d0-b973f7d66094.jpg?1783937612"
+  },
+  "mana_cost": "{4}{U}{U}",
+  "cmc": 6.0,
+  "type_line": "Creature — Spirit",
+  "oracle_text": "Flying\nWhenever this creature becomes the target of a spell or ability for the first time each turn, counter that spell or ability.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "1f29f022-3ace-4c96-85e8-1f7b63aadf7e",
+  "set": "ema",
+  "set_name": "Eternal Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/1f29f022-3ace-4c96-85e8-1f7b63aadf7e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aema&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ema?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/24f01503-03d3-4d74-b9d0-b973f7d66094/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A65b61373-835a-4b22-90d1-d019446e98f7&unique=prints",
+  "collector_number": "58",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The bolt struck with a flash, and there was a terrible sound, as of glass shattering, but the creature was unharmed.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Shishizaru",
+  "artist_ids": [
+    "f993a598-f922-49c8-bb03-6beb3b780b0d"
+  ],
+  "illustration_id": "a16a7375-9608-476b-9601-195c11f06d9d",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31233,
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": "0.08",
+    "usd_etched": null,
+    "eur": "0.05",
+    "eur_foil": "0.18",
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=413600&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJetting%2BGlasskite",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJetting%2BGlasskite",
+    "edhrec": "https://edhrec.com/route/?cc=Jetting+Glasskite"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F118730%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=290362&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/60995?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

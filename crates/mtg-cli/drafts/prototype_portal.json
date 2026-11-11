@@ -1,0 +1,50 @@
+{
+  "oracle_id": "7f3b6c25-b855-4ea5-a8ad-d954a6cdffb7",
+  "name": "Prototype Portal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prototype Portal",
+      "oracle_fingerprint": "e0c923dae5e95a29b435f4942b5b22de",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Artifact" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+                    { "Remember": { "what": { "Bound": "exiled" }, "slot": "imprint" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": { "Remembered": { "on": "This", "slot": "imprint" } } }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

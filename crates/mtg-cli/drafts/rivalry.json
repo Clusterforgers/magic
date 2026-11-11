@@ -1,0 +1,36 @@
+{
+  "oracle_id": "da77cf1b-eaeb-4a60-aa16-a1217ce8b550",
+  "name": "Rivalry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rivalry",
+      "oracle_fingerprint": "156747d3decb89480e5562d4df134bb6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "Triggering" }] },
+                "op": "Gt",
+                "right": {
+                  "Largest": {
+                    "who": {
+                      "PlayersWhere": {
+                        "who": "EachPlayer",
+                        "test": { "Not": { "Among": "Triggering" } }
+                      }
+                    },
+                    "of": [{ "Type": "Land" }]
+                  }
+                }
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

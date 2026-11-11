@@ -1,0 +1,64 @@
+{
+  "oracle_id": "d799e58a-0032-4df8-a77f-0d824ec15214",
+  "name": "Arni Metalbrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arni Metalbrow",
+      "oracle_fingerprint": "6657d34378105c9280ff3e3788c032a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Attacking"],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{R}",
+                  "paid": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Lt",
+                                "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                              }
+                            }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "picked" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Bound": "picked" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

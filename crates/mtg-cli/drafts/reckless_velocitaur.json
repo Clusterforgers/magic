@@ -1,0 +1,66 @@
+{
+  "oracle_id": "367420cb-e77b-4d0c-9a83-0deee28f6d36",
+  "name": "Reckless Velocitaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Velocitaur",
+      "oracle_fingerprint": "d75ee627572a0b5a664fc7e5bcc2c113",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "BecomesSaddled": {
+                    "what": [
+                      { "Subtype": "Mount" },
+                      {
+                        "Test": {
+                          "left": {
+                            "CountOf": { "of": "This", "filter": [{ "Saddled": "Candidate" }] }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "BecomesCrewed": {
+                    "what": [
+                      { "Subtype": "Vehicle" },
+                      {
+                        "Test": {
+                          "left": {
+                            "CountOf": { "of": "This", "filter": [{ "Crewed": "Candidate" }] }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "if": { "All": ["YourTurn", { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }] },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "541f7525-a9a4-493d-b724-354ae6d37de5",
+  "name": "Flying Drone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flying Drone",
+      "oracle_fingerprint": "ee62b3722e802ade4fcfb439f90d82d7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{U}" },
+              "Tap",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}{U}",
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "Entered",
+                          "who": "EachPlayer",
+                          "filter": [
+                            { "Type": "Creature" },
+                            { "HasKeyword": "Flying" },
+                            "Other",
+                            { "ControlledBy": "You" }
+                          ]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

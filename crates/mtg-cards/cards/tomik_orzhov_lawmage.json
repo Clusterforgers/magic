@@ -1,0 +1,43 @@
+{
+  "oracle_id": "7a501f7e-eec8-45f7-9ac3-483fd8f5ca5e",
+  "name": "Tomik, Orzhov Lawmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tomik, Orzhov Lawmage",
+      "oracle_fingerprint": "9a8c85082f9fbb4c4d367e63308bc207",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Rule": { "rule": { "AttackLimitAt": { "most": 1, "at": "This" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasCounter": "+1/+1" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

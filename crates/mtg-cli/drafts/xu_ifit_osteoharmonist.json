@@ -1,0 +1,36 @@
+{
+  "oracle_id": "39e32fdf-93bf-4390-8275-0d7d10ad7360",
+  "name": "Xu-Ifit, Osteoharmonist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Xu-Ifit, Osteoharmonist",
+      "oracle_fingerprint": "82558fb3bc9cf343453408b3e5ed8113",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Arrived": { "of": { "Target": 0 }, "zone": "Battlefield" } },
+                  "mods": [{ "AddSubtype": "Skeleton" }, "LoseAbilities"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

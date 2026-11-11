@@ -1,0 +1,21 @@
+{
+  "oracle_id": "9c6ac895-0644-47ea-8a40-8f35cbbeba42",
+  "name": "Cybership",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cybership",
+      "oracle_fingerprint": "8532260d7fc8b37ed45773f7160b0c97",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 200 }
+          }
+        },
+        { "Keyword": { "Crew": 4 } }
+      ]
+    }
+  ]
+}

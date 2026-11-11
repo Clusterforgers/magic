@@ -1,0 +1,27 @@
+{
+  "oracle_id": "35064a72-c052-496f-8f1a-6dbc5e617d3f",
+  "name": "Price of Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Price of Glory",
+      "oracle_fingerprint": "c831b17f25b4101f865463eeb156afbf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }] } },
+            "if": {
+              "Not": {
+                "Matches": {
+                  "subject": "Triggering",
+                  "selector": [{ "ControlledBy": "ActivePlayer" }]
+                }
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

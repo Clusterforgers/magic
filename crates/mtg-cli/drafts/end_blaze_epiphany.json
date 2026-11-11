@@ -1,0 +1,54 @@
+{
+  "oracle_id": "00cfbea0-e862-468b-90d5-7478eb9847c0",
+  "name": "End-Blaze Epiphany",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "End-Blaze Epiphany",
+      "oracle_fingerprint": "9121e8380780262dfbb740b83dc6ae2c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "ExileTop": {
+                        "count": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                        "as": "exiled"
+                      }
+                    },
+                    { "Choose": { "from": { "Bound": "exiled" }, "as": "chosen" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "chosen" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

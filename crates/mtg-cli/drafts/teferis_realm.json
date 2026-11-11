@@ -1,0 +1,77 @@
+{
+  "oracle_id": "9851d934-2e07-49c8-b08b-15f96d0f3f0c",
+  "name": "Teferi's Realm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi's Realm",
+      "oracle_fingerprint": "0d71475d540590dfa95f6064dbd6b5a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "ChooseValue": {
+                  "who": "TriggeringPlayer",
+                  "kind": { "Options": ["artifact", "creature", "land", "non-Aura enchantment"] },
+                  "as": "type"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "type", "word": "artifact" } },
+                  "then": [
+                    {
+                      "PhaseOut": {
+                        "what": { "Each": [{ "Type": "Artifact" }, { "Not": "Token" }] }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "type", "word": "creature" } },
+                  "then": [
+                    {
+                      "PhaseOut": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "Not": "Token" }] }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "type", "word": "land" } },
+                  "then": [
+                    { "PhaseOut": { "what": { "Each": [{ "Type": "Land" }, { "Not": "Token" }] } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "type", "word": "non-Aura enchantment" } },
+                  "then": [
+                    {
+                      "PhaseOut": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Enchantment" },
+                            { "Not": { "Subtype": "Aura" } },
+                            { "Not": "Token" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

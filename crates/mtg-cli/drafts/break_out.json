@@ -1,0 +1,74 @@
+{
+  "oracle_id": "99eaac39-28d4-4af7-984b-f75fd37902ed",
+  "name": "Break Out",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Break Out",
+      "oracle_fingerprint": "53a60f2d381987f82a1f5dfcfa19554f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "kept" },
+                      "selector": [{ "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "kept" },
+                              "to": { "Battlefield": {} },
+                              "as": "entered"
+                            }
+                          },
+                          {
+                            "Continuous": {
+                              "affected": { "Bound": "entered" },
+                              "mods": [{ "AddKeyword": "Haste" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ],
+                        "second": [{ "Move": { "what": { "Bound": "kept" }, "to": "Hand" } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "kept" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

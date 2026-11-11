@@ -33,21 +33,19 @@
               {
                 "Choose": {
                   "from": {
-                    "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }, "ChosenSubtype"]
+                    "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }, "ChosenSubtype"]
                   },
                   "count": { "min": 0, "max": 1 },
-                  "as": "revealed2"
+                  "as": "kept"
                 }
               },
-              { "Reveal": { "what": { "Bound": "revealed2" } } },
-              {
-                "Move": { "what": { "Bound": "revealed2" }, "to": "Hand", "as": "revealed2_moved" }
-              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
               {
                 "If": {
                   "condition": {
                     "CountOf": {
-                      "subject": { "Bound": "revealed2_moved" },
+                      "subject": { "Bound": "kept" },
                       "selector": [],
                       "op": "Eq",
                       "right": 0
@@ -56,16 +54,7 @@
                   "then": [
                     {
                       "May": {
-                        "effects": [
-                          {
-                            "Move": {
-                              "what": {
-                                "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
-                              },
-                              "to": "Graveyard"
-                            }
-                          }
-                        ]
+                        "effects": [{ "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }]
                       }
                     }
                   ]

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "df33b298-9e4b-4522-96e5-c8d8d6af2bb4",
+  "name": "Unnatural Moonrise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unnatural Moonrise",
+      "oracle_fingerprint": "c632b6d1b2fb459e9ba025be76d62564",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "BecomeDayNight": { "to": "Night" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Trample" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "Draw": {} }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{2}{R}{G}" } }
+      ]
+    }
+  ]
+}

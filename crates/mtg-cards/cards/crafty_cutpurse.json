@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2ef53e18-0baf-4eee-b671-4c19b464cbfb",
+  "name": "Crafty Cutpurse",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Crafty Cutpurse",
+      "oracle_fingerprint": "cef307f4b133e266832a77fe92267e34",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 142 }
+          }
+        }
+      ]
+    }
+  ]
+}

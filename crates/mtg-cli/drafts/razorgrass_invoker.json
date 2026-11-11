@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ea2a6bee-8634-429d-a5ca-e5f9f7eb9350",
+  "name": "Razorgrass Invoker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razorgrass Invoker",
+      "oracle_fingerprint": "8129c58580b459cab58da03244372625",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": "{8}",
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "AnyOf": ["This", { "Is": { "Target": 0 } }] }] },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

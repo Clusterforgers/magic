@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3786047e-f136-49f8-81d6-08beb3f9bcfd",
+  "name": "Glitterflitter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Glitterflitter",
+      "oracle_fingerprint": "17f995e9edbbdda5eac52b6207bd3092",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 107 }
+          }
+        }
+      ]
+    }
+  ]
+}

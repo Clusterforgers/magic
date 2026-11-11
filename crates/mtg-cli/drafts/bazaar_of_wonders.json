@@ -1,0 +1,57 @@
+{
+  "oracle_id": "7fca65b8-01fe-4858-97c6-f97ae82cd801",
+  "name": "Bazaar of Wonders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bazaar of Wonders",
+      "oracle_fingerprint": "17daacd938f76b6837727ee7f644ab26",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [{ "SharesName": "Triggering" }, { "In": "Graveyard" }]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "SharesName": "Triggering" },
+                              { "Not": "Token" },
+                              { "In": "Battlefield" }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "object": "card",
+  "id": "a9d007a2-163d-4e09-a70b-280a6fa3203b",
+  "oracle_id": "0b8adb9e-97a5-43d9-87d6-993f22edaf3b",
+  "multiverse_ids": [
+    234849
+  ],
+  "mtgo_id": 42608,
+  "mtgo_foil_id": 42609,
+  "tcgplayer_id": 56315,
+  "cardmarket_id": 250751,
+  "name": "Gutter Grime",
+  "lang": "en",
+  "released_at": "2011-09-30",
+  "uri": "https://api.scryfall.com/cards/a9d007a2-163d-4e09-a70b-280a6fa3203b",
+  "scryfall_uri": "https://scryfall.com/card/isd/186/gutter-grime?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:08:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/9/a9d007a2-163d-4e09-a70b-280a6fa3203b.jpg?1783940917",
+    "normal": "https://cards.scryfall.io/normal/front/a/9/a9d007a2-163d-4e09-a70b-280a6fa3203b.jpg?1783940917",
+    "large": "https://cards.scryfall.io/large/front/a/9/a9d007a2-163d-4e09-a70b-280a6fa3203b.jpg?1783940917",
+    "png": "https://cards.scryfall.io/png/front/a/9/a9d007a2-163d-4e09-a70b-280a6fa3203b.png?1783940917",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/9/a9d007a2-163d-4e09-a70b-280a6fa3203b.jpg?1783940917",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/9/a9d007a2-163d-4e09-a70b-280a6fa3203b.jpg?1783940917",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/9/a9d007a2-163d-4e09-a70b-280a6fa3203b.webp?1783940917",
+    "grid": "https://cards.scryfall.io/grid/front/a/9/a9d007a2-163d-4e09-a70b-280a6fa3203b.webp?1783940917",
+    "display": "https://cards.scryfall.io/display/front/a/9/a9d007a2-163d-4e09-a70b-280a6fa3203b.webp?1783940917",
+    "art": "https://cards.scryfall.io/art/front/a/9/a9d007a2-163d-4e09-a70b-280a6fa3203b.webp?1783940917",
+    "crop": "https://cards.scryfall.io/crop/front/a/9/a9d007a2-163d-4e09-a70b-280a6fa3203b.webp?1783940917",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/9/a9d007a2-163d-4e09-a70b-280a6fa3203b.jpg?1783940917"
+  },
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a nontoken creature you control dies, put a slime counter on this enchantment, then create a green Ooze creature token with \"This token's power and toughness are each equal to the number of slime counters on Gutter Grime.\"",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a9d007a2-163d-4e09-a70b-280a6fa3203b",
+      "component": "combo_piece",
+      "name": "Gutter Grime",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/a9d007a2-163d-4e09-a70b-280a6fa3203b"
+    },
+    {
+      "object": "related_card",
+      "id": "1f22cfdb-15af-46b9-b5c9-d0c76d5b15d6",
+      "component": "token",
+      "name": "Ooze",
+      "type_line": "Token Creature — Ooze",
+      "uri": "https://api.scryfall.com/cards/1f22cfdb-15af-46b9-b5c9-d0c76d5b15d6"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d1026945-2969-42b9-be53-f941405a58cb",
+  "set": "isd",
+  "set_name": "Innistrad",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d1026945-2969-42b9-be53-f941405a58cb",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aisd&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/isd?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a9d007a2-163d-4e09-a70b-280a6fa3203b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0b8adb9e-97a5-43d9-87d6-993f22edaf3b&unique=prints",
+  "collector_number": "186",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Erica Yang",
+  "artist_ids": [
+    "fcc15b63-b280-49da-9fee-f862824a2fc8"
+  ],
+  "illustration_id": "d495eb8d-bb50-483b-bd5b-2d919d18287a",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12806,
+  "penny_rank": 13693,
+  "prices": {
+    "usd": "0.38",
+    "usd_foil": "1.74",
+    "usd_etched": null,
+    "eur": "0.50",
+    "eur_foil": "0.76",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=234849&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGutter%2BGrime",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGutter%2BGrime",
+    "edhrec": "https://edhrec.com/route/?cc=Gutter+Grime"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F56315%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=250751&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/42608?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

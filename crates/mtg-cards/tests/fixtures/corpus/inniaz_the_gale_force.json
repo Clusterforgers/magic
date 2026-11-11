@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "b238485f-ef67-4295-892b-a10235368f74",
+  "oracle_id": "b06ebf74-4042-4c8f-a70b-98ba9e74e6ed",
+  "multiverse_ids": [
+    489179
+  ],
+  "mtgo_id": 81771,
+  "arena_id": 72115,
+  "tcgplayer_id": 216392,
+  "cardmarket_id": 474174,
+  "name": "Inniaz, the Gale Force",
+  "lang": "en",
+  "released_at": "2020-07-17",
+  "uri": "https://api.scryfall.com/cards/b238485f-ef67-4295-892b-a10235368f74",
+  "scryfall_uri": "https://scryfall.com/card/jmp/12/inniaz-the-gale-force?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:15:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/2/b238485f-ef67-4295-892b-a10235368f74.jpg?1783930506",
+    "normal": "https://cards.scryfall.io/normal/front/b/2/b238485f-ef67-4295-892b-a10235368f74.jpg?1783930506",
+    "large": "https://cards.scryfall.io/large/front/b/2/b238485f-ef67-4295-892b-a10235368f74.jpg?1783930506",
+    "png": "https://cards.scryfall.io/png/front/b/2/b238485f-ef67-4295-892b-a10235368f74.png?1783930506",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/2/b238485f-ef67-4295-892b-a10235368f74.jpg?1783930506",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/2/b238485f-ef67-4295-892b-a10235368f74.jpg?1783930506",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/2/b238485f-ef67-4295-892b-a10235368f74.webp?1783930506",
+    "grid": "https://cards.scryfall.io/grid/front/b/2/b238485f-ef67-4295-892b-a10235368f74.webp?1783930506",
+    "display": "https://cards.scryfall.io/display/front/b/2/b238485f-ef67-4295-892b-a10235368f74.webp?1783930506",
+    "art": "https://cards.scryfall.io/art/front/b/2/b238485f-ef67-4295-892b-a10235368f74.webp?1783930506",
+    "crop": "https://cards.scryfall.io/crop/front/b/2/b238485f-ef67-4295-892b-a10235368f74.webp?1783930506",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/2/b238485f-ef67-4295-892b-a10235368f74.jpg?1783930506"
+  },
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Djinn",
+  "oracle_text": "Flying\n{2}{W/U}: Attacking creatures with flying get +1/+1 until end of turn. ({W/U} can be paid with either {W} or {U}.)\nWhenever three or more creatures you control with flying attack, each player gains control of a nonland permanent of your choice controlled by the player to their right.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "0f6ccf25-a627-4263-86df-5757137f1696",
+  "set": "jmp",
+  "set_name": "Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/0f6ccf25-a627-4263-86df-5757137f1696",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajmp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jmp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b238485f-ef67-4295-892b-a10235368f74/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab06ebf74-4042-4c8f-a70b-98ba9e74e6ed&unique=prints",
+  "collector_number": "12",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Livia Prima",
+  "artist_ids": [
+    "0f41e561-bc26-4d85-aab6-66c384e01b74"
+  ],
+  "illustration_id": "c3dd6598-e514-4ab8-a64e-bca8d3ae65cd",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17413,
+  "preview": {
+    "source": "Blacker Lotus",
+    "source_uri": "https://www.youtube.com/watch?v=_PksQo4iGhg",
+    "previewed_at": "2020-06-19"
+  },
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.30",
+    "eur_foil": null,
+    "tix": "0.18"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=489179&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DInniaz%252C%2Bthe%2BGale%2BForce",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DInniaz%252C%2Bthe%2BGale%2BForce",
+    "edhrec": "https://edhrec.com/route/?cc=Inniaz%2C+the+Gale+Force"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F216392%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=474174&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/81771?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

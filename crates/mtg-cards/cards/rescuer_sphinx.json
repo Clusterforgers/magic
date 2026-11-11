@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d4c4ad11-7e71-4ad0-aee7-58ac7b1b38f8",
+  "name": "Rescuer Sphinx",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rescuer Sphinx",
+      "oracle_fingerprint": "aaf6fcb75a61935f57052580142c3d34",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 159 }
+          }
+        }
+      ]
+    }
+  ]
+}

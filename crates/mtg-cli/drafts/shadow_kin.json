@@ -1,0 +1,52 @@
+{
+  "oracle_id": "7ecc506e-bed0-4ae2-9d2f-5143ef63f62c",
+  "name": "Shadow Kin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow Kin",
+      "oracle_fingerprint": "ab360af19b2af46d7b269ff794924ac5",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Mill": { "who": "EachPlayer", "count": 3, "as": "milled" } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Is": { "Bound": "milled" } }, { "Type": "Creature" }]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Bound": "exiled" },
+                        "except": ["ThisAbility"],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

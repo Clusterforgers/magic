@@ -1,0 +1,45 @@
+{
+  "oracle_id": "fd1998c0-c18e-4310-82de-b6320be5fe10",
+  "name": "The Last Agni Kai",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Last Agni Kai",
+      "oracle_fingerprint": "eaee77699543ef8fa64d05371b7e50bc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "excess": { "as": "excess" }
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 1 },
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Target": 1 }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "AddMana": { "mana": { "Fixed": ["Red"] }, "times": { "Bound": "excess" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

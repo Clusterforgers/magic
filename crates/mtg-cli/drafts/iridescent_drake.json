@@ -1,0 +1,24 @@
+{
+  "oracle_id": "f8cf31db-6c33-4bfb-a24c-f22644ccd377",
+  "name": "Iridescent Drake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iridescent Drake",
+      "oracle_fingerprint": "20b1482e5ae43de6b7e0103ed836383a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Subtype": "Aura" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } },
+              { "Attach": { "what": { "Target": 0 }, "to": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "48e1f72d-ef5e-4cea-a0ee-645570a36104",
+  "oracle_id": "518684d9-467a-4936-a3d9-17d23db4622c",
+  "multiverse_ids": [
+    29886
+  ],
+  "mtgo_id": 17315,
+  "mtgo_foil_id": 17316,
+  "tcgplayer_id": 9625,
+  "cardmarket_id": 2396,
+  "name": "Insist",
+  "lang": "en",
+  "released_at": "2002-02-04",
+  "uri": "https://api.scryfall.com/cards/48e1f72d-ef5e-4cea-a0ee-645570a36104",
+  "scryfall_uri": "https://scryfall.com/card/tor/127/insist?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:19:02Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/8/48e1f72d-ef5e-4cea-a0ee-645570a36104.jpg?1783945142",
+    "normal": "https://cards.scryfall.io/normal/front/4/8/48e1f72d-ef5e-4cea-a0ee-645570a36104.jpg?1783945142",
+    "large": "https://cards.scryfall.io/large/front/4/8/48e1f72d-ef5e-4cea-a0ee-645570a36104.jpg?1783945142",
+    "png": "https://cards.scryfall.io/png/front/4/8/48e1f72d-ef5e-4cea-a0ee-645570a36104.png?1783945142",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/8/48e1f72d-ef5e-4cea-a0ee-645570a36104.jpg?1783945142",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/8/48e1f72d-ef5e-4cea-a0ee-645570a36104.jpg?1783945142",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/8/48e1f72d-ef5e-4cea-a0ee-645570a36104.webp?1783945142",
+    "grid": "https://cards.scryfall.io/grid/front/4/8/48e1f72d-ef5e-4cea-a0ee-645570a36104.webp?1783945142",
+    "display": "https://cards.scryfall.io/display/front/4/8/48e1f72d-ef5e-4cea-a0ee-645570a36104.webp?1783945142",
+    "art": "https://cards.scryfall.io/art/front/4/8/48e1f72d-ef5e-4cea-a0ee-645570a36104.webp?1783945142",
+    "crop": "https://cards.scryfall.io/crop/front/4/8/48e1f72d-ef5e-4cea-a0ee-645570a36104.webp?1783945142",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/8/48e1f72d-ef5e-4cea-a0ee-645570a36104.jpg?1783945142"
+  },
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "The next creature spell you cast this turn can't be countered.\nDraw a card.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e0b3fda1-a6ca-4996-849b-08b463d39484",
+  "set": "tor",
+  "set_name": "Torment",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e0b3fda1-a6ca-4996-849b-08b463d39484",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ator&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tor?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/48e1f72d-ef5e-4cea-a0ee-645570a36104/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A518684d9-467a-4936-a3d9-17d23db4622c&unique=prints",
+  "collector_number": "127",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Finesse is no match for brute force.\"\n—Seton, centaur druid",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Franz Vohwinkel",
+  "artist_ids": [
+    "3a243c17-3baa-4b53-9599-645311cd7d3d"
+  ],
+  "illustration_id": "ee256219-e147-474e-a024-c7ecfdde2743",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17765,
+  "penny_rank": 6100,
+  "prices": {
+    "usd": "1.92",
+    "usd_foil": "17.05",
+    "usd_etched": null,
+    "eur": "0.94",
+    "eur_foil": "6.26",
+    "tix": "0.17"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=29886&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DInsist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DInsist",
+    "edhrec": "https://edhrec.com/route/?cc=Insist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F9625%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2396&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/17315?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

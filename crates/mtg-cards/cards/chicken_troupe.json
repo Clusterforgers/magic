@@ -1,0 +1,20 @@
+{
+  "oracle_id": "68982532-c0c8-477b-9dd4-180c6d22731e",
+  "name": "Chicken Troupe",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chicken Troupe",
+      "oracle_fingerprint": "27f86141e212db3d39b1c05d007b0d83",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 137, "end": 237 }
+          }
+        }
+      ]
+    }
+  ]
+}

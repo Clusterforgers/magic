@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3ee18e5f-3d12-489e-b337-29208caaed7a",
+  "name": "Farrelite Priest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Farrelite Priest",
+      "oracle_fingerprint": "19bedef33f5d95b72701d451f065eb62",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["White"] } } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Ge", "right": 4 } },
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "oracle_id": "8a8c7c20-beb7-4352-99ea-7f64a30b9f52",
+  "name": "Faramir, Prince of Ithilien",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faramir, Prince of Ithilien",
+      "oracle_fingerprint": "51075787db18daf07e1ea5ff099cc33f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "opp" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": { "Bound": "opp" } } },
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Type": "Creature" },
+                                {
+                                  "DidThisTurn": {
+                                    "event": "Attacked",
+                                    "by": { "Bound": "opp" },
+                                    "to": "You"
+                                  }
+                                }
+                              ]
+                            },
+                            "op": "Eq",
+                            "right": 0
+                          }
+                        },
+                        "then": [{ "Draw": {} }],
+                        "otherwise": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Human Soldier",
+                                  "colors": ["White"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Human", "Soldier"],
+                                  "power": 1,
+                                  "toughness": 1
+                                }
+                              },
+                              "count": 3
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

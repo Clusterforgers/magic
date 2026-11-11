@@ -1,0 +1,64 @@
+{
+  "oracle_id": "2c1d3e9e-213e-492a-ad5a-91139d70bc0f",
+  "name": "Fishing Pole",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fishing Pole",
+      "oracle_fingerprint": "66bcd6de89fce2813bdcec4508ae183b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [
+                      { "Mana": "{1}" },
+                      "Tap",
+                      { "TapPermanents": { "filter": [{ "Is": "Granter" }] } }
+                    ],
+                    "effects": [
+                      { "PutCounters": { "on": "Granter", "counter": { "Other": "bait" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": [{ "Is": "Attached" }] } },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "bait" } } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Fish",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Fish"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

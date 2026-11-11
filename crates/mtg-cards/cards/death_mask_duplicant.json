@@ -1,0 +1,32 @@
+{
+  "oracle_id": "8bdaa661-861b-4f91-83ea-467e34e11cc3",
+  "name": "Death-Mask Duplicant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Death-Mask Duplicant",
+      "oracle_fingerprint": "410c46111fa122d8c2a1c302af55ce00",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 63, "end": 242 }
+          }
+        }
+      ]
+    }
+  ]
+}

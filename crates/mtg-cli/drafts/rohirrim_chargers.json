@@ -1,0 +1,40 @@
+{
+  "oracle_id": "8e638c52-e7b9-445b-adcf-77b58e06c2ba",
+  "name": "Rohirrim Chargers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rohirrim Chargers",
+      "oracle_fingerprint": "796a61b32415cb41f88b0095acbdc316",
+      "abilities": [
+        { "Keyword": { "Exert": {} } },
+        {
+          "Triggered": {
+            "when": { "Exerted": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Subtype": "Equipment" }],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "BattlefieldAttached": { "to": "Triggering" } }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

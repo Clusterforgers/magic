@@ -1,0 +1,30 @@
+{
+  "oracle_id": "9372f286-5ea6-4abb-b695-1ad5f46efe34",
+  "name": "Spinnerette, Arachnobat",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spinnerette, Arachnobat",
+      "oracle_fingerprint": "fd1eb4c97483ce0c2be289f812e1a3db",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 6, "end": 50 } }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }, { "AddKeyword": "Menace" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Attraction" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

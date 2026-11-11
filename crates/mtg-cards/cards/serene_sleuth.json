@@ -1,0 +1,25 @@
+{
+  "oracle_id": "b0d639cb-71d4-454f-9dd6-89cd7a59b702",
+  "name": "Serene Sleuth",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Serene Sleuth",
+      "oracle_fingerprint": "904fe99d4e3430a22ca1a505ea055a9a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 127, "end": 269 }
+          }
+        }
+      ]
+    }
+  ]
+}

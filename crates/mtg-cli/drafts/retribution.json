@@ -1,0 +1,45 @@
+{
+  "oracle_id": "2c7b0034-7eb5-4950-b6dc-8e1d07d26899",
+  "name": "Retribution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retribution",
+      "oracle_fingerprint": "a48994a9234db34aa9c6d58ce36519e0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "from": { "Target": 0 },
+                  "as": "sacrificed",
+                  "rest_as": "other"
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Is": { "Bound": "sacrificed" } }]
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "other" }, "counter": "-1/-1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

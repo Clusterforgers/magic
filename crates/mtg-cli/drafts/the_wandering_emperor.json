@@ -1,0 +1,67 @@
+{
+  "oracle_id": "0c7f18d5-36cb-4bc6-a358-443b97666215",
+  "name": "The Wandering Emperor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Wandering Emperor",
+      "oracle_fingerprint": "809481eaf6eab29c2d4a4f12f8c5860b",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "InstantActivation": {
+            "kind": "Loyalty",
+            "condition": { "Matches": { "subject": "This", "selector": ["EnteredThisTurn"] } }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Samurai",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Samurai"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Vigilance" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Tapped"] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }, { "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

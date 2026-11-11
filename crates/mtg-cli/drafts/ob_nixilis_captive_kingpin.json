@@ -1,0 +1,33 @@
+{
+  "oracle_id": "55b6434b-1542-40fd-b12a-697d40976582",
+  "name": "Ob Nixilis, Captive Kingpin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ob Nixilis, Captive Kingpin",
+      "oracle_fingerprint": "28b819c91a180894b931bcc2ed38278e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "LifeLost": { "who": "Opponents" } } },
+            "if": { "Compare": { "left": "Triggering", "op": "Eq", "right": 1 } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilYourNextEndStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

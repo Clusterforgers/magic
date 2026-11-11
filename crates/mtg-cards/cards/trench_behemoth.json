@@ -1,0 +1,34 @@
+{
+  "oracle_id": "dc2b1863-b45c-4213-ad89-5e39432daca7",
+  "name": "Trench Behemoth",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Trench Behemoth",
+      "oracle_fingerprint": "7d6f47f8d5f16d0d7d167661e8a8e59d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "ReturnToHand": { "filter": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Untap": { "what": "This" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 105, "end": 247 }
+          }
+        }
+      ]
+    }
+  ]
+}

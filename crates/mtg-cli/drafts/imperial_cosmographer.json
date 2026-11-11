@@ -1,0 +1,51 @@
+{
+  "oracle_id": "b2aa052c-08b7-4334-9ea7-e78da57ff9ea",
+  "name": "Imperial Cosmographer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imperial Cosmographer",
+      "oracle_fingerprint": "82e5530730796d59e45e2ec087796916",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Hand"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Library"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Exile"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Command"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

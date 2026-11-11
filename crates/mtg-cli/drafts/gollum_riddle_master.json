@@ -1,0 +1,72 @@
+{
+  "oracle_id": "514b451b-814d-45fb-a2ba-8fe6f0bdad60",
+  "name": "Gollum, Riddle Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gollum, Riddle Master",
+      "oracle_fingerprint": "8526219008dee137d79e77f022f82026",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["odd", "even"] }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "Test": {
+                      "left": {
+                        "Sum": [
+                          { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                          {
+                            "Times": {
+                              "by": -2,
+                              "of": {
+                                "Quotient": {
+                                  "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                  "by": 2,
+                                  "up": false
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": {
+                        "When": { "condition": { "EnteredAs": "odd" }, "then": 1, "otherwise": 0 }
+                      }
+                    }
+                  }
+                ],
+                "by": "Opponents"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "once_ever": true,
+                  "modes": [
+                    { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] },
+                    {
+                      "effects": [
+                        { "LoseLife": { "who": "Opponents", "amount": 2 } },
+                        { "GainLife": { "amount": 2 } }
+                      ]
+                    },
+                    { "effects": [{ "Draw": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

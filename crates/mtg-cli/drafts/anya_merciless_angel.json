@@ -1,0 +1,89 @@
+{
+  "oracle_id": "0665daf5-e12a-4b59-81fc-63fec2807571",
+  "name": "Anya, Merciless Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anya, Merciless Angel",
+      "oracle_fingerprint": "acf9f868a1a28dafeac02b177ffc32ac",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 3,
+                      "of": {
+                        "Players": {
+                          "PlayersWhere": {
+                            "who": "Opponents",
+                            "test": {
+                              "Compare": {
+                                "left": { "Times": { "by": 2, "of": { "Life": "You" } } },
+                                "op": "Lt",
+                                "right": { "StartingLife": "You" }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "toughness": {
+                    "Times": {
+                      "by": 3,
+                      "of": {
+                        "Players": {
+                          "PlayersWhere": {
+                            "who": "Opponents",
+                            "test": {
+                              "Compare": {
+                                "left": { "Times": { "by": 2, "of": { "Life": "You" } } },
+                                "op": "Lt",
+                                "right": { "StartingLife": "You" }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Times": { "by": 2, "of": { "Life": "You" } } },
+                          "op": "Lt",
+                          "right": { "StartingLife": "You" }
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c4fccdd5-5b51-46b9-9937-9167c108743d",
+  "name": "Sway of the Stars",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sway of the Stars",
+      "oracle_fingerprint": "bb74451eebacb93af062f20a3242a0f4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }, { "In": "Battlefield" }]
+                      }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } },
+              { "SetLife": { "who": "EachPlayer", "amount": 7 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

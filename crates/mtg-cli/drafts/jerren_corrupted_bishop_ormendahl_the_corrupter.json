@@ -16,8 +16,8 @@
                   "ZoneChange": {
                     "what": [
                       { "Subtype": "Human" },
-                      "Other",
                       { "Not": "Token" },
+                      "Other",
                       { "ControlledBy": "You" }
                     ],
                     "from": "Battlefield",

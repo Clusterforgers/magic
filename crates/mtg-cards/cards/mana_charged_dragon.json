@@ -1,0 +1,21 @@
+{
+  "oracle_id": "87354a7b-01be-419e-b383-4c28e12a2f2b",
+  "name": "Mana-Charged Dragon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mana-Charged Dragon",
+      "oracle_fingerprint": "e93b7c06155e44b4298f121a654fe639",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 16, "end": 224 }
+          }
+        }
+      ]
+    }
+  ]
+}

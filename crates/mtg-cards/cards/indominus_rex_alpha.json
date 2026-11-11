@@ -1,0 +1,25 @@
+{
+  "oracle_id": "723a66c3-2c2c-411c-bba5-922e8601981b",
+  "name": "Indominus Rex, Alpha",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Indominus Rex, Alpha",
+      "oracle_fingerprint": "8d0fb18ea7b29dc26a49c2ab7cc64ebc",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 285 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": { "AnyCounters": "This" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

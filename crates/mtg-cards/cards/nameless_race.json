@@ -1,0 +1,26 @@
+{
+  "oracle_id": "35a717ea-bd32-4714-b402-de7f15398e52",
+  "name": "Nameless Race",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nameless Race",
+      "oracle_fingerprint": "1de3628cded135bb53a904ca14f82e9c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 221 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 222, "end": 304 }
+          }
+        }
+      ]
+    }
+  ]
+}

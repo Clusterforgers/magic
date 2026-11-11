@@ -1,0 +1,60 @@
+{
+  "oracle_id": "1a4075f3-6c18-4cbe-99e0-f403dd78a7b0",
+  "name": "Hollow Marauder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hollow Marauder",
+      "oracle_fingerprint": "d1f07e49c845ae0cd204fd7c30bdc374",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": "Opponent", "bounds": { "min": 0, "max": { "Players": "Opponents" } } }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "opp",
+                  "effects": [
+                    { "Discard": { "who": { "Bound": "opp" }, "as": "discarded" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Not": {
+                            "CountOf": {
+                              "subject": { "Bound": "discarded" },
+                              "selector": [
+                                { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }
+                              ],
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          }
+                        },
+                        "then": [{ "Draw": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

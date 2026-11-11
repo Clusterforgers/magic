@@ -1,0 +1,62 @@
+{
+  "oracle_id": "ab739c7e-246a-45ac-bbec-ba44d044dd03",
+  "name": "Tatsumasa, the Dragon's Fang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tatsumasa, the Dragon's Fang",
+      "oracle_fingerprint": "a032f249ebfb22a2b1a0f13c069fd37a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 5, "toughness": 5 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "ExileSelf"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon Spirit",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon", "Spirit"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Bound": "token" } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Arrived": { "of": "This", "zone": "Exile" } },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

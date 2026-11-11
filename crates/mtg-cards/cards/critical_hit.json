@@ -1,0 +1,33 @@
+{
+  "oracle_id": "992e6845-1c6c-4b74-839c-317823bde15b",
+  "name": "Critical Hit",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Critical Hit",
+      "oracle_fingerprint": "52ab2d2a05f13b8624a82a3b39cf2c39",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 55, "end": 187 }
+          }
+        }
+      ]
+    }
+  ]
+}

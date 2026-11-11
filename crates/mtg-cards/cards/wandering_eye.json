@@ -1,0 +1,12 @@
+{
+  "oracle_id": "59015068-6868-4235-981b-96137123c685",
+  "name": "Wandering Eye",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wandering Eye",
+      "oracle_fingerprint": "31609149e0b290f417675072b02b2b48",
+      "abilities": [{ "Keyword": "Flying" }, { "Rule": { "rule": { "RevealHand": "EachPlayer" } } }]
+    }
+  ]
+}

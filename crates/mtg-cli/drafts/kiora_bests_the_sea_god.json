@@ -1,0 +1,75 @@
+{
+  "oracle_id": "84d0c616-2fce-47f4-bfdd-783741a63fd2",
+  "name": "Kiora Bests the Sea God",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kiora Bests the Sea God",
+      "oracle_fingerprint": "e73c6049ba416483b7b6f7358b3c290e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kraken",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kraken"],
+                      "power": 8,
+                      "toughness": 8,
+                      "abilities": [{ "Keyword": "Hexproof" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [{ "Not": { "Type": "Land" } }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "as": "tapped"
+                }
+              },
+              { "Tap": { "what": { "Bound": "tapped" } } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "tapped" },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "Opponents" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

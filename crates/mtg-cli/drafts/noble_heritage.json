@@ -1,0 +1,109 @@
+{
+  "oracle_id": "2e342aa3-2590-4b59-852a-9adb31bafe5c",
+  "name": "Noble Heritage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noble Heritage",
+      "oracle_fingerprint": "8d711e5781bde0a382762e91dccc708d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": ["Commander", { "Type": "Creature" }, { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "AnyOf": [
+                        { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                        { "StepBegins": { "step": "Upkeep", "whose": "You" } }
+                      ]
+                    },
+                    "effects": [
+                      {
+                        "May": {
+                          "effects": [
+                            {
+                              "Choose": {
+                                "from": {
+                                  "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                },
+                                "as": "mine"
+                              }
+                            },
+                            {
+                              "PutCounters": {
+                                "on": { "Bound": "mine" },
+                                "counter": "+1/+1",
+                                "count": 2
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "RepeatEach": {
+                          "over": "Opponents",
+                          "as": "p",
+                          "effects": [
+                            {
+                              "May": {
+                                "who": { "Bound": "p" },
+                                "effects": [
+                                  {
+                                    "Choose": {
+                                      "who": { "Bound": "p" },
+                                      "from": {
+                                        "Each": [
+                                          { "Type": "Creature" },
+                                          { "ControlledBy": { "Bound": "p" } }
+                                        ]
+                                      },
+                                      "as": "c"
+                                    }
+                                  },
+                                  {
+                                    "PutCounters": {
+                                      "on": { "Bound": "c" },
+                                      "counter": "+1/+1",
+                                      "count": 2
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "If": {
+                                "condition": "Performed",
+                                "then": [
+                                  {
+                                    "Rule": {
+                                      "rule": {
+                                        "PlayersHave": {
+                                          "who": "You",
+                                          "keyword": {
+                                            "Protection": [{ "ControlledBy": { "Bound": "p" } }]
+                                          }
+                                        }
+                                      },
+                                      "duration": "UntilYourNextTurn"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

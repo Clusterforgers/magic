@@ -1,0 +1,63 @@
+{
+  "oracle_id": "5c0f63ad-4bb1-479e-9760-5421265da40b",
+  "name": "Struggle for Sanity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Struggle for Sanity",
+      "oracle_fingerprint": "ebd025f6fef69f19f7209ebee250fefe",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                      "selector": [],
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Target": 0 },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                        "as": "their_pick"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "their_pick" }, "as": "their_exiled" } },
+                    {
+                      "Bind": {
+                        "what": { "Bound": "their_exiled" },
+                        "as": "their_all",
+                        "adds": true
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                        "as": "my_pick"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "my_pick" }, "as": "my_exiled" } },
+                    { "Bind": { "what": { "Bound": "my_exiled" }, "as": "my_all", "adds": true } }
+                  ],
+                  "most": 100
+                }
+              },
+              { "Move": { "what": { "Bound": "their_all" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "my_all" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

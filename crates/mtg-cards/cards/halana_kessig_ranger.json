@@ -1,0 +1,48 @@
+{
+  "oracle_id": "f5aa7385-12ea-4ecb-86eb-e8622ebb6908",
+  "name": "Halana, Kessig Ranger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Halana, Kessig Ranger",
+      "oracle_fingerprint": "92eb49adcba39706f581b162b910fd65",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["Other", { "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "source": "Triggering",
+                              "to": { "Target": 0 },
+                              "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

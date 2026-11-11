@@ -1,0 +1,21 @@
+{
+  "oracle_id": "04e7f739-fe50-440d-aa3d-e547295044a8",
+  "name": "Eye of Duskmantle",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Eye of Duskmantle",
+      "oracle_fingerprint": "5f6d1296418e5205707b5114af98cc2f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 216 }
+          }
+        }
+      ]
+    }
+  ]
+}

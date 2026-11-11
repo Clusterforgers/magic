@@ -1,0 +1,45 @@
+{
+  "oracle_id": "055e1799-8188-48f4-854e-d3e28363084f",
+  "name": "Boltbender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boltbender",
+      "oracle_fingerprint": "372db408e9b8c01e2761f5c012d3e607",
+      "abilities": [
+        { "Keyword": { "Disguise": "{1}{R}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ChangeTargets": {
+                        "what": {
+                          "Each": [
+                            { "In": "Stack" },
+                            {
+                              "AnyOf": [
+                                "Spell",
+                                { "Ability": "Activated" },
+                                { "Ability": "Triggered" }
+                              ]
+                            },
+                            "Other"
+                          ]
+                        },
+                        "to": "Choose"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

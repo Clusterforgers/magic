@@ -1,0 +1,71 @@
+{
+  "oracle_id": "e2928d3c-b64a-443e-a1c1-fd204bb098ba",
+  "name": "Unbury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unbury",
+      "oracle_fingerprint": "5a4505418c35a651be92e5b9a9595ede",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "OwnedBy": "You" },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "OwnedBy": "You" },
+                              { "In": "Graveyard" }
+                            ]
+                          }
+                        },
+                        {
+                          "what": {
+                            "Another": {
+                              "what": {
+                                "Object": [
+                                  { "Type": "Creature" },
+                                  { "OwnedBy": "You" },
+                                  { "In": "Graveyard" },
+                                  { "SharesSubtype": { "Target": 0 } }
+                                ]
+                              },
+                              "earlier": [0]
+                            }
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+                        { "Move": { "what": { "Target": 1 }, "to": "Hand" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

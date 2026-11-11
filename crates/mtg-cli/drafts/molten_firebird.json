@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e91ed165-b86f-45e8-95b4-bce79da4ab5a",
+  "name": "Molten Firebird",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Firebird",
+      "oracle_fingerprint": "3b89b4482b900b30cddea1289529a3e4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                  "as": "card"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{4}{R}", "effects": [{ "Exile": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

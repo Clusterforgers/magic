@@ -1,0 +1,20 @@
+{
+  "oracle_id": "af471455-6b9f-4c14-bb90-a74a44ecd247",
+  "name": "Aeon Engine",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aeon Engine",
+      "oracle_fingerprint": "10cb55f91bc42ed52588728f43003f65",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 29, "end": 180 }
+          }
+        }
+      ]
+    }
+  ]
+}

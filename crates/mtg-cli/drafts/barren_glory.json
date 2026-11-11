@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e0523435-bf0b-4568-879c-cb5dce5e0bc1",
+  "name": "Barren Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barren Glory",
+      "oracle_fingerprint": "3995770e1346c72fb9736fd869cee963",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "ControlledBy": "You" }, "Other"] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              ]
+            },
+            "effects": [{ "WinGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

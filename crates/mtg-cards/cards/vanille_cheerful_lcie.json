@@ -1,0 +1,49 @@
+{
+  "oracle_id": "577725ae-290f-4081-8352-3317521a096f",
+  "name": "Vanille, Cheerful l'Cie",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vanille, Cheerful l'Cie",
+      "oracle_fingerprint": "c56c750fdcf845da476bc49432d00cec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": "You" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 100, "end": 317 }
+          }
+        }
+      ]
+    }
+  ]
+}

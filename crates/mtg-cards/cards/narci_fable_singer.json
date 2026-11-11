@@ -1,0 +1,26 @@
+{
+  "oracle_id": "61bbf710-4eb4-4e11-be6e-700a0c6a41ee",
+  "name": "Narci, Fable Singer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Narci, Fable Singer",
+      "oracle_fingerprint": "501de26c0a0a0665082d6ffeccc92cca",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Enchantment" }], "by": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 61, "end": 210 }
+          }
+        }
+      ]
+    }
+  ]
+}

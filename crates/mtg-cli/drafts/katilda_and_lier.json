@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1990012e-2a92-4e76-917a-f90fb7a4ed66",
+  "name": "Katilda and Lier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Katilda and Lier",
+      "oracle_fingerprint": "483576f70fd71a5566f41f7e5d6099d3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Subtype": "Human" }], "by": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

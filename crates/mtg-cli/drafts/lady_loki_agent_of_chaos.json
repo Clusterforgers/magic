@@ -1,0 +1,58 @@
+{
+  "oracle_id": "6efae65b-5ae5-4f62-97e7-cd4d1249fa9e",
+  "name": "Lady Loki, Agent of Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lady Loki, Agent of Chaos",
+      "oracle_fingerprint": "9651fd2fea81118c7bc6105db0cdd5d9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": {
+                    "what": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Instant" },
+                          { "Type": "Sorcery" },
+                          { "Subtype": "Villain" }
+                        ]
+                      }
+                    ],
+                    "by": "You"
+                  }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              { "Exile": { "what": "Triggering" } },
+              {
+                "ExileUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": {
+                    "Difference": [
+                      { "Stat": { "of": "Triggering", "stat": "ManaValue" } },
+                      { "Stat": { "of": { "Bound": "found" }, "stat": "ManaValue" } }
+                    ]
+                  }
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "found" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "07bfb7d2-f171-4ce1-876a-f9fb5c7cd11a",
+  "name": "Devastating Mastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devastating Mastery",
+      "oracle_fingerprint": "6f9f418dafb5f32392d81eaff4a23db6",
+      "abilities": [
+        { "FreeCast": { "cost": "{2}{W}{W}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "CastWith": "Alternative" },
+                  "then": [
+                    { "Choose": { "from": "Opponents", "as": "opponent" } },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "opponent" },
+                        "from": {
+                          "Each": [
+                            { "Not": { "Type": "Land" } },
+                            { "ControlledBy": { "Bound": "opponent" } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 2 },
+                        "as": "returned"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              { "Destroy": { "what": { "Each": [{ "Not": { "Type": "Land" } }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

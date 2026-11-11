@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a968524a-3d2d-4c0c-8f66-bfbfb9ff3c36",
+  "name": "Dynaheir, Invoker Adept",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dynaheir, Invoker Adept",
+      "oracle_fingerprint": "fc4bcedcc28192e1cc61dee1ecd6c35e",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 100 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 101, "end": 281 }
+          }
+        }
+      ]
+    }
+  ]
+}

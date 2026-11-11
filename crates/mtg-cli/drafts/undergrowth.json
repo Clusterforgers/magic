@@ -1,0 +1,55 @@
+{
+  "oracle_id": "f125b6b0-c5ff-44d1-bf99-ebc537d37fc3",
+  "name": "Undergrowth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undergrowth",
+      "oracle_fingerprint": "20191e75c85341b24d0b775e2c9358eb",
+      "abilities": [
+        { "AdditionalCost": { "cost": "{2}{R}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Shield": {
+                        "when": {
+                          "Damage": {
+                            "source": [
+                              {
+                                "AnyOf": [
+                                  { "Not": { "Type": "Creature" } },
+                                  { "Not": { "Color": "Red" } }
+                                ]
+                              }
+                            ],
+                            "combat": true
+                          }
+                        },
+                        "by": "Prevent",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "combat": true } },
+                        "by": "Prevent",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

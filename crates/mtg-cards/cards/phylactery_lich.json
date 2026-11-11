@@ -1,0 +1,41 @@
+{
+  "oracle_id": "520c4d88-34b6-4a26-81ca-65eb8b10461c",
+  "name": "Phylactery Lich",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Phylactery Lich",
+      "oracle_fingerprint": "a3fab28a67c161db52be91320a02c506",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 15, "end": 92 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": {
+                      "Count": [
+                        { "HasCounter": { "Other": "phylactery" } },
+                        { "ControlledBy": "You" }
+                      ]
+                    },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

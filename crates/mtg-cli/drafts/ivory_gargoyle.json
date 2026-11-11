@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e8cc9f83-4e4c-4820-9a7a-f82f728e9767",
+  "name": "Ivory Gargoyle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ivory Gargoyle",
+      "oracle_fingerprint": "55c025eb974c29caec396347b3883024",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                  "as": "card"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{4}{W}", "effects": [{ "Exile": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

@@ -173,7 +173,7 @@ mod tests {
 
     use super::*;
 
-    const SLATE: &str = include_str!("../drafts/slate_of_ancestry.json");
+    const KNOWING: &str = include_str!("../drafts/knowing_half_the_battle.json");
     const AETHER: &str = include_str!("../drafts/aether_web.json");
     const MARKED: &str = r#"{"source": "forge", "oracle_matches": true, "differs": true}"#;
 
@@ -186,19 +186,21 @@ mod tests {
     #[test]
     fn a_wording_only_draft_is_a_candidate_and_a_dropped_clause_a_miss() {
         let cards = [
-            printed(include_str!("../drafts/fixtures/slate_of_ancestry.json")),
+            printed(include_str!(
+                "../drafts/fixtures/knowing_half_the_battle.json"
+            )),
             printed(include_str!("../drafts/fixtures/aether_web.json")),
         ];
-        let files = [("aether_web", AETHER), ("slate_of_ancestry", SLATE)];
-        let meta = [("aether_web", MARKED), ("slate_of_ancestry", MARKED)];
+        let files = [("aether_web", AETHER), ("knowing_half_the_battle", KNOWING)];
+        let meta = [("aether_web", MARKED), ("knowing_half_the_battle", MARKED)];
         let judged = judge(&files, &meta, &mtg_engine::caps(), &cards).unwrap();
         assert_eq!(judged.len(), 2);
-        let (aether, slate) = (&judged[0], &judged[1]);
+        let (aether, knowing) = (&judged[0], &judged[1]);
         assert_eq!(aether.candidate, None);
         assert_eq!(aether.misses.len(), 1);
-        let clauses = slate.candidate.as_ref().unwrap();
-        assert_eq!(clauses[0].rules, [Rule::DiscardHand]);
-        assert_eq!(slate.misses, Vec::<(String, String)>::new());
+        let clauses = knowing.candidate.as_ref().unwrap();
+        assert_eq!(clauses[0].rules, [Rule::Punctuation]);
+        assert_eq!(knowing.misses, Vec::<(String, String)>::new());
 
         let table = tsv(&judged);
         assert_eq!(table.lines().count(), 2);
@@ -207,15 +209,15 @@ mod tests {
                 .lines()
                 .nth(1)
                 .unwrap()
-                .starts_with("slate_of_ancestry\tSlate of Ancestry\t")
+                .starts_with("knowing_half_the_battle\tKnowing // Half the Battle\t")
         );
-        assert!(table.trim_end().ends_with("\tdiscard_hand"));
+        assert!(table.trim_end().ends_with("\tpunctuation"));
         let counts = summary(&judged);
         assert!(
             counts.starts_with("2 drafts marked differs, 1 bulk candidates"),
             "{counts}"
         );
-        assert!(counts.contains("discard_hand"), "{counts}");
+        assert!(counts.contains("punctuation"), "{counts}");
 
         let unmarked = judge(&files, &[], &mtg_engine::caps(), &cards).unwrap();
         assert_eq!(unmarked.len(), 0);

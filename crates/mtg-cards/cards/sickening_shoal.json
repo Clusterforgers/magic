@@ -1,0 +1,48 @@
+{
+  "oracle_id": "2da8e9d6-e8a8-46a5-a478-3e81098d2a08",
+  "name": "Sickening Shoal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sickening Shoal",
+      "oracle_fingerprint": "57c051b70c4314a650d12510ab3937ae",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              {
+                "ExileFromHand": {
+                  "filter": [
+                    { "Color": "Black" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Times": { "by": -1, "of": "X" } },
+                        "toughness": { "Times": { "by": -1, "of": "X" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

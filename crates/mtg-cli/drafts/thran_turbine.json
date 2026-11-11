@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6c31f06d-bf02-48a7-9c17-be2a226b8eae",
+  "name": "Thran Turbine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thran Turbine",
+      "oracle_fingerprint": "f9414b4a565318a5847cc07b7dbab1aa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "AddMana": {
+                        "mana": { "Fixed": ["Colorless", "Colorless"] },
+                        "only": [{ "Ability": {} }, "OtherCosts"]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

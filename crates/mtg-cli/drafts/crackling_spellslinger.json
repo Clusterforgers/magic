@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ed7ba558-5341-4c7b-a9c5-b382dee88a13",
+  "name": "Crackling Spellslinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crackling Spellslinger",
+      "oracle_fingerprint": "9d3382baec1de4fda87ba93ecd5fdd9d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "WasCast": { "by": "You" } }] } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "benefit": { "Keyword": "Storm" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

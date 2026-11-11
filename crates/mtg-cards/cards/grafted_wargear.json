@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c48cf069-eb20-4a61-b58c-b031ec22a5f0",
+  "name": "Grafted Wargear",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Grafted Wargear",
+      "oracle_fingerprint": "930091628c3f5e325743c14ab416dbc4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 30, "end": 116 }
+          }
+        },
+        { "Keyword": { "Equip": "{0}" } }
+      ]
+    }
+  ]
+}

@@ -32,3 +32,11 @@ pub(super) fn event(state: &GameState, object: ObjectId) -> Option<Event> {
 pub(super) fn text(filter: &Selector, count: usize) -> String {
     crate::wording::return_to_hand(filter, count)
 }
+
+/// "Exile a creature you control."
+pub(super) fn exile_text(filter: &Selector, count: usize) -> String {
+    format!(
+        "Exile {}.",
+        crate::wording::counted(filter, count, "you control")
+    )
+}

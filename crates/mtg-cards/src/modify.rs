@@ -219,6 +219,9 @@ pub enum Duration {
     UntilYourNextTurn,
     /// Until the controller's next end step begins: the one of this turn when it has not begun yet (CR 513).
     UntilYourNextEndStep,
+    /// Until the controller's next upkeep begins: the one of a later turn, so one begun in their upkeep lasts until the
+    /// upkeep of their next turn.
+    UntilYourNextUpkeep,
     /// Until the end of the controller's next turn.
     UntilEndOfYourNextTurn,
     /// For as long as the source stays on the battlefield.
@@ -473,6 +476,9 @@ pub enum SpellBenefit {
     Free,
     /// It has the keyword while it is cast: convoke, improvise or affinity, which help pay for it.
     Keyword(Keyword),
+    /// It can't be countered (CR 101.2) for as long as it is on the stack: "the next spell you cast this turn can't be
+    /// countered".
+    Uncounterable,
 }
 
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
@@ -631,8 +637,13 @@ pub enum GameRule {
     /// A player in the group who would flip a coin flips two instead and ignores one (CR 705.3, Krark's Thumb); each such
     /// rule doubles the coins again.
     FlipTwoCoins(Ref),
+    /// A player in the group who would roll one or more dice rolls that many plus one instead and ignores the lowest roll
+    /// (Wyll, Blade of Frontiers); each such rule adds one more die and one more ignored roll.
+    ExtraDie(Ref),
     /// The players play with the top card of their library revealed to every seat.
     RevealTop(Ref),
+    /// The players play with their hands revealed.
+    RevealHand(Ref),
     /// Players may cast cards the ordinary rules do not let them cast: from another zone, without paying their mana
     /// costs, or as though they had flash (CR 601.3).
     MayCast(CastPermission),
@@ -737,6 +748,9 @@ pub enum GameRule {
         /// Their opponents can't win the game either.
         #[serde(default, skip_serializing_if = "crate::effect::is_false")]
         opponents_cant_win: bool,
+        /// Only the loss for 0 or less life (CR 704.5a).
+        #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+        life_only: bool,
     },
     /// The players can't cast spells, only during the turns of the rule's controller with `your_turn`.
     CantCastSpells {
@@ -1024,8 +1038,12 @@ mod tests {
         r#""GraveyardCardsUntargetable""#
     )]
     #[case(
-        GameRule::CantLoseGame { who: Ref::You, opponents_cant_win: true },
+        GameRule::CantLoseGame { who: Ref::You, opponents_cant_win: true, life_only: false },
         r#"{"CantLoseGame":{"who":"You","opponents_cant_win":true}}"#
+    )]
+    #[case(
+        GameRule::CantLoseGame { who: Ref::You, opponents_cant_win: false, life_only: true },
+        r#"{"CantLoseGame":{"who":"You","life_only":true}}"#
     )]
     #[case(
         GameRule::CantCastSpells { who: Ref::Opponents, your_turn: true },

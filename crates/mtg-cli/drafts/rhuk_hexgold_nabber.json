@@ -1,0 +1,61 @@
+{
+  "oracle_id": "06607cba-76ba-4145-a5b5-24d3428142ac",
+  "name": "Rhuk, Hexgold Nabber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhuk, Hexgold Nabber",
+      "oracle_fingerprint": "f14d441b84cffeb908f3dcf5eb8ef7dc",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Attacks": {
+                    "what": [
+                      { "Type": "Creature" },
+                      { "HasAttached": [{ "Subtype": "Equipment" }] },
+                      { "ControlledBy": "You" },
+                      "Other"
+                    ]
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Type": "Creature" },
+                      { "HasAttached": [{ "Subtype": "Equipment" }] },
+                      { "ControlledBy": "You" },
+                      "Other"
+                    ],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Attach": {
+                        "what": {
+                          "Each": [{ "Subtype": "Equipment" }, { "AttachedTo": "Triggering" }]
+                        },
+                        "to": "This"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

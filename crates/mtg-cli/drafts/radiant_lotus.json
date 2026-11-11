@@ -1,0 +1,31 @@
+{
+  "oracle_id": "307be184-176a-40a8-944c-48aa00cfdd29",
+  "name": "Radiant Lotus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiant Lotus",
+      "oracle_fingerprint": "a91d049b2a92f27bf783635c235f4b76",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }], "count": "X" } },
+              { "XAtLeast": 1 }
+            ],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "AddMana": {
+                  "who": { "Target": 0 },
+                  "mana": { "AnyColor": { "Times": { "by": 3, "of": "X" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

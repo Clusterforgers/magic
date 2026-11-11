@@ -1,0 +1,24 @@
+{
+  "oracle_id": "8f6620c3-2c15-467c-92ca-fdf9042a63f7",
+  "name": "Devouring Hellion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devouring Hellion",
+      "oracle_fingerprint": "7029f88a6076c3320dee00f83cf3b091",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "Devour": {
+                "counters": 2,
+                "of": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

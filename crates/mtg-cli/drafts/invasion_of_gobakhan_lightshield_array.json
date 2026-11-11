@@ -1,0 +1,88 @@
+{
+  "oracle_id": "86c32a56-3272-4738-b0b3-a8aa49a17ce4",
+  "name": "Invasion of Gobakhan // Lightshield Array",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Gobakhan",
+      "oracle_fingerprint": "1e79e42ac1d82d4b925f568d7321fa71",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtHand": { "of": { "Target": 0 } } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Target": 0 } },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" } } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "who": { "OwnerOf": { "Bound": "card" } },
+                            "what": [{ "Is": { "Bound": "card" } }],
+                            "from": "Exile",
+                            "play": true,
+                            "additional": "{2}"
+                          }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lightshield Array",
+      "oracle_fingerprint": "e136d8b5d02e2423a47e53771fcbe0ee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, "AttackedThisTurn"] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

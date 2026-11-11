@@ -1,0 +1,98 @@
+{
+  "oracle_id": "cacda1c2-2fe8-40a3-89f3-38a835f10af3",
+  "name": "Fugitive of the Judoon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fugitive of the Judoon",
+      "oracle_fingerprint": "9c3039e9e7e346750cd01f9a3a42f1ed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": { "Ward": "{2}" } }]
+                    }
+                  }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Alien Rhino",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Alien", "Rhino"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Subtype": "Human" }, { "ControlledBy": "You" }] },
+                        "as": "human"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                        "as": "artifact"
+                      }
+                    },
+                    {
+                      "Together": {
+                        "effects": [
+                          { "Exile": { "what": { "Bound": "human" } } },
+                          { "Exile": { "what": { "Bound": "artifact" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "Search": { "filter": [{ "Subtype": "Doctor" }], "as": "doctor" } },
+                    { "Move": { "what": { "Bound": "doctor" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

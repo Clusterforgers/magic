@@ -1,0 +1,22 @@
+{
+  "oracle_id": "4f890d42-e4f1-4eed-aa6c-718865de8927",
+  "name": "Vizier of the Menagerie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vizier of the Menagerie",
+      "oracle_fingerprint": "e6154e76b60c24ef991167fd024e8633",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": { "rule": { "MayCast": { "what": [{ "Type": "Creature" }], "from": "Library" } } }
+        },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Type": "Creature" }], "spend_as": "AnyType" } }
+          }
+        }
+      ]
+    }
+  ]
+}

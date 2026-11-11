@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0e735ba6-7fd1-4d12-b20c-21525dc1e2b5",
+  "name": "Hanweir Battlements",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hanweir Battlements",
+      "oracle_fingerprint": "70561be631cce557d8e1d3f42d53d489",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 71, "end": 227 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a2414a2d-0fd8-4084-8762-ace48f70c853",
+  "name": "Dargo, the Shipwrecker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dargo, the Shipwrecker",
+      "oracle_fingerprint": "9043116eb5592c056274a8bd3990cf32",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 260 }
+          }
+        },
+        { "Keyword": "Trample" },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

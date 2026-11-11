@@ -1,0 +1,41 @@
+{
+  "oracle_id": "f89b0143-4b19-4ab1-a96b-356b21e435ef",
+  "name": "Yuriko, Blade of the Mighty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yuriko, Blade of the Mighty",
+      "oracle_fingerprint": "f5c850112b0c0a3775ba6ae9ca6d45fc",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "EachPlayer", "action": { "Cast": {} } } },
+            "condition": "InCombat"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "AttackingPlayer": "Opponents" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

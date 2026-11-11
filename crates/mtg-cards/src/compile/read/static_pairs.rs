@@ -38,6 +38,14 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
 /// Every wording of two statics that read as one sentence, with a capital and a period; empty for any other two
 /// abilities.
 pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
+    let alone = super::wf25_writers::wf25_pair_texts(first, second);
+    if !alone.is_empty() {
+        return alone;
+    }
+    let zones = super::ep26_mana::ep26_two_zones_texts(first, second);
+    if !zones.is_empty() {
+        return zones;
+    }
     let held = super::c10_uc::c10_uc_enters_held_texts(first, second);
     if !held.is_empty() {
         return held;

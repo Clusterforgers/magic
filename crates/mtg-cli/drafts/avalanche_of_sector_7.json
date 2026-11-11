@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4eb1414c-ba12-4bae-b410-79d51925d6fa",
+  "name": "Avalanche of Sector 7",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avalanche of Sector 7",
+      "oracle_fingerprint": "0f933c569e7888cfe40a5f70d607e137",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }] },
+                  "toughness": 3
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Did": {
+                "action": "Activated",
+                "who": "Opponents",
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }]
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

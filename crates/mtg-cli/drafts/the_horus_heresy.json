@@ -1,0 +1,80 @@
+{
+  "oracle_id": "fc315174-d063-41dd-9379-11d95c5fd4ed",
+  "name": "The Horus Heresy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Horus Heresy",
+      "oracle_fingerprint": "0a470f5197bc8217087e65730625d07a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [{ "Type": "Creature" }, { "Not": { "Supertype": "Legendary" } }]
+                  }
+                },
+                "bounds": { "min": 0, "max": { "Players": "Opponents" } }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "OwnedBy": "You" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "Type": "Creature" }] },
+                        "as": "choice"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "choice" }, "as": "chosen", "adds": true } }
+                  ]
+                }
+              },
+              { "Destroy": { "what": { "Bound": "chosen" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

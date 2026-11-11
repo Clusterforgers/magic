@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f72511b0-9993-4998-b646-65a855cb8170",
+  "name": "Vodalian War Machine",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vodalian War Machine",
+      "oracle_fingerprint": "91db3ecb089e06ac1f01fe8365f2e471",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Merfolk" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Merfolk" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 227, "end": 314 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "4aafb7e7-b9fc-44ae-9c54-da11fd9dcc17",
+  "name": "Phyrexian Furnace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Furnace",
+      "oracle_fingerprint": "b88b0dd79aea39839375eff4d961a061",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } },
+                      "BottomOfLibrary"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "6048b9ac-7d5e-4486-a89a-30adb45aab27",
+  "name": "Lodestone Bauble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lodestone Bauble",
+      "oracle_fingerprint": "70a9dee5072a1abcfbaf47bc1495e261",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [
+                        { "Supertype": "Basic" },
+                        { "Type": "Land" },
+                        { "In": "Graveyard" }
+                      ]
+                    },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 0, "max": 4 }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": { "who": { "OwnerOf": { "Target": 0 } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

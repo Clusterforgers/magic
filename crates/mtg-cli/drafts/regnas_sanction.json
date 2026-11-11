@@ -1,0 +1,73 @@
+{
+  "oracle_id": "b594f7f1-1db7-46e9-bbc7-42ccc16ce9a1",
+  "name": "Regna's Sanction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Regna's Sanction",
+      "oracle_fingerprint": "693bc887fffdecf06fa87f447380ba76",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    { "ChooseValue": { "kind": { "Options": ["friend", "foe"] }, "as": "role" } },
+                    {
+                      "If": {
+                        "condition": { "ChosenWord": { "name": "role", "word": "friend" } },
+                        "then": [
+                          {
+                            "PutCounters": {
+                              "on": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "counter": "+1/+1"
+                            }
+                          }
+                        ],
+                        "otherwise": [
+                          {
+                            "Choose": {
+                              "who": { "Bound": "player" },
+                              "from": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  "Untapped",
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "as": "spared"
+                            }
+                          },
+                          {
+                            "Tap": {
+                              "what": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  "Untapped",
+                                  { "ControlledBy": { "Bound": "player" } },
+                                  { "Not": { "Is": { "Bound": "spared" } } }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

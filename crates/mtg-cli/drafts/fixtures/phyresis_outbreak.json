@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "812498c8-974c-460c-b782-506f5f735346",
+  "oracle_id": "47148b5d-3850-4614-822e-6ef2755996f8",
+  "multiverse_ids": [
+    605694
+  ],
+  "mtgo_id": 106887,
+  "tcgplayer_id": 478549,
+  "cardmarket_id": 693336,
+  "name": "Phyresis Outbreak",
+  "lang": "en",
+  "released_at": "2023-02-10",
+  "uri": "https://api.scryfall.com/cards/812498c8-974c-460c-b782-506f5f735346",
+  "scryfall_uri": "https://scryfall.com/card/onc/12/phyresis-outbreak?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:49:20Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/1/812498c8-974c-460c-b782-506f5f735346.jpg?1783918160",
+    "normal": "https://cards.scryfall.io/normal/front/8/1/812498c8-974c-460c-b782-506f5f735346.jpg?1783918160",
+    "large": "https://cards.scryfall.io/large/front/8/1/812498c8-974c-460c-b782-506f5f735346.jpg?1783918160",
+    "png": "https://cards.scryfall.io/png/front/8/1/812498c8-974c-460c-b782-506f5f735346.png?1783918160",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/1/812498c8-974c-460c-b782-506f5f735346.jpg?1783918160",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/1/812498c8-974c-460c-b782-506f5f735346.jpg?1783918160",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/1/812498c8-974c-460c-b782-506f5f735346.webp?1783918160",
+    "grid": "https://cards.scryfall.io/grid/front/8/1/812498c8-974c-460c-b782-506f5f735346.webp?1783918160",
+    "display": "https://cards.scryfall.io/display/front/8/1/812498c8-974c-460c-b782-506f5f735346.webp?1783918160",
+    "art": "https://cards.scryfall.io/art/front/8/1/812498c8-974c-460c-b782-506f5f735346.webp?1783918160",
+    "crop": "https://cards.scryfall.io/crop/front/8/1/812498c8-974c-460c-b782-506f5f735346.webp?1783918160",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/1/812498c8-974c-460c-b782-506f5f735346.jpg?1783918160"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each opponent gets a poison counter. Then each creature your opponents control gets -1/-1 until end of turn for each poison counter its controller has.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "40923aaf-c935-4aaf-920c-ae2c6ab6c1f9",
+      "component": "combo_piece",
+      "name": "Phyresis Outbreak",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/40923aaf-c935-4aaf-920c-ae2c6ab6c1f9"
+    },
+    {
+      "object": "related_card",
+      "id": "40255bfa-0004-45f1-a31b-17d385f09a95",
+      "component": "combo_piece",
+      "name": "Poison Counter",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/40255bfa-0004-45f1-a31b-17d385f09a95"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8c5e86d4-ae2d-42f7-a0e5-0e4141eb953d",
+  "set": "onc",
+  "set_name": "Phyrexia: All Will Be One Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/8c5e86d4-ae2d-42f7-a0e5-0e4141eb953d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aonc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/onc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/812498c8-974c-460c-b782-506f5f735346/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A47148b5d-3850-4614-822e-6ef2755996f8&unique=prints",
+  "collector_number": "12",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"It is amusing that the fleshlings believe we are at war. In truth, they are nothing but scurrying pests to be eradicated.\"\n—Azax-Azog, the Demon Thane",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Matthew G. Lewis",
+  "artist_ids": [
+    "0b468a19-5726-4635-a918-e4418a67f02a"
+  ],
+  "illustration_id": "e4c6d421-c89d-4958-933a-7fdc2285aafe",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3748,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=YreZouGlA4I",
+    "previewed_at": "2023-01-18"
+  },
+  "prices": {
+    "usd": "12.69",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "11.19",
+    "eur_foil": null,
+    "tix": "6.65"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=605694&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPhyresis%2BOutbreak",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPhyresis%2BOutbreak",
+    "edhrec": "https://edhrec.com/route/?cc=Phyresis+Outbreak"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F478549%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=693336&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/106887?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

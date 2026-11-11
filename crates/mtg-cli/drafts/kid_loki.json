@@ -1,0 +1,43 @@
+{
+  "oracle_id": "19ef0329-08de-4835-8079-2e791e19f3a6",
+  "name": "Kid Loki",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kid Loki",
+      "oracle_fingerprint": "3adc7ea5d8ac882596ecf488c442d0a7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                {
+                  "Test": {
+                    "left": {
+                      "Tally": {
+                        "event": "PlusOneCountersPut",
+                        "who": "You",
+                        "filter": [{ "Is": "Candidate" }]
+                      }
+                    },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Hexproof" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

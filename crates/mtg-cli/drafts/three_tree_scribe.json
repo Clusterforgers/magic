@@ -1,0 +1,53 @@
+{
+  "oracle_id": "7d2a7741-1dff-4fac-92d8-abea24f23f97",
+  "name": "Three Tree Scribe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Three Tree Scribe",
+      "oracle_fingerprint": "64c6751a1f7ba251d70202486d25dd7c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Hand"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Library"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Exile"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Command"
+                  }
+                }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

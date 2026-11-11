@@ -1,0 +1,28 @@
+{
+  "oracle_id": "853a3c2b-3d37-453a-8a77-4d90bd3a1cb7",
+  "name": "Widespread Panic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Widespread Panic",
+      "oracle_fingerprint": "92cb07b1b4ea76712ca6296e069aa58b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Caused": { "inner": { "Did": { "action": "Shuffled" } } } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "TriggeringPlayer",
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "TriggeringPlayer" }] },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

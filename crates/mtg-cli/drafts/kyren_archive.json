@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f8c7da00-69e1-459d-9b66-6de649c5c511",
+  "name": "Kyren Archive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kyren Archive",
+      "oracle_fingerprint": "5e2969f0bbd0cda089f6d05f04f06e36",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "ExileTop": { "as": "archived", "sealed": true } }] } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}" },
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              "SacrificeSelf"
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

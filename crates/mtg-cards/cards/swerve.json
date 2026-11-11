@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c68627b1-025c-48c9-9646-98eb2d268e71",
+  "name": "Swerve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swerve",
+      "oracle_fingerprint": "4c0dea588dfd02e1c0ea6da713101aa5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", "SingleTarget"] } }],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

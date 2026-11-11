@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "a433ca4c-82d0-4e49-bc8e-98e18dd174e9",
+  "oracle_id": "e57e448b-1186-4662-a6b0-01a9ce33b961",
+  "multiverse_ids": [
+    646777
+  ],
+  "mtgo_id": 121918,
+  "arena_id": 89135,
+  "tcgplayer_id": 534486,
+  "cardmarket_id": 753035,
+  "name": "Officious Interrogation",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/a433ca4c-82d0-4e49-bc8e-98e18dd174e9",
+  "scryfall_uri": "https://scryfall.com/card/mkm/222/officious-interrogation?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:20:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/4/a433ca4c-82d0-4e49-bc8e-98e18dd174e9.jpg?1783912842",
+    "normal": "https://cards.scryfall.io/normal/front/a/4/a433ca4c-82d0-4e49-bc8e-98e18dd174e9.jpg?1783912842",
+    "large": "https://cards.scryfall.io/large/front/a/4/a433ca4c-82d0-4e49-bc8e-98e18dd174e9.jpg?1783912842",
+    "png": "https://cards.scryfall.io/png/front/a/4/a433ca4c-82d0-4e49-bc8e-98e18dd174e9.png?1783912842",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/4/a433ca4c-82d0-4e49-bc8e-98e18dd174e9.jpg?1783912842",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/4/a433ca4c-82d0-4e49-bc8e-98e18dd174e9.jpg?1783912842",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/4/a433ca4c-82d0-4e49-bc8e-98e18dd174e9.webp?1783912842",
+    "grid": "https://cards.scryfall.io/grid/front/a/4/a433ca4c-82d0-4e49-bc8e-98e18dd174e9.webp?1783912842",
+    "display": "https://cards.scryfall.io/display/front/a/4/a433ca4c-82d0-4e49-bc8e-98e18dd174e9.webp?1783912842",
+    "art": "https://cards.scryfall.io/art/front/a/4/a433ca4c-82d0-4e49-bc8e-98e18dd174e9.webp?1783912842",
+    "crop": "https://cards.scryfall.io/crop/front/a/4/a433ca4c-82d0-4e49-bc8e-98e18dd174e9.webp?1783912842",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/4/a433ca4c-82d0-4e49-bc8e-98e18dd174e9.jpg?1783912842"
+  },
+  "mana_cost": "{W}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "This spell costs {W}{U} more to cast for each target beyond the first.\nChoose any number of target players. Investigate X times, where X is the total number of creatures those players control.",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Investigate"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ef607895-d6d2-44ab-a6b4-84af55fce593",
+      "component": "token",
+      "name": "Clue",
+      "type_line": "Token Artifact — Clue",
+      "uri": "https://api.scryfall.com/cards/ef607895-d6d2-44ab-a6b4-84af55fce593"
+    },
+    {
+      "object": "related_card",
+      "id": "dd7a78b4-9fe3-4f99-8678-2cf5d344bd0c",
+      "component": "combo_piece",
+      "name": "Officious Interrogation",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/dd7a78b4-9fe3-4f99-8678-2cf5d344bd0c"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set": "mkm",
+  "set_name": "Murders at Karlov Manor",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a433ca4c-82d0-4e49-bc8e-98e18dd174e9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae57e448b-1186-4662-a6b0-01a9ce33b961&unique=prints",
+  "collector_number": "222",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "No guest was permitted to leave before being questioned in an Azorius verity circle.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Borja Pindado",
+  "artist_ids": [
+    "1624a1a8-3492-4c0b-9abc-83dcf2653111"
+  ],
+  "illustration_id": "c1e44299-d08e-41e2-96e9-f7c60103f8c5",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": true,
+  "edhrec_rank": 7916,
+  "penny_rank": 15168,
+  "preview": {
+    "source": "TCGplayer",
+    "source_uri": "https://infinite.tcgplayer.com/article/Our-EXCLUSIVE-Murders-at-Karlov-Manor-Preview-Card/596b6d78-5bdb-4d48-9162-579874cf6121",
+    "previewed_at": "2024-01-23"
+  },
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.22",
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": "0.16",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=646777&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOfficious%2BInterrogation",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOfficious%2BInterrogation",
+    "edhrec": "https://edhrec.com/route/?cc=Officious+Interrogation"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F534486%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753035&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/121918?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

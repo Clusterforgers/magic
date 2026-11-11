@@ -1,0 +1,43 @@
+{
+  "oracle_id": "9d4ec5e5-5520-45c3-8071-53191811117d",
+  "name": "Defiler of Dreams",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Defiler of Dreams",
+      "oracle_fingerprint": "5d3d7bf50baa79b60bfb329e3375df11",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 199 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Color": "Blue" },
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

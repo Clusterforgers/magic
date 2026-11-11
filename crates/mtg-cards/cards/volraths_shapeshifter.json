@@ -1,0 +1,20 @@
+{
+  "oracle_id": "16e9a4ee-0398-4e76-bc7e-dd2d52056aaf",
+  "name": "Volrath's Shapeshifter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Volrath's Shapeshifter",
+      "oracle_fingerprint": "4a480bf8cc6b45ebdc12c05e04abe29b",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 242 }
+          }
+        },
+        { "Activated": { "cost": "{2}", "effects": [{ "Discard": {} }] } }
+      ]
+    }
+  ]
+}

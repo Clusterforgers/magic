@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5b17d3c5-6085-416e-9afd-8ed0639ae7d2",
+  "name": "Everdream",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Everdream",
+      "oracle_fingerprint": "f933201df5e4a298b266fbeecda4ae6c",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": {} }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 13, "end": 208 }
+          }
+        }
+      ]
+    }
+  ]
+}

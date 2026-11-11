@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ab31b652-ddf2-480f-a955-e8b5c87728f9",
+  "name": "Bohn, Beguiling Balladeer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bohn, Beguiling Balladeer",
+      "oracle_fingerprint": "a25b17ffb83a0d0c05d59a8f43645a71",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 243 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Goad": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

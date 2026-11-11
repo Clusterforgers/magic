@@ -1,0 +1,68 @@
+{
+  "oracle_id": "3bcc378c-4470-4757-a0d5-025a32c918ea",
+  "name": "Sin, Spira's Punishment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sin, Spira's Punishment",
+      "oracle_fingerprint": "cbd12bbbeb85214514f06980caecdc55",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [{ "Type": "Land" }]
+                    }
+                  },
+                  "effects": [
+                    {
+                      "ChooseAtRandom": {
+                        "from": {
+                          "Each": [
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" },
+                                { "Type": "Battle" }
+                              ]
+                            },
+                            { "OwnedBy": "You" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "as": "picked"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked" }, "as": "exiled" } },
+                    {
+                      "CreateToken": {
+                        "token": { "CopyOf": { "of": { "Bound": "exiled" } } },
+                        "tapped": true
+                      }
+                    }
+                  ],
+                  "most": 100,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

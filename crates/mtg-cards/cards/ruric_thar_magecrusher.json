@@ -1,0 +1,23 @@
+{
+  "oracle_id": "453b2b3c-7df5-4515-9565-82f603cf451b",
+  "name": "Ruric Thar, Magecrusher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ruric Thar, Magecrusher",
+      "oracle_fingerprint": "f1c2d668b17831a48e2e5fe74f03654b",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 57, "end": 203 }
+          }
+        }
+      ]
+    }
+  ]
+}

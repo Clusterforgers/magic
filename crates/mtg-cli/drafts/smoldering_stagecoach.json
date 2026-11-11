@@ -1,0 +1,63 @@
+{
+  "oracle_id": "83f87884-f0f9-482e-887e-35a8a5c20eb0",
+  "name": "Smoldering Stagecoach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smoldering Stagecoach",
+      "oracle_fingerprint": "5bf019a16198a950a66c70ea0d36e75d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "toughness": 5
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "Type": "Instant" }],
+                      "benefit": { "Keyword": "Cascade" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "Type": "Sorcery" }],
+                      "benefit": { "Keyword": "Cascade" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

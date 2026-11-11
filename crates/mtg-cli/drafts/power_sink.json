@@ -1,0 +1,40 @@
+{
+  "oracle_id": "39412e6d-2837-4729-abf9-e64a5ba87e40",
+  "name": "Power Sink",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Power Sink",
+      "oracle_fingerprint": "a7055096f87175175689b88cede152f8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": "X",
+                  "unpaid": [
+                    { "Counter": { "what": { "Target": 0 } } },
+                    {
+                      "Tap": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

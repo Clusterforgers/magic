@@ -1,0 +1,31 @@
+{
+  "oracle_id": "69b96fe5-9733-4b43-bd66-075742e142d9",
+  "name": "Cruel Calculations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cruel Calculations",
+      "oracle_fingerprint": "03ce62fed5992cc0cb6a64cb8c84cc42",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "ArrivedFrom": "Library" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

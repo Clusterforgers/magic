@@ -1,0 +1,57 @@
+{
+  "oracle_id": "5efce07e-24c4-4520-a46f-9954b67c4e6e",
+  "name": "Lockjaw, Slobbering Teleporter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lockjaw, Slobbering Teleporter",
+      "oracle_fingerprint": "8cbb25d93222be0ce54699362fe4b6b5",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "NoncreatureSpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"]
+                      },
+                      "bounds": { "min": 0, "max": 1 }
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": ["CantBeBlocked"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["CantBeBlocked"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "oracle_id": "7ff7af5f-e4e3-40af-8882-756564bfa479",
+  "name": "Guff Rewrites History",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guff Rewrites History",
+      "oracle_fingerprint": "c9e8342c97e82b156032f39b98ff8133",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "EachPlayer",
+                    "what": [{ "Not": { "Type": "Enchantment" } }, { "Not": { "Type": "Land" } }]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Bind": { "what": { "ControllerOf": { "Target": 0 } }, "as": "players" } },
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "players" },
+                  "as": "p",
+                  "effects": [
+                    {
+                      "ExileUntil": {
+                        "who": { "Bound": "p" },
+                        "filter": [{ "Not": { "Type": "Land" } }],
+                        "as": "found",
+                        "exiled_as": "exiled"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "found" }, "as": "all_found", "adds": true } },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Is": { "Bound": "exiled" } },
+                            { "Not": { "Is": { "Bound": "found" } } },
+                            { "In": "Exile" }
+                          ]
+                        },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "players" },
+                  "as": "caster",
+                  "effects": [
+                    {
+                      "CastFromZone": {
+                        "who": { "Bound": "caster" },
+                        "what": {
+                          "Each": [
+                            { "Is": { "Bound": "all_found" } },
+                            { "OwnedBy": { "Bound": "caster" } },
+                            { "In": "Exile" }
+                          ]
+                        },
+                        "free": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

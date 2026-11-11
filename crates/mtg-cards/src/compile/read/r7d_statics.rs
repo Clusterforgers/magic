@@ -32,7 +32,10 @@ pub(super) fn combat_texts(rule: &GameRule) -> Vec<String> {
         CombatQuirk::AssignsAsUnblocked => {
             "You may have ~ assign its combat damage as though it weren't blocked"
         }
-        _ => return Vec::new(),
+        other => match super::wf25_writers::wf25_combat_text(other) {
+            Some(text) => text,
+            None => return Vec::new(),
+        },
     };
     vec![text.to_owned()]
 }

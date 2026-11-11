@@ -1,0 +1,50 @@
+{
+  "oracle_id": "92c43ee1-0f7d-4993-8d3a-689cc87d7480",
+  "name": "Norn's Decree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Norn's Decree",
+      "oracle_fingerprint": "91f17c03df8371dd41b46b5257a2a7cd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                  "to": "You",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": { "ControllerOf": "Dealer" }, "counter": "poison" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "PlayerAttacks": {
+                "at": {
+                  "PlayersWhere": {
+                    "who": "EachPlayer",
+                    "test": {
+                      "Compare": {
+                        "left": { "Counters": { "on": "You", "counter": "poison" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "effects": [{ "Draw": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

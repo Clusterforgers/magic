@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "dddda66c-2df4-452e-8eca-7e100213fd98",
+  "oracle_id": "e91ed165-b86f-45e8-95b4-bce79da4ab5a",
+  "multiverse_ids": [
+    134738
+  ],
+  "mtgo_id": 26491,
+  "mtgo_foil_id": 26492,
+  "tcgplayer_id": 14765,
+  "cardmarket_id": 14296,
+  "name": "Molten Firebird",
+  "lang": "en",
+  "released_at": "2007-02-02",
+  "uri": "https://api.scryfall.com/cards/dddda66c-2df4-452e-8eca-7e100213fd98",
+  "scryfall_uri": "https://scryfall.com/card/plc/117/molten-firebird?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:45:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/d/dddda66c-2df4-452e-8eca-7e100213fd98.jpg?1783943143",
+    "normal": "https://cards.scryfall.io/normal/front/d/d/dddda66c-2df4-452e-8eca-7e100213fd98.jpg?1783943143",
+    "large": "https://cards.scryfall.io/large/front/d/d/dddda66c-2df4-452e-8eca-7e100213fd98.jpg?1783943143",
+    "png": "https://cards.scryfall.io/png/front/d/d/dddda66c-2df4-452e-8eca-7e100213fd98.png?1783943143",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/d/dddda66c-2df4-452e-8eca-7e100213fd98.jpg?1783943143",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/d/dddda66c-2df4-452e-8eca-7e100213fd98.jpg?1783943143",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/d/dddda66c-2df4-452e-8eca-7e100213fd98.webp?1783943143",
+    "grid": "https://cards.scryfall.io/grid/front/d/d/dddda66c-2df4-452e-8eca-7e100213fd98.webp?1783943143",
+    "display": "https://cards.scryfall.io/display/front/d/d/dddda66c-2df4-452e-8eca-7e100213fd98.webp?1783943143",
+    "art": "https://cards.scryfall.io/art/front/d/d/dddda66c-2df4-452e-8eca-7e100213fd98.webp?1783943143",
+    "crop": "https://cards.scryfall.io/crop/front/d/d/dddda66c-2df4-452e-8eca-7e100213fd98.webp?1783943143",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/d/dddda66c-2df4-452e-8eca-7e100213fd98.jpg?1783943143"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Phoenix",
+  "oracle_text": "Flying\nWhen this creature dies, return it to the battlefield under its owner's control at the beginning of the next end step and you skip your next draw step.\n{4}{R}: Exile this creature.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5a1b571c-73e9-4c14-b9d4-a62507d85789",
+  "set": "plc",
+  "set_name": "Planar Chaos",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5a1b571c-73e9-4c14-b9d4-a62507d85789",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aplc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/plc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dddda66c-2df4-452e-8eca-7e100213fd98/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae91ed165-b86f-45e8-95b4-bce79da4ab5a&unique=prints",
+  "collector_number": "117",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Christopher Moeller",
+  "artist_ids": [
+    "21e10012-06ae-44f2-b38d-3824dd2e73d4"
+  ],
+  "illustration_id": "78bcdd3f-12b3-4433-a494-921d90028123",
+  "border_color": "black",
+  "frame": "2003",
+  "frame_effects": [
+    "colorshifted"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26690,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": "1.06",
+    "usd_etched": null,
+    "eur": "0.24",
+    "eur_foil": "0.81",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=134738&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMolten%2BFirebird",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMolten%2BFirebird",
+    "edhrec": "https://edhrec.com/route/?cc=Molten+Firebird"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F14765%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=14296&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/26491?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

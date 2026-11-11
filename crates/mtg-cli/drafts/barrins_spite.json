@@ -1,0 +1,45 @@
+{
+  "oracle_id": "68b038ef-71c4-4ca5-9821-57bf85831bb7",
+  "name": "Barrin's Spite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barrin's Spite",
+      "oracle_fingerprint": "782e4694044e1630d43e2fdb67e524d2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Creature" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "from": { "Target": 0 },
+                  "as": "sacrificed",
+                  "rest_as": "other"
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "filter": [{ "Is": { "Bound": "sacrificed" } }]
+                }
+              },
+              { "Move": { "what": { "Bound": "other" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

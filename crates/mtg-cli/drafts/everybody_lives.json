@@ -1,0 +1,38 @@
+{
+  "oracle_id": "39213de3-6a4a-4879-a7f9-70f45013765e",
+  "name": "Everybody Lives!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Everybody Lives!",
+      "oracle_fingerprint": "c4e8151686ff23fd824730587bdb3033",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "PlayersHave": { "who": "EachPlayer", "keyword": "Hexproof" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "CantLoseGame": { "who": "EachPlayer", "opponents_cant_win": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

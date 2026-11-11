@@ -1,0 +1,181 @@
+{
+  "object": "card",
+  "id": "1d07c21e-55dc-45b2-b406-2ac38ca5d871",
+  "oracle_id": "c5632f18-7904-4a29-82be-6a6ef8e85e18",
+  "multiverse_ids": [
+    563112
+  ],
+  "tcgplayer_id": 272911,
+  "cardmarket_id": 659862,
+  "name": "Emerald Dragon // Dissonant Wave",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/1d07c21e-55dc-45b2-b406-2ac38ca5d871",
+  "scryfall_uri": "https://scryfall.com/card/clb/229/emerald-dragon-dissonant-wave?utm_source=api",
+  "layout": "adventure",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:05:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/d/1d07c21e-55dc-45b2-b406-2ac38ca5d871.jpg?1783922714",
+    "normal": "https://cards.scryfall.io/normal/front/1/d/1d07c21e-55dc-45b2-b406-2ac38ca5d871.jpg?1783922714",
+    "large": "https://cards.scryfall.io/large/front/1/d/1d07c21e-55dc-45b2-b406-2ac38ca5d871.jpg?1783922714",
+    "png": "https://cards.scryfall.io/png/front/1/d/1d07c21e-55dc-45b2-b406-2ac38ca5d871.png?1783922714",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/d/1d07c21e-55dc-45b2-b406-2ac38ca5d871.jpg?1783922714",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/d/1d07c21e-55dc-45b2-b406-2ac38ca5d871.jpg?1783922714",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/d/1d07c21e-55dc-45b2-b406-2ac38ca5d871.webp?1783922714",
+    "grid": "https://cards.scryfall.io/grid/front/1/d/1d07c21e-55dc-45b2-b406-2ac38ca5d871.webp?1783922714",
+    "display": "https://cards.scryfall.io/display/front/1/d/1d07c21e-55dc-45b2-b406-2ac38ca5d871.webp?1783922714",
+    "art": "https://cards.scryfall.io/art/front/1/d/1d07c21e-55dc-45b2-b406-2ac38ca5d871.webp?1783922714",
+    "crop": "https://cards.scryfall.io/crop/front/1/d/1d07c21e-55dc-45b2-b406-2ac38ca5d871.webp?1783922714",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/d/1d07c21e-55dc-45b2-b406-2ac38ca5d871.jpg?1783922714"
+  },
+  "mana_cost": "{4}{G}{G} // {2}{G}",
+  "cmc": 6.0,
+  "type_line": "Creature — Dragon // Instant — Adventure",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Flying",
+    "Trample"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Emerald Dragon",
+      "mana_cost": "{4}{G}{G}",
+      "type_line": "Creature — Dragon",
+      "oracle_text": "Flying, trample",
+      "power": "4",
+      "toughness": "4",
+      "flavor_text": "Emerald dragons hate prying eyes, and they have a host of ways to deter them.",
+      "artist": "Diego Gisbert",
+      "artist_id": "3f4e975d-092c-40e4-b850-2d582bf4b5cb",
+      "illustration_id": "fa6d8b18-3362-4e62-b064-28d95ff744f0"
+    },
+    {
+      "object": "card_face",
+      "name": "Dissonant Wave",
+      "mana_cost": "{2}{G}",
+      "type_line": "Instant — Adventure",
+      "oracle_text": "Counter target activated or triggered ability from a noncreature source. (Then exile this card. You may cast the creature later from exile.)",
+      "artist": "Diego Gisbert",
+      "artist_id": "3f4e975d-092c-40e4-b850-2d582bf4b5cb"
+    }
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "5e289bb3-f6de-450d-9f7e-77e2e70cb7cc",
+      "component": "combo_piece",
+      "name": "On an Adventure",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/5e289bb3-f6de-450d-9f7e-77e2e70cb7cc"
+    },
+    {
+      "object": "related_card",
+      "id": "1d07c21e-55dc-45b2-b406-2ac38ca5d871",
+      "component": "combo_piece",
+      "name": "Emerald Dragon // Dissonant Wave",
+      "type_line": "Creature — Dragon // Instant — Adventure",
+      "uri": "https://api.scryfall.com/cards/1d07c21e-55dc-45b2-b406-2ac38ca5d871"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1d07c21e-55dc-45b2-b406-2ac38ca5d871/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac5632f18-7904-4a29-82be-6a6ef8e85e18&unique=prints",
+  "collector_number": "229",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Emerald dragons hate prying eyes, and they have a host of ways to deter them.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Diego Gisbert",
+  "artist_ids": [
+    "3f4e975d-092c-40e4-b850-2d582bf4b5cb"
+  ],
+  "illustration_id": "fa6d8b18-3362-4e62-b064-28d95ff744f0",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10150,
+  "preview": {
+    "source": "Tabletop Jocks",
+    "source_uri": "https://twitter.com/tabletopjocks/status/1528739942385319937",
+    "previewed_at": "2022-05-23"
+  },
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.41",
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": "0.25",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563112&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEmerald%2BDragon%2B%252F%252F%2BDissonant%2BWave",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEmerald%2BDragon%2B%252F%252F%2BDissonant%2BWave",
+    "edhrec": "https://edhrec.com/route/?cc=Emerald+Dragon"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272911%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=659862&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Emerald+Dragon&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

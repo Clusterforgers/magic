@@ -113,6 +113,7 @@ Banishing Light
 Banishing Stroke
 Banshee of the Dread Choir
 Baral's Expertise
+Barbarian Class
 Barbed Batterfist
 Bard's Bow
 Barter in Blood
@@ -153,6 +154,7 @@ Blast Zone
 Blastoderm
 Blaze
 Blazing Archon
+Blazing Shoal
 Blazing Sunsteel
 Blight Mamba
 Blight Pile
@@ -322,6 +324,7 @@ Crush Contraband
 Crypt Ghast
 Crystal Barricade
 Crystal Quarry
+Cuboid Colony
 Culling Ritual
 Cultivate
 Curate
@@ -735,6 +738,7 @@ Hour of Revelation
 Howltooth Hollow
 Hua Tuo, Honored Physician
 Hulking Raptor
+Hungry Graffalon
 Hungry Lynx
 Hunt the Weak
 Huntmaster Liger
@@ -745,6 +749,7 @@ Idyllic Beachfront
 Igneous Inspiration
 Ill-Tempered Cyclops
 Illicit Shipment
+Illusion Spinners
 Illustrious Wanderglyph
 Ilysian Caryatid
 Immoral Bargain
@@ -782,6 +787,7 @@ Ixalli's Lorekeeper
 Izzet Charm
 Jace Beleren
 Jace's Archivist
+Jack-o'-Lantern
 Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
@@ -981,6 +987,8 @@ Mizzium Mortars
 Mobilizer Mech
 Moldgraf Millipede
 Molecule Man
+Molt Tender
+Molten Hydra
 Molten Slagheap
 Mona Lisa, Science Geek
 Monastery Swiftspear
@@ -1035,6 +1043,7 @@ Nirkana Revenant
 Norn's Annex
 Norwood Riders
 Notion Rain
+Nourishing Shoal
 Novijen, Heart of Progress
 Nykthos Paragon
 Nylea's Colossus
@@ -1093,6 +1102,7 @@ Patron of the Vein
 Peacewalker Colossus
 Pearl-Ear, Imperial Advisor
 Peema Outrider
+Pensive Professor
 Pentad Prism
 Perch Protection
 Persist
@@ -1105,11 +1115,13 @@ Photon, Mighty Marvel
 Phyrexian Prowler
 Phyrexian Rebirth
 Phyrexian Soulgorger
+Pili-Pala
 Pillar of Origins
 Pillar of the Paruns
 Pinion Feast
 Piper of the Swarm
 Pit Fight
+Pixie Guide
 Plague Drone
 Plague Myr
 Plague Stinger
@@ -1330,6 +1342,7 @@ Shifting Sliver
 Shiny Impetus
 Shipbreaker Kraken
 Shu Cavalry
+Sickening Shoal
 Siege Smash
 Siege Wurm
 Sigiled Paladin
@@ -1353,6 +1366,7 @@ Skeletal Changeling
 Skeletal Scrying
 Skewer the Critics
 Skinthinner
+Skirge Familiar
 Skirk Prospector
 Skitter Eel
 Skittering Crustacean
@@ -1525,6 +1539,7 @@ Territorial Maro
 Terrus Wurm
 Teshar, Ancestor's Apostle
 Teval's Judgment
+Textbook Tabulator
 Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
@@ -1583,6 +1598,7 @@ Tithe Drinker
 Tithebearer Giant
 Tivash, Gloom Summoner
 Tomb Tyrant
+Topiary Lecturer
 Torrential Gearhulk
 Towering Titan
 Toxic Deluge
@@ -1663,6 +1679,7 @@ Vibranium Strike Gauntlets
 Village Pillagers
 Village Rites
 Viridian Corrupter
+Vish Kal, Blood Arbiter
 Visionary Augmenter
 Vitality Hunter
 Vivid Crag
@@ -1685,6 +1702,7 @@ Vulshok Splitter
 Wakanda Forever!
 Walking Ballista
 Wanderbrine Preacher
+Wandering Eye
 Wandertale Mentor
 Wanderwine Hub
 Waning Wurm
@@ -1728,6 +1746,7 @@ Wipe Away
 Wirewood Channeler
 Withering Boon
 Wizard Class
+Wizard's Rockets
 Wolfwillow Haven
 Wooded Bastion
 Woodripper
@@ -1737,6 +1756,7 @@ Wretched Confluence
 Wrexial, the Risen Deep
 Writ of Return
 Wurmwall Sweeper
+Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
 Yisan, the Wanderer Bard
 Young Wolf

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "eb70939f-c4ce-4224-ab74-acc24771d7f0",
+  "name": "Belt of Giant Strength",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Belt of Giant Strength",
+      "oracle_fingerprint": "a0b513e850f6c6149bb646560b3fd522",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "SetPT": { "power": 10, "toughness": 10 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{10}" } }
+      ]
+    }
+  ]
+}

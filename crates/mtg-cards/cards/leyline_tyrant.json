@@ -1,0 +1,23 @@
+{
+  "oracle_id": "f92aaa00-6ece-4033-b3df-b2fc2c4718d9",
+  "name": "Leyline Tyrant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Leyline Tyrant",
+      "oracle_fingerprint": "7c4f55d2322bc401010edccfb88b0c01",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 63 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 64, "end": 173 }
+          }
+        }
+      ]
+    }
+  ]
+}

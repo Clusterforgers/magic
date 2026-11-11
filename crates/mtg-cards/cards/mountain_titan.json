@@ -1,0 +1,28 @@
+{
+  "oracle_id": "160c8e94-ccf9-4058-b7fd-04529456f0fa",
+  "name": "Mountain Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mountain Titan",
+      "oracle_fingerprint": "1761b85334a21673f3d9b236f7667ca8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}{R}",
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": [{ "Color": "Black" }], "by": "You" } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

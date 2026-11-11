@@ -1,0 +1,37 @@
+{
+  "oracle_id": "68979160-b5ce-4787-8a1e-1f40e614c3b0",
+  "name": "Spirit Water Revival",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit Water Revival",
+      "oracle_fingerprint": "81d61402336e4c87ca573d004bcca7e8",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Waterbend": 6 }] } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    },
+                    { "Draw": { "count": 7 } },
+                    { "Rule": { "rule": { "NoMaxHandSize": "You" }, "duration": "Forever" } }
+                  ],
+                  "otherwise": [{ "Draw": { "count": 2 } }]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

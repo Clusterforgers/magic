@@ -1,0 +1,46 @@
+{
+  "oracle_id": "3f7452aa-b075-47d9-b61f-061d61c7d1b4",
+  "name": "Courageous Resolve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Courageous Resolve",
+      "oracle_fingerprint": "f202269e8a341f27550443b159e4830a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Protection": [{ "ControlledBy": "Opponents" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": { "Life": "You" }, "op": "Le", "right": 5 } },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": { "CantLoseGame": { "who": "You", "opponents_cant_win": true } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

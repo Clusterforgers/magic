@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "d1ee8ead-df6a-4c02-83f7-2902d97132b8",
+  "oracle_id": "12b859f8-36f3-43cd-b537-6e07857b247e",
+  "multiverse_ids": [
+    665061
+  ],
+  "mtgo_id": 126665,
+  "tcgplayer_id": 553388,
+  "cardmarket_id": 772930,
+  "name": "Bismuth Mindrender",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/d1ee8ead-df6a-4c02-83f7-2902d97132b8",
+  "scryfall_uri": "https://scryfall.com/card/m3c/51/bismuth-mindrender?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:57:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/1/d1ee8ead-df6a-4c02-83f7-2902d97132b8.jpg?1783911423",
+    "normal": "https://cards.scryfall.io/normal/front/d/1/d1ee8ead-df6a-4c02-83f7-2902d97132b8.jpg?1783911423",
+    "large": "https://cards.scryfall.io/large/front/d/1/d1ee8ead-df6a-4c02-83f7-2902d97132b8.jpg?1783911423",
+    "png": "https://cards.scryfall.io/png/front/d/1/d1ee8ead-df6a-4c02-83f7-2902d97132b8.png?1783911423",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/1/d1ee8ead-df6a-4c02-83f7-2902d97132b8.jpg?1783911423",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/1/d1ee8ead-df6a-4c02-83f7-2902d97132b8.jpg?1783911423",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/1/d1ee8ead-df6a-4c02-83f7-2902d97132b8.webp?1783911423",
+    "grid": "https://cards.scryfall.io/grid/front/d/1/d1ee8ead-df6a-4c02-83f7-2902d97132b8.webp?1783911423",
+    "display": "https://cards.scryfall.io/display/front/d/1/d1ee8ead-df6a-4c02-83f7-2902d97132b8.webp?1783911423",
+    "art": "https://cards.scryfall.io/art/front/d/1/d1ee8ead-df6a-4c02-83f7-2902d97132b8.webp?1783911423",
+    "crop": "https://cards.scryfall.io/crop/front/d/1/d1ee8ead-df6a-4c02-83f7-2902d97132b8.webp?1783911423",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/1/d1ee8ead-df6a-4c02-83f7-2902d97132b8.jpg?1783911423"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Eldrazi",
+  "oracle_text": "Devoid (This card has no color.)\nMenace\nWhenever this creature deals combat damage to a player, that player exiles cards from the top of their library until they exile a nonland card. You may cast that card by paying life equal to the spell's mana value rather than paying its mana cost.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Devoid",
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f5e00721-cf99-43ba-bf16-b22d56d12c73",
+  "set": "m3c",
+  "set_name": "Modern Horizons 3 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f5e00721-cf99-43ba-bf16-b22d56d12c73",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am3c&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m3c?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d1ee8ead-df6a-4c02-83f7-2902d97132b8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A12b859f8-36f3-43cd-b537-6e07857b247e&unique=prints",
+  "collector_number": "51",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Maxime Minard",
+  "artist_ids": [
+    "a9065769-afcd-4e54-a3c0-5809e7b4108b"
+  ],
+  "illustration_id": "8f543d71-61aa-40fd-8341-129831816aac",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "devoid"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "ripplefoil"
+  ],
+  "edhrec_rank": 7475,
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.30",
+    "eur_foil": "8.12",
+    "tix": "0.19"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=665061&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBismuth%2BMindrender",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBismuth%2BMindrender",
+    "edhrec": "https://edhrec.com/route/?cc=Bismuth+Mindrender"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F553388%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=772930&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/126665?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "fab29bc7-1f0a-4df4-b8f1-c008ce5583d2",
+  "name": "Search for Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Search for Glory",
+      "oracle_fingerprint": "9104a74c62e0826111b473378592812e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Not": {
+                            "AnyOf": [
+                              { "Not": { "Supertype": "Snow" } },
+                              {
+                                "Not": {
+                                  "AnyOf": [
+                                    { "Type": "Artifact" },
+                                    { "Type": "Creature" },
+                                    { "Type": "Enchantment" },
+                                    { "Type": "Land" },
+                                    { "Type": "Planeswalker" },
+                                    { "Type": "Battle" }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        { "Supertype": "Legendary" },
+                        { "Subtype": "Saga" }
+                      ]
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              {
+                "GainLife": {
+                  "amount": { "ManaSpent": { "of": null, "from": { "supertypes": ["Snow"] } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

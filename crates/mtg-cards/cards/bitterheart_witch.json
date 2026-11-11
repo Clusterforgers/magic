@@ -1,0 +1,20 @@
+{
+  "oracle_id": "67466d56-9f28-4bbe-ae54-6fd834581e77",
+  "name": "Bitterheart Witch",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bitterheart Witch",
+      "oracle_fingerprint": "d2db31b62956a05d64f13e6a2ffd8619",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 11, "end": 150 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "482889f4-6cf5-457f-9f52-a3f841e038b5",
+  "name": "Bribe Taker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bribe Taker",
+      "oracle_fingerprint": "71b9bd5cf9a3ed53fce756e7f69f90db",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 173 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "39867856-c1f3-442a-abe9-53f8f73777d0",
+  "name": "Joyful Stormsculptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Joyful Stormsculptor",
+      "oracle_fingerprint": "9e215d58f20b3e1763ff34058d43ec2b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Blue", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "HasKeyword": "Convoke" }], "by": "You" } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

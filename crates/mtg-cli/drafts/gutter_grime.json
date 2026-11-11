@@ -1,0 +1,67 @@
+{
+  "oracle_id": "0b8adb9e-97a5-43d9-87d6-993f22edaf3b",
+  "name": "Gutter Grime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gutter Grime",
+      "oracle_fingerprint": "1f3a86e554846d8c7445e710a61b07a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "slime" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ooze",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ooze"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "Counters": {
+                                      "on": { "Each": [{ "Named": "Gutter Grime" }] },
+                                      "counter": { "Other": "slime" }
+                                    }
+                                  },
+                                  "toughness": {
+                                    "Counters": {
+                                      "on": { "Each": [{ "Named": "Gutter Grime" }] },
+                                      "counter": { "Other": "slime" }
+                                    }
+                                  }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

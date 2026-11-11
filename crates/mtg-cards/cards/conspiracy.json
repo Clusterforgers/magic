@@ -1,0 +1,25 @@
+{
+  "oracle_id": "775d284d-0884-4ae3-a1b5-2b2a50a895b4",
+  "name": "Conspiracy",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Conspiracy",
+      "oracle_fingerprint": "f44bd01374de378b25d87ed0e40a76af",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 52, "end": 202 }
+          }
+        }
+      ]
+    }
+  ]
+}

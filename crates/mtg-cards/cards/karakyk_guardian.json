@@ -1,0 +1,22 @@
+{
+  "oracle_id": "41129dc1-be88-4198-94f9-032817a79bc7",
+  "name": "Karakyk Guardian",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Karakyk Guardian",
+      "oracle_fingerprint": "b270c413bf8e9254d7f87f828304c8c1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 27, "end": 164 }
+          }
+        }
+      ]
+    }
+  ]
+}

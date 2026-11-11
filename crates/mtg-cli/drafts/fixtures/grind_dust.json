@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "0383401f-d453-4e8f-82d2-5c016acc2591",
+  "oracle_id": "ab5b697b-ab62-4ee7-a10e-cc937fef3095",
+  "multiverse_ids": [
+    430844
+  ],
+  "mtgo_id": 64826,
+  "tcgplayer_id": 134871,
+  "cardmarket_id": 298545,
+  "name": "Grind // Dust",
+  "lang": "en",
+  "released_at": "2017-07-14",
+  "uri": "https://api.scryfall.com/cards/0383401f-d453-4e8f-82d2-5c016acc2591",
+  "scryfall_uri": "https://scryfall.com/card/hou/155/grind-dust?utm_source=api",
+  "layout": "split",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:46:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/3/0383401f-d453-4e8f-82d2-5c016acc2591.jpg?1783936006",
+    "normal": "https://cards.scryfall.io/normal/front/0/3/0383401f-d453-4e8f-82d2-5c016acc2591.jpg?1783936006",
+    "large": "https://cards.scryfall.io/large/front/0/3/0383401f-d453-4e8f-82d2-5c016acc2591.jpg?1783936006",
+    "png": "https://cards.scryfall.io/png/front/0/3/0383401f-d453-4e8f-82d2-5c016acc2591.png?1783936006",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/3/0383401f-d453-4e8f-82d2-5c016acc2591.jpg?1783936006",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/3/0383401f-d453-4e8f-82d2-5c016acc2591.jpg?1783936006",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/3/0383401f-d453-4e8f-82d2-5c016acc2591.webp?1783936006",
+    "grid": "https://cards.scryfall.io/grid/front/0/3/0383401f-d453-4e8f-82d2-5c016acc2591.webp?1783936006",
+    "display": "https://cards.scryfall.io/display/front/0/3/0383401f-d453-4e8f-82d2-5c016acc2591.webp?1783936006",
+    "art": "https://cards.scryfall.io/art/front/0/3/0383401f-d453-4e8f-82d2-5c016acc2591.webp?1783936006",
+    "crop": "https://cards.scryfall.io/crop/front/0/3/0383401f-d453-4e8f-82d2-5c016acc2591.webp?1783936006",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/3/0383401f-d453-4e8f-82d2-5c016acc2591.jpg?1783936006"
+  },
+  "mana_cost": "{1}{B} // {3}{W}",
+  "cmc": 6.0,
+  "type_line": "Sorcery // Sorcery",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Aftermath"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Grind",
+      "mana_cost": "{1}{B}",
+      "type_line": "Sorcery",
+      "oracle_text": "Put a -1/-1 counter on each of up to two target creatures.",
+      "artist": "Josh Hass",
+      "artist_id": "8fa1fdf0-96d6-46f4-a7ff-b1c0257c3735",
+      "illustration_id": "e9f9ab3c-c37e-4644-bc22-2064ae49b774"
+    },
+    {
+      "object": "card_face",
+      "name": "Dust",
+      "mana_cost": "{3}{W}",
+      "type_line": "Sorcery",
+      "oracle_text": "Aftermath (Cast this spell only from your graveyard. Then exile it.)\nExile any number of target creatures that have -1/-1 counters on them.",
+      "artist": "Josh Hass",
+      "artist_id": "8fa1fdf0-96d6-46f4-a7ff-b1c0257c3735"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "65ff168b-bb94-47a5-a8f9-4ec6c213e768",
+  "set": "hou",
+  "set_name": "Hour of Devastation",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/65ff168b-bb94-47a5-a8f9-4ec6c213e768",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ahou&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/hou?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0383401f-d453-4e8f-82d2-5c016acc2591/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aab5b697b-ab62-4ee7-a10e-cc937fef3095&unique=prints",
+  "collector_number": "155",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Josh Hass",
+  "artist_ids": [
+    "8fa1fdf0-96d6-46f4-a7ff-b1c0257c3735"
+  ],
+  "illustration_id": "e9f9ab3c-c37e-4644-bc22-2064ae49b774",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26658,
+  "penny_rank": 9713,
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "0.27",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.30",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=430844&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGrind%2B%252F%252F%2BDust",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGrind%2B%252F%252F%2BDust",
+    "edhrec": "https://edhrec.com/route/?cc=Grind+%2F%2F+Dust"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F134871%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=298545&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/64826?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cf9129a3-25fe-4787-b41c-0b6968ba5aee",
+  "name": "Expert-Level Safe",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Expert-Level Safe",
+      "oracle_fingerprint": "3b5e5bcf824f653f049aa6024d68a796",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "ExileTop": { "count": 2, "as": "safe", "sealed": true } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 78, "end": 332 }
+          }
+        }
+      ]
+    }
+  ]
+}

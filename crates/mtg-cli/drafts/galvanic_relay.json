@@ -1,0 +1,36 @@
+{
+  "oracle_id": "973c684c-a396-4e40-8aaa-365bc64a6f9a",
+  "name": "Galvanic Relay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galvanic Relay",
+      "oracle_fingerprint": "11196fd961349eddf638e9df5d06c3ea",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "as": "card" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "card" }, "play": true }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a46f9f5c-775c-470d-8935-9556e1bbb23d",
+  "name": "Maarika, Brutal Gladiator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Maarika, Brutal Gladiator",
+      "oracle_fingerprint": "bb8c3be00b92c481fe4e393b1d850bd1",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 106, "end": 274 }
+          }
+        }
+      ]
+    }
+  ]
+}

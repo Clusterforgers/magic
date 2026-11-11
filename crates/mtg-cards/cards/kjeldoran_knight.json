@@ -1,0 +1,47 @@
+{
+  "oracle_id": "5d7747b4-061d-4459-ba80-51361526cbfa",
+  "name": "Kjeldoran Knight",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kjeldoran Knight",
+      "oracle_fingerprint": "6ba13827f0906a365c2924b3d6f645e2",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 326 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "49f29a3b-7136-496c-bc29-8808bfff0f82",
+  "oracle_id": "07c42f46-800e-4d2a-b844-c125ab93190d",
+  "multiverse_ids": [
+    4868
+  ],
+  "mtgo_id": 9679,
+  "mtgo_foil_id": 9680,
+  "tcgplayer_id": 5492,
+  "cardmarket_id": 8959,
+  "name": "Circle of Protection: Shadow",
+  "lang": "en",
+  "released_at": "1997-10-14",
+  "uri": "https://api.scryfall.com/cards/49f29a3b-7136-496c-bc29-8808bfff0f82",
+  "scryfall_uri": "https://scryfall.com/card/tmp/12/circle-of-protection:-shadow?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:44:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/9/49f29a3b-7136-496c-bc29-8808bfff0f82.jpg?1783946668",
+    "normal": "https://cards.scryfall.io/normal/front/4/9/49f29a3b-7136-496c-bc29-8808bfff0f82.jpg?1783946668",
+    "large": "https://cards.scryfall.io/large/front/4/9/49f29a3b-7136-496c-bc29-8808bfff0f82.jpg?1783946668",
+    "png": "https://cards.scryfall.io/png/front/4/9/49f29a3b-7136-496c-bc29-8808bfff0f82.png?1783946668",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/9/49f29a3b-7136-496c-bc29-8808bfff0f82.jpg?1783946668",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/9/49f29a3b-7136-496c-bc29-8808bfff0f82.jpg?1783946668",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/9/49f29a3b-7136-496c-bc29-8808bfff0f82.webp?1783946668",
+    "grid": "https://cards.scryfall.io/grid/front/4/9/49f29a3b-7136-496c-bc29-8808bfff0f82.webp?1783946668",
+    "display": "https://cards.scryfall.io/display/front/4/9/49f29a3b-7136-496c-bc29-8808bfff0f82.webp?1783946668",
+    "art": "https://cards.scryfall.io/art/front/4/9/49f29a3b-7136-496c-bc29-8808bfff0f82.webp?1783946668",
+    "crop": "https://cards.scryfall.io/crop/front/4/9/49f29a3b-7136-496c-bc29-8808bfff0f82.webp?1783946668",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/9/49f29a3b-7136-496c-bc29-8808bfff0f82.jpg?1783946668"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "{1}: The next time a creature of your choice with shadow would deal damage to you this turn, prevent that damage.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "10df3a67-178e-4363-8668-34f0e6edf2a7",
+  "set": "tmp",
+  "set_name": "Tempest",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/10df3a67-178e-4363-8668-34f0e6edf2a7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atmp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tmp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/49f29a3b-7136-496c-bc29-8808bfff0f82/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A07c42f46-800e-4d2a-b844-c125ab93190d&unique=prints",
+  "collector_number": "12",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Harold McNeill",
+  "artist_ids": [
+    "8aadc8a8-df50-45b3-bd88-449e709df482"
+  ],
+  "illustration_id": "a98e2eed-de41-41d9-aaf6-d5d1ab78e68d",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 29252,
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": null,
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=4868&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCircle%2Bof%2BProtection%253A%2BShadow",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCircle%2Bof%2BProtection%253A%2BShadow",
+    "edhrec": "https://edhrec.com/route/?cc=Circle+of+Protection%3A+Shadow"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F5492%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8959&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/9679?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

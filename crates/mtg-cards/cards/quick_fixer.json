@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a4f50771-4a10-4d5d-a7c4-0e24c873a0ae",
+  "name": "Quick Fixer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Quick Fixer",
+      "oracle_fingerprint": "65326e1ae1df963db969e1f6b867c3a5",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 147 }
+          }
+        }
+      ]
+    }
+  ]
+}

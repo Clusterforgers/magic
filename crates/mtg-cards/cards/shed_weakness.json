@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e3390776-66cc-4e0a-a034-701793b05db8",
+  "name": "Shed Weakness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shed Weakness",
+      "oracle_fingerprint": "f122ee3c04cf99ad0d3af2a22232b062",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "May": {
+                  "effects": [{ "RemoveCounters": { "from": { "Target": 0 }, "counter": "-1/-1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "8c89ba89-9bb3-4609-873c-6f5a961733ce",
+  "name": "The Irencrag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Irencrag",
+      "oracle_fingerprint": "e10caa3b3ac3fc208f734e8c15e47973",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Supertype": "Legendary" },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "AddSubtype": "Equipment" },
+                          "LoseAbilities",
+                          { "AddKeyword": { "Equip": "{3}" } },
+                          {
+                            "GrantAbility": {
+                              "Static": {
+                                "affected": "Attached",
+                                "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

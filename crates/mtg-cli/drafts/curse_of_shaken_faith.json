@@ -1,0 +1,38 @@
+{
+  "oracle_id": "297494f0-1f79-4f77-b68b-6ed858e21f4e",
+  "name": "Curse of Shaken Faith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Shaken Faith",
+      "oracle_fingerprint": "a389a1632897eb7f4fa8fc12a635ea4d",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [
+                      {
+                        "Test": {
+                          "left": { "Tallied": { "who": "AttachedPlayer", "what": "SpellsCast" } },
+                          "op": "Gt",
+                          "right": 1
+                        }
+                      }
+                    ],
+                    "by": "AttachedPlayer"
+                  }
+                },
+                { "SpellCopied": { "by": "AttachedPlayer" } }
+              ]
+            },
+            "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

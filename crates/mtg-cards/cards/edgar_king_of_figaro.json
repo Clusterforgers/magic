@@ -1,0 +1,31 @@
+{
+  "oracle_id": "264efed9-65ab-40ad-877f-c6c25ca0281e",
+  "name": "Edgar, King of Figaro",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Edgar, King of Figaro",
+      "oracle_fingerprint": "09637ed8e6b9f59682f32d1d07066921",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 62, "end": 183 }
+          }
+        }
+      ]
+    }
+  ]
+}

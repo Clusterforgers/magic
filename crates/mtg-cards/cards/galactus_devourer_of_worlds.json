@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4232995b-68c0-4514-8cde-bc62b9d1cbaa",
+  "name": "Galactus, Devourer of Worlds",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Galactus, Devourer of Worlds",
+      "oracle_fingerprint": "b3242f0d23f2f87994cf80cbf31aaa41",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 78, "end": 256 }
+          }
+        }
+      ]
+    }
+  ]
+}

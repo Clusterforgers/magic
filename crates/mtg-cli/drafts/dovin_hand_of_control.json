@@ -1,0 +1,45 @@
+{
+  "oracle_id": "95bbe04c-bcea-461d-9946-6c1a35dfbeb1",
+  "name": "Dovin, Hand of Control",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dovin, Hand of Control",
+      "oracle_fingerprint": "b2c0e537ccc5e27ac4e4faee31123ac4",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "Opponents" }
+            ],
+            "change": "Increase",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "Opponents" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": "Prevent",
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }] } },
+                  "by": "Prevent",
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

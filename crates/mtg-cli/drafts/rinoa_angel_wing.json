@@ -1,0 +1,71 @@
+{
+  "oracle_id": "47b29cf9-8ef3-4b6a-a9a3-3ab822c5dea4",
+  "name": "Rinoa, Angel Wing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rinoa, Angel Wing",
+      "oracle_fingerprint": "9dcf5bd2535e90e589df6ae848304155",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasKeyword": "Flying" }
+                    ]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Vigilance" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }],
+                  "from": "Battlefield",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "limit": "OncePerTurnDone",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Choose": { "from": "Triggering", "as": "returned" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "returned" },
+                        "to": {
+                          "Battlefield": {
+                            "tapped": true,
+                            "under": { "OwnerOf": { "Bound": "returned" } },
+                            "counters": [[{ "Other": "flying" }, 1]]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

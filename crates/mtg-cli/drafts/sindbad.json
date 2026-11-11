@@ -1,0 +1,35 @@
+{
+  "oracle_id": "dc81069b-b2cf-44b3-98fc-45bb24b815cb",
+  "name": "Sindbad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sindbad",
+      "oracle_fingerprint": "1353a59b084d960a85a734db0ef8d0e9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Draw": { "as": "drawn" } },
+              { "Reveal": { "what": { "Bound": "drawn" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "Matches": {
+                        "subject": { "Bound": "drawn" },
+                        "selector": [{ "Type": "Land" }]
+                      }
+                    }
+                  },
+                  "then": [{ "Discard": { "filter": [{ "Is": { "Bound": "drawn" } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

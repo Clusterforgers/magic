@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c309ec42-34a0-4083-a36c-7814643d7960",
+  "name": "Mandate of Peace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mandate of Peace",
+      "oracle_fingerprint": "7bc4d6c86d7c39500a603f8656d8982b",
+      "abilities": [
+        { "CastOnly": { "condition": "InCombat" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "CantCastSpells": { "who": "Opponents" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "oracle_id": "b0f87e25-6604-4723-9467-1e4fedc1157a",
+  "name": "Peace Talks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peace Talks",
+      "oracle_fingerprint": "0b0cca991de3220d2e02e0f1e63dc319",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": ["CantAttack"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": "EachPlayer",
+                      "action": {
+                        "BeTargeted": [{ "AnyOf": ["Spell", { "Ability": "Activated" }] }]
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": { "Each": [] },
+                      "action": {
+                        "BeTargeted": [{ "AnyOf": ["Spell", { "Ability": "Activated" }] }]
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }] },
+                        "mods": ["CantAttack"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Cant": {
+                            "who": "EachPlayer",
+                            "action": {
+                              "BeTargeted": [{ "AnyOf": ["Spell", { "Ability": "Activated" }] }]
+                            }
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Cant": {
+                            "who": { "Each": [] },
+                            "action": {
+                              "BeTargeted": [{ "AnyOf": ["Spell", { "Ability": "Activated" }] }]
+                            }
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

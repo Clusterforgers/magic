@@ -1,0 +1,36 @@
+{
+  "oracle_id": "83a71000-942b-4472-9521-0e1070a3343b",
+  "name": "Inferno Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inferno Trap",
+      "oracle_fingerprint": "a86b02f610d929afaed5bacc641bcf36",
+      "abilities": [
+        {
+          "FreeCast": {
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "DidThisTurn": { "event": "Damaged", "to": "You" } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "cost": "{R}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

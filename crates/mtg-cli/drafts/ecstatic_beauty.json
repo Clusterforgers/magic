@@ -1,0 +1,42 @@
+{
+  "oracle_id": "724d933c-6e5f-458c-9b39-83b4662693ea",
+  "name": "Ecstatic Beauty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ecstatic Beauty",
+      "oracle_fingerprint": "f81dbb494a624fa326704b793339eef7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 3, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Is": { "Bound": "impulse" } },
+                      { "In": "Exile" },
+                      { "HasKeywordNamed": "Suspend" }
+                    ]
+                  },
+                  "counter": { "Other": "time" },
+                  "count": 4
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 4, "cost": "{R}" } } }
+      ]
+    }
+  ]
+}

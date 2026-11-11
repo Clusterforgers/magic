@@ -1,0 +1,45 @@
+{
+  "oracle_id": "84594f86-724b-4f6b-b374-2265a00db566",
+  "name": "Haunted Plate Mail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunted Plate Mail",
+      "oracle_fingerprint": "296eff956d565fb6f11c2a1a7a1c6b32",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 4, "toughness": 4 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "SetTypes": ["Artifact", "Creature"] },
+                    { "SetCreatureTypes": ["Spirit"] }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

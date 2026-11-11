@@ -1,0 +1,61 @@
+{
+  "oracle_id": "fd9aeda1-9e44-4bc6-aa0d-19d58918d1f4",
+  "name": "Rally the Horde",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rally the Horde",
+      "oracle_fingerprint": "9661d8b7360a54a1521a82aed9657cba",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Not": {
+                      "Matches": {
+                        "subject": { "Bound": "third" },
+                        "selector": [{ "Type": "Land" }]
+                      }
+                    }
+                  },
+                  "effects": [
+                    { "ExileTop": { "as": "first" } },
+                    { "Remember": { "what": { "Bound": "first" }, "slot": "exiled" } },
+                    { "ExileTop": { "as": "second" } },
+                    { "Remember": { "what": { "Bound": "second" }, "slot": "exiled" } },
+                    { "ExileTop": { "as": "third" } },
+                    { "Remember": { "what": { "Bound": "third" }, "slot": "exiled" } }
+                  ],
+                  "most": 100,
+                  "at_least_once": true
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Warrior",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "CountOf": {
+                      "of": { "Remembered": { "on": "This", "slot": "exiled" } },
+                      "filter": [{ "Not": { "Type": "Land" } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

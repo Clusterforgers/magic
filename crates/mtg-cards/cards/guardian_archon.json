@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c7748659-0206-448f-8567-83565cb0b51a",
+  "name": "Guardian Archon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Guardian Archon",
+      "oracle_fingerprint": "a637d437db8571e136343f6450d38b2c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 60 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 61, "end": 209 }
+          }
+        }
+      ]
+    }
+  ]
+}

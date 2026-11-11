@@ -1,0 +1,23 @@
+{
+  "oracle_id": "d18e60ed-ab6e-4b73-88f6-caa3f8e9c78e",
+  "name": "Talruum Piper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talruum Piper",
+      "oracle_fingerprint": "eb435a49838904204a2c3451fbd773c0",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MustBlockAttacker": {
+                "who": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+                "attacker": "This"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

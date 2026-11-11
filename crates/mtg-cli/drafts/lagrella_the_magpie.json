@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6a98b586-5187-48a1-bde3-f6141f3e9cb1",
+  "name": "Lagrella, the Magpie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lagrella, the Magpie",
+      "oracle_fingerprint": "8beb7ab9b4c1a0c22a9c89bdc8f8426b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                    "rule": "DifferentControllers"
+                  }
+                },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a10b3e35-8cc4-450e-9e30-0fce8df0fea4",
+  "name": "Necrodominance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necrodominance",
+      "oracle_fingerprint": "23477e0738502ad1b543a0edaaa0763e",
+      "abilities": [
+        { "Rule": { "rule": { "SkipDrawStep": "You" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "ChooseValue": { "kind": { "Number": [0, { "Life": "You" }] }, "as": "life" } },
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": { "ChosenAs": "life" } }],
+                  "paid": [{ "Draw": { "count": { "ChosenAs": "life" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "MaxHandSize": { "who": "You", "size": 5 } } } },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

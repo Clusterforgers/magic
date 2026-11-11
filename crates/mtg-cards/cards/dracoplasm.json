@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3155c833-8170-4166-8f47-c3c1fad1575a",
+  "name": "Dracoplasm",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dracoplasm",
+      "oracle_fingerprint": "92bd5c6c5c5d020a5f795b3c7f7015a1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 180 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "oracle_id": "759406d7-44ae-4260-9ef5-3bb2c92f751a",
+  "name": "Urza, Planeswalker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Urza, Planeswalker",
+      "oracle_fingerprint": "8ddec9f0fb965fcac26c92e908da0485",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 85 } }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "SpellCost": {
+                      "applies_to": [
+                        "Spell",
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Instant" },
+                            { "Type": "Sorcery" }
+                          ]
+                        },
+                        { "ControlledBy": "You" }
+                      ],
+                      "change": "Reduce",
+                      "mana": "{2}"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [{ "Draw": { "count": 2 } }, { "Discard": {} }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Planeswalker" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Destroy": { "what": { "Each": [{ "Not": { "Type": "Land" } }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

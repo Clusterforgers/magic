@@ -1,0 +1,26 @@
+{
+  "oracle_id": "5f589a11-1601-4a17-92d6-58e9dd9b00f2",
+  "name": "Fight the _____ Fight",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fight the _____ Fight",
+      "oracle_fingerprint": "be87d5872b1a30487d155d5d2878682f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 29, "end": 169 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 170, "end": 262 }
+          }
+        }
+      ]
+    }
+  ]
+}

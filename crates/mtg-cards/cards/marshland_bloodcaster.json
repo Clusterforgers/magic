@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5ecf35b1-0bfd-4c60-a791-5a3b918dd630",
+  "name": "Marshland Bloodcaster",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Marshland Bloodcaster",
+      "oracle_fingerprint": "9b549712bea70ec4fe61f44d6d30ee02",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 138 }
+          }
+        }
+      ]
+    }
+  ]
+}

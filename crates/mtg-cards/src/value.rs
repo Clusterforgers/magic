@@ -529,6 +529,9 @@ pub enum Amount {
     ResolvedThisTurn,
     /// How many permanents this permanent devoured as it entered (CR 702.82); zero once it has left the battlefield.
     Devoured,
+    /// How many counters of the kind the cost of the resolving ability removed from its source ("for each charge counter removed this
+    /// way" after "Remove all charge counters from ~"); zero outside such an ability.
+    RemovedThisWay(CounterKind),
     /// The number a `Let` of the resolving spell or ability fixed under the name; zero before it ran.
     Bound(String),
     /// One if the spell was cast for this alternative cost, else zero (a target specification that only awaken adds reads it in its most).
@@ -567,6 +570,14 @@ pub enum Amount {
     /// The most spells one of the players the reference names cast during the previous turn ("no spells were cast last turn":
     /// `EachPlayer`, equal to 0; "a player cast two or more spells last turn": at least 2); 0 before any turn has ended.
     CastLastTurn(Ref),
+    /// `Tallied` of the turn that ended last, whoever's it was ("if you lost life last turn", "if an opponent lost life
+    /// last turn"); 0 before any turn has ended. Only a count of players: not damage to objects, counters or dungeons.
+    TalliedLastTurn {
+        /// The players read.
+        who: Ref,
+        /// What is counted.
+        what: TurnTally,
+    },
     /// The size of the party of the player the reference names (CR 700.8): the most roles among Cleric, Rogue, Warrior and
     /// Wizard their creatures fill, each creature filling one role and each role once, so 0 to 4; the largest when it names several.
     Party(Ref),
@@ -756,6 +767,7 @@ enum Tagged {
     Promised,
     ResolvedThisTurn,
     Devoured,
+    RemovedThisWay(CounterKind),
     Bound(String),
     CastWith(CastWay),
     ColorsSpent,
@@ -774,6 +786,10 @@ enum Tagged {
     },
     StartingLife(Ref),
     CastLastTurn(Ref),
+    TalliedLastTurn {
+        who: Ref,
+        what: TurnTally,
+    },
     Party(Ref),
     Triggering,
     Tally {
@@ -883,6 +899,7 @@ enum TaggedRef<'a> {
     Promised,
     ResolvedThisTurn,
     Devoured,
+    RemovedThisWay(&'a CounterKind),
     Bound(&'a str),
     CastWith(CastWay),
     ColorsSpent,
@@ -901,6 +918,10 @@ enum TaggedRef<'a> {
     },
     StartingLife(&'a Ref),
     CastLastTurn(&'a Ref),
+    TalliedLastTurn {
+        who: &'a Ref,
+        what: TurnTally,
+    },
     Party(&'a Ref),
     Triggering,
     Tally {
@@ -989,6 +1010,7 @@ impl From<Tagged> for Amount {
             Tagged::Promised => Amount::Promised,
             Tagged::ResolvedThisTurn => Amount::ResolvedThisTurn,
             Tagged::Devoured => Amount::Devoured,
+            Tagged::RemovedThisWay(counter) => Amount::RemovedThisWay(counter),
             Tagged::Bound(name) => Amount::Bound(name),
             Tagged::CastWith(way) => Amount::CastWith(way),
             Tagged::ColorsSpent => Amount::ColorsSpent,
@@ -998,6 +1020,7 @@ impl From<Tagged> for Amount {
             Tagged::HighestCounters { who, counter } => Amount::HighestCounters { who, counter },
             Tagged::StartingLife(who) => Amount::StartingLife(who),
             Tagged::CastLastTurn(who) => Amount::CastLastTurn(who),
+            Tagged::TalliedLastTurn { who, what } => Amount::TalliedLastTurn { who, what },
             Tagged::Party(who) => Amount::Party(who),
             Tagged::Triggering => Amount::Triggering,
             Tagged::DieResult(which) => Amount::DieResult(which),
@@ -1079,6 +1102,9 @@ impl Serialize for Amount {
             Amount::Promised => TaggedRef::Promised.serialize(serializer),
             Amount::ResolvedThisTurn => TaggedRef::ResolvedThisTurn.serialize(serializer),
             Amount::Devoured => TaggedRef::Devoured.serialize(serializer),
+            Amount::RemovedThisWay(counter) => {
+                TaggedRef::RemovedThisWay(counter).serialize(serializer)
+            }
             Amount::Bound(name) => TaggedRef::Bound(name).serialize(serializer),
             Amount::CastWith(way) => TaggedRef::CastWith(*way).serialize(serializer),
             Amount::ColorsSpent => TaggedRef::ColorsSpent.serialize(serializer),
@@ -1092,6 +1118,9 @@ impl Serialize for Amount {
             }
             Amount::StartingLife(who) => TaggedRef::StartingLife(who).serialize(serializer),
             Amount::CastLastTurn(who) => TaggedRef::CastLastTurn(who).serialize(serializer),
+            Amount::TalliedLastTurn { who, what } => {
+                TaggedRef::TalliedLastTurn { who, what: *what }.serialize(serializer)
+            }
             Amount::Party(who) => TaggedRef::Party(who).serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
             Amount::DieResult(which) => TaggedRef::DieResult(*which).serialize(serializer),

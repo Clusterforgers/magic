@@ -1,0 +1,20 @@
+{
+  "oracle_id": "710a3499-64f8-4d2c-8c9c-d58950e47ea7",
+  "name": "Eriette, the Beguiler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Eriette, the Beguiler",
+      "oracle_fingerprint": "531243fdc76a05ccfb7ca3b67dadbfb1",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 9, "end": 235 }
+          }
+        }
+      ]
+    }
+  ]
+}

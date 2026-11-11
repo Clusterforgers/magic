@@ -1,0 +1,35 @@
+{
+  "oracle_id": "602ce676-380d-4c3c-b97a-9234ccdc2904",
+  "name": "Demigod of Revenge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demigod of Revenge",
+      "oracle_fingerprint": "fc71fd1da0a1df625dd5827106c878a0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Named": "Demigod of Revenge" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3b577179-10d0-43f1-ac17-9dd2d12c965d",
+  "name": "Littjara Mirrorlake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Littjara Mirrorlake",
+      "oracle_fingerprint": "d2e7e9671a0627095a34d94a51400e21",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}{G}{G}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "as": "token" } },
+              { "PutCounters": { "on": { "Bound": "token" }, "counter": "+1/+1" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "d1960749-c11e-4ac4-97cb-f37d7875d479",
+  "name": "Goldbug, Humanity's Ally // Goldbug, Scrappy Scout",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Goldbug, Humanity's Ally",
+      "oracle_fingerprint": "e9204a8e2cbee7ab50b88d246676b619",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 77 } }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Subtype": "Human" }, "Attacking", { "ControlledBy": "You" }] },
+                "combat": true
+              }
+            },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 157, "end": 220 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Goldbug, Scrappy Scout",
+      "oracle_fingerprint": "15213e1031b5678f47d1d493d62d2132",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 65 } }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "CantBeCountered": {
+                "Each": ["Spell", { "Subtype": "Human" }, { "ControlledBy": "You" }]
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 111, "end": 191 }
+          }
+        }
+      ]
+    }
+  ]
+}

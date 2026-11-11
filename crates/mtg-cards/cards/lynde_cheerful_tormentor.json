@@ -1,0 +1,26 @@
+{
+  "oracle_id": "dc386f6c-bd4a-462a-8d42-0e7a552a4f17",
+  "name": "Lynde, Cheerful Tormentor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lynde, Cheerful Tormentor",
+      "oracle_fingerprint": "2cd5550ba8dda2d1070957bcd208fedf",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 11, "end": 160 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 161, "end": 285 }
+          }
+        }
+      ]
+    }
+  ]
+}

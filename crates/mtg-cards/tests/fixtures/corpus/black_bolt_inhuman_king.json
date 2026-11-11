@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "0d484566-6816-4535-a754-dbda8073ae73",
+  "oracle_id": "a30f30e3-dbbf-4cb2-b3d0-76f57dffb2dd",
+  "multiverse_ids": [],
+  "resource_id": "F5F9BF866F9F9A571F4685A9CFFEA5E1DC6442147B3402FF006463501ED58E17",
+  "mtgo_id": 150591,
+  "tcgplayer_id": 697605,
+  "cardmarket_id": 891844,
+  "name": "Black Bolt, Inhuman King",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/0d484566-6816-4535-a754-dbda8073ae73",
+  "scryfall_uri": "https://scryfall.com/card/msc/76/black-bolt-inhuman-king?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:41:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/d/0d484566-6816-4535-a754-dbda8073ae73.jpg?1783903274",
+    "normal": "https://cards.scryfall.io/normal/front/0/d/0d484566-6816-4535-a754-dbda8073ae73.jpg?1783903274",
+    "large": "https://cards.scryfall.io/large/front/0/d/0d484566-6816-4535-a754-dbda8073ae73.jpg?1783903274",
+    "png": "https://cards.scryfall.io/png/front/0/d/0d484566-6816-4535-a754-dbda8073ae73.png?1783903274",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/d/0d484566-6816-4535-a754-dbda8073ae73.jpg?1783903274",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/d/0d484566-6816-4535-a754-dbda8073ae73.jpg?1783903274",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/d/0d484566-6816-4535-a754-dbda8073ae73.webp?1783903274",
+    "grid": "https://cards.scryfall.io/grid/front/0/d/0d484566-6816-4535-a754-dbda8073ae73.webp?1783903274",
+    "display": "https://cards.scryfall.io/display/front/0/d/0d484566-6816-4535-a754-dbda8073ae73.webp?1783903274",
+    "art": "https://cards.scryfall.io/art/front/0/d/0d484566-6816-4535-a754-dbda8073ae73.webp?1783903274",
+    "crop": "https://cards.scryfall.io/crop/front/0/d/0d484566-6816-4535-a754-dbda8073ae73.webp?1783903274",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/d/0d484566-6816-4535-a754-dbda8073ae73.jpg?1783903274"
+  },
+  "mana_cost": "{2}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Inhuman Noble Hero",
+  "oracle_text": "Flying\nWhenever you cast a noncreature spell, Black Bolt gets +2/+2 until end of turn.\nLethal Voice — Whenever Black Bolt becomes the target of a spell or ability an opponent controls, destroy target nonland permanent that player controls.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Lethal Voice"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0d484566-6816-4535-a754-dbda8073ae73/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa30f30e3-dbbf-4cb2-b3d0-76f57dffb2dd&unique=prints",
+  "collector_number": "76",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Irvin Rodriguez",
+  "artist_ids": [
+    "8143991c-e24c-490e-a9d4-a5464f14d25b"
+  ],
+  "illustration_id": "68ff2668-b0a1-46a0-a630-b1934a83c744",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 20470,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": null,
+    "tix": "0.29"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBlack%2BBolt%252C%2BInhuman%2BKing",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBlack%2BBolt%252C%2BInhuman%2BKing",
+    "edhrec": "https://edhrec.com/route/?cc=Black+Bolt%2C+Inhuman+King"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697605%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891844&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150591?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "6290233b-b015-4909-8aba-bf8d65cc37b5",
+  "name": "Blue Mage's Cane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blue Mage's Cane",
+      "oracle_fingerprint": "947bd048edc2c4a45fe85e4371b59a9e",
+      "abilities": [
+        { "Keyword": "JobSelect" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 0, "toughness": 2 } },
+              { "AddSubtype": "Wizard" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "Defending" }
+                          ]
+                        },
+                        "bounds": { "min": 0, "max": 1 }
+                      }
+                    ],
+                    "effects": [
+                      { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                      {
+                        "If": {
+                          "condition": "Performed",
+                          "then": [
+                            { "CopyCard": { "what": { "Bound": "exiled" }, "as": "copy" } },
+                            { "CastFromZone": { "what": { "Bound": "copy" }, "rather": "{3}" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "dc0d4e58-db39-4a05-b27c-452180c86d47",
+  "name": "Creeping Chill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Creeping Chill",
+      "oracle_fingerprint": "bae083577c27d0fc12fff185850c0d18",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Library", "to": "Graveyard" } },
+            "from": "Graveyard",
+            "effects": [
+              { "May": { "effects": [{ "Exile": { "what": "This" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "DealDamage": { "to": "Opponents", "amount": 3 } },
+                    { "GainLife": { "amount": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

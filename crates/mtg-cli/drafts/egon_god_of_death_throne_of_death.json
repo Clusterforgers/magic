@@ -1,0 +1,65 @@
+{
+  "oracle_id": "8fa7bd8f-f712-4dd1-9ffb-e30dfe744389",
+  "name": "Egon, God of Death // Throne of Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Egon, God of Death",
+      "oracle_fingerprint": "28c4ba99fb418a1c42099077abdef3b2",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "count": { "min": 2, "max": 2 },
+                        "as": "cards"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "cards" } } }
+                  ],
+                  "otherwise": [{ "Sacrifice": { "filter": ["This"] } }, { "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Throne of Death",
+      "oracle_fingerprint": "ffb5b6f2542221cf9d3e0d7db0fd6d00",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Mill": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}" },
+              "Tap",
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "8b56efee-bdc8-4516-9c0d-b28ca1b0a918",
+  "name": "Wings of Hubris",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wings of Hubris",
+      "oracle_fingerprint": "7b11b5b7f42796eb23bf04a499b9a1a3",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Flying" }] } },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              { "Bind": { "what": "Attached", "as": "creature" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "creature" },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "creature" } },
+                        "filter": [{ "Is": { "Bound": "creature" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

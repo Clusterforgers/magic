@@ -1,0 +1,53 @@
+{
+  "oracle_id": "1a3ce329-ee48-4abc-b820-b43e9e68eae9",
+  "name": "Phyrexian Portal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Portal",
+      "oracle_fingerprint": "93e8cb96172c6e65529c612a95564eb3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 10
+                    }
+                  },
+                  "then": [
+                    { "LookAtTop": { "count": 10, "as": "top" } },
+                    {
+                      "SeparatePiles": {
+                        "who": { "Target": 0 },
+                        "what": { "Bound": "top" },
+                        "chooser": "You",
+                        "as": "exiled",
+                        "rest_as": "other"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "exiled" } } },
+                    { "Choose": { "from": { "Bound": "other" }, "as": "card", "rest_as": "rest" } },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "rest" },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

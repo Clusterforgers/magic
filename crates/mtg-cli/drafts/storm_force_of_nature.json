@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7c47876d-143f-4e4c-b151-90c099e452a1",
+  "name": "Storm, Force of Nature",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm, Force of Nature",
+      "oracle_fingerprint": "dc34ee97ec1516aed648367cdeb94817",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "benefit": { "Keyword": "Storm" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "oracle_id": "0221330a-3e7a-40aa-9c78-85c88a4c1a53",
+  "name": "Green Sun's Twilight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Green Sun's Twilight",
+      "oracle_fingerprint": "f1c793bf5ddce82ef82b49e4e3e815ca",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": { "Sum": ["X", 1] }, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "creature"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Land" },
+                      { "Not": { "Is": { "Bound": "creature" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "land"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 5 } },
+                  "then": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "creature" },
+                        "as": "card",
+                        "effects": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "card" },
+                                    "to": { "Battlefield": {} }
+                                  }
+                                }
+                              ],
+                              "second": [{ "Move": { "what": { "Bound": "card" }, "to": "Hand" } }]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "land" },
+                        "as": "card2",
+                        "effects": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "card2" },
+                                    "to": { "Battlefield": {} }
+                                  }
+                                }
+                              ],
+                              "second": [{ "Move": { "what": { "Bound": "card2" }, "to": "Hand" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Bound": "creature" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "land" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

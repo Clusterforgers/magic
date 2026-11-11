@@ -1,0 +1,76 @@
+{
+  "oracle_id": "b69d2bd6-3e99-4c51-89af-0acedd48739e",
+  "name": "Fraying Line",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fraying Line",
+      "oracle_fingerprint": "2fe668d363e1b25cc29b774f7c3b8b17",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "rope" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "Choose": {
+                        "who": "Triggering",
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }]
+                        },
+                        "as": "roped"
+                      }
+                    },
+                    {
+                      "PutCounters": { "on": { "Bound": "roped" }, "counter": { "Other": "rope" } }
+                    }
+                  ],
+                  "unpaid": [
+                    {
+                      "Together": {
+                        "effects": [
+                          { "Exile": { "what": "This" } },
+                          {
+                            "Exile": {
+                              "what": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "Not": { "HasCounter": { "Other": "rope" } } }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "RemoveAllCounters": {
+                        "from": { "Each": [{ "Type": "Creature" }] },
+                        "counter": { "Other": "rope" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

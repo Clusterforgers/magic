@@ -1,0 +1,48 @@
+{
+  "oracle_id": "7d3a0216-871b-4c1b-adb1-de99b832f577",
+  "name": "Ruinous Waterbending",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruinous Waterbending",
+      "oracle_fingerprint": "1e2cf4df40d9ecb5668cb6e92288fe96",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Waterbend": 4 }] } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Type": "Creature" }],
+                            "from": "Battlefield",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "once": false,
+                        "this_turn": true,
+                        "effects": [{ "GainLife": { "amount": 1 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

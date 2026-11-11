@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "f915b034-ab16-48a6-a151-71eaa0b542f9",
+  "oracle_id": "2c37d4e1-6b76-4feb-933b-1752ecc6d3e8",
+  "multiverse_ids": [
+    562966
+  ],
+  "tcgplayer_id": 273052,
+  "cardmarket_id": 660264,
+  "name": "Modify Memory",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/f915b034-ab16-48a6-a151-71eaa0b542f9",
+  "scryfall_uri": "https://scryfall.com/card/clb/83/modify-memory?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:06:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/9/f915b034-ab16-48a6-a151-71eaa0b542f9.jpg?1783922782",
+    "normal": "https://cards.scryfall.io/normal/front/f/9/f915b034-ab16-48a6-a151-71eaa0b542f9.jpg?1783922782",
+    "large": "https://cards.scryfall.io/large/front/f/9/f915b034-ab16-48a6-a151-71eaa0b542f9.jpg?1783922782",
+    "png": "https://cards.scryfall.io/png/front/f/9/f915b034-ab16-48a6-a151-71eaa0b542f9.png?1783922782",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/9/f915b034-ab16-48a6-a151-71eaa0b542f9.jpg?1783922782",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/9/f915b034-ab16-48a6-a151-71eaa0b542f9.jpg?1783922782",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/9/f915b034-ab16-48a6-a151-71eaa0b542f9.webp?1783922782",
+    "grid": "https://cards.scryfall.io/grid/front/f/9/f915b034-ab16-48a6-a151-71eaa0b542f9.webp?1783922782",
+    "display": "https://cards.scryfall.io/display/front/f/9/f915b034-ab16-48a6-a151-71eaa0b542f9.webp?1783922782",
+    "art": "https://cards.scryfall.io/art/front/f/9/f915b034-ab16-48a6-a151-71eaa0b542f9.webp?1783922782",
+    "crop": "https://cards.scryfall.io/crop/front/f/9/f915b034-ab16-48a6-a151-71eaa0b542f9.webp?1783922782",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/9/f915b034-ab16-48a6-a151-71eaa0b542f9.jpg?1783922782"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exchange control of two target creatures controlled by different players. If you control neither creature, draw three cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f915b034-ab16-48a6-a151-71eaa0b542f9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2c37d4e1-6b76-4feb-933b-1752ecc6d3e8&unique=prints",
+  "collector_number": "83",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Percival's clothes itched and his dinner was unpleasantly wriggly, but the kobold looked like he was having the time of his life.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dave Greco",
+  "artist_ids": [
+    "2b466c0f-fad2-46fe-adc9-0007371d01bf"
+  ],
+  "illustration_id": "1f90cd09-237e-4a08-b98d-90c2adeaae49",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8029,
+  "preview": {
+    "source": "Gamerbraves",
+    "source_uri": "https://www.gamerbraves.com/modify-memory-brings-a-dd-classic-to-mtg/",
+    "previewed_at": "2022-05-24"
+  },
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.46",
+    "usd_etched": null,
+    "eur": "0.32",
+    "eur_foil": "0.42",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=562966&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DModify%2BMemory",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DModify%2BMemory",
+    "edhrec": "https://edhrec.com/route/?cc=Modify+Memory"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F273052%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=660264&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Modify+Memory&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

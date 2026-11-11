@@ -1,0 +1,25 @@
+{
+  "oracle_id": "5a35201d-e9b1-433a-bb70-3280ceedbcd6",
+  "name": "Elmar, Ulvenwald Informant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elmar, Ulvenwald Informant",
+      "oracle_fingerprint": "3f16e12f9b1ef4d52ef95bb3b74e9edc",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 2 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              { "CreateToken": { "token": { "Named": "clue" } } }
+            ]
+          }
+        },
+        { "Keyword": { "PartnerGroup": "Friends forever" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "faf9bb36-e537-42a8-b9ee-bf2c50b0e5bd",
+  "name": "Goblin Assassin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Assassin",
+      "oracle_fingerprint": "307532e6487bfff04e0aa5f176d54fa6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": { "what": [{ "Subtype": "Goblin" }, "Other"], "to": "Battlefield" }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "who": { "Bound": "player" },
+                        "lose": [
+                          {
+                            "Sacrifice": {
+                              "who": { "Bound": "player" },
+                              "filter": [{ "Type": "Creature" }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

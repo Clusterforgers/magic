@@ -1,0 +1,68 @@
+{
+  "oracle_id": "3909ff79-2103-407c-a812-a5a5a996fce2",
+  "name": "Fandaniel, Telophoroi Ascian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fandaniel, Telophoroi Ascian",
+      "oracle_fingerprint": "df5b7d71466646321b9ae334e15f2b5c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "player" },
+                        "cost": [
+                          {
+                            "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Not": "Token" }] }
+                          }
+                        ],
+                        "unpaid": [
+                          {
+                            "LoseLife": {
+                              "who": { "Bound": "player" },
+                              "amount": {
+                                "Times": {
+                                  "by": 2,
+                                  "of": {
+                                    "Count": [
+                                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                                      { "OwnedBy": "You" },
+                                      { "In": "Graveyard" }
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

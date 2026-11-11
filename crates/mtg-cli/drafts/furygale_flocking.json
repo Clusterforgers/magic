@@ -1,0 +1,76 @@
+{
+  "oracle_id": "943fc88d-c281-46bb-9dc7-1052f789362b",
+  "name": "Furygale Flocking",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Furygale Flocking",
+      "oracle_fingerprint": "38c341879230ce962652144238c39f90",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "OwnedBy": "You" },
+                { "In": "Graveyard" }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elemental",
+                            "colors": ["Blue", "Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elemental"],
+                            "power": 3,
+                            "toughness": 3,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        },
+                        "count": 2,
+                        "as": "tokens"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MustAttackPlayers": {
+                            "who": { "Bound": "tokens" },
+                            "players": { "Bound": "opp" }
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "tokens" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

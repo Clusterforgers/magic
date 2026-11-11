@@ -1,0 +1,51 @@
+{
+  "oracle_id": "0635ab65-fc1a-4e43-9e11-3a1ad3093830",
+  "name": "Ecological Appreciation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ecological Appreciation",
+      "oracle_fingerprint": "4ca5ebe5e6f5e8bd72001a48e6f419a2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ],
+                  "count": { "min": 0, "max": 4 },
+                  "reveal": true,
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              { "Choose": { "from": "Opponents", "as": "opponent" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "opponent" },
+                  "from": { "Bound": "found" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "chosen",
+                  "rest_as": "rest"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "chosen" },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Move": { "what": { "Bound": "rest" }, "to": { "Battlefield": {} } } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

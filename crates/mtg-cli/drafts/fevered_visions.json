@@ -1,0 +1,43 @@
+{
+  "oracle_id": "70763549-4b4e-4cb8-8c02-0639ba18bb1a",
+  "name": "Fevered Visions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fevered Visions",
+      "oracle_fingerprint": "100a7882b3d834a57e555b941af051e8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              { "Draw": { "who": "Triggering" } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Matches": {
+                          "subject": "Triggering",
+                          "selector": [{ "ControlledBy": "Opponents" }]
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Count": [{ "OwnedBy": "Triggering" }, { "In": "Hand" }] },
+                          "op": "Ge",
+                          "right": 4
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

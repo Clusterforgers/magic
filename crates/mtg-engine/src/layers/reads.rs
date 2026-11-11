@@ -361,6 +361,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Promised
         | Amount::ResolvedThisTurn
         | Amount::Devoured
+        | Amount::RemovedThisWay(_)
         | Amount::Bound(_)
         | Amount::CastWith(_)
         | Amount::ColorsSpent
@@ -393,6 +394,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::CommanderColors(who)
         | Amount::StartingLife(who)
         | Amount::CastLastTurn(who)
+        | Amount::TalliedLastTurn { who, .. }
         | Amount::HighestCounters { who, .. }
         | Amount::LowestLife(who)
         | Amount::LowestHand(who)

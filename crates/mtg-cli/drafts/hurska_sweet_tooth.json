@@ -1,0 +1,49 @@
+{
+  "oracle_id": "8d49b6a1-4ae2-4443-a6b3-9ef806cb6fc4",
+  "name": "Hurska Sweet-Tooth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hurska Sweet-Tooth",
+      "oracle_fingerprint": "8eb55cd838bbc6a8897bcfbb817411d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{G/W}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [
+                                { "ModifyPT": { "power": "Triggering", "toughness": "Triggering" } }
+                              ],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

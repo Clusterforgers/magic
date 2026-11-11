@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5f6aa548-0ab3-451f-b291-10cac3f3ea1a",
+  "name": "Diligent Farmhand",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Diligent Farmhand",
+      "oracle_fingerprint": "03cb7fdea7bf35658ef1aa6014648cd2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 133, "end": 242 }
+          }
+        }
+      ]
+    }
+  ]
+}

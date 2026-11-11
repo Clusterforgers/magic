@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3e1b32a9-27a4-4550-a644-ebe254e1f512",
+  "name": "Clockspinning",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Clockspinning",
+      "oracle_fingerprint": "e960303fe8f60092dd8e0d9afb5649b7",
+      "abilities": [
+        { "Keyword": { "Buyback": "{3}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 124, "end": 267 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "17f2342b-4dd8-445a-a7c1-4a15a5688294",
+  "name": "Escaped Shapeshifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Escaped Shapeshifter",
+      "oracle_fingerprint": "54e567188f4d95f14a5840b96e9fc446",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "HasKeyword": "Flying" },
+                    { "Not": { "Named": "Escaped Shapeshifter" } },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

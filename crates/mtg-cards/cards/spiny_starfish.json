@@ -1,0 +1,20 @@
+{
+  "oracle_id": "663d6c61-e269-4f2f-9d8f-49c4c23f05d8",
+  "name": "Spiny Starfish",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spiny Starfish",
+      "oracle_fingerprint": "3f453b4b6396877ee2ea139686e28662",
+      "abilities": [
+        { "Activated": { "cost": "{U}", "effects": [{ "Regenerate": { "what": "This" } }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 31, "end": 187 }
+          }
+        }
+      ]
+    }
+  ]
+}

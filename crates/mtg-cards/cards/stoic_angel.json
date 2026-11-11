@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b50c865b-705f-489e-9ffc-ba8060ba262f",
+  "name": "Stoic Angel",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Stoic Angel",
+      "oracle_fingerprint": "e120711e5b171880b2e2e7ccaaa4bd01",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 18, "end": 86 }
+          }
+        }
+      ]
+    }
+  ]
+}

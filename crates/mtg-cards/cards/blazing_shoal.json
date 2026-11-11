@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ccba143d-ed9b-4044-bdad-f010a0e38e47",
+  "name": "Blazing Shoal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blazing Shoal",
+      "oracle_fingerprint": "a0a7389e121b1306d4c76afdbd7d6747",
+      "abilities": [
+        {
+          "FreeCast": {
+            "cost": [
+              {
+                "ExileFromHand": {
+                  "filter": [
+                    { "Color": "Red" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": "X", "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

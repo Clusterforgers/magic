@@ -1,0 +1,57 @@
+{
+  "oracle_id": "677bd655-b240-4862-912c-29209fb295e1",
+  "name": "The Flood of Mars",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Flood of Mars",
+      "oracle_fingerprint": "35217a1814b810a85b7bba44e5f86ee2",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Other", { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "flood" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Type": "Creature" }] }
+                  },
+                  "then": [
+                    {
+                      "BecomeCopy": { "what": { "Target": 0 }, "of": "This", "duration": "Forever" }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Type": "Land" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddSubtype": "Island" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

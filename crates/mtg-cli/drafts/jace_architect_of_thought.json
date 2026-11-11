@@ -1,0 +1,111 @@
+{
+  "oracle_id": "2274c7ae-5a40-4fd4-a4ac-6f56b23034e4",
+  "name": "Jace, Architect of Thought",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace, Architect of Thought",
+      "oracle_fingerprint": "4fb79a122aecac7caf7e2840345f4093",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                  },
+                  "once": false,
+                  "until": "UntilYourNextTurn",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Choose": { "from": "Opponents", "as": "separator" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "separator" },
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "pile",
+                  "rest_as": "other"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Bound": "pile" }, "to": "Hand" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "other" },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [
+                    { "Move": { "what": { "Bound": "other" }, "to": "Hand" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "pile" },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "Search": {
+                        "of": { "Bound": "p" },
+                        "filter": [{ "Not": { "Type": "Land" } }],
+                        "count": { "min": 0, "max": 1 },
+                        "as": "found"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "found" }, "as": "ex" } },
+                    { "Bind": { "what": { "Bound": "ex" }, "as": "all", "adds": true } },
+                    { "Shuffle": { "who": { "Bound": "p" } } }
+                  ]
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "all" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

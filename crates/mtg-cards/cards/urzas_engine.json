@@ -1,0 +1,26 @@
+{
+  "oracle_id": "bf6ea878-044b-40a8-a21b-0191a948a69a",
+  "name": "Urza's Engine",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Urza's Engine",
+      "oracle_fingerprint": "62b8c95b90d513008e60cecb4dedd3db",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 378 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 379, "end": 461 }
+          }
+        }
+      ]
+    }
+  ]
+}

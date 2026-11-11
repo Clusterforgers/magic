@@ -1,0 +1,96 @@
+{
+  "oracle_id": "47e77918-13ec-47ce-9256-5a3b5bf8d315",
+  "name": "Bison Whistle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bison Whistle",
+      "oracle_fingerprint": "9aa2effefb4b0d9c48be367d434d123e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Subtype": "Bison" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }]
+                              },
+                              "to": { "Battlefield": {} }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Reveal": {
+                              "what": {
+                                "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }]
+                              }
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }]
+                              },
+                              "to": "Hand"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }]
+                              },
+                              "to": "Graveyard"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

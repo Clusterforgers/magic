@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a8011dce-17fb-46e1-8297-81a4acccbd05",
+  "name": "Mister Fantastic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mister Fantastic",
+      "oracle_fingerprint": "24385df769867e490c2348568f6a3a54",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "NoncreatureSpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{U}{R}{G}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Ability": "Triggered" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "CopyAbility": { "what": { "Target": 0 }, "count": 2, "new_targets": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

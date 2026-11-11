@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f7b754d3-9863-420d-895d-00e70b8b078a",
+  "name": "Danitha, Sword of Hope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Danitha, Sword of Hope",
+      "oracle_fingerprint": "16574aea069316e32b62326b6fe2be0e",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Equipment" },
+                      { "Targeting": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

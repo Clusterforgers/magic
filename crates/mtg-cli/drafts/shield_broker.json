@@ -1,0 +1,39 @@
+{
+  "oracle_id": "481234e5-fbfd-46e8-8b9a-a4e708dd2195",
+  "name": "Shield Broker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shield Broker",
+      "oracle_fingerprint": "7334b4419d1ee85d2f1eeae18bfee392",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": "Commander" },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "shield" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": { "WhileHasCounter": { "Other": "shield" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

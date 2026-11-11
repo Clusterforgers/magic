@@ -1,0 +1,69 @@
+{
+  "oracle_id": "8b70d296-2756-4bda-b51e-f93be395fce7",
+  "name": "Simic Guildmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Simic Guildmage",
+      "oracle_fingerprint": "497437d6ac8a745a0c0cc40d7e557161",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": {
+                  "Another": {
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                      ]
+                    },
+                    "earlier": [0]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "MoveCounters": {
+                  "from": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Aura" }] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "HasAttached": [{ "Is": { "Target": 0 } }] } },
+                      {
+                        "ControlledBy": {
+                          "ControllerOf": {
+                            "Each": [{ "HasAttached": [{ "Is": { "Target": 0 } }] }]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "permanent"
+                }
+              },
+              { "Attach": { "what": { "Target": 0 }, "to": { "Bound": "permanent" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

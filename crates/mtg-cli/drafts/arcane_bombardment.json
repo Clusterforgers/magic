@@ -1,0 +1,50 @@
+{
+  "oracle_id": "1e36a42f-58e2-49bc-8c14-7f75e1d8ef98",
+  "name": "Arcane Bombardment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcane Bombardment",
+      "oracle_fingerprint": "4a2f1deea20d08174b28f0cf7df018d2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" } } },
+              {
+                "CopyCard": {
+                  "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "as": "copies"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "copies" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

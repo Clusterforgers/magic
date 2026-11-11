@@ -1,0 +1,177 @@
+{
+  "object": "card",
+  "id": "15304957-dbb5-4010-a0a6-27343d4c20a3",
+  "oracle_id": "0b1557e8-3dd6-4276-8b8e-505e7ea944ec",
+  "multiverse_ids": [
+    642481,
+    642482
+  ],
+  "mtgo_id": 119242,
+  "tcgplayer_id": 526405,
+  "cardmarket_id": 744724,
+  "name": "Eye of Ojer Taq // Apex Observatory",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/15304957-dbb5-4010-a0a6-27343d4c20a3",
+  "scryfall_uri": "https://scryfall.com/card/lcc/15/eye-of-ojer-taq-apex-observatory?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:38:56Z",
+  "cmc": 3.0,
+  "type_line": "Artifact // Artifact",
+  "color_identity": [],
+  "keywords": [
+    "Craft",
+    "Transform"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Eye of Ojer Taq",
+      "mana_cost": "{3}",
+      "type_line": "Artifact",
+      "oracle_text": "{T}: Add one mana of any color.\nCraft with two that share a card type {6} ({6}, Exile this artifact, Exile the two from among other permanents you control and/or cards from your graveyard: Return this card transformed under its owner's control. Craft only as a sorcery.)",
+      "colors": [],
+      "artist": "Erikas Perl",
+      "artist_id": "39cb50cf-0223-43c7-bd96-afb5f05c7e43",
+      "illustration_id": "2cb6693b-1a4c-4c30-b5bd-9264c577e7b6",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.jpg?1783913936",
+        "normal": "https://cards.scryfall.io/normal/front/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.jpg?1783913936",
+        "large": "https://cards.scryfall.io/large/front/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.jpg?1783913936",
+        "png": "https://cards.scryfall.io/png/front/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.png?1783913936",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.jpg?1783913936",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.jpg?1783913936",
+        "thumb": "https://cards.scryfall.io/thumb/front/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.webp?1783913936",
+        "grid": "https://cards.scryfall.io/grid/front/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.webp?1783913936",
+        "display": "https://cards.scryfall.io/display/front/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.webp?1783913936",
+        "art": "https://cards.scryfall.io/art/front/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.webp?1783913936",
+        "crop": "https://cards.scryfall.io/crop/front/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.webp?1783913936",
+        "jpeg": "https://cards.scryfall.io/normal/front/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.jpg?1783913936"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Apex Observatory",
+      "mana_cost": "",
+      "type_line": "Artifact",
+      "oracle_text": "This artifact enters tapped. As it enters, choose a card type shared among two exiled cards used to craft it.\n{T}: The next spell you cast this turn of the chosen type can be cast without paying its mana cost.",
+      "colors": [],
+      "flavor_text": "Though they had never left the Core, the Oltec knew the stars.",
+      "artist": "Erikas Perl",
+      "artist_id": "39cb50cf-0223-43c7-bd96-afb5f05c7e43",
+      "illustration_id": "f6aa8782-9233-43e9-a650-d19bfa885b32",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.jpg?1783913936",
+        "normal": "https://cards.scryfall.io/normal/back/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.jpg?1783913936",
+        "large": "https://cards.scryfall.io/large/back/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.jpg?1783913936",
+        "png": "https://cards.scryfall.io/png/back/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.png?1783913936",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.jpg?1783913936",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.jpg?1783913936",
+        "thumb": "https://cards.scryfall.io/thumb/back/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.webp?1783913936",
+        "grid": "https://cards.scryfall.io/grid/back/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.webp?1783913936",
+        "display": "https://cards.scryfall.io/display/back/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.webp?1783913936",
+        "art": "https://cards.scryfall.io/art/back/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.webp?1783913936",
+        "crop": "https://cards.scryfall.io/crop/back/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.webp?1783913936",
+        "jpeg": "https://cards.scryfall.io/normal/back/1/5/15304957-dbb5-4010-a0a6-27343d4c20a3.jpg?1783913936"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/15304957-dbb5-4010-a0a6-27343d4c20a3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0b1557e8-3dd6-4276-8b8e-505e7ea944ec&unique=prints",
+  "collector_number": "15",
+  "digital": false,
+  "rarity": "mythic",
+  "artist": "Erikas Perl",
+  "artist_ids": [
+    "39cb50cf-0223-43c7-bd96-afb5f05c7e43"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 12896,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1965047218",
+    "previewed_at": "2023-10-31"
+  },
+  "prices": {
+    "usd": "1.59",
+    "usd_foil": "1.71",
+    "usd_etched": null,
+    "eur": "1.07",
+    "eur_foil": "1.72",
+    "tix": "2.00"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=642481&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEye%2Bof%2BOjer%2BTaq%2B%252F%252F%2BApex%2BObservatory",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEye%2Bof%2BOjer%2BTaq%2B%252F%252F%2BApex%2BObservatory",
+    "edhrec": "https://edhrec.com/route/?cc=Eye+of+Ojer+Taq"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F526405%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=744724&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/119242?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

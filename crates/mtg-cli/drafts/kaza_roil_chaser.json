@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0b8517c0-0441-4fd9-99ec-2274e57c3cb6",
+  "name": "Kaza, Roil Chaser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaza, Roil Chaser",
+      "oracle_fingerprint": "57e0c310d2c89f9063ebb8972136034d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Let": {
+                  "as": "wizards",
+                  "amount": { "Count": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "benefit": {
+                        "Cost": { "change": "Reduce", "mana": "{1}", "per": { "Bound": "wizards" } }
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

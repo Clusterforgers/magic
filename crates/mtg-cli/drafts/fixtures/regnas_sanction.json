@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "3ea0c6c5-f782-40bf-a0c9-ee7e97963146",
+  "oracle_id": "b594f7f1-1db7-46e9-bbc7-42ccc16ce9a1",
+  "multiverse_ids": [
+    445998
+  ],
+  "mtgo_id": 68788,
+  "tcgplayer_id": 167764,
+  "cardmarket_id": 358581,
+  "name": "Regna's Sanction",
+  "lang": "en",
+  "released_at": "2018-06-08",
+  "uri": "https://api.scryfall.com/cards/3ea0c6c5-f782-40bf-a0c9-ee7e97963146",
+  "scryfall_uri": "https://scryfall.com/card/bbd/30/regnas-sanction?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:27:49Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/e/3ea0c6c5-f782-40bf-a0c9-ee7e97963146.jpg?1783934869",
+    "normal": "https://cards.scryfall.io/normal/front/3/e/3ea0c6c5-f782-40bf-a0c9-ee7e97963146.jpg?1783934869",
+    "large": "https://cards.scryfall.io/large/front/3/e/3ea0c6c5-f782-40bf-a0c9-ee7e97963146.jpg?1783934869",
+    "png": "https://cards.scryfall.io/png/front/3/e/3ea0c6c5-f782-40bf-a0c9-ee7e97963146.png?1783934869",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/e/3ea0c6c5-f782-40bf-a0c9-ee7e97963146.jpg?1783934869",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/e/3ea0c6c5-f782-40bf-a0c9-ee7e97963146.jpg?1783934869",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/e/3ea0c6c5-f782-40bf-a0c9-ee7e97963146.webp?1783934869",
+    "grid": "https://cards.scryfall.io/grid/front/3/e/3ea0c6c5-f782-40bf-a0c9-ee7e97963146.webp?1783934869",
+    "display": "https://cards.scryfall.io/display/front/3/e/3ea0c6c5-f782-40bf-a0c9-ee7e97963146.webp?1783934869",
+    "art": "https://cards.scryfall.io/art/front/3/e/3ea0c6c5-f782-40bf-a0c9-ee7e97963146.webp?1783934869",
+    "crop": "https://cards.scryfall.io/crop/front/3/e/3ea0c6c5-f782-40bf-a0c9-ee7e97963146.webp?1783934869",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/e/3ea0c6c5-f782-40bf-a0c9-ee7e97963146.jpg?1783934869"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "For each player, choose friend or foe. Each friend puts a +1/+1 counter on each creature they control. Each foe chooses one untapped creature they control, then taps the rest.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set": "bbd",
+  "set_name": "Battlebond",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/95f97fbc-58ef-4645-982e-43e2db6f1124",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Abbd&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/bbd?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3ea0c6c5-f782-40bf-a0c9-ee7e97963146/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab594f7f1-1db7-46e9-bbc7-42ccc16ce9a1&unique=prints",
+  "collector_number": "30",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Show them the light, my love.\"\n—Krav, the Unredeemed",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bayard Wu",
+  "artist_ids": [
+    "b089963c-610a-4d50-9206-d64b7caedef1"
+  ],
+  "illustration_id": "8ba61701-c271-4cb9-b42d-b02298a2622f",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14983,
+  "prices": {
+    "usd": "0.55",
+    "usd_foil": "2.47",
+    "usd_etched": null,
+    "eur": "0.42",
+    "eur_foil": "1.02",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=445998&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRegna%2527s%2BSanction",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRegna%2527s%2BSanction",
+    "edhrec": "https://edhrec.com/route/?cc=Regna%27s+Sanction"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F167764%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=358581&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/68788?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

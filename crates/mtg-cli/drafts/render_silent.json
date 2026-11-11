@@ -14,9 +14,7 @@
               { "Counter": { "what": { "Target": 0 } } },
               {
                 "Rule": {
-                  "rule": {
-                    "Cant": { "who": { "ControllerOf": { "Target": 0 } }, "action": { "Cast": {} } }
-                  },
+                  "rule": { "CantCastSpells": { "who": { "ControllerOf": { "Target": 0 } } } },
                   "duration": "UntilEndOfTurn"
                 }
               }

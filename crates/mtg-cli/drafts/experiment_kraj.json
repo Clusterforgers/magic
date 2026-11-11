@@ -1,0 +1,32 @@
+{
+  "oracle_id": "93cfa771-067f-44ed-9e29-6caf698ee9aa",
+  "name": "Experiment Kraj",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Experiment Kraj",
+      "oracle_fingerprint": "795280d843475397151a3c76ccc62d40",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [{ "Type": "Creature" }, "Other", { "HasCounter": "+1/+1" }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

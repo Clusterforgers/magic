@@ -154,6 +154,8 @@ pub enum Rule {
     SkipExtraTurns(Vec<PlayerId>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
     FlipTwoCoins(Vec<PlayerId>),
+    /// The players roll one die more for each roll of one or more dice and ignore the lowest roll.
+    ExtraDie(Vec<PlayerId>),
     /// The players keep unspent mana of the type (every type when absent) as steps and phases end (CR 500.4).
     KeepUnspentMana(Vec<PlayerId>, Option<ManaType>),
     /// Unspent mana the players would lose becomes mana of the type instead.
@@ -181,6 +183,8 @@ pub enum Rule {
     },
     /// The players play with the top card of their library revealed.
     RevealTop(Vec<PlayerId>),
+    /// The players play with their hands revealed to every seat.
+    RevealHand(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Vec<PlayerId>),
     /// The players' maximum hand size is this many cards (CR 402.2).
@@ -351,6 +355,9 @@ pub enum Rule {
         who: Vec<PlayerId>,
         /// The players who can't win.
         winless: Vec<PlayerId>,
+        /// Only the loss for having 0 or less life does not happen (CR 704.5a).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        life_only: bool,
     },
     /// The players can't cast spells, only during this player's turns when one is named.
     CantCastSpells {
@@ -580,6 +587,8 @@ pub(crate) struct RulesInForce {
     skip_extra_turns: BTreeSet<PlayerId>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
+    /// One entry for each rule that adds a die to a player's rolls: a player listed twice rolls two more.
+    extra_die: Vec<PlayerId>,
     /// The players who keep unspent mana as steps end, with the type kept (every type when `None`).
     keep_mana: Vec<(PlayerId, Option<ManaType>)>,
     /// The players whose lost mana becomes another type, in timestamp order.
@@ -593,6 +602,7 @@ pub(crate) struct RulesInForce {
     /// The players who may spend mana as though it were of any color or type, with the spells it is for.
     spend_mana_as: Vec<(PlayerId, mtg_cards::modify::SpendAs, Option<Selector>)>,
     reveal_top: BTreeSet<PlayerId>,
+    reveal_hand: BTreeSet<PlayerId>,
     no_hand_limit: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
@@ -863,7 +873,9 @@ impl RulesInForce {
         let (free, flash) = match benefit {
             SpellBenefit::Free => (true, false),
             SpellBenefit::Flash => (false, true),
-            SpellBenefit::Cost { .. } | SpellBenefit::Keyword(_) => return,
+            SpellBenefit::Cost { .. } | SpellBenefit::Keyword(_) | SpellBenefit::Uncounterable => {
+                return;
+            }
         };
         if let Some(source) = source {
             self.casts.push(Cast {
@@ -947,6 +959,7 @@ impl RulesInForce {
             Rule::VoteAgain(players) => self.vote_again.extend(players),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
+            Rule::ExtraDie(players) => self.extra_die.extend(players),
             Rule::KeepUnspentMana(players, mana) => {
                 self.keep_mana.extend(players.iter().map(|p| (*p, *mana)));
             }
@@ -971,6 +984,7 @@ impl RulesInForce {
                     .extend(players.iter().map(|p| (*p, *into)));
             }
             Rule::RevealTop(players) => self.reveal_top.extend(players),
+            Rule::RevealHand(players) => self.reveal_hand.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::MaxHandSize(_)
             | Rule::HandSizeChange(_)
@@ -1256,6 +1270,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
+        GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
         GameRule::KeepUnspentMana { who, mana } => {
             Rule::KeepUnspentMana(scope.players(who)?, *mana)
         }
@@ -1279,6 +1294,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             Rule::UnspentManaBecomes(scope.players(who)?, *into)
         }
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
+        GameRule::RevealHand(who) => Rule::RevealHand(scope.players(who)?),
         GameRule::MayCast(permission) => Rule::MayCast {
             who: scope.players(&permission.who)?,
             what: permission.what.clone(),
@@ -1434,6 +1450,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::VoteAgain(players)
         | Rule::SkipExtraTurns(players)
         | Rule::FlipTwoCoins(players)
+        | Rule::ExtraDie(players)
         | Rule::KeepUnspentMana(players, _)
         | Rule::UnspentManaBecomes(players, _)
         | Rule::DrawLimit(players, _)
@@ -1441,6 +1458,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::OpponentsCantMakeSacrifice(players)
         | Rule::SpendManaAs { players, .. }
         | Rule::RevealTop(players)
+        | Rule::RevealHand(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
         | Rule::NoLegendRule(players)
@@ -1515,11 +1533,14 @@ fn gather(state: &GameState) -> RulesInForce {
         return found;
     }
     // A rule that a permanent has works from the battlefield, one a spell has for itself from the stack, and a card's
-    // permission to cast itself from its owner's graveyard or from exile (CR 601.2a, 113.6) from there.
-    let graveyards = state
-        .players()
-        .iter()
-        .map(|player| (Zone::Graveyard(player.id()), ZoneKind::Graveyard));
+    // permission to cast itself from its owner's graveyard, from exile or from a hand ("you may cast this spell as though
+    // it had flash if ...", CR 601.2a, 113.6) from there.
+    let graveyards = state.players().iter().flat_map(|player| {
+        [
+            (Zone::Graveyard(player.id()), ZoneKind::Graveyard),
+            (Zone::Hand(player.id()), ZoneKind::Hand),
+        ]
+    });
     for (zone, from) in [
         (Zone::Battlefield, ZoneKind::Battlefield),
         (Zone::Stack, ZoneKind::Stack),
@@ -1586,6 +1607,7 @@ static NONE: RulesInForce = RulesInForce {
     vote_again: BTreeSet::new(),
     skip_extra_turns: BTreeSet::new(),
     flip_two: Vec::new(),
+    extra_die: Vec::new(),
     keep_mana: Vec::new(),
     mana_becomes: Vec::new(),
     draw_limit: Vec::new(),
@@ -1593,6 +1615,7 @@ static NONE: RulesInForce = RulesInForce {
     spared_sacrifice: BTreeSet::new(),
     spend_mana_as: Vec::new(),
     reveal_top: BTreeSet::new(),
+    reveal_hand: BTreeSet::new(),
     no_hand_limit: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
@@ -1669,6 +1692,11 @@ impl GameState {
         }
         self.zone(Zone::Library(player)).last().copied()
     }
+
+    /// Whether a rule has `player` play with their hand revealed to every seat.
+    pub fn hand_revealed(&self, player: PlayerId) -> bool {
+        self.rules().reveal_hand.contains(&player)
+    }
 }
 
 /// Folds `RuleCreated`: the change joins those in state; a duration that follows the source needs one, and an id is
@@ -1739,10 +1767,10 @@ pub(crate) fn fold_used(state: &mut GameState, id: EffectId, left: u32) -> Resul
 }
 
 /// Ends the `NextSpell` rules the cast of `spell` by `player` spends (the card is judged where it is cast from, as the
-/// announcement judged it).
-pub(crate) fn spend_next_spells(state: &mut GameState, player: PlayerId, spell: ObjectId) {
+/// announcement judged it), and says whether one of them keeps the spell from being countered.
+pub(crate) fn spend_next_spells(state: &mut GameState, player: PlayerId, spell: ObjectId) -> bool {
     let Some(target) = state.object(spell).map(GameObject::reference) else {
-        return;
+        return false;
     };
     let spent: Vec<EffectId> = state
         .rule_effects
@@ -1760,9 +1788,38 @@ pub(crate) fn spend_next_spells(state: &mut GameState, player: PlayerId, spell: 
             .then_some(effect.id)
         })
         .collect();
+    let uncounterable = state.rule_effects.iter().any(|effect| {
+        spent.contains(&effect.id)
+            && matches!(
+                effect.rule,
+                Rule::NextSpell {
+                    benefit: mtg_cards::modify::SpellBenefit::Uncounterable,
+                    ..
+                }
+            )
+    });
     state
         .rule_effects
         .retain(|effect| !spent.contains(&effect.id));
+    uncounterable
+}
+
+/// The spell `spell` on the stack can't be countered from now on, as a `NextSpell` rule its cast spent said: a rule of its
+/// own that names the spell, and so no other object once it leaves the stack.
+pub(crate) fn uncounterable_from_now(state: &mut GameState, player: PlayerId, spell: ObjectId) {
+    let Some(named) = state.object(spell).map(GameObject::reference) else {
+        return;
+    };
+    let effect = RuleEffect {
+        id: EffectId(state.next_effect),
+        rule: Rule::CantBeCountered(vec![named]),
+        duration: Duration::Forever,
+        source: Some(named),
+        controller: player,
+        turn: state.turn().number(),
+    };
+    state.next_effect += 1;
+    state.rule_effects.push(effect);
 }
 
 /// Folds `RuleExpired`: the change leaves the state.
@@ -2015,6 +2072,19 @@ pub(crate) fn ep24_unspent_mana(
         .find(|(who, _)| *who == player)
         .map(|(_, into)| *into);
     (kept, becomes)
+}
+
+/// How many dice `player` rolls more than asked, ignoring as many of the lowest rolls: one for each rule that adds one, at
+/// most 8.
+pub fn ep29_extra_dice(state: &GameState, player: PlayerId) -> u32 {
+    let extra = state
+        .rules()
+        .extra_die
+        .iter()
+        .filter(|who| **who == player)
+        .count()
+        .min(8);
+    u32::try_from(extra).unwrap_or(0)
 }
 
 /// How many coins `player` flips for one coin they would flip: two for each rule that doubles them, at most 32.

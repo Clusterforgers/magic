@@ -1,0 +1,24 @@
+{
+  "oracle_id": "ee626bd3-c18b-4d26-a9bd-8c23bdc02090",
+  "name": "Dralnu's Pet",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dralnu's Pet",
+      "oracle_fingerprint": "b635bc9b219110b3333b6744f769ab9d",
+      "abilities": [
+        {
+          "Keyword": {
+            "Kicker": [{ "Mana": "{2}{B}" }, { "Discard": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 144, "end": 271 }
+          }
+        }
+      ]
+    }
+  ]
+}

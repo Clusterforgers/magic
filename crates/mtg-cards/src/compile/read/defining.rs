@@ -381,6 +381,10 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
             counters::kind_text(counter)?
         )),
         Amount::AnyCounters(Ref::This) => Some("the number of counters on ~".to_owned()),
+        Amount::RemovedThisWay(counter) => Some(format!(
+            "the number of {} counters removed this way",
+            counters::kind_text(counter)?
+        )),
         Amount::Greatest { of, stat } => Some(format!(
             "the greatest {} among {}",
             stat_text(*stat)?,

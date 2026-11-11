@@ -1,0 +1,16 @@
+{
+  "oracle_id": "7282f643-191b-41be-9f6f-82360c915d6d",
+  "name": "Abyssal Persecutor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abyssal Persecutor",
+      "oracle_fingerprint": "fd42fadccc47f23d7d6f93279f42d00e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Rule": { "rule": { "CantLoseGame": { "who": "Opponents" } } } }
+      ]
+    }
+  ]
+}

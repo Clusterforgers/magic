@@ -1,0 +1,59 @@
+{
+  "oracle_id": "ac1d7dfe-1454-46a9-acf6-66ae86b6a6c5",
+  "name": "Mudslide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mudslide",
+      "oracle_fingerprint": "aaa725b5d97028f1c0d8761ba06e745d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Tapped",
+                      { "Not": { "HasKeyword": "Flying" } },
+                      { "ControlledBy": "Triggering" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Type": "Creature" },
+                        "Tapped",
+                        { "Not": { "HasKeyword": "Flying" } },
+                        { "ControlledBy": "Triggering" }
+                      ]
+                    }
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{2}",
+                  "times": { "CountOf": { "of": { "Bound": "chosen" }, "filter": [] } },
+                  "paid": [{ "Untap": { "what": { "Bound": "chosen" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

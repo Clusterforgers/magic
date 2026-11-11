@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "98366937-d15b-4a66-b9f6-878d50b63871",
+  "oracle_id": "df42c768-34ca-4ebf-8f66-eaccf7261f70",
+  "multiverse_ids": [],
+  "resource_id": "B68E97801E39AC4BD73A3AD0EA7ADB28E62339AE402971173405D22FEC1C2217",
+  "mtgo_id": 141211,
+  "arena_id": 96002,
+  "tcgplayer_id": 630859,
+  "cardmarket_id": 824145,
+  "name": "Firion, Wild Rose Warrior",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/98366937-d15b-4a66-b9f6-878d50b63871",
+  "scryfall_uri": "https://scryfall.com/card/fin/137/firion-wild-rose-warrior?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:36:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/8/98366937-d15b-4a66-b9f6-878d50b63871.jpg?1783906604",
+    "normal": "https://cards.scryfall.io/normal/front/9/8/98366937-d15b-4a66-b9f6-878d50b63871.jpg?1783906604",
+    "large": "https://cards.scryfall.io/large/front/9/8/98366937-d15b-4a66-b9f6-878d50b63871.jpg?1783906604",
+    "png": "https://cards.scryfall.io/png/front/9/8/98366937-d15b-4a66-b9f6-878d50b63871.png?1783906604",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/8/98366937-d15b-4a66-b9f6-878d50b63871.jpg?1783906604",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/8/98366937-d15b-4a66-b9f6-878d50b63871.jpg?1783906604",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/8/98366937-d15b-4a66-b9f6-878d50b63871.webp?1783906604",
+    "grid": "https://cards.scryfall.io/grid/front/9/8/98366937-d15b-4a66-b9f6-878d50b63871.webp?1783906604",
+    "display": "https://cards.scryfall.io/display/front/9/8/98366937-d15b-4a66-b9f6-878d50b63871.webp?1783906604",
+    "art": "https://cards.scryfall.io/art/front/9/8/98366937-d15b-4a66-b9f6-878d50b63871.webp?1783906604",
+    "crop": "https://cards.scryfall.io/crop/front/9/8/98366937-d15b-4a66-b9f6-878d50b63871.webp?1783906604",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/8/98366937-d15b-4a66-b9f6-878d50b63871.jpg?1783906604"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Rebel Warrior",
+  "oracle_text": "Equipped creatures you control have haste.\nWhenever a nontoken Equipment you control enters, create a token that's a copy of it, except it has \"This Equipment's equip abilities cost {2} less to activate.\" Sacrifice that token at the beginning of the next upkeep.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "81c9d442-d7d5-4911-b0b9-c3206faeab1d",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/81c9d442-d7d5-4911-b0b9-c3206faeab1d"
+    },
+    {
+      "object": "related_card",
+      "id": "6687a6e8-f674-4db8-81eb-5ad28b7890f7",
+      "component": "combo_piece",
+      "name": "Firion, Wild Rose Warrior",
+      "type_line": "Legendary Creature — Human Rebel Warrior",
+      "uri": "https://api.scryfall.com/cards/6687a6e8-f674-4db8-81eb-5ad28b7890f7"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set": "fin",
+  "set_name": "Final Fantasy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afin&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fin?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/98366937-d15b-4a66-b9f6-878d50b63871/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adf42c768-34ca-4ebf-8f66-eaccf7261f70&unique=prints",
+  "collector_number": "137",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Elizabeth Peiró",
+  "artist_ids": [
+    "154beecd-b9b8-4795-950c-de8de7434c43"
+  ],
+  "illustration_id": "da3c3389-b593-4e29-974b-c749262c8821",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "ffii",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 4050,
+  "penny_rank": 8138,
+  "prices": {
+    "usd": "0.70",
+    "usd_foil": "1.05",
+    "usd_etched": null,
+    "eur": "0.43",
+    "eur_foil": "0.90",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFirion%252C%2BWild%2BRose%2BWarrior",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFirion%252C%2BWild%2BRose%2BWarrior",
+    "edhrec": "https://edhrec.com/route/?cc=Firion%2C+Wild+Rose+Warrior"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F630859%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824145&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/141211?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

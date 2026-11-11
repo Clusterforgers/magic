@@ -1,0 +1,54 @@
+{
+  "oracle_id": "05e9b55e-6329-48ec-b7d7-24c6b9692244",
+  "name": "Nicol Bolas, Planeswalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nicol Bolas, Planeswalker",
+      "oracle_fingerprint": "31be0576fa9bc0c59fc58d5562377ea6",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 3 },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Creature" } }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 9 },
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 7 } },
+              { "Discard": { "who": { "OrController": { "Target": 0 } }, "count": 7 } },
+              {
+                "Sacrifice": {
+                  "who": { "OrController": { "Target": 0 } },
+                  "filter": [],
+                  "count": 7
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

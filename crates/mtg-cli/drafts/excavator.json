@@ -1,0 +1,37 @@
+{
+  "oracle_id": "2d5ebcd7-07c2-412e-b0d9-54e3a88895fd",
+  "name": "Excavator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Excavator",
+      "oracle_fingerprint": "8cfa37534eef689ea62faa2f2b10715d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }] } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "AddKeyword": {
+                        "Landwalk": [{ "Type": "Land" }, { "SharesSubtype": "Paid" }]
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

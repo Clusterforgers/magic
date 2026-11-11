@@ -1,0 +1,56 @@
+{
+  "oracle_id": "77d3cc31-837a-408a-b7f8-5aa9de78e1b7",
+  "name": "Knowledge Vault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knowledge Vault",
+      "oracle_fingerprint": "cd025211798841e0ac635cdb61a4f274",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [{ "ExileTop": { "as": "exiled", "sealed": true } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "to": "Graveyard"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

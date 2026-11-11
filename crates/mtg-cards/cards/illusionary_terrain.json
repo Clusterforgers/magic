@@ -1,0 +1,26 @@
+{
+  "oracle_id": "17ae63fa-fd63-45e6-81c1-bf30851bf77c",
+  "name": "Illusionary Terrain",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Illusionary Terrain",
+      "oracle_fingerprint": "cc4560634120b47a0d120b3abb7788b4",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{2}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 172, "end": 228 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 229, "end": 293 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "570a5e60-ed0f-4c14-8cc3-af819648030b",
+  "name": "Glamerdye",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Glamerdye",
+      "oracle_fingerprint": "0b31523ea62e455ad4a3303768ba553b",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 103 }
+          }
+        },
+        { "Keyword": "Retrace" }
+      ]
+    }
+  ]
+}

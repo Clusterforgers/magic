@@ -1,0 +1,59 @@
+{
+  "oracle_id": "97dea59e-2090-4653-9ed9-86820a20605f",
+  "name": "Maddening Imp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maddening Imp",
+      "oracle_fingerprint": "3243382d903b7ba121d6bf2c3058d035",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "All": [{ "Not": "YourTurn" }, "BeforeAttackers", { "Not": "InCombat" }]
+            },
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "Subtype": "Wall" } },
+                      { "ControlledBy": "ActivePlayer" }
+                    ]
+                  },
+                  "as": "creatures"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "MustAttack": { "Bound": "creatures" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            { "Is": { "Bound": "creatures" } },
+                            { "Not": "AttackedThisTurn" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

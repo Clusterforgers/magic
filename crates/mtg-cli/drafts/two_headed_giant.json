@@ -1,0 +1,54 @@
+{
+  "oracle_id": "e0efb48b-e7e5-4ed0-a7de-c8f72d357319",
+  "name": "Two-Headed Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Two-Headed Giant",
+      "oracle_fingerprint": "a9eba237499501d70f076520635f21e4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "FlipCoin": {
+                        "win": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "DoubleStrike" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "lose": [
+                    {
+                      "FlipCoin": {
+                        "lose": [
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "AddKeyword": "Menace" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

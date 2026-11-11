@@ -1,0 +1,58 @@
+{
+  "oracle_id": "f7c89d03-606e-4284-90dd-64b1fbebfb4d",
+  "name": "Thassa's Intervention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thassa's Intervention",
+      "oracle_fingerprint": "08d6df820f660649899e7f5fd01f84a4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "LookAtTop": { "count": "X", "as": "seen" } },
+                        {
+                          "Choose": {
+                            "from": { "Bound": "seen" },
+                            "count": { "min": 0, "max": 2 },
+                            "as": "kept",
+                            "rest_as": "rest"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+                        {
+                          "Move": {
+                            "what": { "Bound": "rest" },
+                            "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": ["Spell"] } }],
+                      "effects": [
+                        {
+                          "Pay": {
+                            "who": { "ControllerOf": { "Target": 0 } },
+                            "cost": "{1}",
+                            "times": { "Times": { "by": 2, "of": "X" } },
+                            "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

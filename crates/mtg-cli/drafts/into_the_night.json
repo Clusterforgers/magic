@@ -1,0 +1,42 @@
+{
+  "oracle_id": "58c131f3-c623-4324-b061-9535018676b6",
+  "name": "Into the Night",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Into the Night",
+      "oracle_fingerprint": "dbd4a89214de6c836dd46e18b9c1f891",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "BecomeDayNight": { "to": "Night" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Discard": {
+                  "count": { "Count": [{ "Is": { "Bound": "chosen" } }] },
+                  "filter": [{ "Is": { "Bound": "chosen" } }],
+                  "as": "discarded"
+                }
+              },
+              {
+                "Draw": {
+                  "count": { "Sum": [{ "Count": [{ "Is": { "Bound": "discarded" } }] }, 1] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

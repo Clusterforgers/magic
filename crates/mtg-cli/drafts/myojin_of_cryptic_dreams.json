@@ -11,16 +11,7 @@
           "Replacement": {
             "when": { "Enters": { "what": ["This"] } },
             "by": { "WithCounters": { "counter": { "Other": "indestructible" }, "count": 1 } },
-            "condition": {
-              "Matches": {
-                "subject": "This",
-                "selector": [
-                  "This",
-                  { "WasCast": { "by": "You", "from": "Hand" } },
-                  { "OwnedBy": "You" }
-                ]
-              }
-            }
+            "condition": { "Matches": { "subject": "This", "selector": [{ "CastFrom": "Hand" }] } }
           }
         },
         {
@@ -31,17 +22,18 @@
                 "what": {
                   "Object": [
                     "Spell",
-                    { "ControlledBy": "You" },
+                    { "In": "Stack" },
                     {
                       "AnyOf": [
                         { "Type": "Artifact" },
-                        { "Type": "Battle" },
                         { "Type": "Creature" },
                         { "Type": "Enchantment" },
+                        { "Type": "Planeswalker" },
                         { "Type": "Land" },
-                        { "Type": "Planeswalker" }
+                        { "Type": "Battle" }
                       ]
-                    }
+                    },
+                    { "ControlledBy": "You" }
                   ]
                 }
               }

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "62d394e1-6e7d-4703-8fd8-494f0f043876",
+  "name": "The Beamtown Bullies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Beamtown Bullies",
+      "oracle_fingerprint": "3af18b6c3826f45cfb26ab88ff74f5a4",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": { "Not": "YourTurn" },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Supertype": "Legendary" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "under": "ActivePlayer" } },
+                  "as": "it"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "it" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              { "Goad": { "what": { "Bound": "it" } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "it" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

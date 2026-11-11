@@ -1,0 +1,35 @@
+{
+  "oracle_id": "65b3a40e-1d2b-4b24-996f-c935414ded7d",
+  "name": "Chromatic Armor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chromatic Armor",
+      "oracle_fingerprint": "9138ee2868e3d15b761c1fdd14b5437f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "sleight" }, "count": 1 } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 101, "end": 198 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 199, "end": 308 }
+          }
+        }
+      ]
+    }
+  ]
+}

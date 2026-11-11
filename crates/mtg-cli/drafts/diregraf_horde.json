@@ -1,0 +1,47 @@
+{
+  "oracle_id": "d7947858-f11d-438c-8ad3-991afe950a11",
+  "name": "Diregraf Horde",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diregraf Horde",
+      "oracle_fingerprint": "e0c46cdd42bce54b7bbfa551ec7e3a57",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Decayed" }]
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": { "Object": [{ "In": "Graveyard" }] },
+                      "bounds": { "min": 0, "max": 2 }
+                    }
+                  ],
+                  "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

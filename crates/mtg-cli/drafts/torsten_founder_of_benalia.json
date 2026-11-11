@@ -12,24 +12,28 @@
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
               { "LookAtTop": { "count": 7, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
               {
                 "Choose": {
                   "from": {
                     "Each": [
-                      { "In": "Library" },
                       { "Is": { "Bound": "top" } },
                       { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }
                     ]
                   },
-                  "count": { "min": 0, "max": null },
-                  "as": "kept2"
+                  "count": { "min": 0, "max": 7 },
+                  "as": "picked"
                 }
               },
-              { "Reveal": { "what": { "Bound": "top" } } },
-              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } },
               {
                 "Move": {
-                  "what": { "Bound": "top" },
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Is": { "Bound": "picked" } } }
+                    ]
+                  },
                   "to": { "Library": { "place": "Bottom", "order": "Random" } }
                 }
               }

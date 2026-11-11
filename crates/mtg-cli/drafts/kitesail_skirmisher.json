@@ -1,0 +1,36 @@
+{
+  "oracle_id": "462269c7-ca16-4aa7-bf52-f7fcda25a05b",
+  "name": "Kitesail Skirmisher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kitesail Skirmisher",
+      "oracle_fingerprint": "3eef1c32aca613d55154ebb2bc25bcfe",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, "Other", { "AttackingPlayer": "Against" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Encore": "{4}{U}" } }
+      ]
+    }
+  ]
+}

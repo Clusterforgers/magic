@@ -49,17 +49,18 @@
           "Loyalty": {
             "cost": { "Minus": 9 },
             "effects": [
+              { "Bind": { "what": { "Each": [{ "Type": "Creature" }] }, "as": "taken" } },
               {
                 "Continuous": {
-                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "affected": { "Bound": "taken" },
                   "mods": [{ "SetController": "You" }],
                   "duration": "UntilEndOfTurn"
                 }
               },
-              { "Untap": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              { "Untap": { "what": { "Bound": "taken" } } },
               {
                 "Continuous": {
-                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "affected": { "Bound": "taken" },
                   "mods": [{ "AddKeyword": "Haste" }],
                   "duration": "UntilEndOfTurn"
                 }

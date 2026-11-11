@@ -1,0 +1,56 @@
+{
+  "oracle_id": "76d9c310-9d06-43e8-87a9-fb03318a6cb8",
+  "name": "Howl of the Horde",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Howl of the Horde",
+      "oracle_fingerprint": "48c3893bdc402b31ebe47354f619a4d9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": {
+                          "SpellCast": {
+                            "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                            "by": "You"
+                          }
+                        },
+                        "this_turn": true,
+                        "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

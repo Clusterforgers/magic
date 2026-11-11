@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f4ff3efb-c9ed-4451-a7f2-5ff52ffb6cab",
+  "name": "Volrath's Curse",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Volrath's Curse",
+      "oracle_fingerprint": "015dcea6d5e4380994d1578dd39e3fb8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 232 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

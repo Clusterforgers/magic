@@ -1,0 +1,12 @@
+{
+  "oracle_id": "03436524-197a-4941-a2a1-c7c4b71c4709",
+  "name": "Arcbound Wanderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcbound Wanderer",
+      "oracle_fingerprint": "2f76bf004ea94732568c4514b33ee813",
+      "abilities": [{ "Keyword": "Sunburst" }]
+    }
+  ]
+}

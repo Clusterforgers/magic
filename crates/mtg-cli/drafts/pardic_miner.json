@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e1788b54-4cd9-459f-b2c9-06773e68e9e3",
+  "name": "Pardic Miner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pardic Miner",
+      "oracle_fingerprint": "d1f5a71d127aa2457e070877724e9e9c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": "PlayLand" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

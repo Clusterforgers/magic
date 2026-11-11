@@ -1,0 +1,32 @@
+{
+  "oracle_id": "5e6cbe03-6d6a-413e-9f3c-2770d408cc79",
+  "name": "Conjurer's Ban",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conjurer's Ban",
+      "oracle_fingerprint": "f9e2048e002a6070fae6f0add58cee68",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": "EachPlayer",
+                      "action": { "Cast": { "filter": [{ "ChosenAs": "name" }] } }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "37e44e1c-481d-4f5d-b76b-036f40e9124e",
+  "name": "Flame Burst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flame Burst",
+      "oracle_fingerprint": "56014ef0c612353cfd7396440752e49e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Sum": [2, { "Count": [{ "In": "Graveyard" }, { "Named": "Flame Burst" }] }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

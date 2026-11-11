@@ -1,0 +1,62 @@
+{
+  "oracle_id": "71c68002-1489-4858-a8fb-1f575641983e",
+  "name": "Infantry Shield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infantry Shield",
+      "oracle_fingerprint": "85c5bd8df4f1709155fa07010fcfc4f4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": "Menace" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Warrior",
+                              "colors": ["Red"],
+                              "types": ["Creature"],
+                              "subtypes": ["Warrior"],
+                              "power": 1,
+                              "toughness": 1
+                            }
+                          },
+                          "count": { "Stat": { "of": "This", "stat": "Power" } },
+                          "tapped": true,
+                          "attacking": true,
+                          "as": "warriors"
+                        }
+                      },
+                      {
+                        "DelayedTrigger": {
+                          "when": { "StepBegins": { "step": "End" } },
+                          "effects": [
+                            {
+                              "Sacrifice": {
+                                "filter": [{ "Is": { "Bound": "warriors" } }],
+                                "count": { "Count": [{ "Is": { "Bound": "warriors" } }] }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

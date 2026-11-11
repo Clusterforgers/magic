@@ -1,0 +1,12 @@
+{
+  "oracle_id": "d12d4b54-a13a-46ba-b176-3aaa453ce3e2",
+  "name": "Tajuru Preserver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tajuru Preserver",
+      "oracle_fingerprint": "b17da14eea9f53ba40bbe09e96ddf71f",
+      "abilities": [{ "Rule": { "rule": { "OpponentsCantMakeSacrifice": "You" } } }]
+    }
+  ]
+}

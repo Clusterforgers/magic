@@ -1,0 +1,46 @@
+{
+  "oracle_id": "05d7222b-cc08-4f1f-8e35-6058599572ba",
+  "name": "Twilight Diviner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twilight Diviner",
+      "oracle_fingerprint": "260a0370203ccd0d5ba060242f782a7c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    "Other",
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "ArrivedFrom": "Graveyard" },
+                        { "WasCast": { "from": "Graveyard" } }
+                      ]
+                    }
+                  ],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              { "Choose": { "from": "Triggering", "as": "one" } },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "one" } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

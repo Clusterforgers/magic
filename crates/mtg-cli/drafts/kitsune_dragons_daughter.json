@@ -1,0 +1,44 @@
+{
+  "oracle_id": "9be19bdf-db1e-433e-8be4-8b985a568211",
+  "name": "Kitsune, Dragon's Daughter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kitsune, Dragon's Daughter",
+      "oracle_fingerprint": "2676d855ce5702bfe3ef0a791bd17f3a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                    "rule": "DifferentControllers"
+                  }
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ExchangeControl": { "what": [{ "Target": 0 }], "duration": "Forever" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

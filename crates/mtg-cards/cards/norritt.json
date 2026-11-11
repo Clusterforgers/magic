@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4318c704-888f-4d85-b5f7-6d9abb14e60c",
+  "name": "Norritt",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Norritt",
+      "oracle_fingerprint": "b202afcb08a0d2509937709807722207",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Color": "Blue" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 33, "end": 314 }
+          }
+        }
+      ]
+    }
+  ]
+}

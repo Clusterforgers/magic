@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f455b731-6ff9-4acb-9447-f524faa49b27",
+  "name": "Breaking Wave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breaking Wave",
+      "oracle_fingerprint": "eb3e8be78c77265bbf63349a8bed0395",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "flash": true, "additional": "{2}" } },
+            "from": "Hand"
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Bind": { "what": { "Each": [{ "Type": "Creature" }, "Tapped"] }, "as": "tapped" } },
+              {
+                "Bind": {
+                  "what": { "Each": [{ "Type": "Creature" }, "Untapped"] },
+                  "as": "untapped"
+                }
+              },
+              {
+                "Together": {
+                  "effects": [
+                    { "Untap": { "what": { "Bound": "tapped" } } },
+                    { "Tap": { "what": { "Bound": "untapped" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

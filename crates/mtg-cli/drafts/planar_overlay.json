@@ -1,0 +1,103 @@
+{
+  "oracle_id": "a7be1624-04cc-4ed5-8b05-63b633893dee",
+  "name": "Planar Overlay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planar Overlay",
+      "oracle_fingerprint": "1ece27c82ac7bdd1e891e6fc1140b6db",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "Subtype": "Plains" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "plains"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "Subtype": "Island" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "island"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "Subtype": "Swamp" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "swamp"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "Subtype": "Mountain" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "mountain"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "Subtype": "Forest" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "forest"
+                      }
+                    },
+                    {
+                      "Together": {
+                        "effects": [
+                          { "Move": { "what": { "Bound": "plains" }, "to": "Hand" } },
+                          { "Move": { "what": { "Bound": "island" }, "to": "Hand" } },
+                          { "Move": { "what": { "Bound": "swamp" }, "to": "Hand" } },
+                          { "Move": { "what": { "Bound": "mountain" }, "to": "Hand" } },
+                          { "Move": { "what": { "Bound": "forest" }, "to": "Hand" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

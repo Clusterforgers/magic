@@ -1,0 +1,44 @@
+{
+  "oracle_id": "89390fc2-17af-4754-bb1c-7af905d4a2a8",
+  "name": "Loxodon Peacekeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loxodon Peacekeeper",
+      "oracle_fingerprint": "eb251433ff0af940ed54c36243a2fbd8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": { "Life": "You" },
+                          "op": "Le",
+                          "right": { "LowestLife": "EachPlayer" }
+                        }
+                      }
+                    }
+                  },
+                  "as": "lowest"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Bound": "lowest" } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

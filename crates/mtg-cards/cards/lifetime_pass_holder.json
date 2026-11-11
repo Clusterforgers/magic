@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7bf6f13a-3c90-4bda-bc84-e026828bf4d1",
+  "name": "\"Lifetime\" Pass Holder",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "\"Lifetime\" Pass Holder",
+      "oracle_fingerprint": "ea66112266bafd121e750f926afcdbb8",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 29, "end": 73 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 74, "end": 200 }
+          }
+        }
+      ]
+    }
+  ]
+}

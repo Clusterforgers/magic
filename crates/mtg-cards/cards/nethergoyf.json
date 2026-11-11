@@ -1,0 +1,35 @@
+{
+  "oracle_id": "040cbd8a-a9e5-454b-a5ae-9b66bb66b8e9",
+  "name": "Nethergoyf",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nethergoyf",
+      "oracle_fingerprint": "c9ec50f7b44f4c48981ad3e361e17d89",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "toughness": {
+                    "Sum": [{ "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] }, 1]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 136, "end": 309 }
+          }
+        }
+      ]
+    }
+  ]
+}

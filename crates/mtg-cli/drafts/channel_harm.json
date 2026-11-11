@@ -1,0 +1,73 @@
+{
+  "oracle_id": "4b3d1cfb-9f1d-4e4e-a15a-2e248ff5bdfc",
+  "name": "Channel Harm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Channel Harm",
+      "oracle_fingerprint": "5497065c144974e4aaa5f6c49939804f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": "You", "source": [{ "Not": { "ControlledBy": "You" } }] }
+                  },
+                  "by": {
+                    "PreventAnd": [
+                      {
+                        "May": {
+                          "effects": [
+                            {
+                              "DealDamage": {
+                                "source": "This",
+                                "to": { "Target": 0 },
+                                "amount": "Triggering"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "ControlledBy": "You" }] },
+                      "source": [{ "Not": { "ControlledBy": "You" } }]
+                    }
+                  },
+                  "by": {
+                    "PreventAnd": [
+                      {
+                        "May": {
+                          "effects": [
+                            {
+                              "DealDamage": {
+                                "source": "This",
+                                "to": { "Target": 0 },
+                                "amount": "Triggering"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

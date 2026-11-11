@@ -1,0 +1,33 @@
+{
+  "oracle_id": "36c2fc4c-7d8b-47c2-91c3-e356df60b219",
+  "name": "Angel of Jubilation",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Angel of Jubilation",
+      "oracle_fingerprint": "f14e7d1c4604fbfdf862b861091b0401",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Not": { "Color": "Black" } },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 55, "end": 138 }
+          }
+        }
+      ]
+    }
+  ]
+}

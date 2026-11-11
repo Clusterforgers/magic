@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5e719329-612e-4ad5-ac95-6eb5328738ab",
+  "name": "Permeating Mass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Permeating Mass",
+      "oracle_fingerprint": "4055cbde6faf807226050f8b8f4446ea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "BecomeCopy": { "what": "Triggering", "of": "This", "duration": "Forever" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

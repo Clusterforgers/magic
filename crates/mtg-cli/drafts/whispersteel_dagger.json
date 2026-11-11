@@ -1,0 +1,47 @@
+{
+  "oracle_id": "ca59fbf4-c774-49d3-8630-108c053e01fb",
+  "name": "Whispersteel Dagger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whispersteel Dagger",
+      "oracle_fingerprint": "0367cf9840600b075ca21629fc69d58c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "TriggeringPlayer", "as": "player" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Type": "Creature" }, { "OwnedBy": { "Bound": "player" } }],
+                      "from": "Graveyard",
+                      "once": true,
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

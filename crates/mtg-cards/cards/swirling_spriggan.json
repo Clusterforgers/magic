@@ -1,0 +1,31 @@
+{
+  "oracle_id": "3b0cea17-9baf-43c7-9f01-44f255e9d687",
+  "name": "Swirling Spriggan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swirling Spriggan",
+      "oracle_fingerprint": "5304e73c6098b18d97fd895799a896b3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G/U}{G/U}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "ChooseValue": { "kind": "Colors", "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetColorsChosen": "chosen" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

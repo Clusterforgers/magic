@@ -1,0 +1,54 @@
+{
+  "oracle_id": "eff22b28-88b8-4251-937f-4c06b6ca7bd2",
+  "name": "Loyal Inventor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loyal Inventor",
+      "oracle_fingerprint": "f29764d11e669592550097f559e5c68a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": { "filter": [{ "Type": "Artifact" }], "reveal": true, "as": "card" }
+                    },
+                    { "Shuffle": {} },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": {
+                              "Each": [{ "Subtype": "Assassin" }, { "ControlledBy": "You" }]
+                            },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Move": { "what": { "Bound": "card" }, "to": "Hand" } }],
+                        "otherwise": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "card" },
+                              "to": { "Library": { "place": "Top" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "620d0572-6d22-43e2-83a9-000e605c8a2b",
+  "name": "Squandered Resources",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squandered Resources",
+      "oracle_fingerprint": "44f96d150dbf6b20347bf822cda9c494",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "ProducedBy": { "among": [{ "Is": "Paid" }], "count": 1, "colorless": true }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

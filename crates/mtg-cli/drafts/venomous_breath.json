@@ -1,0 +1,43 @@
+{
+  "oracle_id": "fc73bd1b-c713-4825-9f2d-f6ae95dddf09",
+  "name": "Venomous Breath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venomous Breath",
+      "oracle_fingerprint": "45fce170823d68e146ae76e3dc3ce98a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "AnyOf": [
+                                { "Blocks": { "Target": 0 } },
+                                { "BlockedBy": { "Target": 0 } }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

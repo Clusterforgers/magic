@@ -1,0 +1,34 @@
+{
+  "oracle_id": "44865261-16f8-42d2-a388-a57173142eb0",
+  "name": "Magus of the Arena",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Arena",
+      "oracle_fingerprint": "1bad2272ae216a3c28e0f9ce12f120d5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Mana": "{3}" }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": "Opponents",
+                    "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "Tap": { "what": { "Target": 1 } } },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

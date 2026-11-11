@@ -1,0 +1,58 @@
+{
+  "oracle_id": "797bb53d-b111-41fe-95d7-64cb0f833b22",
+  "name": "Stronghold Gambit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stronghold Gambit",
+      "oracle_fingerprint": "906d0f4dc6817b86a9ec1f9d7a51688c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "as": "picked"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "picked" }, "as": "chosen", "adds": true } }
+                  ]
+                }
+              },
+              { "Reveal": { "what": { "Bound": "chosen" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "chosen" } },
+                      { "In": "Hand" },
+                      { "Type": "Creature" },
+                      {
+                        "LeastAmong": {
+                          "stat": "ManaValue",
+                          "group": [
+                            { "Is": { "Bound": "chosen" } },
+                            { "In": "Hand" },
+                            { "Type": "Creature" }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

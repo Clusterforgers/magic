@@ -1,0 +1,45 @@
+{
+  "oracle_id": "591ce7dc-8407-43ed-acfc-e3d8fd547125",
+  "name": "Nomad Mythmaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nomad Mythmaker",
+      "oracle_fingerprint": "c03553bac08ba53b74d7c43a1943cf1c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Enchantment" },
+                    { "Subtype": "Aura" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "creature"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "aura"
+                }
+              },
+              { "Attach": { "what": { "Bound": "aura" }, "to": { "Bound": "creature" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

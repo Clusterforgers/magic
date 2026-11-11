@@ -1,0 +1,66 @@
+{
+  "oracle_id": "ef67a41b-a2a6-4f1b-a0d5-15560e99e387",
+  "name": "Maestros Confluence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maestros Confluence",
+      "oracle_fingerprint": "7226ca84e6a7f7b65ea08dce900c05c9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 3, "max": 3 },
+                  "repeat": true,
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                              { "Compare": { "stat": "Colors", "op": "Eq", "to": 1 } },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Goad": {
+                            "what": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

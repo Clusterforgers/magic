@@ -261,10 +261,8 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         .iter()
         .filter(|permission| permission.covers(state, player, card))
         .collect();
-    let types = card.base_types();
-    let instant = types.contains(CardType::Instant)
-        || keywords::grants_instant_timing(state, id)
-        || permissions.iter().any(|permission| permission.flash);
+    let instant = ep29_instant(state, card, &permissions);
+    let ep29_paid_flash = ep29_paid_flash(state, player, &permissions, !instant && in_hand);
     let mut ways = Vec::new();
     let printed = card.card().mana_cost.as_ref();
     // Cast for its mana cost from a hand, or from the zone a permission names, which may add costs.
@@ -274,8 +272,9 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         .copied()
         .filter(|permission| permission.adds_to_printed(zone_kind(zone)))
         .collect();
+    let paid_flash = ep29_paid_flash.is_some();
     let added = if own {
-        Some(Added::default())
+        Some(ep29_paid_flash.unwrap_or_default())
     } else {
         permit_costs::added(by_permission)
     };
@@ -287,7 +286,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
                 alternative: None,
                 label: format!("Cast for {cost}"),
                 mana: None,
-                instant,
+                instant: instant || paid_flash,
                 variant: 0,
                 parts: Vec::new(),
             },
@@ -331,6 +330,36 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
 
 /// "You may spend mana as though it were mana of any color" and "you may pay 2 life rather than {B}": the rules reach
 /// every way of the cast.
+/// Whether the card may be cast as an instant: an instant, a card a keyword gives that timing, or one a permission lets
+/// be cast as though it had flash for no added cost.
+fn ep29_instant(state: &GameState, card: &GameObject, permissions: &[&Cast]) -> bool {
+    card.base_types().contains(CardType::Instant)
+        || keywords::grants_instant_timing(state, card.id())
+        || permissions
+            .iter()
+            .any(|p| p.flash && p.additional.is_none())
+}
+
+/// "You may cast this spell as though it had flash if you pay {2} more": when `player` could not cast a sorcery now, a cast
+/// from a hand goes through such a permission and pays what it adds (CR 601.3b); `None` when no such permission is open. `open`
+/// is false for a card cast from elsewhere or one that may be cast as an instant anyway.
+fn ep29_paid_flash(
+    state: &GameState,
+    player: PlayerId,
+    permissions: &[&Cast],
+    open: bool,
+) -> Option<Added> {
+    if !open || sorcery_timing(state, player) {
+        return None;
+    }
+    permit_costs::added(
+        permissions
+            .iter()
+            .copied()
+            .filter(|permission| permission.flash && permission.additional.is_some()),
+    )
+}
+
 fn ep24_rule_costs(
     state: &GameState,
     player: PlayerId,

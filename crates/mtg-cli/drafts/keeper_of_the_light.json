@@ -1,0 +1,33 @@
+{
+  "oracle_id": "62d1300f-2b76-42b9-8e6c-f920712cd547",
+  "name": "Keeper of the Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keeper of the Light",
+      "oracle_fingerprint": "78bfe2ccef3a664fc6b5ca3b245344e8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Mana": "{W}" }],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": { "Target": 0 } },
+                      "op": "Gt",
+                      "right": { "Life": "You" }
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

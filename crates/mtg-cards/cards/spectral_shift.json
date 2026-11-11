@@ -1,0 +1,20 @@
+{
+  "oracle_id": "99eb4f63-841f-4b6b-9794-82bc2ed7b758",
+  "name": "Spectral Shift",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spectral Shift",
+      "oracle_fingerprint": "e29bd10f4d1c0b6fd0a88efc4235091d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 297 }
+          }
+        },
+        { "Keyword": { "Entwine": "{2}" } }
+      ]
+    }
+  ]
+}

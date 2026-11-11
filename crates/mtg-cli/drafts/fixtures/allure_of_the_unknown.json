@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "f77e09c3-917c-4bbb-bb94-60f4e9417832",
+  "oracle_id": "252d9b25-45a1-40ca-b563-4cdefc791a44",
+  "multiverse_ids": [
+    476458
+  ],
+  "mtgo_id": 79538,
+  "arena_id": 70718,
+  "tcgplayer_id": 206623,
+  "cardmarket_id": 430074,
+  "name": "Allure of the Unknown",
+  "lang": "en",
+  "released_at": "2020-01-24",
+  "uri": "https://api.scryfall.com/cards/f77e09c3-917c-4bbb-bb94-60f4e9417832",
+  "scryfall_uri": "https://scryfall.com/card/thb/207/allure-of-the-unknown?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:32:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/7/f77e09c3-917c-4bbb-bb94-60f4e9417832.jpg?1783931526",
+    "normal": "https://cards.scryfall.io/normal/front/f/7/f77e09c3-917c-4bbb-bb94-60f4e9417832.jpg?1783931526",
+    "large": "https://cards.scryfall.io/large/front/f/7/f77e09c3-917c-4bbb-bb94-60f4e9417832.jpg?1783931526",
+    "png": "https://cards.scryfall.io/png/front/f/7/f77e09c3-917c-4bbb-bb94-60f4e9417832.png?1783931526",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/7/f77e09c3-917c-4bbb-bb94-60f4e9417832.jpg?1783931526",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/7/f77e09c3-917c-4bbb-bb94-60f4e9417832.jpg?1783931526",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/7/f77e09c3-917c-4bbb-bb94-60f4e9417832.webp?1783931526",
+    "grid": "https://cards.scryfall.io/grid/front/f/7/f77e09c3-917c-4bbb-bb94-60f4e9417832.webp?1783931526",
+    "display": "https://cards.scryfall.io/display/front/f/7/f77e09c3-917c-4bbb-bb94-60f4e9417832.webp?1783931526",
+    "art": "https://cards.scryfall.io/art/front/f/7/f77e09c3-917c-4bbb-bb94-60f4e9417832.webp?1783931526",
+    "crop": "https://cards.scryfall.io/crop/front/f/7/f77e09c3-917c-4bbb-bb94-60f4e9417832.webp?1783931526",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/7/f77e09c3-917c-4bbb-bb94-60f4e9417832.jpg?1783931526"
+  },
+  "mana_cost": "{3}{B}{R}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Reveal the top six cards of your library. An opponent exiles a nonland card from among them, then you put the rest into your hand. That opponent may cast the exiled card without paying its mana cost.",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5f23a78d-cda1-462a-8be3-a62b40c34913",
+  "set": "thb",
+  "set_name": "Theros Beyond Death",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5f23a78d-cda1-462a-8be3-a62b40c34913",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Athb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/thb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f77e09c3-917c-4bbb-bb94-60f4e9417832/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A252d9b25-45a1-40ca-b563-4cdefc791a44&unique=prints",
+  "collector_number": "207",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The light of hope blinded Pantor to the ills of the world.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Seb McKinnon",
+  "artist_ids": [
+    "ad4caca0-8d89-44ce-a1a6-d5ca905bd6fb"
+  ],
+  "illustration_id": "f5441ea7-2826-497a-88b0-f691dc95a626",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 17518,
+  "penny_rank": 14032,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://twitter.com/wizards_magic/status/1210598726512840705",
+    "previewed_at": "2019-12-27"
+  },
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.10",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.39",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=476458&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAllure%2Bof%2Bthe%2BUnknown",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAllure%2Bof%2Bthe%2BUnknown",
+    "edhrec": "https://edhrec.com/route/?cc=Allure+of+the+Unknown"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F206623%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=430074&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/79538?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

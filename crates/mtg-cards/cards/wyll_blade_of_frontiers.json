@@ -1,0 +1,21 @@
+{
+  "oracle_id": "4fb254cf-b60c-4a3e-b753-4213cb572837",
+  "name": "Wyll, Blade of Frontiers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wyll, Blade of Frontiers",
+      "oracle_fingerprint": "1afde891fe401e85a98ed80461f23830",
+      "abilities": [
+        { "Rule": { "rule": { "ExtraDie": "You" } } },
+        {
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

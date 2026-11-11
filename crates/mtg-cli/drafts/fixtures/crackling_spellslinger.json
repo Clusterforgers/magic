@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "aa735e13-f784-4174-91fc-3751aaa559d1",
+  "oracle_id": "ed7ba558-5341-4c7b-a9c5-b382dee88a13",
+  "multiverse_ids": [
+    658345
+  ],
+  "mtgo_id": 125181,
+  "tcgplayer_id": 545342,
+  "cardmarket_id": 764521,
+  "name": "Crackling Spellslinger",
+  "lang": "en",
+  "released_at": "2024-04-19",
+  "uri": "https://api.scryfall.com/cards/aa735e13-f784-4174-91fc-3751aaa559d1",
+  "scryfall_uri": "https://scryfall.com/card/otc/25/crackling-spellslinger?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:06:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/a/aa735e13-f784-4174-91fc-3751aaa559d1.jpg?1783911966",
+    "normal": "https://cards.scryfall.io/normal/front/a/a/aa735e13-f784-4174-91fc-3751aaa559d1.jpg?1783911966",
+    "large": "https://cards.scryfall.io/large/front/a/a/aa735e13-f784-4174-91fc-3751aaa559d1.jpg?1783911966",
+    "png": "https://cards.scryfall.io/png/front/a/a/aa735e13-f784-4174-91fc-3751aaa559d1.png?1783911966",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/a/aa735e13-f784-4174-91fc-3751aaa559d1.jpg?1783911966",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/a/aa735e13-f784-4174-91fc-3751aaa559d1.jpg?1783911966",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/a/aa735e13-f784-4174-91fc-3751aaa559d1.webp?1783911966",
+    "grid": "https://cards.scryfall.io/grid/front/a/a/aa735e13-f784-4174-91fc-3751aaa559d1.webp?1783911966",
+    "display": "https://cards.scryfall.io/display/front/a/a/aa735e13-f784-4174-91fc-3751aaa559d1.webp?1783911966",
+    "art": "https://cards.scryfall.io/art/front/a/a/aa735e13-f784-4174-91fc-3751aaa559d1.webp?1783911966",
+    "crop": "https://cards.scryfall.io/crop/front/a/a/aa735e13-f784-4174-91fc-3751aaa559d1.webp?1783911966",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/a/aa735e13-f784-4174-91fc-3751aaa559d1.jpg?1783911966"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Flash\nWhen this creature enters, if you cast it, the next instant or sorcery spell you cast this turn has storm. (When you cast that spell, copy it for each spell cast before it this turn. You may choose new targets for the copies.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set": "otc",
+  "set_name": "Outlaws of Thunder Junction Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d6548798-0c10-4509-b71a-2d8b1d14665a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/otc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/aa735e13-f784-4174-91fc-3751aaa559d1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aed7ba558-5341-4c7b-a9c5-b382dee88a13&unique=prints",
+  "collector_number": "25",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Marta Nael",
+  "artist_ids": [
+    "266ab861-ed64-4ba5-865c-f18758421cc3"
+  ],
+  "illustration_id": "5d5f164a-a9c9-43db-b012-8fef819c288c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9257,
+  "prices": {
+    "usd": "1.14",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.50",
+    "eur_foil": null,
+    "tix": "1.82"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=658345&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCrackling%2BSpellslinger",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCrackling%2BSpellslinger",
+    "edhrec": "https://edhrec.com/route/?cc=Crackling+Spellslinger"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F545342%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764521&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/125181?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

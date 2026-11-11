@@ -1,0 +1,20 @@
+{
+  "oracle_id": "14e23074-95b8-4477-b981-6231c19bacdc",
+  "name": "Evermind",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Evermind",
+      "oracle_fingerprint": "daf25f22ca8a858afd08eeeaa7df731b",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": {} }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 53, "end": 224 }
+          }
+        }
+      ]
+    }
+  ]
+}

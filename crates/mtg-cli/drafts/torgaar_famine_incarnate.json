@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4229140f-fa5b-4727-a16a-cbbd756d979e",
+  "name": "Torgaar, Famine Incarnate",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Torgaar, Famine Incarnate",
+      "oracle_fingerprint": "5f6bda47bec04913260a968defb6f960",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": "X" } }],
+            "required": true
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Times": { "by": 2, "of": "X" } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 158, "end": 269 }
+          }
+        }
+      ]
+    }
+  ]
+}

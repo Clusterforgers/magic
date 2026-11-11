@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4d614c79-7934-4662-9ce1-22b57d5137f7",
+  "name": "Steamflogger Boss",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Steamflogger Boss",
+      "oracle_fingerprint": "9bb992554596994b44ac74dbf7547a1e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Rigger" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 52, "end": 144 }
+          }
+        }
+      ]
+    }
+  ]
+}

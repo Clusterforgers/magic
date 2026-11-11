@@ -1,0 +1,47 @@
+{
+  "oracle_id": "84137013-7a23-4bc8-b855-04889373fdae",
+  "name": "Witch-king, Sky Scourge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Witch-king, Sky Scourge",
+      "oracle_fingerprint": "1fab3991c49a999166b5a93c65b6c91b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Wraith" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "ExileTop": {
+                  "count": {
+                    "Total": {
+                      "of": [{ "Subtype": "Wraith" }, "Attacking", { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Is": { "Bound": "exiled" } }],
+                      "from": "Exile",
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Undying" }
+      ]
+    }
+  ]
+}

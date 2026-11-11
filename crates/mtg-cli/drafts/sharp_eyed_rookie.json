@@ -1,0 +1,46 @@
+{
+  "oracle_id": "0642fb0d-73cb-4989-852c-3233fe36c3b4",
+  "name": "Sharp-Eyed Rookie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sharp-Eyed Rookie",
+      "oracle_fingerprint": "4dbf3021d8e861fe3f2b96412e76fbe1",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "Any": [
+                {
+                  "Compare": {
+                    "left": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                    "op": "Gt",
+                    "right": { "Stat": { "of": "This", "stat": "Power" } }
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Stat": { "of": "Triggering", "stat": "Toughness" } },
+                    "op": "Gt",
+                    "right": { "Stat": { "of": "This", "stat": "Toughness" } }
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "CreateToken": { "token": { "Named": "clue" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -111,6 +111,7 @@ fn is_fixed(item: &CostItem) -> bool {
         | CostItem::ExileFromHand { count, .. }
         | CostItem::RevealFromHand { count, .. }
         | CostItem::ReturnToHand { count, .. }
+        | CostItem::ExilePermanents { count, .. }
         | CostItem::Behold { count, .. }
         | CostItem::ExiledToGraveyard { count, .. }
         | CostItem::ToLibrary { count, .. } => fixed(count),
@@ -153,6 +154,7 @@ fn amount_is_x(item: &CostItem) -> bool {
         | CostItem::ExileFromHand { count, .. }
         | CostItem::RevealFromHand { count, .. }
         | CostItem::ReturnToHand { count, .. }
+        | CostItem::ExilePermanents { count, .. }
         | CostItem::Behold { count, .. }
         | CostItem::ExiledToGraveyard { count, .. }
         | CostItem::ToLibrary { count, .. } => *count == Amount::X,
@@ -213,11 +215,12 @@ impl Kind {
 
 fn kind_of_targetable(what: &Targetable) -> Kind {
     match what {
-        Targetable::Player | Targetable::Opponent => Kind::Player,
+        Targetable::Player | Targetable::Opponent | Targetable::PlayerAmong(_) => Kind::Player,
         Targetable::Object(_) | Targetable::PerPlayer { .. } => Kind::Object,
         Targetable::Together { what, .. }
         | Targetable::Another { what, .. }
-        | Targetable::ChosenBy { what, .. } => kind_of_targetable(what),
+        | Targetable::ChosenBy { what, .. }
+        | Targetable::AtRandom(what) => kind_of_targetable(what),
         Targetable::AnyTarget | Targetable::Either(_) => Kind::Either,
     }
 }
@@ -368,6 +371,8 @@ struct Walker<'a> {
     pays_objects: bool,
     /// The cost under the walk is that of an activated ability, whose counted amounts the engine counts as it is announced.
     activated_cost: bool,
+    /// The ability under the walk is an activated one whose cost removes counters from its source: the kinds `RemovedThisWay` reads.
+    ep29_removes: Vec<crate::value::CounterKind>,
     /// The cost under the walk is paid rather than a mana cost, whose counted amounts the engine counts for the card cast.
     rather_cost: bool,
     /// Whether a required additional cost of the card counts the X the caster announces, which the effects read.
@@ -409,6 +414,7 @@ impl<'a> Walker<'a> {
             has_additional_cost: false,
             pays_objects: false,
             activated_cost: false,
+            ep29_removes: Vec::new(),
             rather_cost: false,
             counts_x: false,
             x_free: false,
@@ -1023,6 +1029,7 @@ impl<'a> Walker<'a> {
                 self.hand_or_life_lost(amount);
             }
             Amount::Kicks | Amount::Promised | Amount::Devoured => self.paid_amount(amount),
+            Amount::RemovedThisWay(counter) => self.ep29_removed(counter),
             Amount::Bound(name) => {
                 if !self.scope.numbers.contains(name) {
                     self.problem(format!("`{name}` is not a number kept by an earlier `Let`"));
@@ -1035,7 +1042,18 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The counters the cost of the ability removed from its source ("for each charge counter removed this way").
+    fn ep29_removed(&mut self, counter: &crate::value::CounterKind) {
+        self.uses("Amount", "RemovedThisWay");
+        if !self.ep29_removes.contains(counter) {
+            self.problem(
+                "`RemovedThisWay` needs an activated ability whose cost removes counters of that kind from its source",
+            );
+        }
+    }
+
     /// The amounts of the general kinds: a logged tally, the commanders' colors, the turn and the targets of the trigger.
+    #[allow(clippy::too_many_lines)]
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
             Amount::Tally { who, filter, .. } => {
@@ -1057,6 +1075,17 @@ impl<'a> Walker<'a> {
             Amount::HighestCounters { who, .. } => self.player_amount("HighestCounters", who),
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
             Amount::CastLastTurn(who) => self.player_amount("CastLastTurn", who),
+            Amount::TalliedLastTurn { who, what } => {
+                if matches!(
+                    what,
+                    TurnTally::CountersPut
+                        | TurnTally::DamageDealtTo
+                        | TurnTally::DungeonsCompleted
+                ) {
+                    self.problem("last turn is kept for the counts of players only");
+                }
+                self.player_amount("TalliedLastTurn", who);
+            }
             Amount::Party(who) => self.player_amount("Party", who),
             Amount::CastWith(_) => self.uses("Amount", "CastWith"),
             Amount::ColorsSpent => self.uses("Amount", "ColorsSpent"),
@@ -1132,6 +1161,7 @@ impl<'a> Walker<'a> {
             | Amount::Promised
             | Amount::ResolvedThisTurn
             | Amount::Devoured
+            | Amount::RemovedThisWay(_)
             | Amount::Bound(_)
             | Amount::PermanentsGraved
             | Amount::Tallied { .. }
@@ -1380,6 +1410,7 @@ impl<'a> Walker<'a> {
                     | CostItem::UntapPermanents { filter, count }
                     | CostItem::RevealFromHand { filter, count }
                     | CostItem::ReturnToHand { filter, count }
+                    | CostItem::ExilePermanents { filter, count }
                     | CostItem::Behold { filter, count, .. }
                     | CostItem::ExiledToGraveyard { filter, count }
                     | CostItem::ToLibrary { filter, count, .. }
@@ -1699,6 +1730,7 @@ impl<'a> Walker<'a> {
                     | CostItem::TapPermanents { .. }
                     | CostItem::TapPower { .. }
                     | CostItem::ReturnToHand { .. }
+                    | CostItem::ExilePermanents { .. }
                     | CostItem::DamageToYou(_)
                     | CostItem::Unattach
                     | CostItem::ExileTop(_)
@@ -2518,6 +2550,14 @@ impl Walker<'_> {
                 self.uses("Target", "ChosenBy");
                 self.at("who", |w| w.reference(who, Kind::Player));
                 self.at("what", |w| w.targetable(what));
+            }
+            Targetable::AtRandom(what) => {
+                self.uses("Target", "AtRandom");
+                self.at("what", |w| w.targetable(what));
+            }
+            Targetable::PlayerAmong(among) => {
+                self.uses("Target", "PlayerAmong");
+                self.at("among", |w| w.reference(among, Kind::Player));
             }
             Targetable::AnyTarget | Targetable::Player | Targetable::Opponent => {}
         }
@@ -4195,6 +4235,19 @@ impl Walker<'_> {
         effects: &[Effect],
     ) {
         let paid = std::mem::replace(&mut self.pays_objects, picks(cost));
+        let removes = cost
+            .0
+            .iter()
+            .filter_map(|item| match item {
+                CostItem::RemoveCounters {
+                    counter: Some(counter),
+                    from: None,
+                    ..
+                } => Some(counter.clone()),
+                _ => None,
+            })
+            .collect();
+        let outer = std::mem::replace(&mut self.ep29_removes, removes);
         // The X a part of the cost counts is the one the ability announces.
         self.x_free = cost.has_x();
         self.x_now = self.x_free;
@@ -4215,6 +4268,7 @@ impl Walker<'_> {
         self.x_now = cost.has_x();
         self.body(targets, effects, false);
         self.pays_objects = paid;
+        self.ep29_removes = outer;
     }
 
     /// A loyalty ability: a `-X` cost is asked as the ability is announced, and the effects read it.
@@ -4501,6 +4555,7 @@ impl Walker<'_> {
             | GameRule::VoteAgain(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
+            | GameRule::ExtraDie(who)
             | GameRule::KeepUnspentMana { who, .. }
             | GameRule::UnspentManaBecomes { who, .. }
             | GameRule::DrawLimit { who, .. }
@@ -4510,6 +4565,7 @@ impl Walker<'_> {
                 who, spells: None, ..
             }
             | GameRule::RevealTop(who)
+            | GameRule::RevealHand(who)
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
             | GameRule::NoMaxHandSize(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
@@ -4656,6 +4712,18 @@ impl Walker<'_> {
 
     /// The players a rule about losing, casting or combat damage names.
     fn w17b_rule(&mut self, tag: &str, rule: &GameRule) {
+        if let GameRule::CantLoseGame {
+            opponents_cant_win: true,
+            life_only: true,
+            ..
+        } = rule
+        {
+            self.at(tag, |w| {
+                w.problem(
+                    "a rule that spares only the loss for life lets the opponents win as usual",
+                );
+            });
+        }
         if let GameRule::CantLoseGame { who, .. }
         | GameRule::CantCastSpells { who, .. }
         | GameRule::ToughnessAssignsDamage(who) = rule
@@ -4675,7 +4743,8 @@ impl Walker<'_> {
     }
 
     /// A rule works from the battlefield, "this spell can't be countered" from the stack (CR 113.6b), and a card's
-    /// permission to cast itself from its graveyard or from exile from there (CR 113.6).
+    /// permission to cast itself from its graveyard or from exile from there (CR 113.6), and its permission to cast itself
+    /// from its owner's hand as though it had flash from the hand.
     fn rule_zone(&mut self, rule: &GameRule, from: ZoneKind) {
         let spell = matches!(rule, GameRule::CantBeCountered(Ref::This));
         let c8_eg_itself = matches!(
@@ -4683,10 +4752,16 @@ impl Walker<'_> {
             GameRule::MayCast(permission)
                 if permission.what.0 == [Pred::This] && permission.from == Some(from)
         );
+        let ep27_flash = matches!(
+            rule,
+            GameRule::MayCast(permission)
+                if permission.what.0 == [Pred::This] && permission.from.is_none() && permission.flash
+        );
         match from {
             ZoneKind::Battlefield => {}
             ZoneKind::Stack if spell => {}
             ZoneKind::Graveyard | ZoneKind::Exile if c8_eg_itself => {}
+            ZoneKind::Hand if ep27_flash => {}
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
                 w.problem("a card can be a commander in every zone: write the rule without `from`");
             }),
@@ -4736,10 +4811,18 @@ impl Walker<'_> {
                 }
             }
             ReplaceWhen::LifeGain { who }
+            | ReplaceWhen::LoseGame { who }
             | ReplaceWhen::Mill { who }
             | ReplaceWhen::Draw { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
+        }
+    }
+
+    /// A loss of the game is replaced only by steps that happen instead.
+    fn ep27_lose_game(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        if matches!(when, ReplaceWhen::LoseGame { .. }) && !matches!(by, ReplaceBy::Instead(_)) {
+            self.problem("a loss of the game is replaced only by steps that happen instead");
         }
     }
 
@@ -4829,16 +4912,26 @@ impl Walker<'_> {
         }
     }
 
-    /// Only the counters of an event are halved.
+    /// Only the counters or the damage of an event are halved, and only damage is lessened or capped.
     fn ep24_half(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
-        if *by == ReplaceBy::Half && !matches!(when, ReplaceWhen::CountersPut { .. }) {
-            self.problem("only the counters of an event are halved");
+        let damage = matches!(when, ReplaceWhen::Damage { .. });
+        if *by == ReplaceBy::Half && !damage && !matches!(when, ReplaceWhen::CountersPut { .. }) {
+            self.problem("only the counters or the damage of an event are halved");
+        }
+        match by {
+            ReplaceBy::Subtract(_) | ReplaceBy::Cap(_) if !damage => {
+                self.problem("only damage is lessened or capped");
+            }
+            ReplaceBy::Subtract(0) => self.problem("subtracting nothing changes nothing"),
+            ReplaceBy::Cap(0) => self.problem("capping damage at 0 is `Prevent`"),
+            _ => {}
         }
     }
 
     /// The engine changes only the count of a mill (`ReplaceWhen.Mill.Other`) and halves only counters.
     fn e19_mill(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.ep24_half(when, by);
+        self.ep27_lose_game(when, by);
         if matches!(when, ReplaceWhen::Mill { .. })
             && !matches!(by, ReplaceBy::Multiply(_) | ReplaceBy::Add(_))
         {
@@ -4918,6 +5011,7 @@ impl Walker<'_> {
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         self.g11b_replace_by(when, by);
@@ -4982,6 +5076,7 @@ impl Walker<'_> {
             | ReplaceBy::WithCounterOf(_)
             | ReplaceBy::EntersPrepared
             | ReplaceBy::ChooseWord(_)
+            | ReplaceBy::UnderChosenOpponent
                 if !enters =>
             {
                 self.problem("only an `Enters` event is entered tapped, chosen on or paid for");
@@ -5109,6 +5204,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::ExileFromHand { .. }
                 | CostItem::RevealFromHand { .. }
                 | CostItem::ReturnToHand { .. }
+                | CostItem::ExilePermanents { .. }
                 | CostItem::TapPermanents { .. }
                 | CostItem::TapPower { .. }
                 | CostItem::CollectEvidence(_)
@@ -5832,6 +5928,7 @@ mod tests {
     #[case::a_static_ability_from_the_graveyard(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Haste"}],"condition":{"Compare":{"left":{"Count":[{"Subtype":"Mountain"},{"ControlledBy":"You"}]},"op":"Ge","right":1}},"from":"Graveyard"}}"#, &["Ability.Static", "Ability.From", "Keyword.Haste", "Mod.AddKeyword"])]
     #[case::trigger_from_the_graveyard(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"limit":"OncePerTurn","from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Ability.Limit", "Ability.From", "Effect.Draw", "Trigger.StepBegins"])]
     #[case::a_cast_permission_with_added_costs(r#"{"Rule":{"rule":{"MayCast":{"what":["This"],"from":"Graveyard","additional":[{"PayLife":3},{"Discard":{}}]}},"from":"Graveyard"}}"#, &["Ability.From", "Ability.Rule", "Cost.Discard", "Cost.PayLife", "Rule.MayCast"])]
+    #[case::ep27_cast_itself_with_flash_from_a_hand(r#"{"Rule":{"rule":{"MayCast":{"what":["This"],"flash":true}},"condition":"YourTurn","from":"Hand"}}"#, &["Ability.From", "Ability.Rule", "Rule.MayCast"])]
     #[case::affinity_given_to_spells(r#"{"Static":{"affected":{"Each":["Spell",{"Type":"Enchantment"}]},"mods":[{"AddKeyword":{"Affinity":[{"Subtype":"Aura"}]}}]}}"#, &["Ability.Static", "Ability.Static.SpellKeywords", "Keyword.Affinity", "Mod.AddKeyword"])]
     #[case::a_discard_of_your_choice(r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Discard"])]
     #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
@@ -6222,6 +6319,26 @@ mod tests {
         r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"State":{"condition":"YourTurn"}},"effects":[{"Draw":{}}]}}]}}"#,
         "a state is the whole pattern of a triggered ability"
     )]
+    #[case::ep27_a_loss_prevented(
+        r#"{"Replacement":{"when":{"LoseGame":{}},"by":"Prevent"}}"#,
+        "a loss of the game is replaced only by steps that happen instead"
+    )]
+    #[case::ep27_tokens_lessened(
+        r#"{"Replacement":{"when":{"TokenCreation":{"controller":"You"}},"by":{"Subtract":1}}}"#,
+        "only damage is lessened or capped"
+    )]
+    #[case::ep27_damage_capped_at_nothing(
+        r#"{"Replacement":{"when":{"Damage":{}},"by":{"Cap":0}}}"#,
+        "capping damage at 0 is `Prevent`"
+    )]
+    #[case::ep27_draws_halved(
+        r#"{"Replacement":{"when":{"Draw":{"who":"You"}},"by":"Half"}}"#,
+        "only the counters or the damage of an event are halved"
+    )]
+    #[case::ep27_life_only_and_opponents_cant_win(
+        r#"{"Rule":{"rule":{"CantLoseGame":{"who":"You","opponents_cant_win":true,"life_only":true}}}}"#,
+        "a rule that spares only the loss for life lets the opponents win as usual"
+    )]
     #[case::a_state_in_the_cause_of_a_rule(
         r#"{"Rule":{"rule":{"TriggerAgain":{"cause":{"State":{"condition":"YourTurn"}}}}}}"#,
         "a state is the whole pattern of a triggered ability"
@@ -6240,6 +6357,14 @@ mod tests {
     )]
     #[case::from_a_hand(
         r#"{"Rule":{"rule":{"CantDraw":"You"},"from":"Hand"}}"#,
+        "abilities[0].Rule.from: a rule works from the battlefield"
+    )]
+    #[case::a_permission_from_a_hand_without_flash(
+        r#"{"Rule":{"rule":{"MayCast":{"what":["This"]}},"from":"Hand"}}"#,
+        "abilities[0].Rule.from: a rule works from the battlefield"
+    )]
+    #[case::a_flash_permission_from_a_hand_for_other_cards(
+        r#"{"Rule":{"rule":{"MayCast":{"what":[{"Type":"Creature"}],"flash":true}},"from":"Hand"}}"#,
         "abilities[0].Rule.from: a rule works from the battlefield"
     )]
     #[case::from_the_stack_for_another_rule(

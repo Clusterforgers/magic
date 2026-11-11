@@ -207,6 +207,9 @@ fn read_expression(ctx: &Ctx, expression: &str) -> Tr<Value> {
     }
     if let Some(rest) = expression.strip_prefix("SVar$") {
         let (name, steps) = rest.split_once('/').unwrap_or((rest, ""));
+        if name == "CostCountersRemoved" {
+            return apply_steps(ctx, super::cost::ep29_removed(ctx)?, steps);
+        }
         return apply_steps(ctx, amount(ctx, name)?, steps);
     }
     let (base, steps) = expression.split_once('/').unwrap_or((expression, ""));
@@ -312,6 +315,12 @@ fn event_amount(ctx: &Ctx, expression: &str) -> Tr<Option<Value>> {
             // The cards in all their hands together.
             if what == "CardsInHand" {
                 return Ok(Some(json!({"Count": [{"In": "Hand"}, {"OwnedBy": who}]})));
+            }
+            // "If an opponent lost life last turn": the count kept as the turn before ended.
+            if what == "LifeLostLastTurn" {
+                return Ok(Some(
+                    json!({"TalliedLastTurn": {"who": who, "what": "LifeLost"}}),
+                ));
             }
             let tally = match what {
                 "HighestLifeLostThisTurn" => Some("LifeLostMost"),

@@ -66,6 +66,8 @@ pub(crate) enum Kind {
     Untap,
     /// A permanent the payer controls returns to its owner's hand.
     Return,
+    /// A permanent the payer controls is exiled.
+    ExilePermanent,
     /// A permanent the payer controls loses a counter of the kind its filter names.
     Counter,
     /// A card in any player's graveyard is exiled.
@@ -113,6 +115,8 @@ pub(crate) enum Part {
     Damage(u32),
     /// The source stops being attached.
     Unattach,
+    /// The payer discards every card in their hand ("Discard your hand"): nothing to choose, an empty hand pays it.
+    DiscardHand,
     /// Cards exiled from the top of the payer's library.
     ExileTop(u32),
     /// Counters put on the source.
@@ -173,6 +177,7 @@ const fn counted(item: &CostItem) -> &'static str {
         CostItem::RevealFromHand { .. } => "Cost.RevealFromHand.Counted",
         CostItem::TapPermanents { .. } => "Cost.TapPermanents.Counted",
         CostItem::ReturnToHand { .. } => "Cost.ReturnToHand.Counted",
+        CostItem::ExilePermanents { .. } => "Cost.ExilePermanents.Counted",
         _ => "Cost",
     }
 }
@@ -330,6 +335,9 @@ impl Part {
     /// The part a cost item is, `None` for the items that are not one of these (`{T}`, mana, losing the source), or the
     /// name of the part whose amount the engine cannot count.
     pub(crate) fn read(item: &CostItem) -> Result<Option<Part>, &'static str> {
+        if discards_the_hand(item) {
+            return Ok(Some(Part::DiscardHand));
+        }
         let (part, x) = match item {
             CostItem::PayLife(count) => {
                 let (number, x) = amount(count, item)?;
@@ -419,6 +427,9 @@ impl Part {
             CostItem::RevealFromHand { filter, count } => pick(Kind::Reveal, filter, count, item)?,
             CostItem::TapPermanents { filter, count } => pick(Kind::Tap, filter, count, item)?,
             CostItem::ReturnToHand { filter, count } => pick(Kind::Return, filter, count, item)?,
+            CostItem::ExilePermanents { filter, count } => {
+                pick(Kind::ExilePermanent, filter, count, item)?
+            }
             _ => match read_more(item)? {
                 Some(found) => found,
                 None => return Ok(None),
@@ -439,6 +450,7 @@ impl Part {
                 Part::Damage(_) => Part::Damage(x),
                 Part::ExileTop(_) => Part::ExileTop(x),
                 Part::Unattach => Part::Unattach,
+                Part::DiscardHand => Part::DiscardHand,
                 Part::Counters { counter, .. } => Part::Counters {
                     counter: counter.clone(),
                     count: x,
@@ -492,7 +504,7 @@ impl Part {
             } => among::most(payer, filter, counter.as_ref()),
             Part::Pick(pick) => u32::try_from(pick.candidates(payer).len()).unwrap_or(u32::MAX),
             Part::ExileTop(_) => exile_top::most(payer),
-            Part::Exert | Part::Unattach | Part::X(_) => return None,
+            Part::Exert | Part::Unattach | Part::DiscardHand | Part::X(_) => return None,
         };
         Some(number)
     }
@@ -507,6 +519,7 @@ impl Part {
             Part::DiscardRandom(_) => "Cost.DiscardRandom",
             Part::Damage(_) => "Cost.DamageToYou",
             Part::Unattach => "Cost.Unattach",
+            Part::DiscardHand => "Cost.Discard",
             Part::ExileTop(_) => "Cost.ExileTop",
             Part::Counters { .. } => "Cost.RemoveCounters",
             Part::PutCounters { .. } => "Cost.PutCounters",
@@ -529,6 +542,7 @@ impl Part {
                 Kind::Tap => "Cost.TapPermanents",
                 Kind::TapPower => "Cost.TapPower",
                 Kind::Return => "Cost.ReturnToHand",
+                Kind::ExilePermanent => "Cost.ExilePermanents",
                 Kind::Untap => "Cost.UntapPermanents",
                 Kind::Counter => "Cost.RemoveCounters",
             },
@@ -547,6 +561,7 @@ impl Part {
             }
             Part::Damage(amount) => format!("Take {amount} damage"),
             Part::Unattach => "Unattach this permanent".to_owned(),
+            Part::DiscardHand => "Discard your hand".to_owned(),
             Part::ExileTop(1) => "Exile the top card of your library".to_owned(),
             Part::ExileTop(amount) => format!("Exile the top {amount} cards of your library"),
             Part::Mill(1) => "Mill a card".to_owned(),
@@ -600,6 +615,7 @@ impl Part {
             Part::DiscardRandom(amount) => random::payable(payer, *amount).then(Vec::new),
             Part::Damage(_) => payer.state.object(payer.source).is_some().then(Vec::new),
             Part::Unattach => unattach::payable(payer).then(Vec::new),
+            Part::DiscardHand => Some(Vec::new()),
             Part::ExileTop(amount) => exile_top::payable(payer, *amount).then(Vec::new),
             Part::Pick(pick) if pick.kind == Kind::Evidence => {
                 let found = pick.candidates(payer);
@@ -668,6 +684,11 @@ impl Part {
             Part::DiscardRandom(amount) => random::events(state, player, *amount),
             Part::Damage(amount) => damage::events(state, player, source, *amount),
             Part::Unattach => vec![unattach::event(source)],
+            Part::DiscardHand => state
+                .zone(crate::zones::Zone::Hand(player))
+                .iter()
+                .map(|object| discard::event(player, *object))
+                .collect(),
             Part::ExileTop(amount) => exile_top::events(state, player, *amount),
             Part::Counters { counter, count } => counters::events(state, source, counter, *count),
             Part::PutCounters { counter, count } => source::put(state, source, counter, *count),
@@ -798,7 +819,9 @@ impl Pick {
             Kind::ExileHand => exile_hand::candidates(payer, &self.filter),
             Kind::Reveal => reveal::candidates(payer, &self.filter),
             Kind::Tap | Kind::TapPower => tap::candidates(payer, &self.filter),
-            Kind::Return | Kind::Blight(_) => bounce::candidates(payer, &self.filter),
+            Kind::Return | Kind::Blight(_) | Kind::ExilePermanent => {
+                bounce::candidates(payer, &self.filter)
+            }
             Kind::Untap => untap::candidates(payer, &self.filter),
             Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
             Kind::ExileAny => exile::candidates_any(payer, &self.filter),
@@ -812,9 +835,12 @@ impl Pick {
         found.retain(|id| match self.kind {
             Kind::Sacrifice => crate::prohibit::may_sacrifice(payer.state, payer.player, *id),
             Kind::Discard => crate::prohibit::may_discard(payer.state, payer.player, *id),
-            Kind::Exile | Kind::ExileHand | Kind::ExileAny | Kind::Craft | Kind::Behold(true) => {
-                crate::prohibit::may_exile(payer.state, *id)
-            }
+            Kind::Exile
+            | Kind::ExileHand
+            | Kind::ExileAny
+            | Kind::ExilePermanent
+            | Kind::Craft
+            | Kind::Behold(true) => crate::prohibit::may_exile(payer.state, *id),
             _ => true,
         });
         found
@@ -901,6 +927,7 @@ impl Pick {
             Kind::Tap => tap::text(&self.filter, self.count),
             Kind::TapPower => tap::power_text(&self.filter, self.count),
             Kind::Return => bounce::text(&self.filter, self.count),
+            Kind::ExilePermanent => bounce::exile_text(&self.filter, self.count),
             Kind::Untap => untap::text(&self.filter, self.count),
             Kind::Counter => c11c_counter_picks::c11c_text(&self.filter, self.count),
             Kind::ExileAny => exile::text_any(&self.filter, self.count),
@@ -946,7 +973,9 @@ impl Pick {
         match self.kind {
             Kind::Sacrifice => sacrifice::event(state, object),
             Kind::Discard => Some(discard::event(player, object)),
-            Kind::Exile | Kind::ExileHand | Kind::Craft => exile_hand::event(state, object),
+            Kind::Exile | Kind::ExileHand | Kind::Craft | Kind::ExilePermanent => {
+                exile_hand::event(state, object)
+            }
             Kind::Reveal => Some(reveal::event(player, object)),
             Kind::Tap | Kind::TapPower => Some(tap::event(object)),
             Kind::Return => bounce::event(state, object),
@@ -963,3 +992,9 @@ impl Pick {
 
 #[cfg(test)]
 mod tests;
+
+/// "Discard your hand": a discard counted as every card of the payer's hand, with no filter.
+fn discards_the_hand(item: &CostItem) -> bool {
+    matches!(item, CostItem::Discard { count: Amount::Count(cards), filter: None }
+        if cards.0 == [Pred::In(ZoneKind::Hand), Pred::OwnedBy(mtg_cards::refs::Ref::You)])
+}

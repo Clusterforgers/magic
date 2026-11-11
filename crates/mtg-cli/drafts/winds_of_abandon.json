@@ -1,0 +1,48 @@
+{
+  "oracle_id": "499a4715-6776-461b-bee4-22ed172d455e",
+  "name": "Winds of Abandon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winds of Abandon",
+      "oracle_fingerprint": "425cc67c64073ea85e6d18a4fd5c5161",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "exiled" },
+                  "as": "c",
+                  "effects": [
+                    {
+                      "Search": {
+                        "who": { "ControllerOf": { "Departed": { "Bound": "c" } } },
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "as": "land"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": { "who": { "ControllerOf": { "Departed": { "Bound": "c" } } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Overload": "{4}{W}{W}" } }
+      ]
+    }
+  ]
+}

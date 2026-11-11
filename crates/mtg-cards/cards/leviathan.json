@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d8c49932-9b4f-4cb0-a7e9-4b7eb12203ee",
+  "name": "Leviathan",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Leviathan",
+      "oracle_fingerprint": "2a58ce83008746ba9b28c60c770ce1cc",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        { "Static": { "affected": "This", "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Island" }], "count": 2 } }],
+                  "paid": [{ "Untap": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 174, "end": 281 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "oracle_id": "5cbbb3f3-63a4-4983-81ea-8c405b10e63f",
+  "name": "Voice of Resurgence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voice of Resurgence",
+      "oracle_fingerprint": "9fac095bfc9d18ae010941214955b9d2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "by": "Opponents" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "if": {
+              "Any": [
+                "YourTurn",
+                { "Not": { "Matches": { "subject": "Triggering", "selector": ["Spell"] } } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Green", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 0,
+                      "toughness": 0,
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "SetPT": {
+                                  "power": {
+                                    "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                  },
+                                  "toughness": {
+                                    "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              }
+                            ],
+                            "defining": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

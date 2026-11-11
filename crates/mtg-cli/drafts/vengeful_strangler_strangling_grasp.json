@@ -1,0 +1,65 @@
+{
+  "oracle_id": "ffc1fe11-0ecb-4497-a266-0817c79477e9",
+  "name": "Vengeful Strangler // Strangling Grasp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Strangler",
+      "oracle_fingerprint": "fdacf8e1ef8cc0b62e27f5d89b0c7788",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "BattlefieldAttached": { "to": { "Target": 0 } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Strangling Grasp",
+      "oracle_fingerprint": "698afa3acbb762c18022e41a96a8eab9",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [
+              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+              { "ControlledBy": "Opponents" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": "Attached" },
+                  "filter": [{ "Not": { "Type": "Land" } }]
+                }
+              },
+              { "LoseLife": { "who": { "ControllerOf": "Attached" }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

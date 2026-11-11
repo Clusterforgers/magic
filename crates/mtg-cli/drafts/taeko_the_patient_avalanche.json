@@ -1,0 +1,79 @@
+{
+  "oracle_id": "3d3eb043-8ce6-461a-b8bc-67f0ba6cd580",
+  "name": "Taeko, the Patient Avalanche",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Taeko, the Patient Avalanche",
+      "oracle_fingerprint": "9043c16dbf0dcae289f0a5d7b305a559",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Hand"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Library"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Exile"
+                  }
+                },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Command"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Scry": {} }, { "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{U/B}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": ["CantBeBlocked"],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

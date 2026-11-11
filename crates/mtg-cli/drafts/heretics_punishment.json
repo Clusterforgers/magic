@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a484120f-1027-4fc0-b4ea-cba94c262203",
+  "name": "Heretic's Punishment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heretic's Punishment",
+      "oracle_fingerprint": "3d5e1a2061b06a3321bbe45c1429805c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Greatest": { "of": [{ "Is": { "Bound": "milled" } }], "stat": "ManaValue" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

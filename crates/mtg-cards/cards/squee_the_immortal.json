@@ -1,0 +1,22 @@
+{
+  "oracle_id": "481fb71a-11b9-462e-a4da-ca35ffd1bd22",
+  "name": "Squee, the Immortal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squee, the Immortal",
+      "oracle_fingerprint": "b56d0cd5eeeda69a44b475883a18035b",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "from": "Graveyard" } },
+            "from": "Graveyard"
+          }
+        },
+        {
+          "Rule": { "rule": { "MayCast": { "what": ["This"], "from": "Exile" } }, "from": "Exile" }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8ff7c8af-de9a-45f8-a9ba-98209a746891",
+  "name": "Unlucky Witness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unlucky Witness",
+      "oracle_fingerprint": "fb1a17b26d394dd1f65da4bf5a7a973c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "ExileTop": { "count": 2, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "impulse" },
+                      "play": true,
+                      "once": true
+                    }
+                  },
+                  "duration": "UntilYourNextEndStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

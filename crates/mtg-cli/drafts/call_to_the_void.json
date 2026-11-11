@@ -1,0 +1,63 @@
+{
+  "oracle_id": "c2db2c28-3ddc-41ce-a0c2-ddc555dea133",
+  "name": "Call to the Void",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call to the Void",
+      "oracle_fingerprint": "1a5bc7c52d6c5a02982eb33d9a8902da",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "own"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "own" }, "as": "chosen_own", "adds": true } },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Not": { "ControlledBy": { "Bound": "player" } } }
+                          ]
+                        },
+                        "as": "other"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "other" }, "as": "chosen_other", "adds": true } }
+                  ]
+                }
+              },
+              { "Reveal": { "what": { "Bound": "chosen_own" } } },
+              { "Reveal": { "what": { "Bound": "chosen_other" } } },
+              {
+                "Together": {
+                  "effects": [
+                    { "Destroy": { "what": { "Bound": "chosen_own" } } },
+                    { "Destroy": { "what": { "Bound": "chosen_other" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "oracle_id": "7ca584e7-4621-4b4e-a381-a0051acbf66a",
+  "name": "Urianger Augurelt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urianger Augurelt",
+      "oracle_fingerprint": "6de384b0bf025a161f16fe0129cfb90f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "who": "You",
+                    "what": [{ "ArrivedFrom": "Exile" }]
+                  }
+                },
+                { "SpellCast": { "what": [{ "WasCast": { "from": "Exile" } }], "by": "You" } }
+              ]
+            },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "May": { "effects": [{ "ExileHidden": { "what": { "Bound": "top" } } }] } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "what": [{ "ExiledWith": "This" }], "from": "Exile", "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "SpellCost": {
+                      "applies_to": ["Spell", { "ExiledWith": "This" }],
+                      "change": "Reduce",
+                      "mana": "{2}"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

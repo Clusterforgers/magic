@@ -1,0 +1,63 @@
+{
+  "oracle_id": "d9c1c4d5-cc60-4762-9fc1-c768a1f61539",
+  "name": "Warren Weirding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warren Weirding",
+      "oracle_fingerprint": "81b38bbfd8bca687fe30ed6cf91e3e61",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Subtype": "Goblin" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "who": { "Target": 0 },
+                        "token": {
+                          "Custom": {
+                            "name": "Goblin Rogue",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Goblin", "Rogue"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 2,
+                        "as": "tokens"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Is": { "Bound": "tokens" } }] },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

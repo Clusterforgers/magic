@@ -1,0 +1,33 @@
+{
+  "oracle_id": "39d7569e-62b0-4f37-813a-0985632c66c9",
+  "name": "Encircling Fissure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Encircling Fissure",
+      "oracle_fingerprint": "63e29b783e2a30bd0f55824cf9c883c9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }],
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Awaken": { "count": 2, "cost": "{4}{W}" } } }
+      ]
+    }
+  ]
+}

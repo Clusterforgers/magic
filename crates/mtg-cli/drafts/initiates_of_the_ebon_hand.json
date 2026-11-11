@@ -1,0 +1,34 @@
+{
+  "oracle_id": "0bf359ef-669f-41dc-8ab5-ba8e58b2f398",
+  "name": "Initiates of the Ebon Hand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Initiates of the Ebon Hand",
+      "oracle_fingerprint": "8e1ea39b6d6397a6797e042760457b3a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Black"] } } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Ge", "right": 4 } },
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

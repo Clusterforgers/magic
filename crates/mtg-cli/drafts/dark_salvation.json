@@ -1,0 +1,74 @@
+{
+  "oracle_id": "f5c2b700-da52-4436-b234-e32ba7759e17",
+  "name": "Dark Salvation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Salvation",
+      "oracle_fingerprint": "954c821c6a372a3255b542a36a3518be",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Bind": { "what": { "Target": 0 }, "as": "player" } },
+              {
+                "CreateToken": {
+                  "who": { "Bound": "player" },
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": "X"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Count": [
+                                { "Subtype": "Zombie" },
+                                { "ControlledBy": { "Bound": "player" } }
+                              ]
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Count": [
+                                { "Subtype": "Zombie" },
+                                { "ControlledBy": { "Bound": "player" } }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

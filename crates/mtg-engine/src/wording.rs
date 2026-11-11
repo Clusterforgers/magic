@@ -231,7 +231,7 @@ fn who(by: &Ref) -> (&'static str, &'static str) {
 fn kind_of(what: &Targetable) -> (String, String) {
     match what {
         Targetable::AnyTarget => ("target".to_owned(), String::new()),
-        Targetable::Player => ("player".to_owned(), String::new()),
+        Targetable::Player | Targetable::PlayerAmong(_) => ("player".to_owned(), String::new()),
         Targetable::Opponent => ("opponent".to_owned(), String::new()),
         Targetable::Object(selector) => phrase(selector),
         Targetable::PerPlayer { players, what } => {
@@ -255,7 +255,7 @@ fn kind_of(what: &Targetable) -> (String, String) {
             let (head, tail) = kind_of(what);
             (format!("other {head}"), tail)
         }
-        Targetable::ChosenBy { what, .. } => kind_of(what),
+        Targetable::ChosenBy { what, .. } | Targetable::AtRandom(what) => kind_of(what),
         Targetable::Either(kinds) => (
             kinds
                 .iter()
@@ -944,7 +944,7 @@ pub(crate) fn sacrifice_up_to(filter: &Selector, count: usize) -> String {
 }
 
 /// `count` of what `filter` describes, with `place` after them: "a creature you control", "2 creatures you control".
-fn counted(filter: &Selector, count: usize, extra: &str) -> String {
+pub(crate) fn counted(filter: &Selector, count: usize, extra: &str) -> String {
     let (head, tail) = phrase(filter);
     let tail = if tail.is_empty() {
         extra.to_owned()

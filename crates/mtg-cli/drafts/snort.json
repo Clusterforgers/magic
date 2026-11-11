@@ -1,0 +1,62 @@
+{
+  "oracle_id": "ab94985c-5a3e-42c7-be10-29c5b638346b",
+  "name": "Snort",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snort",
+      "oracle_fingerprint": "a76050a54134876588ef2485767329d5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Discard": {
+                              "who": { "Bound": "player" },
+                              "count": {
+                                "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }]
+                              }
+                            }
+                          },
+                          { "Draw": { "who": { "Bound": "player" }, "count": 5 } }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "DealDamage": {
+                              "to": {
+                                "PlayersWhere": {
+                                  "who": "Opponents",
+                                  "test": { "Among": { "Bound": "player" } }
+                                }
+                              },
+                              "amount": 5
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{R}" } }
+      ]
+    }
+  ]
+}

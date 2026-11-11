@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e67b8eb2-7b39-4fdb-9ee2-686d1d781cfa",
+  "name": "Tectonic Hellion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tectonic Hellion",
+      "oracle_fingerprint": "460862db6d05dd9910a8d1f42f485c42",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": {
+                            "Largest": { "who": "EachPlayer", "of": [{ "Type": "Land" }] }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "filter": [{ "Type": "Land" }],
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

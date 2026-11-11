@@ -1,0 +1,71 @@
+{
+  "oracle_id": "4f88ddfa-5478-426a-a978-dfc64c687db1",
+  "name": "Liar's Pendulum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liar's Pendulum",
+      "oracle_fingerprint": "79feb918989ef02561eb624a081486d1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "ChooseValue": {
+                  "who": { "Target": 0 },
+                  "kind": { "Options": ["in hand", "not in hand"] },
+                  "as": "guess"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    { "Reveal": { "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Any": [
+                            {
+                              "All": [
+                                { "ChosenWord": { "name": "guess", "word": "in hand" } },
+                                {
+                                  "CountOf": {
+                                    "subject": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                                    "selector": [{ "ChosenAs": "name" }],
+                                    "op": "Eq",
+                                    "right": 0
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "All": [
+                                { "ChosenWord": { "name": "guess", "word": "not in hand" } },
+                                {
+                                  "CountOf": {
+                                    "subject": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                                    "selector": [{ "ChosenAs": "name" }],
+                                    "op": "Gt",
+                                    "right": 0
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        "then": [{ "Draw": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

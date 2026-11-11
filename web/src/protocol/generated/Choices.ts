@@ -19,6 +19,11 @@ modes?: Array<number>,
  */
 random_modes?: boolean, 
 /**
+ * How many target specifications the game filled with its random source ("any target chosen at random"), each with
+ * the next substream after the modes: the event that carries these choices spends them.
+ */
+random_targets?: number, 
+/**
  * The value of X, which outlives the spell (CR 107.3).
  */
 x?: number, 

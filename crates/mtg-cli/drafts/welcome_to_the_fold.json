@@ -1,0 +1,78 @@
+{
+  "oracle_id": "b8647f54-f50b-4bc6-bd44-fda25ef189fa",
+  "name": "Welcome to the Fold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Welcome to the Fold",
+      "oracle_fingerprint": "8fb2f5f5fe36713298cee6da0ae1c52d",
+      "abilities": [
+        { "Keyword": { "Madness": "{X}{U}{U}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "CastWith": "Madness" },
+                  "then": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Target": 0 },
+                            "selector": [
+                              {
+                                "Compare": {
+                                  "stat": "Toughness",
+                                  "op": "Le",
+                                  "to": { "Sum": [{ "ManaSpent": { "of": null } }, -2] }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "then": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "SetController": "You" }],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Target": 0 },
+                            "selector": [
+                              { "Compare": { "stat": "Toughness", "op": "Le", "to": 2 } }
+                            ]
+                          }
+                        },
+                        "then": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "SetController": "You" }],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

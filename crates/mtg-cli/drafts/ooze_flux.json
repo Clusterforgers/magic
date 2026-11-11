@@ -1,0 +1,45 @@
+{
+  "oracle_id": "631d0de7-4810-4bc3-b86b-8e2505ed91f4",
+  "name": "Ooze Flux",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ooze Flux",
+      "oracle_fingerprint": "ddacb72f11537375ed7a3a9d9a7a7450",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{G}" },
+              {
+                "RemoveCountersAmong": {
+                  "counter": "+1/+1",
+                  "count": "X",
+                  "from": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                }
+              },
+              { "XAtLeast": 1 }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": "X",
+                      "token": {
+                        "name": "Ooze",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Ooze"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

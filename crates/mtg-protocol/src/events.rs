@@ -102,6 +102,11 @@ pub enum HiddenEvent {
         /// Cards looked at.
         count: u32,
     },
+    /// Cards the viewer cannot see (of a hand or a library) were picked at random; how many is all that shows.
+    PickedAtRandom {
+        /// Cards picked.
+        count: u32,
+    },
     /// A player found cards by searching; which, only they know until they are revealed.
     CardsFound {
         /// Who searched.
@@ -259,6 +264,12 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
     // Every seat sees every hand, so what is dealt, bottomed or drawn is told whole.
     let own = |player: &PlayerId| *player == viewer || before.ruleset().open_hands();
     match event {
+        // A pick among cards of a hand or a library names them only to a seat that sees them.
+        Event::ChosenAtRandom { cards } if cards.iter().any(|card| !knows(before, *card, viewer)) => {
+            Some(HiddenEvent::PickedAtRandom {
+                count: count(cards.len()),
+            })
+        }
         Event::LibraryShuffled { player, .. } => {
             Some(HiddenEvent::LibraryShuffled { player: *player })
         }
@@ -445,8 +456,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CommanderStayed { .. }
         | Event::CompanionRevealed { .. }
         | Event::CompanionBrought { .. }
-        // A pick at random is of the cards of a public zone, which every seat sees, or of the cards a discard at
-        // random then reveals.
+        // A pick at random among cards the viewer sees.
         | Event::ChosenAtRandom { .. }
         // Players are public.
         | Event::PlayersChosenAtRandom { .. }

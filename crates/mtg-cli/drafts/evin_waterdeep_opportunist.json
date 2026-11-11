@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f688f839-c7c2-45a9-8c60-9fdb030803e6",
+  "name": "Evin, Waterdeep Opportunist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evin, Waterdeep Opportunist",
+      "oracle_fingerprint": "c1853cc5997d8b65f779c178acf9a602",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": { "Ward": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Treasure" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "Did": { "action": "Sacrificed", "what": [{ "Type": "Creature" }] } }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

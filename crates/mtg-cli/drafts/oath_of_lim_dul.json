@@ -1,0 +1,36 @@
+{
+  "oracle_id": "64e163c2-2378-4e4c-aefe-5e0d2fd19988",
+  "name": "Oath of Lim-Dûl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of Lim-Dûl",
+      "oracle_fingerprint": "a0e382585225ef2a074e10309a27a600",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "LifeLost": { "who": "You" } },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 1, "op": "Eq", "right": 1 } },
+                  "effects": [
+                    {
+                      "Pay": {
+                        "cost": [{ "Discard": {} }],
+                        "unpaid": [{ "Sacrifice": { "filter": ["Other"] } }]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "times": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        { "Activated": { "cost": "{B}{B}", "effects": [{ "Draw": {} }] } }
+      ]
+    }
+  ]
+}

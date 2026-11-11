@@ -1,0 +1,66 @@
+{
+  "oracle_id": "92f0677f-64d8-4c83-abad-ffa2a37f88c1",
+  "name": "Celestial Convergence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celestial Convergence",
+      "oracle_fingerprint": "069598ea10b86f13226753ed3117352f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "omen" }, "count": 7 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "omen" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "omen" } } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Players": {
+                                "PlayersWhere": {
+                                  "who": "EachPlayer",
+                                  "test": {
+                                    "Compare": {
+                                      "left": { "Life": "You" },
+                                      "op": "Eq",
+                                      "right": { "HighestLife": "EachPlayer" }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "op": "Ge",
+                            "right": 2
+                          }
+                        },
+                        "then": [{ "DrawGame": {} }],
+                        "otherwise": [{ "WinGame": { "who": "MostLife" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

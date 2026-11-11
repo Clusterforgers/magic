@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7e0cdba8-45e0-4fe5-b440-2d8fcf4d6b2b",
+  "name": "Sanctum Prelate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanctum Prelate",
+      "oracle_fingerprint": "ca16faaa37b261c0d6c5d331c9c9253e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "Number": { "min": 0, "max": 1000000 } } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "Cast": {
+                    "filter": [
+                      { "Not": { "Type": "Creature" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "Chosen" } }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

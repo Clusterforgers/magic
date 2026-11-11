@@ -1,0 +1,27 @@
+{
+  "oracle_id": "da1035c4-bafe-434e-b1bd-5b08960d4c91",
+  "name": "Rug of Smothering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rug of Smothering",
+      "oracle_fingerprint": "d8bbdd23c59ba669894ab27bf2e21d3a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Triggering",
+                  "amount": { "Tallied": { "who": "Triggering", "what": "SpellsCast" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

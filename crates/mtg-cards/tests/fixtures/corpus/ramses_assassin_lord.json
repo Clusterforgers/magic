@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "9e5f168c-4f56-4d06-bef1-db10fdfbe657",
+  "oracle_id": "170182ed-af1d-442a-8868-d74a96e17f03",
+  "multiverse_ids": [
+    597915
+  ],
+  "mtgo_id": 103520,
+  "tcgplayer_id": 282769,
+  "cardmarket_id": 671530,
+  "name": "Ramses, Assassin Lord",
+  "lang": "en",
+  "released_at": "2022-09-09",
+  "uri": "https://api.scryfall.com/cards/9e5f168c-4f56-4d06-bef1-db10fdfbe657",
+  "scryfall_uri": "https://scryfall.com/card/dmc/39/ramses-assassin-lord?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:44:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/e/9e5f168c-4f56-4d06-bef1-db10fdfbe657.jpg?1783921463",
+    "normal": "https://cards.scryfall.io/normal/front/9/e/9e5f168c-4f56-4d06-bef1-db10fdfbe657.jpg?1783921463",
+    "large": "https://cards.scryfall.io/large/front/9/e/9e5f168c-4f56-4d06-bef1-db10fdfbe657.jpg?1783921463",
+    "png": "https://cards.scryfall.io/png/front/9/e/9e5f168c-4f56-4d06-bef1-db10fdfbe657.png?1783921463",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/e/9e5f168c-4f56-4d06-bef1-db10fdfbe657.jpg?1783921463",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/e/9e5f168c-4f56-4d06-bef1-db10fdfbe657.jpg?1783921463",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/e/9e5f168c-4f56-4d06-bef1-db10fdfbe657.webp?1783921463",
+    "grid": "https://cards.scryfall.io/grid/front/9/e/9e5f168c-4f56-4d06-bef1-db10fdfbe657.webp?1783921463",
+    "display": "https://cards.scryfall.io/display/front/9/e/9e5f168c-4f56-4d06-bef1-db10fdfbe657.webp?1783921463",
+    "art": "https://cards.scryfall.io/art/front/9/e/9e5f168c-4f56-4d06-bef1-db10fdfbe657.webp?1783921463",
+    "crop": "https://cards.scryfall.io/crop/front/9/e/9e5f168c-4f56-4d06-bef1-db10fdfbe657.webp?1783921463",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/e/9e5f168c-4f56-4d06-bef1-db10fdfbe657.jpg?1783921463"
+  },
+  "mana_cost": "{2}{U}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Assassin",
+  "oracle_text": "Deathtouch\nOther Assassins you control get +1/+1.\nWhenever a player loses the game, if they were attacked this turn by an Assassin you controlled, you win the game.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Deathtouch"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "78076b27-f888-4723-b27c-44074accd261",
+  "set": "dmc",
+  "set_name": "Dominaria United Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/78076b27-f888-4723-b27c-44074accd261",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9e5f168c-4f56-4d06-bef1-db10fdfbe657/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A170182ed-af1d-442a-8868-d74a96e17f03&unique=prints",
+  "collector_number": "39",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Why butcher an army when you can slash a single throat for the same result?\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Manuel Castañón",
+  "artist_ids": [
+    "35f11eeb-36ff-4059-bb70-d1274f5bd858"
+  ],
+  "illustration_id": "5cbc9c9f-24dc-4e43-bfe6-44e243d0ebfd",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5977,
+  "preview": {
+    "source": "The Spike Feeders",
+    "source_uri": "https://www.youtube.com/shorts/vzox5oXRclk",
+    "previewed_at": "2022-08-18"
+  },
+  "prices": {
+    "usd": "2.87",
+    "usd_foil": "2.58",
+    "usd_etched": null,
+    "eur": "2.13",
+    "eur_foil": "2.61",
+    "tix": "1.01"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=597915&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRamses%252C%2BAssassin%2BLord",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRamses%252C%2BAssassin%2BLord",
+    "edhrec": "https://edhrec.com/route/?cc=Ramses%2C+Assassin+Lord"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F282769%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=671530&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/103520?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

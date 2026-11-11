@@ -1,0 +1,71 @@
+{
+  "oracle_id": "cf113674-f809-4b97-9e8d-e22385446ddb",
+  "name": "Goldwardens' Gambit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goldwardens' Gambit",
+      "oracle_fingerprint": "93e87485b90d09c23acfcccc4a0046ad",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Equipment" }] } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Rebel",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Rebel"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 5,
+                  "as": "rebels"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "rebels" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "rebels" },
+                  "as": "rebel",
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }]
+                              },
+                              "as": "equipment"
+                            }
+                          },
+                          {
+                            "Attach": {
+                              "what": { "Bound": "equipment" },
+                              "to": { "Bound": "rebel" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

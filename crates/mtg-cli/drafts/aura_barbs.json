@@ -1,0 +1,59 @@
+{
+  "oracle_id": "1aa8fdc3-efeb-450d-9540-2ef0efaf270d",
+  "name": "Aura Barbs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aura Barbs",
+      "oracle_fingerprint": "8c3555dfb01328edf465bdc8da9838b8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Enchantment" }] },
+                  "as": "e",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "e" },
+                        "to": { "ControllerOf": { "Bound": "e" } },
+                        "amount": 2
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Subtype": "Aura" },
+                      { "AttachedTo": { "Each": [{ "Type": "Creature" }] } }
+                    ]
+                  },
+                  "as": "a",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "a" },
+                        "to": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "HasAttached": [{ "Is": { "Bound": "a" } }] }
+                          ]
+                        },
+                        "amount": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

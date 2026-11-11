@@ -1525,6 +1525,7 @@ fn w2f_cost_taken(
             count: 2,
         }],
         convoked: vec![mtg_engine::object::ObjectRef { id: a, counter: 1 }],
+        removed: 3,
     }
 }
 
@@ -1541,6 +1542,7 @@ fn pipeline_events() -> Vec<Event> {
     let choices = Choices {
         modes: vec![1],
         random_modes: true,
+        random_targets: 0,
         x: Some(3),
         targets: vec![vec![target, Target::Player(player)]],
         division: vec![(target, 2)],

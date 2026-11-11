@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ec45caf7-2051-463d-bf70-3dda671d6ce2",
+  "name": "Swift Silence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swift Silence",
+      "oracle_fingerprint": "1e8231dca95d9e5117d97c97eb2c9115",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Counter": { "what": { "Each": ["Spell", "Other"] }, "as": "c" } },
+              { "Draw": { "count": { "Count": [{ "Is": { "Bound": "c" } }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

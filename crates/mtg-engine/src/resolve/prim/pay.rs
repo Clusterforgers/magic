@@ -204,6 +204,10 @@ fn repeated(cost: &Cost, times: usize) -> Cost {
                     filter: filter.clone(),
                     count: times_over(count),
                 }],
+                CostItem::ExilePermanents { filter, count } => vec![CostItem::ExilePermanents {
+                    filter: filter.clone(),
+                    count: times_over(count),
+                }],
                 CostItem::TapPermanents { filter, count } => vec![CostItem::TapPermanents {
                     filter: filter.clone(),
                     count: times_over(count),

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "9fc7aba7-eda2-4134-9c10-31ee35201b72",
+  "name": "Ichormoon Gauntlet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ichormoon Gauntlet",
+      "oracle_fingerprint": "82f8bd66eb2385128e834019398f839b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Loyalty": { "cost": "Zero", "effects": [{ "Proliferate": {} }] }
+                }
+              },
+              {
+                "GrantAbility": {
+                  "Loyalty": { "cost": { "Minus": 12 }, "effects": [{ "ExtraTurn": {} }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "PutCountersOf": {
+                  "on": { "Target": 0 },
+                  "of": { "Target": 0 },
+                  "each": 1,
+                  "one_kind": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

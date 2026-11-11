@@ -1,0 +1,43 @@
+{
+  "oracle_id": "7e4e1d13-db1a-48e5-9b5f-f3e71d10c23e",
+  "name": "Feast of the Victorious Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feast of the Victorious Dead",
+      "oracle_fingerprint": "c8c35d3fd3111d49dc92abadbfc735e5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": {
+                  "min": 1,
+                  "max": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } }
+                },
+                "divide": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } }
+              }
+            ],
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } }
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

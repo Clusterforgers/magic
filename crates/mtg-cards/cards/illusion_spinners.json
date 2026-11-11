@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b608288e-1755-4738-b828-9df6998bae8d",
+  "name": "Illusion Spinners",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illusion Spinners",
+      "oracle_fingerprint": "07fe92fc738c6915714c6ef67188b7fd",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "flash": true } },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Hand"
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Untapped"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

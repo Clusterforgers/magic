@@ -1,0 +1,42 @@
+{
+  "oracle_id": "f97e405d-4c24-4d4d-9e19-e349c073113c",
+  "name": "Hive Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hive Mind",
+      "oracle_fingerprint": "00e8e3679dde725f27f4e9ea1d2ac587",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }] }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "Among": "TriggeringPlayer" } }
+                    }
+                  },
+                  "as": "player",
+                  "effects": [
+                    {
+                      "CopySpell": {
+                        "what": "Triggering",
+                        "who": { "Bound": "player" },
+                        "new_targets": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

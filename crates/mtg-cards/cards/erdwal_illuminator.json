@@ -1,0 +1,17 @@
+{
+  "oracle_id": "5ff4ef34-acb9-46c3-8530-f4b093807066",
+  "name": "Erdwal Illuminator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Erdwal Illuminator",
+      "oracle_fingerprint": "2a54ee6ae5806b200b61ab839bc1a18a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 93 } }
+        }
+      ]
+    }
+  ]
+}

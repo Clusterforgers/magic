@@ -1,0 +1,34 @@
+{
+  "oracle_id": "12326d23-1fb5-4084-a23a-d6e2c90ea36c",
+  "name": "Arena",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arena",
+      "oracle_fingerprint": "1bad2272ae216a3c28e0f9ce12f120d5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Mana": "{3}" }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": "Opponents",
+                    "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "Tap": { "what": { "Target": 1 } } },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c39e5fb0-6de3-4105-ad3c-0ecb8951a1d5",
+  "name": "Misdirection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Misdirection",
+      "oracle_fingerprint": "97aed9958b52a32471707e663af63fa5",
+      "abilities": [
+        { "FreeCast": { "cost": [{ "ExileFromHand": { "filter": [{ "Color": "Blue" }] } }] } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", "SingleTarget"] } }],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

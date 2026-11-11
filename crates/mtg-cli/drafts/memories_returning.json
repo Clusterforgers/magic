@@ -1,0 +1,56 @@
+{
+  "oracle_id": "6cdc6548-cb32-437f-850a-9002542ad3d5",
+  "name": "Memories Returning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memories Returning",
+      "oracle_fingerprint": "f0e09ff593cad417fef878339e87ae09",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept1", "rest_as": "rest1" } },
+              { "Move": { "what": { "Bound": "kept1" }, "to": "Hand" } },
+              { "Choose": { "from": "Opponents", "as": "opp" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "opp" },
+                  "from": { "Bound": "rest1" },
+                  "as": "bottom1",
+                  "rest_as": "rest2"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "bottom1" },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              },
+              { "Choose": { "from": { "Bound": "rest2" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "opp" },
+                  "from": { "Bound": "rest3" },
+                  "as": "bottom2",
+                  "rest_as": "rest4"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "bottom2" },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              },
+              { "Move": { "what": { "Bound": "rest4" }, "to": "Hand" } }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{7}{U}{U}" } }
+      ]
+    }
+  ]
+}

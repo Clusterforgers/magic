@@ -1,0 +1,61 @@
+{
+  "oracle_id": "f748b2fb-6c2a-400a-8e96-fa4e4a1dfe80",
+  "name": "Shelldock Isle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shelldock Isle",
+      "oracle_fingerprint": "1096d0bcd6d9119f427a795f05cd9457",
+      "abilities": [
+        { "Keyword": { "Hideaway": 4 } },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Players": {
+                          "PlayersWhere": {
+                            "who": "EachPlayer",
+                            "test": {
+                              "Compare": {
+                                "left": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                                "op": "Le",
+                                "right": 20
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                        "free": true,
+                        "play": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -18,7 +18,7 @@
             "targets": [
               {
                 "what": { "Object": [{ "Type": "Creature" }] },
-                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } },
+                "bounds": { "min": 0, "max": "X" },
                 "divide": "X"
               }
             ],

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "b23c28ec-dc4d-4072-8fd8-6640a104335a",
+  "name": "Smirking Spelljacker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smirking Spelljacker",
+      "oracle_fingerprint": "7369b76b14dae93cb9c5866b94dba19b",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": ["Spell", { "In": "Stack" }, { "ControlledBy": "Opponents" }] }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "CountOf": {
+                "subject": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                "selector": [],
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CastFromZone": {
+                  "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "free": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

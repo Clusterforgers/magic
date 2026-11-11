@@ -1,0 +1,41 @@
+{
+  "oracle_id": "27e27681-9221-4e64-8c78-e153a86bc6e0",
+  "name": "Fires of Invention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fires of Invention",
+      "oracle_fingerprint": "770168d72b24ef397b59bade546bb0bd",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "You",
+                "action": { "Cast": { "more_than": 2, "unless": "YourTurn" } }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "Compare": {
+                      "stat": "ManaValue",
+                      "op": "Le",
+                      "to": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                    }
+                  }
+                ],
+                "free": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

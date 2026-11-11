@@ -1,0 +1,55 @@
+{
+  "oracle_id": "dd69ef80-d30c-4b15-aec8-4154dc20cb25",
+  "name": "Covetous Elegy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Covetous Elegy",
+      "oracle_fingerprint": "9355abc3775fd3f3ba4fe88d1a59caf4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 2 },
+                        "as": "kept",
+                        "rest_as": "rest"
+                      }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [{ "Is": { "Bound": "rest" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "rest" } }] }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

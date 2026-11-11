@@ -1,0 +1,98 @@
+{
+  "oracle_id": "10721d62-dc68-43b4-bfa2-dcb8cf8ea980",
+  "name": "Way of the Warlord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Way of the Warlord",
+      "oracle_fingerprint": "ce4d45eac9610415196b278d11ae38b6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }]
+                      },
+                      "op": "Lt",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Jace",
+                            "colors": ["Blue"],
+                            "types": ["Planeswalker"],
+                            "subtypes": ["Jace"],
+                            "abilities": [
+                              {
+                                "Loyalty": {
+                                  "cost": { "Minus": 1 },
+                                  "effects": [{ "Surveil": {} }]
+                                }
+                              },
+                              { "Loyalty": { "cost": { "Minus": 3 }, "effects": [{ "Draw": {} }] } }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "jace"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "jace" }, "counter": "loyalty", "count": 5 } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Loyalty": {
+                    "cost": { "Minus": 4 },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [
+                            { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                          ]
+                        },
+                        "bounds": { "min": 0, "max": 1 }
+                      },
+                      { "what": "Player" }
+                    ],
+                    "effects": [
+                      {
+                        "Together": {
+                          "effects": [
+                            { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+                            { "DealDamage": { "to": { "Target": 1 }, "amount": 2 } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

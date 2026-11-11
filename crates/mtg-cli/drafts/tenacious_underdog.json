@@ -1,0 +1,21 @@
+{
+  "oracle_id": "598e3ed2-659f-4400-b41d-3aee8068fba6",
+  "name": "Tenacious Underdog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tenacious Underdog",
+      "oracle_fingerprint": "6d1c4432642d76a2f160b33cb592c29a",
+      "abilities": [
+        { "Keyword": { "Blitz": [{ "Mana": "{2}{B}{B}" }, { "PayLife": 2 }] } },
+        {
+          "AltCast": {
+            "way": "Blitz",
+            "cost": [{ "Mana": "{2}{B}{B}" }, { "PayLife": 2 }],
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

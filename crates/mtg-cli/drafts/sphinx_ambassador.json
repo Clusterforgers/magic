@@ -1,0 +1,50 @@
+{
+  "oracle_id": "69e1a166-02f7-43f8-b099-dbb01034370c",
+  "name": "Sphinx Ambassador",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx Ambassador",
+      "oracle_fingerprint": "7dc494615abb2f4deaa4d3b9aa9d751d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Search": { "of": "Triggering", "filter": [], "as": "found" } },
+              { "ChooseValue": { "who": "Triggering", "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "found" },
+                      "selector": [{ "Type": "Creature" }, { "Not": { "ChosenAs": "name" } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "found" },
+                              "to": { "Battlefield": { "under": "You" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Shuffle": { "who": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

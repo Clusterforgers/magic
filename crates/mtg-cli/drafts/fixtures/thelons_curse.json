@@ -1,0 +1,128 @@
+{
+  "object": "card",
+  "id": "9b868846-cc3c-4756-a5dd-2335bb380567",
+  "oracle_id": "f6880f71-a05a-4752-ba33-ffbc450606bf",
+  "multiverse_ids": [
+    1930
+  ],
+  "tcgplayer_id": 3759,
+  "cardmarket_id": 7493,
+  "name": "Thelon's Curse",
+  "lang": "en",
+  "released_at": "1994-11-01",
+  "uri": "https://api.scryfall.com/cards/9b868846-cc3c-4756-a5dd-2335bb380567",
+  "scryfall_uri": "https://scryfall.com/card/fem/77/thelons-curse?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T13:04:44Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/b/9b868846-cc3c-4756-a5dd-2335bb380567.jpg?1783947884",
+    "normal": "https://cards.scryfall.io/normal/front/9/b/9b868846-cc3c-4756-a5dd-2335bb380567.jpg?1783947884",
+    "large": "https://cards.scryfall.io/large/front/9/b/9b868846-cc3c-4756-a5dd-2335bb380567.jpg?1783947884",
+    "png": "https://cards.scryfall.io/png/front/9/b/9b868846-cc3c-4756-a5dd-2335bb380567.png?1783947884",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/b/9b868846-cc3c-4756-a5dd-2335bb380567.jpg?1783947884",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/b/9b868846-cc3c-4756-a5dd-2335bb380567.jpg?1783947884",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/b/9b868846-cc3c-4756-a5dd-2335bb380567.webp?1783947884",
+    "grid": "https://cards.scryfall.io/grid/front/9/b/9b868846-cc3c-4756-a5dd-2335bb380567.webp?1783947884",
+    "display": "https://cards.scryfall.io/display/front/9/b/9b868846-cc3c-4756-a5dd-2335bb380567.webp?1783947884",
+    "art": "https://cards.scryfall.io/art/front/9/b/9b868846-cc3c-4756-a5dd-2335bb380567.webp?1783947884",
+    "crop": "https://cards.scryfall.io/crop/front/9/b/9b868846-cc3c-4756-a5dd-2335bb380567.webp?1783947884",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/b/9b868846-cc3c-4756-a5dd-2335bb380567.jpg?1783947884"
+  },
+  "mana_cost": "{G}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Blue creatures don't untap during their controllers' untap steps.\nAt the beginning of each player's upkeep, that player may choose any number of tapped blue creatures they control and pay {U} for each creature chosen this way. If the player does, untap those creatures.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cf7390b1-341a-4ae8-a325-da0f5f322f13",
+  "set": "fem",
+  "set_name": "Fallen Empires",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/cf7390b1-341a-4ae8-a325-da0f5f322f13",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afem&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fem?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9b868846-cc3c-4756-a5dd-2335bb380567/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af6880f71-a05a-4752-ba33-ffbc450606bf&unique=prints",
+  "collector_number": "77",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Pete Venters",
+  "artist_ids": [
+    "d54c4a1a-c0c5-4834-84db-125d341f3ad8"
+  ],
+  "illustration_id": "ef24a30a-8886-4365-8276-2987529b7fac",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 31907,
+  "prices": {
+    "usd": "0.63",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.96",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=1930&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThelon%2527s%2BCurse",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThelon%2527s%2BCurse",
+    "edhrec": "https://edhrec.com/route/?cc=Thelon%27s+Curse"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F3759%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=7493&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Thelon%27s+Curse&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

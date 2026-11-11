@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a4433da6-78b7-4669-a0dd-e7ea9672b0bc",
+  "name": "Shield of the Avatar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Shield of the Avatar",
+      "oracle_fingerprint": "ec620ca56118bd37b0d04c5fdc7acedd",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 125 }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

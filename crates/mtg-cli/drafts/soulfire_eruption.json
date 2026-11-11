@@ -1,0 +1,64 @@
+{
+  "oracle_id": "089dd3b7-c3ed-4734-8789-a3c1ed9a4e40",
+  "name": "Soulfire Eruption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulfire Eruption",
+      "oracle_fingerprint": "57d2bebd01d61313cf1a00551734be40",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Creature" }] },
+                    { "Object": [{ "Type": "Planeswalker" }] },
+                    "Player"
+                  ]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Sum": [
+                      { "Count": [{ "Type": "Creature" }] },
+                      { "Count": [{ "Type": "Planeswalker" }] },
+                      { "Players": "EachPlayer" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "victim",
+                  "effects": [
+                    { "ExileTop": { "as": "card" } },
+                    { "Bind": { "what": { "Bound": "card" }, "as": "impulse", "adds": true } },
+                    {
+                      "DealDamage": {
+                        "to": { "Bound": "victim" },
+                        "amount": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

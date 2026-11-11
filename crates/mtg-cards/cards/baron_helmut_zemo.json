@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0fe6c042-1182-4392-8938-fee36149d74f",
+  "name": "Baron Helmut Zemo",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Baron Helmut Zemo",
+      "oracle_fingerprint": "00f778441682eda1bbdc05b9af62c986",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "Color": "Black" }, { "CastFrom": "Hand" }], "by": "You" }
+            },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 76, "end": 373 }
+          }
+        }
+      ]
+    }
+  ]
+}

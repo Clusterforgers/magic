@@ -1,0 +1,23 @@
+{
+  "oracle_id": "2593944c-1bde-4307-b3ca-f7ecbeb027c1",
+  "name": "Minion of the Wastes",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Minion of the Wastes",
+      "oracle_fingerprint": "6afc408fcc9626ae1c4aad0ec81d3ffb",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 8, "end": 56 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 57, "end": 146 }
+          }
+        }
+      ]
+    }
+  ]
+}

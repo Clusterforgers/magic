@@ -1,0 +1,43 @@
+{
+  "oracle_id": "0752fe67-9b8a-42c0-90e3-087d426b2f3b",
+  "name": "Esoteric Duplicator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Esoteric Duplicator",
+      "oracle_fingerprint": "f4b8ce5d2f6c7b31f61a3f3edac7e9ae",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Artifact" }], "by": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    { "Bind": { "what": "Triggering", "as": "artifact" } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "token": { "CopyOf": { "of": { "Bound": "artifact" } } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": { "cost": [{ "Mana": "{2}" }, "SacrificeSelf"], "effects": [{ "Draw": {} }] }
+        }
+      ]
+    }
+  ]
+}

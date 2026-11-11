@@ -1,0 +1,36 @@
+{
+  "oracle_id": "00e8b4c9-3a79-4864-a730-c0081d397c5b",
+  "name": "Dazzling Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dazzling Sphinx",
+      "oracle_fingerprint": "d4d1e8bf3747999220c093260e8ac694",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "ExileUntil": {
+                  "who": "Triggering",
+                  "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "found" }, "free": true } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "cdf5c31c-c324-471f-b6d7-06a06e91daa3",
+  "name": "Vislor Turlough",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vislor Turlough",
+      "oracle_fingerprint": "109252175a513d805505ace8714b3295",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Choose": { "from": "Opponents", "as": "opponent" } },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "SetController": { "Bound": "opponent" } }, "Goaded"],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Draw": {} },
+              { "LoseLife": { "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

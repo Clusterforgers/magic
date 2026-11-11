@@ -1,0 +1,30 @@
+{
+  "oracle_id": "49bf3805-cc9e-4550-8a01-171282aa49c9",
+  "name": "Rune Snag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune Snag",
+      "oracle_fingerprint": "a0376d7c2272ce452ab32488fc3b842d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{2}",
+                  "times": {
+                    "Sum": [1, { "Count": [{ "Named": "Rune Snag" }, { "In": "Graveyard" }] }]
+                  },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

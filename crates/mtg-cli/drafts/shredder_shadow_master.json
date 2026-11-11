@@ -1,0 +1,63 @@
+{
+  "oracle_id": "ee82947d-1cf0-4c53-84d4-81f81c6201ee",
+  "name": "Shredder, Shadow Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shredder, Shadow Master",
+      "oracle_fingerprint": "9cda52e212505369d0298bdc2247166c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AttacksPlayer": { "what": ["This"], "at": "EachPlayer" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "Not": { "Among": "Defending" } }
+                    }
+                  },
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": { "of": "This", "except": [{ "RemoveSupertype": "Legendary" }] }
+                        },
+                        "tapped": true,
+                        "attacking": true,
+                        "against": { "Bound": "opp" },
+                        "as": "token"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "EndCombat" } },
+                        "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "token" } }] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Triggering",
+                  "amount": { "Half": { "of": { "Life": "Triggering" }, "up": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

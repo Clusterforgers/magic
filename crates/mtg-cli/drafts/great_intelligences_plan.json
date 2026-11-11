@@ -1,0 +1,35 @@
+{
+  "oracle_id": "cb9abc41-07f8-4a06-b7b9-9dd6be526e42",
+  "name": "Great Intelligence's Plan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Great Intelligence's Plan",
+      "oracle_fingerprint": "6323bcd2bf8062350fb283a8a762bf35",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "VillainousChoice": {
+                  "who": { "Target": 0 },
+                  "first": [{ "Discard": { "who": { "Target": 0 }, "count": 3 } }],
+                  "second": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "free": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

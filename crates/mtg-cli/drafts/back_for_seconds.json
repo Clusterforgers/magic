@@ -1,0 +1,62 @@
+{
+  "oracle_id": "ee3d21b9-58b4-480c-bae3-26de50f1a5c6",
+  "name": "Back for Seconds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Back for Seconds",
+      "oracle_fingerprint": "e612a0015692e1cee7ec4ff46c05111e",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": "AdditionalCostPaid",
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Is": { "Target": 0 } },
+                            { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "chosen"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "chosen" }, "to": { "Battlefield": {} } } },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Is": { "Target": 0 } },
+                            { "Not": { "Is": { "Bound": "chosen" } } },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "to": "Hand"
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

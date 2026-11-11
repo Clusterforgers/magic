@@ -1,0 +1,31 @@
+{
+  "oracle_id": "c62b5c22-e058-436f-9575-a01cb2112829",
+  "name": "Redirect Lightning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Redirect Lightning",
+      "oracle_fingerprint": "989704aa06f36ab8b78b2a35f14f9398",
+      "abilities": [
+        {
+          "AdditionalCost": { "cost": [{ "OneOf": [[{ "PayLife": 5 }], "{2}"] }], "required": true }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    "SingleTarget"
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

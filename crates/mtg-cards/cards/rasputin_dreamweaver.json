@@ -1,0 +1,51 @@
+{
+  "oracle_id": "fef452ee-9018-4175-bb79-476544e48433",
+  "name": "Rasputin Dreamweaver",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rasputin Dreamweaver",
+      "oracle_fingerprint": "7d289234e482961d0211dc4774543c8a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "dream" }, "count": 7 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "dream" } } }],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": { "Other": "dream" } } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 203, "end": 301 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 302, "end": 359 }
+          }
+        }
+      ]
+    }
+  ]
+}

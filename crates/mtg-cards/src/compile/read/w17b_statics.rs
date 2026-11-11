@@ -13,6 +13,8 @@ const W17B_GRAVEYARDS: &str = "Cards in graveyards can't be the targets of spell
 const W17B_CANT_LOSE: &str = "You can't lose the game and your opponents can't win the game";
 /// The sentence of `GameRule::CantLoseGame` alone.
 const W17B_CANT_LOSE_ALONE: &str = "You can't lose the game";
+/// The sentence of `GameRule::CantLoseGame` for the loss by life alone.
+const W17B_NO_LIFE_LOSS: &str = "You don't lose the game for having 0 or less life";
 /// The sentence of `GameRule::CantCastSpells` during your turn.
 const W17B_CANT_CAST: &str = "Your opponents can't cast spells during your turn";
 /// The end of the sentence of `GameRule::ToughnessAssignsDamage`.
@@ -28,6 +30,20 @@ pub(super) fn w17b_read(r: &mut Reader<'_>) -> Option<GameRule> {
         return Some(GameRule::CantLoseGame {
             who: Ref::You,
             opponents_cant_win,
+            life_only: false,
+        });
+    }
+    if r.attempt(|r| {
+        r.need("you don't lose the game for having")?;
+        (r.number()? == 0).then_some(())?;
+        r.need("or less life")
+    })
+    .is_some()
+    {
+        return Some(GameRule::CantLoseGame {
+            who: Ref::You,
+            opponents_cant_win: false,
+            life_only: true,
         });
     }
     if r.words("your opponents can't cast spells during your turn") {
@@ -58,12 +74,18 @@ pub(super) fn w17b_texts(rule: &GameRule) -> Vec<String> {
         GameRule::CantLoseGame {
             who: Ref::You,
             opponents_cant_win,
+            life_only: false,
         } => if *opponents_cant_win {
             W17B_CANT_LOSE
         } else {
             W17B_CANT_LOSE_ALONE
         }
         .to_owned(),
+        GameRule::CantLoseGame {
+            who: Ref::You,
+            opponents_cant_win: false,
+            life_only: true,
+        } => W17B_NO_LIFE_LOSS.to_owned(),
         GameRule::CantCastSpells {
             who: Ref::Opponents,
             your_turn: true,

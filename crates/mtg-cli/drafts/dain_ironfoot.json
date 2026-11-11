@@ -1,0 +1,69 @@
+{
+  "oracle_id": "9924c189-3c82-431a-b570-7805b2a406f0",
+  "name": "Dáin Ironfoot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dáin Ironfoot",
+      "oracle_fingerprint": "7e1624f41997270666a799d348cbda48",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Axe",
+                      "types": ["Artifact"],
+                      "subtypes": ["Equipment"],
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+                          }
+                        },
+                        { "Keyword": { "Equip": "{2}" } }
+                      ]
+                    }
+                  },
+                  "as": "axe"
+                }
+              },
+              {
+                "Reflexive": {
+                  "targets": [
+                    { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+                  ],
+                  "effects": [{ "Attach": { "what": { "Bound": "axe" }, "to": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "HasAttached": [{ "Subtype": "Equipment" }] },
+                      "Attacking",
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

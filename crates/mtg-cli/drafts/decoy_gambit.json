@@ -1,0 +1,44 @@
+{
+  "oracle_id": "94d9878e-9786-438c-8b33-c1dff730b748",
+  "name": "Decoy Gambit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decoy Gambit",
+      "oracle_fingerprint": "54f1b289fd5bd8273a35dde5c053b952",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": { "players": "Opponents", "what": [{ "Type": "Creature" }] }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "ControllerOf": { "Bound": "creature" } },
+                        "options": [
+                          [{ "Draw": {} }],
+                          [{ "Move": { "what": { "Bound": "creature" }, "to": "Hand" } }]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

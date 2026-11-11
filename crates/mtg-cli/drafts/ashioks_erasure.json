@@ -1,0 +1,53 @@
+{
+  "oracle_id": "13cf3ef7-d88e-4cc7-a4d8-cedc671f356a",
+  "name": "Ashiok's Erasure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashiok's Erasure",
+      "oracle_fingerprint": "3516f99d083d1724fad665d9d956d9a2",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "exiled" } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": {
+                  "Cast": {
+                    "filter": [
+                      { "SharesName": { "Remembered": { "on": "This", "slot": "exiled" } } }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Remembered": { "on": "This", "slot": "exiled" } },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

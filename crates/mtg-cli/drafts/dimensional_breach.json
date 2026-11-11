@@ -1,0 +1,43 @@
+{
+  "oracle_id": "70d4f764-fca1-477a-9b0f-bbfcc1f7dfb1",
+  "name": "Dimensional Breach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimensional Breach",
+      "oracle_fingerprint": "311774999f6e94bcc486ab7dcd5d91d5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": [] }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "once": false,
+                  "until": "Forever",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": "Triggering",
+                        "from": {
+                          "Each": [
+                            { "Is": { "Bound": "exiled" } },
+                            { "In": "Exile" },
+                            { "OwnedBy": "Triggering" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

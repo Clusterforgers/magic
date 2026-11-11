@@ -1,0 +1,83 @@
+{
+  "oracle_id": "43e1b053-2cb9-4b1d-9e38-100cfa7267b6",
+  "name": "The Seventh Doctor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Seventh Doctor",
+      "oracle_fingerprint": "6d8edcfd08ccd3a5df3cbf2ff6620b13",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "ChooseValue": {
+                  "who": "Defending",
+                  "kind": { "Options": ["greater", "not greater"] },
+                  "as": "guess"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      {
+                        "All": [
+                          { "ChosenWord": { "name": "guess", "word": "greater" } },
+                          {
+                            "Not": {
+                              "Compare": {
+                                "left": {
+                                  "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" }
+                                },
+                                "op": "Gt",
+                                "right": {
+                                  "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "All": [
+                          { "ChosenWord": { "name": "guess", "word": "not greater" } },
+                          {
+                            "Compare": {
+                              "left": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } },
+                              "op": "Gt",
+                              "right": {
+                                "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "card" },
+                        "free": true,
+                        "otherwise": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

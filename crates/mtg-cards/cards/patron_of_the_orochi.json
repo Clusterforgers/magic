@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e245f2f6-2b5b-41bc-88b3-5b41ca813c5e",
+  "name": "Patron of the Orochi",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Patron of the Orochi",
+      "oracle_fingerprint": "4794ac03ed3d3ce79cf42cbf42e65e1a",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 203 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "limit": "OncePerTurn",
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "Subtype": "Forest" }] } } },
+              { "Untap": { "what": { "Each": [{ "Color": "Green" }, { "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

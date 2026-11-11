@@ -1,0 +1,85 @@
+{
+  "oracle_id": "b4429e71-434e-480c-a8d1-2ad11de8b2d9",
+  "name": "Convert to Slime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Convert to Slime",
+      "oracle_fingerprint": "9acde322ca31a347513c66fe7e4b2bcd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] }, "bounds": { "min": 0, "max": 1 } },
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } },
+              {
+                "what": { "Object": [{ "Type": "Enchantment" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Destroy": { "what": { "Target": 0 }, "as": "destroyed_artifact" } },
+                    { "Destroy": { "what": { "Target": 1 }, "as": "destroyed_creature" } },
+                    { "Destroy": { "what": { "Target": 2 }, "as": "destroyed_enchantment" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Sized": {
+                            "size": {
+                              "Sum": [
+                                {
+                                  "Stat": {
+                                    "of": { "Bound": "destroyed_artifact" },
+                                    "stat": "ManaValue"
+                                  }
+                                },
+                                {
+                                  "Stat": {
+                                    "of": { "Bound": "destroyed_creature" },
+                                    "stat": "ManaValue"
+                                  }
+                                },
+                                {
+                                  "Stat": {
+                                    "of": { "Bound": "destroyed_enchantment" },
+                                    "stat": "ManaValue"
+                                  }
+                                }
+                              ]
+                            },
+                            "token": {
+                              "name": "Ooze",
+                              "colors": ["Green"],
+                              "types": ["Creature"],
+                              "subtypes": ["Ooze"]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

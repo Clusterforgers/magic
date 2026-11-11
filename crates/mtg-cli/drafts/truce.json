@@ -1,0 +1,48 @@
+{
+  "oracle_id": "fe4aa72b-f176-461a-aca0-1519721609b2",
+  "name": "Truce",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Truce",
+      "oracle_fingerprint": "beca39f3414116ebc546a22d3c3a91e8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "who": { "Bound": "p" },
+                        "kind": { "Number": [0, 2] },
+                        "as": "n"
+                      }
+                    },
+                    { "Draw": { "who": { "Bound": "p" }, "count": { "ChosenAs": "n" } } },
+                    {
+                      "GainLife": {
+                        "who": { "Bound": "p" },
+                        "amount": {
+                          "Times": {
+                            "by": 2,
+                            "of": {
+                              "Sum": [2, { "Times": { "by": -1, "of": { "ChosenAs": "n" } } }]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

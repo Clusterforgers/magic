@@ -424,6 +424,13 @@ pub(crate) fn lasts(
         Duration::UntilYourNextTurn => {
             state.is_alive(controller) && !(turn.number() != began && turn.active() == controller)
         }
+        // It lasts through the untap step of that turn and ends as its upkeep begins.
+        Duration::UntilYourNextUpkeep => {
+            state.is_alive(controller)
+                && !(turn.number() != began
+                    && turn.active() == controller
+                    && turn.step() >= Step::Upkeep)
+        }
         Duration::WhileSourceOnBattlefield => source.is_some_and(|source| {
             state
                 .object(source.id)
@@ -712,6 +719,11 @@ mod tests {
     #[case::your_turn_still_going(Duration::UntilYourNextTurn, (3, ME, Step::End), true)]
     #[case::your_turn_when_another_seat_plays(Duration::UntilYourNextTurn, (4, FOE, Step::Main1), true)]
     #[case::your_turn_when_it_comes_again(Duration::UntilYourNextTurn, (5, ME, Step::Upkeep), false)]
+    #[case::your_upkeep_in_the_turn_it_began(Duration::UntilYourNextUpkeep, (3, ME, Step::End), true)]
+    #[case::your_upkeep_when_another_seat_plays(Duration::UntilYourNextUpkeep, (4, FOE, Step::Upkeep), true)]
+    #[case::your_upkeep_through_your_untap_step(Duration::UntilYourNextUpkeep, (5, ME, Step::Untap), true)]
+    #[case::your_upkeep_when_it_begins(Duration::UntilYourNextUpkeep, (5, ME, Step::Upkeep), false)]
+    #[case::your_upkeep_after_it(Duration::UntilYourNextUpkeep, (5, ME, Step::Main1), false)]
     #[case::source_stays(Duration::WhileSourceOnBattlefield, (3, ME, Step::Main1), true)]
     #[case::the_end_of_your_next_turn_in_the_turn_it_began(Duration::UntilEndOfYourNextTurn, (3, ME, Step::End), true)]
     #[case::the_end_of_your_next_turn_in_another_seats_turn(Duration::UntilEndOfYourNextTurn, (4, FOE, Step::Main1), true)]

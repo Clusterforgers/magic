@@ -1,0 +1,48 @@
+{
+  "oracle_id": "f84d8217-51a4-49ba-9df6-d080ed38f37d",
+  "name": "Urborg Lhurgoyf",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Urborg Lhurgoyf",
+      "oracle_fingerprint": "c4470c61050c5022b1c4692fd7be7a19",
+      "abilities": [
+        { "Keyword": { "Kicker": "{U}" } },
+        { "Keyword": { "Kicker": "{B}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 89, "end": 159 }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "toughness": {
+                    "Sum": [
+                      {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      1
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f4c57454-d36f-4f38-b7ac-76477a516c3e",
+  "name": "Decorum Dissertation",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Decorum Dissertation",
+      "oracle_fingerprint": "d2453e9265d0d41d98022a5b396dc4cf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 48, "end": 247 }
+          }
+        }
+      ]
+    }
+  ]
+}

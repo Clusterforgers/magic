@@ -1,0 +1,43 @@
+{
+  "oracle_id": "e5cd1024-ec1a-4df9-8bc6-ad2f3f443d06",
+  "name": "Fickle Efreet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fickle Efreet",
+      "oracle_fingerprint": "6bba9ff93dcdc0be5ca6ab05233ddbd8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [
+                    {
+                      "FlipCoin": {
+                        "lose": [
+                          { "Choose": { "from": "Opponents", "as": "opponent" } },
+                          {
+                            "Continuous": {
+                              "affected": "This",
+                              "mods": [{ "SetController": { "Bound": "opponent" } }],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

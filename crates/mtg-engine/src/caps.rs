@@ -152,10 +152,12 @@ const RUNS: &[&str] = &[
     "Cost.RevealFromHand.Counted.Activated",
     "Cost.TapPermanents.Counted.Activated",
     "Cost.ReturnToHand.Counted.Activated",
+    "Cost.ExilePermanents.Counted.Activated",
     "Cost.PutCounters.Counted.Activated",
     "Cost.UntapPermanents.Counted.Activated",
     "Cost.RemoveCountersAmong.Counted.Activated",
     "Cost.ReturnToHand",
+    "Cost.ExilePermanents",
     "Cost.ExileFromHand",
     "Cost.RevealFromHand",
     "Cost.OneOf",
@@ -315,6 +317,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.DayIfNeither",
     "ReplaceBy.EntersPrepared",
     "ReplaceBy.ChooseWord",
+    "ReplaceBy.UnderChosenOpponent",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
     "Effect.CopySpell",
@@ -366,6 +369,7 @@ const RUNS: &[&str] = &[
     "Rule.VoteAgain",
     "Rule.SkipExtraTurns",
     "Rule.FlipTwoCoins",
+    "Rule.ExtraDie",
     "Rule.KeepUnspentMana",
     "Rule.DrawLimit",
     "Rule.AbilitiesAsThoughHaste",
@@ -374,6 +378,7 @@ const RUNS: &[&str] = &[
     "Rule.SpendManaAs",
     "Rule.UnspentManaBecomes",
     "Rule.RevealTop",
+    "Rule.RevealHand",
     "Rule.NoMaxHandSize",
     "Rule.MaxHandSize",
     "Rule.HandSizeChange",
@@ -479,6 +484,8 @@ const RUNS: &[&str] = &[
     "Target.TotalManaValue",
     "Target.Another",
     "Target.ChosenBy",
+    "Target.AtRandom",
+    "Target.PlayerAmong",
     "Effect.FlipCoin",
     "Effect.Clash",
     "Effect.Modal.AtRandom",
@@ -604,6 +611,7 @@ const RUNS: &[&str] = &[
     "Amount.HighestCounters",
     "Amount.StartingLife",
     "Amount.CastLastTurn",
+    "Amount.TalliedLastTurn",
     "Amount.Party",
     "Amount.Tally",
     "Amount.CommanderColors",
@@ -630,6 +638,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.TurnedFaceUp",
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
+    "ReplaceWhen.LoseGame",
     "ReplaceWhen.Mill",
     "ReplaceWhen.Draw",
     "ReplaceWhen.Draw.ExceptDrawStep",
@@ -637,6 +646,8 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Multiply",
     "ReplaceBy.Add",
     "ReplaceBy.Half",
+    "ReplaceBy.Subtract",
+    "ReplaceBy.Cap",
     "ReplaceBy.Prevent",
     "ReplaceBy.PreventNext",
     "ReplaceBy.PreventUpTo",
@@ -753,6 +764,7 @@ const RUNS: &[&str] = &[
     "Keyword.Horsemanship",
     "Keyword.Phasing",
     "Amount.Devoured",
+    "Amount.RemovedThisWay",
     "Keyword.Spectacle",
     "Keyword.Freerunning",
     "Keyword.UmbraArmor",
@@ -920,6 +932,7 @@ mod tests {
     #[case::replacing_zone_changes("ReplaceWhen.ZoneChange", true)]
     #[case::replacing_counters_put("ReplaceWhen.CountersPut", true)]
     #[case::replacing_life_gain("ReplaceWhen.LifeGain", true)]
+    #[case::replacing_a_loss("ReplaceWhen.LoseGame", true)]
     #[case::replacing_mills("ReplaceWhen.Mill", true)]
     #[case::replacing_draws("ReplaceWhen.Draw", true)]
     #[case::replacing_entering("ReplaceWhen.Enters", true)]

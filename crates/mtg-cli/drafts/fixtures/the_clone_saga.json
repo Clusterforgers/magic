@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "d356ed6b-062f-47c5-a54e-a74dbc0300f4",
+  "oracle_id": "0f0282c6-aceb-4879-8ec8-482d0501204a",
+  "multiverse_ids": [],
+  "resource_id": "16836A81918B1D0890565D801057915E19188773E7DC14982E2EA3A63E5258A5",
+  "mtgo_id": 151989,
+  "arena_id": 105792,
+  "tcgplayer_id": 697227,
+  "cardmarket_id": 892000,
+  "name": "The Clone Saga",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/d356ed6b-062f-47c5-a54e-a74dbc0300f4",
+  "scryfall_uri": "https://scryfall.com/card/msc/782/the-clone-saga?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-16T06:22:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/3/d356ed6b-062f-47c5-a54e-a74dbc0300f4.jpg?1784182977",
+    "normal": "https://cards.scryfall.io/normal/front/d/3/d356ed6b-062f-47c5-a54e-a74dbc0300f4.jpg?1784182977",
+    "large": "https://cards.scryfall.io/large/front/d/3/d356ed6b-062f-47c5-a54e-a74dbc0300f4.jpg?1784182977",
+    "png": "https://cards.scryfall.io/png/front/d/3/d356ed6b-062f-47c5-a54e-a74dbc0300f4.png?1784182977",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/3/d356ed6b-062f-47c5-a54e-a74dbc0300f4.jpg?1784182977",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/3/d356ed6b-062f-47c5-a54e-a74dbc0300f4.jpg?1784182977",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/3/d356ed6b-062f-47c5-a54e-a74dbc0300f4.webp?1784182977",
+    "grid": "https://cards.scryfall.io/grid/front/d/3/d356ed6b-062f-47c5-a54e-a74dbc0300f4.webp?1784182977",
+    "display": "https://cards.scryfall.io/display/front/d/3/d356ed6b-062f-47c5-a54e-a74dbc0300f4.webp?1784182977",
+    "art": "https://cards.scryfall.io/art/front/d/3/d356ed6b-062f-47c5-a54e-a74dbc0300f4.webp?1784182977",
+    "crop": "https://cards.scryfall.io/crop/front/d/3/d356ed6b-062f-47c5-a54e-a74dbc0300f4.webp?1784182977",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/3/d356ed6b-062f-47c5-a54e-a74dbc0300f4.jpg?1784182977"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Surveil 3.\nII — When you next cast a creature spell this turn, copy it, except the copy isn't legendary.\nIII — Choose a card name. Whenever a creature with the chosen name deals combat damage to a player this turn, draw a card.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Surveil"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d356ed6b-062f-47c5-a54e-a74dbc0300f4",
+      "component": "combo_piece",
+      "name": "The Clone Saga",
+      "type_line": "Enchantment — Saga",
+      "uri": "https://api.scryfall.com/cards/d356ed6b-062f-47c5-a54e-a74dbc0300f4"
+    },
+    {
+      "object": "related_card",
+      "id": "f4e87a11-b3b1-47b2-bd73-f4c78d6fbe6c",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/f4e87a11-b3b1-47b2-bd73-f4c78d6fbe6c"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d356ed6b-062f-47c5-a54e-a74dbc0300f4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0f0282c6-aceb-4879-8ec8-482d0501204a&unique=prints",
+  "collector_number": "782",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bill Sienkiewicz",
+  "artist_ids": [
+    "c1a9ecfb-1440-4579-adfb-bd10095dd690"
+  ],
+  "illustration_id": "27cdaee7-99e0-4094-bdc9-fe6539816b37",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 9237,
+  "penny_rank": 12318,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": "0.28",
+    "tix": "0.10"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BClone%2BSaga",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BClone%2BSaga",
+    "edhrec": "https://edhrec.com/route/?cc=The+Clone+Saga"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697227%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=892000&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/151989?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

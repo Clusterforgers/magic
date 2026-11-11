@@ -1,0 +1,33 @@
+{
+  "oracle_id": "700ef9c8-698b-45f7-a1fd-dec74e553224",
+  "name": "Shang-Chi, Master of Kung Fu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shang-Chi, Master of Kung Fu",
+      "oracle_fingerprint": "c4587512f538f9e600c49f685af0c608",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "AbilitiesAsThoughHaste": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 2 },
+                  "only": [{ "Ability": { "types": ["Creature"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

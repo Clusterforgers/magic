@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "a753abfc-35d3-4faf-ab35-3b51aa778174",
+  "oracle_id": "6cdc6548-cb32-437f-850a-9002542ad3d5",
+  "multiverse_ids": [],
+  "resource_id": "64F85AF4091D6C4E0D5062243B7E748719FCBFCA015944B9EC69CF290FAD63EB",
+  "mtgo_id": 141053,
+  "arena_id": 95920,
+  "tcgplayer_id": 634038,
+  "cardmarket_id": 827725,
+  "name": "Memories Returning",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/a753abfc-35d3-4faf-ab35-3b51aa778174",
+  "scryfall_uri": "https://scryfall.com/card/fin/63/memories-returning?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:37:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/7/a753abfc-35d3-4faf-ab35-3b51aa778174.jpg?1783906633",
+    "normal": "https://cards.scryfall.io/normal/front/a/7/a753abfc-35d3-4faf-ab35-3b51aa778174.jpg?1783906633",
+    "large": "https://cards.scryfall.io/large/front/a/7/a753abfc-35d3-4faf-ab35-3b51aa778174.jpg?1783906633",
+    "png": "https://cards.scryfall.io/png/front/a/7/a753abfc-35d3-4faf-ab35-3b51aa778174.png?1783906633",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/7/a753abfc-35d3-4faf-ab35-3b51aa778174.jpg?1783906633",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/7/a753abfc-35d3-4faf-ab35-3b51aa778174.jpg?1783906633",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/7/a753abfc-35d3-4faf-ab35-3b51aa778174.webp?1783906633",
+    "grid": "https://cards.scryfall.io/grid/front/a/7/a753abfc-35d3-4faf-ab35-3b51aa778174.webp?1783906633",
+    "display": "https://cards.scryfall.io/display/front/a/7/a753abfc-35d3-4faf-ab35-3b51aa778174.webp?1783906633",
+    "art": "https://cards.scryfall.io/art/front/a/7/a753abfc-35d3-4faf-ab35-3b51aa778174.webp?1783906633",
+    "crop": "https://cards.scryfall.io/crop/front/a/7/a753abfc-35d3-4faf-ab35-3b51aa778174.webp?1783906633",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/7/a753abfc-35d3-4faf-ab35-3b51aa778174.jpg?1783906633"
+  },
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Reveal the top five cards of your library. Put one of them into your hand. Then choose an opponent. They put one on the bottom of your library. Then you put one into your hand. Then they put one on the bottom of your library. Put the other into your hand.\nFlashback {7}{U}{U}",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flashback"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set": "fin",
+  "set_name": "Final Fantasy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afin&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fin?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a753abfc-35d3-4faf-ab35-3b51aa778174/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6cdc6548-cb32-437f-850a-9002542ad3d5&unique=prints",
+  "collector_number": "63",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Grace Zhu",
+  "artist_ids": [
+    "2bd5874c-2f48-4df3-9d8f-84bcd3f204a9"
+  ],
+  "illustration_id": "7d8fefc3-0b2f-4da6-8f15-0640b56fb15b",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "ffviii"
+  ],
+  "edhrec_rank": 9690,
+  "penny_rank": 7599,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.42",
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": "0.66",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMemories%2BReturning",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMemories%2BReturning",
+    "edhrec": "https://edhrec.com/route/?cc=Memories+Returning"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F634038%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=827725&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/141053?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

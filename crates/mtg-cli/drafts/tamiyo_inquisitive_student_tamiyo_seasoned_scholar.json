@@ -1,0 +1,122 @@
+{
+  "oracle_id": "1ed9e351-0000-4b75-8ecb-d15bd88df68a",
+  "name": "Tamiyo, Inquisitive Student // Tamiyo, Seasoned Scholar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tamiyo, Inquisitive Student",
+      "oracle_fingerprint": "4b76bb79bd0c6844d31a07e124fc7aa2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "tamiyo" } },
+              {
+                "Move": {
+                  "what": { "Bound": "tamiyo" },
+                  "to": {
+                    "Battlefield": {
+                      "under": { "OwnerOf": { "Bound": "tamiyo" } },
+                      "transformed": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tamiyo, Seasoned Scholar",
+      "oracle_fingerprint": "2c05c60c030bf20484bba6161beb824c",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AttacksPlayerOrPlaneswalker": { "what": [{ "Type": "Creature" }], "at": "You" }
+                  },
+                  "once": false,
+                  "until": "UntilYourNextTurn",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Color": "Green" }, { "In": "Hand" }]
+                    }
+                  },
+                  "then": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Half": {
+                      "of": { "Count": [{ "In": "Library" }, { "OwnedBy": "You" }] },
+                      "up": true
+                    }
+                  }
+                }
+              },
+              {
+                "CreateEmblem": {
+                  "abilities": [{ "Rule": { "rule": { "NoMaxHandSize": "You" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

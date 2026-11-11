@@ -1,0 +1,84 @@
+{
+  "oracle_id": "8b834f83-951b-4b5c-b9f1-3d860baa3c0e",
+  "name": "Winnowing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winnowing",
+      "oracle_fingerprint": "d448cbc5c9393ff81cd7feba8e572f4d",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "as": "pick"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "pick" }, "as": "chosen", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "sacrificer",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "sacrificer" },
+                        "filter": [
+                          { "Type": "Creature" },
+                          { "Not": { "Is": { "Bound": "chosen" } } },
+                          {
+                            "Not": {
+                              "SharesSubtype": {
+                                "Each": [
+                                  { "Is": { "Bound": "chosen" } },
+                                  { "ControlledBy": { "Bound": "sacrificer" } }
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "count": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "sacrificer" } },
+                            { "Not": { "Is": { "Bound": "chosen" } } },
+                            {
+                              "Not": {
+                                "SharesSubtype": {
+                                  "Each": [
+                                    { "Is": { "Bound": "chosen" } },
+                                    { "ControlledBy": { "Bound": "sacrificer" } }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

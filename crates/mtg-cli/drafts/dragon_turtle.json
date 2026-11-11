@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a3270e64-38d2-49e5-8a1e-a5e81205776b",
+  "name": "Dragon Turtle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon Turtle",
+      "oracle_fingerprint": "3fc93a6289a0403ada257830e7d49fa9",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Tap": { "what": "This" } },
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

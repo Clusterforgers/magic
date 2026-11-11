@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d5d91377-fd66-4dbe-a092-07f2ea379ca7",
+  "name": "Leovold, Emissary of Trest",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Leovold, Emissary of Trest",
+      "oracle_fingerprint": "6b035a5e18e0a8a94b3d3833f10539c7",
+      "abilities": [
+        { "Rule": { "rule": { "DrawLimit": { "who": "Opponents", "most": 1 } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 55, "end": 178 }
+          }
+        }
+      ]
+    }
+  ]
+}

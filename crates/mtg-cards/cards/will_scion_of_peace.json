@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4ecb8653-db8c-468a-853d-420ff62a7a8a",
+  "name": "Will, Scion of Peace",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Will, Scion of Peace",
+      "oracle_fingerprint": "89ec93d738b9a29d41383a5251d2d8ce",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 10, "end": 170 }
+          }
+        }
+      ]
+    }
+  ]
+}

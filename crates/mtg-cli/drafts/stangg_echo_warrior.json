@@ -1,0 +1,70 @@
+{
+  "oracle_id": "aaf2a587-ced7-4615-b10f-164e7384b073",
+  "name": "Stangg, Echo Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stangg, Echo Warrior",
+      "oracle_fingerprint": "5c46a5793d49099004e3586b714368a2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Stangg Twin",
+                      "colors": ["Red", "Green"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Warrior"],
+                      "power": 3,
+                      "toughness": 4
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "twin"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                      { "AttachedTo": "This" }
+                    ]
+                  },
+                  "as": "attachment",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": { "CopyOf": { "of": { "Bound": "attachment" } } },
+                        "as": "copy"
+                      }
+                    },
+                    { "Attach": { "what": { "Bound": "copy" }, "to": { "Bound": "twin" } } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "copy" } }] } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "twin" } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

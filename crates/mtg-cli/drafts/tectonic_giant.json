@@ -1,0 +1,55 @@
+{
+  "oracle_id": "0e5e46e3-f9af-47cc-a740-bf808d5cb4b1",
+  "name": "Tectonic Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tectonic Giant",
+      "oracle_fingerprint": "58e3282a44676b44856465431807757b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Attacks": { "what": ["This"] } },
+                {
+                  "BecomesTarget": {
+                    "what": ["This"],
+                    "by": ["Spell", { "ControlledBy": "Opponents" }]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "DealDamage": { "to": "Opponents", "amount": 3 } }] },
+                    {
+                      "effects": [
+                        { "ExileTop": { "count": 2, "as": "exiled" } },
+                        { "Choose": { "from": { "Bound": "exiled" }, "as": "impulse" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "from": "Exile",
+                                "only": { "Bound": "impulse" },
+                                "play": true
+                              }
+                            },
+                            "duration": "UntilEndOfYourNextTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

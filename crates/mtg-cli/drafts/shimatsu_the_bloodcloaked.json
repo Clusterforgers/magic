@@ -1,0 +1,19 @@
+{
+  "oracle_id": "af24dc1c-6726-4788-8be8-609ee19ad2c8",
+  "name": "Shimatsu the Bloodcloaked",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shimatsu the Bloodcloaked",
+      "oracle_fingerprint": "2b6eef56590118df4a35d920e46101a1",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Devour": { "counters": 1, "of": [] } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "cfaa13d6-9992-4223-8bd7-c44046505555",
+  "name": "Leyline of Transformation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Transformation",
+      "oracle_fingerprint": "ce86f0575e062f2abf5e9e088081c829",
+      "abilities": [
+        "OpeningHand",
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "AnyOf": [{ "ControlledBy": "You" }, { "OwnedBy": "You" }] },
+                { "AnyOf": [{ "ControlledBy": "You" }, { "Not": { "In": "Battlefield" } }] }
+              ]
+            },
+            "mods": ["AddChosenSubtype"]
+          }
+        }
+      ]
+    }
+  ]
+}

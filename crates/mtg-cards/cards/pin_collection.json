@@ -1,0 +1,26 @@
+{
+  "oracle_id": "69fedfbb-5d88-4fe0-81e1-1e97a56c6aca",
+  "name": "Pin Collection",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pin Collection",
+      "oracle_fingerprint": "04b0aa2b6b438b7bf3a568c086995bde",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 134 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 135, "end": 224 }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

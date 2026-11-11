@@ -11,7 +11,6 @@
           "Static": {
             "affected": {
               "Each": [
-                { "Type": "Creature" },
                 {
                   "AnyOf": [
                     { "Subtype": "Assassin" },
@@ -21,11 +20,11 @@
                     { "Subtype": "Warlock" }
                   ]
                 },
-                "Other",
-                { "ControlledBy": "You" }
+                { "ControlledBy": "You" },
+                "Other"
               ]
             },
-            "mods": [{ "AddKeyword": "Haste" }, { "AddKeyword": "Vigilance" }]
+            "mods": [{ "AddKeyword": "Vigilance" }, { "AddKeyword": "Haste" }]
           }
         },
         {
@@ -38,18 +37,14 @@
                     {
                       "Continuous": {
                         "affected": {
-                          "Each": [
-                            { "Type": "Artifact" },
-                            { "Subtype": "Treasure" },
-                            { "ControlledBy": "You" }
-                          ]
+                          "Each": [{ "Subtype": "Treasure" }, { "ControlledBy": "You" }]
                         },
                         "mods": [
-                          { "SetPT": { "power": 3, "toughness": 3 } },
+                          { "AddType": "Artifact" },
+                          { "AddType": "Creature" },
                           { "AddSubtype": "Construct" },
                           { "AddSubtype": "Assassin" },
-                          { "AddType": "Artifact" },
-                          { "AddType": "Creature" }
+                          { "SetPT": { "power": 3, "toughness": 3 } }
                         ],
                         "duration": "UntilEndOfTurn"
                       }

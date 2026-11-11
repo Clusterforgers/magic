@@ -1,0 +1,61 @@
+{
+  "oracle_id": "7ee394a2-84de-42e8-834e-6c1030be0aef",
+  "name": "Sphinx of Clear Skies",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx of Clear Skies",
+      "oracle_fingerprint": "7164a6fe3d3c5a3dcd1b8a2c7c0653cf",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Choose": { "from": "Opponents", "as": "separator" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "separator" },
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "count": { "min": 0, "max": null },
+                  "as": "pile",
+                  "rest_as": "other"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": { "Bound": "pile" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "other" }, "to": "Graveyard" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [
+                    { "Move": { "what": { "Bound": "other" }, "to": "Hand" } },
+                    { "Move": { "what": { "Bound": "pile" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -88,6 +88,9 @@ pub(super) fn counted(r: &mut Reader<'_>) -> Option<Amount> {
     if let Some(held) = super::w13b_mill_rad::w13b_you_have(r, &counter) {
         return Some(held);
     }
+    if r.words("counter removed this way") {
+        return Some(Amount::RemovedThisWay(counter));
+    }
     r.need("counter on")?;
     (r.source() || (r.it == Some(Ref::This) && r.word("it"))).then_some(Amount::Counters {
         on: Ref::This,
@@ -108,6 +111,9 @@ pub(super) fn counted_plural(r: &mut Reader<'_>) -> Option<Amount> {
         return Some(any);
     }
     let counter = kind(r)?;
+    if r.words("counters removed this way") {
+        return Some(Amount::RemovedThisWay(counter));
+    }
     r.need("counters on")?;
     (r.source() || (r.it == Some(Ref::This) && r.word("it"))).then_some(Amount::Counters {
         on: Ref::This,

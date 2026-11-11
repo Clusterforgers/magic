@@ -1,0 +1,49 @@
+{
+  "oracle_id": "925a3ded-b7bc-4384-8684-79c20c59ab12",
+  "name": "Caravan Vigil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caravan Vigil",
+      "oracle_fingerprint": "914973c58e1fb4d2ff378ee28a73c95e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [
+                          { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } }
+                        ],
+                        "second": [{ "Move": { "what": { "Bound": "land" }, "to": "Hand" } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "land" }, "to": "Hand" } }]
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

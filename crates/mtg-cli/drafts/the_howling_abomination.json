@@ -1,0 +1,42 @@
+{
+  "oracle_id": "4a67946e-8903-4994-9641-d31fbb62082c",
+  "name": "The Howling Abomination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Howling Abomination",
+      "oracle_fingerprint": "bbdafdc2228c62f0ac128c80f4325568",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Trample" }],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": ["This"], "by": ["Spell"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": "Opponents", "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

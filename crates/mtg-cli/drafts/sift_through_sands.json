@@ -1,0 +1,68 @@
+{
+  "oracle_id": "4f5978a6-40c2-49df-8277-48a6d4f6f23e",
+  "name": "Sift Through Sands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sift Through Sands",
+      "oracle_fingerprint": "3d2a1535e4eaaa6e0706ace589269538",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "Discard": {} },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "SpellCast",
+                              "who": "You",
+                              "filter": [{ "Named": "Peer Through Depths" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "SpellCast",
+                              "who": "You",
+                              "filter": [{ "Named": "Reach Through Mists" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Search": { "filter": [{ "Named": "The Unspeakable" }], "as": "found" }
+                          },
+                          { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                          { "Shuffle": {} }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

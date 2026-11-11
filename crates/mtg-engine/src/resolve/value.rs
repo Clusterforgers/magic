@@ -71,6 +71,7 @@ impl From<ResolveError> for crate::error::EngineError {
 static NO_CHOICES: Choices = Choices {
     modes: Vec::new(),
     random_modes: false,
+    random_targets: 0,
     x: None,
     targets: Vec::new(),
     division: Vec::new(),
@@ -415,8 +416,25 @@ impl<'a> Scope<'a> {
     }
 
     /// The largest count of the turn among the players `who` names, or among the objects it names for the times counters
-    /// were put on them.
-    fn tallied(&self, who: &Ref, what: TurnTally) -> Result<i64, ResolveError> {
+    /// were put on them; with `last`, of the turn that ended last.
+    #[allow(clippy::too_many_lines)]
+    fn tallied(&self, who: &Ref, what: TurnTally, last: bool) -> Result<i64, ResolveError> {
+        // "Last turn" reads the counts kept as the turn before this one ended.
+        let tally_of = |player, kind| {
+            if last {
+                self.state.tallied_last_turn(player, kind)
+            } else {
+                self.state.tallied(player, kind)
+            }
+        };
+        if last
+            && matches!(
+                what,
+                TurnTally::DungeonsCompleted | TurnTally::DamageDealtTo | TurnTally::CountersPut
+            )
+        {
+            return Err(ResolveError::Unsupported("Amount.TalliedLastTurn.Kind"));
+        }
         let kind = match what {
             TurnTally::Attackers => Tally::Attackers,
             TurnTally::DamageTaken => Tally::Hurt,
@@ -474,17 +492,17 @@ impl<'a> Scope<'a> {
                 let total: u32 = self
                     .players(who)?
                     .into_iter()
-                    .map(|player| self.state.tallied(player, kind))
+                    .map(|player| tally_of(player, kind))
                     .sum();
                 return Ok(i64::from(total));
             }
             TurnTally::LifeLost => {
-                let lost: u32 = self
+                let life_lost: u32 = self
                     .players(who)?
                     .into_iter()
-                    .map(|player| self.state.tallied(player, Tally::Lost))
+                    .map(|player| tally_of(player, Tally::Lost))
                     .sum();
-                return Ok(i64::from(lost));
+                return Ok(i64::from(life_lost));
             }
             TurnTally::DamageDealtTo => {
                 let named = self.refs(who)?;
@@ -503,7 +521,7 @@ impl<'a> Scope<'a> {
         Ok(self
             .players(who)?
             .into_iter()
-            .map(|player| i64::from(self.state.tallied(player, kind)))
+            .map(|player| i64::from(tally_of(player, kind)))
             .max()
             .unwrap_or(0))
     }
@@ -920,7 +938,8 @@ impl<'a> Scope<'a> {
         let mut what = &spec.what;
         while let Targetable::Together { what: inner, .. }
         | Targetable::Another { what: inner, .. }
-        | Targetable::ChosenBy { what: inner, .. } = what
+        | Targetable::ChosenBy { what: inner, .. }
+        | Targetable::AtRandom(inner) = what
         {
             what = inner;
         }
@@ -931,9 +950,11 @@ impl<'a> Scope<'a> {
             )),
             Targetable::Player => self.refs(&Ref::EachPlayer),
             Targetable::Opponent => self.refs(&Ref::Opponents),
+            Targetable::PlayerAmong(among) => self.refs(among),
             Targetable::Together { .. }
             | Targetable::Another { .. }
-            | Targetable::ChosenBy { .. } => {
+            | Targetable::ChosenBy { .. }
+            | Targetable::AtRandom(_) => {
                 Err(ResolveError::Unsupported("overload of a nested target"))
             }
             Targetable::AnyTarget | Targetable::Either(_) => Err(ResolveError::Unsupported(
@@ -1951,11 +1972,13 @@ impl<'a> Scope<'a> {
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::ResolvedThisTurn => self.resolved_this_turn(),
             Amount::Devoured => self.w7e_devoured(),
+            Amount::RemovedThisWay(_) => i64::from(self.choices.cost_counters_removed()),
             Amount::Bound(name) => self.kept_number(name),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
             Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),
             Amount::PermanentsGraved => i64::from(self.state.graved_this_turn()),
-            Amount::Tallied { who, what } => self.tallied(who, *what)?,
+            Amount::Tallied { who, what } => self.tallied(who, *what, false)?,
+            Amount::TalliedLastTurn { who, what } => self.tallied(who, *what, true)?,
             Amount::Largest { who, of } => self.largest(who, of)?,
             Amount::HighestCounters { who, counter } => self.highest_counters(who, counter)?,
             Amount::Party(who) => self.party(who)?,

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "005c181a-05db-4c15-9893-65103cca338e",
+  "name": "Toluz, Clever Conductor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Toluz, Clever Conductor",
+      "oracle_fingerprint": "141e8ac35e6bbb4cd3a9d199962c49d2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Connive": { "what": "This" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Batch": { "Discarded": { "by": "You" } } },
+            "effects": [
+              { "Exile": { "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "oracle_id": "a6cefecd-459e-439a-a62c-689c2919b689",
+  "name": "Arbiter of the Ideal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arbiter of the Ideal",
+      "oracle_fingerprint": "4626a8704abe77d7da801adc53683c39",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "top" },
+                      "selector": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Creature" },
+                            { "Type": "Land" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "top" },
+                              "to": {
+                                "Battlefield": { "counters": [[{ "Other": "manifestation" }, 1]] }
+                              }
+                            }
+                          },
+                          {
+                            "Continuous": {
+                              "affected": {
+                                "Arrived": { "of": { "Bound": "top" }, "zone": "Battlefield" }
+                              },
+                              "mods": [{ "AddType": "Enchantment" }],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

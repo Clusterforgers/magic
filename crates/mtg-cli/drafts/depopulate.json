@@ -1,0 +1,46 @@
+{
+  "oracle_id": "4a83c2fa-f2d2-4b86-8407-4269f127936d",
+  "name": "Depopulate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Depopulate",
+      "oracle_fingerprint": "c37e283bfddf9a41389f8ed497509ab5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": { "Bound": "p" } },
+                                { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Draw": { "who": { "Bound": "p" } } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

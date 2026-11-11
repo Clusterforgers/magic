@@ -1,0 +1,59 @@
+{
+  "oracle_id": "25e1d5fe-c2d8-4a11-ad54-bf1626f9ab45",
+  "name": "Oversimplify",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oversimplify",
+      "oracle_fingerprint": "8da7455be0b03af75ddaea00eccc0cae",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "Type": "Creature" }] }, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "who": { "Bound": "player" },
+                        "token": {
+                          "Custom": {
+                            "name": "Fractal",
+                            "colors": ["Green", "Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Fractal"],
+                            "power": 0,
+                            "toughness": 0
+                          }
+                        },
+                        "as": "fractal"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "fractal" },
+                        "counter": "+1/+1",
+                        "count": {
+                          "Total": {
+                            "of": [
+                              { "Is": { "Departed": { "Bound": "exiled" } } },
+                              { "ControlledBy": { "Bound": "player" } }
+                            ],
+                            "stat": "Power"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

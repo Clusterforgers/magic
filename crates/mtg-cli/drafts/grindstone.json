@@ -1,0 +1,49 @@
+{
+  "oracle_id": "97560adc-814e-450c-9ca7-f9364e910a0b",
+  "name": "Grindstone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grindstone",
+      "oracle_fingerprint": "e3ef46c0faae19a48b57c6873580e2e4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [
+                        {
+                          "Test": {
+                            "left": {
+                              "CountOf": {
+                                "of": { "Bound": "milled" },
+                                "filter": [{ "SharesColor": "Candidate" }]
+                              }
+                            },
+                            "op": "Ge",
+                            "right": 2
+                          }
+                        }
+                      ],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 2, "as": "milled" } }],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

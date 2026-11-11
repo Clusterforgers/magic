@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e9541db2-2874-4307-b896-c403f6d82e68",
+  "name": "Hallowed Moonlight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hallowed Moonlight",
+      "oracle_fingerprint": "204b971b0b7075a63dd6cbdbdb1090fe",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "Not": { "WasCast": {} } }],
+                      "to": "Battlefield"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

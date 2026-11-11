@@ -1,0 +1,63 @@
+{
+  "oracle_id": "3d1b09a3-f151-4218-974b-02bb6159247a",
+  "name": "Seize the Spotlight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seize the Spotlight",
+      "oracle_fingerprint": "1380db5f9853da9683cee40552db2b68",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "Bound": "opp" },
+                        "options": [
+                          [
+                            {
+                              "Choose": {
+                                "from": {
+                                  "Each": [
+                                    { "Type": "Creature" },
+                                    { "ControlledBy": { "Bound": "opp" } }
+                                  ]
+                                },
+                                "as": "stolen"
+                              }
+                            },
+                            {
+                              "Continuous": {
+                                "affected": { "Bound": "stolen" },
+                                "mods": [{ "SetController": "You" }],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            },
+                            { "Untap": { "what": { "Bound": "stolen" } } },
+                            {
+                              "Continuous": {
+                                "affected": { "Bound": "stolen" },
+                                "mods": [{ "AddKeyword": "Haste" }],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ],
+                          [{ "Draw": {} }, { "CreateToken": { "token": { "Named": "treasure" } } }]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

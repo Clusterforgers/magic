@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7e4d1ce3-92f0-4acc-962b-8073d41d3673",
+  "name": "Unsettled Mariner",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Unsettled Mariner",
+      "oracle_fingerprint": "b3d5da4177a85e74c8fbafe057fda7e1",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 47, "end": 211 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3570001c-844f-4319-9850-ab997d62a83b",
+  "name": "Visions of Ruin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Visions of Ruin",
+      "oracle_fingerprint": "4bf875fccb18f23000bab47f668d0bda",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Artifact" }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "CountOf": { "of": { "Bound": "sacrificed" }, "filter": [] } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{8}{R}{R}" } }
+      ]
+    }
+  ]
+}

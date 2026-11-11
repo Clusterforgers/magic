@@ -1,0 +1,182 @@
+{
+  "object": "card",
+  "id": "04506bad-3856-4184-8dda-941ded60f41a",
+  "oracle_id": "f3e23d5e-bd88-4e7c-a3fb-db2a8cb05b22",
+  "multiverse_ids": [
+    685840
+  ],
+  "mtgo_id": 135406,
+  "tcgplayer_id": 609601,
+  "cardmarket_id": 805028,
+  "name": "Gisela, the Broken Blade",
+  "lang": "en",
+  "released_at": "2025-01-24",
+  "uri": "https://api.scryfall.com/cards/04506bad-3856-4184-8dda-941ded60f41a",
+  "scryfall_uri": "https://scryfall.com/card/inr/24/gisela-the-broken-blade?utm_source=api",
+  "layout": "meld",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:03:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/4/04506bad-3856-4184-8dda-941ded60f41a.jpg?1783908181",
+    "normal": "https://cards.scryfall.io/normal/front/0/4/04506bad-3856-4184-8dda-941ded60f41a.jpg?1783908181",
+    "large": "https://cards.scryfall.io/large/front/0/4/04506bad-3856-4184-8dda-941ded60f41a.jpg?1783908181",
+    "png": "https://cards.scryfall.io/png/front/0/4/04506bad-3856-4184-8dda-941ded60f41a.png?1783908181",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/4/04506bad-3856-4184-8dda-941ded60f41a.jpg?1783908181",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/4/04506bad-3856-4184-8dda-941ded60f41a.jpg?1783908181",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/4/04506bad-3856-4184-8dda-941ded60f41a.webp?1783908181",
+    "grid": "https://cards.scryfall.io/grid/front/0/4/04506bad-3856-4184-8dda-941ded60f41a.webp?1783908181",
+    "display": "https://cards.scryfall.io/display/front/0/4/04506bad-3856-4184-8dda-941ded60f41a.webp?1783908181",
+    "art": "https://cards.scryfall.io/art/front/0/4/04506bad-3856-4184-8dda-941ded60f41a.webp?1783908181",
+    "crop": "https://cards.scryfall.io/crop/front/0/4/04506bad-3856-4184-8dda-941ded60f41a.webp?1783908181",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/4/04506bad-3856-4184-8dda-941ded60f41a.jpg?1783908181"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Angel Horror",
+  "oracle_text": "Flying, first strike, lifelink\nAt the beginning of your end step, if you both own and control Gisela and a creature named Bruna, the Fading Light, exile them, then meld them into Brisela, Voice of Nightmares.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Lifelink",
+    "First strike",
+    "Meld"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "cd8586f9-97e2-438d-b74f-1e53c811f314",
+      "component": "combo_piece",
+      "name": "Eldritch Moon Checklist",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/cd8586f9-97e2-438d-b74f-1e53c811f314"
+    },
+    {
+      "object": "related_card",
+      "id": "7e926e19-553c-470a-afde-358541af5caa",
+      "component": "meld_result",
+      "name": "Brisela, Voice of Nightmares",
+      "type_line": "Legendary Creature — Eldrazi Angel",
+      "uri": "https://api.scryfall.com/cards/7e926e19-553c-470a-afde-358541af5caa"
+    },
+    {
+      "object": "related_card",
+      "id": "6fccdb60-5fce-4a6e-a709-b986f9a4b653",
+      "component": "meld_part",
+      "name": "Bruna, the Fading Light",
+      "type_line": "Legendary Creature — Angel Horror",
+      "uri": "https://api.scryfall.com/cards/6fccdb60-5fce-4a6e-a709-b986f9a4b653"
+    },
+    {
+      "object": "related_card",
+      "id": "04506bad-3856-4184-8dda-941ded60f41a",
+      "component": "meld_part",
+      "name": "Gisela, the Broken Blade",
+      "type_line": "Legendary Creature — Angel Horror",
+      "uri": "https://api.scryfall.com/cards/04506bad-3856-4184-8dda-941ded60f41a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set": "inr",
+  "set_name": "Innistrad Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/04506bad-3856-4184-8dda-941ded60f41a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af3e23d5e-bd88-4e7c-a3fb-db2a8cb05b22&unique=prints",
+  "collector_number": "24",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "She now hears only Emrakul's murmurs.",
+  "card_back_id": "130c9fd0-22e2-434a-afc9-0890ce7b368c",
+  "artist": "Clint Cearley",
+  "artist_ids": [
+    "03b75350-d5a0-4e3a-b3b4-8d4a5554385b"
+  ],
+  "illustration_id": "db5289ab-8aa4-412d-afd4-f7b7fef475fb",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 2544,
+  "penny_rank": 1886,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/news/making-magic/the-ins-and-outs-of-innistrad-remastered",
+    "previewed_at": "2025-01-06"
+  },
+  "prices": {
+    "usd": "22.26",
+    "usd_foil": "30.21",
+    "usd_etched": null,
+    "eur": "15.82",
+    "eur_foil": "21.03",
+    "tix": "0.12"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=685840&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGisela%252C%2Bthe%2BBroken%2BBlade",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGisela%252C%2Bthe%2BBroken%2BBlade",
+    "edhrec": "https://edhrec.com/route/?cc=Gisela%2C+the+Broken+Blade"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F609601%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=805028&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/135406?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

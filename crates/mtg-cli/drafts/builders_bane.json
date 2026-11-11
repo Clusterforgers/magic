@@ -1,0 +1,51 @@
+{
+  "oracle_id": "814adb99-6100-4c36-96d9-763bc20dca5d",
+  "name": "Builder's Bane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Builder's Bane",
+      "oracle_fingerprint": "3fb8bece42ebe9e9c503503001999f59",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Artifact" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "player",
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Bound": "player" },
+                              "amount": {
+                                "Destroyed": [
+                                  { "Type": "Artifact" },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "4fc69345-4c1f-4113-8e1c-15b8e2e597fc",
+  "name": "Write into Being",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Write into Being",
+      "oracle_fingerprint": "735f00dab48f87568f16b24c7df5b7d8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept", "rest_as": "other" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": { "Library": { "place": "Top" } } } },
+              { "Manifest": { "as": "manifest" } },
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "other" },
+                        "to": { "Library": { "place": "Top" } }
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "other" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

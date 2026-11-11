@@ -1,0 +1,47 @@
+{
+  "oracle_id": "8be368dc-6212-4627-989e-077eea78f30d",
+  "name": "Powerbalance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Powerbalance",
+      "oracle_fingerprint": "c9059621051748c563b9fbed16d3f93f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "top" },
+                            "selector": [
+                              {
+                                "Compare": {
+                                  "stat": "ManaValue",
+                                  "op": "Eq",
+                                  "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "then": [{ "CastFromZone": { "what": { "Bound": "top" }, "free": true } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

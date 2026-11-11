@@ -1,0 +1,42 @@
+{
+  "oracle_id": "9f9882f5-2338-4881-b418-b15348a462b4",
+  "name": "Intervention Pact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intervention Pact",
+      "oracle_fingerprint": "2462734b9d05a0249a17755b84a760d5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [{ "Pay": { "cost": "{1}{W}{W}", "unpaid": [{ "LoseGame": {} }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

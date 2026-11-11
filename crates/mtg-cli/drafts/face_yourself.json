@@ -1,0 +1,51 @@
+{
+  "oracle_id": "3c0fe71c-bee1-41d3-aeb5-1723028eedde",
+  "name": "Face Yourself",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Face Yourself",
+      "oracle_fingerprint": "50aa1496dd2de52fadfda24d05899be4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": {
+                        "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                      },
+                      "except": [
+                        { "AddKeyword": "Haste" },
+                        {
+                          "GrantAbility": {
+                            "Triggered": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "if": {
+                                "Compare": {
+                                  "left": {
+                                    "Count": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }]
+                                  },
+                                  "op": "Eq",
+                                  "right": 0
+                                }
+                              },
+                              "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

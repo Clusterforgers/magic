@@ -1,0 +1,95 @@
+{
+  "oracle_id": "cf288b0a-a343-4ef7-ba02-4f83a6dabeaf",
+  "name": "Hypergenesis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hypergenesis",
+      "oracle_fingerprint": "d0807a67f4070a21c29acd293aba3203",
+      "abilities": [
+        { "Keyword": { "Suspend": { "time": 3, "cost": "{1}{G}{G}" } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Bound": "before" },
+                      "op": "Gt",
+                      "right": {
+                        "Count": [
+                          {
+                            "AnyOf": [
+                              { "Type": "Creature" },
+                              { "Type": "Artifact" },
+                              { "Type": "Enchantment" },
+                              { "Type": "Land" }
+                            ]
+                          },
+                          { "In": "Hand" }
+                        ]
+                      }
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Let": {
+                        "as": "before",
+                        "amount": {
+                          "Count": [
+                            {
+                              "AnyOf": [
+                                { "Type": "Creature" },
+                                { "Type": "Artifact" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" }
+                              ]
+                            },
+                            { "In": "Hand" }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "player",
+                        "effects": [
+                          {
+                            "Choose": {
+                              "who": { "Bound": "player" },
+                              "from": {
+                                "Each": [
+                                  {
+                                    "AnyOf": [
+                                      { "Type": "Creature" },
+                                      { "Type": "Artifact" },
+                                      { "Type": "Enchantment" },
+                                      { "Type": "Land" }
+                                    ]
+                                  },
+                                  { "In": "Hand" },
+                                  { "OwnedBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "count": { "min": 0, "max": 1 },
+                              "as": "picked"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

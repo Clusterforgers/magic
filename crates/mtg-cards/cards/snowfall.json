@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5ffed544-1656-4753-ac8f-ad8fb4442c7f",
+  "name": "Snowfall",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Snowfall",
+      "oracle_fingerprint": "3862b1ceb71aa149a3d09757e2a64279",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{U}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 172, "end": 382 }
+          }
+        }
+      ]
+    }
+  ]
+}

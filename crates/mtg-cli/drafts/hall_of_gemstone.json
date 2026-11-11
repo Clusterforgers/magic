@@ -1,0 +1,19 @@
+{
+  "oracle_id": "3da9fecc-064a-44e6-b88e-4b10194e367e",
+  "name": "Hall of Gemstone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hall of Gemstone",
+      "oracle_fingerprint": "e1ac4dfb4f22268fb41012a586bd7171",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [{ "ChooseValue": { "who": "Triggering", "kind": "Color", "as": "color" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "316c265b-67e2-48b3-aac8-07a898dbb20f",
+  "name": "Crown of Convergence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crown of Convergence",
+      "oracle_fingerprint": "af976089abb0eb448d93e8f597697a5b",
+      "abilities": [
+        { "Rule": { "rule": { "RevealTop": "You" } } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                {
+                  "SharesColor": {
+                    "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"]
+                  }
+                }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "CountOf": {
+                "subject": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"] },
+                "selector": [{ "Type": "Creature" }],
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}{G}",
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"] },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

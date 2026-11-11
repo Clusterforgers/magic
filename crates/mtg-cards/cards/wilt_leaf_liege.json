@@ -1,0 +1,45 @@
+{
+  "oracle_id": "2441696b-a9ba-4813-ba2e-e71f85281d05",
+  "name": "Wilt-Leaf Liege",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wilt-Leaf Liege",
+      "oracle_fingerprint": "c3ba5ba6571ec08484741b1fc715d889",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Color": "Green" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Color": "White" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 134, "end": 280 }
+          }
+        }
+      ]
+    }
+  ]
+}

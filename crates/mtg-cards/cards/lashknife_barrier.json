@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7e529372-cec7-40d7-a1ac-1dce1764f8b2",
+  "name": "Lashknife Barrier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lashknife Barrier",
+      "oracle_fingerprint": "252a135bb4bf48be6774d902aab8165a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            },
+            "by": { "Subtract": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

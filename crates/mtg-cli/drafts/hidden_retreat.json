@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a116329a-343e-4f10-a122-38bf8b5ac2c8",
+  "name": "Hidden Retreat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Retreat",
+      "oracle_fingerprint": "9a59b5597093c91d23b0a4963d500e96",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "ToLibrary": { "from": "Hand", "filter": [] } }],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    "Spell",
+                    { "In": "Stack" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }] } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

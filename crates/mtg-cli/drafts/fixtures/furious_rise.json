@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "1f5da1ab-d720-4140-8121-89de760d020c",
+  "oracle_id": "52b3a979-3b93-4441-9237-0c8a754e5523",
+  "multiverse_ids": [
+    627689
+  ],
+  "mtgo_id": 114677,
+  "tcgplayer_id": 507259,
+  "cardmarket_id": 723544,
+  "name": "Furious Rise",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/1f5da1ab-d720-4140-8121-89de760d020c",
+  "scryfall_uri": "https://scryfall.com/card/cmm/225/furious-rise?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:07:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/f/1f5da1ab-d720-4140-8121-89de760d020c.jpg?1783915653",
+    "normal": "https://cards.scryfall.io/normal/front/1/f/1f5da1ab-d720-4140-8121-89de760d020c.jpg?1783915653",
+    "large": "https://cards.scryfall.io/large/front/1/f/1f5da1ab-d720-4140-8121-89de760d020c.jpg?1783915653",
+    "png": "https://cards.scryfall.io/png/front/1/f/1f5da1ab-d720-4140-8121-89de760d020c.png?1783915653",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/f/1f5da1ab-d720-4140-8121-89de760d020c.jpg?1783915653",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/f/1f5da1ab-d720-4140-8121-89de760d020c.jpg?1783915653",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/f/1f5da1ab-d720-4140-8121-89de760d020c.webp?1783915653",
+    "grid": "https://cards.scryfall.io/grid/front/1/f/1f5da1ab-d720-4140-8121-89de760d020c.webp?1783915653",
+    "display": "https://cards.scryfall.io/display/front/1/f/1f5da1ab-d720-4140-8121-89de760d020c.webp?1783915653",
+    "art": "https://cards.scryfall.io/art/front/1/f/1f5da1ab-d720-4140-8121-89de760d020c.webp?1783915653",
+    "crop": "https://cards.scryfall.io/crop/front/1/f/1f5da1ab-d720-4140-8121-89de760d020c.webp?1783915653",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/f/1f5da1ab-d720-4140-8121-89de760d020c.jpg?1783915653"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your end step, if you control a creature with power 4 or greater, exile the top card of your library. You may play that card until you exile another card with this enchantment.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1f5da1ab-d720-4140-8121-89de760d020c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A52b3a979-3b93-4441-9237-0c8a754e5523&unique=prints",
+  "collector_number": "225",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Klothys set out to mend the destiny of Theros, her fury guiding every stitch.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chase Stone",
+  "artist_ids": [
+    "2d753f61-5f5b-468e-97ea-8e0fdd347340"
+  ],
+  "illustration_id": "6c9a1cb7-137b-4b19-a271-11c390b0dd61",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 8924,
+  "penny_rank": 14943,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.27",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.23",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=627689&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFurious%2BRise",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFurious%2BRise",
+    "edhrec": "https://edhrec.com/route/?cc=Furious+Rise"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F507259%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=723544&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/114677?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

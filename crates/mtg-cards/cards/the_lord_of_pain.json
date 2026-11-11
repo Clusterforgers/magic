@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b194f277-5045-4391-8b48-d555a6d657a7",
+  "name": "The Lord of Pain",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Lord of Pain",
+      "oracle_fingerprint": "001ca460c0e5e9e19dd45f219ee90cff",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Rule": { "rule": { "CantGainLife": "Opponents" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 39, "end": 206 }
+          }
+        }
+      ]
+    }
+  ]
+}

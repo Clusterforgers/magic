@@ -1,0 +1,43 @@
+{
+  "oracle_id": "ffe6371c-d137-4062-8c6e-6e9794ab25bc",
+  "name": "Temporary Truce",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporary Truce",
+      "oracle_fingerprint": "beca39f3414116ebc546a22d3c3a91e8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "who": { "Bound": "player" },
+                        "kind": { "Number": [0, 2] },
+                        "as": "n"
+                      }
+                    },
+                    { "Draw": { "who": { "Bound": "player" }, "count": { "ChosenAs": "n" } } },
+                    {
+                      "GainLife": {
+                        "who": { "Bound": "player" },
+                        "amount": {
+                          "Times": { "by": 2, "of": { "Difference": [2, { "ChosenAs": "n" }] } }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b8b51a29-a2be-4b97-a73c-ea512d3d5622",
+  "name": "Norin the Wary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Norin the Wary",
+      "oracle_fingerprint": "0bb32d4b90112496797a1647d2ca8532",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "SpellCast": {} }, { "Attacks": { "what": [{ "Type": "Creature" }] } }]
+            },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

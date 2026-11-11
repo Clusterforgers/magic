@@ -1,0 +1,101 @@
+{
+  "oracle_id": "1e048c15-50d6-4313-880a-e04348952a51",
+  "name": "Alaundo the Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alaundo the Seer",
+      "oracle_fingerprint": "7ce063d97fe6aeca1520aadf1ec3c1dd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Draw": {} },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "exiled" },
+                  "counter": { "Other": "time" },
+                  "count": { "Stat": { "of": { "Bound": "exiled" }, "stat": "ManaValue" } }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "exiled" },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "CountersRemoved": { "what": ["This"], "counter": { "Other": "time" } }
+                          },
+                          "if": {
+                            "All": [
+                              {
+                                "Compare": {
+                                  "left": {
+                                    "Counters": { "on": "This", "counter": { "Other": "time" } }
+                                  },
+                                  "op": "Eq",
+                                  "right": 0
+                                }
+                              },
+                              { "Matches": { "subject": "This", "selector": [{ "In": "Exile" }] } }
+                            ]
+                          },
+                          "from": "Exile",
+                          "effects": [
+                            { "CastFromZone": { "what": "This", "free": true, "as": "spell" } },
+                            {
+                              "If": {
+                                "condition": {
+                                  "Matches": {
+                                    "subject": { "Bound": "spell" },
+                                    "selector": [{ "Type": "Creature" }]
+                                  }
+                                },
+                                "then": [
+                                  {
+                                    "Continuous": {
+                                      "affected": { "Bound": "spell" },
+                                      "mods": [{ "AddKeyword": "Haste" }],
+                                      "duration": "UntilEndOfTurn"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "OwnedBy": "You" },
+                      { "Not": { "Is": { "Bound": "exiled" } } }
+                    ]
+                  },
+                  "counter": { "Other": "time" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

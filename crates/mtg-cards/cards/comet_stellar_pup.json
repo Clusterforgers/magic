@@ -1,0 +1,140 @@
+{
+  "oracle_id": "e7c67480-1816-4071-9eab-a1d1b535a344",
+  "name": "Comet, Stellar Pup",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Comet, Stellar Pup",
+      "oracle_fingerprint": "62234142ac700f4adc1769f0fd930efd",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 2,
+                      "effects": [
+                        { "PutCounters": { "on": "This", "counter": "loyalty", "count": 2 } },
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Squirrel",
+                                "colors": ["Green"],
+                                "types": ["Creature"],
+                                "subtypes": ["Squirrel"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            },
+                            "count": 2,
+                            "as": "squirrels"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Bound": "squirrels" },
+                            "mods": [{ "AddKeyword": "Haste" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 3,
+                      "to": 3,
+                      "effects": [
+                        { "RemoveCounters": { "from": "This", "counter": "loyalty" } },
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" },
+                                { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                              ]
+                            },
+                            "as": "card"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+                      ]
+                    },
+                    {
+                      "from": 4,
+                      "to": 5,
+                      "effects": [
+                        {
+                          "Either": {
+                            "first": [
+                              {
+                                "Choose": {
+                                  "from": { "Each": [{ "Type": "Creature" }] },
+                                  "as": "victim"
+                                }
+                              },
+                              {
+                                "DealDamage": {
+                                  "to": { "Bound": "victim" },
+                                  "amount": { "Counters": { "on": "This", "counter": "loyalty" } }
+                                }
+                              }
+                            ],
+                            "second": [
+                              { "Choose": { "from": "EachPlayer", "as": "victim" } },
+                              {
+                                "DealDamage": {
+                                  "to": { "Bound": "victim" },
+                                  "amount": { "Counters": { "on": "This", "counter": "loyalty" } }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        { "RemoveCounters": { "from": "This", "counter": "loyalty", "count": 2 } }
+                      ]
+                    },
+                    {
+                      "from": 6,
+                      "to": 6,
+                      "effects": [{ "PutCounters": { "on": "This", "counter": "loyalty" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 25, "end": 126 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 127, "end": 215 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 216, "end": 326 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 327, "end": 407 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "64cd68be-6e6a-4577-8465-a892463b6d6c",
+  "oracle_id": "054c00b4-c940-455a-ad88-b8aa35931ecf",
+  "multiverse_ids": [
+    34832
+  ],
+  "mtgo_id": 17149,
+  "mtgo_foil_id": 17150,
+  "tcgplayer_id": 9718,
+  "cardmarket_id": 2291,
+  "name": "Alter Reality",
+  "lang": "en",
+  "released_at": "2002-02-04",
+  "uri": "https://api.scryfall.com/cards/64cd68be-6e6a-4577-8465-a892463b6d6c",
+  "scryfall_uri": "https://scryfall.com/card/tor/22/alter-reality?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:19:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/4/64cd68be-6e6a-4577-8465-a892463b6d6c.jpg?1783945166",
+    "normal": "https://cards.scryfall.io/normal/front/6/4/64cd68be-6e6a-4577-8465-a892463b6d6c.jpg?1783945166",
+    "large": "https://cards.scryfall.io/large/front/6/4/64cd68be-6e6a-4577-8465-a892463b6d6c.jpg?1783945166",
+    "png": "https://cards.scryfall.io/png/front/6/4/64cd68be-6e6a-4577-8465-a892463b6d6c.png?1783945166",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/4/64cd68be-6e6a-4577-8465-a892463b6d6c.jpg?1783945166",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/4/64cd68be-6e6a-4577-8465-a892463b6d6c.jpg?1783945166",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/4/64cd68be-6e6a-4577-8465-a892463b6d6c.webp?1783945166",
+    "grid": "https://cards.scryfall.io/grid/front/6/4/64cd68be-6e6a-4577-8465-a892463b6d6c.webp?1783945166",
+    "display": "https://cards.scryfall.io/display/front/6/4/64cd68be-6e6a-4577-8465-a892463b6d6c.webp?1783945166",
+    "art": "https://cards.scryfall.io/art/front/6/4/64cd68be-6e6a-4577-8465-a892463b6d6c.webp?1783945166",
+    "crop": "https://cards.scryfall.io/crop/front/6/4/64cd68be-6e6a-4577-8465-a892463b6d6c.webp?1783945166",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/4/64cd68be-6e6a-4577-8465-a892463b6d6c.jpg?1783945166"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Change the text of target spell or permanent by replacing all instances of one color word with another. (This effect lasts indefinitely.)\nFlashback {1}{U} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flashback"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e0b3fda1-a6ca-4996-849b-08b463d39484",
+  "set": "tor",
+  "set_name": "Torment",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e0b3fda1-a6ca-4996-849b-08b463d39484",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ator&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tor?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/64cd68be-6e6a-4577-8465-a892463b6d6c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A054c00b4-c940-455a-ad88-b8aa35931ecf&unique=prints",
+  "collector_number": "22",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Justin Sweet",
+  "artist_ids": [
+    "bb15780e-8f96-4823-b258-a7a9fd79b02c"
+  ],
+  "illustration_id": "51265931-626d-49a0-8879-2f3aeb2baaba",
+  "border_color": "black",
+  "frame": "1997",
+  "frame_effects": [
+    "tombstone"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15548,
+  "penny_rank": 15502,
+  "prices": {
+    "usd": "2.29",
+    "usd_foil": "13.00",
+    "usd_etched": null,
+    "eur": "0.92",
+    "eur_foil": "7.98",
+    "tix": "0.58"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=34832&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAlter%2BReality",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAlter%2BReality",
+    "edhrec": "https://edhrec.com/route/?cc=Alter+Reality"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F9718%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=2291&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/17149?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

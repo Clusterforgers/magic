@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c7a50ece-4fe4-4e54-9319-b92a4144445d",
+  "name": "Vampiric Embrace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampiric Embrace",
+      "oracle_fingerprint": "531f3f95ac9896b1fc483679ac589647",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "DamagedBy": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

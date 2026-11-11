@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "ceb287d3-cb8e-4ff2-8082-c0bd59c59b45",
+  "oracle_id": "26e988da-52cf-4382-8646-a27c5ad1b92d",
+  "multiverse_ids": [
+    642692
+  ],
+  "mtgo_id": 117448,
+  "tcgplayer_id": 524278,
+  "cardmarket_id": 740989,
+  "name": "Dino DNA",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45",
+  "scryfall_uri": "https://scryfall.com/card/rex/20/dino-dna?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:33:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/e/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45.jpg?1783913633",
+    "normal": "https://cards.scryfall.io/normal/front/c/e/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45.jpg?1783913633",
+    "large": "https://cards.scryfall.io/large/front/c/e/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45.jpg?1783913633",
+    "png": "https://cards.scryfall.io/png/front/c/e/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45.png?1783913633",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/e/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45.jpg?1783913633",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/e/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45.jpg?1783913633",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/e/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45.webp?1783913633",
+    "grid": "https://cards.scryfall.io/grid/front/c/e/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45.webp?1783913633",
+    "display": "https://cards.scryfall.io/display/front/c/e/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45.webp?1783913633",
+    "art": "https://cards.scryfall.io/art/front/c/e/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45.webp?1783913633",
+    "crop": "https://cards.scryfall.io/crop/front/c/e/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45.webp?1783913633",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/e/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45.jpg?1783913633"
+  },
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact",
+  "oracle_text": "Imprint — {1}, {T}: Exile target creature card from a graveyard. Activate only as a sorcery.\n{6}: Create a token that's a copy of target creature card exiled with this artifact, except it's a 6/6 green Dinosaur creature with trample. Activate only as a sorcery.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Imprint"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f5f192d0-6265-41a7-8d95-4cbe48d1657f",
+      "component": "combo_piece",
+      "name": "Dino DNA",
+      "type_line": "Artifact",
+      "uri": "https://api.scryfall.com/cards/f5f192d0-6265-41a7-8d95-4cbe48d1657f"
+    },
+    {
+      "object": "related_card",
+      "id": "01c3b739-89b3-4ad8-aab9-76e8f87cf123",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/01c3b739-89b3-4ad8-aab9-76e8f87cf123"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "647b6fd3-6935-4b96-85a4-d0191487ea5a",
+  "set": "rex",
+  "set_name": "Jurassic World Collection",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/647b6fd3-6935-4b96-85a4-d0191487ea5a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Arex&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/rex?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ceb287d3-cb8e-4ff2-8082-c0bd59c59b45/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A26e988da-52cf-4382-8646-a27c5ad1b92d&unique=prints",
+  "collector_number": "20",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Dinosaurs left their blueprints behind for us.\"\n—Mr. DNA",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Leonardo Santanna",
+  "artist_ids": [
+    "f1f8e6d8-8fb3-472a-a32f-a4b1225bd054"
+  ],
+  "illustration_id": "ffb79fcf-4f4f-4351-bb40-2717d5c2545b",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond",
+    "boosterfun"
+  ],
+  "edhrec_rank": 6259,
+  "prices": {
+    "usd": "16.43",
+    "usd_foil": "19.97",
+    "usd_etched": null,
+    "eur": "12.21",
+    "eur_foil": "17.78",
+    "tix": "6.33"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=642692&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDino%2BDNA",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDino%2BDNA",
+    "edhrec": "https://edhrec.com/route/?cc=Dino+DNA"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F524278%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=740989&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/117448?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

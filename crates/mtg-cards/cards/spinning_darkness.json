@@ -1,0 +1,27 @@
+{
+  "oracle_id": "69eeee95-cc69-41d1-833b-8895ef72df82",
+  "name": "Spinning Darkness",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spinning Darkness",
+      "oracle_fingerprint": "45634122b7d1728741b8db3e8aaf84a2",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 97 } }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "oracle_id": "e13edf92-cdba-4c24-b81b-088b1554fde6",
+  "name": "Eye of Singularity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eye of Singularity",
+      "oracle_fingerprint": "ac774d3850a02a4935228ec4b777942f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Not": { "Supertype": "Basic" } },
+                          { "Not": { "Type": "Land" } }
+                        ]
+                      },
+                      {
+                        "Test": {
+                          "left": { "Count": [{ "SharesName": "Candidate" }] },
+                          "op": "Gt",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "regenerate": false
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Not": { "Supertype": "Basic" } }, { "Not": { "Type": "Land" } }] }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "SharesName": "Triggering" }, { "Not": { "Is": "Triggering" } }]
+                  },
+                  "regenerate": false
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

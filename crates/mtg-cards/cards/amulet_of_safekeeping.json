@@ -1,0 +1,25 @@
+{
+  "oracle_id": "98709d61-4da4-4d3a-a654-bb2a7a0edb6b",
+  "name": "Amulet of Safekeeping",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Amulet of Safekeeping",
+      "oracle_fingerprint": "9b79d7cbb169971626c6ed35ede4c8f6",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 136 }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token"] },
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

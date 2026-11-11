@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ca597a0d-b510-4b25-9a83-4d4e613546f5",
+  "name": "Bound in Gold",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bound in Gold",
+      "oracle_fingerprint": "6573db994c006769f3b4da0f0a66951f",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 18, "end": 154 }
+          }
+        }
+      ]
+    }
+  ]
+}

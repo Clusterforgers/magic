@@ -1,0 +1,49 @@
+{
+  "oracle_id": "644a8946-4890-4c2b-978f-02eedc95b5ad",
+  "name": "Book Burning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Book Burning",
+      "oracle_fingerprint": "4cf1f5854603a1eaf6ebb8e17bba7da4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "p" },
+                        "effects": [
+                          { "DealDamage": { "to": { "Bound": "p" }, "amount": 6 } },
+                          { "Bind": { "what": { "Bound": "p" }, "as": "volunteers", "adds": true } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Players": { "Bound": "volunteers" } },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Mill": { "who": { "Target": 0 }, "count": 6 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

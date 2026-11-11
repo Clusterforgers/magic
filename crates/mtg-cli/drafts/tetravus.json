@@ -1,0 +1,113 @@
+{
+  "oracle_id": "85255c26-4e74-4cf0-91a6-78ddba5abdc6",
+  "name": "Tetravus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tetravus",
+      "oracle_fingerprint": "cdcc9b14279115f584c1da1a7762e2f9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "kind": {
+                          "Number": [0, { "Counters": { "on": "This", "counter": "+1/+1" } }]
+                        },
+                        "as": "n"
+                      }
+                    },
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": "+1/+1",
+                        "count": { "ChosenAs": "n" }
+                      }
+                    },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Tetravite",
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Tetravite"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [
+                              { "Keyword": "Flying" },
+                              {
+                                "Rule": {
+                                  "rule": {
+                                    "Cant": {
+                                      "who": "This",
+                                      "action": { "BeAttachedBy": [{ "Subtype": "Aura" }] }
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "count": { "ChosenAs": "n" },
+                        "as": "tetravites"
+                      }
+                    },
+                    { "Remember": { "what": { "Bound": "tetravites" }, "slot": "tetravites" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Remembered": { "on": "This", "slot": "tetravites" } },
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "CountOf": {
+                              "of": { "Remembered": { "on": "This", "slot": "tetravites" } },
+                              "filter": []
+                            }
+                          }
+                        },
+                        "as": "ex"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "ex" } } },
+                    {
+                      "PutCounters": {
+                        "on": "This",
+                        "counter": "+1/+1",
+                        "count": { "CountOf": { "of": { "Bound": "ex" }, "filter": [] } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

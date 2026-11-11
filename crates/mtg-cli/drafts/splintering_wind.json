@@ -1,0 +1,73 @@
+{
+  "oracle_id": "184f68a1-0c13-42f4-aee6-3ca744f6a30b",
+  "name": "Splintering Wind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Splintering Wind",
+      "oracle_fingerprint": "9f5a5b4827738d79b317181d36f905c7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Splinter",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Splinter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        { "Keyword": { "CumulativeUpkeep": "{G}" } }
+                      ]
+                    }
+                  },
+                  "as": "splinter"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Bound": "splinter" } }],
+                      "from": "Battlefield"
+                    }
+                  },
+                  "effects": [
+                    {
+                      "Together": {
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "source": { "Bound": "splinter" },
+                              "to": "You",
+                              "amount": 1
+                            }
+                          },
+                          {
+                            "DealDamage": {
+                              "source": { "Bound": "splinter" },
+                              "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                              "amount": 1
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

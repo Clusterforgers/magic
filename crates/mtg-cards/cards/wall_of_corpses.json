@@ -1,0 +1,21 @@
+{
+  "oracle_id": "16a7895a-ca23-4112-a91f-4b1528e75cea",
+  "name": "Wall of Corpses",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Corpses",
+      "oracle_fingerprint": "d91098a00c8c74f786213bbeebb069b5",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "BlockedBy": "This" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

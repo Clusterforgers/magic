@@ -1,0 +1,54 @@
+{
+  "oracle_id": "1f250443-8d5e-46c9-920e-8e9373780e32",
+  "name": "The Millennium Calendar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Millennium Calendar",
+      "oracle_fingerprint": "6ac1d90787b7f0b2736eed8e70da622e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "Untapped": { "what": [{ "ControlledBy": "You" }] } } },
+            "if": { "All": ["YourTurn", { "Step": "Untap" }] },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": { "Other": "time" },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [{ "MultiplyCounters": { "on": "This", "counter": { "Other": "time" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Matches": {
+                    "subject": "This",
+                    "selector": [
+                      { "CounterCount": { "kind": { "Other": "time" }, "op": "Ge", "to": 1000 } }
+                    ]
+                  }
+                }
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              { "LoseLife": { "who": "Opponents", "amount": 1000 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

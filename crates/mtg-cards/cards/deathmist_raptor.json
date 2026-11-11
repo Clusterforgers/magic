@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a7d4f5aa-26d4-4363-aa5a-a26d6f791b82",
+  "name": "Deathmist Raptor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Deathmist Raptor",
+      "oracle_fingerprint": "0e79dda71918c706f076cc5092cf5fc4",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 11, "end": 148 }
+          }
+        },
+        { "Keyword": { "Megamorph": "{4}{G}" } }
+      ]
+    }
+  ]
+}

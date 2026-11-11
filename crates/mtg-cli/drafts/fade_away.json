@@ -1,0 +1,41 @@
+{
+  "oracle_id": "f92c2d47-f2f7-43d9-acf3-0145bad1977d",
+  "name": "Fade Away",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fade Away",
+      "oracle_fingerprint": "00bb5002937817a070710a61e2896bf1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }] },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Bound": "creature" } },
+                        "cost": "{1}",
+                        "unpaid": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": { "Bound": "creature" } },
+                              "filter": []
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

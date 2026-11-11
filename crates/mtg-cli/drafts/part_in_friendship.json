@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e1a9c467-2d64-4e11-adf3-7333c923b187",
+  "name": "Part in Friendship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Part in Friendship",
+      "oracle_fingerprint": "0d7e9aa1a4d8c140eb2555cb7662099e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "found",
+                  "revealed_as": "rest"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Bound": "found" }, "stat": "ManaValue" } },
+                      "op": "Le",
+                      "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "then": [
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "3075dadd-240f-4455-9286-9f1d48f53a3f",
+  "name": "Jar of Eyeballs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jar of Eyeballs",
+      "oracle_fingerprint": "80e9ae7e2949f48ea66c1a8e9f16b5a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "eyeball" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "Let": {
+                  "as": "eyes",
+                  "amount": { "Counters": { "on": "This", "counter": { "Other": "eyeball" } } }
+                }
+              },
+              { "RemoveAllCounters": { "from": "This", "counter": { "Other": "eyeball" } } },
+              { "LookAtTop": { "count": { "Bound": "eyes" }, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest3" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

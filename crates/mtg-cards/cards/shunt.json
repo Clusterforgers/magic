@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e714bcfb-b451-4b7b-ab60-4cb845c75647",
+  "name": "Shunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shunt",
+      "oracle_fingerprint": "4c0dea588dfd02e1c0ea6da713101aa5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", "SingleTarget"] } }],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -6,17 +6,7 @@
     {
       "name": "Discontinuity",
       "oracle_fingerprint": "bd6ac1066607e62cc63139d5c89aca72",
-      "abilities": [
-        { "Spell": { "effects": ["EndTurn"] } },
-        {
-          "CostModifier": {
-            "applies_to": ["This"],
-            "change": "Reduce",
-            "mana": "{2}{U}{U}",
-            "condition": "YourTurn"
-          }
-        }
-      ]
+      "abilities": [{ "Spell": { "effects": ["EndTurn"] } }]
     }
   ]
 }

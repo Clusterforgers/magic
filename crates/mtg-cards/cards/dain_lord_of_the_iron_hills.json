@@ -1,0 +1,26 @@
+{
+  "oracle_id": "5b79b68a-db71-4638-824e-ab89b1716c86",
+  "name": "Dáin, Lord of the Iron Hills",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dáin, Lord of the Iron Hills",
+      "oracle_fingerprint": "c3953a9acd0dcd4bc1cf63c2fb3586f4",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 10, "end": 139 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 140, "end": 267 }
+          }
+        }
+      ]
+    }
+  ]
+}

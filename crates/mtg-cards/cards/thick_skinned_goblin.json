@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e7436973-9ac8-45b2-9d79-769bfacef4b9",
+  "name": "Thick-Skinned Goblin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thick-Skinned Goblin",
+      "oracle_fingerprint": "5a6f0f06c79f094776eacc6a35c26845",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 73 } }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": { "Protection": [{ "Color": "Red" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "d7cba934-02ad-4677-bb4d-50808b01b4f9",
+  "name": "Thranduil's Decree",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thranduil's Decree",
+      "oracle_fingerprint": "1258dfa4610b473aaa6171eebd8ceb41",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Countered": {
+                      "what": [
+                        { "Is": { "Target": 0 } },
+                        "Spell",
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" },
+                            { "Type": "Battle" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "SameCard": { "Target": 0 } }, { "In": "Exile" }],
+                      "from": "Exile",
+                      "free": true
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

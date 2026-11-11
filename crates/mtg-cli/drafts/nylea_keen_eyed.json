@@ -1,0 +1,57 @@
+{
+  "oracle_id": "642bbdf6-9a8c-4158-83c8-d59feb49101b",
+  "name": "Nylea, Keen-Eyed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nylea, Keen-Eyed",
+      "oracle_fingerprint": "2ad98046f49d964630436dc6b68c9b1d",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["Green"] }, "op": "Lt", "right": 5 }
+            }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": [{ "Type": "Creature" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{G}",
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "top" }, "to": "Hand" } }],
+                  "otherwise": [
+                    {
+                      "May": {
+                        "effects": [{ "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

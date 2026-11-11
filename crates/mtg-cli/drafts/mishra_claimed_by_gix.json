@@ -1,0 +1,27 @@
+{
+  "oracle_id": "26a623a1-60c9-47e3-af96-616e29551865",
+  "name": "Mishra, Claimed by Gix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mishra, Claimed by Gix",
+      "oracle_fingerprint": "7f4760fc8945b7fe08366c6df1d93ea6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Count": [{ "Type": "Creature" }, "Attacking"] }
+                }
+              },
+              { "GainLife": { "amount": { "Count": [{ "Type": "Creature" }, "Attacking"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

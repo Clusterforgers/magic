@@ -68,4 +68,9 @@ takes?: Array<Take>,
 /**
  * A payment may use it more than once: it neither taps nor sacrifices its source and costs only what it takes (Cadaverous Bloom, Skirk Prospector), so every use takes others; left out means a payment uses it once.
  */
-repeat?: boolean, };
+repeat?: boolean, 
+/**
+ * "Activate only as an instant" (Lion's Eye Diamond): offered at priority only, never as a source of a payment; left out
+ * means both.
+ */
+priority_only?: boolean, };

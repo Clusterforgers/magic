@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8b3febb9-0597-46af-b005-982f1a31c83e",
+  "name": "Oath of Kaya",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of Kaya",
+      "oracle_fingerprint": "d6bd6e8cacf4123f733a841b03096ac4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "Attacks": {
+                  "what": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    { "AttackingPlaneswalkerOf": "You" }
+                  ]
+                }
+              }
+            },
+            "effects": [
+              { "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

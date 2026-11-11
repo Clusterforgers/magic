@@ -1,0 +1,51 @@
+{
+  "oracle_id": "01f8db27-1191-488e-b0d5-172821613c15",
+  "name": "Eye of the Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eye of the Storm",
+      "oracle_fingerprint": "d04c56245ceb76329499f70fc96893b4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }] }
+            },
+            "effects": [
+              { "Exile": { "what": "Triggering", "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "ExiledWith": "This" },
+                      { "In": "Exile" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "as": "card",
+                  "effects": [
+                    {
+                      "CopyCard": {
+                        "who": "TriggeringPlayer",
+                        "what": { "Bound": "card" },
+                        "as": "copy"
+                      }
+                    },
+                    {
+                      "CastFromZone": {
+                        "who": "TriggeringPlayer",
+                        "what": { "Bound": "copy" },
+                        "free": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "oracle_id": "92301066-8904-41bc-84bd-4aa286cbab9c",
+  "name": "Liliana of the Dark Realms",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Liliana of the Dark Realms",
+      "oracle_fingerprint": "89c25e7ca0d56eca0efd3f72eae1aab9",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Swamp" }], "reveal": true, "as": "land" } },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }]
+                              },
+                              "toughness": {
+                                "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Times": {
+                                  "by": -1,
+                                  "of": {
+                                    "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              },
+                              "toughness": {
+                                "Times": {
+                                  "by": -1,
+                                  "of": {
+                                    "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 194, "end": 271 }
+          }
+        }
+      ]
+    }
+  ]
+}

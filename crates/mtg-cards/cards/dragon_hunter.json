@@ -1,0 +1,20 @@
+{
+  "oracle_id": "11c8e218-0cd5-4356-89fd-f39f989e487b",
+  "name": "Dragon Hunter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dragon Hunter",
+      "oracle_fingerprint": "3bababc7218f94f143d56613d0cabe98",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Subtype": "Dragon" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 24, "end": 79 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5ffc1e77-152b-4a82-8ea8-2c79cc31d5ef",
+  "name": "Play with Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Play with Fire",
+      "oracle_fingerprint": "551933ceeacf6a0279d6e0251bd7c566",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Target": 0 } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      { "Compare": { "left": "DamageDealtThisWay", "op": "Gt", "right": 0 } }
+                    ]
+                  },
+                  "then": [{ "Scry": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f3d4f5ab-0ff4-48e1-8cf0-163b290804a5",
+  "name": "Unstable Amulet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unstable Amulet",
+      "oracle_fingerprint": "9b9549b965b2a92e3316e620abf969de",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "CastFrom": "Hand" } }], "by": "You" } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 2 }],
+            "effects": [
+              { "Forget": { "slot": "amulet" } },
+              { "ExileTop": { "as": "impulse" } },
+              { "Remember": { "what": { "Bound": "impulse" }, "slot": "amulet" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Remembered": { "on": "This", "slot": "amulet" } },
+                      "play": true
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

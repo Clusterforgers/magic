@@ -102,6 +102,13 @@ fn fact(test: &Condition) -> Option<Fact> {
         } if *right == Amount::Fixed(1) => one("who lost life this turn"),
         Amount::Tallied {
             who: Ref::You,
+            what: TurnTally::Attackers,
+        } if *right == Amount::Fixed(1) => Some(Fact {
+            one: "who attacked this turn".to_owned(),
+            many: vec!["who attacked this turn".to_owned()],
+        }),
+        Amount::Tallied {
+            who: Ref::You,
             what: TurnTally::DamageTaken,
         } if *right == Amount::Fixed(1) => Some(Fact {
             one: "who was dealt damage this turn".to_owned(),
@@ -272,4 +279,12 @@ pub(super) fn r9w_cast_text(what: &Selector, by: &Ref) -> Option<String> {
     r9w_off_turn(by)?;
     let cast = super::c4_cast_hand::cast_text(what, who)?;
     Some(format!("{cast}, if it's not their turn"))
+}
+
+/// "target opponent who lost life this turn": one target among the players a fact holds for (`Targetable::PlayerAmong`).
+pub(super) fn r9w_target_text(among: &Ref) -> Option<String> {
+    let Ref::PlayersWhere { who, test } = among else {
+        return None;
+    };
+    Some(format!("target {} {}", noun(who)?.0, fact(test)?.one))
 }

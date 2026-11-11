@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ec7ae9ed-dc5b-47ed-a4ad-086f3c7c377c",
+  "name": "Deflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deflection",
+      "oracle_fingerprint": "4c0dea588dfd02e1c0ea6da713101aa5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", "SingleTarget"] } }],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

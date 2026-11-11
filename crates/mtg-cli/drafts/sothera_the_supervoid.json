@@ -1,0 +1,92 @@
+{
+  "oracle_id": "760ede92-a826-4144-9de8-84ba9b8743d1",
+  "name": "Sothera, the Supervoid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sothera, the Supervoid",
+      "oracle_fingerprint": "1812d24f8bb69c1abb86791d8b843f0c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "opp" },
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Bound": "opp" } }]
+                        },
+                        "as": "chosen"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "chosen" }, "as": "exiled" } },
+                    { "Remember": { "what": { "Bound": "exiled" }, "slot": "sothera" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "CountOf": {
+                          "subject": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "selector": [],
+                          "op": "Eq",
+                          "right": 0
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Remembered": { "on": "This", "slot": "sothera" } } },
+                      { "Type": "Creature" },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "card" },
+                  "to": { "Battlefield": { "under": "You", "counters": [["+1/+1", 2]] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

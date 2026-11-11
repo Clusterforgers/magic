@@ -22,11 +22,11 @@
                     ]
                   },
                   "count": { "min": 0, "max": 1 },
-                  "as": "kept2"
+                  "as": "kept"
                 }
               },
-              { "Reveal": { "what": { "Bound": "kept2" } } },
-              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
               {
                 "Move": {
                   "what": { "Bound": "top" },
@@ -47,14 +47,14 @@
                       "AnyOf": [
                         { "Type": "Artifact" },
                         { "Type": "Enchantment" },
-                        {
-                          "Not": {
-                            "AnyOf": [
-                              { "Not": { "Type": "Creature" } },
-                              { "Not": { "HasKeyword": "Flying" } }
-                            ]
-                          }
-                        }
+                        { "Type": "Creature" }
+                      ]
+                    },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Enchantment" },
+                        { "HasKeyword": "Flying" }
                       ]
                     }
                   ]

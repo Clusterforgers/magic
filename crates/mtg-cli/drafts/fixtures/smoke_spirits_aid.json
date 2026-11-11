@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "e492a245-46ba-438e-8d81-4626faa49bff",
+  "oracle_id": "8fef58ff-4743-4065-9df0-c5edf9aa2502",
+  "multiverse_ids": [
+    553919
+  ],
+  "mtgo_id": 97792,
+  "tcgplayer_id": 262986,
+  "cardmarket_id": 608614,
+  "name": "Smoke Spirits' Aid",
+  "lang": "en",
+  "released_at": "2022-02-18",
+  "uri": "https://api.scryfall.com/cards/e492a245-46ba-438e-8d81-4626faa49bff",
+  "scryfall_uri": "https://scryfall.com/card/nec/22/smoke-spirits-aid?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:26:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/4/e492a245-46ba-438e-8d81-4626faa49bff.jpg?1783923991",
+    "normal": "https://cards.scryfall.io/normal/front/e/4/e492a245-46ba-438e-8d81-4626faa49bff.jpg?1783923991",
+    "large": "https://cards.scryfall.io/large/front/e/4/e492a245-46ba-438e-8d81-4626faa49bff.jpg?1783923991",
+    "png": "https://cards.scryfall.io/png/front/e/4/e492a245-46ba-438e-8d81-4626faa49bff.png?1783923991",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/4/e492a245-46ba-438e-8d81-4626faa49bff.jpg?1783923991",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/4/e492a245-46ba-438e-8d81-4626faa49bff.jpg?1783923991",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/4/e492a245-46ba-438e-8d81-4626faa49bff.webp?1783923991",
+    "grid": "https://cards.scryfall.io/grid/front/e/4/e492a245-46ba-438e-8d81-4626faa49bff.webp?1783923991",
+    "display": "https://cards.scryfall.io/display/front/e/4/e492a245-46ba-438e-8d81-4626faa49bff.webp?1783923991",
+    "art": "https://cards.scryfall.io/art/front/e/4/e492a245-46ba-438e-8d81-4626faa49bff.webp?1783923991",
+    "crop": "https://cards.scryfall.io/crop/front/e/4/e492a245-46ba-438e-8d81-4626faa49bff.webp?1783923991",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/4/e492a245-46ba-438e-8d81-4626faa49bff.jpg?1783923991"
+  },
+  "mana_cost": "{X}{R}",
+  "cmc": 1.0,
+  "type_line": "Sorcery",
+  "oracle_text": "For each of up to X target creatures, create a red Aura enchantment token named Smoke Blessing attached to that creature. Those tokens have enchant creature and \"When enchanted creature dies, it deals 1 damage to its controller and you create a Treasure token.\"",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "6911181d-573b-41eb-96a4-799c96e008fc",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/6911181d-573b-41eb-96a4-799c96e008fc"
+    },
+    {
+      "object": "related_card",
+      "id": "cbcade55-8ae3-4ac0-b2a9-f890b83ed530",
+      "component": "combo_piece",
+      "name": "Smoke Spirits' Aid",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/cbcade55-8ae3-4ac0-b2a9-f890b83ed530"
+    },
+    {
+      "object": "related_card",
+      "id": "5eb01bef-8989-4b38-a303-0aafab1b33e5",
+      "component": "token",
+      "name": "Smoke Blessing",
+      "type_line": "Token Enchantment — Aura",
+      "uri": "https://api.scryfall.com/cards/5eb01bef-8989-4b38-a303-0aafab1b33e5"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5b4d929d-bdf9-4bbf-858e-e248f53325ad",
+  "set": "nec",
+  "set_name": "Neon Dynasty Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/5b4d929d-bdf9-4bbf-858e-e248f53325ad",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Anec&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/nec?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e492a245-46ba-438e-8d81-4626faa49bff/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8fef58ff-4743-4065-9df0-c5edf9aa2502&unique=prints",
+  "collector_number": "22",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Uriah Voth",
+  "artist_ids": [
+    "14cf4c0c-1a83-4366-ba61-6d0a26ee5a69"
+  ],
+  "illustration_id": "355fec7f-84d5-4cb2-8f74-2585fe1d45f3",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 10135,
+  "prices": {
+    "usd": "0.39",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.33",
+    "eur_foil": null,
+    "tix": "0.58"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=553919&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSmoke%2BSpirits%2527%2BAid",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSmoke%2BSpirits%2527%2BAid",
+    "edhrec": "https://edhrec.com/route/?cc=Smoke+Spirits%27+Aid"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F262986%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=608614&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/97792?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
