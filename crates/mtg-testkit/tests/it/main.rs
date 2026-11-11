@@ -252,6 +252,7 @@ mod ep26_random_targets;
 mod ep26_two_zones;
 mod ep27_hands_revealed;
 mod ep27_lessened_damage;
+mod ep27_lose_game_instead;
 mod ep27_no_life_loss;
 mod ep27_self_flash;
 mod equip_to;

@@ -4765,10 +4765,18 @@ impl Walker<'_> {
                 }
             }
             ReplaceWhen::LifeGain { who }
+            | ReplaceWhen::LoseGame { who }
             | ReplaceWhen::Mill { who }
             | ReplaceWhen::Draw { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
+        }
+    }
+
+    /// A loss of the game is replaced only by steps that happen instead.
+    fn ep27_lose_game(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        if matches!(when, ReplaceWhen::LoseGame { .. }) && !matches!(by, ReplaceBy::Instead(_)) {
+            self.problem("a loss of the game is replaced only by steps that happen instead");
         }
     }
 
@@ -4877,6 +4885,7 @@ impl Walker<'_> {
     /// The engine changes only the count of a mill (`ReplaceWhen.Mill.Other`) and halves only counters.
     fn e19_mill(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.ep24_half(when, by);
+        self.ep27_lose_game(when, by);
         if matches!(when, ReplaceWhen::Mill { .. })
             && !matches!(by, ReplaceBy::Multiply(_) | ReplaceBy::Add(_))
         {

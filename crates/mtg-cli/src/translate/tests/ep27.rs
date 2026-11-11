@@ -1,4 +1,4 @@
-//! Goal: the pieces of ep27 translate as the card prints them. A card cast as though it had flash under a condition (`CastWithFlash | ValidCard$ Card.Self | EffectZone$ All | Caster$ You`) is a `MayCast` rule of the card from its hand with the line's condition; a check of the spell (X, its targets, teamwork), another caster or zone stays a gap. "You don't lose the game for having 0 or less life" (`GameLoss | ValidLoseReason$ LifeReachedZero | Layer$ CantHappen`) is a `CantLoseGame` rule for the loss by life alone, under the line's condition; another reason, text or player stays a gap. Hands played revealed (`MayLookAt$ Player` over `AffectedZone$ Hand`) are a `RevealHand` rule for every player, the opponents or you; a look by one seat or another owner stays a gap. Damage lessened (`ReplaceCount$DamageAmount/Minus.N`), halved rounded down (`HalfDown`) or capped (a fixed N under `DamageAmount$ GE<N+1>`) is a `Subtract`, `Half` or `Cap` replacement; another threshold, a fixed amount alone, nothing subtracted or another rounding stays a gap.
+//! Goal: the pieces of ep27 translate as the card prints them. A card cast as though it had flash under a condition (`CastWithFlash | ValidCard$ Card.Self | EffectZone$ All | Caster$ You`) is a `MayCast` rule of the card from its hand with the line's condition; a check of the spell (X, its targets, teamwork), another caster or zone stays a gap. "You don't lose the game for having 0 or less life" (`GameLoss | ValidLoseReason$ LifeReachedZero | Layer$ CantHappen`) is a `CantLoseGame` rule for the loss by life alone, under the line's condition; another reason, text or player stays a gap. "If you would lose the game, instead ..." (`GameLoss` with `ReplaceWith$`) is a `LoseGame` replacement by the steps of the chain; another player, a layer or a reason stays a gap. Hands played revealed (`MayLookAt$ Player` over `AffectedZone$ Hand`) are a `RevealHand` rule for every player, the opponents or you; a look by one seat or another owner stays a gap. Damage lessened (`ReplaceCount$DamageAmount/Minus.N`), halved rounded down (`HalfDown`) or capped (a fixed N under `DamageAmount$ GE<N+1>`) is a `Subtract`, `Half` or `Cap` replacement; another threshold, a fixed amount alone, nothing subtracted or another rounding stays a gap.
 use rstest::rstest;
 use serde_json::json;
 
@@ -50,6 +50,19 @@ fn ep27_no_loss_for_life() {
     );
 }
 
+#[test]
+fn ep27_instead_of_losing() {
+    let script = "Name:T\nTypes:Artifact\nR:Event$ GameLoss | ActiveZones$ Battlefield | ValidPlayer$ You | ReplaceWith$ ExileSetLife | Description$ If you would lose the game, instead exile CARDNAME and your life total becomes 1.\nSVar:ExileSetLife:DB$ ChangeZone | Origin$ Battlefield | Destination$ Exile | Defined$ Self | SubAbility$ DBSetLife\nSVar:DBSetLife:DB$ SetLife | Defined$ You | LifeAmount$ 1\n";
+    assert_eq!(gaps(script), Vec::<String>::new());
+    assert_eq!(
+        abilities(script),
+        vec![json!({"Replacement": {
+            "when": {"LoseGame": {}},
+            "by": {"Instead": [{"Exile": {"what": "This"}}, {"SetLife": {"amount": 1}}]},
+        }})]
+    );
+}
+
 #[rstest]
 #[case::another_reason(
     "ValidPlayer$ You | ValidLoseReason$ Milled | Layer$ CantHappen | Description$ You don't lose the game for having 0 or less life."
@@ -60,9 +73,13 @@ fn ep27_no_loss_for_life() {
 #[case::another_player(
     "ValidPlayer$ Opponent | ValidLoseReason$ LifeReachedZero | Layer$ CantHappen | Description$ Your opponents don't lose the game for having 0 or less life."
 )]
-#[case::instead(
+#[case::instead_for_life_alone(
     "ValidPlayer$ You | ValidLoseReason$ LifeReachedZero | ReplaceWith$ X | Description$ You don't lose the game for having 0 or less life."
 )]
+#[case::instead_for_an_opponent(
+    "ValidPlayer$ Opponent | ReplaceWith$ X | Description$ If an opponent would lose the game, instead x."
+)]
+#[case::instead_with_a_layer("ValidPlayer$ You | Layer$ Control | ReplaceWith$ X | Description$ x")]
 fn ep27_other_game_losses_stay_gaps(#[case] line: &str) {
     let found = gaps(&unlife(line));
     assert!(

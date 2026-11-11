@@ -1,4 +1,4 @@
-//! Goal: the writers of ep27 write the card's words and nothing near them. "You may cast this spell as though it had flash if C." and the forms with the condition first ("As long as C, ...", "If C, ...") read as a `MayCast` rule of the card from its hand and write back; a permission from another zone, without flash, for other cards or without its condition does not.
+//! Goal: the writers of ep27 write the card's words and nothing near them. "You may cast this spell as though it had flash if C." and the forms with the condition first ("As long as C, ...", "If C, ...") read as a `MayCast` rule of the card from its hand and write back; a permission from another zone, without flash, for other cards or without its condition does not. "If you would lose the game, instead ..." writes its steps as a spell would; another amount, fewer steps or another player does not. "You don't lose the game for having 0 or less life", hands played revealed, and damage lessened, capped or halved read and write back; every loss, other players, another source, recipient, amount or prevention does not.
 use super::*;
 
 const FAERIE: &str = r#"{"Compare":{"left":{"Count":[{"Subtype":"Faerie"},{"ControlledBy":"You"}]},"op":"Ge","right":1}}"#;
@@ -136,6 +136,57 @@ const MINE: &str = r#"{"to":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]
 #[case::ghosts(lessened("{}", r#""Half""#), GHOSTS, true)]
 #[case::ghosts_prevented_half(lessened("{}", r#""PreventHalf""#), GHOSTS, false)]
 fn ep27_lessened_damage_writes_as_printed(
+    #[case] ability: Ability,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let found = written_variants(&ability);
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
+fn instead_of_losing(who: &str, by: &str) -> Ability {
+    ability(&format!(
+        r#"{{"Replacement":{{"when":{{"LoseGame":{who}}},"by":{by}}}}}"#
+    ))
+}
+
+const THRONE_STEPS: &str = r#"{"Instead":[{"Exile":{"what":"This"}},{"SetLife":{"amount":1}}]}"#;
+const THRONE: &str = "If you would lose the game, instead exile ~ and your life total becomes 1.";
+
+#[rstest]
+#[case::throne(instead_of_losing("{}", THRONE_STEPS), THRONE, true)]
+#[case::another_life(
+    instead_of_losing("{}", &THRONE_STEPS.replace("\"amount\":1", "\"amount\":2")),
+    THRONE,
+    false
+)]
+#[case::one_step(
+    instead_of_losing("{}", r#"{"Instead":[{"Exile":{"what":"This"}}]}"#),
+    THRONE,
+    false
+)]
+#[case::an_opponent(
+    instead_of_losing(r#"{"who":"Opponents"}"#, THRONE_STEPS),
+    THRONE,
+    false
+)]
+#[case::archangel(
+    instead_of_losing(
+        "{}",
+        r#"{"Instead":[{"Exile":{"what":"This"}},{"SetLife":{"amount":{"StartingLife":"You"}}}]}"#
+    ),
+    "If you would lose the game, instead exile ~ and your life total becomes equal to your starting life total.",
+    true
+)]
+#[case::an_opponents_life(
+    instead_of_losing(
+        "{}",
+        r#"{"Instead":[{"Exile":{"what":"This"}},{"SetLife":{"who":"Opponents","amount":1}}]}"#
+    ),
+    THRONE,
+    false
+)]
+fn ep27_instead_of_losing_writes_as_printed(
     #[case] ability: Ability,
     #[case] text: &str,
     #[case] reads: bool,

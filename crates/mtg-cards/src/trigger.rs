@@ -783,6 +783,13 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player would lose the game (CR 104.3), for any reason: "If you would lose the game, instead ..."; only
+    /// `Instead` replaces it.
+    LoseGame {
+        /// Who would lose it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// A player would mill one or more cards (CR 701.17): all the cards one effect mills from a player's library are
     /// one event, so `Multiply` and `Add` change how many are milled ("they mill twice that many cards instead").
     Mill {

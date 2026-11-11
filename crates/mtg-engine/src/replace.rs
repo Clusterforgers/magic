@@ -514,6 +514,8 @@ enum Unit {
     Life { player: PlayerId },
     /// A player would draw a card.
     Draw { player: PlayerId },
+    /// A player would lose the game.
+    Loss { player: PlayerId },
     /// An object would move to another zone than the battlefield.
     Move {
         object: ObjectId,
@@ -611,6 +613,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         ReplaceWhen::TokenCreation { .. }
         | ReplaceWhen::Mill { .. }
         | ReplaceWhen::LifeGain { .. }
+        | ReplaceWhen::LoseGame { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
 }
@@ -850,6 +853,7 @@ impl Pass<'_> {
                 }
             }
             Event::LifeGained { player, .. } => Unit::Life { player: *player },
+            Event::PlayerLost { player, .. } => Unit::Loss { player: *player },
             Event::CardDrawn { player, .. } | Event::DrewFromEmptyLibrary { player } => {
                 Unit::Draw { player: *player }
             }
@@ -1004,6 +1008,7 @@ impl Pass<'_> {
                     }
             }
             (ReplaceWhen::LifeGain { who }, Unit::Life { player })
+            | (ReplaceWhen::LoseGame { who }, Unit::Loss { player })
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
             }
@@ -1608,7 +1613,7 @@ impl Pass<'_> {
         };
         match unit {
             Unit::Tokens { controller } | Unit::Enter { controller, .. } => *controller,
-            Unit::Life { player } | Unit::Draw { player } => *player,
+            Unit::Life { player } | Unit::Draw { player } | Unit::Loss { player } => *player,
             Unit::Damage { target, .. } => match target {
                 DamageTarget::Player(player) => *player,
                 DamageTarget::Object(object) => controller_of(*object),

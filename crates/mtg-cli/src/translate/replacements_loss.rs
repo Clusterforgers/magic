@@ -1,9 +1,10 @@
-//! `GameLoss` replacements that forbid the loss: "you can't lose the game" and "you don't lose the game for having 0 or less life".
+//! `GameLoss` replacements that forbid the loss: "you can't lose the game" and "you don't lose the game for having 0 or less life", and "if you would lose the game, instead ...".
 
 use serde_json::{Value, json};
 
 use super::condition::{KEYS, condition};
 use super::ctx::{Ctx, Tr, check_keys, unmapped};
+use super::effects::chain_at;
 use crate::forge::script::Params;
 
 /// The secondary `GameWin` line of "you can't lose the game and your opponents can't win the game": the `GameLoss` line
@@ -32,13 +33,14 @@ pub fn opponents_cant_win(p: &Params) -> Tr<()> {
 }
 
 /// A `GameLoss` line with `Layer$ CantHappen` for the controller, under the line's own condition.
-pub fn game_loss(ctx: &Ctx, p: &Params, prefixed: Option<&Value>) -> Tr<Value> {
+pub fn game_loss(ctx: &mut Ctx, p: &Params, prefixed: Option<&Value>) -> Tr<Value> {
     let mut read = vec![
         "Event",
         "ActiveZones",
         "ValidPlayer",
         "Layer",
         "ValidLoseReason",
+        "ReplaceWith",
     ];
     read.extend(KEYS);
     check_keys(p, "Replacement.GameLoss", &read, |_, _| false)?;
@@ -46,6 +48,9 @@ pub fn game_loss(ctx: &Ctx, p: &Params, prefixed: Option<&Value>) -> Tr<Value> {
         return unmapped("key:Replacement.GameLoss.condition");
     }
     let condition = condition(ctx, p)?;
+    if p.has("ReplaceWith") && p.get("Layer").is_none() {
+        return ep27_instead(ctx, p, condition);
+    }
     if p.get("Layer") != Some("CantHappen") {
         return unmapped("replacement:GameLoss-instead");
     }
@@ -76,6 +81,30 @@ pub fn game_loss(ctx: &Ctx, p: &Params, prefixed: Option<&Value>) -> Tr<Value> {
     let mut out = json!({"Rule": {"rule": rule}});
     if let Some(condition) = condition {
         out["Rule"]["condition"] = condition;
+    }
+    Ok(out)
+}
+
+/// A `GameLoss` line with `ReplaceWith$` for the controller of a permanent: "If you would lose the game, instead ...", a
+/// `LoseGame` replacement by the steps the chain names. Another player, zone or reason is a gap.
+fn ep27_instead(ctx: &mut Ctx, p: &Params, condition: Option<Value>) -> Tr<Value> {
+    if p.get("ValidPlayer") != Some("You") {
+        return unmapped("replacement:GameLoss-ValidPlayer");
+    }
+    if !matches!(p.get("ActiveZones"), None | Some("Battlefield")) {
+        return unmapped("replacement:GameLoss-zone");
+    }
+    if p.has("ValidLoseReason") {
+        return unmapped("key:Replacement.GameLoss.ValidLoseReason-instead");
+    }
+    let name = p.get("ReplaceWith").unwrap_or_default();
+    let steps = ctx.sub(name).and_then(|sub| chain_at(ctx, &sub, false))?;
+    if steps.is_empty() {
+        return unmapped("replacement:GameLoss-instead-empty");
+    }
+    let mut out = json!({"Replacement": {"when": {"LoseGame": {}}, "by": {"Instead": steps}}});
+    if let Some(condition) = condition {
+        out["Replacement"]["condition"] = condition;
     }
     Ok(out)
 }

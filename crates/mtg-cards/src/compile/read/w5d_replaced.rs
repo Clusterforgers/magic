@@ -194,6 +194,49 @@ fn w5d_step_texts(effect: &Effect) -> Vec<String> {
     .collect()
 }
 
+/// The steps that happen instead, written as a spell would say them, lowercase and without the closing period; two
+/// steps also as "A and B", each as its own sentence would say it ("exile ~ and your life total becomes 1").
+fn ep27_steps_texts(steps: &[Effect]) -> Vec<String> {
+    let lower = |text: String| {
+        let text = text.strip_suffix('.').unwrap_or(&text);
+        let mut chars = text.chars();
+        chars.next().map_or_else(String::new, |first| {
+            first.to_lowercase().chain(chars).collect::<String>()
+        })
+    };
+    let mut found: Vec<String> = super::render::variants(&Ability::Spell {
+        targets: Vec::new(),
+        effects: steps.to_vec(),
+    })
+    .into_iter()
+    .map(lower)
+    .collect();
+    if let [first, second] = steps {
+        for one in ep27_step_texts(first) {
+            for two in ep27_step_texts(second) {
+                found.push(format!("{one} and {two}"));
+            }
+        }
+    }
+    found
+}
+
+/// One step as its own sentence would say it, lowercase; a life total set for you as "your life total becomes N".
+fn ep27_step_texts(step: &Effect) -> Vec<String> {
+    match step {
+        Effect::SetLife {
+            who: Ref::You,
+            amount: Amount::Fixed(n),
+        } => vec![format!("your life total becomes {n}")],
+        Effect::SetLife {
+            who: Ref::You,
+            amount: Amount::StartingLife(Ref::You),
+        } => vec!["your life total becomes equal to your starting life total".to_owned()],
+        Effect::SetLife { .. } => Vec::new(),
+        other => w5d_step_texts(other),
+    }
+}
+
 /// `texts` when another writer wrote the ability, else what `w5d_replaced` reads, written back.
 pub(super) fn w5d_or_sentences(texts: Vec<String>, ability: &Ability) -> Vec<String> {
     if texts.is_empty() {
@@ -224,6 +267,13 @@ pub(super) fn w5d_sentences(ability: &Ability) -> Vec<String> {
 
 fn w5d_texts(when: &ReplaceWhen, effects: &[Effect]) -> Option<Vec<String>> {
     Some(match (when, effects) {
+        // "If you would lose the game, instead exile ~ and your life total becomes 1."
+        (ReplaceWhen::LoseGame { who: Ref::You }, steps) if !steps.is_empty() => {
+            ep27_steps_texts(steps)
+                .into_iter()
+                .map(|steps| format!("if you would lose the game, instead {steps}"))
+                .collect()
+        }
         (
             ReplaceWhen::LifeGain { who },
             [Effect::LoseLife {

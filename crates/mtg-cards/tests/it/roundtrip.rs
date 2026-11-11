@@ -1351,6 +1351,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                         effect: false,
                     }),
                 reference().prop_map(|who| ReplaceWhen::LifeGain { who }),
+                reference().prop_map(|who| ReplaceWhen::LoseGame { who }),
                 reference().prop_map(|who| ReplaceWhen::Mill { who }),
                 (reference(), 0..3u32).prop_map(|(who, except_draw_step)| ReplaceWhen::Draw {
                     who,
