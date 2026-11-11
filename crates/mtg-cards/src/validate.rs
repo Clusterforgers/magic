@@ -4665,6 +4665,18 @@ impl Walker<'_> {
 
     /// The players a rule about losing, casting or combat damage names.
     fn w17b_rule(&mut self, tag: &str, rule: &GameRule) {
+        if let GameRule::CantLoseGame {
+            opponents_cant_win: true,
+            life_only: true,
+            ..
+        } = rule
+        {
+            self.at(tag, |w| {
+                w.problem(
+                    "a rule that spares only the loss for life lets the opponents win as usual",
+                );
+            });
+        }
         if let GameRule::CantLoseGame { who, .. }
         | GameRule::CantCastSpells { who, .. }
         | GameRule::ToughnessAssignsDamage(who) = rule
@@ -6239,6 +6251,10 @@ mod tests {
     #[case::a_state_in_a_delayed_trigger(
         r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"State":{"condition":"YourTurn"}},"effects":[{"Draw":{}}]}}]}}"#,
         "a state is the whole pattern of a triggered ability"
+    )]
+    #[case::ep27_life_only_and_opponents_cant_win(
+        r#"{"Rule":{"rule":{"CantLoseGame":{"who":"You","opponents_cant_win":true,"life_only":true}}}}"#,
+        "a rule that spares only the loss for life lets the opponents win as usual"
     )]
     #[case::a_state_in_the_cause_of_a_rule(
         r#"{"Rule":{"rule":{"TriggerAgain":{"cause":{"State":{"condition":"YourTurn"}}}}}}"#,

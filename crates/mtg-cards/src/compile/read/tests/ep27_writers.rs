@@ -53,3 +53,40 @@ fn ep27_self_flash_near_misses_differ(
     let found = written_variants(&ability);
     assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
 }
+
+const NO_LIFE_LOSS: &str = "You don't lose the game for having 0 or less life.";
+
+#[test]
+fn ep27_no_loss_for_life_reads_and_writes() {
+    let read = golden(NO_LIFE_LOSS, ClauseKind::Static, false);
+    assert_eq!(
+        read,
+        ability(r#"{"Rule":{"rule":{"CantLoseGame":{"who":"You","life_only":true}}}}"#)
+    );
+}
+
+#[rstest]
+#[case::life_only(
+    r#"{"CantLoseGame":{"who":"You","life_only":true}}"#,
+    NO_LIFE_LOSS,
+    true
+)]
+#[case::every_loss(r#"{"CantLoseGame":{"who":"You"}}"#, NO_LIFE_LOSS, false)]
+#[case::life_only_is_not_every_loss(
+    r#"{"CantLoseGame":{"who":"You","life_only":true}}"#,
+    "You can't lose the game.",
+    false
+)]
+#[case::for_opponents(
+    r#"{"CantLoseGame":{"who":"Opponents","life_only":true}}"#,
+    NO_LIFE_LOSS,
+    false
+)]
+fn ep27_no_loss_for_life_near_misses_differ(
+    #[case] rule: &str,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let found = written_variants(&ability(&format!(r#"{{"Rule":{{"rule":{rule}}}}}"#)));
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}

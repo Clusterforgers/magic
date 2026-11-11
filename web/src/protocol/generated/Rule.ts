@@ -265,7 +265,11 @@ who: Array<PlayerId>,
 /**
  * The players who can't win.
  */
-winless: Array<PlayerId>, } } | { "CantCastSpells": { 
+winless: Array<PlayerId>, 
+/**
+ * Only the loss for having 0 or less life does not happen (CR 704.5a).
+ */
+life_only?: boolean, } } | { "CantCastSpells": { 
 /**
  * The players who can't cast spells.
  */

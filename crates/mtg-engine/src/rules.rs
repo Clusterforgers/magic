@@ -351,6 +351,9 @@ pub enum Rule {
         who: Vec<PlayerId>,
         /// The players who can't win.
         winless: Vec<PlayerId>,
+        /// Only the loss for having 0 or less life does not happen (CR 704.5a).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        life_only: bool,
     },
     /// The players can't cast spells, only during this player's turns when one is named.
     CantCastSpells {

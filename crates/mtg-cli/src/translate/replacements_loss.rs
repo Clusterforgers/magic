@@ -1,4 +1,4 @@
-//! `GameLoss` replacements that forbid the loss: "you can't lose the game".
+//! `GameLoss` replacements that forbid the loss: "you can't lose the game" and "you don't lose the game for having 0 or less life".
 
 use serde_json::{Value, json};
 
@@ -33,7 +33,13 @@ pub fn opponents_cant_win(p: &Params) -> Tr<()> {
 
 /// A `GameLoss` line with `Layer$ CantHappen` for the controller, under the line's own condition.
 pub fn game_loss(ctx: &Ctx, p: &Params, prefixed: Option<&Value>) -> Tr<Value> {
-    let mut read = vec!["Event", "ActiveZones", "ValidPlayer", "Layer"];
+    let mut read = vec![
+        "Event",
+        "ActiveZones",
+        "ValidPlayer",
+        "Layer",
+        "ValidLoseReason",
+    ];
     read.extend(KEYS);
     check_keys(p, "Replacement.GameLoss", &read, |_, _| false)?;
     if prefixed.is_some() {
@@ -49,6 +55,14 @@ pub fn game_loss(ctx: &Ctx, p: &Params, prefixed: Option<&Value>) -> Tr<Value> {
     if !matches!(p.get("ActiveZones"), None | Some("Battlefield")) {
         return unmapped("replacement:GameLoss-zone");
     }
+    // "You don't lose the game for having 0 or less life": only the loss for life is spared (CR 704.5a).
+    match p.get("ValidLoseReason") {
+        None => {}
+        Some("LifeReachedZero") => return ep27_life_only(p, condition),
+        Some(other) => {
+            return unmapped(format!("key:Replacement.GameLoss.ValidLoseReason={other}"));
+        }
+    }
     // The line's text says whether the opponents also can't win; a different text is a different rule.
     let opponents_cant_win = match p.get("Description").map(str::trim) {
         Some("You can't lose the game and your opponents can't win the game.") => true,
@@ -60,6 +74,20 @@ pub fn game_loss(ctx: &Ctx, p: &Params, prefixed: Option<&Value>) -> Tr<Value> {
         rule["CantLoseGame"]["opponents_cant_win"] = json!(true);
     }
     let mut out = json!({"Rule": {"rule": rule}});
+    if let Some(condition) = condition {
+        out["Rule"]["condition"] = condition;
+    }
+    Ok(out)
+}
+
+/// The `GameLoss` line of `ValidLoseReason$ LifeReachedZero`: "you don't lose the game for having 0 or less life", a
+/// `CantLoseGame` rule for the loss by life alone; another text is a gap.
+fn ep27_life_only(p: &Params, condition: Option<Value>) -> Tr<Value> {
+    let text = p.get("Description").unwrap_or_default().to_lowercase();
+    if !text.contains("you don't lose the game for having 0 or less life") {
+        return unmapped("replacement:GameLoss-text");
+    }
+    let mut out = json!({"Rule": {"rule": {"CantLoseGame": {"who": "You", "life_only": true}}}});
     if let Some(condition) = condition {
         out["Rule"]["condition"] = condition;
     }

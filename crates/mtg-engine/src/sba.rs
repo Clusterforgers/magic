@@ -25,7 +25,8 @@ fn refills(state: &GameState, player: &Player) -> bool {
 }
 
 fn loss_reason(state: &GameState, player: &Player) -> Option<LossReason> {
-    if player.life() <= 0 {
+    // A rule may spare the loss for life alone (CR 704.5a); the other checks still apply.
+    if player.life() <= 0 && !crate::w17b_statics::w17b_life_spared(state, player.id()) {
         Some(LossReason::ZeroLife)
     } else if player.failed_draws > 0 && !refills(state, player) {
         Some(LossReason::EmptyLibrary)
