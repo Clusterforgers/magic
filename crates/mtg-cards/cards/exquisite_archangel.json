@@ -1,7 +1,7 @@
 {
   "oracle_id": "472efb69-47c8-4c93-b60a-f6dba4364b8c",
   "name": "Exquisite Archangel",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Exquisite Archangel",
@@ -9,9 +9,14 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 125 }
+          "Replacement": {
+            "when": { "LoseGame": {} },
+            "by": {
+              "Instead": [
+                { "Exile": { "what": "This" } },
+                { "SetLife": { "amount": { "StartingLife": "You" } } }
+              ]
+            }
           }
         }
       ]

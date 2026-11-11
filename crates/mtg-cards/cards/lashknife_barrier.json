@@ -1,7 +1,7 @@
 {
   "oracle_id": "7e529372-cec7-40d7-a1ac-1dce1764f8b2",
   "name": "Lashknife Barrier",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lashknife Barrier",
@@ -14,9 +14,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 43, "end": 159 }
+          "Replacement": {
+            "when": {
+              "Damage": { "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            },
+            "by": { "Subtract": 1 }
           }
         }
       ]

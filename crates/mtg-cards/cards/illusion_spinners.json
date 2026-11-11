@@ -1,14 +1,24 @@
 {
   "oracle_id": "b608288e-1755-4738-b828-9df6998bae8d",
   "name": "Illusion Spinners",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Illusion Spinners",
       "oracle_fingerprint": "07fe92fc738c6915714c6ef67188b7fd",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 71 } }
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "flash": true } },
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Hand"
+          }
         },
         { "Keyword": "Flying" },
         {
