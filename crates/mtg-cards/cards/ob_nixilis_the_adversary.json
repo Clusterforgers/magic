@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a6abb6af-7ea2-43f3-8718-2a077ad0c947",
+  "name": "Ob Nixilis, the Adversary",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ob Nixilis, the Adversary",
+      "oracle_fingerprint": "337352670d7e5601afa386d506fdd142",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 189 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 190, "end": 298 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 299, "end": 402 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 7 } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 7 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

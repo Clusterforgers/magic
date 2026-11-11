@@ -152,6 +152,7 @@ Bladed Bracers
 Blasphemous Act
 Blast Zone
 Blastoderm
+Blatant Thievery
 Blaze
 Blazing Archon
 Blazing Shoal
@@ -251,6 +252,7 @@ Champion's Helm
 Changeling Outcast
 Changing Loyalty
 Charmbreaker Devils
+Charred Graverobber
 Chartooth Cougar
 Chemister's Insight
 Chief Engineer
@@ -423,6 +425,7 @@ Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
 Dreadship Reef
+Dream Chisel
 Dream's Grip
 Dreamtail Heron
 Dreg Mangler
@@ -603,6 +606,7 @@ Gemhide Sliver
 Gemrazer
 General's Enforcer
 Generous Ent
+Genesis Hydra
 Genesis Storm
 Genesis Wave
 Gerrard's Wisdom
@@ -610,6 +614,7 @@ Getaway Car
 Ghalta, Primal Hunger
 Ghave, Guru of Spores
 Ghired, Conclave Exile
+Ghitu Fire
 Ghost Quarter
 Ghostblade Eidolon
 Ghostly Dancers
@@ -775,6 +780,7 @@ Into the Roil
 Into the Time Vortex
 Intrepid Rabbit
 Invading Manticore
+Invasion of Segovia // Caetus, Sea Tyrant of Segovia
 Invisible Force Field
 Invisible Stalker
 Iridescent Vinelasher
@@ -874,6 +880,7 @@ Light 'Em Up
 Light Up the Stage
 Lightform
 Lightning Bolt
+Lightning, Security Sergeant
 Lignify
 Liliana's Standard Bearer
 Lion Sash
@@ -1544,6 +1551,7 @@ Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
 The Celestus
+The Dalek Emperor
 The Gaffer
 The Locust God
 The Modern Age // Vector Glider
@@ -1676,6 +1684,7 @@ Vesuva
 Veteran's Powerblade
 Viashino Weaponsmith
 Vibranium Strike Gauntlets
+Vigean Hydropon
 Village Pillagers
 Village Rites
 Viridian Corrupter

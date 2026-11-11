@@ -330,6 +330,7 @@ const RUNS: &[&str] = &[
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",
+    "Rule.Duration.WhileYouControlSource",
     "Duration.WhileSourceTapped",
     "Duration.WhileHasCounter",
     "Duration.UntilPaid",
@@ -977,7 +978,7 @@ mod tests {
     #[case::continuous_for_as_long_as_the_source_is_tapped("Duration.WhileSourceTapped", true)]
     #[case::a_rule_for_as_long_as_you_control_the_source(
         "Rule.Duration.WhileYouControlSource",
-        false
+        true
     )]
     #[case::pumps("Mod.ModifyPT", true)]
     #[case::granted_keywords("Mod.AddKeyword", true)]

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cd30de8a-87ad-4870-a89f-5745d57ada0a",
+  "name": "Paladin of Prahv",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Paladin of Prahv",
+      "oracle_fingerprint": "6b75f36dd939580b9eec65d3976cec5d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+            "effects": [{ "GainLife": { "amount": "Triggering" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 62, "end": 247 }
+          }
+        }
+      ]
+    }
+  ]
+}

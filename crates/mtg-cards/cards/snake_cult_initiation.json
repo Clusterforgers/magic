@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b6a64b19-e312-4e98-91bd-3bedca84eed3",
+  "name": "Snake Cult Initiation",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Snake Cult Initiation",
+      "oracle_fingerprint": "944fa1837963ab06674e6e7b2c53fa55",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 17, "end": 197 }
+          }
+        }
+      ]
+    }
+  ]
+}

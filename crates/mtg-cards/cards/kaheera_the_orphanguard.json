@@ -1,0 +1,40 @@
+{
+  "oracle_id": "35428c77-9731-4d4d-8f75-e939a491cf86",
+  "name": "Kaheera, the Orphanguard",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kaheera, the Orphanguard",
+      "oracle_fingerprint": "b556452ec1e85b6ab312f86b201d9d3d",
+      "abilities": [
+        {
+          "Keyword": {
+            "Companion": {
+              "Each": {
+                "of": [{ "Type": "Creature" }],
+                "has": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Cat" },
+                      { "Subtype": "Elemental" },
+                      { "Subtype": "Nightmare" },
+                      { "Subtype": "Dinosaur" },
+                      { "Subtype": "Beast" }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 235, "end": 351 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c73a9939-0742-4919-94d6-c3b537697f17",
+  "name": "Ranar the Ever-Watchful",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ranar the Ever-Watchful",
+      "oracle_fingerprint": "c479d3e3a158930890132db0c7957f95",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 18, "end": 78 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 79, "end": 279 }
+          }
+        }
+      ]
+    }
+  ]
+}

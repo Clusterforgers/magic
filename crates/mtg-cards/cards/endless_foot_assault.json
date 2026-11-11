@@ -1,0 +1,20 @@
+{
+  "oracle_id": "77ccafd9-6d76-4658-81ab-bde0454fcc15",
+  "name": "Endless Foot Assault",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Endless Foot Assault",
+      "oracle_fingerprint": "324ae8e356c409823ddeb3f201012fa6",
+      "abilities": [
+        { "Keyword": { "Squad": "{1}{W}" } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 174, "end": 294 }
+          }
+        }
+      ]
+    }
+  ]
+}

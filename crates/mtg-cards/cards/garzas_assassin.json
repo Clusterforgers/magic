@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9660b7c4-7b04-4ec3-b867-299c141f77e6",
+  "name": "Garza's Assassin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Garza's Assassin",
+      "oracle_fingerprint": "14e61e21cd3eafaa12688f91fd7aaa2a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 59, "end": 301 }
+          }
+        }
+      ]
+    }
+  ]
+}

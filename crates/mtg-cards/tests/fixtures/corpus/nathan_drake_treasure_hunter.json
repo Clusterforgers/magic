@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb",
+  "oracle_id": "ed69b907-272c-4a87-a943-06aaad976fb1",
+  "multiverse_ids": [],
+  "tcgplayer_id": 659017,
+  "cardmarket_id": 857528,
+  "name": "Nathan Drake, Treasure Hunter",
+  "lang": "en",
+  "released_at": "2025-10-27",
+  "uri": "https://api.scryfall.com/cards/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb",
+  "scryfall_uri": "https://scryfall.com/card/sld/2216/nathan-drake-treasure-hunter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:12:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/b/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb.jpg?1783905127",
+    "normal": "https://cards.scryfall.io/normal/front/1/b/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb.jpg?1783905127",
+    "large": "https://cards.scryfall.io/large/front/1/b/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb.jpg?1783905127",
+    "png": "https://cards.scryfall.io/png/front/1/b/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb.png?1783905127",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/b/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb.jpg?1783905127",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/b/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb.jpg?1783905127",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/b/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb.webp?1783905127",
+    "grid": "https://cards.scryfall.io/grid/front/1/b/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb.webp?1783905127",
+    "display": "https://cards.scryfall.io/display/front/1/b/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb.webp?1783905127",
+    "art": "https://cards.scryfall.io/art/front/1/b/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb.webp?1783905127",
+    "crop": "https://cards.scryfall.io/crop/front/1/b/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb.webp?1783905127",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/b/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb.jpg?1783905127"
+  },
+  "mana_cost": "{U}{B}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Rogue",
+  "oracle_text": "First strike\nYou may spend mana as though it were mana of any color to cast spells you don't own or to activate abilities of permanents you control but don't own.\nWhenever Nathan Drake attacks, exile the top card of each player's library. You may cast a spell from among those cards.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "First strike"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set": "sld",
+  "set_name": "Secret Lair Drop",
+  "set_type": "box",
+  "set_uri": "https://api.scryfall.com/sets/4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asld&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/sld?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1bb5f991-4d05-48b2-ac8d-81fd9ef7f4bb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aed69b907-272c-4a87-a943-06aaad976fb1&unique=prints",
+  "collector_number": "2216",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Piotr Dura",
+  "artist_ids": [
+    "aff176e8-1d15-432e-ad1d-207a474decba"
+  ],
+  "illustration_id": "c931b51a-ee4e-45c0-b6c8-ab596533db77",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 14476,
+  "prices": {
+    "usd": "4.35",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "4.56",
+    "eur_foil": "12.32",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNathan%2BDrake%252C%2BTreasure%2BHunter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNathan%2BDrake%252C%2BTreasure%2BHunter",
+    "edhrec": "https://edhrec.com/route/?cc=Nathan+Drake%2C+Treasure+Hunter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F659017%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857528&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Nathan+Drake%2C+Treasure+Hunter&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e1626880-0fa3-441a-9978-b293fc87c418",
+  "name": "Lightning, Security Sergeant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning, Security Sergeant",
+      "oracle_fingerprint": "8c164276a2dd99162df6191552de55f8",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

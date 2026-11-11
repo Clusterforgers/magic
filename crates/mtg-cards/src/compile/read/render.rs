@@ -753,6 +753,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     super::w14_trailing_if::add(&mut texts);
     super::e16c_attacks::add(ability, &mut texts);
     super::e17b_exile_until::add(ability, &mut texts);
+    super::rmt4_wordings::add(ability, &mut texts);
     oracle_only::add_last(ability, &mut texts);
     texts
 }

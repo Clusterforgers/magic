@@ -1,0 +1,64 @@
+{
+  "oracle_id": "51042581-4add-4487-a1b6-85446539b975",
+  "name": "Age of Ultron",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Age of Ultron",
+      "oracle_fingerprint": "147897d729f24362c7fe0bc570e244f7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Robot Villain",
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Robot", "Villain"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 270, "end": 378 }
+          }
+        }
+      ]
+    }
+  ]
+}

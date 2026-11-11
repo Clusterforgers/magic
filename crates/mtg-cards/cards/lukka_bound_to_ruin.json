@@ -1,0 +1,47 @@
+{
+  "oracle_id": "8e68eba1-65ac-4c03-956f-45e7b5695e2a",
+  "name": "Lukka, Bound to Ruin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lukka, Bound to Ruin",
+      "oracle_fingerprint": "41cc34be3d8f0dafb8384b9a5716d297",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 134 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red", "Green"] },
+                  "only": [
+                    { "Spell": { "types": ["Creature"] } },
+                    { "Ability": { "types": ["Creature"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 232, "end": 299 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 300, "end": 493 }
+          }
+        }
+      ]
+    }
+  ]
+}

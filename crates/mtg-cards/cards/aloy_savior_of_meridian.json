@@ -1,0 +1,21 @@
+{
+  "oracle_id": "f0554a8f-32de-4069-9f47-5e06ceb3f09d",
+  "name": "Aloy, Savior of Meridian",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aloy, Savior of Meridian",
+      "oracle_fingerprint": "8db6a2199b0518f799b3b426f6b8d75d",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Reach" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 17, "end": 377 }
+          }
+        }
+      ]
+    }
+  ]
+}

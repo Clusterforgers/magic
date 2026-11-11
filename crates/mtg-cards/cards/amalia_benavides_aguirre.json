@@ -1,0 +1,20 @@
+{
+  "oracle_id": "85eefda9-4aab-467d-a08c-be026cb8ff42",
+  "name": "Amalia Benavides Aguirre",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Amalia Benavides Aguirre",
+      "oracle_fingerprint": "1e404cd99daccdaa717225cf33b1db57",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "PayLife": 3 }] } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 17, "end": 354 }
+          }
+        }
+      ]
+    }
+  ]
+}

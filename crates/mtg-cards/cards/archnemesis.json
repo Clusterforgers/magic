@@ -1,0 +1,26 @@
+{
+  "oracle_id": "c408717c-e07b-484f-9c81-5666595adf81",
+  "name": "Archnemesis",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Archnemesis",
+      "oracle_fingerprint": "42e5e0d1bf26cd250e2456f608cb86a5",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": { "opponent": true } } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 17, "end": 113 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 114, "end": 185 }
+          }
+        }
+      ]
+    }
+  ]
+}

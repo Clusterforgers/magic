@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a1602bd0-f346-43cf-86ec-1dd300a7f2ed",
+  "name": "Thundermane Dragon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thundermane Dragon",
+      "oracle_fingerprint": "f0be04732f403b7d9aba569b2691993e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 62, "end": 217 }
+          }
+        }
+      ]
+    }
+  ]
+}

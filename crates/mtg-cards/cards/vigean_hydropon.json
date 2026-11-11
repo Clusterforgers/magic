@@ -1,0 +1,15 @@
+{
+  "oracle_id": "3eab4c00-a8ae-4912-bee1-68376de700a3",
+  "name": "Vigean Hydropon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vigean Hydropon",
+      "oracle_fingerprint": "eb24485b2248657b9447b1f1cb3dfcc1",
+      "abilities": [
+        { "Keyword": { "Graft": 5 } },
+        { "Static": { "affected": "This", "mods": ["CantAttack", "CantBlock"] } }
+      ]
+    }
+  ]
+}

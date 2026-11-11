@@ -1,0 +1,59 @@
+{
+  "oracle_id": "7b3c0d89-55ed-43d7-a00a-7b060857ec4e",
+  "name": "Invasion of Segovia // Caetus, Sea Tyrant of Segovia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Segovia",
+      "oracle_fingerprint": "46aa47928bec4462a6cfec6968ed5b7b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Kraken",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Kraken"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Caetus, Sea Tyrant of Segovia",
+      "oracle_fingerprint": "22a71460c8a06c4fe325f686996aa50c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": ["Spell", { "Not": { "Type": "Creature" } }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Convoke" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 4 } }
+            ],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

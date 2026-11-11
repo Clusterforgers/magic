@@ -1,0 +1,47 @@
+{
+  "oracle_id": "34ef174e-1b3d-43d5-9f72-3d35befbdd7f",
+  "name": "Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ojer Pakpatiq, Deepest Epoch",
+      "oracle_fingerprint": "cbb04e86685d58e14182bdf3b87f4405",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 7, "end": 197 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 198, "end": 332 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Temple of Cyclical Time",
+      "oracle_fingerprint": "c1c9f3994d80bbd1a4161842f34d17a4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Blue"] } } },
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "time" } } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 100, "end": 203 }
+          }
+        }
+      ]
+    }
+  ]
+}

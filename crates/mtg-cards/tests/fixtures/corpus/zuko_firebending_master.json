@@ -1,0 +1,165 @@
+{
+  "object": "card",
+  "id": "496a4fa5-b3e5-4020-b432-6d353095aa33",
+  "oracle_id": "33db6dc8-2c88-4a7f-8d4d-3bc9fb6544b2",
+  "multiverse_ids": [],
+  "resource_id": "2B3B60E10D060B2A1E1EB552D010EDCCBA8391DB9A625589A0D4367ADBB14C00",
+  "mtgo_id": 145652,
+  "arena_id": 98272,
+  "tcgplayer_id": 660567,
+  "cardmarket_id": 855796,
+  "name": "Zuko, Firebending Master",
+  "lang": "en",
+  "released_at": "2025-11-21",
+  "uri": "https://api.scryfall.com/cards/496a4fa5-b3e5-4020-b432-6d353095aa33",
+  "scryfall_uri": "https://scryfall.com/card/tle/127/zuko-firebending-master?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:06:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/9/496a4fa5-b3e5-4020-b432-6d353095aa33.jpg?1783904817",
+    "normal": "https://cards.scryfall.io/normal/front/4/9/496a4fa5-b3e5-4020-b432-6d353095aa33.jpg?1783904817",
+    "large": "https://cards.scryfall.io/large/front/4/9/496a4fa5-b3e5-4020-b432-6d353095aa33.jpg?1783904817",
+    "png": "https://cards.scryfall.io/png/front/4/9/496a4fa5-b3e5-4020-b432-6d353095aa33.png?1783904817",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/9/496a4fa5-b3e5-4020-b432-6d353095aa33.jpg?1783904817",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/9/496a4fa5-b3e5-4020-b432-6d353095aa33.jpg?1783904817",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/9/496a4fa5-b3e5-4020-b432-6d353095aa33.webp?1783904817",
+    "grid": "https://cards.scryfall.io/grid/front/4/9/496a4fa5-b3e5-4020-b432-6d353095aa33.webp?1783904817",
+    "display": "https://cards.scryfall.io/display/front/4/9/496a4fa5-b3e5-4020-b432-6d353095aa33.webp?1783904817",
+    "art": "https://cards.scryfall.io/art/front/4/9/496a4fa5-b3e5-4020-b432-6d353095aa33.webp?1783904817",
+    "crop": "https://cards.scryfall.io/crop/front/4/9/496a4fa5-b3e5-4020-b432-6d353095aa33.webp?1783904817",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/9/496a4fa5-b3e5-4020-b432-6d353095aa33.jpg?1783904817"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Noble Ally",
+  "oracle_text": "First strike\nFirebending X, where X is the number of experience counters you have. (Whenever this creature attacks, add X {R}. This mana lasts until end of combat.)\nWhenever you cast a spell during combat, you get an experience counter.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "First strike",
+    "Firebending"
+  ],
+  "produced_mana": [
+    "R"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a0a0547d-1da6-44cd-9652-e815c49c2f65",
+      "component": "combo_piece",
+      "name": "Zuko, Firebending Master",
+      "type_line": "Legendary Creature — Human Noble Ally",
+      "uri": "https://api.scryfall.com/cards/a0a0547d-1da6-44cd-9652-e815c49c2f65"
+    },
+    {
+      "object": "related_card",
+      "id": "edf99449-b176-460b-afb3-14a35e3ae35a",
+      "component": "combo_piece",
+      "name": "Experience",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/edf99449-b176-460b-afb3-14a35e3ae35a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set": "tle",
+  "set_name": "Avatar: The Last Airbender Eternal",
+  "set_type": "eternal",
+  "set_uri": "https://api.scryfall.com/sets/a75e6ceb-d62c-4063-8e96-f269e3a0b025",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atle&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tle?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/496a4fa5-b3e5-4020-b432-6d353095aa33/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A33db6dc8-2c88-4a7f-8d4d-3bc9fb6544b2&unique=prints",
+  "collector_number": "127",
+  "digital": false,
+  "rarity": "mythic",
+  "watermark": "firenation",
+  "flavor_text": "\"I have changed.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kinota Eishi",
+  "artist_ids": [
+    "6a5f88a0-53fc-4d3f-bf44-cc5e840c3420"
+  ],
+  "illustration_id": "a2cb0b6e-4ec1-447c-a23c-1cea7956e081",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 5089,
+  "prices": {
+    "usd": "10.27",
+    "usd_foil": "11.21",
+    "usd_etched": null,
+    "eur": "14.96",
+    "eur_foil": "14.98",
+    "tix": "1.70"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DZuko%252C%2BFirebending%2BMaster",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DZuko%252C%2BFirebending%2BMaster",
+    "edhrec": "https://edhrec.com/route/?cc=Zuko%2C+Firebending+Master"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F660567%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=855796&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/145652?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

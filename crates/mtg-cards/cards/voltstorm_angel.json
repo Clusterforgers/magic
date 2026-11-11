@@ -1,0 +1,28 @@
+{
+  "oracle_id": "836609f7-48b8-47b0-9af6-94150b048251",
+  "name": "Voltstorm Angel",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Voltstorm Angel",
+      "oracle_fingerprint": "363f193be96f588a2f93df19a930eb3d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 77, "end": 286 }
+          }
+        }
+      ]
+    }
+  ]
+}

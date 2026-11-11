@@ -1,0 +1,27 @@
+{
+  "oracle_id": "8bb51dd2-cc62-48ea-ae8e-52351073a8c9",
+  "name": "Blatant Thievery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blatant Thievery",
+      "oracle_fingerprint": "d7066a71e545b29bb419fbd30f3941fc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "PerPlayer": { "players": "Opponents", "what": [] } } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

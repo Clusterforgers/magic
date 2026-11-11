@@ -3819,7 +3819,7 @@ impl Walker<'_> {
                     w.problem(E15G_PAID_ONLY);
                 }
                 w.rule(rule);
-                // Only the layers end an effect when the source changes controller.
+                // A rule ends when the layers give its source to another player (`RuleEffect::is_active`).
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Rule", "Duration.WhileYouControlSource");
                 }

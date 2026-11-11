@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "881175c4-fee5-4c39-ad25-145ef73569ce",
+  "oracle_id": "ff86f385-dc3e-4bfe-83e7-9229afab4aa9",
+  "multiverse_ids": [
+    522188
+  ],
+  "mtgo_id": 90597,
+  "tcgplayer_id": 240382,
+  "cardmarket_id": 566906,
+  "name": "Arcbound Tracker",
+  "lang": "en",
+  "released_at": "2021-06-18",
+  "uri": "https://api.scryfall.com/cards/881175c4-fee5-4c39-ad25-145ef73569ce",
+  "scryfall_uri": "https://scryfall.com/card/mh2/112/arcbound-tracker?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:14:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/8/881175c4-fee5-4c39-ad25-145ef73569ce.jpg?1783926850",
+    "normal": "https://cards.scryfall.io/normal/front/8/8/881175c4-fee5-4c39-ad25-145ef73569ce.jpg?1783926850",
+    "large": "https://cards.scryfall.io/large/front/8/8/881175c4-fee5-4c39-ad25-145ef73569ce.jpg?1783926850",
+    "png": "https://cards.scryfall.io/png/front/8/8/881175c4-fee5-4c39-ad25-145ef73569ce.png?1783926850",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/8/881175c4-fee5-4c39-ad25-145ef73569ce.jpg?1783926850",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/8/881175c4-fee5-4c39-ad25-145ef73569ce.jpg?1783926850",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/8/881175c4-fee5-4c39-ad25-145ef73569ce.webp?1783926850",
+    "grid": "https://cards.scryfall.io/grid/front/8/8/881175c4-fee5-4c39-ad25-145ef73569ce.webp?1783926850",
+    "display": "https://cards.scryfall.io/display/front/8/8/881175c4-fee5-4c39-ad25-145ef73569ce.webp?1783926850",
+    "art": "https://cards.scryfall.io/art/front/8/8/881175c4-fee5-4c39-ad25-145ef73569ce.webp?1783926850",
+    "crop": "https://cards.scryfall.io/crop/front/8/8/881175c4-fee5-4c39-ad25-145ef73569ce.webp?1783926850",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/8/881175c4-fee5-4c39-ad25-145ef73569ce.jpg?1783926850"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Artifact Creature — Dog",
+  "oracle_text": "Menace\nModular 2 (This creature enters with two +1/+1 counters on it. When it dies, you may put its +1/+1 counters on target artifact creature.)\nWhenever you cast a spell other than your first spell each turn, put a +1/+1 counter on this creature.",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Modular",
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c1c7eb8c-f205-40ab-a609-767cb296544e",
+  "set": "mh2",
+  "set_name": "Modern Horizons 2",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/c1c7eb8c-f205-40ab-a609-767cb296544e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/881175c4-fee5-4c39-ad25-145ef73569ce/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aff86f385-dc3e-4bfe-83e7-9229afab4aa9&unique=prints",
+  "collector_number": "112",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Campbell White",
+  "artist_ids": [
+    "d281eab4-463a-4ba8-9039-8943737960a0"
+  ],
+  "illustration_id": "cd6b0381-a607-454e-9cce-56a90d0b8a2d",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9934,
+  "penny_rank": 15527,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.12",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=522188&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DArcbound%2BTracker",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DArcbound%2BTracker",
+    "edhrec": "https://edhrec.com/route/?cc=Arcbound+Tracker"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F240382%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=566906&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/90597?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
