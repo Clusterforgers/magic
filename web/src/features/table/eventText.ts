@@ -224,6 +224,7 @@ function durationWords(
     UntilEndOfTurn: ' until end of turn',
     UntilEndOfCombat: ' until end of combat',
     UntilYourNextTurn: " until their controller's next turn",
+    UntilYourNextUpkeep: " until their controller's next upkeep",
     UntilYourNextEndStep: " until their controller's next end step",
     UntilEndOfYourNextTurn: " until the end of their controller's next turn",
     WhileSourceOnBattlefield:
