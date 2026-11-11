@@ -107,10 +107,8 @@ pub(super) fn discarded_filtered_text(
     let kind = super::selectors::phrase_text(filter, super::selectors::Form::Count)?;
     let kind = kind.strip_suffix(" card").unwrap_or(&kind);
     // A card in a hand is no permanent: "a nonland card", "a card with mana value 3 or greater".
-    if let Some(card) = kind
-        .contains("permanent")
-        .then(|| wf26_in_hand(filter))
-        .flatten()
+    if let Some(card) = wf26_in_hand(filter)
+        .filter(|card| kind.contains("permanent") || card.contains("permanent card"))
     {
         return match count {
             Amount::Fixed(1) => Some(format!("a {card}")),

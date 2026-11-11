@@ -27,7 +27,14 @@ pub(super) fn wf26_wordings(
     wf26_counters_and_wordings(ability, written, texts);
     let those: Vec<String> = texts
         .iter()
-        .flat_map(|text| [those_named(text), opponent_as_player(text)])
+        .flat_map(|text| {
+            [
+                those_named(text),
+                opponent_as_player(text),
+                controller_as_that_player(text),
+                ring_apart(text),
+            ]
+        })
         .flatten()
         .collect();
     for text in those {
@@ -221,6 +228,50 @@ fn opponent_as_player(text: &str) -> Option<String> {
                 || (word.contains(' ') && text.to_lowercase().contains(word))
         });
     once.then(|| text.replacen("that opponent", "that player", 1))
+}
+
+/// "Target opponent ... Destroy up to one target Attraction target player controls." as "... that player controls", and
+/// "target creature an opponent controls ... another target creature its controller controls" as "... that player
+/// controls": the player the first target is, or controls it, named a second time.
+fn controller_as_that_player(text: &str) -> Option<String> {
+    for (said, first) in [
+        (
+            "target player controls",
+            ["target player", "target opponent"],
+        ),
+        (
+            "its controller controls",
+            [
+                "target creature an opponent controls",
+                "target permanent an opponent controls",
+            ],
+        ),
+    ] {
+        let Some(at) = text.rfind(said) else {
+            continue;
+        };
+        let before = text[..at].to_lowercase();
+        if text.matches(said).count() == 1 && first.iter().any(|named| before.contains(named)) {
+            return Some(format!(
+                "{}that player controls{}",
+                &text[..at],
+                &text[at + said.len()..]
+            ));
+        }
+    }
+    None
+}
+
+/// ", then the Ring tempts you." as ". The Ring tempts you." or ". Then the Ring tempts you.": the temptation after
+/// the other steps in a sentence of its own.
+fn ring_apart(text: &str) -> Option<String> {
+    const JOINED: &str = ", then the Ring tempts you.";
+    text.ends_with(JOINED).then(|| {
+        format!(
+            "{}. The Ring tempts you.",
+            &text[..text.len() - JOINED.len()]
+        )
+    })
 }
 
 /// "all nonland colorless cards" as "all colorless nonland cards": two adjectives before "card" in either order.

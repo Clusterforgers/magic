@@ -275,3 +275,46 @@ fn wf26_that_opponent_is_that_player(#[case] text: &str, #[case] expected: Optio
     super::super::wf26_writers::wf26_wordings(&ability, |_| Vec::new(), &mut texts);
     assert_eq!(texts.get(1).map(String::as_str), expected, "{text}");
 }
+
+const PERMANENT_CARD: &str = r#"{"Discard":{"who":{"Target":0},"filter":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Creature"},{"Type":"Enchantment"},{"Type":"Planeswalker"},{"Type":"Battle"}]}],"by":"You"}}"#;
+
+#[rstest]
+#[case::nonland_permanent(&spell("Opponent", PERMANENT_CARD), "Target opponent reveals their hand. You choose a nonland permanent card from it. That player discards that card.", true)]
+#[case::nonland_permanent_for_nonland(&spell("Opponent", PERMANENT_CARD), DURESS, false)]
+#[case::the_ring_apart(
+    r#"{"Spell":{"effects":[{"Draw":{}},{"RingTempts":{}}]}}"#,
+    "Draw a card. The Ring tempts you.",
+    true
+)]
+fn wf26_permanent_cards_and_the_ring(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+    assert_eq!(reads(json, clause), same, "{clause}");
+}
+
+#[rstest]
+#[case::named_again(
+    "Target opponent discards a card. Destroy up to one target Attraction target player controls.",
+    Some(
+        "Target opponent discards a card. Destroy up to one target Attraction that player controls."
+    )
+)]
+#[case::named_once("Destroy target creature target player controls.", None)]
+#[case::its_controller(
+    "Target creature an opponent controls deals 1 damage to another target creature its controller controls.",
+    Some(
+        "Target creature an opponent controls deals 1 damage to another target creature that player controls."
+    )
+)]
+#[case::its_controller_of_any(
+    "Target creature deals 1 damage to another target creature its controller controls.",
+    None
+)]
+#[case::ring_joined(
+    "Draw a card, then the Ring tempts you.",
+    Some("Draw a card. The Ring tempts you.")
+)]
+fn wf26_that_player_controls(#[case] text: &str, #[case] expected: Option<&str>) {
+    let ability = ability(DIPLOMACY);
+    let mut texts = vec![text.to_owned()];
+    super::super::wf26_writers::wf26_wordings(&ability, |_| Vec::new(), &mut texts);
+    assert_eq!(texts.get(1).map(String::as_str), expected, "{text}");
+}
