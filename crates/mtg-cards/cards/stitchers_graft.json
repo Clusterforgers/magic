@@ -1,7 +1,7 @@
 {
   "oracle_id": "2b73a5ec-c52e-4074-a7cb-78d6eb2adef0",
   "name": "Stitcher's Graft",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Stitcher's Graft",
@@ -28,9 +28,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 124, "end": 210 }
+          "Triggered": {
+            "when": { "Unattached": { "what": ["This"] } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Is": "Triggering" }] } }]
           }
         },
         { "Keyword": { "Equip": "{2}" } }

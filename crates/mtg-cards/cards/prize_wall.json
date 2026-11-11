@@ -1,7 +1,7 @@
 {
   "oracle_id": "41b05346-8531-4086-96a5-e973aff150cb",
   "name": "Prize Wall",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Prize Wall",
@@ -15,9 +15,20 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 33, "end": 127 }
+          "Activated": {
+            "cost": [{ "Mana": "{4}{U}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutSticker": { "on": [{ "Not": { "Type": "Land" } }, { "OwnedBy": "You" }] }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
