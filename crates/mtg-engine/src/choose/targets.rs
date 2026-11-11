@@ -165,9 +165,9 @@ pub struct TargetOptions {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct Total {
-    /// The most the mana values may add up to.
+    /// The most the values (mana values or powers) may add up to.
     pub most: u32,
-    /// The mana value of each legal target, in the order of `legal`.
+    /// The value of each legal target, in the order of `legal`.
     pub values: Vec<u32>,
 }
 
@@ -448,7 +448,11 @@ pub(crate) fn options_for(
         Targetable::Together {
             rule: TargetSet::TotalManaValueAtMost(most),
             ..
-        } => totalled(state, legal, amount_of(most)?, min)?,
+        } => totalled(state, legal, amount_of(most)?, min, rmt1_mana_value)?,
+        Targetable::Together {
+            rule: TargetSet::TotalPowerAtMost(most),
+            ..
+        } => totalled(state, legal, amount_of(most)?, min, rmt1_power)?,
         _ => (legal, None, available),
     };
     if available < min {
@@ -476,13 +480,9 @@ fn totalled(
     legal: Vec<Target>,
     most: u32,
     min: u32,
+    stat: fn(&GameState, ObjectId) -> u32,
 ) -> Option<(Vec<Target>, Option<Total>, u32)> {
-    let value = |target: &Target| {
-        target
-            .object()
-            .and_then(|object| state.object(object.id))
-            .map_or(0, GameObject::mana_value)
-    };
+    let value = |target: &Target| target.object().map_or(0, |object| stat(state, object.id));
     let (legal, values): (Vec<Target>, Vec<u32>) = legal
         .into_iter()
         .map(|target| {
@@ -506,6 +506,19 @@ fn totalled(
         return None;
     }
     Some((legal, Some(Total { most, values }), together))
+}
+
+/// The mana value of the object, 0 when it is gone.
+fn rmt1_mana_value(state: &GameState, id: ObjectId) -> u32 {
+    state.object(id).map_or(0, GameObject::mana_value)
+}
+
+/// The power of the object as it is now (a card outside the battlefield has its printed power), 0 when it has none or
+/// a negative one, so a total over powers counts it as nothing.
+fn rmt1_power(state: &GameState, id: ObjectId) -> u32 {
+    crate::characteristics::characteristics(state, id)
+        .and_then(|chars| chars.power)
+        .map_or(0, |power| u32::try_from(power).unwrap_or(0))
 }
 
 /// Without what reads the targets of earlier specifications, for a check made before they are chosen: a predicate
@@ -707,6 +720,7 @@ fn together_key(state: &GameState, rule: &TargetSet, target: &Target) -> u64 {
         TargetSet::DifferentManaValues | TargetSet::TotalManaValueAtMost(_) => {
             u64::from(object.mana_value())
         }
+        TargetSet::TotalPowerAtMost(_) => u64::from(rmt1_power(state, object.id())),
     }
 }
 
@@ -722,7 +736,10 @@ fn group_together(
     let Targetable::Together { rule, .. } = &spec.what else {
         return (legal, None, available);
     };
-    if matches!(rule, TargetSet::TotalManaValueAtMost(_)) {
+    if matches!(
+        rule,
+        TargetSet::TotalManaValueAtMost(_) | TargetSet::TotalPowerAtMost(_)
+    ) {
         return (legal, None, available);
     }
     let alike = matches!(rule, TargetSet::SameController);

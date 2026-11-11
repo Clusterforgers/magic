@@ -1,0 +1,38 @@
+{
+  "oracle_id": "ad5ff61f-79d6-4dd9-b4fe-17f7a0055c44",
+  "name": "Reunion of the House",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reunion of the House",
+      "oracle_fingerprint": "3244bade98d807486861b10fc49f89a2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" }
+                      ]
+                    },
+                    "rule": { "TotalPowerAtMost": 10 }
+                  }
+                },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

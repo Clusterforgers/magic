@@ -1,0 +1,21 @@
+{
+  "oracle_id": "eb8ff6c1-f9b4-4dae-8f46-0f1ad4c05355",
+  "name": "Fog Patch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fog Patch",
+      "oracle_fingerprint": "ea0bc980c42ec7316e9ed7a76e367488",
+      "abilities": [
+        { "CastOnly": { "condition": { "Step": "DeclareBlockers" } } },
+        {
+          "Spell": {
+            "effects": [
+              { "BecomeBlocked": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

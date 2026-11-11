@@ -2619,6 +2619,16 @@ impl<'a> Scope<'a> {
         matches!(self.entered_choice(), Some(Chosen::Word(chosen)) if chosen == word)
     }
 
+    /// Whether the turn is before its attackers are declared, or in combat after its blockers are declared.
+    fn rmt1_moment(&self, condition: &Condition) -> bool {
+        let step = self.state.turn().step();
+        if *condition == Condition::BeforeAttackers {
+            step < crate::turn::Step::DeclareAttackers
+        } else {
+            self.in_combat() && step >= crate::turn::Step::DeclareBlockers
+        }
+    }
+
     /// Whether a condition is true now.
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
@@ -2690,9 +2700,7 @@ impl<'a> Scope<'a> {
             Condition::Step(named) => {
                 crate::triggers::step_matches(*named, self.state.turn().step())
             }
-            Condition::BeforeAttackers => {
-                self.state.turn().step() < crate::turn::Step::DeclareAttackers
-            }
+            Condition::BeforeAttackers | Condition::AfterBlockers => self.rmt1_moment(condition),
             Condition::InCombat => self.in_combat(),
             Condition::FirstCombat => self.in_combat() && self.state.turn().combats() == 1,
             Condition::Level { of, op, level } => {

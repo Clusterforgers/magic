@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3c9faba7-f2d3-4978-be94-020dc8003dc0",
+  "name": "Intuition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intuition",
+      "oracle_fingerprint": "2754bcc3cbec936a1bf1f7c0881b1d87",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [],
+                  "count": { "min": 3, "max": 3 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Bound": "found" },
+                  "as": "chosen",
+                  "rest_as": "rest"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -521,6 +521,8 @@ pub enum TargetSet {
     DifferentManaValues,
     /// Their mana values add up to at most this ("with total mana value 3 or less").
     TotalManaValueAtMost(Amount),
+    /// Their powers add up to at most this ("with total power 10 or less").
+    TotalPowerAtMost(Amount),
 }
 
 /// What a target can be.

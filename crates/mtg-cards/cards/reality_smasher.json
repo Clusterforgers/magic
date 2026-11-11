@@ -1,0 +1,34 @@
+{
+  "oracle_id": "17c651c7-da4e-45e9-9a64-fad3e873123d",
+  "name": "Reality Smasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reality Smasher",
+      "oracle_fingerprint": "da573100cdbe196b0121d935c1467b75",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": ["This"],
+                "by": ["Spell", { "ControlledBy": "Opponents" }]
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": [{ "Discard": {} }],
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

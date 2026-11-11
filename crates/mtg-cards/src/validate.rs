@@ -1315,6 +1315,7 @@ impl<'a> Walker<'a> {
             Condition::IsNight => self.uses("Condition", "IsNight"),
             Condition::Step(_) => self.uses("Condition", "Step"),
             Condition::BeforeAttackers => self.uses("Condition", "BeforeAttackers"),
+            Condition::AfterBlockers => self.uses("Condition", "AfterBlockers"),
             Condition::InCombat => self.uses("Condition", "InCombat"),
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
             Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
@@ -2560,6 +2561,10 @@ impl Walker<'_> {
                 self.uses("Target", "Together");
                 if let TargetSet::TotalManaValueAtMost(most) = rule {
                     self.uses("Target", "TotalManaValue");
+                    self.at("rule", |w| w.amount(most));
+                }
+                if let TargetSet::TotalPowerAtMost(most) = rule {
+                    self.uses("Target", "TotalPower");
                     self.at("rule", |w| w.amount(most));
                 }
                 self.at("what", |w| w.targetable(what));
@@ -3907,6 +3912,11 @@ impl Walker<'_> {
             }
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::RemoveFromCombat { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::BecomeBlocked { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::PutBeneathTop { what, below } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("below", |w| w.amount(below));
+            }
             Effect::Shield {
                 when,
                 by,

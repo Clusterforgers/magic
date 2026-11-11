@@ -2156,7 +2156,10 @@ impl Writer<'_> {
         self.targets.first().is_some_and(|spec| match &spec.what {
             Targetable::Together {
                 what,
-                rule: TargetSet::TotalManaValueAtMost(_) | TargetSet::SameController,
+                rule:
+                    TargetSet::TotalManaValueAtMost(_)
+                    | TargetSet::TotalPowerAtMost(_)
+                    | TargetSet::SameController,
             } => wanted(what),
             // A player a fact holds for is worded as any target player is (`name_target` writes the fact).
             Targetable::PlayerAmong(_) => wanted(&Targetable::Player),
@@ -2896,6 +2899,45 @@ impl Writer<'_> {
         Some(format!("remove {} from combat", self.object(what)?))
     }
 
+    /// "target unblocked attacking creature becomes blocked", "attacking creatures become blocked": the verb agrees
+    /// with its subject.
+    fn rmt1_become_blocked(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::BecomeBlocked { what } = effect else {
+            return None;
+        };
+        let one = *what == Ref::This || self.single(what);
+        let verb = if one {
+            "becomes blocked"
+        } else {
+            "become blocked"
+        };
+        let subject = self.object(what)?;
+        // "Attacking creatures become blocked.": a group is named without "all".
+        let subject = match what {
+            Ref::Each(_) => subject
+                .strip_prefix("all ")
+                .map_or(subject.clone(), str::to_owned),
+            _ => subject,
+        };
+        Some(format!("{subject} {verb}"))
+    }
+
+    /// "put target nonland permanent into its owner's library just beneath the top X cards of that library".
+    fn rmt1_beneath(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::PutBeneathTop {
+            what,
+            below: Amount::X,
+        } = effect
+        else {
+            return None;
+        };
+        self.is_a_permanent(what).then_some(())?;
+        Some(format!(
+            "put {} into its owner's library just beneath the top X cards of that library",
+            self.object(what)?
+        ))
+    }
+
     /// {1} paid X times is "{X}" (r5b).
     fn r5b_x_payment(&mut self, effect: &Effect) -> Option<String> {
         let Effect::Pay {
@@ -2931,6 +2973,8 @@ impl Writer<'_> {
             .or_else(|| self.library_exile(effect))
             .or_else(|| self.exiled(effect))
             .or_else(|| self.left_combat(effect))
+            .or_else(|| self.rmt1_become_blocked(effect))
+            .or_else(|| self.rmt1_beneath(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| super::ep33_face_down::ep33_put_face_down(effect))
             .or_else(|| mass_moves::text(effect))

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "d6efbbf9-1449-45ce-b187-30041eb36d93",
+  "name": "Curtain of Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curtain of Light",
+      "oracle_fingerprint": "7ed3cfe37b1a5c16852fbef166f4e0a2",
+      "abilities": [
+        { "CastOnly": { "condition": "AfterBlockers" } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Unblocked", "Attacking"] } }
+            ],
+            "effects": [{ "BecomeBlocked": { "what": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

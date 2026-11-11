@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e8d78a83-c932-4b55-8f75-7094c672c3a9",
+  "name": "Unexpectedly Absent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unexpectedly Absent",
+      "oracle_fingerprint": "b77cc5ed6f49b42376afefa945db4c42",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "PutBeneathTop": { "what": { "Target": 0 }, "below": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

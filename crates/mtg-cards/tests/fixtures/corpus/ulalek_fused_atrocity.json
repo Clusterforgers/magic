@@ -1,0 +1,162 @@
+{
+  "object": "card",
+  "id": "fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c",
+  "oracle_id": "9f6828e3-39d9-45d9-9bf1-0e3737a0321e",
+  "multiverse_ids": [
+    668531
+  ],
+  "mtgo_id": 127485,
+  "arena_id": 92601,
+  "tcgplayer_id": 552426,
+  "cardmarket_id": 771302,
+  "name": "Ulalek, Fused Atrocity",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c",
+  "scryfall_uri": "https://scryfall.com/card/m3c/4/ulalek-fused-atrocity?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:57:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/d/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c.jpg?1783911439",
+    "normal": "https://cards.scryfall.io/normal/front/f/d/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c.jpg?1783911439",
+    "large": "https://cards.scryfall.io/large/front/f/d/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c.jpg?1783911439",
+    "png": "https://cards.scryfall.io/png/front/f/d/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c.png?1783911439",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/d/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c.jpg?1783911439",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/d/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c.jpg?1783911439",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/d/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c.webp?1783911439",
+    "grid": "https://cards.scryfall.io/grid/front/f/d/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c.webp?1783911439",
+    "display": "https://cards.scryfall.io/display/front/f/d/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c.webp?1783911439",
+    "art": "https://cards.scryfall.io/art/front/f/d/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c.webp?1783911439",
+    "crop": "https://cards.scryfall.io/crop/front/f/d/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c.webp?1783911439",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/d/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c.jpg?1783911439"
+  },
+  "mana_cost": "{C/W}{C/U}{C/B}{C/R}{C/G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Eldrazi",
+  "oracle_text": "Devoid (This card has no color.)\nWhenever you cast an Eldrazi spell, you may pay {C}{C}. If you do, copy all spells you control, then copy all other activated and triggered abilities you control. You may choose new targets for the copies. (Mana abilities can't be copied.)",
+  "power": "2",
+  "toughness": "5",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Devoid"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "8a016157-6f3f-4fb2-b962-1f548d378545",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/8a016157-6f3f-4fb2-b962-1f548d378545"
+    },
+    {
+      "object": "related_card",
+      "id": "7a816daf-3244-420f-a10d-b31ebf04f12a",
+      "component": "combo_piece",
+      "name": "Ulalek, Fused Atrocity",
+      "type_line": "Legendary Creature — Eldrazi",
+      "uri": "https://api.scryfall.com/cards/7a816daf-3244-420f-a10d-b31ebf04f12a"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f5e00721-cf99-43ba-bf16-b22d56d12c73",
+  "set": "m3c",
+  "set_name": "Modern Horizons 3 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f5e00721-cf99-43ba-bf16-b22d56d12c73",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am3c&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m3c?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fdad1b0e-d3cc-4d76-ae7e-fee12558cf2c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9f6828e3-39d9-45d9-9bf1-0e3737a0321e&unique=prints",
+  "collector_number": "4",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alex Konstad",
+  "artist_ids": [
+    "58b2a57c-50ca-4047-b4e7-efb28cb22851"
+  ],
+  "illustration_id": "f5410963-0e71-46e7-bef9-99edb184c2fe",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "devoid"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 4763,
+  "penny_rank": 9368,
+  "prices": {
+    "usd": "0.69",
+    "usd_foil": "0.81",
+    "usd_etched": null,
+    "eur": "0.39",
+    "eur_foil": "0.46",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=668531&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUlalek%252C%2BFused%2BAtrocity",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUlalek%252C%2BFused%2BAtrocity",
+    "edhrec": "https://edhrec.com/route/?cc=Ulalek%2C+Fused+Atrocity"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F552426%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=771302&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/127485?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

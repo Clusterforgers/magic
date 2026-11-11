@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7ca99e2f-faf2-4301-a0ae-7cb880ba965b",
+  "name": "Jace, Mirror Mage",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jace, Mirror Mage",
+      "oracle_fingerprint": "786b5b84a14146af13474bdbe965effc",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}" } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 11, "end": 143 }
+          }
+        },
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Scry": { "count": 2 } }] } },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 156, "end": 264 }
+          }
+        }
+      ]
+    }
+  ]
+}

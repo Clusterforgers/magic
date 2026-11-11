@@ -1,0 +1,68 @@
+{
+  "oracle_id": "2c75b870-263b-41ab-9ece-6e3845bc3d8d",
+  "name": "Koth, Fire of Resistance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Koth, Fire of Resistance",
+      "oracle_fingerprint": "ff46ff9cee2ccdb4410b76031297a431",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Subtype": "Mountain" }],
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }],
+                            "to": "Battlefield"
+                          }
+                        },
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -473,6 +473,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::IsNight
         | Condition::Step(_)
         | Condition::BeforeAttackers
+        | Condition::AfterBlockers
         | Condition::InCombat
         | Condition::FirstCombat
         | Condition::NeitherDayNorNight

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "785c306c-471c-4699-8ab2-43c253d569cf",
+  "name": "Lich's Mastery",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lich's Mastery",
+      "oracle_fingerprint": "18be330e1246dd8b3254820d2726c214",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        { "Rule": { "rule": { "CantLoseGame": { "who": "You" } } } },
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "Draw": { "count": "Triggering" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 80, "end": 198 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "LoseGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

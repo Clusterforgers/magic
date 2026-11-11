@@ -400,7 +400,11 @@ unpreventable?: boolean, } } | "CombatEnded" | "DamageCleared" | { "RemovedFromC
 /**
  * The creature.
  */
-object: ObjectId, } } | { "Regenerated": { 
+object: ObjectId, } } | { "AttackersBlocked": { 
+/**
+ * The attackers, each not blocked before.
+ */
+attackers: Array<ObjectId>, } } | { "Regenerated": { 
 /**
  * The permanent.
  */

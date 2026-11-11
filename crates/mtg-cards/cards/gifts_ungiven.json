@@ -1,0 +1,41 @@
+{
+  "oracle_id": "58aec411-167d-4709-8560-793eaaed62c5",
+  "name": "Gifts Ungiven",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gifts Ungiven",
+      "oracle_fingerprint": "982749a903dc9884c6003cd58332fa8a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [],
+                  "count": { "min": 0, "max": 4 },
+                  "reveal": true,
+                  "distinct": true,
+                  "as": "found"
+                }
+              },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Bound": "found" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "chosen",
+                  "rest_as": "rest"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Graveyard" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

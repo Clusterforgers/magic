@@ -1,0 +1,26 @@
+{
+  "oracle_id": "6b92a5f4-a241-48c8-9aec-c8e9d5b01fa5",
+  "name": "The Phasing of Zhalfir",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Phasing of Zhalfir",
+      "oracle_fingerprint": "0531755c49266ac74363c81f5b5783c5",
+      "abilities": [
+        { "Keyword": "ReadAhead" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 153, "end": 261 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 262, "end": 389 }
+          }
+        }
+      ]
+    }
+  ]
+}

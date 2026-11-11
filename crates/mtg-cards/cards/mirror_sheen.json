@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d6494704-54b2-4c80-acb4-184c9815c5f3",
+  "name": "Mirror Sheen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Sheen",
+      "oracle_fingerprint": "b00dc25b8e76a1b9a4fc544dfb06a85e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U/R}{U/R}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "TargetsPlayer": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}
