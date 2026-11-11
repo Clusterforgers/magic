@@ -24,7 +24,12 @@ fn sheet(name: &str, words: &str) -> Arc<CardDefinition> {
 
 fn cards() -> BTreeMap<String, Arc<CardDefinition>> {
     let mut cards: BTreeMap<String, Arc<CardDefinition>> = (0..20)
-        .map(|n| (format!("bear-{n}"), free_creature(&format!("Bear {n}"), 2, 2)))
+        .map(|n| {
+            (
+                format!("bear-{n}"),
+                free_creature(&format!("Bear {n}"), 2, 2),
+            )
+        })
         .collect();
     cards.insert(SHEETS[0].to_owned(), sheet("Sheet A", "Wicked"));
     cards.insert(SHEETS[1].to_owned(), sheet("Sheet B", "Fluffy"));
@@ -32,7 +37,11 @@ fn cards() -> BTreeMap<String, Arc<CardDefinition>> {
 }
 
 fn catalog_of(cards: &BTreeMap<String, Arc<CardDefinition>>) -> Catalog {
-    Catalog::new(cards.iter().map(|(id, card)| (id.clone(), Arc::clone(card))))
+    Catalog::new(
+        cards
+            .iter()
+            .map(|(id, card)| (id.clone(), Arc::clone(card))),
+    )
 }
 
 fn oracle(stickers: Vec<String>) -> DeckRef {
@@ -70,10 +79,22 @@ fn a_recipe_rebuilds_the_setup_with_the_sticker_sheets(#[values(2, 3, 4)] seats:
     assert_eq!(back, recipe);
     let setup = back.build_with(&catalog).unwrap();
     for (seat, player) in setup.players.iter().enumerate() {
-        let names: Vec<&str> = player.stickers.iter().map(|sheet| sheet.name.as_str()).collect();
-        let expected: &[&str] = if seat % 2 == 0 { &["Sheet A", "Sheet B"] } else { &[] };
+        let names: Vec<&str> = player
+            .stickers
+            .iter()
+            .map(|sheet| sheet.name.as_str())
+            .collect();
+        let expected: &[&str] = if seat % 2 == 0 {
+            &["Sheet A", "Sheet B"]
+        } else {
+            &[]
+        };
         assert_eq!(names, expected, "seat {seat}");
-        assert_eq!(player.library.len(), 20, "the sheets are no cards of the deck");
+        assert_eq!(
+            player.library.len(),
+            20,
+            "the sheets are no cards of the deck"
+        );
     }
 }
 
@@ -84,8 +105,13 @@ fn a_seat_without_sheets_hashes_as_before_and_a_changed_sheet_fails() {
     let without = GameRecipe::normal(7, [oracle(Vec::new())])
         .with_fingerprints_from(&catalog)
         .unwrap();
-    let library: Vec<_> = (0..20).map(|n| Arc::clone(&cards[&format!("bear-{n}")])).collect();
-    assert_eq!(without.fingerprints[0], DeckFingerprint::of(&library).unwrap());
+    let library: Vec<_> = (0..20)
+        .map(|n| Arc::clone(&cards[&format!("bear-{n}")]))
+        .collect();
+    assert_eq!(
+        without.fingerprints[0],
+        DeckFingerprint::of(&library).unwrap()
+    );
     let with = recipe(2, &catalog);
     assert_ne!(with.fingerprints[0], with.fingerprints[1]);
     cards.insert(SHEETS[1].to_owned(), sheet("Sheet B", "Grumpy"));
