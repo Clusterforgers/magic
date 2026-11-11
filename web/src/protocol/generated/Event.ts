@@ -155,7 +155,15 @@ by: PlayerId,
 /**
  * Whether the controlled player takes an extra turn after that turn.
  */
-extra_turn?: boolean, } } | { "PhasesAdded": { 
+extra_turn?: boolean, } } | { "GameRestarted": { 
+/**
+ * The player whose effect restarted the game.
+ */
+by: PlayerId, 
+/**
+ * The exiled cards left out of the new game.
+ */
+kept: Array<ObjectId>, } } | { "PhasesAdded": { 
 /**
  * The first step of each added phase.
  */

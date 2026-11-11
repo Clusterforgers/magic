@@ -64,6 +64,17 @@ fn karn_restarts_the_game_keeping_what_it_exiled() {
 }
 
 #[test]
+fn emrakul_costs_less_for_each_card_type_in_your_graveyard() {
+    let read = golden(
+        "This spell costs {1} less to cast for each card type among cards in your graveyard.",
+        ClauseKind::Static,
+        false,
+    );
+    let json = serde_json::to_string(&read).unwrap();
+    assert!(json.contains(r#""per":{"CardTypes":"#), "{json}");
+}
+
+#[test]
 fn opponents_are_controlled_while_they_search() {
     reads_as(
         "You control your opponents while they're searching their libraries.",
@@ -161,15 +172,25 @@ fn near_misses_stay_unread(#[case] text: &str) {
 }
 
 #[test]
-fn a_near_miss_of_the_search_rule_stays_unread() {
-    assert_eq!(
-        clause(
-            "You control your opponents while they're searching their graveyards.",
-            ClauseKind::Static,
-            false
-        ),
-        None
+fn opponents_exile_what_they_find() {
+    reads_as(
+        "While an opponent is searching their library, they exile each card they find. You may play those cards for as long as they remain exiled, and you may spend mana as though it were mana of any color to cast them.",
+        ClauseKind::Static,
+        false,
+        r#"{"Rule":{"rule":{"ExileFound":"Opponents"}}}"#,
     );
+}
+
+#[rstest]
+#[case::their_graveyard("You control your opponents while they're searching their graveyards.")]
+#[case::cast_only(
+    "While an opponent is searching their library, they exile each card they find. You may cast those spells for as long as they remain exiled, and you may spend mana as though it were mana of any color to cast them."
+)]
+#[case::no_mana_clause(
+    "While an opponent is searching their library, they exile each card they find. You may play those cards for as long as they remain exiled."
+)]
+fn near_misses_of_the_search_rules_stay_unread(#[case] text: &str) {
+    assert_eq!(clause(text, ClauseKind::Static, false), None, "{text}");
 }
 
 /// The abilities a whole card compiles to, as JSON.

@@ -617,6 +617,18 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if r.words("you control your opponents while they're searching their libraries") {
         return Some(GameRule::ControlSearches(Ref::Opponents));
     }
+    if let Some(rule) = r.attempt(|r| {
+        r.need("while an opponent is searching their library")?;
+        r.punct(',').then_some(())?;
+        r.need("they exile each card they find")?;
+        r.punct('.').then_some(())?;
+        r.need("you may play those cards for as long as they remain exiled")?;
+        r.punct(',').then_some(())?;
+        r.need("and you may spend mana as though it were mana of any color to cast them")?;
+        Some(GameRule::ExileFound(Ref::Opponents))
+    }) {
+        return Some(rule);
+    }
     if r.words("you gain life rather than lose life from radiation") {
         return Some(GameRule::RadiationGainsLife(Ref::You));
     }
@@ -1734,6 +1746,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         }
         (GameRule::ControlSearches(Ref::Opponents), ZoneKind::Battlefield) => {
             vec!["You control your opponents while they're searching their libraries".to_owned()]
+        }
+        (GameRule::ExileFound(Ref::Opponents), ZoneKind::Battlefield) => {
+            vec!["While an opponent is searching their library, they exile each card they find. You may play those cards for as long as they remain exiled, and you may spend mana as though it were mana of any color to cast them".to_owned()]
         }
         (GameRule::SkipDrawStep(Ref::You), ZoneKind::Battlefield) => {
             vec!["Skip your draw step".to_owned()]

@@ -1034,6 +1034,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const after = extra_turn === true ? ', then takes an extra turn' : ''
     return line(`${n.seat(by)} will control ${n.seat(player)} during their next turn${after}`)
   }
+  if ('GameRestarted' in event) {
+    const { by, kept } = event.GameRestarted
+    const cards = kept.length === 0 ? '' : `, keeping ${kept.map((id) => n.card(id)).join(', ')} in exile`
+    return line(`${n.seat(by)} restarts the game${cards}`)
+  }
   if ('SpellControlGained' in event) {
     return line(`${n.seat(event.SpellControlGained.player)} gains control of ${n.card(event.SpellControlGained.object)}`)
   }

@@ -214,7 +214,9 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - The engine asks every decision of the controlled player as before (`Engine::decision_owned`); `Engine::decision` shows it to the player who answers it (`player_control::answerer`), so the server, the clocks and the bots route by `Decision.player` unchanged. A rule `ControlSearches` (Opposition Agent) hands over a choice among the cards of its player's own library.
 - The controller sees what the controlled player sees (CR 722.3): their hand, their face-down cards, the cards shown to them and offered to them (`sight.rs`, `zone_is_visible_in`).
 - Control of a spell or ability on the stack (CR 110.2): a `SetController` of a `Continuous` effect that names a stack object logs `SpellControlGained`, which sets the object's controller, so it resolves for the new controller and a permanent spell enters under them; `ChangeTargets` then asks the new controller.
+- A rule `ExileFound` (Opposition Agent) exiles each card a player finds in their library as the search logs it (`search.rs`) and gives the rule's controller a `MayCast` of those cards from exile with `play` and `spend_as: AnyColor`; the search binds the cards as they were found, so the step that would have moved them finds nothing.
 - Cleave (CR 702.148): an alternative cost; `Keyword::Cleave` carries the spell ability without the bracketed words, which a spell cast for that cost announces and resolves in place of the printed one (`keywords/cleave.rs`).
+- A restart (CR 727, `restart.rs`): `RestartGame` logs `GameRestarted {by, kept}`, whose fold puts every card back in its owner's library (a commander in the command zone) as a new object, removes every other object but the resolving one, starts the players over and returns the game to `PreGame`; the resolution ends as usual, the opening runs with `by` first, and the kept cards still in exile enter under `by` as the opening ends, before turn 1.
 
 ## Copies
 

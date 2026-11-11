@@ -353,6 +353,10 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
                 phrase::selectors(ctx, &permission.what)
             )
         }
+        GameRule::ExileFound(who) => format!(
+            "{} exile each card they find while they search their libraries, and you may play those cards while they remain exiled, spending mana as though it were mana of any color",
+            phrase::who(ctx, who)
+        ),
         GameRule::ControlSearches(who) => format!(
             "you control {} while they search their libraries",
             phrase::who(ctx, who)

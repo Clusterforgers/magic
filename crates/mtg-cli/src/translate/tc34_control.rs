@@ -1,6 +1,8 @@
 //! Control of a player and of a spell, and text changes: `ControlPlayer` (CR 722), `ControlSpell` with `Mode$ Gain`,
 //! `ChangeText` (CR 612) and the `GenericChoice` between a color word and a basic land type change (Mind Bend).
-//! `RestartGame` (Karn Liberated) stays a gap.
+//! The replacement that exiles what an opponent finds in their library (Opposition Agent) is `ExileFound`.
+//! `RestartGame` that leaves the non-Aura permanent cards exiled with the source in exile and then puts them onto the
+//! battlefield (Karn Liberated) is `RestartGame`; any other restart is a gap.
 
 use serde_json::{Value, json};
 
@@ -207,4 +209,102 @@ fn either_word(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         effects.extend(super::effects::chain_at(ctx, &next, false)?);
     }
     Ok(effects)
+}
+
+/// The replacement of an opponent's search (Opposition Agent): each card they find in their library is exiled instead,
+/// and an effect lets the controller play the exiled cards while they stay there, spending mana as though it were mana
+/// of any color. Any other shape is a gap.
+pub fn exile_found(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    let gap = || unmapped("key:Replacement.FoundSearchingLibrary");
+    let exile = p
+        .get("ReplaceWith")
+        .and_then(|name| ctx.svar(name))
+        .map(Params::parse);
+    let permission = exile
+        .as_ref()
+        .and_then(|exile| exile.get("SubAbility"))
+        .and_then(|name| ctx.svar(name))
+        .map(Params::parse);
+    let play = permission
+        .as_ref()
+        .and_then(|effect| effect.get("StaticAbilities"))
+        .and_then(|name| ctx.svar(name))
+        .map(Params::parse);
+    let (Some(exile), Some(permission), Some(play)) = (exile, permission, play) else {
+        return gap();
+    };
+    let shape = p.get("Event") == Some("Moved")
+        && p.get("ValidCard") == Some("Card.OppOwn")
+        && p.get("Origin") == Some("Library")
+        && p.get("ActiveZones") == Some("Battlefield")
+        && exile.get("DB") == Some("ChangeZone")
+        && exile.get("Destination") == Some("Exile")
+        && exile.get("Defined") == Some("ReplacedCard")
+        && permission.get("DB") == Some("Effect")
+        && permission.get("Duration") == Some("Permanent")
+        && permission.get("RememberObjects") == Some("ReplacedCard")
+        && permission.get("SubAbility").is_none()
+        && play.get("Mode") == Some("Continuous")
+        && play.get("MayPlay") == Some("True")
+        && play.get("Affected") == Some("Card.IsRemembered")
+        && play.get("AffectedZone") == Some("Exile")
+        && play.get("MayPlayIgnoreColor") == Some("True")
+        && play.iter().all(|(key, _)| {
+            [
+                "Mode",
+                "MayPlay",
+                "Affected",
+                "AffectedZone",
+                "MayPlayIgnoreColor",
+                "Description",
+            ]
+            .contains(&key)
+        });
+    if !shape {
+        return gap();
+    }
+    Ok(json!({"Rule": {"rule": {"ExileFound": "Opponents"}}}))
+}
+
+/// A `RestartGame` line: Karn Liberated's restart, which keeps the non-Aura permanent cards exiled with its source out of
+/// the new game and then puts them onto the battlefield under its controller's control, is `RestartGame`; any other is a
+/// gap. `None` for any other line.
+pub fn restart_game(ctx: &Ctx, p: &Params) -> Option<Tr<Vec<Value>>> {
+    if p.get("DB").or_else(|| p.get("SP")).or_else(|| p.get("AB")) != Some("RestartGame") {
+        return None;
+    }
+    let back = p
+        .get("SubAbility")
+        .and_then(|name| ctx.svar(name))
+        .map(Params::parse);
+    let karn = p.get("RestrictFromZone") == Some("Exile")
+        && p.get("RestrictFromValid") == Some("Card.!ExiledWithSource,Spell,Card.Aura")
+        && back.as_ref().is_some_and(|back| {
+            back.get("DB") == Some("ChangeZoneAll")
+                && back.get("ChangeType") == Some("Permanent.nonAura+ExiledWithSource")
+                && back.get("Origin") == Some("Exile")
+                && back.get("Destination") == Some("Battlefield")
+                && back.get("GainControl") == Some("True")
+                && back.get("SubAbility").is_none()
+        });
+    if !karn {
+        return Some(unmapped("RestartGame"));
+    }
+    let permanent: Vec<Value> = [
+        "Artifact",
+        "Battle",
+        "Creature",
+        "Enchantment",
+        "Land",
+        "Planeswalker",
+    ]
+    .into_iter()
+    .map(|kind| json!({"Type": kind}))
+    .collect();
+    Some(Ok(vec![json!({"RestartGame": {"keep": [
+        {"In": "Exile"},
+        {"ExiledWith": "This"},
+        {"Not": {"Subtype": "Aura"}},
+        {"AnyOf": permanent},
+    ]}})]))
 }

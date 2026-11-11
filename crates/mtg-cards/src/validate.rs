@@ -4601,6 +4601,7 @@ impl Walker<'_> {
             }),
             GameRule::TriggerAgain { .. }
             | GameRule::ControlSearches(_)
+            | GameRule::ExileFound(_)
             | GameRule::NoLegendRule(_)
             | GameRule::NoLegendRuleFor(_)
             | GameRule::AbilitiesAsThoughHaste(_)
@@ -4632,9 +4633,9 @@ impl Walker<'_> {
                 });
                 self.scope = saved;
             }
-            GameRule::NoLegendRule(who) | GameRule::ControlSearches(who) => {
-                self.at(tag, |w| w.reference(who, Kind::Player))
-            }
+            GameRule::NoLegendRule(who)
+            | GameRule::ControlSearches(who)
+            | GameRule::ExileFound(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::NoLegendRuleFor(what) | GameRule::AbilitiesAsThoughHaste(what) => {
                 self.at(tag, |w| w.selector(what));
             }

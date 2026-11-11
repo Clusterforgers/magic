@@ -950,10 +950,9 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         extra_turn: bool,
     },
-    /// The game restarts (CR 727) and the cards `keep` picks stay in exile; once the new game's opening is over they are
-    /// put onto the battlefield under the effect's controller's control (Karn Liberated).
+    /// The game restarts (CR 727); `keep` stays exiled, then enters under your control.
     RestartGame {
-        /// The exiled cards kept out of the new game.
+        /// The exiled cards kept.
         keep: Selector,
     },
     /// The player becomes the monarch (CR 724).

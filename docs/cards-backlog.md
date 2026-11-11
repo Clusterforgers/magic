@@ -244,6 +244,7 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 - [ ] (r3w4b) Delayed triggers and repeated steps left: a loyalty ability's delayed return (Nahiri, the Harbinger), steps repeated for each object ("each Dragon you control", "each of those creatures"), a delayed trigger on its own line (Forth Eorlingas!)
 - [ ] (r3w6a) The A to L mismatches left: "you may have it fight", "you and target opponent each create", "another target player", a token "that's all colors", one of two counter removals as a cost; Commodore Guff, Kazuul and Gyome need a rewrite
 - [ ] (r3w5a) Writers for the rules of the r3 samples: a draw replaced after the first in a draw step (Notion Thief), a type and a granted ability during your turn (Gourmand's Talent)
+- [ ] (r4e3) Cleave cards whose other wordings do not read: a delayed loss at that turn's end step (Alchemist's Gambit), "with mana value 2 or less" on a chosen card (Dread Fugue), a lasting hand-size cut (Inspired Idea), X defined after the effect (Lantern Flare), a two-subtype target (Lunar Rejection), "that wasn't cast from its owner's hand" (Wash Away)
 - [ ] (r2cf) A card's name in its token or a name that starts with a creature type reads as `~` in both the checker and the corpus calibration (Kher Keep, Tuktuk the Explorer, Sliver Hivelord)
 
 ## Layouts

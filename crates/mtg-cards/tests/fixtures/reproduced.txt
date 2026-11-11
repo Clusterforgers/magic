@@ -485,6 +485,7 @@ Emmara Tandris
 Empowered Autogenerator
 Empyrial Plate
 Empyrial Storm
+Emrakul, the Promised End
 Enigma Thief
 Enraged Revolutionary
 Enthusiastic Study
@@ -821,6 +822,7 @@ Kang, Temporal Tyrant
 Karador, Ghost Chieftain
 Karametra's Favor
 Karametra, God of Harvests
+Karn Liberated
 Karn's Bastion
 Kathari Screecher
 Kaya's Wrath
@@ -1075,6 +1077,7 @@ Olivia's Wrath
 Ominous Harvest
 Onakke Oathkeeper
 Oona's Blackguard
+Opposition Agent
 Opt
 Oran-Rief, the Vastwood
 Orazca Relic

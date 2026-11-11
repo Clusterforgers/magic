@@ -187,6 +187,9 @@ pub enum Rule {
     RevealHand(Vec<PlayerId>),
     /// The rule's controller controls the players while they search their libraries (CR 722).
     ControlSearches(Vec<PlayerId>),
+    /// The players exile each card they find while they search their libraries, and the rule's controller may play
+    /// those cards while they remain exiled (Opposition Agent).
+    ExileFound(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Vec<PlayerId>),
     /// The players' maximum hand size is this many cards (CR 402.2).
@@ -607,6 +610,8 @@ pub(crate) struct RulesInForce {
     reveal_hand: BTreeSet<PlayerId>,
     /// Who controls each player while they search their library, the latest rule last.
     control_searches: Vec<(PlayerId, PlayerId)>,
+    /// Whose searches exile what they find, with the controller and source of each rule that says so.
+    exile_found: Vec<(PlayerId, PlayerId, Option<ObjectRef>)>,
     no_hand_limit: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
@@ -989,6 +994,9 @@ impl RulesInForce {
             }
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::RevealHand(players) => self.reveal_hand.extend(players),
+            Rule::ExileFound(players) => self
+                .exile_found
+                .extend(players.iter().map(|player| (*player, controller, source))),
             Rule::ControlSearches(players) => self
                 .control_searches
                 .extend(players.iter().map(|player| (*player, controller))),
@@ -1303,6 +1311,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
         GameRule::RevealHand(who) => Rule::RevealHand(scope.players(who)?),
         GameRule::ControlSearches(who) => Rule::ControlSearches(scope.players(who)?),
+        GameRule::ExileFound(who) => Rule::ExileFound(scope.players(who)?),
         GameRule::MayCast(permission) => Rule::MayCast {
             who: scope.players(&permission.who)?,
             what: permission.what.clone(),
@@ -1468,6 +1477,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::RevealTop(players)
         | Rule::RevealHand(players)
         | Rule::ControlSearches(players)
+        | Rule::ExileFound(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
         | Rule::NoLegendRule(players)
@@ -1626,6 +1636,7 @@ static NONE: RulesInForce = RulesInForce {
     reveal_top: BTreeSet::new(),
     reveal_hand: BTreeSet::new(),
     control_searches: Vec::new(),
+    exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
@@ -1712,6 +1723,17 @@ impl GameState {
             .rev()
             .find(|(searched, by)| *searched == player && *by != player && self.is_alive(*by))
             .map(|(_, by)| *by)
+    }
+
+    /// The rules under which `player` exiles what they find in their library, as the player who may play those cards and
+    /// the source of the rule; an opponent's rule whose controller has left does nothing.
+    pub fn exile_found_by(&self, player: PlayerId) -> Vec<(PlayerId, Option<ObjectRef>)> {
+        self.rules()
+            .exile_found
+            .iter()
+            .filter(|(searched, by, _)| *searched == player && *by != player && self.is_alive(*by))
+            .map(|(_, by, source)| (*by, *source))
+            .collect()
     }
 
     /// Whether a rule has `player` play with their hand revealed to every seat.

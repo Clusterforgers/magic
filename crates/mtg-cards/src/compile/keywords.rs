@@ -824,6 +824,7 @@ fn kind_quality(words: &str) -> Option<Selector> {
             }]));
         }
         "snow" => return Some(Selector(vec![Pred::Supertype(Supertype::Snow)])),
+        "instants" => return Some(Selector(vec![Pred::Type(CardType::Instant)])),
         "legendary creatures" => {
             return Some(Selector(vec![
                 creature,
@@ -865,6 +866,7 @@ pub fn kind_quality_word(quality: &Selector) -> Option<String> {
             },
         ] => "monocolored".to_owned(),
         [Pred::Supertype(Supertype::Snow)] => "snow".to_owned(),
+        [Pred::Type(CardType::Instant)] => "instants".to_owned(),
         [kind, Pred::Supertype(Supertype::Legendary)] if *kind == creature => {
             "legendary creatures".to_owned()
         }
@@ -1162,6 +1164,7 @@ mod tests {
         &[protects(Pred::Compare { stat: StatKind::Colors, op: Cmp::Eq, to: Amount::Fixed(1) })]
     )]
     #[case::snow("Protection from snow", &[protects(Pred::Supertype(Supertype::Snow))])]
+    #[case::instants("Protection from instants", &[protects(Pred::Type(CardType::Instant))])]
     #[case::two_colours(
         "Protection from white and from blue",
         &[protects(Pred::Color(Color::White)), protects(Pred::Color(Color::Blue))]

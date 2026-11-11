@@ -64,6 +64,9 @@ pub fn chain_at(ctx: &mut Ctx, p: &Params, top: bool) -> Tr<Vec<Value>> {
     if let Some(out) = super::tc34_control::control_with_extra_turn(ctx, p, top) {
         return out;
     }
+    if let Some(out) = super::tc34_control::restart_game(ctx, p) {
+        return out;
+    }
     ctx.mark_parent();
     // A condition on a line that picks its own target reads that target, which the line declares only after it.
     let coming = p

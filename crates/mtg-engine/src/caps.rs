@@ -382,6 +382,7 @@ const RUNS: &[&str] = &[
     "Rule.RevealTop",
     "Rule.RevealHand",
     "Rule.ControlSearches",
+    "Rule.ExileFound",
     "Rule.NoMaxHandSize",
     "Rule.MaxHandSize",
     "Rule.HandSizeChange",

@@ -692,6 +692,8 @@ pub enum GameRule {
     /// The rule's controller controls the players while they search their libraries (CR 722): "You control your
     /// opponents while they're searching their libraries."
     ControlSearches(Ref),
+    /// The players exile what they find in their libraries; you may play it from exile (Opposition Agent).
+    ExileFound(Ref),
     /// The legend rule (CR 704.5j) does not apply to the legendary permanents of the players.
     NoLegendRule(Ref),
     /// The legend rule (CR 704.5j) does not apply to the permanents the selector picks, judged for the rule's controller:

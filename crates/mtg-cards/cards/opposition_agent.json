@@ -1,7 +1,7 @@
 {
   "oracle_id": "1f438b8f-fe23-4f3b-ab2e-f6c33676c462",
   "name": "Opposition Agent",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Opposition Agent",
@@ -9,12 +9,7 @@
       "abilities": [
         { "Keyword": "Flash" },
         { "Rule": { "rule": { "ControlSearches": "Opponents" } } },
-        {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 74, "end": 284 }
-          }
-        }
+        { "Rule": { "rule": { "ExileFound": "Opponents" } } }
       ]
     }
   ]

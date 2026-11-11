@@ -83,6 +83,51 @@ fn opposition_agent_controls_searching_opponents() {
     );
 }
 
+const AGENT_EXILE: &str = "R:Event$ Moved | ValidCard$ Card.OppOwn | FoundSearchingLibrary$ True | Origin$ Library | ReplaceWith$ RepExile | ActiveZones$ Battlefield | Description$ While an opponent is searching their library, they exile each card they find.\nSVar:RepExile:DB$ ChangeZone | Hidden$ True | Origin$ All | Destination$ Exile | Defined$ ReplacedCard | SubAbility$ DBEffect\nSVar:DBEffect:DB$ Effect | Duration$ Permanent | StaticAbilities$ MayPlay | RememberObjects$ ReplacedCard | ForgetOnMoved$ Exile\nSVar:MayPlay:Mode$ Continuous | MayPlay$ True | Affected$ Card.IsRemembered | AffectedZone$ Exile | MayPlayIgnoreColor$ True\n";
+
+#[test]
+fn opposition_agent_exiles_what_opponents_find() {
+    let script = format!("Name:T\nTypes:Creature Human Rogue\nPT:3/2\n{AGENT_EXILE}");
+    let found = abilities(&script);
+    assert!(
+        found.contains(&json!({"Rule": {"rule": {"ExileFound": "Opponents"}}})),
+        "{found:?} {:?}",
+        gaps(&script)
+    );
+}
+
+#[rstest]
+#[case::its_own_searches("ValidCard$ Card.OppOwn", "ValidCard$ Card.YouOwn")]
+#[case::cast_only("MayPlay$ True", "MayPlay$ True | MayPlayCastOnly$ True")]
+#[case::without_the_mana("MayPlayIgnoreColor$ True", "MayPlayIgnoreType$ True")]
+fn another_search_replacement_stays_a_gap(#[case] from: &str, #[case] to: &str) {
+    let script = format!(
+        "Name:T\nTypes:Creature Human Rogue\nPT:3/2\n{}",
+        AGENT_EXILE.replacen(from, to, 1)
+    );
+    assert!(
+        !abilities(&script).contains(&json!({"Rule": {"rule": {"ExileFound": "Opponents"}}})),
+        "{script}"
+    );
+    assert!(
+        gaps(&script)
+            .iter()
+            .any(|gap| gap.contains("FoundSearchingLibrary") || gap.contains("MayPlay")),
+        "{:?}",
+        gaps(&script)
+    );
+}
+
+#[test]
+fn karn_restarts_the_game_keeping_what_it_exiled() {
+    let script = "Name:T\nTypes:Sorcery\nA:SP$ RestartGame | RestrictFromZone$ Exile | RestrictFromValid$ Card.!ExiledWithSource,Spell,Card.Aura | SubAbility$ ReturnFromExile\nSVar:ReturnFromExile:DB$ ChangeZoneAll | ChangeType$ Permanent.nonAura+ExiledWithSource | Origin$ Exile | Destination$ Battlefield | GainControl$ True\n";
+    let found = abilities(script);
+    assert_eq!(found.len(), 1, "{:?}", gaps(script));
+    let keep = &found[0]["Spell"]["effects"][0]["RestartGame"]["keep"];
+    assert_eq!(keep[1], json!({"ExiledWith": "This"}), "{}", found[0]);
+    assert_eq!(keep[2], json!({"Not": {"Subtype": "Aura"}}), "{}", found[0]);
+}
+
 #[rstest]
 #[case::two_extra_turns_after(
     "Name:T\nTypes:Sorcery\nA:SP$ ControlPlayer | ValidTgts$ Opponent | SubAbility$ DBDelTrig\nSVar:DBDelTrig:DB$ DelayedTrigger | Mode$ Phase | DelayedTriggerDefinedPlayer$ Targeted | RememberObjects$ Targeted | Phase$ Cleanup | Execute$ DBAddTurn | Static$ True\nSVar:DBAddTurn:DB$ AddTurn | Defined$ DelayTriggerRemembered | NumTurns$ 2\n",

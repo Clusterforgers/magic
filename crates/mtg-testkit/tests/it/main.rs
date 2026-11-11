@@ -776,6 +776,7 @@ mod ring;
 mod tapped_for_mana;
 mod target_reductions;
 mod tc34_cleave;
+mod tc34_opposition_agent;
 mod tc34_player_control;
 mod tc34_restart;
 mod tc34_text_change;
