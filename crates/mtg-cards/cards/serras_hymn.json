@@ -1,7 +1,7 @@
 {
   "oracle_id": "66a3ffde-4c81-4798-b99b-a6cc3a93c3e3",
   "name": "Serra's Hymn",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Serra's Hymn",
@@ -20,9 +20,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 82, "end": 275 }
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [
+              {
+                "what": "AnyTarget",
+                "bounds": { "min": 0, "max": null },
+                "divide": { "Counters": { "on": "This", "counter": { "Other": "verse" } } }
+              }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventCounted": "Divided" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

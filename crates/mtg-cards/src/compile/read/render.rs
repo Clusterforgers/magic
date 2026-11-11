@@ -59,6 +59,7 @@ mod revealed;
 mod rmt2_countered;
 mod rmt2_divided_shield;
 mod rmt2_held_down;
+mod rmt2_more;
 mod shuffled_in;
 mod stolen;
 mod switched;
@@ -738,6 +739,8 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     w22_shields::w22_goad_wordings(&mut texts);
     rmt2_held_down::rmt2_held_down_wordings(&mut texts);
     rmt2_held_down::rmt2_protection_wordings(&mut texts);
+    rmt2_held_down::rmt2_they_control_wordings(&mut texts);
+    rmt2_held_down::rmt2_twice_wordings(&mut texts);
     w22_moves::w22_graved_wordings(&mut texts);
     w22_moves::w22_library_wordings(ability, &mut texts);
     super::r7e_events::wf24_activated_wordings(&mut texts);
@@ -3269,6 +3272,7 @@ impl Writer<'_> {
             .or_else(|| self.c7_untap_held(effects))
             .or_else(|| self.r7d_countered_exiled(effects))
             .or_else(|| self.rmt2_countered_into_library(effects))
+            .or_else(|| Self::rmt2_destroy_either(effects))
             .or_else(|| self.r7d_tapped_held(effects))
             .or_else(|| self.taken_and_typed(effects))
             .or_else(|| self.af_steps(effects))
@@ -3351,6 +3355,9 @@ impl Writer<'_> {
             .or_else(|| self.w22_source_shield(effect))
             .or_else(|| self.w22_next(effect))
             .or_else(|| self.rmt2_divided_prevention(effect))
+            .or_else(|| self.rmt2_no_lands(effect))
+            .or_else(|| self.rmt2_reverberation(effect))
+            .or_else(|| self.rmt2_target_spell_uncounterable(effect))
         {
             return Some(text);
         }

@@ -1,16 +1,18 @@
-//! Goal: a prevention shield divided among targets (Remedy, "prevent the next 5 damage that would be dealt this turn to any number of targets, divided as you choose") prevents each target's own share and no more, a player it did not target is dealt all the damage, and a target given the whole amount keeps it whole, at tables of two, three and four seats.
+//! Goal: a prevention shield divided among targets (Remedy, "prevent the next 5 damage that would be dealt this turn to any number of targets, divided as you choose") prevents each target's own share and no more, a player it did not target is dealt all the damage, and a target given the whole amount keeps it whole; Serra's Hymn divides as many as its verse counters, at tables of two, three and four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
 
 use common::copying::life;
 use common::spell;
+use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_engine::Answer;
 use mtg_engine::choose::DivideChoice;
 use mtg_engine::decision::PayChoice;
 use mtg_testkit::cards::plains;
-use mtg_testkit::{Driver, Scenario, ScriptError, ready};
+use mtg_testkit::corpus::card;
+use mtg_testkit::{Driver, Scenario, ScriptError, ready, with_counters};
 use rstest::rstest;
 
 /// Seat 0 casts Remedy on the players of `shares` with those shares, then seat 1 casts a spell that deals 4 damage to
@@ -75,6 +77,64 @@ fn each_target_is_spared_its_own_share(
     }
     for seat in 2..seats {
         assert_eq!(life(&driver, seat), 16, "seat {seat} was not a target");
+    }
+    Ok(())
+}
+
+/// Seat 0 sacrifices Serra's Hymn with `verses` verse counters, dividing them among seats 1 and 0 as `shares`, then seat 1
+/// deals 4 damage to each player.
+#[rstest]
+#[case::three_verses_two_and_one(3, &[(1, 2), (0, 1)], &[(0, 17), (1, 18)])]
+#[case::one_verse_on_one_target(1, &[(1, 1)], &[(0, 16), (1, 17)])]
+fn serras_hymn_divides_its_verse_counters(
+    #[case] verses: u32,
+    #[case] shares: &[(usize, u32)],
+    #[case] lives: &[(usize, i32)],
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let blast = spell(
+        "Blast",
+        CardType::Instant,
+        "[]",
+        r#"[{"DealDamage":{"to":"EachPlayer","amount":4}}]"#,
+    );
+    let hymn = with_counters(
+        ready(card("Serra's Hymn").unwrap()),
+        CounterKind::Other("verse".to_owned()),
+        verses,
+    );
+    let mut driver =
+        Driver::from_scenario(Scenario::new(seats).battlefield(0, [hymn]).hand(1, [blast]))?;
+    driver.begin_activation("Serra's Hymn")?;
+    let targets: Vec<_> = shares
+        .iter()
+        .map(|(seat, _)| driver.target_player(*seat))
+        .collect();
+    driver.choose_targets(&targets)?;
+    if shares.len() > 1 {
+        driver.answer(Answer::DivideAmount(DivideChoice::Division(
+            targets
+                .iter()
+                .zip(shares)
+                .map(|(target, (_, share))| (*target, *share))
+                .collect(),
+        )))?;
+    }
+    while !driver.state().stack().is_empty() {
+        driver.pass()?;
+    }
+    for _ in 0..16 {
+        if driver.decision()?.player == common::pid(1) {
+            break;
+        }
+        driver.pass()?;
+    }
+    driver.cast("Blast")?;
+    while !driver.state().stack().is_empty() {
+        driver.pass()?;
+    }
+    for (seat, expected) in lives {
+        assert_eq!(life(&driver, *seat), *expected, "seat {seat}");
     }
     Ok(())
 }

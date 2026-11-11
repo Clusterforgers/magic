@@ -102,3 +102,45 @@ pub fn rmt2_protection_wordings(texts: &mut Vec<String>) {
         }
     }
 }
+
+/// "deals 10 damage to target player and each creature and planeswalker they control" for the target player named again
+/// ("... and each creature and planeswalker target player controls").
+pub fn rmt2_they_control_wordings(texts: &mut Vec<String>) {
+    const FIRST: &str = "target player and each ";
+    let found: Vec<String> = texts
+        .iter()
+        .filter_map(|text| {
+            let at = text.find(FIRST)? + FIRST.len();
+            let rest = &text[at..];
+            let again = rest.find(" target player controls")?;
+            if rest[..again].contains([',', '.', ';']) {
+                return None;
+            }
+            Some(format!(
+                "{}{}{}",
+                &text[..at],
+                &rest[..again],
+                rest[again..].replacen(" target player controls", " they control", 1)
+            ))
+        })
+        .collect();
+    for text in found {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
+}
+
+/// "manifest dread twice" for the action written twice in a row.
+pub fn rmt2_twice_wordings(texts: &mut Vec<String>) {
+    let found: Vec<String> = texts
+        .iter()
+        .filter(|text| text.contains("manifest dread and manifest dread"))
+        .map(|text| text.replace("manifest dread and manifest dread", "manifest dread twice"))
+        .collect();
+    for text in found {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
+}

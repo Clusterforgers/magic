@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ed68160e-5e3d-44f2-ac7a-3749fda10119",
+  "name": "Catastrophe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Catastrophe",
+      "oracle_fingerprint": "ae6c4d8fd00fdfcdf3fc4d72995ab2ac",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Either": {
+                  "first": [{ "Destroy": { "what": { "Each": [{ "Type": "Land" }] } } }],
+                  "second": [
+                    {
+                      "Destroy": {
+                        "what": { "Each": [{ "Type": "Creature" }] },
+                        "regenerate": false
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

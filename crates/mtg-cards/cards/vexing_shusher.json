@@ -1,7 +1,7 @@
 {
   "oracle_id": "a20a7cf8-2075-47ad-9229-36264b112e61",
   "name": "Vexing Shusher",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vexing Shusher",
@@ -9,9 +9,12 @@
       "abilities": [
         { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
         {
-          "Manual": {
-            "reason": "you apply this activated ability by hand",
-            "span": { "start": 31, "end": 70 }
+          "Activated": {
+            "cost": "{R/G}",
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Rule": { "rule": { "CantBeCountered": { "Target": 0 } }, "duration": "Forever" } }
+            ]
           }
         }
       ]

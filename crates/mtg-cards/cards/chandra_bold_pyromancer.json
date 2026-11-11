@@ -1,7 +1,7 @@
 {
   "oracle_id": "1cdba3c1-19e1-43c3-a0d8-5fb2b88060d8",
   "name": "Chandra, Bold Pyromancer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Chandra, Bold Pyromancer",
@@ -31,9 +31,23 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 120, "end": 213 }
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 10 } },
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  },
+                  "amount": 10
+                }
+              }
+            ]
           }
         }
       ]

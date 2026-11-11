@@ -1,4 +1,4 @@
-//! Goal: the rmt2 writers read back a countered spell put into its owner's library, a prevention shield divided among targets, permanents of a target player held down through their next untap step and protection from a quality or from the color of your choice exactly as printed, and a near miss (another place, amount, player, quality or order) is refused.
+//! Goal: the rmt2 writers read back a countered spell put into its owner's library, a prevention shield divided among targets, permanents of a target player held down through their next untap step and protection from a quality or from the color of your choice, a choice of two kinds to destroy, a target player who can't play lands and damage of a target spell dealt to its controller exactly as printed, and a near miss (another place, amount, player, quality or order) is refused.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -15,6 +15,10 @@ const VAPORS: &str = r#"{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"WH
 const BARRIER: &str = r#"{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":[{"ControlledBy":"You"}]}}],"effects":[{"Either":{"first":[FIRST],"second":[SECOND]}}]}}]}]}"#;
 const ARTIFACTS: &str = r#"{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":{"Protection":[{"Type":"Artifact"}]}}],"duration":"UntilEndOfTurn"}}"#;
 const CREATURES: &str = r#"{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":{"Protection":[{"Type":"Creature"}]}}],"duration":"UntilEndOfTurn"}}"#;
+const CATASTROPHE: &str = r#"{"faces":[{"abilities":[{"Spell":{"effects":[{"Either":{"first":[{"Destroy":{"what":{"Each":[{"Type":"Land"}]}}}],"second":[{"Destroy":{"what":{"Each":[{"Type":"Creature"}]},"regenerate":REGEN}}]}}]}}]}]}"#;
+const TURF: &str = r#"{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"WHO"}],"effects":[{"Rule":{"rule":{"Cant":{"who":{"Target":0},"action":"PlayLand"}},"duration":"UntilEndOfTurn"}},{"Draw":{}}]}}]}]}"#;
+const REVERB: &str = r#"{"faces":[{"abilities":[{"Spell":{"targets":[{"what":{"Object":["Spell",{"Type":"Sorcery"}]}}],"effects":[{"Shield":{"when":{"Damage":{"source":[{"Is":{"Target":0}}]}},"by":{"Redirect":{"to":{"ControllerOf":{"Target":0}},"next":NEXT}},"duration":"UntilEndOfTurn"}}]}}]}]}"#;
+const HYMN: &str = r#"{"faces":[{"abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"May":{"effects":[{"PutCounters":{"on":"This","counter":{"Other":"verse"}}}]}}]}},{"Activated":{"cost":["SacrificeSelf"],"targets":[{"what":"AnyTarget","bounds":{"min":0,"max":null},"divide":{"Counters":{"on":"This","counter":{"Other":"KIND"}}}}],"effects":[{"Shield":{"when":{"Damage":{"to":{"Target":0}}},"by":{"PreventCounted":"Divided"},"duration":"UntilEndOfTurn"}}]}}]}]}"#;
 const COLOR: &str = r#"{"Continuous":{"affected":{"Target":0},"mods":["AddProtectionFromChosenColor"],"duration":"UntilEndOfTurn"}}"#;
 
 fn verdict(name: &str, rules: &str) -> Verdict {
@@ -38,6 +42,14 @@ fn verdict(name: &str, rules: &str) -> Verdict {
 #[case::barrier_artifacts_or_color("Razor Barrier", BARRIER.replace("FIRST", ARTIFACTS).replace("SECOND", COLOR), true)]
 #[case::barrier_not_creatures("Razor Barrier", BARRIER.replace("FIRST", CREATURES).replace("SECOND", COLOR), false)]
 #[case::barrier_not_the_other_order("Razor Barrier", BARRIER.replace("FIRST", COLOR).replace("SECOND", ARTIFACTS), false)]
+#[case::catastrophe_without_regeneration("Catastrophe", CATASTROPHE.replace("REGEN", "false"), true)]
+#[case::catastrophe_not_with_regeneration("Catastrophe", CATASTROPHE.replace("REGEN", "true"), false)]
+#[case::turf_wound_target_player("Turf Wound", TURF.replace("WHO", "Player"), true)]
+#[case::turf_wound_not_an_opponent("Turf Wound", TURF.replace("WHO", "Opponent"), false)]
+#[case::reverberation_all_damage("Reverberation", REVERB.replace("NEXT", "false"), true)]
+#[case::reverberation_not_the_next("Reverberation", REVERB.replace("NEXT", "true"), false)]
+#[case::hymn_verse_counters("Serra's Hymn", HYMN.replace("KIND", "verse"), true)]
+#[case::hymn_not_charge_counters("Serra's Hymn", HYMN.replace("KIND", "charge"), false)]
 fn the_rmt2_writers_read_back_the_printed_clause(
     #[case] name: &str,
     #[case] rules: String,
