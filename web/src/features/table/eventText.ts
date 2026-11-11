@@ -156,6 +156,9 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   if ('AddSupertype' in modification) {
     return `${becomes} ${modification.AddSupertype.toLowerCase()} too`
   }
+  if ('RemoveSupertype' in modification) {
+    return `${loses} ${modification.RemoveSupertype.toLowerCase()}`
+  }
   if ('AddSubtype' in modification) return `${becomes} ${modification.AddSubtype} too`
   if ('SetCreatureTypes' in modification) {
     return `${becomes} ${joinWords(modification.SetCreatureTypes)}`
