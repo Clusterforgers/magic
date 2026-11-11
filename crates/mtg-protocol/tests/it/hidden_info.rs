@@ -1663,10 +1663,13 @@ fn a_card_revealed_into_a_hand_is_known_to_every_seat_and_the_rest_stay_hidden(
     #[values(2, 3, 4)] seats: usize,
 ) {
     let narset = mtg_testkit::corpus::card("Narset, Parter of Veils").unwrap();
-    let Some(mtg_cards::ability::Ability::Loyalty { effects, .. }) =
-        narset.rules.first().map(|rule| (**rule).clone())
+    let Some(mtg_cards::ability::Ability::Loyalty { effects, .. }) = narset
+        .rules
+        .iter()
+        .map(|rule| (**rule).clone())
+        .find(|rule| matches!(rule, mtg_cards::ability::Ability::Loyalty { .. }))
     else {
-        panic!("Narset's −2 is her first rule")
+        panic!("Narset has a loyalty ability")
     };
     let spell = mtg_cards::CardDefinition::new("Peek")
         .with_type(mtg_core::card::CardType::Sorcery)
@@ -2178,7 +2181,7 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_prevention_and_regeneration(
 ) {
     let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
     let (mut checked, mut regenerated, mut shields_used) = (0usize, 0usize, 0usize);
-    for seed in seed..seed + PREVENTION_GAMES {
+    for seed in (0..PREVENTION_GAMES).map(|offset| seed + offset) {
         let setup = with_unique_names(prevent_fuzz_setup(players, seed).unwrap());
         let engine = run_game(setup, seed, |step: &Step| {
             // The only option the prevention decks ask for is the damage a shield takes first.

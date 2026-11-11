@@ -1,0 +1,41 @@
+{
+  "oracle_id": "544c9ad2-86f9-483e-a53c-f64c8602c393",
+  "name": "Damocles Base, Sword of Kang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Damocles Base, Sword of Kang",
+      "oracle_fingerprint": "32dded1a95c1d7957c2f53a89691d96a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "VillainousChoice": {
+                  "who": "Triggering",
+                  "first": [
+                    {
+                      "Sacrifice": {
+                        "who": "Triggering",
+                        "filter": [{ "Type": "Creature" }, { "Not": "Token" }]
+                      }
+                    }
+                  ],
+                  "second": [
+                    { "LoseLife": { "who": "Triggering", "amount": 2 } },
+                    { "Draw": { "count": 2 } }
+                  ],
+                  "they": true
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

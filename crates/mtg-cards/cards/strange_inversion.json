@@ -1,7 +1,7 @@
 {
   "oracle_id": "540f8779-cf29-4582-8b7f-95ebcae92925",
   "name": "Strange Inversion",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Strange Inversion",
@@ -21,12 +21,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 64, "end": 235 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{1}{R}" } } }
       ]
     }
   ]

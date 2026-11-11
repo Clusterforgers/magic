@@ -232,6 +232,7 @@ pub(super) const VERBS: &[&str] = &[
     "explore",
     "populate",
     "venture",
+    "open",
     "learn",
     "discover",
     "add",

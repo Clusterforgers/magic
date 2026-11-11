@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9f6828e3-39d9-45d9-9bf1-0e3737a0321e",
+  "name": "Ulalek, Fused Atrocity",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ulalek, Fused Atrocity",
+      "oracle_fingerprint": "8bfbf1e56659b5b26bed75ab456ef718",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 33, "end": 272 }
+          }
+        }
+      ]
+    }
+  ]
+}

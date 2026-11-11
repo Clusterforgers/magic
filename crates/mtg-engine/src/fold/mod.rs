@@ -27,6 +27,8 @@ mod p12_arrived;
 #[cfg(test)]
 mod r3d_atoms;
 mod resolution;
+#[cfg(test)]
+mod rmt8_atoms;
 pub(crate) use resolution::step_done;
 #[cfg(test)]
 mod tests;
@@ -121,20 +123,33 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Mutated { .. }
         | Event::CardParted { .. }
         | Event::CommanderStayed { .. }
-        | Event::ObjectLeftGame { .. } => zones::apply(state, event),
+        | Event::ObjectLeftGame { .. } => {
+            zones::apply(state, event)?;
+            opening::dk26_exiled(state, event)
+        }
+        Event::GameRestarted { by, kept } => {
+            crate::restart::fold(state, *by, kept);
+            Ok(())
+        }
         Event::CompanionRevealed { .. } | Event::CompanionBrought { .. } => {
             crate::companions::fold(state, event)
         }
         Event::AttackersDeclared { .. }
+        | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }
         | Event::DamageDealt { .. }
         | Event::CombatEnded
         | Event::JoinedAttack { .. }
         | Event::RemovedFromCombat { .. }
+        | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
-        | Event::DamageCleared => combat::apply(state, event),
+        | Event::DamageCleared => {
+            combat::apply(state, event)?;
+            crate::rmt8_turns::mark_fought(state, event);
+            Ok(())
+        }
         Event::AbilityPutOnStack(_)
         | Event::AbilityActivated { .. }
         | Event::ResolutionBegan { .. }
@@ -185,6 +200,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Suspected { object } => set_suspected(state, *object, true),
         Event::Unsuspected { object } => set_suspected(state, *object, false),
         Event::Solved { object } => set_solved(state, *object),
+        Event::Harnessed { object } => crate::rmt8_turns::set_harnessed(state, *object),
         Event::Crewed { .. } => tally_crewed(state, event),
         // The change follows as events of its own; the action restarts the round, so the other seats see it, and a look
         // by hand records what the seat learned.
@@ -268,6 +284,9 @@ fn designate(state: &mut GameState, event: &Event) {
         Event::CitysBlessingGained { player } => {
             state.citys_blessing.insert(*player);
         }
+        Event::EnduringStoryGained { player } => {
+            state.enduring_story.insert(*player);
+        }
         Event::SpeedChanged { player, speed } => crate::speed::set(state, *player, *speed),
         Event::RingBearerLost { player } => {
             if let Some(ring) = state.ring.get_mut(player) {
@@ -336,6 +355,7 @@ fn begin_turn(
     } else {
         state.turn.regular = active;
     }
+    state.rmt8_count_turn(active);
     state.turn.number = number;
     state.turn.active = active;
     state.turn.extra = extra;
@@ -344,6 +364,7 @@ fn begin_turn(
     state.turn.combats = 0;
     state.turn.ahead.clear();
     state.turn.ending = false;
+    crate::player_control::turn_began(state, number, active);
     if !extra && (before == 0 || state.opens_round(previous, active)) {
         state.turn.round += 1;
     }
@@ -379,6 +400,11 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             player: *player,
             skip_untap: *skip_untap,
         }),
+        Event::PlayerControlGained {
+            player,
+            by,
+            extra_turn,
+        } => crate::player_control::gain(state, *player, *by, *extra_turn),
         Event::ExtraTurnSkipped { player } => {
             if state.extra_turns.pop().map(|turn| turn.player) != Some(*player) {
                 return Err(invalid(format!("{player:?} has no extra turn to skip")));
@@ -389,6 +415,9 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             // A phase added after the current one begins as its entry says, and the entry is spent (CR 500.8).
             if state.turn.ahead.first() == Some(step) {
                 state.turn.ahead.remove(0);
+            }
+            if *step == Step::Upkeep {
+                state.rmt8_mark_upkeep();
             }
             if *step == Step::BeginCombat {
                 state.turn.combats += 1;
@@ -418,9 +447,18 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::TurnBegan { .. }
         | Event::ExtraTurnAdded { .. }
+        | Event::PlayerControlGained { .. }
         | Event::ExtraTurnSkipped { .. }
         | Event::PhasesAdded { .. }
         | Event::StepBegan { .. } => apply_turn(state, event)?,
+        Event::SpellControlGained { object, player } => {
+            let spell = state
+                .objects
+                .get_mut(object)
+                .filter(|spell| spell.zone() == Zone::Stack)
+                .ok_or_else(|| invalid(format!("{object:?} is no spell on the stack")))?;
+            spell.controller = *player;
+        }
         // `ManaBurned` is information in the log: the life it cost is its own `LifeLost`.
         Event::NothingToDo { .. }
         | Event::AnnouncementRewound { .. }
@@ -431,6 +469,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Adapted { .. }
         | Event::Bolstered { .. }
         | Event::Learned { .. }
+        | Event::EvidenceCollected { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
         Event::ChosenAtRandom { .. }
@@ -455,6 +494,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::RingTempted { .. }
         | Event::RingBearerLost { .. }
         | Event::CitysBlessingGained { .. }
+        | Event::EnduringStoryGained { .. }
         | Event::SpeedChanged { .. } => designate(state, event),
 
         Event::PermanentTapped { object } => {
@@ -470,6 +510,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::Devoured { object, count } => w7e_set_devoured(state, *object, *count)?,
         Event::ClassLevelGained { object, level, .. } => set_level(state, *object, *level)?,
         Event::TurnedFaceUp { object, .. } => turn_face_up(state, *object)?,
+        Event::TurnedFaceDown { object, .. } => crate::rmt8_turns::turn_face_down(state, *object)?,
         Event::DoorUnlocked { object, door, .. } => unlock(state, *object, *door)?,
         Event::ManaAdded {
             player,
@@ -764,6 +805,16 @@ fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineErr
             crate::w11a_exert::w11a_fold_ended(state, *object, *player)
         }
         Event::Ventured(ventured) => crate::w11d_dungeon::w11d_fold_ventured(state, ventured),
+        Event::AttractionDeckShuffled { player, order } => {
+            state.rng_index += 1;
+            crate::un33_attractions::fold_shuffled(state, *player, order)
+        }
+        Event::RolledToVisit {
+            player, visited, ..
+        } => {
+            crate::un33_attractions::fold_rolled(state, *player, visited);
+            Ok(())
+        }
         Event::InitiativeTaken { player, object } => {
             crate::w15a_initiative::w15a_fold_taken(state, *player, *object)
         }

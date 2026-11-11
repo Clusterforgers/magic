@@ -53,7 +53,7 @@ fn uses(effect: &str) -> Vec<String> {
 #[case::countered_into_library(
     r#"{"Countered":{"what":[{"Is":"This"}]}}"#,
     r#"{"IntoLibrary":{"place":"Top"}}"#,
-    None
+    Some(ShieldShape::Countered)
 )]
 #[case::entries(
     r#"{"Enters":{"what":[{"Type":"Creature"}]}}"#,

@@ -14,6 +14,7 @@ use mtg_cards::compile::{
     escalate_reads, forecast_lines, own_names, reinforce_line, same_written_text,
     static_pair_texts, written_variants,
 };
+use mtg_cards::keyword::Keyword;
 use mtg_cards::load::Library;
 use mtg_cards::support::PrintedCard;
 
@@ -212,7 +213,7 @@ fn the_frontier_of_the_compiler() {
 /// The clause without its ability word ("Landfall — "), which is flavor.
 fn without_ability_word(text: &str) -> &str {
     match text.split_once(" \u{2014} ") {
-        Some((word, rest)) if !word.contains(['~', ',', '.']) && word.split(' ').count() <= 5 => {
+        Some((word, rest)) if !word.contains(['~', ',', '.']) && word.split(' ').count() <= 6 => {
             rest
         }
         _ => text,
@@ -483,6 +484,13 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             }
             pair_apart = true;
         }
+        // The spell of a cleave card is printed with brackets, which the read back pairs (`rmt0_cards`).
+        let cleaves = listed.iter().any(|&(other, rule)| {
+            other == face && matches!(rule, Ability::Keyword(Keyword::Cleave { .. }))
+        });
+        if cleaves && matches!(ability, Ability::Spell { .. }) {
+            continue;
+        }
         let written = attached_as_named(ability, written_variants(ability));
         if written.is_empty() {
             assert!(
@@ -504,6 +512,7 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             | Ability::FreeCast { .. }
             | Ability::CastOnly { .. }
             | Ability::OpeningHand
+            | Ability::OpeningHandWith { .. }
             | Ability::CostModifier { .. } => &[ClauseKind::Static],
             // A keyword line the keyword reader does not read ("Unearth—Pay eight {E}.") is written whole.
             Ability::Keyword(_) => &[ClauseKind::Keyword, ClauseKind::Static],

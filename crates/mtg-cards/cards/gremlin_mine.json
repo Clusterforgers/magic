@@ -1,0 +1,38 @@
+{
+  "oracle_id": "33510024-b1ff-428a-8ccd-2ca2a332d53c",
+  "name": "Gremlin Mine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gremlin Mine",
+      "oracle_fingerprint": "8329951d01746699083ba4c73d7ef7f1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }, { "Type": "Creature" }] } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }] } }
+            ],
+            "effects": [
+              {
+                "RemoveCounters": {
+                  "from": { "Target": 0 },
+                  "counter": "charge",
+                  "count": 4,
+                  "up_to": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

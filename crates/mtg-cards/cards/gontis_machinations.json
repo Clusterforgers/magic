@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4e6238d8-bd6a-4952-a7dd-9c41a78a2cba",
+  "name": "Gonti's Machinations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gonti's Machinations",
+      "oracle_fingerprint": "b4ddb578cf1be740293ca272656b7b6c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "LifeLost": { "who": "You" } }, "nth": 1 } },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 2 }, "SacrificeSelf"],
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 3 } },
+              { "GainLife": { "amount": "LifeLostThisWay" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

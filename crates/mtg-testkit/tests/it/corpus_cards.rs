@@ -38,9 +38,15 @@ const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Jack-o'-Lantern", Partial, 1),
     ("Molt Tender", Partial, 1),
     ("Nourishing Shoal", Partial, 1),
+    (
+        "Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time",
+        Partial,
+        1,
+    ),
     ("Pili-Pala", Partial, 1),
     ("Sickening Shoal", Partial, 1),
     ("Skirge Familiar", Partial, 1),
+    ("Vexing Puzzlebox", Partial, 1),
     ("Wizard's Rockets", Partial, 2),
     ("Yurlok of Scorch Thrash", Partial, 1),
 ];

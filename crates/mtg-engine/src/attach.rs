@@ -111,8 +111,12 @@ fn judged_host(state: &GameState, attachment: ObjectId, host: ObjectId, in_play:
     let (Some(object), Some(target)) = (state.object(attachment), state.object(host)) else {
         return false;
     };
+    let host_here = target.zone() == Zone::Battlefield
+        || (matches!(target.zone(), Zone::Graveyard(_))
+            && target.kind() == ObjectKind::Card
+            && dk27_enchants_graveyard(state, attachment));
     if (in_play && object.zone() != Zone::Battlefield)
-        || target.zone() != Zone::Battlefield
+        || !host_here
         || target.kind() == ObjectKind::Ability
     {
         return false;
@@ -225,6 +229,16 @@ fn spares(state: &GameState, keyword: &Keyword, attachment: ObjectId, host: Obje
     })
 }
 
+/// Whether the enchant restriction of `id` names a card in a graveyard ("enchant creature card in a graveyard"), so the
+/// Aura may be attached to a card there (Animate Dead).
+pub(crate) fn dk27_enchants_graveyard(state: &GameState, id: ObjectId) -> bool {
+    enchant_restriction(state, id).is_some_and(|selector| {
+        selector
+            .0
+            .contains(&Pred::In(mtg_cards::refs::ZoneKind::Graveyard))
+    })
+}
+
 /// Whether `id` has reconfigure, so it may equip a creature while it is a creature itself (CR 301.5c).
 fn has_reconfigure(state: &GameState, id: ObjectId) -> bool {
     keywords_of(state, id)
@@ -234,9 +248,16 @@ fn has_reconfigure(state: &GameState, id: ObjectId) -> bool {
 
 /// Whether the enchant abilities of the Aura allow `host`, judged for the Aura's controller.
 fn may_enchant(state: &GameState, aura: &GameObject, host: &GameObject) -> bool {
-    let Some(selector) = enchant_restriction(state, aura.id()) else {
+    let Some(mut selector) = enchant_restriction(state, aura.id()) else {
         return true;
     };
+    // An Aura that enchants a card in a graveyard and returned it (Animate Dead) enchants that permanent once it is on
+    // the battlefield: there it is judged by the rest of its restriction ("creature").
+    if host.zone() == Zone::Battlefield {
+        selector
+            .0
+            .retain(|pred| *pred != Pred::In(mtg_cards::refs::ZoneKind::Graveyard));
+    }
     Scope::announcing(state, controller_of_object(state, aura), aura.reference())
         .selects(&selector, host.reference())
         .unwrap_or(false)
@@ -409,9 +430,14 @@ pub(crate) fn fold_attached(
     if object == to {
         return Err(invalid("a permanent cannot be attached to itself"));
     }
+    // A card in a graveyard is a host only for an Aura that enchants one there (Animate Dead).
+    let graveyard_host = dk27_enchants_graveyard(state, object);
     let host = state
         .object(to)
-        .filter(|host| host.zone() == Zone::Battlefield)
+        .filter(|host| {
+            host.zone() == Zone::Battlefield
+                || (graveyard_host && matches!(host.zone(), Zone::Graveyard(_)))
+        })
         .map(GameObject::reference)
         .ok_or_else(|| {
             invalid(format!(

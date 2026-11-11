@@ -49,6 +49,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::RemoveCounters { .. }
         | Effect::RemoveAllCounters { .. }
         | Effect::MoveCounters { .. }
+        | Effect::SpellEntersWith { .. }
         | Effect::MultiplyCounters { .. }
         | Effect::PutCountersOf { .. }
         | Effect::Tap { .. }
@@ -62,6 +63,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Transform { .. }
         | Effect::Flip { .. }
         | Effect::TurnFaceUp { .. }
+        | Effect::TurnFaceDown { .. }
+        | Effect::Harness { .. }
         | Effect::Prepare { .. }
         | Effect::Suspect { .. }
         | Effect::Unsuspect { .. }
@@ -71,6 +74,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Goad { .. }
         | Effect::Fight { .. }
         | Effect::BecomeMonarch { .. }
+        | Effect::ControlPlayer { .. }
+        | Effect::RestartGame { .. }
         | Effect::RingTempts { .. }
         | Effect::CreateEmblem { .. }
         | Effect::BecomeDayNight { .. }
@@ -79,6 +84,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Conjure { .. }
         | Effect::Seek { .. }
         | Effect::Venture { .. }
+        | Effect::OpenAttraction { .. }
+        | Effect::RollToVisit { .. }
         | Effect::UnlockDoor { .. }
         | Effect::TakeInitiative { .. }
         | Effect::Monstrosity { .. }
@@ -111,6 +118,9 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Rule { .. }
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }
+        | Effect::BecomeBlocked { .. }
+        | Effect::PutBeneathTop { .. }
+        | Effect::LoseUnspentMana { .. }
         | Effect::Shield { .. }
         | Effect::EndTurn
         | Effect::LoseGame { .. }
@@ -125,7 +135,7 @@ fn reports(effect: &Effect) -> Reports {
         Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
         | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
-        | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::VillainousChoice { .. }
+        | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::ChooseNumbers { .. } | Effect::BidLife { .. } | Effect::VillainousChoice { .. }
         | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
         | Effect::Either { .. } | Effect::OneOf { .. } => Reports::Nothing,
     }

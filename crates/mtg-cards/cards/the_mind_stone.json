@@ -1,7 +1,7 @@
 {
   "oracle_id": "b175e826-09e8-4fae-9f2e-b902f95b282d",
   "name": "The Mind Stone",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Mind Stone",
@@ -15,15 +15,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 29, "end": 108 }
+          "Activated": {
+            "cost": [{ "Mana": "{5}{W}" }, "Tap"],
+            "effects": [{ "Harness": { "what": "This" } }]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 109, "end": 275 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": { "Matches": { "subject": "This", "selector": ["Harnessed"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Other", { "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+            ]
           }
         }
       ]

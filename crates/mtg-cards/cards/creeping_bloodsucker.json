@@ -1,0 +1,22 @@
+{
+  "oracle_id": "0bdddaf9-579a-4588-b5b3-faa189d4bdcc",
+  "name": "Creeping Bloodsucker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Creeping Bloodsucker",
+      "oracle_fingerprint": "136a76d5cc31cc8ab735216997dc40c7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": "DamageDealtThisWay" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

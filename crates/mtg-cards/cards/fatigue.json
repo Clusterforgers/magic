@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0a88dcb6-a391-408f-8bfc-7b5b2cc34267",
+  "name": "Fatigue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fatigue",
+      "oracle_fingerprint": "9e6dba4c2cdf124dc9b0eca28d178482",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": { "SkipStep": "Draw" } } },
+                  "duration": "UntilSkipped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

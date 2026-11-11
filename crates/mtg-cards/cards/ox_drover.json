@@ -1,0 +1,44 @@
+{
+  "oracle_id": "70f26726-0373-4e50-a1de-37392ca94890",
+  "name": "Ox Drover",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ox Drover",
+      "oracle_fingerprint": "3070076824be95bbac587cd7c627fda5",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Static": { "affected": "This", "mods": [{ "CantBeBlockedBy": [{ "Subtype": "Ox" }] }] } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Custom": {
+                      "name": "Ox",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ox"],
+                      "power": 2,
+                      "toughness": 4
+                    }
+                  }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

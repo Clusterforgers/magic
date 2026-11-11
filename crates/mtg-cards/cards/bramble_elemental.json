@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ac5c0078-e2f1-4ac1-8748-575d69e09cf8",
+  "name": "Bramble Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bramble Elemental",
+      "oracle_fingerprint": "0307ae018d2fbf63e6bb5e6c670ec74a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attached": { "what": [{ "Subtype": "Aura" }], "to": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

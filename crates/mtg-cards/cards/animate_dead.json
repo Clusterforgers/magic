@@ -1,0 +1,49 @@
+{
+  "oracle_id": "c0d8fef4-65f4-4769-982d-b397d2b7e977",
+  "name": "Animate Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Animate Dead",
+      "oracle_fingerprint": "7829eaf903dad1dd9890b2d0f38d50a2",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "In": "Graveyard" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "In": "Battlefield" }] } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Attached",
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "returned"
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Bound": "returned" } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "returned" } },
+                        "filter": [{ "Is": { "Bound": "returned" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -1, "toughness": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

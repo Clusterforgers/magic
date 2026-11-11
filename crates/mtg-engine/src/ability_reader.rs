@@ -209,7 +209,7 @@ pub(crate) fn definition_has_static(definition: &CardDefinition) -> bool {
 pub(crate) fn definition_gives_supertype(definition: &CardDefinition) -> bool {
     definition.rules.iter().any(|rules| {
         matches!(&**rules, Ability::Static { mods, .. }
-            if mods.iter().any(|given| matches!(given, WantedModification::AddSupertype(_))))
+            if mods.iter().any(|given| matches!(given, WantedModification::AddSupertype(_) | WantedModification::RemoveSupertype(_))))
     })
 }
 
@@ -348,6 +348,16 @@ pub(crate) fn definition_has_ascend(definition: &CardDefinition) -> bool {
         matches!(
             **rules,
             Ability::Keyword(mtg_cards::keyword::Keyword::Ascend)
+        )
+    })
+}
+
+/// Whether a card with this definition has storied, so the game watches for the enduring story (`GameState::possible`).
+pub(crate) fn definition_has_storied(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        matches!(
+            **rules,
+            Ability::Keyword(mtg_cards::keyword::Keyword::Storied)
         )
     })
 }

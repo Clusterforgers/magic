@@ -198,6 +198,9 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
                 TargetSet::TotalManaValueAtMost(most) => {
                     format!("with total mana value {} or less", amount(ctx, most))
                 }
+                TargetSet::TotalPowerAtMost(most) => {
+                    format!("with total power {} or less", amount(ctx, most))
+                }
             }
         ),
         Targetable::Another { what, .. } => {
@@ -548,6 +551,7 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
         Condition::AdditionalCostPaid => "the additional cost was paid".to_owned(),
         Condition::AsCast(inner) => format!("{} as this spell was cast", condition(ctx, inner)),
         Condition::YourTurn => "it is your turn".to_owned(),
+        Condition::ExtraTurn => "it is an extra turn".to_owned(),
         Condition::Among(players) => format!("you are among {}", who(ctx, players)),
         Condition::IsDay => "it is day".to_owned(),
         Condition::IsNight => "it is night".to_owned(),
@@ -573,6 +577,8 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::UntilOpponentBecomesMonarch => "until an opponent becomes the monarch".to_owned(),
         Duration::NextUntapStep => "until the next untap step".to_owned(),
         Duration::UntilTurnSkipped => "until the turn is skipped".to_owned(),
+        Duration::UntilSkipped => "until it is skipped".to_owned(),
+        Duration::UntilSkippedThisTurn => "until it is skipped this turn".to_owned(),
         Duration::UntilCastFromExile => "until this card is cast from exile".to_owned(),
         Duration::WhileHasCounter(counter) => {
             format!("while it has a {} counter", counter_text(counter))

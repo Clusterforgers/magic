@@ -93,6 +93,7 @@ mod stops;
 mod store_contract;
 mod store_failures;
 mod timer_bank;
+mod un33_attraction_recipe;
 mod visibility;
 mod windows;
 mod ws_games;

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "981138d0-bf61-406a-85be-68cc5e58796c",
+  "name": "Tapestry Warden",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tapestry Warden",
+      "oracle_fingerprint": "0070d91983eb8dbdd1e7c33c9f91fabe",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    {
+                      "Test": {
+                        "left": { "Stat": { "of": "Candidate", "stat": "Toughness" } },
+                        "op": "Gt",
+                        "right": { "Stat": { "of": "Candidate", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                },
+                "quirk": "AssignsByToughness"
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 142, "end": 268 }
+          }
+        }
+      ]
+    }
+  ]
+}

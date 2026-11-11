@@ -18,7 +18,8 @@ pub(super) fn next(state: &GameState, player: PlayerId, card: ObjectId, door: u8
     if !sorcery_timing(state, player) || dk1c5_events(state, player, card, door).is_none() {
         return Next::Drop;
     }
-    suspend::pay(state, player, card, cost, || {
+    let spend = crate::spend::Spend::special(mtg_cards::spend::SpecialAction::Unlock);
+    suspend::pay_for(state, player, card, (cost, spend), || {
         dk1c5_events(state, player, card, door)
     })
 }

@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "ee245922-b380-4b2e-a43f-ab1ba8078943",
+  "oracle_id": "16d0aea2-4ca4-4a9d-8674-2863e085f514",
+  "multiverse_ids": [
+    2614
+  ],
+  "tcgplayer_id": 4622,
+  "cardmarket_id": 6390,
+  "name": "Chaos Lord",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/ee245922-b380-4b2e-a43f-ab1ba8078943",
+  "scryfall_uri": "https://scryfall.com/card/ice/178/chaos-lord?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:58:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/e/ee245922-b380-4b2e-a43f-ab1ba8078943.jpg?1783947491",
+    "normal": "https://cards.scryfall.io/normal/front/e/e/ee245922-b380-4b2e-a43f-ab1ba8078943.jpg?1783947491",
+    "large": "https://cards.scryfall.io/large/front/e/e/ee245922-b380-4b2e-a43f-ab1ba8078943.jpg?1783947491",
+    "png": "https://cards.scryfall.io/png/front/e/e/ee245922-b380-4b2e-a43f-ab1ba8078943.png?1783947491",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/e/ee245922-b380-4b2e-a43f-ab1ba8078943.jpg?1783947491",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/e/ee245922-b380-4b2e-a43f-ab1ba8078943.jpg?1783947491",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/e/ee245922-b380-4b2e-a43f-ab1ba8078943.webp?1783947491",
+    "grid": "https://cards.scryfall.io/grid/front/e/e/ee245922-b380-4b2e-a43f-ab1ba8078943.webp?1783947491",
+    "display": "https://cards.scryfall.io/display/front/e/e/ee245922-b380-4b2e-a43f-ab1ba8078943.webp?1783947491",
+    "art": "https://cards.scryfall.io/art/front/e/e/ee245922-b380-4b2e-a43f-ab1ba8078943.webp?1783947491",
+    "crop": "https://cards.scryfall.io/crop/front/e/e/ee245922-b380-4b2e-a43f-ab1ba8078943.webp?1783947491",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/e/ee245922-b380-4b2e-a43f-ab1ba8078943.jpg?1783947491"
+  },
+  "mana_cost": "{4}{R}{R}{R}",
+  "cmc": 7.0,
+  "type_line": "Creature — Human",
+  "oracle_text": "First strike\nAt the beginning of your upkeep, target opponent gains control of this creature if the number of permanents is even.\nThis creature can attack as though it had haste unless it entered this turn.",
+  "power": "7",
+  "toughness": "7",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "First strike"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ee245922-b380-4b2e-a43f-ab1ba8078943/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A16d0aea2-4ca4-4a9d-8674-2863e085f514&unique=prints",
+  "collector_number": "178",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Brian Snõddy",
+  "artist_ids": [
+    "770b4e16-de76-49ed-949f-84e6d2e06d25"
+  ],
+  "illustration_id": "ec12bea2-2cdf-42e4-a968-1f8bc1d88e81",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26913,
+  "prices": {
+    "usd": "0.52",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.45",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2614&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DChaos%2BLord",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DChaos%2BLord",
+    "edhrec": "https://edhrec.com/route/?cc=Chaos+Lord"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4622%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6390&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Chaos+Lord&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

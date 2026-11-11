@@ -19,7 +19,7 @@ import type {
 } from '@/protocol/generated'
 import { forecastChoiceScene, forecastScene, withBlockForecast } from './combatScene'
 import { abilitiesTable, withAbilities } from './abilityScene'
-import { assignDamage } from './damagePrompt'
+import { assignBandedDamage, assignDamage } from './damagePrompt'
 import { ANNOUNCE_PROMPTS } from './announcePrompts'
 import { EFFECT_MOMENTS, EFFECT_PROMPTS } from './effectPrompts'
 import type { Fixture } from './fixture'
@@ -186,6 +186,17 @@ const block: DevPrompt = ({ view }) => {
     blockers: untappedCreatures(view, viewer).map((object) => ({ object: object.id, can_block })),
   }
   return { id: 1, decision: { player: viewer, kind: { DeclareBlockers: options } } }
+}
+
+/** The attack with banding on the first creature that may attack, so a band can be formed (CR 702.22c). */
+const attackBanding: DevPrompt = (context) => {
+  const made = attack(context)
+  const kind = made.decision.kind
+  if ('DeclareAttackers' in kind) {
+    const [first] = kind.DeclareAttackers.attackers
+    if (first !== undefined) first.banding = true
+  }
+  return made
 }
 
 /** The attack with the first creature that may attack required to (goaded). */
@@ -476,6 +487,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   block,
   'block-required': blockRequired,
   'attack-required': attackRequired,
+  'attack-banding': attackBanding,
   'block-clock': (fixture) => ({ ...block(fixture), deadlineMs: 45_000 }),
   mulligan: aboutHand((hand) => ({
     Mulligan: {
@@ -503,6 +515,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   damage: assignDamage(2),
   damage3: assignDamage(3),
   damage1: assignDamage(1),
+  'damage-banding': assignBandedDamage,
   pay,
   'pay-short': payShort,
   'pay-locked': payLocked,
@@ -542,6 +555,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   block: blockTable,
   'block-required': blockTable,
   'attack-required': attackTable(false),
+  'attack-banding': attackTable(false),
   'block-clock': blockTable,
   forecast: forecastScene,
   'forecast-choice': forecastChoiceScene,

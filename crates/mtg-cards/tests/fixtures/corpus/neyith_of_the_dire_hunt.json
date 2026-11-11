@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "0c1eed0f-9692-44c0-b1ad-afa691165d52",
+  "oracle_id": "aba04455-c13f-48f7-9674-56803b39a42b",
+  "multiverse_ids": [
+    489197
+  ],
+  "mtgo_id": 81807,
+  "arena_id": 72133,
+  "tcgplayer_id": 215963,
+  "cardmarket_id": 472499,
+  "name": "Neyith of the Dire Hunt",
+  "lang": "en",
+  "released_at": "2020-07-17",
+  "uri": "https://api.scryfall.com/cards/0c1eed0f-9692-44c0-b1ad-afa691165d52",
+  "scryfall_uri": "https://scryfall.com/card/jmp/30/neyith-of-the-dire-hunt?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:14:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/c/0c1eed0f-9692-44c0-b1ad-afa691165d52.jpg?1783930499",
+    "normal": "https://cards.scryfall.io/normal/front/0/c/0c1eed0f-9692-44c0-b1ad-afa691165d52.jpg?1783930499",
+    "large": "https://cards.scryfall.io/large/front/0/c/0c1eed0f-9692-44c0-b1ad-afa691165d52.jpg?1783930499",
+    "png": "https://cards.scryfall.io/png/front/0/c/0c1eed0f-9692-44c0-b1ad-afa691165d52.png?1783930499",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/c/0c1eed0f-9692-44c0-b1ad-afa691165d52.jpg?1783930499",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/c/0c1eed0f-9692-44c0-b1ad-afa691165d52.jpg?1783930499",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/c/0c1eed0f-9692-44c0-b1ad-afa691165d52.webp?1783930499",
+    "grid": "https://cards.scryfall.io/grid/front/0/c/0c1eed0f-9692-44c0-b1ad-afa691165d52.webp?1783930499",
+    "display": "https://cards.scryfall.io/display/front/0/c/0c1eed0f-9692-44c0-b1ad-afa691165d52.webp?1783930499",
+    "art": "https://cards.scryfall.io/art/front/0/c/0c1eed0f-9692-44c0-b1ad-afa691165d52.webp?1783930499",
+    "crop": "https://cards.scryfall.io/crop/front/0/c/0c1eed0f-9692-44c0-b1ad-afa691165d52.webp?1783930499",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/c/0c1eed0f-9692-44c0-b1ad-afa691165d52.jpg?1783930499"
+  },
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Warrior",
+  "oracle_text": "Whenever one or more creatures you control fight or become blocked, draw a card.\nAt the beginning of combat on your turn, you may pay {2}{R/G}. If you do, double target creature's power until end of turn. That creature must be blocked this combat if able. ({R/G} can be paid with either {R} or {G}.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Double"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "0f6ccf25-a627-4263-86df-5757137f1696",
+  "set": "jmp",
+  "set_name": "Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/0f6ccf25-a627-4263-86df-5757137f1696",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ajmp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/jmp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0c1eed0f-9692-44c0-b1ad-afa691165d52/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aaba04455-c13f-48f7-9674-56803b39a42b&unique=prints",
+  "collector_number": "30",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Magali Villeneuve",
+  "artist_ids": [
+    "9e6a55ae-be4d-4c23-a2a5-135737ffd879"
+  ],
+  "illustration_id": "b0ed101a-d5d1-4e05-a5e8-775b21291d68",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 4256,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-preview/behind-scenes-designing-jumpstart-2020-06-17",
+    "previewed_at": "2020-06-17"
+  },
+  "prices": {
+    "usd": "13.41",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "8.43",
+    "eur_foil": null,
+    "tix": "3.09"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=489197&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNeyith%2Bof%2Bthe%2BDire%2BHunt",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNeyith%2Bof%2Bthe%2BDire%2BHunt",
+    "edhrec": "https://edhrec.com/route/?cc=Neyith+of+the+Dire+Hunt"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F215963%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=472499&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/81807?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

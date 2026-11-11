@@ -1,0 +1,39 @@
+{
+  "oracle_id": "66bef5a7-79b7-4a9c-98dc-8670f867f04c",
+  "name": "Nethroi, Apex of Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nethroi, Apex of Death",
+      "oracle_fingerprint": "904d39f0cd04254a0ea03927fded113b",
+      "abilities": [
+        { "Keyword": { "Mutate": "{4}{B}{B}{G/W}" } },
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Mutates": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        { "In": "Graveyard" },
+                        { "OwnedBy": "You" }
+                      ]
+                    },
+                    "rule": { "TotalPowerAtMost": 10 }
+                  }
+                },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

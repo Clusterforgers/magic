@@ -20,6 +20,7 @@ import type {
   PlayerId,
   RuleEffect,
   Target,
+  TextWord,
   Zone,
   ZoneCause,
 } from '@/protocol/generated'
@@ -94,6 +95,13 @@ function keywordWords(keyword: unknown): string {
   return tag.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase()
 }
 
+/** The words of a kind of keyword a change takes away, whatever its parameter. */
+const KEYWORD_KIND_WORDS = {
+  Landwalk: 'all landwalk abilities',
+  Protection: 'protection',
+  Ward: 'ward',
+} as const
+
 /** What a change does to what it changes, as a verb phrase ("becomes an artifact too", "gets +1/+1"). */
 /** The card types in declaration order; the wire set holds bit n for the nth. */
 const CARD_TYPE_ORDER = [
@@ -148,6 +156,9 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   if ('AddSupertype' in modification) {
     return `${becomes} ${modification.AddSupertype.toLowerCase()} too`
   }
+  if ('RemoveSupertype' in modification) {
+    return `${loses} ${modification.RemoveSupertype.toLowerCase()}`
+  }
   if ('AddSubtype' in modification) return `${becomes} ${modification.AddSubtype} too`
   if ('SetCreatureTypes' in modification) {
     return `${becomes} ${joinWords(modification.SetCreatureTypes)}`
@@ -163,6 +174,9 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   }
   if ('AddKeyword' in modification) return `${gains} ${keywordWords(modification.AddKeyword)}`
   if ('RemoveKeyword' in modification) return `${loses} ${keywordWords(modification.RemoveKeyword)}`
+  if ('RemoveKeywordKind' in modification) {
+    return `${loses} ${KEYWORD_KIND_WORDS[modification.RemoveKeywordKind]}`
+  }
   if ('LockKeyword' in modification) {
     const word = keywordWords(modification.LockKeyword)
     return `${loses} ${word} and can't have or gain it`
@@ -187,6 +201,11 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       Both: `${seat} or planeswalkers ${seat} controls`,
     }[attacked]
     return `can't attack ${whom}`
+  }
+  if ('ChangeText' in modification) {
+    const word = (text: TextWord) => ('Color' in text ? text.Color.toLowerCase() : text.Subtype)
+    const { from, to } = modification.ChangeText
+    return `${group ? 'have' : 'has'} "${word(from)}" changed to "${word(to)}" in ${group ? 'their' : 'its'} text`
   }
   const { power, toughness } = modification.ModifyPowerToughness
   return `${group ? 'get' : 'gets'} ${power >= 0 ? '+' : ''}${power}/${toughness >= 0 ? '+' : ''}${toughness}`
@@ -238,6 +257,8 @@ function durationWords(
     UntilOpponentBecomesMonarch: ' until an opponent becomes the monarch',
     NextUntapStep: " through its controller's next untap step",
     UntilTurnSkipped: ' until the turn it skips',
+    UntilSkipped: ' until the step or combat it skips',
+    UntilSkippedThisTurn: ' until the step or combat it skips this turn',
     UntilCastFromExile:
       source === null
         ? ' until its source is cast from exile'
@@ -578,6 +599,7 @@ function describeChoice(choice: Choice, n: EventNames): string {
   if ('YesNo' in choice) return choice.YesNo ? 'answers yes' : 'answers no'
   if ('Option' in choice) return `chooses option ${choice.Option + 1}`
   if ('Vote' in choice) return `votes for option ${choice.Vote + 1}`
+  if ('SecretNumber' in choice) return `secretly chooses ${choice.SecretNumber}`
   return 'chooses which effect applies first'
 }
 
@@ -594,6 +616,7 @@ const BECAUSE: Record<
     | { Haunting: unknown }
     | { Manifested: unknown }
     | { Cloaked: unknown }
+    | { PutFaceDown: unknown }
   >,
   string
 > = {
@@ -619,6 +642,7 @@ function objectCause(cause: Extract<ZoneCause, object>): string {
   if ('Haunting' in cause) return 'is exiled haunting a creature'
   if ('Manifested' in cause) return 'is manifested'
   if ('Cloaked' in cause) return 'is cloaked'
+  if ('PutFaceDown' in cause) return 'is put onto the battlefield face down'
   return 'is exiled for a while'
 }
 
@@ -833,6 +857,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('FirstPlayerChosen' in event) return line(`${n.seat(event.FirstPlayerChosen.player)} goes first`)
   if ('LibraryShuffled' in event)
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
+  if ('AttractionDeckShuffled' in event)
+    return quiet(`${n.seat(event.AttractionDeckShuffled.player)} shuffles their Attraction deck`)
   if ('HandDealt' in event) {
     return line(`${n.seat(event.HandDealt.player)} is dealt ${cards(event.HandDealt.cards.length)}`)
   }
@@ -886,6 +912,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Suspected' in event) return line(`${n.card(event.Suspected.object)} becomes suspected`)
   if ('Unsuspected' in event) return line(`${n.card(event.Unsuspected.object)} is no longer suspected`)
   if ('Solved' in event) return line(`${n.card(event.Solved.object)} is solved`)
+  if ('Harnessed' in event) return line(`${n.card(event.Harnessed.object)} is harnessed`)
   if ('BecameCopy' in event) {
     const { object, of } = event.BecameCopy
     return line(`${n.card(object)} becomes a copy of ${n.card(of.id)}`)
@@ -921,9 +948,17 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('EmblemCreated' in event) return line(`${n.seat(event.EmblemCreated.owner)} gets an emblem`)
   if ('Proliferated' in event) return line(`${n.seat(event.Proliferated.player)} proliferates`)
   if ('Learned' in event) return line(`${n.seat(event.Learned.player)} learns`)
+  if ('EvidenceCollected' in event) return line(`${n.seat(event.EvidenceCollected.player)} collects evidence`)
   if ('DieRolled' in event) {
     const { player, sides, result } = event.DieRolled
     return line(`${n.seat(player)} rolls a d${sides}: ${result}`)
+  }
+  if ('RolledToVisit' in event) {
+    const { player, result, visited } = event.RolledToVisit
+    const count = visited.length
+    return line(
+      `${n.seat(player)} rolls ${result} to visit their Attractions: ${count === 0 ? 'none is' : count === 1 ? 'one is' : `${count} are`} visited`,
+    )
   }
   if ('CoinFlipped' in event) {
     const { player, won, call, side } = event.CoinFlipped
@@ -953,6 +988,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('CitysBlessingGained' in event) {
     return line(`${n.seat(event.CitysBlessingGained.player)} gets the city's blessing`)
   }
+  if ('EnduringStoryGained' in event) {
+    return line(`${n.seat(event.EnduringStoryGained.player)} gets an enduring story`)
+  }
   if ('RingTempted' in event) {
     const { player, level, bearer } = event.RingTempted
     const chosen = bearer === undefined ? '' : ` and chooses ${n.card(bearer)} as their Ring-bearer`
@@ -978,6 +1016,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('TurnedFaceUp' in event)
     return line(`${n.seat(event.TurnedFaceUp.player)} turns ${n.card(event.TurnedFaceUp.object)} face up`)
+  if ('TurnedFaceDown' in event)
+    return line(
+      `${n.seat(event.TurnedFaceDown.player)} turns ${n.card(event.TurnedFaceDown.object)} face down`,
+    )
   if ('DoorUnlocked' in event) {
     const { player, object, door } = event.DoorUnlocked
     return line(`${n.seat(player)} unlocks ${n.door?.(object, door) ?? `a door of ${n.card(object)}`}`)
@@ -1013,6 +1055,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('RemovedFromCombat' in event) {
     return line(`${n.card(event.RemovedFromCombat.object)} is removed from combat`)
   }
+  if ('AttackersBlocked' in event) {
+    const { attackers } = event.AttackersBlocked
+    const verb = attackers.length === 1 ? 'becomes' : 'become'
+    return line(`${joinWords(attackers.map(n.card))} ${verb} blocked`)
+  }
   if ('TurnBegan' in event) {
     const { number, active, extra } = event.TurnBegan
     return line(`Turn ${number} begins: ${n.seat(active)}'s ${extra ? 'extra turn' : 'turn'}`)
@@ -1022,6 +1069,21 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('ExtraTurnSkipped' in event) {
     return quiet(`${n.seat(event.ExtraTurnSkipped.player)} skips an extra turn`)
+  }
+  if ('PlayerControlGained' in event) {
+    const { player, by, extra_turn } = event.PlayerControlGained
+    const after = extra_turn === true ? ', then takes an extra turn' : ''
+    return line(`${n.seat(by)} will control ${n.seat(player)} during their next turn${after}`)
+  }
+  if ('GameRestarted' in event) {
+    const { by, kept } = event.GameRestarted
+    const cards = kept.length === 0 ? '' : `, keeping ${kept.map((id) => n.card(id)).join(', ')} in exile`
+    return line(`${n.seat(by)} restarts the game${cards}`)
+  }
+  if ('SpellControlGained' in event) {
+    return line(
+      `${n.seat(event.SpellControlGained.player)} gains control of ${n.card(event.SpellControlGained.object)}`,
+    )
   }
   if ('PhasesAdded' in event) {
     return line(`${event.PhasesAdded.steps.length} additional phase(s) follow this phase`)
@@ -1089,6 +1151,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     if (attackers.length === 0) return quiet(`${n.seat(player)} declares no attackers`)
     return line(`${n.seat(player)} attacks ${attackClauses(attackers, n)}`)
   }
+  if ('BandFormed' in event) {
+    const { player, attackers } = event.BandFormed
+    return line(`${n.seat(player)} bands ${joinWords(attackers.map((id) => n.card(id)))} together`)
+  }
   if ('BlockersDeclared' in event) {
     const { player, blocks } = event.BlockersDeclared
     if (blocks.length === 0) return quiet(`${n.seat(player)} declares no blockers`)
@@ -1149,6 +1215,8 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
     return line(`${n.seat(event.HandDealt.player)} is dealt ${cards(event.HandDealt.count)}`)
   if ('LibraryShuffled' in event)
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
+  if ('AttractionDeckShuffled' in event)
+    return quiet(`${n.seat(event.AttractionDeckShuffled.player)} shuffles their Attraction deck`)
   if ('LibraryRefilled' in event) {
     return quiet(`${n.seat(event.LibraryRefilled.player)} shuffles their graveyard into their library`)
   }

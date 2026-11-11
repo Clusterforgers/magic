@@ -1,0 +1,56 @@
+{
+  "oracle_id": "9b0c6b77-69df-4330-86a7-8dc4666abd38",
+  "name": "Paleontologist's Pick-Axe // Dinosaur Headdress",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Paleontologist's Pick-Axe",
+      "oracle_fingerprint": "bc387e9a0ab6d795e5ec28a71d5385d0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{5}" },
+              { "Craft": { "filter": [{ "Type": "Creature" }, "Other"], "count": "X" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dinosaur Headdress",
+      "oracle_fingerprint": "1924156f9f9f316609afe4ca2b64a98a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 70, "end": 180 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 181, "end": 233 }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

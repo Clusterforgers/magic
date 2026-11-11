@@ -2,7 +2,7 @@
 import type { PlayerId, PlayerView } from '@/protocol/generated'
 
 /** The zones a pod counts. */
-export type ZoneKey = 'hand' | 'library' | 'graveyard' | 'exile' | 'command'
+export type ZoneKey = 'hand' | 'library' | 'graveyard' | 'exile' | 'command' | 'attractions'
 
 /** A zone as the chips and dialogs name it. */
 export const ZONE_NAME: Record<ZoneKey, string> = {
@@ -11,6 +11,7 @@ export const ZONE_NAME: Record<ZoneKey, string> = {
   graveyard: 'Graveyard',
   exile: 'Exile',
   command: 'Command zone',
+  attractions: 'Attraction deck',
 }
 
 /** The name of a zone in a picture too narrow for the whole word. */
@@ -20,6 +21,7 @@ export const ZONE_SHORT: Record<ZoneKey, string> = {
   graveyard: 'Grave',
   exile: 'Exile',
   command: 'Cmd',
+  attractions: 'Attr',
 }
 
 /** From this picture width (px) the label of an empty zone is written out; under it the short form fits. */
@@ -69,14 +71,16 @@ export function podCounts(player: PlayerView, exile: number): PodCounts {
     graveyard: player.graveyard.count,
     exile,
     command: player.command.count,
+    attractions: player.attraction_deck ?? 0,
   }
 }
 
-/** The zones a pod draws as chips: the four that always count, and the command zone once it holds a card. */
+/** The zones a pod draws as chips: the four that always count, then the command zone and the Attraction deck once they hold a card. */
 export function chipZones(counts: PodCounts): ZoneKey[] {
-  return counts.command > 0
-    ? ['hand', 'library', 'graveyard', 'exile', 'command']
-    : ['hand', 'library', 'graveyard', 'exile']
+  const zones: ZoneKey[] = ['hand', 'library', 'graveyard', 'exile']
+  if (counts.command > 0) zones.push('command')
+  if (counts.attractions > 0) zones.push('attractions')
+  return zones
 }
 
 /**

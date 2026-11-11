@@ -1,7 +1,7 @@
 {
   "oracle_id": "e86bd38f-7804-449d-af29-21e96a56ab30",
   "name": "Witch Hunt",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Witch Hunt",
@@ -15,9 +15,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 98, "end": 200 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [{ "what": { "AtRandom": "Opponent" } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "Target": 0 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
           }
         }
       ]

@@ -23,12 +23,12 @@ impl GameState {
             return false;
         };
         object.face_down().is_none_or(|how| {
-            self.may_look_as(
-                how,
-                object.owner(),
-                crate::characteristics::controller_of_object(self, object),
-                viewer,
-            ) || crate::rules::grants_look(self, viewer, object)
+            let controller = crate::characteristics::controller_of_object(self, object);
+            // A player who controls another sees what that player sees (CR 722.3).
+            self.sees_as(viewer)
+                .into_iter()
+                .any(|seen| self.may_look_as(how, object.owner(), controller, seen))
+                || crate::rules::grants_look(self, viewer, object)
         })
     }
 
@@ -91,7 +91,8 @@ impl GameState {
         }
         self.resolving().is_some_and(|resolving| {
             resolving.shown().iter().any(|shown| {
-                shown.card == object.reference() && shown.to.is_none_or(|seat| seat == viewer)
+                shown.card == object.reference()
+                    && shown.to.is_none_or(|seat| self.sees_for(viewer, seat))
             })
         })
     }
@@ -274,7 +275,9 @@ pub fn offered_to(state: &GameState, viewer: PlayerId) -> Vec<ObjectId> {
         return opening_scry(state, viewer).map_or_else(Vec::new, |(_, cards)| cards);
     }
     offered_cards(state)
-        .filter(|(seat, _)| *seat == viewer)
+        .filter(|(seat, _)| {
+            state.sees_for(viewer, *seat) || state.search_controller(*seat) == Some(viewer)
+        })
         .map_or_else(Vec::new, |(_, cards)| cards)
 }
 

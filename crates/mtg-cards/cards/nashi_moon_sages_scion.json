@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d04b6c2c-50fc-464d-9991-230efec70d2b",
+  "name": "Nashi, Moon Sage's Scion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nashi, Moon Sage's Scion",
+      "oracle_fingerprint": "804ef7a61a0ecd5a30c74db0907e9204",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{3}{B}" } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 148, "end": 389 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -385,6 +385,17 @@ fn evidence_is_collected_by_total_mana_value_and_not_by_the_number_of_cards(
     settle(&mut driver)?;
     assert_eq!(hand(&driver), hand_before + 1, "paid: the card is drawn");
     assert_eq!(life(&driver), life_before);
+    // The evidence is told once, by its collector, whatever the number of cards it took (CR 701.59).
+    let told: Vec<_> = driver
+        .engine()
+        .events()
+        .iter()
+        .filter(|event| matches!(event, mtg_engine::events::Event::EvidenceCollected { .. }))
+        .collect();
+    assert_eq!(
+        told,
+        [&mtg_engine::events::Event::EvidenceCollected { player: pid(0) }]
+    );
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());
     Ok(())

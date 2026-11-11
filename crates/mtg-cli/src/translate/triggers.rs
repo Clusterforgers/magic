@@ -520,6 +520,15 @@ fn changes_zone(ctx: &Ctx, p: &Params) -> Tr<Value> {
         (None, _) | (Some("TriggeredCardController"), Some("Battlefield")) => {}
         _ => return unmapped("key:Trigger.ChangesZone.TriggerController"),
     }
+    // "Whenever you open an Attraction" (CR 701.51c): an Attraction of yours put onto the battlefield from your deck.
+    if p.get("Origin") == Some("AttractionDeck") {
+        return match (p.get("Destination"), p.get("ValidCard")) {
+            (Some("Battlefield"), Some("Attraction.YouCtrl" | "Attraction.YouOwn")) => {
+                Ok(json!({"OpenedAttraction": {"who": "You"}}))
+            }
+            _ => unmapped("zone:Trigger.Origin=AttractionDeck"),
+        };
+    }
     let mut what = selector_any(ctx, p.get("ValidCard").unwrap_or("Card"))?;
     let (origins, destinations) = (zone_list(p, "Origin")?, zone_list(p, "Destination")?);
     // "Enters from your graveyard": Forge names the zone alone, Oracle its owner too.

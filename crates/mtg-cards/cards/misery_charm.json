@@ -1,0 +1,47 @@
+{
+  "oracle_id": "46aa8dca-2a7d-4bff-9323-5f6933ca95f2",
+  "name": "Misery Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Misery Charm",
+      "oracle_fingerprint": "6bd174071a66482c4f682e0c212baa68",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Subtype": "Cleric" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Subtype": "Cleric" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

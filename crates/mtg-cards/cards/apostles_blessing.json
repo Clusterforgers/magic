@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ea393815-0202-4edc-aa1e-6885fe9b20ab",
+  "name": "Apostle's Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apostle's Blessing",
+      "oracle_fingerprint": "9b9d7e24673ffe9dd1ba9fef1b54938b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": { "Protection": [{ "Type": "Artifact" }] } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["AddProtectionFromChosenColor"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

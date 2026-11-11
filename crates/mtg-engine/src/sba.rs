@@ -103,6 +103,7 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
     events.extend(refilled);
     events.extend(crate::day_night::sync(state));
     events.extend(crate::citys_blessing::sync(state));
+    events.extend(crate::rmt6_storied::sync(state));
     events.extend(crate::speed::sync(state));
     events.extend(crate::w11d_dungeon::w11d_sba(state));
     events.extend(crate::w15a_initiative::w15a_sba(state));

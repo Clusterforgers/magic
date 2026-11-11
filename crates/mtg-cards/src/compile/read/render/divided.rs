@@ -34,7 +34,7 @@ impl Writer<'_> {
 
 /// The targets the damage is divided among: "one or two targets", "any number of target creatures and/or planeswalkers
 /// your opponents control", "up to X target creatures".
-fn among_text(spec: &TargetSpec) -> Option<String> {
+pub(super) fn among_text(spec: &TargetSpec) -> Option<String> {
     let targets = match &spec.what {
         Targetable::AnyTarget => "targets".to_owned(),
         Targetable::Object(selector) => format!(

@@ -128,7 +128,7 @@ async fn a_client_that_answers_pings_stays_and_one_that_does_not_is_dropped() {
 
     // Seat 0 keeps reading, which answers every ping, and is still there after many timeouts.
     let mut alive = table.player(0).await;
-    let stayed = tokio::time::timeout(Duration::from_millis(2_000), alive.closed()).await;
+    let stayed = tokio::time::timeout(Duration::from_secs(2), alive.closed()).await;
     assert!(
         stayed.is_err(),
         "a client that answers pings was dropped: {stayed:?}"

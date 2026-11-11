@@ -1,0 +1,45 @@
+{
+  "oracle_id": "6a448862-e8d8-4a08-8e3d-5460afa29b4d",
+  "name": "Urza, Prince of Kroog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urza, Prince of Kroog",
+      "oracle_fingerprint": "81d7763cf4ce9560bf67998807ff8736",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{6}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "SetPT": { "power": 1, "toughness": 1 } },
+                        { "AddSubtype": "Soldier" },
+                        { "AddType": "Creature" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

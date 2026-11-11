@@ -1,0 +1,46 @@
+{
+  "oracle_id": "1829f1dc-1fa9-4361-b318-d4dee280e6fd",
+  "name": "Anje, Maid of Dishonor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anje, Maid of Dishonor",
+      "oracle_fingerprint": "9c87eee0bb57a02f8ae8cc15730aa3e4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [
+                    { "AnyOf": ["This", { "Subtype": "Vampire" }] },
+                    { "ControlledBy": "You" }
+                  ],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "CreateToken": { "token": { "Named": "blood" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              {
+                "Sacrifice": {
+                  "filter": ["Other", { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Blood" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

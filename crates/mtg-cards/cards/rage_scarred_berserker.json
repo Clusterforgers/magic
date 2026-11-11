@@ -1,0 +1,33 @@
+{
+  "oracle_id": "658d54d4-e967-490c-b958-3743b3b1ef45",
+  "name": "Rage-Scarred Berserker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rage-Scarred Berserker",
+      "oracle_fingerprint": "0d13c51d295960dd002349f8b7c425a0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Indestructible" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

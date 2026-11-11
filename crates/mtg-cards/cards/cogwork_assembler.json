@@ -1,0 +1,35 @@
+{
+  "oracle_id": "01cebebb-050c-4b69-8a13-c569183a3cc3",
+  "name": "Cogwork Assembler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cogwork Assembler",
+      "oracle_fingerprint": "8b943cb9a10835b5942bf1f627e7dcc9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{7}",
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "as": "copy" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

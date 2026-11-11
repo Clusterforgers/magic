@@ -19,7 +19,7 @@ use crate::announce::Next;
 use crate::answers::Outcome;
 use crate::cast::payment_decision;
 use crate::characteristics::controller_of_object;
-use crate::combat::{AttackTarget, attack_events, defending_player};
+use crate::combat::{AttackExtras, AttackTarget, attack_events, defending_player};
 use crate::decision::{AttackOptions, Decision, DecisionKind, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
@@ -86,15 +86,17 @@ fn can_pay_life(state: &GameState, player: PlayerId, life: u32) -> bool {
                 .is_some_and(|seat| i64::from(seat.life()) >= i64::from(life)))
 }
 
-/// The events of an attack declared and paid for: the declaration, the exerts (CR 701.43), then the life it costs.
+/// The events of an attack declared and paid for: the declaration, the bands (CR 702.22c), the exerts (CR 701.43), then
+/// the life it costs.
 pub(crate) fn made(
     state: &GameState,
     player: PlayerId,
     attackers: &[(ObjectId, AttackTarget)],
-    exert: &[ObjectId],
+    extras: &AttackExtras,
 ) -> Vec<Event> {
     let mut events = attack_events(state, player, attackers);
-    events.extend(crate::w11a_exert::w11a_exert_events(player, exert));
+    events.extend(crate::keywords::banding::band_events(player, &extras.bands));
+    events.extend(crate::w11a_exert::w11a_exert_events(player, &extras.exert));
     let life = life_total(state, attackers);
     if life > 0 {
         events.push(Event::LifePaid {
@@ -220,7 +222,7 @@ pub(crate) fn declare(
     state: &GameState,
     player: PlayerId,
     attackers: Vec<(ObjectId, AttackTarget)>,
-    exert: Vec<ObjectId>,
+    extras: AttackExtras,
 ) -> Result<Outcome, EngineError> {
     let owed = total(state, &attackers);
     let life = life_total(state, &attackers);
@@ -228,12 +230,12 @@ pub(crate) fn declare(
         return Err(IllegalAnswer::AttackUnaffordable(format!("{life} life")).into());
     }
     if owed.symbols().is_empty() {
-        return Ok(Outcome::Events(made(state, player, &attackers, &exert)));
+        return Ok(Outcome::Events(made(state, player, &attackers, &extras)));
     }
     if payment(state, player, &attackers).is_none() {
         return Err(IllegalAnswer::AttackUnaffordable(owed.to_string()).into());
     }
-    Ok(Outcome::BeginAttack(attackers, exert))
+    Ok(Outcome::BeginAttack(attackers, extras))
 }
 
 /// The decision of an attack that waits for its payment: `PayMana` for the total cost, which can be backed out of. An

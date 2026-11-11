@@ -69,8 +69,11 @@ pub fn rule(ctx: &Ctx, p: &Params) -> Option<Tr<Value>> {
         "Continuous" if p.has("SetMaxHandSize") => hand_size(ctx, p),
         "Continuous" if p.has("RaiseMaxHandSize") => hand_size_change(ctx, p),
         "Continuous" if p.has("AdjustLandPlays") => land_plays(ctx, p),
+        "Continuous" if p.has("ControlOpponentsSearchingLibrary") => control_searches(p),
         "Continuous" if p.get("AddKeyword") == Some("CantSearchLibrary") => cant_search(p),
-        "Continuous" if p.has("AdditionalOptionalVote") => e14c_vote_again(p),
+        "Continuous" if p.has("AdditionalOptionalVote") || p.has("AdditionalVote") => {
+            e14c_vote_again(p)
+        }
         "Continuous" if p.has("MayLookAt") && !p.has("MayPlay") => super::statics_look::look(p),
         _ => return None,
     };
@@ -324,6 +327,20 @@ fn ignore_hexproof(ctx: &Ctx, p: &Params) -> Tr<Value> {
     Ok(json!({"IgnoreHexproof": rule}))
 }
 
+/// `ControlOpponentsSearchingLibrary$ You` over `Affected$ Opponent`: "You control your opponents while they're searching
+/// their libraries."
+fn control_searches(p: &Params) -> Tr<Value> {
+    keys(
+        p,
+        "Continuous",
+        &["Affected", "ControlOpponentsSearchingLibrary"],
+    )?;
+    match (p.get("Affected"), p.get("ControlOpponentsSearchingLibrary")) {
+        (Some("Opponent"), Some("You")) => Ok(json!({"ControlSearches": "Opponents"})),
+        _ => unmapped("key:Static.ControlOpponentsSearchingLibrary"),
+    }
+}
+
 /// `SetMaxHandSize$` of the players `Affected$` names.
 fn hand_size(ctx: &Ctx, p: &Params) -> Tr<Value> {
     keys(p, "Continuous", &["Affected", "SetMaxHandSize"])?;
@@ -416,6 +433,14 @@ fn cant_search(p: &Params) -> Tr<Value> {
 /// `Affected$ You` with `AdditionalOptionalVote$ 1`: while voting, you may vote an additional time (CR 701.38d). A
 /// vote the player must cast (`AdditionalVote$`) or more than one stays a gap.
 fn e14c_vote_again(p: &Params) -> Tr<Value> {
+    // "While voting, you get an additional vote": a vote the player casts, not one they may.
+    if p.has("AdditionalVote") {
+        keys(p, "Continuous", &["Affected", "AdditionalVote"])?;
+        return match (p.get("Affected"), p.get("AdditionalVote")) {
+            (Some("You"), Some("1")) => Ok(json!({"ExtraVote": "You"})),
+            _ => unmapped("key:Static.Continuous.AdditionalVote"),
+        };
+    }
     keys(p, "Continuous", &["Affected", "AdditionalOptionalVote"])?;
     match (p.get("Affected"), p.get("AdditionalOptionalVote")) {
         (Some("You"), Some("1")) => Ok(json!({"VoteAgain": "You"})),

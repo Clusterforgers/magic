@@ -1,0 +1,27 @@
+{
+  "oracle_id": "cdb1f944-a5ac-4683-a4eb-eebb82feea8d",
+  "name": "Voidmage Husher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voidmage Husher",
+      "oracle_fingerprint": "5b9e63f94f2093b8e2b6693d2106b789",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Ability": "Activated" }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

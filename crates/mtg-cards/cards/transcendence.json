@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f9279f8f-3d19-4f5b-b194-cb8c65313b7e",
+  "name": "Transcendence",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Transcendence",
+      "oracle_fingerprint": "93eb59cceb2efccf3fa3f522772fccc6",
+      "abilities": [
+        { "Rule": { "rule": { "CantLoseGame": { "who": "You", "life_only": true } } } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 51, "end": 100 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 101, "end": 213 }
+          }
+        }
+      ]
+    }
+  ]
+}

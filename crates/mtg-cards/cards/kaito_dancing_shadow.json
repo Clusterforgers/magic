@@ -1,0 +1,69 @@
+{
+  "oracle_id": "17fd42f6-f388-4ffc-8fec-ca9ada2506ee",
+  "name": "Kaito, Dancing Shadow",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kaito, Dancing Shadow",
+      "oracle_fingerprint": "53abd9d62d2eefe40f14da697956f5e3",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 216 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantAttack", "CantBlock"],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Loyalty": { "cost": "Zero", "effects": [{ "Draw": {} }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Drone",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Drone"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [
+                        { "Keyword": "Deathtouch" },
+                        {
+                          "Triggered": {
+                            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                            "effects": [
+                              { "LoseLife": { "who": "Opponents", "amount": 2 } },
+                              { "GainLife": { "amount": 2 } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

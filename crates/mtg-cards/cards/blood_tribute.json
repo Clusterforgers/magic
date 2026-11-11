@@ -1,0 +1,33 @@
+{
+  "oracle_id": "aa2da79c-b36c-4120-8d7d-f5571e87e45e",
+  "name": "Blood Tribute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Tribute",
+      "oracle_fingerprint": "25697f852b4f644f5f0c59c49a6a8117",
+      "abilities": [
+        { "Keyword": { "Kicker": [{ "TapPermanents": { "filter": [{ "Subtype": "Vampire" }] } }] } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Half": { "of": { "Life": { "Target": 0 } }, "up": true } }
+                }
+              },
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [{ "GainLife": { "amount": "LifeLostThisWay" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

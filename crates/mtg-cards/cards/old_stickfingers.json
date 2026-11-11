@@ -1,0 +1,37 @@
+{
+  "oracle_id": "1d85eec2-80db-466c-bd48-d2a12866e8bd",
+  "name": "Old Stickfingers",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Old Stickfingers",
+      "oracle_fingerprint": "ebd2c38043aec6969a0bde3a599513c2",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 231 }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "toughness": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

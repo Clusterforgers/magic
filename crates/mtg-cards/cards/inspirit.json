@@ -1,0 +1,28 @@
+{
+  "oracle_id": "90fd82e8-f638-4ba4-a03c-a30d46f93a39",
+  "name": "Inspirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspirit",
+      "oracle_fingerprint": "49452a2c4b544f4ca69aadfe48a388f6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

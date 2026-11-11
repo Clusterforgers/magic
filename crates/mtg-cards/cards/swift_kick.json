@@ -1,0 +1,33 @@
+{
+  "oracle_id": "8c54fd75-e89f-490e-90dd-788f22b6e316",
+  "name": "Swift Kick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swift Kick",
+      "oracle_fingerprint": "63abce1449f54aca8b522f2ee77b8541",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

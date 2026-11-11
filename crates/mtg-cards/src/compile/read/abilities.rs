@@ -122,6 +122,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         TriggerPattern::Tapped { .. }
             | TriggerPattern::TappedNotAttacking { .. }
             | TriggerPattern::Untapped { .. }
+            | TriggerPattern::Unattached { .. }
     );
     if triggers::targeted_itself(&when) {
         r.it = Some(Ref::This);
@@ -299,6 +300,8 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::LifeLost { .. }
             | TriggerPattern::BecomesMonarch { .. }
             | TriggerPattern::Ventured { .. }
+            | TriggerPattern::RolledToVisit { .. }
+            | TriggerPattern::OpenedAttraction { .. }
             | TriggerPattern::CompletedDungeon { .. }
             | TriggerPattern::Proliferated { .. }
             | TriggerPattern::CoinFlipWon { .. }

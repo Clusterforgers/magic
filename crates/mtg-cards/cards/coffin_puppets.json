@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e49771ab-cabb-4a5f-aef3-a0ac8147e6bf",
+  "name": "Coffin Puppets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coffin Puppets",
+      "oracle_fingerprint": "b14f83e7580e9604d5496993bd8adee2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Land" }], "count": 2 } }],
+            "condition": {
+              "All": [
+                "YourTurn",
+                { "Step": "Upkeep" },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

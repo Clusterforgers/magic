@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6df7f4b4-a3a8-44d0-845f-84304bf6a3f8",
+  "name": "Keleth, Sunmane Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keleth, Sunmane Familiar",
+      "oracle_fingerprint": "64be546b6326bf69f8674b8b424e3444",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["Commander", { "ControlledBy": "You" }] } },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

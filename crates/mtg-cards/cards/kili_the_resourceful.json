@@ -7,12 +7,7 @@
       "name": "Kíli the Resourceful",
       "oracle_fingerprint": "b5d39bde124ca93db7eedb99e70f44b5",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 129 }
-          }
-        },
+        { "Keyword": "Storied" },
         {
           "Manual": {
             "reason": "you apply this clause by hand",

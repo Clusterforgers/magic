@@ -315,6 +315,28 @@ describe('the preview', () => {
     )
   })
 
+  it('names the numbers lit up on an Attraction, and nothing for another card', async () => {
+    const { container, user, fixture } = renderTable({
+      seats: 2,
+      state: (state) => {
+        const view = clone(must(state.view))
+        const attacker = must(view.combat.attackers[0]).object
+        view.objects = view.objects.map((object) =>
+          object.id === attacker ? { ...object, lights: [2, 6] } : object,
+        )
+        return { ...state, view, objectsById: indexById(view.objects) }
+      },
+    })
+    const attacker = must(fixture.view.combat.attackers[0]).object
+    await user.hover(must(container.querySelector<HTMLElement>(`button[data-object-id="${attacker}"]`)))
+    expect(
+      screen.getByTestId('card-preview').querySelector('[data-slot="preview-lights"]'),
+    ).toHaveTextContent('2, 6')
+    await user.unhover(must(container.querySelector<HTMLElement>(`button[data-object-id="${attacker}"]`)))
+    await user.hover(firstCard(container))
+    expect(screen.getByTestId('card-preview').querySelector('[data-slot="preview-lights"]')).toBeNull()
+  })
+
   it('docks on the side away from the card', async () => {
     const { container, user } = renderTable({ seats: 2 })
     const land = firstCard(container)

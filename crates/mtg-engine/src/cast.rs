@@ -80,6 +80,7 @@ pub(crate) fn activation_events(
             .ok()?
             .at(choices.x.unwrap_or(0));
             shots = parts::photographed(state, &price.parts, choices.cost_picks());
+            shots.extend(parts::rmt5_top_shots(state, player, &price.parts));
             events.extend(turns(&price, ability.object));
             // The other parts of the cost, in the order it prints them, with the objects the player picked for them.
             let mut picks = choices.cost_picks().iter();
@@ -455,11 +456,19 @@ pub(crate) fn spell_cast(
     choices: &Choices,
     granted: bool,
 ) -> Vec<Event> {
-    let mut events = vec![Event::SpellCast {
+    let mut events = Vec::with_capacity(3);
+    // The cards spliced onto the spell are revealed and stay in the hand (CR 702.47a).
+    if !choices.spliced().is_empty() {
+        events.push(Event::Revealed(crate::library::Revealed {
+            player,
+            cards: choices.spliced().to_vec(),
+        }));
+    }
+    events.push(Event::SpellCast {
         player,
         object: spell,
         choices: choices.clone(),
-    }];
+    });
     if granted {
         events.push(Event::ChoiceMade {
             player,
@@ -487,7 +496,8 @@ pub(crate) fn spell_events(
         choices.cost_picks(),
         choices.cost_kinds(),
     )?;
-    let shots = parts::photographed(state, parts, choices.cost_picks());
+    let mut shots = parts::photographed(state, parts, choices.cost_picks());
+    shots.extend(parts::rmt5_top_shots(state, player, parts));
     events.extend(spell_cast(
         player,
         spell,
@@ -603,9 +613,9 @@ fn announcement(
             choice: Choice::YesNo(true),
         }]),
         Some(Pending {
-            what: What::Attack(attackers, exert),
+            what: What::Attack(attackers, extras),
             ..
-        }) => Ok(crate::attack_tax::made(state, player, attackers, exert)),
+        }) => Ok(crate::attack_tax::made(state, player, attackers, extras)),
         Some(Pending {
             what: What::Block(blocks),
             ..

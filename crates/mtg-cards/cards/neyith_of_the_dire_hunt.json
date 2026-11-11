@@ -1,0 +1,59 @@
+{
+  "oracle_id": "aba04455-c13f-48f7-9674-56803b39a42b",
+  "name": "Neyith of the Dire Hunt",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Neyith of the Dire Hunt",
+      "oracle_fingerprint": "ce25c1099cbddaece24b07b306b72c44",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 80 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{R/G}",
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                              "toughness": 0
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Combat": {
+                            "who": { "Target": 0 },
+                            "quirk": { "MustBeBlocked": "AtLeastOne" }
+                          }
+                        },
+                        "duration": "UntilEndOfCombat"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -20,8 +20,8 @@
                           "what": {
                             "Object": [
                               { "Type": "Creature" },
-                              { "OwnedBy": "You" },
-                              { "In": "Graveyard" }
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
                             ]
                           }
                         }

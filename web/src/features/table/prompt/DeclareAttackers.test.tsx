@@ -465,3 +465,60 @@ describe('exerting an attacker', () => {
     ])
   })
 })
+
+describe('forming a band', () => {
+  const [a, b, c] = creaturesOf(fixtureOf(2), 0) as [ObjectId, ObjectId, ObjectId]
+  const options: AttackOptions = {
+    attackers: [
+      { object: a, defenders: [{ Player: 1 }], banding: true },
+      { object: b, defenders: [{ Player: 1 }] },
+      { object: c, defenders: [{ Player: 1 }] },
+    ],
+  }
+
+  it('offers Band only once two attackers are in and one has banding', async () => {
+    const { card, user } = attack(options)
+    await user.click(card(b))
+    await user.click(card(c))
+    expect(screen.queryByRole('button', { name: 'Form a band' })).toBeNull()
+    await user.click(card(a))
+    expect(screen.getByRole('button', { name: 'Form a band' })).toBeInTheDocument()
+  })
+
+  it.each([
+    ['without a band', false],
+    ['with a band', true],
+  ])('answers %s', async (_, banded) => {
+    const { card, user, button, answer } = attack(options)
+    await user.click(card(a))
+    await user.click(card(b))
+    if (banded) {
+      await user.click(button('Form a band'))
+      expect(button('Done forming the band')).toBeDisabled()
+      await user.click(card(a))
+      await user.click(card(b))
+      await user.click(button('Done forming the band'))
+    }
+    await user.click(button('Confirm attack'))
+    const attackers = [
+      [a, { Player: 1 }],
+      [b, { Player: 1 }],
+    ]
+    expect(answer.mock.calls).toEqual([
+      [banded ? { DeclareExerting: { attackers, bands: [[a, b]] } } : { DeclareAttackers: attackers }],
+    ])
+  })
+
+  it('takes a creature taken out of the attack out of its band', async () => {
+    const { card, user, button, answer } = attack(options)
+    await user.click(card(a))
+    await user.click(card(b))
+    await user.click(button('Form a band'))
+    await user.click(card(a))
+    await user.click(card(b))
+    await user.click(button('Done forming the band'))
+    await user.click(card(b))
+    await user.click(button('Confirm attack'))
+    expect(answer.mock.calls).toEqual([[{ DeclareAttackers: [[a, { Player: 1 }]] }]])
+  })
+})

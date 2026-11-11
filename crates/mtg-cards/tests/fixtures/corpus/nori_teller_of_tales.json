@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "b05adb48-980c-49a0-9ce6-7c7f3f20715d",
+  "oracle_id": "03253076-9add-4efb-9227-b0a062c86534",
+  "multiverse_ids": [],
+  "resource_id": "11C15235DE6D3FB63653A5853B484F7BB5634D94452DE6D567F7C518E613DDD1",
+  "mtgo_id": 154260,
+  "arena_id": 103541,
+  "tcgplayer_id": 708808,
+  "cardmarket_id": 900340,
+  "name": "Nori, Teller of Tales",
+  "lang": "en",
+  "released_at": "2026-08-14",
+  "uri": "https://api.scryfall.com/cards/b05adb48-980c-49a0-9ce6-7c7f3f20715d",
+  "scryfall_uri": "https://scryfall.com/card/hob/161/nori-teller-of-tales?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-29T11:08:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/0/b05adb48-980c-49a0-9ce6-7c7f3f20715d.jpg?1785323303",
+    "normal": "https://cards.scryfall.io/normal/front/b/0/b05adb48-980c-49a0-9ce6-7c7f3f20715d.jpg?1785323303",
+    "large": "https://cards.scryfall.io/large/front/b/0/b05adb48-980c-49a0-9ce6-7c7f3f20715d.jpg?1785323303",
+    "png": "https://cards.scryfall.io/png/front/b/0/b05adb48-980c-49a0-9ce6-7c7f3f20715d.png?1785323303",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/0/b05adb48-980c-49a0-9ce6-7c7f3f20715d.jpg?1785323303",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/0/b05adb48-980c-49a0-9ce6-7c7f3f20715d.jpg?1785323303",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/0/b05adb48-980c-49a0-9ce6-7c7f3f20715d.webp?1785323303",
+    "grid": "https://cards.scryfall.io/grid/front/b/0/b05adb48-980c-49a0-9ce6-7c7f3f20715d.webp?1785323303",
+    "display": "https://cards.scryfall.io/display/front/b/0/b05adb48-980c-49a0-9ce6-7c7f3f20715d.webp?1785323303",
+    "art": "https://cards.scryfall.io/art/front/b/0/b05adb48-980c-49a0-9ce6-7c7f3f20715d.webp?1785323303",
+    "crop": "https://cards.scryfall.io/crop/front/b/0/b05adb48-980c-49a0-9ce6-7c7f3f20715d.webp?1785323303",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/0/b05adb48-980c-49a0-9ce6-7c7f3f20715d.jpg?1785323303"
+  },
+  "mana_cost": "{1}{R/W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Dwarf Bard",
+  "oracle_text": "Whenever Nori attacks, target attacking creature gains first strike until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "59218c23-cb7a-4fde-9cff-3f2f71af1308",
+  "set": "hob",
+  "set_name": "The Hobbit",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/59218c23-cb7a-4fde-9cff-3f2f71af1308",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ahob&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/hob?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b05adb48-980c-49a0-9ce6-7c7f3f20715d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A03253076-9add-4efb-9227-b0a062c86534&unique=prints",
+  "collector_number": "161",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"If more of us valued food and cheer and song above hoarded gold, it would be a merrier world.\"\n—Thorin",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Marco Teixeira",
+  "artist_ids": [
+    "34108a62-3b01-4b43-b58e-9f5901908499"
+  ],
+  "illustration_id": "7527b9ce-1aea-4dbf-aa49-88f17d572a72",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 13235,
+  "prices": {
+    "usd": "0.10",
+    "usd_foil": "0.20",
+    "usd_etched": null,
+    "eur": "0.04",
+    "eur_foil": "0.11",
+    "tix": "0.01"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNori%252C%2BTeller%2Bof%2BTales",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNori%252C%2BTeller%2Bof%2BTales",
+    "edhrec": "https://edhrec.com/route/?cc=Nori%2C+Teller+of+Tales"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F708808%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=900340&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/154260?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

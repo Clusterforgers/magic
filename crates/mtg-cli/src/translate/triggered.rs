@@ -92,6 +92,8 @@ enum Word {
     Attackers,
     /// The player who declared the attackers.
     AttackingPlayer,
+    /// The permanent an attachment became unattached from.
+    Object,
 }
 
 /// The word's kind and whether it names that object's controller; none for a word this module does not know.
@@ -121,6 +123,7 @@ fn kind(word: &str) -> Option<(Word, bool)> {
         "TriggeredAttackedTarget" => (Word::AttackedTarget, false),
         "TriggeredAttackers" => (Word::Attackers, false),
         "TriggeredAttackingPlayer" => (Word::AttackingPlayer, false),
+        "TriggeredObject" | "TriggeredObjectLKICopy" => (Word::Object, false),
         _ => return None,
     })
 }
@@ -264,6 +267,8 @@ pub fn resolve(shape: Option<&Shape>, word: &str) -> Tr<Value> {
         Word::Target if mode == "BecomesTarget" => "TriggeringFirst",
         // A batch of damage holds what was hurt: the one player of a trigger, or the creatures dealt damage together.
         Word::Target if matches!(mode, "DamageDone" | "DamageDoneOnce") => "Triggering",
+        // The event of an unattachment holds the permanent it left.
+        Word::Object if mode == "Unattached" => "Triggering",
         _ => return gap(),
     };
     let object = matches!(what, Word::Card | Word::Attacker | Word::Owner);

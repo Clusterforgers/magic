@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0e7b9caf-8285-4386-98bc-9a809827f447",
+  "name": "Exhaustion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exhaustion",
+      "oracle_fingerprint": "9c34e2141f81eac14ab455323210b5a1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

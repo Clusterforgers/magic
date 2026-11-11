@@ -1,0 +1,19 @@
+{
+  "oracle_id": "767c896d-4ff6-4cd4-b3a4-80179e84e1cd",
+  "name": "Virulent Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Virulent Sliver",
+      "oracle_fingerprint": "54f6d25d98428793bf0fc52219b3af7c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Sliver" }, { "Type": "Creature" }] },
+            "mods": [{ "AddKeyword": { "Macro": { "name": "poisonous", "amount": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

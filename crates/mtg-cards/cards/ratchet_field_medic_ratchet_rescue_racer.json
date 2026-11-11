@@ -1,0 +1,45 @@
+{
+  "oracle_id": "4f95664f-6113-41e6-a99e-12bfc9d1710a",
+  "name": "Ratchet, Field Medic // Ratchet, Rescue Racer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ratchet, Field Medic",
+      "oracle_fingerprint": "78baf68865a7683d0bcae9b2e8b4e519",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 77 }
+          }
+        },
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 87, "end": 301 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ratchet, Rescue Racer",
+      "oracle_fingerprint": "c8371f152b0b19e3135339c8d4944f8e",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 65 }
+          }
+        },
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 75, "end": 233 }
+          }
+        }
+      ]
+    }
+  ]
+}

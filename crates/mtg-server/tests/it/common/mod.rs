@@ -37,7 +37,7 @@ pub fn seat(n: usize) -> PlayerId {
 
 /// Every wait in a test is bounded, so a bug shows up as a failure instead of a hang.
 pub async fn timed<T>(future: impl Future<Output = T>) -> T {
-    tokio::time::timeout(Duration::from_secs(120), future)
+    tokio::time::timeout(Duration::from_mins(2), future)
         .await
         .expect("timed out waiting for the game")
 }

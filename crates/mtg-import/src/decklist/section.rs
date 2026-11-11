@@ -10,6 +10,8 @@ fn section_from_word(word: &str) -> Option<Section> {
         "sideboard" | "side" | "side board" => Some(Section::Sideboard),
         "commander" | "commanders" | "command zone" => Some(Section::Commander),
         "companion" => Some(Section::Companion),
+        "attractions" | "attraction" | "attraction deck" => Some(Section::Attractions),
+        "stickers" | "sticker sheets" => Some(Section::Stickers),
         "maybeboard" | "maybe" | "maybe board" => Some(Section::Maybeboard),
         _ => None,
     }
@@ -22,6 +24,8 @@ pub fn header_word(section: Section) -> &'static str {
         Section::Sideboard => "Sideboard",
         Section::Commander => "Commander",
         Section::Companion => "Companion",
+        Section::Attractions => "Attractions",
+        Section::Stickers => "Stickers",
         Section::Maybeboard => "Maybeboard",
     }
 }
@@ -31,12 +35,12 @@ pub fn header_word(section: Section) -> &'static str {
 pub enum Header {
     /// A part of the deck.
     Section(Section),
-    /// Listed cards that are no deck cards, such as Moxfield's stickers; holds the name as written.
+    /// Listed cards that are no deck cards; holds the name as written.
     Ignored(String),
 }
 
-/// Sections some formats list next to the deck that hold no deck cards (case-insensitive).
-const IGNORED_WORDS: [&str; 1] = ["stickers"];
+/// Sections some formats list next to the deck that hold no deck cards (case-insensitive); none is known.
+const IGNORED_WORDS: [&str; 0] = [];
 
 /// The words of a header line without its colon and `(15)` count.
 fn header_text(line: &str) -> &str {
@@ -138,9 +142,10 @@ mod tests {
     }
 
     #[rstest]
-    #[case::moxfield("STICKERS:", Some(Header::Ignored("STICKERS".to_owned())))]
-    #[case::any_case("Stickers", Some(Header::Ignored("Stickers".to_owned())))]
-    #[case::with_count("Stickers (10)", Some(Header::Ignored("Stickers".to_owned())))]
+    #[case::moxfield("STICKERS:", Some(Header::Section(Section::Stickers)))]
+    #[case::any_case("Stickers", Some(Header::Section(Section::Stickers)))]
+    #[case::with_count("Stickers (10)", Some(Header::Section(Section::Stickers)))]
+    #[case::attractions("ATTRACTIONS:", Some(Header::Section(Section::Attractions)))]
     #[case::a_deck_section("SIDEBOARD:", Some(Header::Section(Section::Sideboard)))]
     #[case::a_card_named_so("Stickers of Doom", None)]
     #[case::unknown_shouting_header("LANDS:", None)]

@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "7d8238dd-858f-466c-96de-986bd66861d7",
+  "oracle_id": "791cbb7c-7935-4902-b050-9ea9d030e9fa",
+  "multiverse_ids": [
+    669017
+  ],
+  "mtgo_id": 129451,
+  "arena_id": 91639,
+  "tcgplayer_id": 558345,
+  "cardmarket_id": 777584,
+  "name": "Osteomancer Adept",
+  "lang": "en",
+  "released_at": "2024-08-02",
+  "uri": "https://api.scryfall.com/cards/7d8238dd-858f-466c-96de-986bd66861d7",
+  "scryfall_uri": "https://scryfall.com/card/blb/103/osteomancer-adept?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:47:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/d/7d8238dd-858f-466c-96de-986bd66861d7.jpg?1783910831",
+    "normal": "https://cards.scryfall.io/normal/front/7/d/7d8238dd-858f-466c-96de-986bd66861d7.jpg?1783910831",
+    "large": "https://cards.scryfall.io/large/front/7/d/7d8238dd-858f-466c-96de-986bd66861d7.jpg?1783910831",
+    "png": "https://cards.scryfall.io/png/front/7/d/7d8238dd-858f-466c-96de-986bd66861d7.png?1783910831",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/d/7d8238dd-858f-466c-96de-986bd66861d7.jpg?1783910831",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/d/7d8238dd-858f-466c-96de-986bd66861d7.jpg?1783910831",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/d/7d8238dd-858f-466c-96de-986bd66861d7.webp?1783910831",
+    "grid": "https://cards.scryfall.io/grid/front/7/d/7d8238dd-858f-466c-96de-986bd66861d7.webp?1783910831",
+    "display": "https://cards.scryfall.io/display/front/7/d/7d8238dd-858f-466c-96de-986bd66861d7.webp?1783910831",
+    "art": "https://cards.scryfall.io/art/front/7/d/7d8238dd-858f-466c-96de-986bd66861d7.webp?1783910831",
+    "crop": "https://cards.scryfall.io/crop/front/7/d/7d8238dd-858f-466c-96de-986bd66861d7.webp?1783910831",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/d/7d8238dd-858f-466c-96de-986bd66861d7.jpg?1783910831"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Squirrel Warlock",
+  "oracle_text": "Deathtouch\n{T}: Until end of turn, you may cast creature spells from your graveyard by foraging in addition to paying their other costs. If you cast a spell this way, that creature enters with a finality counter on it. (To forage, exile three cards from your graveyard or sacrifice a Food. If a creature with a finality counter on it would die, exile it instead.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Deathtouch"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a2f58272-bba6-439d-871e-7a46686ac018",
+  "set": "blb",
+  "set_name": "Bloomburrow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a2f58272-bba6-439d-871e-7a46686ac018",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ablb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/blb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7d8238dd-858f-466c-96de-986bd66861d7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A791cbb7c-7935-4902-b050-9ea9d030e9fa&unique=prints",
+  "collector_number": "103",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Zrom",
+  "artist_ids": [
+    "826eea7d-7381-42e0-b21d-60ec2d79b588"
+  ],
+  "illustration_id": "62196651-3811-4933-a4ea-a3f132d399be",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6227,
+  "penny_rank": 7734,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/products/bloomburrow/card-image-gallery",
+    "previewed_at": "2024-07-09"
+  },
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": "0.58",
+    "usd_etched": null,
+    "eur": "0.36",
+    "eur_foil": "0.71",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=669017&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOsteomancer%2BAdept",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOsteomancer%2BAdept",
+    "edhrec": "https://edhrec.com/route/?cc=Osteomancer+Adept"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F558345%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=777584&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/129451?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

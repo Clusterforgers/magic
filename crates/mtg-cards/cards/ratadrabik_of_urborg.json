@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b3ab43f2-4f2b-4439-9254-0110ce443fdb",
+  "name": "Ratadrabik of Urborg",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ratadrabik of Urborg",
+      "oracle_fingerprint": "fc2a9f0f6a853decd19fe2a7eea0f21c",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Zombie" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 62, "end": 259 }
+          }
+        }
+      ]
+    }
+  ]
+}

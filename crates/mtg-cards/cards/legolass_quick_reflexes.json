@@ -1,0 +1,20 @@
+{
+  "oracle_id": "59154c04-6bc5-4b95-af1f-6de5fed05649",
+  "name": "Legolas's Quick Reflexes",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Legolas's Quick Reflexes",
+      "oracle_fingerprint": "6bb6a5d3bbe64691e5bc7aa7a0e55549",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 130, "end": 307 }
+          }
+        }
+      ]
+    }
+  ]
+}

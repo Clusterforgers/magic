@@ -1,16 +1,23 @@
 {
   "oracle_id": "aed1f0cd-8df8-415f-afd6-ccfd12234334",
   "name": "The Rollercrusher Ride",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Rollercrusher Ride",
       "oracle_fingerprint": "dd22ae1f5a2234062a75cb2a3923a762",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 195 }
+          "Replacement": {
+            "when": { "Damage": { "source": [{ "ControlledBy": "You" }], "combat": false } },
+            "by": { "Multiply": 2 },
+            "condition": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            }
           }
         },
         {

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "30e3e48c-98dc-4d27-b7ea-e81d39f7d24e",
+  "name": "Mischievous Quanar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mischievous Quanar",
+      "oracle_fingerprint": "0c04eb2016254531114ee0567e48bdbb",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 0, "end": 40 }
+          }
+        },
+        { "Keyword": { "Morph": "{1}{U}{U}" } },
+        {
+          "Triggered": {
+            "when": { "TurnedFaceUp": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

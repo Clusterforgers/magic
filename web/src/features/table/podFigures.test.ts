@@ -20,7 +20,7 @@ import {
 } from './podFigures'
 import type { PodCounts, ZoneKey } from './podFigures'
 
-const COUNTS: PodCounts = { hand: 7, library: 46, graveyard: 5, exile: 1, command: 1 }
+const COUNTS: PodCounts = { hand: 7, library: 46, graveyard: 5, exile: 1, command: 1, attractions: 0 }
 
 const zones = (counts: Partial<Record<ZoneKey, number>>): PlayerView =>
   ({
@@ -96,7 +96,20 @@ describe('podCounts and chipZones', () => {
   })
 
   it('draws the four chips even when every one is empty: a zero is a figure', () => {
-    expect(chipZones({ hand: 0, library: 0, graveyard: 0, exile: 0, command: 0 })).toHaveLength(4)
+    expect(
+      chipZones({ hand: 0, library: 0, graveyard: 0, exile: 0, command: 0, attractions: 0 }),
+    ).toHaveLength(4)
+  })
+
+  it("draws the Attraction deck's chip last while it holds a card", () => {
+    expect(chipZones({ ...COUNTS, attractions: 9 })).toEqual([
+      'hand',
+      'library',
+      'graveyard',
+      'exile',
+      'command',
+      'attractions',
+    ])
   })
 })
 

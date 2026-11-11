@@ -1,0 +1,42 @@
+{
+  "oracle_id": "bad27b43-7716-4ce1-82ba-2a6d437363e7",
+  "name": "The Mechanist, Aerial Artisan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Mechanist, Aerial Artisan",
+      "oracle_fingerprint": "cb20c9a1348d4b60cb6ee231bbe485df",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, "Token", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 1 } },
+                    { "SetCreatureTypes": ["Construct"] },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

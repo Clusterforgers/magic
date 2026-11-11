@@ -78,7 +78,6 @@ fn restricted_and_lasting_mana_reads_as_the_rule(#[case] line: &str, #[case] eff
 #[rstest]
 #[case::unknown_subtype("Spell.Zorp", "key:Mana.RestrictValid=Spell.Zorp")]
 #[case::two_subtypes("Spell.Pirate+Rogue", "key:Mana.RestrictValid=Spell.Pirate+Rogue")]
-#[case::face_down("Static.isTurnFaceUp", "key:Mana.RestrictValid=Static.isTurnFaceUp")]
 fn a_restriction_that_is_not_read_stays_a_gap(#[case] restriction: &str, #[case] gap: &str) {
     let text = artifact(&format!(
         "A:AB$ Mana | Cost$ T | Produced$ C | RestrictValid$ {restriction}"

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f6dec1e0-148a-4742-815f-56806305897d",
+  "name": "Unblinking Bleb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unblinking Bleb",
+      "oracle_fingerprint": "9968616eb2b96c5698ae6102a2ca531f",
+      "abilities": [
+        { "Keyword": { "Morph": "{2}{U}" } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "TurnedFaceUp": { "what": ["This"] } },
+                { "TurnedFaceUp": { "what": ["Other"] } }
+              ]
+            },
+            "effects": [{ "May": { "effects": [{ "Scry": { "count": 2 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

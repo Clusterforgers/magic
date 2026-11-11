@@ -50,6 +50,8 @@ pub enum GivenRule {
     SwitchPowerToughness,
     /// The host's card types, subtypes or creature types change.
     ChangeTypes,
+    /// The host's text changes (CR 612).
+    ChangeText,
     /// The host's colours change.
     SetColors,
     /// The host is goaded.
@@ -114,7 +116,9 @@ impl Gives {
             Modification::DoesntUntap => GivenRule::DoesntUntap,
             Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,
             Modification::LoseAbilities => GivenRule::LoseAbilities,
-            Modification::RemoveKeyword(_) | Modification::LockKeyword(_) => GivenRule::LoseKeyword,
+            Modification::RemoveKeyword(_)
+            | Modification::RemoveKeywordKind(_)
+            | Modification::LockKeyword(_) => GivenRule::LoseKeyword,
             Modification::GrantAbility(_)
             | Modification::GainAbilities(_)
             | Modification::GrantText(_) => GivenRule::GainAbility,
@@ -124,11 +128,13 @@ impl Gives {
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
             | Modification::AddSupertype(_)
+            | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => GivenRule::ChangeTypes,
             Modification::SetColors(_) | Modification::AddColors(_) => GivenRule::SetColors,
+            Modification::ChangeText { .. } => GivenRule::ChangeText,
             Modification::Goaded { .. } => GivenRule::Goaded,
         };
         self.rule(rule);

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f2103ab8-a183-4db8-98dd-4146217b5125",
+  "name": "Pariah's Shield",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pariah's Shield",
+      "oracle_fingerprint": "af372bed1a399452f0b29d4859649655",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 76 }
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

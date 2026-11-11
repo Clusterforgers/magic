@@ -8,7 +8,7 @@ use mtg_core::color::Color;
 
 use crate::companion::DeckCondition;
 use crate::cost::{Cost, CostItem};
-use crate::keyword::{GiftKind, Keyword};
+use crate::keyword::{GiftKind, Keyword, SpliceOnto};
 use crate::mana::ManaCostX;
 use crate::refs::{Pred, Selector};
 use crate::value::{Amount, Cmp, StatKind};
@@ -22,6 +22,8 @@ enum Params {
     Dash,
     /// A cost: mana symbols, or a dash and a cost in words.
     Cost,
+    /// Mana symbols only: a cost in words leaves the line to the text (splice, whose engine pays mana alone).
+    Mana,
     /// A number or `X`.
     Number,
     /// Words (`creature`, `from red`).
@@ -90,6 +92,8 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("shadow", Params::None),
     ("skulk", Params::None),
     ("banding", Params::None),
+    ("splice onto arcane", Params::Mana),
+    ("splice onto instant or sorcery", Params::Mana),
     ("infect", Params::None),
     ("wither", Params::None),
     ("persist", Params::None),
@@ -127,6 +131,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("read ahead", Params::None),
     ("exploit", Params::None),
     ("ascend", Params::None),
+    ("storied", Params::None),
     ("cipher", Params::None),
     ("conspire", Params::None),
     ("dethrone", Params::None),
@@ -287,6 +292,7 @@ fn plausible(params: Params, rest: &str) -> bool {
         Params::None => rest.is_empty(),
         Params::Dash => rest.is_empty() || rest.starts_with('\u{2014}'),
         Params::Cost => rest.contains('{') || rest.starts_with('\u{2014}'),
+        Params::Mana => rest.starts_with('{'),
         Params::Number => {
             rest == "X" || (!rest.is_empty() && rest.chars().all(|c| c.is_ascii_digit()))
         }
@@ -399,6 +405,7 @@ fn hexproof_quality(word: &str) -> Option<Selector> {
 
 /// The keyword an item names, when the DSL declares it and its parameter reads; `None` leaves the
 /// item to the table.
+#[allow(clippy::too_many_lines)]
 pub fn read(item: &str) -> Option<Keyword> {
     let found = find(item)?;
     let rest = found.rest;
@@ -423,6 +430,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "disguise" => spell_cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
+        "cleave" => spell_cost(rest).map(cleave),
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
         "squad" => spell_cost(rest).map(Keyword::Squad),
@@ -465,6 +473,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "afflict" => positive(rest).map(Keyword::Afflict),
         "renown" => positive(rest).map(Keyword::Renown),
         "replicate" => spell_cost(rest).map(Keyword::Replicate),
+        name if SPLICE_OR_BAND.contains(&name) => splice_or_band(name, rest),
         "backup" => positive(rest).map(backup),
         "crew" => positive(rest).map(Keyword::Crew),
         "saddle" => positive(rest).map(Keyword::Saddle),
@@ -730,6 +739,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "storm" => Keyword::Storm,
         "gravestorm" => Keyword::Gravestorm,
         "epic" => Keyword::Epic,
+        "banding" => Keyword::Banding,
         "assist" => Keyword::Assist,
         "sunburst" => Keyword::Sunburst,
         "demonstrate" => Keyword::Demonstrate,
@@ -782,10 +792,22 @@ fn plain(name: &str) -> Option<Keyword> {
         "riot" => Keyword::Riot,
         "decayed" => Keyword::Decayed,
         "ascend" => Keyword::Ascend,
+        "storied" => Keyword::Storied,
         "jump-start" => Keyword::JumpStart,
         "retrace" => Keyword::Retrace,
         _ => return None,
     })
+}
+
+/// Cleave at `cost`, its spell filled in by the compiler from the text without the bracketed words.
+fn cleave(cost: crate::cost::Cost) -> Keyword {
+    Keyword::Cleave {
+        cost,
+        spell: Box::new(crate::ability::Ability::Spell {
+            targets: Vec::new(),
+            effects: Vec::new(),
+        }),
+    }
 }
 
 /// The quality a protection names, when it is one colour, colourless, multicolored, one kind of permanent, a mana value
@@ -819,6 +841,7 @@ fn kind_quality(words: &str) -> Option<Selector> {
             }]));
         }
         "snow" => return Some(Selector(vec![Pred::Supertype(Supertype::Snow)])),
+        "instants" => return Some(Selector(vec![Pred::Type(CardType::Instant)])),
         "legendary creatures" => {
             return Some(Selector(vec![
                 creature,
@@ -860,6 +883,7 @@ pub fn kind_quality_word(quality: &Selector) -> Option<String> {
             },
         ] => "monocolored".to_owned(),
         [Pred::Supertype(Supertype::Snow)] => "snow".to_owned(),
+        [Pred::Type(CardType::Instant)] => "instants".to_owned(),
         [kind, Pred::Supertype(Supertype::Legendary)] if *kind == creature => {
             "legendary creatures".to_owned()
         }
@@ -986,6 +1010,25 @@ fn cost(rest: &str) -> Option<Cost> {
         return (life > 0).then(|| Cost(vec![CostItem::PayLife(Amount::Fixed(life))]));
     }
     ManaCostX::from_str(rest).ok().map(Cost::mana)
+}
+
+/// The keywords [`splice_or_band`] reads.
+const SPLICE_OR_BAND: [&str; 3] = [
+    "splice onto arcane",
+    "splice onto instant or sorcery",
+    "bands with other",
+];
+
+/// Splice with its cost, which the engine pays in mana alone (CR 702.47a; a cost in words stays unread), or "bands with
+/// other" with its quality (CR 702.22b).
+fn splice_or_band(name: &str, rest: &str) -> Option<Keyword> {
+    let onto = match name {
+        "splice onto arcane" => SpliceOnto::Arcane,
+        "splice onto instant or sorcery" => SpliceOnto::InstantOrSorcery,
+        _ => return super::read::affinity_filter(rest).map(Keyword::BandsWithOther),
+    };
+    let cost = ManaCostX::from_str(rest).ok().map(Cost::mana)?;
+    Some(Keyword::Splice { onto, cost })
 }
 
 /// The cost of a keyword paid as a spell is cast (kicker, buyback, entwine, flashback, evoke, madness): as `cost`, else
@@ -1157,6 +1200,7 @@ mod tests {
         &[protects(Pred::Compare { stat: StatKind::Colors, op: Cmp::Eq, to: Amount::Fixed(1) })]
     )]
     #[case::snow("Protection from snow", &[protects(Pred::Supertype(Supertype::Snow))])]
+    #[case::instants("Protection from instants", &[protects(Pred::Type(CardType::Instant))])]
     #[case::two_colours(
         "Protection from white and from blue",
         &[protects(Pred::Color(Color::White)), protects(Pred::Color(Color::Blue))]
@@ -1430,6 +1474,10 @@ mod tests {
     #[case::recover_generic("Recover {1}{B}", Keyword::Recover(mana("{1}{B}")))]
     #[case::ripple("Ripple 4", Keyword::Ripple(4))]
     #[case::epic("Epic", Keyword::Epic)]
+    #[case::banding("Banding", Keyword::Banding)]
+    #[case::bands_with_other_legendary("Bands with other legendary creatures", Keyword::BandsWithOther(Selector(vec![Pred::Type(CardType::Creature), Pred::Supertype(Supertype::Legendary)])))]
+    #[case::splice_onto_arcane("Splice onto Arcane {1}{R}", Keyword::Splice { onto: SpliceOnto::Arcane, cost: mana("{1}{R}") })]
+    #[case::splice_onto_instants("Splice onto instant or sorcery {2}{U}", Keyword::Splice { onto: SpliceOnto::InstantOrSorcery, cost: mana("{2}{U}") })]
     #[case::demonstrate("Demonstrate", Keyword::Demonstrate)]
     #[case::bargain("Bargain", Keyword::Bargain)]
     #[case::conspire("Conspire", Keyword::Conspire)]
@@ -1493,6 +1541,7 @@ mod tests {
     #[case::riot("Riot", Keyword::Riot)]
     #[case::decayed("Decayed", Keyword::Decayed)]
     #[case::ascend("Ascend", Keyword::Ascend)]
+    #[case::storied("Storied", Keyword::Storied)]
     #[case::fabricate("Fabricate 2", Keyword::Fabricate(2))]
     #[case::fabricate_lowercase("fabricate 1", Keyword::Fabricate(1))]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
@@ -1627,6 +1676,10 @@ mod tests {
         "Enchant Forest",
         Keyword::Enchant(Selector(vec![Pred::Subtype(Subtype("Forest".into()))]))
     )]
+    #[case::dk27_enchant_a_card_in_a_graveyard(
+        "Enchant creature card in a graveyard",
+        Keyword::Enchant(Selector(vec![Pred::Type(CardType::Creature), Pred::In(crate::refs::ZoneKind::Graveyard)]))
+    )]
     #[case::companion(
         "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         Keyword::companion(DeckCondition::Distinct {
@@ -1720,7 +1773,7 @@ mod tests {
     #[case::ward_with_nothing_to_pay("Ward\u{2014}")]
     #[case::ward_sacrificing_a_made_up_kind("Ward\u{2014}Sacrifice a frobnicator.")]
     #[case::ward_with_a_cost_that_is_a_sentence("Ward\u{2014}Draw a card.")]
-    #[case::enchant_a_card_in_a_graveyard("Enchant creature card in a graveyard")]
+    #[case::enchant_a_card_in_your_graveyard("Enchant creature card in your graveyard")]
     #[case::enchant_with_a_quality_the_table_keeps("Enchant bewildered creature")]
     #[case::enchant_with_another_aura("Enchant creature with another Aura attached to it")]
     #[case::enchant_nothing("Enchant")]
@@ -1733,7 +1786,11 @@ mod tests {
         "Companion \u{2014} Each permanent card in your starting deck has an activated ability."
     )]
     #[case::companion_without_a_condition("Companion")]
-    #[case::undeclared("Banding")]
+    #[case::bands_with_other_named_creatures("Bands with other creatures named Wolves of the Hunt")]
+    #[case::splice_onto_a_made_up_kind("Splice onto Banana {1}")]
+    #[case::splice_without_a_cost("Splice onto Arcane")]
+    #[case::splice_by_sacrifice("Splice onto Arcane\u{2014}Sacrifice two Mountains.")]
+    #[case::splice_paid_by_an_opponents_life("Splice onto Arcane\u{2014}An opponent gains 5 life.")]
     #[case::crew_x("Crew X")]
     #[case::dredge_x("Dredge X")]
     #[case::dredge_nothing("Dredge 0")]
@@ -1809,6 +1866,7 @@ mod tests {
             // Every typecycling is read from the word before `cycling`; `Basic landcycling` is the one with a table entry.
             "Typecycling" => "Basic landcycling",
             "Equip to" => "Equip",
+            "Splice" => "Splice onto Arcane",
             other => other,
         }
     }
@@ -1927,6 +1985,7 @@ mod tests {
             "Plot {1}",
             "Fabricate 1",
             "Ascend",
+            "Storied",
             "Daybound",
             "Nightbound",
             "Wither",
@@ -1996,6 +2055,10 @@ mod tests {
             "Recover {1}",
             "Ripple 4",
             "Epic",
+            "Banding",
+            "Bands with other Dinosaurs",
+            "Splice onto Arcane {1}{R}",
+            "Cleave {1}{R}",
             "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",

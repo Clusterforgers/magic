@@ -74,6 +74,8 @@ pub enum Action {
     Bolstered,
     /// A creature adapted.
     Adapted,
+    /// A creature evolved (CR 702.100d).
+    Evolved,
     /// A creature became monstrous.
     BecameMonstrous,
     /// A creature became renowned.
@@ -88,6 +90,8 @@ pub enum Action {
     Learned,
     /// A player rolled a die.
     Rolled,
+    /// A player collected evidence (CR 701.59).
+    CollectedEvidence,
 }
 
 impl Action {
@@ -137,6 +141,7 @@ impl Action {
             Action::Amassed => ("amass", "amasses"),
             Action::Bolstered => ("bolster", "bolsters"),
             Action::Adapted => ("adapt", "adapts"),
+            Action::Evolved => ("evolve", "evolves"),
             Action::BecameMonstrous => ("become monstrous", "becomes monstrous"),
             Action::BecameRenowned => ("become renowned", "becomes renowned"),
             Action::Exploited => ("exploit a creature", "exploits a creature"),
@@ -144,6 +149,7 @@ impl Action {
             Action::Mutated => ("mutate", "mutates"),
             Action::Learned => ("learn", "learns"),
             Action::Rolled => ("roll a die", "rolls a die"),
+            Action::CollectedEvidence => ("collect evidence", "collects evidence"),
         }
     }
 

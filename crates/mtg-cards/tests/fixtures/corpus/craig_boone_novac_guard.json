@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "63d83dad-21c3-4777-84b0-3c775585b5fd",
+  "oracle_id": "74f4743b-06a9-48e3-9fdf-27a56660ac8e",
+  "multiverse_ids": [
+    652187
+  ],
+  "mtgo_id": 132449,
+  "tcgplayer_id": 540004,
+  "cardmarket_id": 758538,
+  "name": "Craig Boone, Novac Guard",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/63d83dad-21c3-4777-84b0-3c775585b5fd",
+  "scryfall_uri": "https://scryfall.com/card/pip/100/craig-boone-novac-guard?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/3/63d83dad-21c3-4777-84b0-3c775585b5fd.jpg?1783912390",
+    "normal": "https://cards.scryfall.io/normal/front/6/3/63d83dad-21c3-4777-84b0-3c775585b5fd.jpg?1783912390",
+    "large": "https://cards.scryfall.io/large/front/6/3/63d83dad-21c3-4777-84b0-3c775585b5fd.jpg?1783912390",
+    "png": "https://cards.scryfall.io/png/front/6/3/63d83dad-21c3-4777-84b0-3c775585b5fd.png?1783912390",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/3/63d83dad-21c3-4777-84b0-3c775585b5fd.jpg?1783912390",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/3/63d83dad-21c3-4777-84b0-3c775585b5fd.jpg?1783912390",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/3/63d83dad-21c3-4777-84b0-3c775585b5fd.webp?1783912390",
+    "grid": "https://cards.scryfall.io/grid/front/6/3/63d83dad-21c3-4777-84b0-3c775585b5fd.webp?1783912390",
+    "display": "https://cards.scryfall.io/display/front/6/3/63d83dad-21c3-4777-84b0-3c775585b5fd.webp?1783912390",
+    "art": "https://cards.scryfall.io/art/front/6/3/63d83dad-21c3-4777-84b0-3c775585b5fd.webp?1783912390",
+    "crop": "https://cards.scryfall.io/crop/front/6/3/63d83dad-21c3-4777-84b0-3c775585b5fd.webp?1783912390",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/3/63d83dad-21c3-4777-84b0-3c775585b5fd.jpg?1783912390"
+  },
+  "mana_cost": "{1}{R}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Soldier",
+  "oracle_text": "Reach, lifelink\nOne for My Baby — Whenever you attack with two or more creatures, put two quest counters on Craig Boone. When you do, Craig Boone deals damage equal to the number of quest counters on it to up to one target creature unless that creature's controller has Craig Boone deal that much damage to them.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Lifelink",
+    "Reach",
+    "One for My Baby"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/63d83dad-21c3-4777-84b0-3c775585b5fd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A74f4743b-06a9-48e3-9fdf-27a56660ac8e&unique=prints",
+  "collector_number": "100",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Pierre Raveneau",
+  "artist_ids": [
+    "af0b5c5b-b496-46df-a026-cceefb5b3ef8"
+  ],
+  "illustration_id": "f77d9bf8-824d-450c-82f9-c7c4ab896ba5",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 7839,
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": "2.66",
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": "2.89",
+    "tix": "3.58"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652187&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCraig%2BBoone%252C%2BNovac%2BGuard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCraig%2BBoone%252C%2BNovac%2BGuard",
+    "edhrec": "https://edhrec.com/route/?cc=Craig+Boone%2C+Novac+Guard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F540004%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=758538&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132449?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

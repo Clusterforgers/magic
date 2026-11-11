@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a1fc4269-f3e4-4a59-849d-aa1727eef23a",
+  "name": "From Under the Floorboards",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "From Under the Floorboards",
+      "oracle_fingerprint": "d48780a85aac9812d7a76e0fec0624e7",
+      "abilities": [
+        { "Keyword": { "Madness": "{X}{B}{B}" } },
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 142, "end": 308 }
+          }
+        }
+      ]
+    }
+  ]
+}

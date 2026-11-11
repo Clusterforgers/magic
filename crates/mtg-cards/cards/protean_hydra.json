@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6e32b958-70d3-4f3d-b10e-d6c8cb27dd93",
+  "name": "Protean Hydra",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Protean Hydra",
+      "oracle_fingerprint": "dd7af2a78f01062a587e4eb9fa8ab16b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 50, "end": 157 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 158, "end": 281 }
+          }
+        }
+      ]
+    }
+  ]
+}

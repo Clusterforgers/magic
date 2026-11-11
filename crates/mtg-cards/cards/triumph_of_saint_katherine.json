@@ -1,0 +1,21 @@
+{
+  "oracle_id": "6f8a4998-35c7-4e30-a9e7-7d4ec933238a",
+  "name": "Triumph of Saint Katherine",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Triumph of Saint Katherine",
+      "oracle_fingerprint": "f8e6fc142f739ba7e213d41fc8ed8ba9",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 9, "end": 237 }
+          }
+        },
+        { "Keyword": { "Miracle": "{1}{W}" } }
+      ]
+    }
+  ]
+}

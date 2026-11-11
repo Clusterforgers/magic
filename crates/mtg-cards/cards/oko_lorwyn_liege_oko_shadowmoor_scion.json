@@ -1,0 +1,122 @@
+{
+  "oracle_id": "a0c956dc-d7de-4f11-b76f-7537fbee1731",
+  "name": "Oko, Lorwyn Liege // Oko, Shadowmoor Scion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Oko, Lorwyn Liege",
+      "oracle_fingerprint": "0710eb49d83dbcead333824560e53e58",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{G}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["AddAllCreatureTypes"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -2, "toughness": 0 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Oko, Shadowmoor Scion",
+      "oracle_fingerprint": "935c449a7e4aa2fc8adea743ae55e27b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Pay": { "cost": "{U}", "paid": [{ "Transform": { "what": "This" } }] } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "milled" } },
+                      { "In": "Graveyard" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" },
+                          { "Type": "Battle" }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elk",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elk"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 215, "end": 351 }
+          }
+        }
+      ]
+    }
+  ]
+}

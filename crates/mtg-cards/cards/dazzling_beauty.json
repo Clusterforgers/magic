@@ -1,0 +1,30 @@
+{
+  "oracle_id": "de96ef93-a2e0-409d-9d25-fcb2405039b5",
+  "name": "Dazzling Beauty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dazzling Beauty",
+      "oracle_fingerprint": "19eeb2ec7b30d0208e004deda4b17b2e",
+      "abilities": [
+        { "CastOnly": { "condition": { "Step": "DeclareBlockers" } } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Unblocked", "Attacking"] } }
+            ],
+            "effects": [
+              { "BecomeBlocked": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

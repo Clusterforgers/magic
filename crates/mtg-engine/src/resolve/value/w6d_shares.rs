@@ -130,13 +130,18 @@ impl Scope<'_> {
         })
     }
 
-    /// Whether the object is a permanent on the battlefield attached to one of the objects the reference names.
+    /// Whether the object is a permanent on the battlefield attached to one of the objects the reference names, or to one
+    /// of the players it names.
     fn w6d_attached_to(&self, host: &Ref, seen: &Seen<'_>) -> Result<bool, ResolveError> {
         let Some(card) = seen.card.filter(|_| seen.zone == Zone::Battlefield) else {
             return Ok(false);
         };
         let Some(attached_to) = self.state.host_of(card.id()) else {
-            return Ok(false);
+            // An Aura that enchants a player is attached to that player.
+            return Ok(match self.state.player_host_of(card.id()) {
+                Some(player) => self.players(host)?.contains(&player),
+                None => false,
+            });
         };
         Ok(self
             .objects(host)?

@@ -576,6 +576,32 @@ impl Driver {
         self.answer(Answer::DeclareAttackers(chosen))
     }
 
+    /// The deciding player attacks as [`Driver::attack`] does, with the attackers named in each of `bands` in a band
+    /// (CR 702.22c).
+    pub fn attack_in_bands(
+        &mut self,
+        attacks: &[(&str, usize)],
+        bands: &[&[&str]],
+    ) -> Result<Vec<Event>, ScriptError> {
+        let attackers = self.w11a_attackers(attacks)?;
+        let bands = bands
+            .iter()
+            .map(|band| {
+                band.iter()
+                    .map(|name| {
+                        let named = attackers.iter().map(|(object, _)| *object);
+                        self.find(named, name, "attackers")
+                    })
+                    .collect::<Result<Vec<_>, _>>()
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+        self.answer(Answer::DeclareExerting {
+            attackers,
+            exert: Vec::new(),
+            bands,
+        })
+    }
+
     /// The deciding player attacks as [`Driver::attack`] does and exerts the attackers named in `exert` (CR 701.43).
     pub fn w11a_attack_exerting(
         &mut self,
@@ -590,7 +616,11 @@ impl Driver {
                 self.find(named, name, "attackers")
             })
             .collect::<Result<Vec<_>, _>>()?;
-        self.answer(Answer::DeclareExerting { attackers, exert })
+        self.answer(Answer::DeclareExerting {
+            attackers,
+            exert,
+            bands: Vec::new(),
+        })
     }
 
     /// The attackers and defenders `attacks` names among the legal attackers of the pending declaration.

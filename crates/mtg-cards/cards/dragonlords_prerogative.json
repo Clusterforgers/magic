@@ -1,0 +1,30 @@
+{
+  "oracle_id": "46bc0aaf-987f-4c8d-b98b-50b90f97c9a3",
+  "name": "Dragonlord's Prerogative",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dragonlord's Prerogative",
+      "oracle_fingerprint": "dc4f7efadaf261611e7bc54819cf935f",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "RevealFromHand": { "filter": [{ "Subtype": "Dragon" }] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 87, "end": 194 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 195, "end": 211 }
+          }
+        }
+      ]
+    }
+  ]
+}

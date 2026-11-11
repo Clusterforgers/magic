@@ -21,13 +21,15 @@
             "effects": [
               {
                 "Pay": {
-                  "cost": [{ "PayLife": { "Tallied": { "who": "You", "what": "LifeGained" } } }],
+                  "cost": [
+                    { "PayLife": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } } }
+                  ],
                   "paid": [
                     {
                       "CreateToken": {
                         "token": {
                           "Sized": {
-                            "size": { "Tallied": { "who": "You", "what": "LifeGained" } },
+                            "size": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
                             "token": {
                               "name": "Demon",
                               "colors": ["Black"],

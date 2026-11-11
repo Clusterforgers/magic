@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7d05ffe2-e52b-42af-87ca-6aae488b9f41",
+  "name": "Behemoth of Vault 0",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Behemoth of Vault 0",
+      "oracle_fingerprint": "08e9ddf18aae8bfe59f171223461e9bc",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 4 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 80, "end": 218 }
+          }
+        }
+      ]
+    }
+  ]
+}

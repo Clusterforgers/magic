@@ -1,7 +1,7 @@
 {
   "oracle_id": "16950554-0e39-4705-aab4-7a8734771844",
   "name": "Shape of the Wiitigo",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Shape of the Wiitigo",
@@ -15,9 +15,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 86, "end": 253 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "Attached",
+                      "selector": [
+                        { "FoughtSinceYourLastUpkeep": { "attacked": true, "blocked": true } }
+                      ]
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1" } }],
+                  "otherwise": [{ "RemoveCounters": { "from": "Attached", "counter": "+1/+1" } }]
+                }
+              }
+            ]
           }
         }
       ]

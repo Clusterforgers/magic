@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f1fee486-660e-4356-896e-671e8b675ad8",
+  "name": "Storm Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm Elemental",
+      "oracle_fingerprint": "aa219c92cb3e5ebc2df8557770fcff0e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, { "ExileTop": 1 }],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, { "ExileTop": 1 }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "Paid",
+                      "selector": [{ "Supertype": "Snow" }, { "Type": "Land" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

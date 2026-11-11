@@ -1,0 +1,32 @@
+{
+  "oracle_id": "73c7fdb3-4742-4d08-8658-daa4435c49b1",
+  "name": "Invasion of Vryn // Overloaded Mage-Ring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Vryn",
+      "oracle_fingerprint": "9c0b814e8f91d6e265236efa25071e08",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 3 } }, { "Discard": {} }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Overloaded Mage-Ring",
+      "oracle_fingerprint": "130a78999a4ee9a4fa3f2d571e93bb74",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": ["Spell", { "ControlledBy": "You" }] } }],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

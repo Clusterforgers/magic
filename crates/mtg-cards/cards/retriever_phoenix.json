@@ -1,0 +1,27 @@
+{
+  "oracle_id": "279e573d-b7a3-4e62-a708-3ec992d97972",
+  "name": "Retriever Phoenix",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Retriever Phoenix",
+      "oracle_fingerprint": "ab4537af325a1358bde4e7a0fea06ee1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 14, "end": 185 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 186, "end": 301 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "9b0b217d-cc9d-4187-89cb-f13160ed2983",
+  "name": "The Rise of Sozin // Fire Lord Sozin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Rise of Sozin",
+      "oracle_fingerprint": "0fefdb87370794f405fa9b5520bb926c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 95, "end": 252 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fire Lord Sozin",
+      "oracle_fingerprint": "371a39de62c97679512e3ad84871f00e",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 3 } } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 108, "end": 337 }
+          }
+        }
+      ]
+    }
+  ]
+}

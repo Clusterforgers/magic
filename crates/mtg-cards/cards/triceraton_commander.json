@@ -1,0 +1,55 @@
+{
+  "oracle_id": "45d40cdb-21cc-4569-a894-83dd3026c947",
+  "name": "Triceraton Commander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triceraton Commander",
+      "oracle_fingerprint": "7c34d173fdf2a9f99deade899bed1dfd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dinosaur Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dinosaur", "Soldier"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }, "Other"]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

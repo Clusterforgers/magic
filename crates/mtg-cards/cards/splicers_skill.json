@@ -1,7 +1,7 @@
 {
   "oracle_id": "96fe9bab-0ffa-4d8a-81b7-a48fd532d3f2",
   "name": "Splicer's Skill",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Splicer's Skill",
@@ -26,12 +26,7 @@
             ]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 64, "end": 259 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "InstantOrSorcery", "cost": "{3}{W}" } } }
       ]
     }
   ]

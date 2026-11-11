@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7776c114-c02a-4694-9b9d-00fbfad2d2a2",
+  "name": "Dream Chisel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Chisel",
+      "oracle_fingerprint": "188341310de9e9b89e3cf0c7b86e879b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "FaceDown", { "Type": "Creature" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -24,3 +24,20 @@ export const assignDamage =
     }
     return { id: 1, decision: { player: viewer, kind: { AssignDamage: options } } }
   }
+
+/**
+ * Banding (CR 702.22j): a creature of the next seat attacks and two of the viewer's creatures block it, one with
+ * banding, so the viewer divides the attacker's damage among them.
+ */
+export const assignBandedDamage: DevPrompt = ({ view }) => {
+  const viewer = view.viewer
+  const opponent = (viewer + 1) % view.players.length
+  const attacker = view.objects.find((object) => isCreature(object) && object.controller === opponent)
+  const blockers = view.objects.filter((object) => isCreature(object) && object.controller === viewer)
+  const options: DamageOptions = {
+    attacker: attacker?.id ?? 0,
+    power: Math.max(attacker?.power ?? 0, 4),
+    blockers: blockers.slice(0, 2).map((object) => object.id),
+  }
+  return { id: 1, decision: { player: viewer, kind: { AssignDamage: options } } }
+}

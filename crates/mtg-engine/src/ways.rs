@@ -116,19 +116,23 @@ fn cast_cost_x(cost: &mtg_cards::cost::Cost, counted: bool) -> Option<(ManaCost,
     (!unpaid).then(|| (price.mana.unwrap_or(ManaCost::ZERO), price.parts, price.x))
 }
 
-/// How many `{X}` the cost of the alternative way `way` of the card `id` holds: the miracle cost may hold some
-/// ("Miracle {X}{W}{W}", CR 107.3), whose X is announced in place of the one of the printed cost; any other way holds none.
+/// How many `{X}` the cost of the alternative way `way` of the card `id` holds: the miracle and cleave costs may hold some
+/// ("Miracle {X}{W}{W}", "Cleave {X}{R}{W}", CR 107.3), whose X is announced in place of the one of the printed cost; any
+/// other way holds none.
 pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u32 {
     if way == CastWay::Harmonize {
         return crate::c9_emerge_ways::c9_emerge_harmonize_x(&keywords_of(state, id));
     }
-    if way != CastWay::Miracle {
+    if !matches!(way, CastWay::Miracle | CastWay::Cleave) {
         return 0;
     }
     keywords_of(state, id)
         .into_iter()
-        .find_map(|keyword| match keyword {
-            Keyword::Miracle(cost) => cast_cost_x(cost, false).map(|(_, _, x)| x),
+        .find_map(|keyword| match (way, keyword) {
+            (CastWay::Miracle, Keyword::Miracle(cost))
+            | (CastWay::Cleave, Keyword::Cleave { cost, .. }) => {
+                cast_cost_x(cost, false).map(|(_, _, x)| x)
+            }
             _ => None,
         })
         .unwrap_or(0)
@@ -576,6 +580,7 @@ fn keyword_way(
         }
         Keyword::Evoke(cost) => (CastWay::Evoke, "Evoke", cost, in_hand),
         Keyword::Overload(cost) => (CastWay::Overload, "Overload", cost, in_hand),
+        Keyword::Cleave { cost, .. } => (CastWay::Cleave, "Cleave", cost, in_hand),
         Keyword::Dash(cost) => (
             CastWay::Dash,
             "Dash",
@@ -664,12 +669,17 @@ fn keyword_way(
             | CastWay::Prototype
     ) {
         cast_cost(cost)?
+    } else if way == CastWay::Cleave {
+        // A cleave cost may hold `{X}`, announced as the spell is cast (`alternative_x`).
+        let (mana, parts, _) = cast_cost_with_x(cost).filter(|(_, parts, _)| parts.is_empty())?;
+        (mana, parts)
     } else {
         (mana_only(cost)?, Vec::new())
     };
+    let x = "{X}".repeat(usize::try_from(alternative_x(state, id, way)).unwrap_or(0));
     Some(Way {
         alternative: Some(way),
-        label: format!("{name} {}", cost_words(&mana, &parts)),
+        label: format!("{name} {x}{}", cost_words(&mana, &parts)),
         mana: Some(mana),
         instant,
         variant: 0,
@@ -947,7 +957,7 @@ pub(crate) fn can_foretell(
             pool,
             &for_card(state, sources, id),
             life,
-            &Spend::other(),
+            &Spend::special(mtg_cards::spend::SpecialAction::Foretell),
         )
 }
 
@@ -1030,7 +1040,7 @@ pub(crate) fn can_turn_up(
             pool,
             &for_card(state, sources, id),
             life,
-            &Spend::other(),
+            &Spend::special(mtg_cards::spend::SpecialAction::TurnFaceUp),
         )
 }
 
@@ -1158,6 +1168,9 @@ pub(crate) fn announceable_in(
     if way == Some(CastWay::Mutate) {
         // The creature spell has the one target of mutate and no other (CR 702.140a).
         return merged::announceable(state, player, id);
+    }
+    if let Some(rules) = crate::keywords::cleave::cleaved(state, id, way) {
+        return announceable(state, player, id, &rules) && attach::announceable(state, player, id);
     }
     way == Some(CastWay::Overload)
         || (spell_ability(state, id)

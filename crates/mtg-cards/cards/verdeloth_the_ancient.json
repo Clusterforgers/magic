@@ -1,0 +1,26 @@
+{
+  "oracle_id": "8222321f-b74d-4f74-9ee7-79455433345a",
+  "name": "Verdeloth the Ancient",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Verdeloth the Ancient",
+      "oracle_fingerprint": "5410371ea6768fda35a2f6c11a119e72",
+      "abilities": [
+        { "Keyword": { "Kicker": "{X}" } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 67, "end": 126 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 127, "end": 213 }
+          }
+        }
+      ]
+    }
+  ]
+}

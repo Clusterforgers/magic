@@ -1,0 +1,25 @@
+{
+  "oracle_id": "922cf963-2b1b-43ad-819e-6e49133e6aae",
+  "name": "Spiteful Visions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spiteful Visions",
+      "oracle_fingerprint": "a9de07dfd7a5b834f7441e9b7ff64a38",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw" } },
+            "effects": [{ "Draw": { "who": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Drew": {} },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

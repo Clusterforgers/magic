@@ -1,0 +1,169 @@
+{
+  "object": "card",
+  "id": "d90080ea-062b-4b92-89e7-b6dcb2c70a8c",
+  "oracle_id": "795a2b09-2ed1-4bc8-b6c9-fb26a81e6790",
+  "multiverse_ids": [
+    667654
+  ],
+  "mtgo_id": 128094,
+  "tcgplayer_id": 555886,
+  "cardmarket_id": 774643,
+  "name": "Shaun & Rebecca, Agents",
+  "lang": "en",
+  "released_at": "2024-07-05",
+  "uri": "https://api.scryfall.com/cards/d90080ea-062b-4b92-89e7-b6dcb2c70a8c",
+  "scryfall_uri": "https://scryfall.com/card/acr/64/shaun-&-rebecca-agents?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:49:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/9/d90080ea-062b-4b92-89e7-b6dcb2c70a8c.jpg?1783910969",
+    "normal": "https://cards.scryfall.io/normal/front/d/9/d90080ea-062b-4b92-89e7-b6dcb2c70a8c.jpg?1783910969",
+    "large": "https://cards.scryfall.io/large/front/d/9/d90080ea-062b-4b92-89e7-b6dcb2c70a8c.jpg?1783910969",
+    "png": "https://cards.scryfall.io/png/front/d/9/d90080ea-062b-4b92-89e7-b6dcb2c70a8c.png?1783910969",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/9/d90080ea-062b-4b92-89e7-b6dcb2c70a8c.jpg?1783910969",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/9/d90080ea-062b-4b92-89e7-b6dcb2c70a8c.jpg?1783910969",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/9/d90080ea-062b-4b92-89e7-b6dcb2c70a8c.webp?1783910969",
+    "grid": "https://cards.scryfall.io/grid/front/d/9/d90080ea-062b-4b92-89e7-b6dcb2c70a8c.webp?1783910969",
+    "display": "https://cards.scryfall.io/display/front/d/9/d90080ea-062b-4b92-89e7-b6dcb2c70a8c.webp?1783910969",
+    "art": "https://cards.scryfall.io/art/front/d/9/d90080ea-062b-4b92-89e7-b6dcb2c70a8c.webp?1783910969",
+    "crop": "https://cards.scryfall.io/crop/front/d/9/d90080ea-062b-4b92-89e7-b6dcb2c70a8c.webp?1783910969",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/9/d90080ea-062b-4b92-89e7-b6dcb2c70a8c.jpg?1783910969"
+  },
+  "mana_cost": "{1}{G}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Assassin Scientist",
+  "oracle_text": "Vigilance\nWhen Shaun & Rebecca enters, search your graveyard, hand, and library for a card named The Animus and put it onto the battlefield, then shuffle.\n{T}: Add {C}. When you do, mill two cards.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Vigilance",
+    "Mill"
+  ],
+  "produced_mana": [
+    "C"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a375bfc8-9272-4421-96cb-80bd8759db47",
+      "component": "combo_piece",
+      "name": "Shaun & Rebecca, Agents",
+      "type_line": "Legendary Creature — Human Assassin Scientist",
+      "uri": "https://api.scryfall.com/cards/a375bfc8-9272-4421-96cb-80bd8759db47"
+    },
+    {
+      "object": "related_card",
+      "id": "81a84bf5-bb15-4a6e-b4c7-7218967b33f2",
+      "component": "combo_piece",
+      "name": "The Animus",
+      "type_line": "Legendary Artifact",
+      "uri": "https://api.scryfall.com/cards/81a84bf5-bb15-4a6e-b4c7-7218967b33f2"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set": "acr",
+  "set_name": "Assassin's Creed",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/54b67b0b-cd3f-4e0d-ac25-fef5d966409b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aacr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/acr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d90080ea-062b-4b92-89e7-b6dcb2c70a8c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A795a2b09-2ed1-4bc8-b6c9-fb26a81e6790&unique=prints",
+  "collector_number": "64",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Information is a weapon as potent as any Assassin's blade.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gintas Galvanauskas",
+  "artist_ids": [
+    "14072144-bba7-4730-8f99-f75bcd4b24a2"
+  ],
+  "illustration_id": "b7d65c33-1be7-4af2-8c5a-06e866933303",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 15945,
+  "penny_rank": 10400,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.29",
+    "usd_etched": null,
+    "eur": "0.07",
+    "eur_foil": "0.31",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=667654&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DShaun%2B%2526%2BRebecca%252C%2BAgents",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DShaun%2B%2526%2BRebecca%252C%2BAgents",
+    "edhrec": "https://edhrec.com/route/?cc=Shaun+%26+Rebecca%2C+Agents"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F555886%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=774643&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/128094?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

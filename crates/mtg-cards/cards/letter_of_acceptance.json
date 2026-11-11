@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e0cb503e-9814-4280-9c29-4eff3379bc24",
+  "name": "Letter of Acceptance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Letter of Acceptance",
+      "oracle_fingerprint": "c04fe93e2998ec94681eb1dfde541898",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

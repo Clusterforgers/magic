@@ -45,6 +45,11 @@ pub enum HiddenEvent {
         /// Cards dealt.
         count: u32,
     },
+    /// An Attraction deck was shuffled; the new order is known to nobody.
+    AttractionDeckShuffled {
+        /// Owner of the deck.
+        player: PlayerId,
+    },
     /// A library was shuffled; the new order is known to nobody.
     LibraryShuffled {
         /// Owner of the library.
@@ -273,6 +278,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         Event::LibraryShuffled { player, .. } => {
             Some(HiddenEvent::LibraryShuffled { player: *player })
         }
+        Event::AttractionDeckShuffled { player, .. } => {
+            Some(HiddenEvent::AttractionDeckShuffled { player: *player })
+        }
         Event::LibraryRefilled { player, order } => Some(HiddenEvent::LibraryRefilled {
             player: *player,
             count: count(order.len()),
@@ -345,6 +353,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::TurnBegan { .. }
         | Event::ExtraTurnAdded { .. }
         | Event::ExtraTurnSkipped { .. }
+        | Event::PlayerControlGained { .. }
+        | Event::GameRestarted { .. }
+        | Event::SpellControlGained { .. }
         | Event::PhasesAdded { .. }
         | Event::StepBegan { .. }
         | Event::NothingToDo { .. }
@@ -369,12 +380,14 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CardDiscarded { .. }
         | Event::Cycled { .. }
         | Event::AttackersDeclared { .. }
+        | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }
         | Event::DamageDealt { .. }
         | Event::CombatEnded
         | Event::DamageCleared
         | Event::RemovedFromCombat { .. }
+        | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
         | Event::ShieldUsed { .. }
@@ -422,14 +435,18 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Suspected { .. }
         | Event::Unsuspected { .. }
         | Event::Solved { .. }
+        | Event::Harnessed { .. }
         | Event::DayNightChanged { .. }
         | Event::MonarchChanged { .. }
         | Event::CitysBlessingGained { .. }
+        | Event::EnduringStoryGained { .. }
         | Event::SpeedChanged { .. }
         | Event::RingTempted { .. }
         | Event::RingBearerLost { .. }
         | Event::Learned { .. }
+        | Event::EvidenceCollected { .. }
         | Event::DieRolled { .. }
+        | Event::RolledToVisit { .. }
         | Event::CoinFlipped { .. }
         // A roll by hand is told to every seat, as a spell's roll is.
         | Event::ManualRolled { .. }
@@ -447,6 +464,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Crewed { .. }
         | Event::ClassLevelGained { .. }
         | Event::TurnedFaceUp { .. }
+        | Event::TurnedFaceDown { .. }
         | Event::DoorUnlocked { .. }
         | Event::Mutated { .. }
         // The cards of a merged permanent are public on the battlefield, and so is where one goes.
@@ -569,8 +587,11 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
         // for a vote cast face down: the vote that is done shows the tally.
         Event::ChoiceMade { player, choice }
             if *player != viewer
-                && (matches!(choice, mtg_engine::choose::Choice::Vote(_))
-                    || !choice.objects().iter().all(|id| knows(before, *id, viewer))) =>
+                && (matches!(
+                    choice,
+                    mtg_engine::choose::Choice::Vote(_)
+                        | mtg_engine::choose::Choice::SecretNumber(_)
+                ) || !choice.objects().iter().all(|id| knows(before, *id, viewer))) =>
         {
             Some(HiddenEvent::ChoiceMade { player: *player })
         }

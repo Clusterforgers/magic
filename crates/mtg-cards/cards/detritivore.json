@@ -1,0 +1,53 @@
+{
+  "oracle_id": "ba5fa5ca-f72d-49dd-9f86-e6e1292f5bf0",
+  "name": "Detritivore",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Detritivore",
+      "oracle_fingerprint": "6483eaecbb04faba0f0aad7c3ccf0ee7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Opponents" }
+                    ]
+                  },
+                  "toughness": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Opponents" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 117, "end": 401 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 402, "end": 500 }
+          }
+        }
+      ]
+    }
+  ]
+}

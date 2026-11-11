@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "8f0f3643-a355-4132-bce8-c306df3cf830",
+  "oracle_id": "f9de4cea-27c4-4343-8a7a-09b8f346c3b5",
+  "multiverse_ids": [
+    430257
+  ],
+  "tcgplayer_id": 132017,
+  "cardmarket_id": 297985,
+  "name": "Djinn of Infinite Deceits",
+  "lang": "en",
+  "released_at": "2017-06-09",
+  "uri": "https://api.scryfall.com/cards/8f0f3643-a355-4132-bce8-c306df3cf830",
+  "scryfall_uri": "https://scryfall.com/card/cma/38/djinn-of-infinite-deceits?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:51:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/f/8f0f3643-a355-4132-bce8-c306df3cf830.jpg?1783936294",
+    "normal": "https://cards.scryfall.io/normal/front/8/f/8f0f3643-a355-4132-bce8-c306df3cf830.jpg?1783936294",
+    "large": "https://cards.scryfall.io/large/front/8/f/8f0f3643-a355-4132-bce8-c306df3cf830.jpg?1783936294",
+    "png": "https://cards.scryfall.io/png/front/8/f/8f0f3643-a355-4132-bce8-c306df3cf830.png?1783936294",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/f/8f0f3643-a355-4132-bce8-c306df3cf830.jpg?1783936294",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/f/8f0f3643-a355-4132-bce8-c306df3cf830.jpg?1783936294",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/f/8f0f3643-a355-4132-bce8-c306df3cf830.webp?1783936294",
+    "grid": "https://cards.scryfall.io/grid/front/8/f/8f0f3643-a355-4132-bce8-c306df3cf830.webp?1783936294",
+    "display": "https://cards.scryfall.io/display/front/8/f/8f0f3643-a355-4132-bce8-c306df3cf830.webp?1783936294",
+    "art": "https://cards.scryfall.io/art/front/8/f/8f0f3643-a355-4132-bce8-c306df3cf830.webp?1783936294",
+    "crop": "https://cards.scryfall.io/crop/front/8/f/8f0f3643-a355-4132-bce8-c306df3cf830.webp?1783936294",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/f/8f0f3643-a355-4132-bce8-c306df3cf830.jpg?1783936294"
+  },
+  "mana_cost": "{4}{U}{U}",
+  "cmc": 6.0,
+  "type_line": "Creature — Djinn",
+  "oracle_text": "Flying\n{T}: Exchange control of two target nonlegendary creatures. You can't activate this ability during combat.",
+  "power": "2",
+  "toughness": "7",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "fd4d8463-0156-4c60-a40e-778762bb90e4",
+  "set": "cma",
+  "set_name": "Commander Anthology",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/fd4d8463-0156-4c60-a40e-778762bb90e4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acma&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cma?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8f0f3643-a355-4132-bce8-c306df3cf830/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af9de4cea-27c4-4343-8a7a-09b8f346c3b5&unique=prints",
+  "collector_number": "38",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The winds of change have a mind of their own.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Robbie Trevino",
+  "artist_ids": [
+    "34f236c4-d646-4e48-9723-9df5f507754d"
+  ],
+  "illustration_id": "943f9b4f-f0d5-4b11-9e32-9bb07e10015c",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 14838,
+  "prices": {
+    "usd": "0.72",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.51",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=430257&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDjinn%2Bof%2BInfinite%2BDeceits",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDjinn%2Bof%2BInfinite%2BDeceits",
+    "edhrec": "https://edhrec.com/route/?cc=Djinn+of+Infinite+Deceits"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F132017%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=297985&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Djinn+of+Infinite+Deceits&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

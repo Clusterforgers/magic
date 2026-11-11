@@ -176,7 +176,7 @@ impl Default for Pace {
             auto_pass: true,
             response: Some(Duration::from_secs(10)),
             blocks: Some(Duration::from_secs(45)),
-            think: Some(Duration::from_secs(60)),
+            think: Some(Duration::from_mins(1)),
             active: None,
             extension: Some(Duration::from_secs(20)),
             grace: Duration::from_secs(3),
@@ -791,6 +791,7 @@ mod tests {
             can_cancel,
             cost: None,
             per_x: 0,
+            secret: false,
         })
     }
 
@@ -877,7 +878,7 @@ mod tests {
             auto_pass: true,
             response: Some(Duration::from_secs(10)),
             blocks: Some(Duration::from_secs(45)),
-            think: Some(Duration::from_secs(60)),
+            think: Some(Duration::from_mins(1)),
             active: None,
             extension: Some(Duration::from_secs(20)),
             grace: Duration::from_secs(3),
@@ -946,7 +947,7 @@ mod tests {
 
     #[test]
     fn the_opening_clock_is_the_think_clock_whatever_the_decision() {
-        assert_eq!(pace().opening_clock(), Some(Duration::from_secs(60)));
+        assert_eq!(pace().opening_clock(), Some(Duration::from_mins(1)));
         let none = Pace {
             think: None,
             ..pace()
@@ -961,7 +962,7 @@ mod tests {
                 let d = decision(player, kind.clone());
                 assert_eq!(
                     pace().clock_for(&d, ACTIVE),
-                    Some(Duration::from_secs(60)),
+                    Some(Duration::from_mins(1)),
                     "{d:?}"
                 );
             }
@@ -977,7 +978,7 @@ mod tests {
             );
             assert_eq!(
                 pace().clock_for(&other, ACTIVE),
-                Some(Duration::from_secs(60)),
+                Some(Duration::from_mins(1)),
                 "{other:?}"
             );
             let opening = opening_kinds().contains(&kind);
@@ -1046,7 +1047,7 @@ mod tests {
         assert!(pace.auto_pass);
         assert_eq!(pace.response, Some(Duration::from_secs(10)));
         assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
-        assert_eq!(pace.think, Some(Duration::from_secs(60)));
+        assert_eq!(pace.think, Some(Duration::from_mins(1)));
         assert_eq!(pace.active, None, "the active seat is not hurried");
         assert_eq!(pace.extension, Some(Duration::from_secs(20)));
         assert_eq!(pace.grace, Duration::from_secs(3));

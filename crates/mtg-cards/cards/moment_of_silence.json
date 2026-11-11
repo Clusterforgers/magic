@@ -1,0 +1,26 @@
+{
+  "oracle_id": "43af5041-a4bd-4b61-b1a1-bdea916afc59",
+  "name": "Moment of Silence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moment of Silence",
+      "oracle_fingerprint": "68af3d0512f11877d827852136212ffe",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": "SkipCombat" } },
+                  "duration": "UntilSkippedThisTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

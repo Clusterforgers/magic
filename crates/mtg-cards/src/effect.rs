@@ -116,6 +116,13 @@ pub enum Destination {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         counters: Vec<(CounterKind, u32)>,
     },
+    /// The battlefield face down (CR 708.3): a 2/2 creature with nothing else that its controller alone may look at,
+    /// turned face up only for its morph, megamorph or disguise cost.
+    BattlefieldFaceDown {
+        /// Enters under this player's control; its owner's when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        under: Option<Ref>,
+    },
     /// Its owner's library.
     Library {
         /// Top, bottom or shuffled in.
@@ -331,6 +338,12 @@ pub enum ValueKind {
     CardTypeOf(Vec<CardType>),
     /// A creature type other than these ("choose a creature type other than Wall").
     CreatureTypeExcept(Vec<String>),
+    /// A basic land type (CR 205.3i): Plains, Island, Swamp, Mountain or Forest.
+    BasicLandType,
+    /// A color word or a basic land type, the word a text change replaces (CR 612): "one color word or one basic land type".
+    ColorOrBasicLandType,
+    /// A word of the kind of the one chosen under this name, other than it: the word a text change writes ("with another").
+    LikeChosen(String),
 }
 
 /// One instruction of a spell or ability. Optional fields have defaults: `who` is the
@@ -530,6 +543,26 @@ pub enum Effect {
     /// about them changes.
     RemoveFromCombat {
         /// The creatures that leave combat.
+        what: Ref,
+    },
+    /// The players lose all unspent mana (CR 106.4), whatever it lasts for: "that player loses all unspent mana".
+    LoseUnspentMana {
+        /// Whose mana pools empty.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// Puts objects into their owners' libraries just beneath the top `below` cards ("just beneath the top X cards of
+    /// that library"), the number worked out as the step runs; a library with fewer cards takes them at the bottom.
+    PutBeneathTop {
+        /// What is put.
+        what: Ref,
+        /// How many cards stay above them.
+        below: Amount,
+    },
+    /// Attacking creatures become blocked (CR 509.1h), even those that can't be blocked: each one not yet blocked is
+    /// blocked by no creature, so it deals no combat damage unless it has trample, and "becomes blocked" triggers.
+    BecomeBlocked {
+        /// The attacking creatures.
         what: Ref,
     },
     /// Exiles objects.
@@ -755,6 +788,15 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,
     },
+    /// The permanent spells `spell` names enter the battlefield with `count` additional +1/+1 counters on them as they
+    /// resolve (CR 614.1c): "that creature enters with an additional +1/+1 counter on it" after a creature spell is cast.
+    SpellEntersWith {
+        /// The spells on the stack.
+        spell: Ref,
+        /// How many counters, worked out now.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
     /// Moves counters from one object onto another (CR 122.5); the first object gives up what it has, up to the count.
     /// When `from` names several objects ("from other permanents you control"), each gives up to the count in turn.
     MoveCounters {
@@ -876,6 +918,11 @@ pub enum Effect {
         /// What is turned.
         what: Ref,
     },
+    /// Turns face-up permanents face down as 2/2 morphs (CR 708.2a).
+    TurnFaceDown {
+        /// What is turned.
+        what: Ref,
+    },
     /// Makes prepare cards on the battlefield prepared: while one is, its controller may cast a copy of its spell face and doing so unprepares it. A permanent that is prepared already, is no prepare card or is not on the battlefield is passed over.
     Prepare {
         /// What becomes prepared.
@@ -896,6 +943,11 @@ pub enum Effect {
     /// already, is no Case or is not on the battlefield is passed over.
     Solve {
         /// What becomes solved.
+        what: Ref,
+    },
+    /// Harnesses permanents: their ∞ abilities work from then on.
+    Harness {
+        /// What becomes harnessed.
         what: Ref,
     },
     /// The player surveils (CR 701.25): looks at the top cards of their library and puts any into the graveyard.
@@ -936,12 +988,43 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         undercity: bool,
     },
+    /// "Open an Attraction" (CR 701.51): the player puts the top card of their Attraction deck onto the battlefield, once
+    /// for each of `count`; a player without an Attraction deck opens nothing.
+    OpenAttraction {
+        /// Who opens.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// How many Attractions.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// "Roll to visit your Attractions" (CR 701.52): the player rolls a six-sided die and each Attraction they control
+    /// with that number lit up is visited.
+    RollToVisit {
+        /// Who rolls.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// The player unlocks a locked door of a Room they control, which they choose (CR 709.5): "unlock a locked door of a
     /// Room you control".
     UnlockDoor {
         /// Who unlocks it.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+    },
+    /// The controller of the effect controls the player during that player's next turn (CR 722): "You control target
+    /// player during that player's next turn."
+    ControlPlayer {
+        /// The player controlled.
+        who: Ref,
+        /// Whether that player takes an extra turn after that turn (Emrakul, the Promised End).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        extra_turn: bool,
+    },
+    /// The game restarts (CR 727); `keep` stays exiled, then enters under your control.
+    RestartGame {
+        /// The exiled cards kept.
+        keep: Selector,
     },
     /// The player becomes the monarch (CR 724).
     BecomeMonarch {
@@ -1368,6 +1451,51 @@ pub enum Effect {
         /// Names the players or objects with the most votes when `options` is `Of`.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
+    },
+    /// Each player `who` names chooses a whole number from `min` up, the controller first and the others in turn order;
+    /// secret numbers are chosen face down and revealed together ("each player secretly chooses a number 0 or greater").
+    /// The highest number is remembered under `bind` (`Amount::ChosenAs`), the players who chose it are bound to
+    /// `highest` and those who chose the lowest to `lowest`.
+    ChooseNumbers {
+        /// Who chooses.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The least number allowed.
+        #[serde(default = "Amount::zero", skip_serializing_if = "Amount::is_zero")]
+        min: Amount,
+        /// The numbers are chosen face down and revealed together.
+        #[serde(default, skip_serializing_if = "is_false")]
+        secret: bool,
+        /// The name the highest number is remembered under.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name the players who chose the highest number are bound to.
+        highest: String,
+        /// The name the players who chose the lowest number are bound to.
+        lowest: String,
+    },
+    /// The players `who` names bid life: the controller opens with a bid (`start`, or any number from 0), then in turn
+    /// order each other player may top the high bid, and the bidding ends when the high bid stands. The high bid is
+    /// remembered under `bind` (`Amount::ChosenAs`) and the high bidder is bound to `winner`; bidding loses no life by
+    /// itself.
+    BidLife {
+        /// Who may bid.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The controller's opening bid ("a bid of 0"); any number they choose when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        start: Option<Amount>,
+        /// The name the high bid is remembered under.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name the high bidder is bound to.
+        winner: String,
     },
     /// The player faces a villainous choice (CR 701.56): they choose one of the two lists and it is done.
     VillainousChoice {

@@ -16,7 +16,7 @@ use crate::companions::CompanionStage;
 use crate::error::SetupError;
 use crate::format::{ExtraZone, FormatRules, RuleSet};
 use crate::layers::LayersCache;
-use crate::object::{Chosen, Designations, GameObject, ObjectRef, PermanentState};
+use crate::object::{Chosen, Designations, FaceDown, GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
 use crate::rules::{RulesCache, changes_costs};
 use crate::state::{GameState, Possible, Stage, Tallies};
@@ -92,6 +92,9 @@ pub struct PlayerSetup {
     /// The companion the seat names (CR 702.139): a card outside its deck that the game keeps outside the game until the
     /// seat pays to put it into its hand.
     pub companion: Option<Arc<CardDefinition>>,
+    /// The seat's Attraction deck (CR 717.2), top card first: cards outside its deck that begin the game face down in
+    /// its command zone.
+    pub attractions: Vec<crate::un33_attractions::AttractionCard>,
 }
 
 /// Where the game starts.
@@ -168,6 +171,18 @@ impl GameSetup {
     pub fn with_commanders(mut self, commanders: Vec<Vec<Arc<CardDefinition>>>) -> Self {
         for (player, cards) in self.players.iter_mut().zip(commanders) {
             player.commanders = cards;
+        }
+        self
+    }
+
+    /// The setup with these Attraction decks, one entry for each seat in table order, top card first.
+    #[must_use]
+    pub fn with_attractions(
+        mut self,
+        decks: Vec<Vec<crate::un33_attractions::AttractionCard>>,
+    ) -> Self {
+        for (player, deck) in self.players.iter_mut().zip(decks) {
+            player.attractions = deck;
         }
         self
     }
@@ -386,6 +401,7 @@ impl GameState {
         };
         let mut presets = Vec::new();
         let mut commander_ids = Vec::new();
+        let mut un33 = crate::un33_attractions::Attractions::default();
         let mut placed: BTreeMap<(usize, usize), ObjectId> = BTreeMap::new();
         for (seat, setup_player) in setup.players.iter().enumerate() {
             let owner = PlayerId::from_index(seat);
@@ -405,6 +421,11 @@ impl GameState {
             }
             for card in &setup_player.commanders {
                 commander_ids.push((create(owner, card, Zone::Command(owner)), card.name.clone()));
+            }
+            // The Attraction deck lies face down in the command zone, its top card the last one made.
+            for attraction in setup_player.attractions.iter().rev() {
+                let id = create(owner, &attraction.card, Zone::Command(owner));
+                un33.add(owner, id, attraction.lights);
             }
             let status = match setup.start {
                 Start::Mulligan => MulliganStatus::NeedsHand,
@@ -429,6 +450,12 @@ impl GameState {
                     stage,
                 );
                 next_id += 1;
+            }
+        }
+        // The cards of the Attraction decks lie face down (CR 717.2).
+        for id in un33.lights.keys() {
+            if let Some(object) = objects.get_mut(id) {
+                object.face_down = Some(FaceDown::Attraction);
             }
         }
         for (id, preset) in presets {
@@ -456,6 +483,10 @@ impl GameState {
                 (Stage::Turns, (turn, active, step), first)
             }
         };
+        let lives = players
+            .iter()
+            .map(|player| (player.id(), player.life()))
+            .collect();
         let mut game = GameState {
             format: Arc::clone(&setup.format),
             house_rules: setup.house_rules.clone(),
@@ -512,12 +543,18 @@ impl GameState {
             result: None,
             day_night: None,
             seat_turns: std::collections::BTreeMap::new(),
+            rmt8_turns: crate::rmt8_turns::turns_before(turn.0, first_player, seats),
+            rmt8_lives: lives,
+            rmt8_upkeeps: std::collections::BTreeMap::new(),
             last_turn_of: None,
             monarch: None,
+            player_controls: Vec::new(),
             citys_blessing: std::collections::BTreeSet::new(),
+            enduring_story: std::collections::BTreeSet::new(),
             speeds: crate::speed::Speeds::default(),
             ring: crate::ring::Rings::new(),
             w11d: crate::w11d_dungeon::W11dDungeons::default(),
+            un33,
             w15a_initiative: None,
             commanders: Commanders::of(commander_ids),
             companions,
@@ -525,8 +562,13 @@ impl GameState {
             revealed_by_hand: Vec::new(),
             notes: Vec::new(),
             memory: crate::memory::Memory::new(),
+            restart: None,
         };
         game.note_what_cards_can_do();
+        // An Attraction card goes to the junkyard by a replacement effect (CR 717.6).
+        if !game.un33.is_empty() {
+            game.possible.replacements = true;
+        }
         // A commander is moved by a replacement effect and costs a tax, so both are looked for in its game.
         if game.commanders.any() {
             game.possible.replacements = true;
@@ -657,8 +699,14 @@ impl GameState {
                 .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Protection(_)))
         });
         self.possible.protection = protection;
+        self.note_designations();
+    }
+
+    /// Notes whether some card can bring day and night, the city's blessing, an enduring story or speed.
+    fn note_designations(&mut self) {
         self.possible.day_night = self.any_face(crate::ability_reader::definition_has_day_night);
         self.possible.ascend = self.any_face(crate::ability_reader::definition_has_ascend);
+        self.possible.storied = self.any_face(crate::ability_reader::definition_has_storied);
         self.possible.engines = self.any_face(crate::ability_reader::definition_has_engines);
     }
 

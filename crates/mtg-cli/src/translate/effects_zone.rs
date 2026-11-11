@@ -268,25 +268,37 @@ pub fn manifest_dread(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         "ManifestDread",
         &["Amount", "DefinedPlayer", "RememberManifested"],
     )?;
-    if !matches!(p.get("Amount"), None | Some("1")) {
-        return unmapped("key:ManifestDread.Amount");
+    // "Manifest dread twice": the whole action again, one after the other (`Amount$ 2`).
+    let times = match p.get("Amount") {
+        None => 1,
+        Some(word) => match word.parse::<u32>() {
+            Ok(n @ 1..=3) => n,
+            _ => return unmapped("key:ManifestDread.Amount"),
+        },
+    };
+    if times > 1 && p.has("RememberManifested") {
+        return unmapped("key:ManifestDread.Amount-with-RememberManifested");
     }
     let who = defined(ctx, p.get("DefinedPlayer").unwrap_or("You"))?;
-    let looked = ctx.fresh("looked");
-    let kept = ctx.fresh("kept");
-    let rest = ctx.fresh("rest");
-    let mut manifest = json!({"Manifest": {"who": who}});
-    if p.get("RememberManifested") == Some("True") {
-        let name = ctx.fresh("manifested");
-        manifest["Manifest"]["as"] = json!(name);
-        ctx.remembered = Some(json!({ "Bound": name }));
+    let mut effects = Vec::new();
+    for _ in 0..times {
+        let looked = ctx.fresh("looked");
+        let kept = ctx.fresh("kept");
+        let rest = ctx.fresh("rest");
+        let mut manifest = json!({"Manifest": {"who": who}});
+        if p.get("RememberManifested") == Some("True") {
+            let name = ctx.fresh("manifested");
+            manifest["Manifest"]["as"] = json!(name);
+            ctx.remembered = Some(json!({ "Bound": name }));
+        }
+        effects.extend([
+            json!({"LookAtTop": {"who": who, "count": 2, "as": looked}}),
+            json!({"Choose": {"who": who, "from": {"Bound": looked}, "as": kept, "rest_as": rest}}),
+            json!({"Move": {"what": {"Bound": rest}, "to": "Graveyard"}}),
+            manifest,
+        ]);
     }
-    Ok(vec![
-        json!({"LookAtTop": {"who": who, "count": 2, "as": looked}}),
-        json!({"Choose": {"who": who, "from": {"Bound": looked}, "as": kept, "rest_as": rest}}),
-        json!({"Move": {"what": {"Bound": rest}, "to": "Graveyard"}}),
-        manifest,
-    ])
+    Ok(effects)
 }
 
 /// The card types an `AddType$` word may name; any other word is a supertype or a subtype.

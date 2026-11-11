@@ -45,6 +45,18 @@ pub(super) fn apply(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) ->
     if !ctx.state.possible.costs {
         return mana;
     }
+    // Before the X of a cost that counts it is announced, the spell is judged at the most X, which only takes more and
+    // makes a reduction of its own that reads it larger ("{2} less for each counter removed this way").
+    let judged;
+    let choices = if choices.x.is_none() && ctx.needs.x == Some(super::x::XCost::Parts) {
+        judged = Choices {
+            x: super::parts::most(ctx, choices),
+            ..choices.clone()
+        };
+        &judged
+    } else {
+        choices
+    };
     let specs = targets::specs(ctx, choices);
     // Before its targets are chosen a spell is judged as if it found the targets a modifier asks for, among the ones
     // its specifications allow, so a step before the targets does not give up on a reduction the targets bring.
@@ -73,12 +85,45 @@ pub(crate) fn cheapest<'a>(
         &[],
         &Choices {
             way,
+            x: dk27_most_counted(state, player, spell),
             ..Choices::default()
         },
         Some(printed.clone()),
         Some(&possible_specs(state, spell)),
     );
     Cow::Owned(cost.unwrap_or(ManaCost::ZERO))
+}
+
+/// The X a spell with no `{X}` in its mana cost is judged at before anything is announced: the most its required
+/// additional costs that count X can take ("you may remove any number of +1/+1 counters"), since more X only takes more
+/// and a modifier of its own reads X as the number taken ("costs {2} less for each counter removed this way"). `None`
+/// for a spell with an `{X}` or without such a cost.
+fn dk27_most_counted(state: &GameState, player: PlayerId, spell: ObjectId) -> Option<u32> {
+    let card = state.object(spell)?;
+    if card.card().x_in_cost > 0 {
+        return None;
+    }
+    let paying = crate::parts::Payer {
+        state,
+        player,
+        source: spell,
+        barred: &[],
+        granter: None,
+    };
+    crate::ability_reader::printed_rules(card.card())
+        .filter_map(|rule| match &**rule {
+            Ability::AdditionalCost {
+                cost,
+                required: true,
+                ..
+            } => Some(cost.0.clone()),
+            _ => None,
+        })
+        .flatten()
+        .filter_map(|item| crate::parts::Part::read(&item).ok().flatten())
+        .filter(crate::parts::Part::is_counted)
+        .filter_map(|part| part.most(&paying))
+        .min()
 }
 
 /// Every target specification `spell` may announce: its enchant restriction as an Aura spell, else the targets of its

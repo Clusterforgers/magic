@@ -1,0 +1,21 @@
+{
+  "oracle_id": "74f4743b-06a9-48e3-9fdf-27a56660ac8e",
+  "name": "Craig Boone, Novac Guard",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Craig Boone, Novac Guard",
+      "oracle_fingerprint": "4b0633e8f04520dcb69047a9747e3dfe",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 16, "end": 312 }
+          }
+        }
+      ]
+    }
+  ]
+}

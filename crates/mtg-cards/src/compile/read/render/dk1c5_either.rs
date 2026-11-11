@@ -19,6 +19,11 @@ impl Writer<'_> {
         first: &[Effect],
         second: &[Effect],
     ) -> Option<String> {
+        if let Some(text) =
+            crate::compile::read::ep33_face_down::ep33_face_up_or_down(first, second)
+        {
+            return Some(text);
+        }
         Some(format!(
             "{} or {}",
             self.dk1c5_option(first)?,

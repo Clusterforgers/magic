@@ -1,0 +1,44 @@
+{
+  "oracle_id": "9fba3097-d53f-4ea4-b5d2-8adddaa09524",
+  "name": "Arcee, Sharpshooter // Arcee, Acrobatic Coupe",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Arcee, Sharpshooter",
+      "oracle_fingerprint": "60d1975619b1e982ab9e14d051bec8f1",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 77 }
+          }
+        },
+        { "Keyword": "FirstStrike" },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 91, "end": 202 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Arcee, Acrobatic Coupe",
+      "oracle_fingerprint": "7bb251e615e64851c03b24f68189f8da",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 65 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 66, "end": 205 }
+          }
+        }
+      ]
+    }
+  ]
+}

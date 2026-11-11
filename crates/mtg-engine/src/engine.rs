@@ -70,6 +70,9 @@ pub struct Engine {
     state: GameState,
     events: Vec<Event>,
     decision: Option<Decision>,
+    /// The decision as the players see it: asked of the player who answers it, which a control of its player changes
+    /// (`player_control::answerer`).
+    shown: Option<Decision>,
     pending: Option<Pending>,
     held: Option<Held>,
     /// The open `Together` batch: where its events begin in the log and the state before them.
@@ -90,6 +93,7 @@ impl Engine {
             state,
             events,
             decision: None,
+            shown: None,
             pending: None,
             held: None,
             batch: None,
@@ -132,7 +136,21 @@ impl Engine {
 
     /// The pending decision; `None` once the game is over.
     pub fn decision(&self) -> Option<&Decision> {
+        self.shown.as_ref()
+    }
+
+    /// The pending decision as the engine asks it: of the player it is about, whoever answers it (CR 722).
+    pub fn decision_owned(&self) -> Option<&Decision> {
         self.decision.as_ref()
+    }
+
+    /// Sets the pending decision and the form the players see.
+    fn set_decision(&mut self, decision: Option<Decision>) {
+        self.shown = decision.as_ref().map(|decision| Decision {
+            player: crate::player_control::answerer(&self.state, decision),
+            kind: decision.kind.clone(),
+        });
+        self.decision = decision;
     }
 
     /// Every decision the game waits on now: in the opening each seat with a question (keep or mulligan, the cards to
@@ -141,7 +159,7 @@ impl Engine {
         if self.opening() {
             return mulligan::open_decisions(&self.state);
         }
-        self.decision.iter().cloned().collect()
+        self.shown.iter().cloned().collect()
     }
 
     /// Validates `player`'s answer to its decision among [`decisions`](Engine::decisions) and advances, as
@@ -151,7 +169,7 @@ impl Engine {
         player: PlayerId,
         answer: Answer,
     ) -> Result<Vec<Event>, EngineError> {
-        let primary = self.decision.as_ref().ok_or(EngineError::NoDecision)?;
+        let primary = self.shown.as_ref().ok_or(EngineError::NoDecision)?;
         if primary.player == player {
             return self.apply(answer);
         }
@@ -218,7 +236,7 @@ impl Engine {
         answer: &Answer,
     ) -> Result<CombatForecast, PreviewError> {
         let decision = self.decision.as_ref().ok_or(PreviewError::NoDecision)?;
-        if decision.player != seat {
+        if self.shown.as_ref().map(|shown| shown.player) != Some(seat) {
             return Err(PreviewError::NotYourDecision(seat));
         }
         preview_forecast(&self.state, decision, answer)
@@ -310,7 +328,7 @@ impl Engine {
         let state = replay(&self.setup, &self.events[..checkpoint.mark])?;
         self.events.truncate(checkpoint.mark);
         self.state = state;
-        self.decision = checkpoint.decision;
+        self.set_decision(checkpoint.decision);
         self.pending = checkpoint.pending;
         self.held = checkpoint.held;
         self.batch = None;
@@ -457,8 +475,8 @@ impl Engine {
                 self.pending = Some(Pending::new(player, What::Spell(spell)));
                 Ok(())
             }
-            Outcome::BeginAttack(attackers, exert) => {
-                self.pending = Some(Pending::new(player, What::Attack(attackers, exert)));
+            Outcome::BeginAttack(attackers, extras) => {
+                self.pending = Some(Pending::new(player, What::Attack(attackers, extras)));
                 Ok(())
             }
             Outcome::BeginBlock(blocks) => {
@@ -567,7 +585,7 @@ impl Engine {
             }
             Processed::Ask { decision, proposed } => {
                 self.held = Some(Held { proposed, journal });
-                self.decision = Some(decision);
+                self.set_decision(Some(decision));
                 Ok(())
             }
         }
@@ -690,7 +708,7 @@ impl Engine {
                 let touched = pending.touched;
                 match announce(&self.state, pending) {
                     Next::Ask(decision) => {
-                        self.decision = Some(decision);
+                        self.set_decision(Some(decision));
                         return Ok(());
                     }
                     // A manual action may have left a cost that no longer applies (a source tapped, a card gone).
@@ -707,11 +725,11 @@ impl Engine {
             }
             match next(&self.state) {
                 Progress::Decide(decision) => {
-                    self.decision = Some(decision);
+                    self.set_decision(Some(decision));
                     return Ok(());
                 }
                 Progress::Done => {
-                    self.decision = None;
+                    self.set_decision(None);
                     return Ok(());
                 }
                 Progress::Put(pending) => self.pending = Some(*pending),

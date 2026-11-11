@@ -1,0 +1,20 @@
+{
+  "oracle_id": "82ea519f-0e14-43d3-bf46-a1c5352e9600",
+  "name": "The Jolly Balloon Man",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Jolly Balloon Man",
+      "oracle_fingerprint": "aa418645e98ada398c1b998c1aee3e06",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 6, "end": 274 }
+          }
+        }
+      ]
+    }
+  ]
+}

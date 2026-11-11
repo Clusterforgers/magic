@@ -1,0 +1,56 @@
+{
+  "oracle_id": "1cdba3c1-19e1-43c3-a0d8-5fb2b88060d8",
+  "name": "Chandra, Bold Pyromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra, Bold Pyromancer",
+      "oracle_fingerprint": "71962d9db33531c3ec12c11a691ae19d",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Red", "Red"] } } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 10 } },
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "ControlledBy": { "Target": 0 } }
+                    ]
+                  },
+                  "amount": 10
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

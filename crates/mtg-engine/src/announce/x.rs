@@ -53,7 +53,8 @@ impl XCost {
                 if card.x_in_cost == 0 && required::counts_x(card) {
                     return Some(XCost::Parts);
                 }
-                u32::from(card.x_in_cost)
+                // A cleave cost may hold an `{X}` the mana cost lacks.
+                u32::from(card.x_in_cost).max(ways::alternative_x(state, *spell, CastWay::Cleave))
             }
             What::Ability(ability) => match rules? {
                 activated @ Ability::Activated { cost, .. } => {
@@ -104,6 +105,20 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         work.done.x = true;
         return None;
     }
+    // The mana cost of a spell whose X only its cleave cost holds has none (CR 107.3b).
+    if !work.choices.way.is_some_and(CastWay::replaces_cost)
+        && let What::Spell(spell) = ctx.what
+        && ctx
+            .state
+            .object(*spell)
+            .is_some_and(|card| card.card().x_in_cost == 0)
+        && ways::alternative_x(ctx.state, *spell, CastWay::Cleave) > 0
+        && ctx.needs.x != Some(XCost::Parts)
+    {
+        work.choices.x = Some(0);
+        work.done.x = true;
+        return None;
+    }
     // Without a value of X that can be paid for there is nothing to announce.
     let Some(max) = largest(ctx, work.choices) else {
         return Some(Next::Drop);
@@ -127,6 +142,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         can_cancel: ctx.can_cancel(),
         cost: at_zero(ctx, work.choices),
         per_x: per_x(ctx, work.choices),
+        secret: false,
     })))
 }
 
@@ -565,6 +581,7 @@ mod tests {
             x: XCost::of(&game, PlayerId(0), &What::Spell(card), None),
             price: None,
             modes: None,
+            splice: Vec::new(),
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         match announce(&game, &mut pending) {
@@ -630,6 +647,7 @@ mod tests {
             x: Some(XCost::Mana { symbols: 1 }),
             price: None,
             modes: None,
+            splice: Vec::new(),
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         assert!(matches!(announce(&game, &mut pending), Next::Drop));
@@ -682,6 +700,7 @@ mod tests {
             x: XCost::of(&game, PlayerId(0), &What::Spell(card), None),
             price: None,
             modes: None,
+            splice: Vec::new(),
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         match announce(&game, &mut pending) {

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ee8e6ef3-eb96-48bd-8619-8a9112b3d4f0",
+  "name": "Iroh, Grand Lotus",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Iroh, Grand Lotus",
+      "oracle_fingerprint": "cc4f4b262b2251980503d5e97215fdef",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 2 } } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 14, "end": 240 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 241, "end": 312 }
+          }
+        }
+      ]
+    }
+  ]
+}

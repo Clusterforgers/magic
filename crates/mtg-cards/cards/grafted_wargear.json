@@ -1,7 +1,7 @@
 {
   "oracle_id": "c48cf069-eb20-4a61-b58c-b031ec22a5f0",
   "name": "Grafted Wargear",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Grafted Wargear",
@@ -14,9 +14,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 30, "end": 116 }
+          "Triggered": {
+            "when": { "Unattached": { "what": ["This"] } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Is": "Triggering" }] } }]
           }
         },
         { "Keyword": { "Equip": "{0}" } }

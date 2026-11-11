@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   clampedAmount,
+  damageSentence,
   defaultSplit,
   factsOf,
   hasDeathtouch,
@@ -434,5 +435,32 @@ describe('names', () => {
     [[], []],
   ])('%j are shown as %j', (names, shown) => {
     expect(labelled(names)).toEqual(shown)
+  })
+})
+
+describe('the sentence names whose damage is divided and why', () => {
+  it.each<[string, Parameters<typeof damageSentence>, string]>([
+    [
+      'an attacker of ones own',
+      [4, { name: 'Ogre', blocking: false, banding: false }, ['Wall', 'Bear'], 'Wall and Bear'],
+      'Divide the 4 combat damage of Ogre among its blockers: Wall and Bear.',
+    ],
+    [
+      'an opponents attacker a banding creature blocks',
+      [6, { name: 'Giant', blocking: false, banding: true }, ['Knight', 'Wall'], 'Knight and Wall'],
+      'Banding: Divide the 6 combat damage of Giant among its blockers: Knight and Wall.',
+    ],
+    [
+      'a blocker of a band',
+      [2, { name: 'Wall', blocking: true, banding: true }, ['Knight', 'Bear'], 'Knight and Bear'],
+      'Banding: Divide the 2 combat damage of Wall among the creatures it blocks: Knight and Bear.',
+    ],
+    [
+      'a trampler',
+      [5, { name: 'Wurm', blocking: false, banding: false }, ['Wall'], 'Wall', 'Ann'],
+      'Assign the 5 combat damage of Wurm to its blocker: Wall. Damage not given to a blocker goes to Ann, once every blocker has lethal damage.',
+    ],
+  ])('%s', (_, args, sentence) => {
+    expect(damageSentence(...args)).toBe(sentence)
   })
 })

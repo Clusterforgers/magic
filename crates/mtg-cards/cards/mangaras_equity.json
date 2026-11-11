@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c7986014-30e0-4999-ab95-b86620471419",
+  "name": "Mangara's Equity",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mangara's Equity",
+      "oracle_fingerprint": "7eb86db4a9c7dd650424ed31d7c4f6bf",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 48 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{1}{W}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 132, "end": 282 }
+          }
+        }
+      ]
+    }
+  ]
+}

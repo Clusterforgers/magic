@@ -1,0 +1,31 @@
+{
+  "oracle_id": "4f142d99-8146-4b16-a2cc-ac03da19b960",
+  "name": "Ursine Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ursine Champion",
+      "oracle_fingerprint": "08b86292ddac2e2bc96645ff901291cf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{5}{G}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 3 } },
+                    { "SetCreatureTypes": ["Bear", "Berserker"] }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

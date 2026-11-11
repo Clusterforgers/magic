@@ -36,6 +36,37 @@ impl CardRepo {
             .collect())
     }
 
+    /// The numbers lit up on the Attraction printings of the given cards (CR 717.1), as `(card, printing, lights)` with
+    /// the lights as bits (bit `n` for the number `n`), the newest paper printing of each card first; printings
+    /// without lights, unknown ids and malformed ids are absent.
+    pub async fn attraction_lights(
+        &self,
+        ids: &[OracleId],
+    ) -> Result<Vec<(OracleId, PrintingId, u8)>, DbError> {
+        let uuids: Vec<Uuid> = ids
+            .iter()
+            .filter_map(|id| Uuid::parse_str(id.as_str()).ok())
+            .collect();
+        let rows = sqlx::query!(
+            r#"SELECT oracle_id, printing_id, attraction_lights
+               FROM printings WHERE oracle_id = ANY($1) AND attraction_lights <> 0
+               ORDER BY oracle_id, digital, released_at DESC NULLS LAST, printing_id"#,
+            &uuids
+        )
+        .fetch_all(&self.pool)
+        .await?;
+        Ok(rows
+            .into_iter()
+            .map(|row| {
+                (
+                    OracleId(row.oracle_id.to_string()),
+                    PrintingId(row.printing_id.to_string()),
+                    u8::try_from(row.attraction_lights).unwrap_or(0),
+                )
+            })
+            .collect())
+    }
+
     /// The printings with the given ids; unknown and malformed ids are omitted.
     pub async fn printings(&self, ids: &[PrintingId]) -> Result<Vec<Printing>, DbError> {
         let uuids: Vec<Uuid> = ids

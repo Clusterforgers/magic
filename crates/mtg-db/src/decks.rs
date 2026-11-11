@@ -37,6 +37,10 @@ pub enum DeckZone {
     Commander,
     /// The companion.
     Companion,
+    /// The Attraction deck.
+    Attractions,
+    /// The sticker sheets.
+    Stickers,
 }
 
 impl DeckZone {
@@ -47,6 +51,8 @@ impl DeckZone {
             DeckZone::Sideboard => "sideboard",
             DeckZone::Commander => "commander",
             DeckZone::Companion => "companion",
+            DeckZone::Attractions => "attractions",
+            DeckZone::Stickers => "stickers",
         }
     }
 
@@ -57,6 +63,8 @@ impl DeckZone {
             DeckZone::Sideboard,
             DeckZone::Commander,
             DeckZone::Companion,
+            DeckZone::Attractions,
+            DeckZone::Stickers,
         ]
         .into_iter()
         .find(|zone| zone.keyword() == keyword)

@@ -82,6 +82,8 @@ pub(crate) struct Possible {
     pub(crate) day_night: bool,
     /// Some card has ascend, so the city's blessing is watched.
     pub(crate) ascend: bool,
+    /// Some card has storied, so the enduring story is watched.
+    pub(crate) storied: bool,
     /// Some card has start your engines!, so the speed it starts is watched.
     pub(crate) engines: bool,
     /// Some card, token or player has protection or an effect that gives it, so damage is checked against it.
@@ -98,6 +100,8 @@ pub(crate) struct Possible {
 pub(crate) enum Tally {
     /// A card drawn.
     Drawn,
+    /// A card drawn (counted for the card as it lies in the hand it was drawn into).
+    Dk26Drawn,
     /// A card drawn by the active player in the draw step under way (cleared as each draw step begins).
     C6BlkDrawStepDrawn,
     /// A spell cast.
@@ -177,6 +181,8 @@ pub(crate) enum Tally {
     Cycled,
     /// A surveil (counted for the player).
     Surveilled,
+    /// An Attraction visited (counted for the player who rolled, CR 701.52a).
+    AttractionsVisited,
     /// A scry (counted for the player).
     Scried,
     /// A permanent sacrificed (counted for the player who controlled it).
@@ -268,6 +274,8 @@ pub struct GameState {
     pub(crate) turn: TurnState,
     /// The extra turns still to take, the latest added last: it is taken first (CR 500.7).
     pub(crate) extra_turns: Vec<ExtraTurn>,
+    /// The controls of players scheduled or under way (CR 722), oldest first.
+    pub(crate) player_controls: Vec<crate::player_control::PlayerControl>,
     pub(crate) priority: Option<PriorityState>,
     pub(crate) combat: CombatState,
     pub(crate) effects: Vec<ContinuousEffect>,
@@ -310,16 +318,26 @@ pub struct GameState {
     pub(crate) seat_turns: BTreeMap<PlayerId, crate::turn_summary::TurnSummary>,
     /// The seat whose turn ended last.
     pub(crate) last_turn_of: Option<PlayerId>,
+    /// How many turns each player has begun this game (`rmt8_turns`).
+    pub(crate) rmt8_turns: BTreeMap<PlayerId, u32>,
+    /// Each player's life total as the current turn began (`rmt8_turns`).
+    pub(crate) rmt8_lives: BTreeMap<PlayerId, i32>,
+    /// The turns each player's two latest upkeeps began in, the earlier first (`rmt8_turns`).
+    pub(crate) rmt8_upkeeps: BTreeMap<PlayerId, [u32; 2]>,
     /// The monarch (CR 724): at most one player, from the first card that makes one.
     pub(crate) monarch: Option<PlayerId>,
     /// The players who have the city's blessing (CR 702.131), for the rest of the game.
     pub(crate) citys_blessing: std::collections::BTreeSet<PlayerId>,
+    /// The players who have an enduring story (storied), for the rest of the game.
+    pub(crate) enduring_story: std::collections::BTreeSet<PlayerId>,
     /// Each player's speed (CR 702.179) and the rise the turn owes.
     pub(crate) speeds: crate::speed::Speeds,
     /// Each tempted player's Ring (CR 701.54).
     pub(crate) ring: crate::ring::Rings,
     /// The dungeons (CR 309): each player's venture marker and the dungeons they completed.
     pub(crate) w11d: crate::w11d_dungeon::W11dDungeons,
+    /// The Attraction decks and the lights of the Attraction cards (CR 717).
+    pub(crate) un33: crate::un33_attractions::Attractions,
     /// Who has the initiative (CR 725) and the object that stands for it.
     pub(crate) w15a_initiative: Option<crate::w15a_initiative::W15aHeld>,
     /// The commanders of the game and what is counted for them (CR 903); empty outside Commander.
@@ -336,6 +354,8 @@ pub struct GameState {
     pub(crate) notes: Vec<(crate::object::ObjectRef, String)>,
     /// What each source remembers by slot (`Effect::Remember`); ends with the source.
     pub(crate) memory: crate::memory::Memory,
+    /// The restart under way (CR 727): who restarted the game and the cards that enter after the opening.
+    pub(crate) restart: Option<crate::restart::Restart>,
 }
 
 impl GameState {
@@ -407,13 +427,15 @@ impl GameState {
     }
 
     /// The permanent `id` is attached to (it is an Aura or Equipment), if that host is still the very object it was
-    /// attached to and on the battlefield: a host that left is a new object (CR 400.7).
+    /// attached to and on the battlefield (or the card in a graveyard it was attached to there): a host that left is a
+    /// new object (CR 400.7).
     pub fn host_of(&self, id: ObjectId) -> Option<ObjectId> {
         let object = self.object(id).filter(|o| o.zone() == Zone::Battlefield)?;
         let attached = object.permanent()?.attached_to()?;
         let host = self.object(attached.id)?;
-        (host.zone() == Zone::Battlefield && host.counter() == attached.counter)
-            .then_some(attached.id)
+        // A card in a graveyard hosts only an Aura that enchants one there (`attach::dk27_enchants_graveyard`).
+        let here = host.zone() == Zone::Battlefield || matches!(host.zone(), Zone::Graveyard(_));
+        (here && host.counter() == attached.counter).then_some(attached.id)
     }
 
     /// The player `id` is attached to (an Aura that enchants a player), while that player is still in the game: a
@@ -877,6 +899,10 @@ impl Hash for GameState {
         if !self.memory.is_empty() {
             self.memory.hash(state);
         }
+        // Likewise a game that was never restarted.
+        if let Some(restart) = &self.restart {
+            restart.hash(state);
+        }
         // Likewise a game that counted nothing this turn.
         if !self.tallies.players.is_empty() {
             self.tallies.players.hash(state);
@@ -918,6 +944,13 @@ impl Hash for GameState {
             day_night.hash(state);
         }
         self.hash_turn_summaries(state);
+        self.rmt8_turns.hash(state);
+        self.rmt8_lives.hash(state);
+        self.rmt8_upkeeps.hash(state);
+        // Likewise a game where no player controlled another.
+        if !self.player_controls.is_empty() {
+            self.player_controls.hash(state);
+        }
         // Likewise a game without a monarch.
         if let Some(monarch) = self.monarch {
             monarch.hash(state);
@@ -930,6 +963,10 @@ impl Hash for GameState {
         if !self.citys_blessing.is_empty() {
             self.citys_blessing.hash(state);
         }
+        // Likewise a game where nobody has an enduring story.
+        if !self.enduring_story.is_empty() {
+            self.enduring_story.hash(state);
+        }
         // Likewise a game where nobody has speed.
         if !self.speeds.is_empty() {
             self.speeds.hash(state);
@@ -937,6 +974,10 @@ impl Hash for GameState {
         // Likewise a game where nobody ventured.
         if !self.w11d.is_empty() {
             self.w11d.hash(state);
+        }
+        // Likewise a game without Attractions.
+        if !self.un33.is_empty() {
+            self.un33.hash(state);
         }
         // Likewise a game where nobody took the initiative.
         if let Some(held) = self.w15a_initiative {

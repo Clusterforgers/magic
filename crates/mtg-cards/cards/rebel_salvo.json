@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a35b7fd3-fdef-4414-b720-978f7ce70bff",
+  "name": "Rebel Salvo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rebel Salvo",
+      "oracle_fingerprint": "ea8fe2ba0d2f707d0101cda8fe9b4d9f",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Equipment" }] } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 5 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "RemoveKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

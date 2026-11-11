@@ -123,7 +123,7 @@ fn status_of(text: &str) -> Option<ImplStatus> {
 )]
 #[case::reminder_text_of_a_counter_in_a_keyword_line(
     "Poisonous 1 (Whenever this creature deals combat damage to a player, that player gets a poison counter.)",
-    Some(ImplStatus::Manual)
+    Some(ImplStatus::Full)
 )]
 fn reminder_text_that_explains_a_counter_keeps_the_clause_with_the_table(
     #[case] text: &str,

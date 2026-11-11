@@ -5,10 +5,10 @@
  */
 export type Total = { 
 /**
- * The most the mana values may add up to.
+ * The most the values (mana values or powers) may add up to.
  */
 most: number, 
 /**
- * The mana value of each legal target, in the order of `legal`.
+ * The value of each legal target, in the order of `legal`.
  */
 values: Array<number>, };

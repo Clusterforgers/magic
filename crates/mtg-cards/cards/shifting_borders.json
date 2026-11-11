@@ -1,7 +1,7 @@
 {
   "oracle_id": "b377f717-d0c2-4db5-aba2-fa4bfa35de0f",
   "name": "Shifting Borders",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Shifting Borders",
@@ -15,12 +15,7 @@
             "effects": [{ "ExchangeControl": { "what": [{ "Target": 0 }], "duration": "Forever" } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 38, "end": 209 }
-          }
-        }
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{3}{U}" } } }
       ]
     }
   ]

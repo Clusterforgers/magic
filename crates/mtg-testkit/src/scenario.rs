@@ -234,6 +234,22 @@ impl Scenario {
         self
     }
 
+    /// Gives a player an Attraction deck (CR 717.2), top card first: each card with the numbers lit up on it.
+    #[must_use]
+    pub fn attractions(
+        mut self,
+        player: usize,
+        cards: impl IntoIterator<Item = (Arc<CardDefinition>, mtg_core::attraction::Lights)>,
+    ) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.attractions = cards
+                .into_iter()
+                .map(|(card, lights)| mtg_engine::un33_attractions::AttractionCard { card, lights })
+                .collect();
+        }
+        self
+    }
+
     /// The corpus cards called `names`; one that is not there is recorded and the rest are returned.
     fn corpus_cards<N: AsRef<str>>(
         &mut self,

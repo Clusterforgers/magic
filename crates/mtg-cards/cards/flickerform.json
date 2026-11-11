@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e5345c28-7046-4ff3-a5d6-eeb7a0fb230b",
+  "name": "Flickerform",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Flickerform",
+      "oracle_fingerprint": "47f504355bcf3b208f1a4830962dc940",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 17, "end": 308 }
+          }
+        }
+      ]
+    }
+  ]
+}

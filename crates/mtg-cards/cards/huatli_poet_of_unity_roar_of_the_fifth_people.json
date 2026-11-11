@@ -1,0 +1,102 @@
+{
+  "oracle_id": "2e6ed3e6-d2b8-4b75-b7e1-0773da4987a1",
+  "name": "Huatli, Poet of Unity // Roar of the Fifth People",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Huatli, Poet of Unity",
+      "oracle_fingerprint": "a6df47d13cf067ea93df62a7121995e0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{R/W}{R/W}",
+            "timing": "Sorcery",
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roar of the Fifth People",
+      "oracle_fingerprint": "f8fd24da999f96e837d5493cd2c651b0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dinosaur",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dinosaur"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 139, "end": 217 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Dinosaur" }], "reveal": true, "as": "card" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }, { "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "98e51f1a-ed6e-4286-a41b-e4656d08c934",
+  "name": "Fyndhorn Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fyndhorn Druid",
+      "oracle_fingerprint": "d67a110ca82bb9e33741ed22ccf16d8b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": {
+              "Matches": {
+                "subject": "This",
+                "selector": [{ "DidThisTurn": { "event": "Blocked" } }]
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

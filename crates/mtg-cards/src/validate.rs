@@ -59,6 +59,10 @@ const C7_UNTAP_ONLY: &str =
 
 const SKIP_ONLY: &str = "only the rule that a player skips a turn lasts until the turn is skipped";
 
+/// Only the rule that a player skips a step or combat lasts until it is skipped.
+const RMT3_SKIP_ONLY: &str =
+    "only the rule that a player skips a step or combat lasts until it is skipped";
+
 /// Only a continuous effect lasts until a card is cast from exile.
 const E17A_CAST_ONLY: &str = "only a continuous effect lasts until this card is cast from exile";
 
@@ -396,6 +400,8 @@ struct Walker<'a> {
     spell_targets: Vec<TargetSpec>,
     x_uses: Vec<(usize, String)>,
     names: Vec<(usize, String, String)>,
+    /// The names of the tokens the card defines itself, which its `Named` atoms may name ("a token named Wood").
+    rmt7_token_names: BTreeSet<String>,
     /// The keywords the abilities grant: `AddKeyword`, the abilities of a token, the abilities a backup gives.
     granted: Vec<Keyword>,
 }
@@ -429,6 +435,7 @@ impl<'a> Walker<'a> {
             spell_targets: Vec::new(),
             x_uses: Vec::new(),
             names: Vec::new(),
+            rmt7_token_names: BTreeSet::new(),
             granted: Vec::new(),
         }
     }
@@ -758,7 +765,6 @@ impl<'a> Walker<'a> {
             | Pred::Crewed(r)
             | Pred::Saddled(r)
             | Pred::DamagedBy(r)
-            | Pred::AttachedTo(r)
             | Pred::PairedWith(r)
             | Pred::SameCard(r) => {
                 self.reference(r, Kind::Object);
@@ -768,6 +774,8 @@ impl<'a> Walker<'a> {
                 self.uses("Keyword", &tag_of(keyword));
             }
             Pred::HasKeyword(keyword) => self.keyword(keyword),
+            // An Aura is attached to a permanent, or to a player it enchants ("Curses attached to you").
+            Pred::AttachedTo(r) => self.reference(r, Kind::Either),
             Pred::ChosenAs(name) => self.chosen_as(name),
             Pred::Named(name) => self
                 .names
@@ -851,16 +859,20 @@ impl<'a> Walker<'a> {
             | Pred::Prepared
             | Pred::Suspected
             | Pred::Solved
+            | Pred::Harnessed
+            | Pred::FoughtSinceYourLastUpkeep { .. }
             | Pred::DoubleFaced
             | Pred::Transformed
             | Pred::Paired
             | Pred::EnteredThisTurn
             | Pred::SummoningSick
             | Pred::MilledThisTurn
+            | Pred::DrawnThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
             | Pred::Attacking
             | Pred::AttackingAlone
+            | Pred::AttackingBattle
             | Pred::Blocking
             | Pred::Unblocked
             | Pred::HasCounter(_)
@@ -1075,6 +1087,7 @@ impl<'a> Walker<'a> {
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
             Amount::AdditionalPaid => self.paid_amount(amount),
+            Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -1093,6 +1106,8 @@ impl<'a> Walker<'a> {
             }
             Amount::HighestCounters { who, .. } => self.player_amount("HighestCounters", who),
             Amount::StartingLife(who) => self.player_amount("StartingLife", who),
+            Amount::TurnsTaken(who) => self.player_amount("TurnsTaken", who),
+            Amount::LifeAsTurnBegan(who) => self.player_amount("LifeAsTurnBegan", who),
             Amount::CastLastTurn(who) => self.player_amount("CastLastTurn", who),
             Amount::TalliedLastTurn { who, what } => {
                 if matches!(
@@ -1291,6 +1306,7 @@ impl<'a> Walker<'a> {
             Condition::AsCast(inner) => self.as_cast(inner),
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
             Condition::YourTurn => {}
+            Condition::ExtraTurn => self.uses("Condition", "ExtraTurn"),
             Condition::StartingPlayer(who) => {
                 self.uses("Condition", "StartingPlayer");
                 self.at("StartingPlayer", |w| w.reference(who, Kind::Player));
@@ -1310,11 +1326,13 @@ impl<'a> Walker<'a> {
             Condition::Initiative(who) => self.player_condition("Initiative", who),
             Condition::MonarchAtTurnStart(who) => self.player_condition("MonarchAtTurnStart", who),
             Condition::CitysBlessing(who) => self.player_condition("CitysBlessing", who),
+            Condition::EnduringStory(who) => self.player_condition("EnduringStory", who),
             Condition::MaxSpeed(who) => self.player_condition("MaxSpeed", who),
             Condition::IsDay => self.uses("Condition", "IsDay"),
             Condition::IsNight => self.uses("Condition", "IsNight"),
             Condition::Step(_) => self.uses("Condition", "Step"),
             Condition::BeforeAttackers => self.uses("Condition", "BeforeAttackers"),
+            Condition::AfterBlockers => self.uses("Condition", "AfterBlockers"),
             Condition::InCombat => self.uses("Condition", "InCombat"),
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
             Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
@@ -1880,16 +1898,47 @@ impl<'a> Walker<'a> {
     /// What an enchant ability may enchant.
     fn enchant(&mut self, selector: &Selector) {
         self.selector(selector);
-        // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.
-        if selector
-            .0
-            .iter()
-            .any(|pred| matches!(pred, Pred::In(zone) if !zone.is_battlefield()))
-        {
-            self.uses("Keyword", "Enchant.Elsewhere");
+        // An Aura is attached to a permanent or, enchanting a card in a graveyard, to a card there (Animate Dead); one
+        // that enchants a card in another zone waits for the cards that do.
+        let zones = selector.0.iter().filter_map(|pred| match pred {
+            Pred::In(zone) if !zone.is_battlefield() => Some(*zone),
+            _ => None,
+        });
+        for zone in zones {
+            if zone == ZoneKind::Graveyard {
+                self.uses("Keyword", "Enchant.Graveyard");
+            } else {
+                self.uses("Keyword", "Enchant.Elsewhere");
+            }
         }
     }
 
+    /// The keywords `keyword` leaves out.
+    fn later_keyword(&mut self, keyword: &Keyword) {
+        if let Keyword::Cleave { cost, spell } = keyword {
+            self.cleave(cost, spell);
+        }
+    }
+
+    /// Only mana is paid for a cleave cost; the cleaved spell is walked as the spell it is when cast that way.
+    fn cleave(&mut self, cost: &Cost, spell: &Ability) {
+        self.at("cost", |w| w.cost(cost));
+        self.parts_that_need_an_announcement("Keyword", "Cost", cost);
+        match spell {
+            Ability::Spell { targets, effects } => {
+                // A cleave cost with {X} gives the cleaved spell its X.
+                let saved = std::mem::replace(&mut self.x_now, self.nested == 0);
+                let free = self.x_free;
+                self.x_free |= cost.has_x();
+                self.at("spell", |w| w.body(targets, effects, false));
+                self.x_now = saved;
+                self.x_free = free;
+            }
+            _ => self.problem("the cleaved spell is a Spell ability"),
+        }
+    }
+
+    #[allow(clippy::too_many_lines)]
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
@@ -1952,6 +2001,7 @@ impl<'a> Walker<'a> {
             | Keyword::Encore(cost)
             | Keyword::Foretell(cost)
             | Keyword::Plot(cost)
+            | Keyword::Splice { cost, .. }
             | Keyword::Awaken { cost, .. }
             | Keyword::Prototype { cost, .. }
             | Keyword::Suspend { cost, .. } => {
@@ -1959,6 +2009,7 @@ impl<'a> Walker<'a> {
                 // Only mana is paid for these: a part that takes objects, life or counters is not.
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
+            // Only mana is paid for the cost; the cleaved spell is walked as the spell it is when cast that way.
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
             Keyword::Backup { count, abilities } => self.backup(*count, abilities),
             Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
@@ -1966,6 +2017,7 @@ impl<'a> Walker<'a> {
             Keyword::Protection(quality)
             | Keyword::HexproofFrom(quality)
             | Keyword::Landwalk(quality)
+            | Keyword::BandsWithOther(quality)
             | Keyword::Affinity(quality) => {
                 self.selector(quality);
             }
@@ -1996,7 +2048,7 @@ impl<'a> Walker<'a> {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
             }
-            _ => {}
+            _ => self.later_keyword(keyword),
         }
     }
 
@@ -2034,6 +2086,7 @@ impl<'a> Walker<'a> {
             Modification::CantBeBlockedBy(selector) | Modification::CanBlockOnly(selector) => {
                 self.selector(selector);
             }
+            Modification::BlocksAdditionalPer(per) => self.at("per", |w| w.amount(per)),
             Modification::MinBlockers(count)
             | Modification::MaxBlockers(count)
             | Modification::BlocksAdditional(count) => {
@@ -2061,6 +2114,7 @@ impl<'a> Walker<'a> {
             | Modification::SetLandTypes(_)
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
+            | Modification::ChangeTextChosen { .. }
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
@@ -2068,7 +2122,9 @@ impl<'a> Walker<'a> {
             | Modification::AddProtectionFromChosenColor
             | Modification::AddProtectionFromChosenCardType
             | Modification::LoseThisAbility
+            | Modification::LosePrinted(_)
             | Modification::LoseAbilities
+            | Modification::RemoveKeywordKind(_)
             | Modification::CantAttack
             | Modification::CantAttackYou(_)
             | Modification::CantBlock
@@ -2184,10 +2240,11 @@ impl<'a> Walker<'a> {
                 w.modification(modification);
                 if matches!(
                     modification,
-                    Modification::RemoveSupertype(_)
-                        | Modification::SetName(_)
-                        | Modification::ThisAbility
-                ) || matches!(modification, Modification::AddSupertype(_)) && !w.scope.in_static
+                    Modification::SetName(_) | Modification::ThisAbility
+                ) || matches!(
+                    modification,
+                    Modification::AddSupertype(_) | Modification::RemoveSupertype(_)
+                ) && !w.scope.in_static
                 {
                     w.problem("a supertype, a name or this ability changes only the copiable values of a copy (`except`)");
                 }
@@ -2251,7 +2308,9 @@ impl<'a> Walker<'a> {
             TriggerPattern::StepBegins { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
             }
-            TriggerPattern::DayNightChanges { .. } | TriggerPattern::DoorUnlocked { .. } => {}
+            TriggerPattern::DayNightChanges { .. }
+            | TriggerPattern::DoorUnlocked { .. }
+            | TriggerPattern::Visit {} => {}
             TriggerPattern::DealsDamage { source, to, .. } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(to) = to {
@@ -2263,6 +2322,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::TakesInitiative { who }
             | TriggerPattern::Ventured { who, .. }
+            | TriggerPattern::RolledToVisit { who }
+            | TriggerPattern::OpenedAttraction { who }
             | TriggerPattern::PlayerAttacked { who }
             | TriggerPattern::CompletedDungeon { who }
             | TriggerPattern::Proliferated { who }
@@ -2316,6 +2377,7 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::BecomesBlocked { what, by, .. } => self.becomes_blocked(what, by),
             TriggerPattern::Attached { what, to } => self.w11b_attached(what, to),
+            TriggerPattern::Unattached { what, from } => self.w11b_attached(what, from),
             TriggerPattern::GroupAttacks { .. }
             | TriggerPattern::GroupAttacksAt { .. }
             | TriggerPattern::Chapter { .. } => {
@@ -2402,6 +2464,9 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::TakesInitiative { .. }
                 | TriggerPattern::Ventured { .. }
+                | TriggerPattern::Visit {}
+                | TriggerPattern::RolledToVisit { .. }
+                | TriggerPattern::OpenedAttraction { .. }
                 | TriggerPattern::CompletedDungeon { .. }
                 | TriggerPattern::DoorUnlocked { .. }
                 | TriggerPattern::DayNightChanges { .. }
@@ -2552,6 +2617,10 @@ impl Walker<'_> {
                     self.uses("Target", "TotalManaValue");
                     self.at("rule", |w| w.amount(most));
                 }
+                if let TargetSet::TotalPowerAtMost(most) = rule {
+                    self.uses("Target", "TotalPower");
+                    self.at("rule", |w| w.amount(most));
+                }
                 self.at("what", |w| w.targetable(what));
             }
             Targetable::Another { what, earlier } => {
@@ -2586,7 +2655,10 @@ impl Walker<'_> {
         match to {
             Destination::Battlefield {
                 under: Some(who), ..
-            } => self.at("under", |w| w.reference(who, Kind::Player)),
+            }
+            | Destination::BattlefieldFaceDown { under: Some(who) } => {
+                self.at("under", |w| w.reference(who, Kind::Player));
+            }
             Destination::BattlefieldAttached { to } => {
                 self.at("to", |w| w.reference(to, Kind::Object));
             }
@@ -2693,6 +2765,7 @@ impl Walker<'_> {
     }
 
     fn token_spec(&mut self, spec: &TokenSpec, sized: bool) {
+        self.rmt7_token_names.insert(spec.name.to_lowercase());
         if spec.name.is_empty() {
             self.problem("a token needs a name");
         }
@@ -3117,6 +3190,13 @@ impl Walker<'_> {
                 self.uses("Effect", "Move.Attached");
             }
             Effect::Move {
+                to: Destination::BattlefieldFaceDown { .. },
+                ..
+            } => {
+                self.uses("Effect", "Move.Battlefield");
+                self.uses("Effect", "Move.FaceDown");
+            }
+            Effect::Move {
                 to:
                     Destination::Library {
                         place: Place::Top,
@@ -3289,10 +3369,12 @@ impl Walker<'_> {
             | Effect::Transform { what }
             | Effect::Flip { what }
             | Effect::TurnFaceUp { what }
+            | Effect::TurnFaceDown { what }
             | Effect::Prepare { what }
             | Effect::Suspect { what }
             | Effect::Unsuspect { what }
             | Effect::Solve { what }
+            | Effect::Harness { what }
             | Effect::Goad { what }
             | Effect::Explore { what }
             => w.at("what", |w| w.reference(what, Kind::Object)),
@@ -3306,6 +3388,7 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
+            Effect::RestartGame { keep } => w.at("keep", |w| w.selector(keep)),
             Effect::Fight { what, with } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
@@ -3321,7 +3404,7 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
-            Effect::Incubate { who, count } => {
+            Effect::Incubate { who, count } | Effect::OpenAttraction { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
             }
@@ -3491,10 +3574,12 @@ impl Walker<'_> {
             | Effect::WinGame { who }
             | Effect::LoseGame { who }
             | Effect::Proliferate { who }
+            | Effect::ControlPlayer { who, .. }
             | Effect::BecomeMonarch { who }
             | Effect::RingTempts { who }
             | Effect::TakeInitiative { who }
             | Effect::Venture { who, .. }
+            | Effect::RollToVisit { who }
             | Effect::UnlockDoor { who }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }
@@ -3689,6 +3774,39 @@ impl Walker<'_> {
                 secret,
                 bind,
             } => w.vote(options, *secret, bind.as_deref()),
+            Effect::BidLife {
+                who,
+                start,
+                bind,
+                winner,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                if let Some(start) = start {
+                    w.at("start", |w| w.amount(start));
+                }
+                if bind == winner {
+                    w.problem("the high bid and the high bidder have names of their own");
+                }
+                w.at("as", |w| w.bind(bind, Kind::Value));
+                w.at("winner", |w| w.bind(winner, Kind::Player));
+            }
+            Effect::ChooseNumbers {
+                who,
+                min,
+                bind,
+                highest,
+                lowest,
+                ..
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("min", |w| w.amount(min));
+                if bind == highest || bind == lowest || highest == lowest {
+                    w.problem("the highest number and the players of each end have names of their own");
+                }
+                w.at("as", |w| w.bind(bind, Kind::Value));
+                w.at("highest", |w| w.bind(highest, Kind::Player));
+                w.at("lowest", |w| w.bind(lowest, Kind::Player));
+            }
             Effect::MultiplyCounters { on, factor, .. } => {
                 w.at("on", |w| w.reference(on, Kind::Either));
                 if *factor < 2 {
@@ -3701,6 +3819,10 @@ impl Walker<'_> {
                 if let Some(each) = each {
                     w.at("each", |w| w.amount(each));
                 }
+            }
+            Effect::SpellEntersWith { spell, count } => {
+                w.at("spell", |w| w.reference(spell, Kind::Object));
+                w.at("count", |w| w.amount(count));
             }
             Effect::MoveCounters {
                 from, to, count, ..
@@ -3835,6 +3957,9 @@ impl Walker<'_> {
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
                 }
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn) {
+                    w.problem(RMT3_SKIP_ONLY);
+                }
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
                 }
@@ -3847,7 +3972,7 @@ impl Walker<'_> {
                     w.problem(E15G_PAID_ONLY);
                 }
                 w.rule(rule);
-                // Only the layers end an effect when the source changes controller.
+                // A rule ends when the layers give its source to another player (`RuleEffect::is_active`).
                 if *duration == Duration::WhileYouControlSource {
                     w.uses("Rule", "Duration.WhileYouControlSource");
                 }
@@ -3863,8 +3988,22 @@ impl Walker<'_> {
                 if *duration == Duration::UntilTurnSkipped && !matches!(rule, GameRule::Cant { action: Prohibited::SkipTurn, .. }) {
                     w.problem(SKIP_ONLY);
                 }
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn)
+                    && !matches!(
+                        rule,
+                        GameRule::Cant {
+                            action: Prohibited::SkipStep(_) | Prohibited::SkipCombat,
+                            ..
+                        }
+                    )
+                {
+                    w.problem(RMT3_SKIP_ONLY);
+                }
                 if matches!(rule, GameRule::CanBeCommander) {
                     w.problem("a card can be a commander by a static ability, not by an effect");
+                }
+                if matches!(rule, GameRule::Draft(_)) {
+                    w.problem("a card follows a draft rule by a static ability, not by an effect");
                 }
                 if matches!(rule, GameRule::AnyNumberInDeck) {
                     w.problem("a deck holds any number of a card by a static ability, not by an effect");
@@ -3886,6 +4025,12 @@ impl Walker<'_> {
             }
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::RemoveFromCombat { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::BecomeBlocked { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::LoseUnspentMana { who } => w.at("who", |w| w.reference(who, Kind::Player)),
+            Effect::PutBeneathTop { what, below } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("below", |w| w.amount(below));
+            }
             Effect::Shield {
                 when,
                 by,
@@ -3908,6 +4053,9 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::UntilTurnSkipped {
                     w.problem(SKIP_ONLY);
+                }
+                if matches!(duration, Duration::UntilSkipped | Duration::UntilSkippedThisTurn) {
+                    w.problem(RMT3_SKIP_ONLY);
                 }
                 if *duration == Duration::UntilCastFromExile {
                     w.problem(E17A_CAST_ONLY);
@@ -4217,6 +4365,7 @@ impl Walker<'_> {
                     | Modification::SetColorsChosen(_)
                     | Modification::SetLandTypesChosen(_)
                     | Modification::SetCreatureTypesChosen(_)
+                    | Modification::ChangeTextChosen { .. }
             )
         }) {
             self.at("mods", |w| {
@@ -4458,7 +4607,7 @@ impl Walker<'_> {
                 }
             }
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
-            Ability::OpeningHand => {}
+            Ability::OpeningHand | Ability::OpeningHandWith { .. } => {}
             Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {
@@ -4592,6 +4741,7 @@ impl Walker<'_> {
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
             | GameRule::VoteAgain(who)
+            | GameRule::ExtraVote(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
             | GameRule::ExtraDie(who)
@@ -4624,7 +4774,7 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::CanBeCommander | GameRule::AnyNumberInDeck => {}
+            GameRule::CanBeCommander | GameRule::AnyNumberInDeck | GameRule::Draft(_) => {}
             GameRule::GraveyardCardsUntargetable
             | GameRule::CantLoseGame { .. }
             | GameRule::CantCastSpells { .. }
@@ -4635,6 +4785,8 @@ impl Walker<'_> {
                 w.cant_action(action);
             }),
             GameRule::TriggerAgain { .. }
+            | GameRule::ControlSearches(_)
+            | GameRule::ExileFound(_)
             | GameRule::NoLegendRule(_)
             | GameRule::NoLegendRuleFor(_)
             | GameRule::AbilitiesAsThoughHaste(_)
@@ -4647,7 +4799,8 @@ impl Walker<'_> {
             }
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
-            | GameRule::UntapDuring { .. } => self.rule_option(&tag, rule),
+            | GameRule::UntapDuring { .. }
+            | GameRule::UntapLimit { .. } => self.rule_option(&tag, rule),
         }
     }
 
@@ -4666,7 +4819,9 @@ impl Walker<'_> {
                 });
                 self.scope = saved;
             }
-            GameRule::NoLegendRule(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::NoLegendRule(who)
+            | GameRule::ControlSearches(who)
+            | GameRule::ExileFound(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::NoLegendRuleFor(what) | GameRule::AbilitiesAsThoughHaste(what) => {
                 self.at(tag, |w| w.selector(what));
             }
@@ -4713,6 +4868,10 @@ impl Walker<'_> {
             GameRule::UntapDuring { what, whose } => self.at(tag, |w| {
                 w.at("what", |w| w.selector(what));
                 w.at("whose", |w| w.reference(whose, Kind::Player));
+            }),
+            GameRule::UntapLimit { who, what, .. } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.selector(what));
             }),
             _ => {}
         }
@@ -4804,7 +4963,7 @@ impl Walker<'_> {
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
                 w.problem("a card can be a commander in every zone: write the rule without `from`");
             }),
-            _ if matches!(rule, GameRule::AnyNumberInDeck) => self.at("from", |w| {
+            _ if matches!(rule, GameRule::AnyNumberInDeck | GameRule::Draft(_)) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),
             _ => self.at("from", |w| {
@@ -4863,9 +5022,11 @@ impl Walker<'_> {
         }
     }
 
-    /// A loss of the game is replaced only by steps that happen instead.
+    /// A loss of the game is replaced only by steps that happen instead (every time, or the next time).
     fn ep27_lose_game(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
-        if matches!(when, ReplaceWhen::LoseGame { .. }) && !matches!(by, ReplaceBy::Instead(_)) {
+        if matches!(when, ReplaceWhen::LoseGame { .. })
+            && !matches!(by, ReplaceBy::Instead(_) | ReplaceBy::InsteadNext(_))
+        {
             self.problem("a loss of the game is replaced only by steps that happen instead");
         }
     }
@@ -4934,6 +5095,16 @@ impl Walker<'_> {
     fn g11b_replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         match by {
             ReplaceBy::PreventCounted(amount) if matches!(when, ReplaceWhen::Damage { .. }) => {
+                // A shield over damage to targets gives each target its share of a division (`rmt2_shares`).
+                if matches!(
+                    when,
+                    ReplaceWhen::Damage {
+                        to: Some(Ref::Target(_)),
+                        ..
+                    }
+                ) {
+                    self.amounting = Amounting::Shared;
+                }
                 self.at("PreventCounted", |w| w.amount(amount));
             }
             ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
@@ -4995,10 +5166,14 @@ impl Walker<'_> {
                 }
             }
             ReplaceBy::IntoLibrary { place, .. }
-                if !matches!(when, ReplaceWhen::ZoneChange { .. })
-                    || matches!(place, crate::effect::Place::Below(_)) =>
+                if !matches!(
+                    when,
+                    ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Countered { .. }
+                ) || matches!(place, crate::effect::Place::Below(_)) =>
             {
-                self.problem("`IntoLibrary` replaces a `ZoneChange`, on top, bottom or shuffled");
+                self.problem(
+                    "`IntoLibrary` replaces a `ZoneChange` or a `Countered`, on top, bottom or shuffled",
+                );
             }
             ReplaceBy::MoveTo(_)
                 if !matches!(
@@ -5258,6 +5433,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::ToLibrary { .. }
                 | CostItem::Craft { .. }
                 | CostItem::Forage
+                | CostItem::ExileTop(_)
         ),
     })
 }
@@ -5502,6 +5678,7 @@ pub(crate) fn check_printed(
 ) -> Vec<Problem> {
     let checked = walk(card, tokens);
     let (x_uses, names, granted) = (checked.x_uses, checked.names, checked.granted);
+    let own_tokens = checked.rmt7_token_names;
     let mut walker = Walker::new(tokens);
     if card.oracle_id != printed.oracle_id {
         walker.at("oracle_id", |w| {
@@ -5550,7 +5727,8 @@ pub(crate) fn check_printed(
         }
     }
     for (_, path, name) in names {
-        if !known_names.contains(&name.to_lowercase()) {
+        let lower = name.to_lowercase();
+        if !known_names.contains(&lower) && !own_tokens.contains(&lower) {
             walker.path = vec![path];
             walker.problem(format!("no imported card is named `{name}`"));
         }
@@ -6083,7 +6261,8 @@ mod tests {
     #[case::reconfigure_pays_a_mana_cost(r#"{"Keyword":{"Reconfigure":"{2}"}}"#, &["Cost.Mana", "Keyword.Reconfigure"])]
     #[case::unattaching_the_source_only_while_it_is_attached(r#"{"Activated":{"cost":"{2}","timing":"Sorcery","condition":{"Compare":{"left":{"Count":[{"Is":"Attached"},{"Type":"Creature"}]},"op":"Ge","right":1}},"effects":[{"Unattach":{"what":"This"}}]}}"#, &["Ability.Activated", "Ability.Condition", "Ability.Sorcery", "Cost.Mana", "Effect.Unattach"])]
     #[case::an_aura_that_enchants_a_creature(r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}}"#, &["Keyword.Enchant"])]
-    #[case::an_aura_that_enchants_a_card_in_a_graveyard(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Elsewhere"])]
+    #[case::an_aura_that_enchants_a_card_in_a_graveyard(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Graveyard"])]
+    #[case::an_aura_that_enchants_a_card_in_exile(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Exile"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Elsewhere"])]
     #[case::a_treasure_like_mana_ability(r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana"])]
     #[case::sol_ring(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#, &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana"])]
     #[case::mana_for_creature_spells_only(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1},"only":[{"Spell":{"types":["Creature"]}}]}}]}}"#, &["Ability.Activated", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.Restricted"])]
@@ -6179,7 +6358,7 @@ mod tests {
         "a colour or card type is chosen as an effect begins, so only a `Continuous` effect adds protection from it"
     )]
     #[case::a_supertype_goes_with_a_copy_only(
-        r#"{"Static":{"affected":"This","mods":[{"RemoveSupertype":"Legendary"}]}}"#,
+        r#"{"Static":{"affected":"This","mods":["ThisAbility"]}}"#,
         "a supertype, a name or this ability changes only the copiable values of a copy (`except`)"
     )]
     #[case::a_player_takes_only_the_keywords_players_have(

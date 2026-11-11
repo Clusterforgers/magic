@@ -1,0 +1,20 @@
+{
+  "oracle_id": "791cbb7c-7935-4902-b050-9ea9d030e9fa",
+  "name": "Osteomancer Adept",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Osteomancer Adept",
+      "oracle_fingerprint": "96d375d564089247dc87413c97d82b2e",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 11, "end": 363 }
+          }
+        }
+      ]
+    }
+  ]
+}

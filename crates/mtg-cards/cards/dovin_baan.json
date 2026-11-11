@@ -1,0 +1,48 @@
+{
+  "oracle_id": "5b33bfbf-e4e1-43de-9c96-ccdc2916510a",
+  "name": "Dovin Baan",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dovin Baan",
+      "oracle_fingerprint": "e8fefad540697f460499e3fbae11e1a6",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Target": 0 }, "action": { "Activate": [] } } },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [{ "GainLife": { "amount": 2 } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 148, "end": 254 }
+          }
+        }
+      ]
+    }
+  ]
+}

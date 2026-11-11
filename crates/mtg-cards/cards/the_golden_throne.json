@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a68f41a2-37ee-46e1-bf3c-164c78b003ca",
+  "name": "The Golden Throne",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Golden Throne",
+      "oracle_fingerprint": "d830e02462602edf9d026d97efbac331",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 112 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "AddMana": { "mana": { "AnyCombination": { "count": 3 } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "90ecd452-333a-43b0-be08-a61f3779b3bd",
+  "name": "High Fae Negotiator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "High Fae Negotiator",
+      "oracle_fingerprint": "08078c3ad60658834aec7caef106afe0",
+      "abilities": [
+        { "Keyword": "Bargain" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "AdditionalCostPaid",
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

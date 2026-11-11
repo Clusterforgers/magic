@@ -1,0 +1,30 @@
+{
+  "oracle_id": "296dcc57-5651-4cb1-b89c-fcdd3f5311bd",
+  "name": "Stir the Grave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stir the Grave",
+      "oracle_fingerprint": "df8d1bf3d61ec366758bbf38e3242e29",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

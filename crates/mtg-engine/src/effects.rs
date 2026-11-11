@@ -109,6 +109,8 @@ pub enum Modification {
     SetTypes(CardTypes),
     /// Adds a supertype (layer 4): "enchanted permanent is legendary".
     AddSupertype(Supertype),
+    /// Removes a supertype (layer 4): "~ isn't legendary if it's a token".
+    RemoveSupertype(Supertype),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4); the other subtypes stay (CR 205.1b).
@@ -128,6 +130,11 @@ pub enum Modification {
     AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Removes a keyword ability (layer 6), printed or granted before it; `keywords_of` reads it.
     RemoveKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
+    /// Removes every keyword ability of the kind, whatever its parameter (layer 6): all landwalk, protection or ward.
+    RemoveKeywordKind(
+        #[cfg_attr(feature = "ts", ts(type = "\"Landwalk\" | \"Protection\" | \"Ward\""))]
+        mtg_cards::rmt7_kinds::KeywordKind,
+    ),
     /// Removes a keyword ability and keeps the object from having or gaining it afterwards (layer 6).
     LockKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Gives an activated or a triggered ability (layer 6); `ability_reader` lists it under an address of its own.
@@ -144,6 +151,13 @@ pub enum Modification {
     LoseAbility(crate::abilities::AbilityRef),
     /// Changes the controller (layer 2).
     SetController(PlayerId),
+    /// Replaces every instance of one word of the text with another (layer 3, CR 612).
+    ChangeText {
+        /// The word replaced.
+        from: crate::text_change::TextWord,
+        /// The word written.
+        to: crate::text_change::TextWord,
+    },
     /// Sets power and toughness (layer 7b).
     SetPowerToughness {
         /// New power.
@@ -227,10 +241,12 @@ impl Modification {
     pub const fn layer(&self) -> Option<Layer> {
         Some(match self {
             Modification::SetController(_) => Layer::Control,
+            Modification::ChangeText { .. } => Layer::Text,
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
             | Modification::AddSupertype(_)
+            | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
@@ -239,6 +255,7 @@ impl Modification {
             Modification::AddKeyword(_)
             | Modification::LockKeyword(_)
             | Modification::RemoveKeyword(_)
+            | Modification::RemoveKeywordKind(_)
             | Modification::GrantText(_)
             | Modification::GrantAbility(_)
             | Modification::LoseAbility(_)
@@ -282,6 +299,12 @@ impl Modification {
                     chars.supertypes.push(*supertype);
                 }
             }
+            Modification::RemoveSupertype(supertype) => {
+                chars.supertypes.retain(|held| held != supertype);
+                if !chars.supertypes_removed.contains(supertype) {
+                    chars.supertypes_removed.push(*supertype);
+                }
+            }
             Modification::AddSubtype(subtype) => {
                 if !chars.subtypes.contains(subtype) {
                     chars.subtypes.push(subtype.clone());
@@ -309,6 +332,9 @@ impl Modification {
                 chars.abilities.clear();
             }
             Modification::AddAllCreatureTypes => chars.all_creature_types = true,
+            Modification::ChangeText { from, to } => {
+                crate::text_change::subtypes(&mut chars.subtypes, from, to);
+            }
             Modification::SetColors(colors) => chars.colors = *colors,
             Modification::AddColors(colors) => {
                 chars.colors = colors
@@ -336,6 +362,7 @@ impl Modification {
             Modification::SetController(_)
             | Modification::AddKeyword(_)
             | Modification::RemoveKeyword(_)
+            | Modification::RemoveKeywordKind(_)
             | Modification::GrantText(_)
             | Modification::LockKeyword(_)
             | Modification::LoseAbility(_)
@@ -411,7 +438,10 @@ pub(crate) fn lasts(
         // A payment ends it (`e15g_paid.rs`).
         | Duration::UntilPaid(_)
         | Duration::NextUntapStep
-        | Duration::UntilTurnSkipped => true,
+        | Duration::UntilTurnSkipped
+        // `UntilSkipped` ends with the step or combat it skips (`rmt3_skips`).
+        | Duration::UntilSkipped
+        | Duration::UntilSkippedThisTurn => true,
         Duration::UntilEndOfYourNextTurn => state.is_alive(controller),
         // Begun before the end step of its controller's own turn, it carries the turn before (`began_turn`), so that end step ends it.
         Duration::UntilYourNextEndStep => {
@@ -489,7 +519,7 @@ pub(crate) fn ends_with_turn(
 ) -> bool {
     let turn = state.turn();
     match duration {
-        Duration::UntilEndOfTurn => true,
+        Duration::UntilEndOfTurn | Duration::UntilSkippedThisTurn => true,
         Duration::UntilEndOfYourNextTurn => turn.number() > began && turn.active() == controller,
         _ => false,
     }

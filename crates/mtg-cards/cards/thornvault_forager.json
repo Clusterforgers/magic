@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7b18cfad-a1cf-46c2-bcdd-7762c13d50e5",
+  "name": "Thornvault Forager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thornvault Forager",
+      "oracle_fingerprint": "bba22060bea1f28b724b5cef921d0655",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "Forage"],
+            "effects": [{ "AddMana": { "mana": { "AnyCombination": { "count": 2 } } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}" }, "Tap"],
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Squirrel" }], "reveal": true, "as": "card" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

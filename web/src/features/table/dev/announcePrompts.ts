@@ -65,6 +65,19 @@ const costs: DevPrompt = (fixture) =>
     ChooseCosts: { source: ownSpell(fixture.view)?.id ?? 0, optional: KICKERS, can_cancel: true },
   })
 
+/** Two Arcane cards of the hand that may be spliced onto the viewer's spell (CR 702.47). */
+const costsSplice: DevPrompt = (fixture) =>
+  decision(fixture, {
+    ChooseCosts: {
+      source: ownSpell(fixture.view)?.id ?? 0,
+      optional: [
+        { index: 0, label: 'Splice Glacial Ray {1}{R}' },
+        { index: 1, label: 'Splice Torrent of Stone {4}{R}' },
+      ],
+      can_cancel: true,
+    },
+  })
+
 /** A kicker and a gift that can be promised to each opponent; the engine accepts one gift. */
 const costsGift: DevPrompt = (fixture) => {
   const gifts = opponents(fixture.view).map((seat): OptionalCost => ({
@@ -128,6 +141,7 @@ export const ANNOUNCE_PROMPTS: Record<string, DevPrompt> = {
   'divide-three': divideThree,
   costs,
   'costs-gift': costsGift,
+  'costs-splice': costsSplice,
   x,
   way,
   'sacrifice-cost': sacrificeCost,

@@ -32,6 +32,9 @@ pub(super) fn move_object(
     keep_left_spell(state, id);
     tally_nonland_leaving(state, id, to);
     log_death(state, id, to);
+    if let Some(from) = state.object(id).map(GameObject::zone) {
+        crate::un33_attractions::fold_left(state, id, from);
+    }
     // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
     let timestamp = state.next_timestamp;
     if to == Zone::Battlefield {
@@ -628,6 +631,9 @@ fn card_drawn(
     }
     move_object(state, object, Zone::Hand(player), Placement::Top)?;
     state.tally(player, Tally::Drawn);
+    if let Some(reference) = state.object(object).map(GameObject::reference) {
+        state.tally_object(reference, None, Tally::Dk26Drawn);
+    }
     if state.turn.step == crate::turn::Step::Draw && state.active_player() == Some(player) {
         state.tally(player, Tally::C6BlkDrawStepDrawn);
     }

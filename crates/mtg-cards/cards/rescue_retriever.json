@@ -1,0 +1,44 @@
+{
+  "oracle_id": "86f9897f-84aa-4c8d-8335-cfdb2f565311",
+  "name": "Rescue Retriever",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rescue Retriever",
+      "oracle_fingerprint": "e6383a21c241617df4c6d25ce3d2f173",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Soldier" }, "Other", { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": {
+                  "Each": [
+                    { "Subtype": "Soldier" },
+                    "Attacking",
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

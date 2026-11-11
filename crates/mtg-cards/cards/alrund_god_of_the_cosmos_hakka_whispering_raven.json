@@ -1,0 +1,38 @@
+{
+  "oracle_id": "0a69c3dd-52a3-4ef6-b53f-b0780e0dc5f8",
+  "name": "Alrund, God of the Cosmos // Hakka, Whispering Raven",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Alrund, God of the Cosmos",
+      "oracle_fingerprint": "9874d98494333db23bc1229027f8957c",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 85 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 86, "end": 310 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Hakka, Whispering Raven",
+      "oracle_fingerprint": "518791fcf37d68262c928bcdf4ed7f70",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }, { "Scry": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

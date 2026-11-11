@@ -1,0 +1,20 @@
+{
+  "oracle_id": "17c2a962-994a-49f1-8c4e-ebcc43c3c92a",
+  "name": "Wrathful Red Dragon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wrathful Red Dragon",
+      "oracle_fingerprint": "3e7651c14051ffa4c540fae6a745adeb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 7, "end": 114 }
+          }
+        }
+      ]
+    }
+  ]
+}

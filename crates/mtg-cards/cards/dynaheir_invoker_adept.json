@@ -9,9 +9,10 @@
       "abilities": [
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 100 }
+          "Rule": {
+            "rule": {
+              "AbilitiesAsThoughHaste": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+            }
           }
         },
         {

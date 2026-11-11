@@ -70,6 +70,8 @@ pub struct Player {
     pub(crate) mulligan: MulliganStatus,
     pub(crate) keywords: Vec<Keyword>,
     pub(crate) counters: BTreeMap<CounterKind, u32>,
+    /// Cards still to exile from the hand for a card that began the game on the battlefield (Gemstone Caverns).
+    pub(crate) opening_exile: u32,
 }
 
 impl Player {
@@ -89,6 +91,7 @@ impl Player {
             mulligan,
             keywords,
             counters: BTreeMap::new(),
+            opening_exile: 0,
         }
     }
 

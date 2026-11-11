@@ -1,15 +1,17 @@
 //! `Effect::Search`: players search a zone for cards that match and find some of them (CR 701.23).
 
 use mtg_cards::effect::Effect;
-use mtg_cards::refs::ZoneKind;
-use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_cards::modify::{Duration, SpendAs};
+use mtg_cards::refs::{Selector, ZoneKind};
+use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use super::wrong_effect;
 use crate::choose::{Picked, Selection, Target, pick_selections};
-use crate::events::Event;
+use crate::events::{Event, ZoneCause};
 use crate::library::{CardsFound, Revealed};
+use crate::object::ObjectRef;
 use crate::resolve::{Cx, Next, ResolveError, Run};
-use crate::rules::cant_search;
+use crate::rules::{Rule, RuleEffect, cant_search};
 use crate::wording;
 use crate::zones::Zone;
 
@@ -167,7 +169,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             cards: cards.clone(),
         }));
         if *reveal && !cards.is_empty() {
-            events.push(Event::Revealed(Revealed { player, cards }));
+            events.push(Event::Revealed(Revealed {
+                player,
+                cards: cards.clone(),
+            }));
+        }
+        if place == Zone::Library(player) {
+            let made = events
+                .iter()
+                .filter(|event| matches!(event, Event::RuleCreated { .. }))
+                .count();
+            events.extend(exiled_as_found(state, player, &cards, made));
         }
     }
     Ok(Run::Done {
@@ -176,6 +188,65 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots: Vec::new(),
         next: Next::Sibling,
     })
+}
+
+/// What a rule that exiles the cards a player finds in their library (Opposition Agent) makes of a search that found
+/// `cards`: each card is exiled, and the rule's controller may play them while they stay there, spending mana as though
+/// it were mana of any color. The cards the search binds are the ones it found, which have left; `made` counts the rules
+/// already created in this batch.
+fn exiled_as_found(
+    state: &crate::state::GameState,
+    player: PlayerId,
+    cards: &[ObjectId],
+    made: usize,
+) -> Vec<Event> {
+    let rules = state.exile_found_by(player);
+    if cards.is_empty() || rules.is_empty() {
+        return Vec::new();
+    }
+    let mut events: Vec<Event> = cards
+        .iter()
+        .map(|card| Event::ZoneChanged {
+            object: *card,
+            from: Zone::Library(player),
+            to: Zone::Exile,
+            cause: ZoneCause::Exiled,
+        })
+        .collect();
+    let exiled: Vec<ObjectRef> = cards
+        .iter()
+        .filter_map(|id| state.object(*id))
+        .map(|card| ObjectRef {
+            id: card.id(),
+            counter: card.counter() + 1,
+        })
+        .collect();
+    for (offset, (by, source)) in (made as u64..).zip(rules) {
+        events.push(Event::RuleCreated {
+            effect: Box::new(RuleEffect {
+                id: EffectId(state.next_effect + offset),
+                rule: Rule::MayCast {
+                    who: vec![by],
+                    what: Selector(Vec::new()),
+                    from: Some(ZoneKind::Exile),
+                    free: false,
+                    flash: false,
+                    only: Some(exiled.clone()),
+                    play: true,
+                    once: false,
+                    additional: None,
+                    rather: None,
+                    spend_as: SpendAs::AnyColor,
+                    when: None,
+                },
+                duration: Duration::Forever,
+                source,
+                controller: by,
+                turn: crate::effects::began_turn(state, &Duration::Forever, by),
+            }),
+        });
+    }
+    events
 }
 
 #[cfg(test)]

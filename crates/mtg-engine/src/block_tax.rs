@@ -169,7 +169,8 @@ fn can_pay_life(state: &GameState, player: PlayerId, life: u32) -> bool {
                 .is_some_and(|seat| i64::from(seat.life()) >= i64::from(life)))
 }
 
-/// The events of a block declared and paid for: the declaration, then the life it costs.
+/// The events of a block declared and paid for: the declaration, with a block of one attacker in a band as a block of
+/// the band (CR 702.22h), then the life it costs.
 pub(crate) fn made(
     state: &GameState,
     player: PlayerId,
@@ -177,7 +178,7 @@ pub(crate) fn made(
 ) -> Vec<Event> {
     let mut events = vec![Event::BlockersDeclared {
         player,
-        blocks: blocks.to_vec(),
+        blocks: crate::keywords::banding::blocks_with_bands(state, blocks),
     }];
     let (_, life) = costs(state, blocks);
     if life > 0 {
@@ -225,7 +226,7 @@ pub(crate) fn declare(
     if block_taxes(state).is_empty() {
         return Ok(Outcome::Events(vec![Event::BlockersDeclared {
             player,
-            blocks,
+            blocks: crate::keywords::banding::blocks_with_bands(state, &blocks),
         }]));
     }
     let (owed, life) = costs(state, &blocks);

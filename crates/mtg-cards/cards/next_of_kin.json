@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5b079914-1302-40b5-8060-7c3e5b6e9eae",
+  "name": "Next of Kin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Next of Kin",
+      "oracle_fingerprint": "6e7e6df29bc1c8aea8b0b19834916538",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 17, "end": 279 }
+          }
+        }
+      ]
+    }
+  ]
+}

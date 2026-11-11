@@ -1,0 +1,31 @@
+{
+  "oracle_id": "2cdc1d82-30dc-4f0a-af20-33dde90269b1",
+  "name": "Starforged Sword",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starforged Sword",
+      "oracle_fingerprint": "f9903e8a825b9714c0f32582d3e4d068",
+      "abilities": [
+        { "Keyword": { "Gift": "TappedFish" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "AdditionalCostPaid",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }, { "RemoveKeyword": "Flying" }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

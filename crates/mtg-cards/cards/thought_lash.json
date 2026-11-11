@@ -1,0 +1,34 @@
+{
+  "oracle_id": "81fe7c5e-503e-488c-b06c-1615ed38e5a3",
+  "name": "Thought Lash",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thought Lash",
+      "oracle_fingerprint": "16d624a98d3afda9bc10e3ac453624aa",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": [{ "ExileTop": 1 }] } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 204, "end": 316 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "ExileTop": 1 }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

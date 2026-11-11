@@ -1,0 +1,39 @@
+{
+  "oracle_id": "3509171e-8d7d-4e9e-97a1-58e6c7d225ed",
+  "name": "Summon: Fenrir",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Summon: Fenrir",
+      "oracle_fingerprint": "7e28098de4890815170cd79179fb2f80",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 89, "end": 201 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+                  "this_turn": true,
+                  "effects": [{ "SpellEntersWith": { "spell": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 333, "end": 451 }
+          }
+        }
+      ]
+    }
+  ]
+}

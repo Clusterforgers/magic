@@ -71,11 +71,11 @@ fn every_single_faced_cost_reads_with_the_value_and_colors_scryfall_gives_it() {
                 let [cost] = costs.as_slice() else {
                     panic!("{}: one cost expected", row.cost);
                 };
-                assert_eq!(
-                    f64::from(cost.mana_value()),
-                    cmc,
-                    "{}: mana value",
-                    row.cost
+                assert!(
+                    (f64::from(cost.mana_value()) - cmc).abs() < f64::EPSILON,
+                    "{}: mana value {} is not {cmc}",
+                    row.cost,
+                    cost.mana_value()
                 );
                 if let Some(colors) = colors {
                     assert_eq!(cost.colors(), colors, "{}: colors", row.cost);

@@ -89,6 +89,8 @@ fn state_word(pred: &Pred) -> Option<&'static str> {
         Pred::Prepared => "prepared",
         Pred::Suspected => "suspected",
         Pred::Solved => "solved",
+        Pred::Harnessed => "harnessed",
+        Pred::FoughtSinceYourLastUpkeep { .. } => "in combat since your last upkeep",
         Pred::DoubleFaced => "double-faced",
         Pred::Transformed => "transformed",
         Pred::Paired => "paired",
@@ -124,6 +126,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             Pred::EnteredThisTurn => tail.push("that entered this turn".to_owned()),
             Pred::SummoningSick => tail.push("with summoning sickness".to_owned()),
             Pred::MilledThisTurn => tail.push("that was milled this turn".to_owned()),
+            Pred::DrawnThisTurn => tail.push("drawn this turn".to_owned()),
             Pred::HasAdventure => tail.push("that has an Adventure".to_owned()),
             Pred::ArrivedFrom(origin) => tail.push(format!(
                 "that was put there from {} this turn",
@@ -137,6 +140,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             }
             Pred::AttackingPlayer(Ref::You) => tail.push("attacking you".to_owned()),
             Pred::AttackingAlone => tail.push("attacking alone".to_owned()),
+            Pred::AttackingBattle => tail.push("attacking a battle".to_owned()),
             Pred::AttackingPlayerOrPlaneswalker(Ref::You) => {
                 tail.push("attacking you or a planeswalker you control".to_owned());
             }
@@ -248,6 +252,10 @@ fn kind_of(what: &Targetable) -> (String, String) {
                     format!("with total mana value {most} or less")
                 }
                 TargetSet::TotalManaValueAtMost(_) => "with total mana value X or less".to_owned(),
+                TargetSet::TotalPowerAtMost(Amount::Fixed(most)) => {
+                    format!("with total power {most} or less")
+                }
+                TargetSet::TotalPowerAtMost(_) => "with total power X or less".to_owned(),
             };
             (head, join(&tail, &rule))
         }
@@ -533,6 +541,15 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             (format!("{name} venture{s} into the dungeon"), false)
         }
         TriggerPattern::Ventured { room: Some(_), .. } => ("you enter this room".to_owned(), false),
+        TriggerPattern::Visit {} => ("you visit this Attraction".to_owned(), true),
+        TriggerPattern::RolledToVisit { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} roll{s} to visit Attractions"), false)
+        }
+        TriggerPattern::OpenedAttraction { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} open{s} an Attraction"), false)
+        }
         TriggerPattern::DoorUnlocked {
             door: Some(_),
             fully: false,
@@ -788,6 +805,22 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (
                 format!("{attachment} becomes attached to {host}"),
+                what.0 == [Pred::This],
+            )
+        }
+        TriggerPattern::Unattached { what, from } => {
+            let attachment = if what.is_empty() {
+                "an attachment".to_owned()
+            } else {
+                subject(what)
+            };
+            let host = if from.is_empty() {
+                "a permanent".to_owned()
+            } else {
+                subject(from)
+            };
+            (
+                format!("{attachment} becomes unattached from {host}"),
                 what.0 == [Pred::This],
             )
         }
@@ -1112,6 +1145,9 @@ pub(crate) const SCRY: &str = "Put any number of the cards on the bottom of your
 
 /// The question about cards that may begin the game on the battlefield.
 pub(crate) const OPENING_HAND: &str = "Choose the cards to begin the game on the battlefield.";
+
+/// The question of the cards exiled from the hand after a card began the game on the battlefield (Gemstone Caverns).
+pub(crate) const DK26_OPENING_EXILE: &str = "Choose the cards to exile from your hand.";
 
 /// What the opening asks when a card of the hand may be revealed from it (CR 103.6).
 pub(crate) const OPENING_REVEAL: &str =

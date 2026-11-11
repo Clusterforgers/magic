@@ -1,0 +1,19 @@
+{
+  "oracle_id": "51b114cd-c174-4d74-a854-07c68b41fc9d",
+  "name": "Tainted Remedy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tainted Remedy",
+      "oracle_fingerprint": "cab94d027c16b17deacf91efea33313d",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "LifeGain": { "who": "Opponents" } },
+            "by": { "Instead": [{ "LoseLife": { "who": "Triggering", "amount": "Triggering" } }] }
+          }
+        }
+      ]
+    }
+  ]
+}

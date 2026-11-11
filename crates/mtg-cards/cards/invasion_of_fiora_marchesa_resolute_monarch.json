@@ -1,0 +1,72 @@
+{
+  "oracle_id": "7209f2b6-8851-42ab-bac6-5cf06e211e46",
+  "name": "Invasion of Fiora // Marchesa, Resolute Monarch",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Invasion of Fiora",
+      "oracle_fingerprint": "364c39a68cdc0b4d16fae740d34b994b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Destroy": {
+                            "what": {
+                              "Each": [{ "Type": "Creature" }, { "Supertype": "Legendary" }]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Destroy": {
+                            "what": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "Not": { "Supertype": "Legendary" } }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Marchesa, Resolute Monarch",
+      "oracle_fingerprint": "f0ea80b863c4d28117f4eed7dcc41d8a",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 19, "end": 98 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 99, "end": 230 }
+          }
+        }
+      ]
+    }
+  ]
+}

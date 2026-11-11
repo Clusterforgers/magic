@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7fd6fe21-8fb8-499b-9dd4-806d0d660265",
+  "name": "Circling Vultures",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Circling Vultures",
+      "oracle_fingerprint": "052a5635748d728b0f9ef6a576a110e0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 7, "end": 68 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 69, "end": 183 }
+          }
+        }
+      ]
+    }
+  ]
+}

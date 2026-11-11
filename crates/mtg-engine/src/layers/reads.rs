@@ -49,15 +49,19 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         Modification::AddType(_) | Modification::RemoveType(_) | Modification::SetTypes(_) => {
             Traits::TYPES.or(Traits::SUBTYPES)
         }
-        Modification::AddSupertype(_) => Traits::SUPERTYPES,
+        Modification::AddSupertype(_) | Modification::RemoveSupertype(_) => Traits::SUPERTYPES,
         Modification::AddSubtype(_)
         | Modification::SetCreatureTypes(_)
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
-        // The land loses its abilities with its land types.
-        Modification::SetLandTypes(_) => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
+        // The land loses its abilities with its land types; a text change rewrites the rules, the keywords and the
+        // subtypes.
+        Modification::SetLandTypes(_) | Modification::ChangeText { .. } => {
+            Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
+        }
         Modification::SetColors(_) | Modification::AddColors(_) => Traits::COLORS,
         Modification::AddKeyword(_)
         | Modification::RemoveKeyword(_)
+        | Modification::RemoveKeywordKind(_)
         | Modification::LockKeyword(_) => Traits::KEYWORDS,
         Modification::LoseAbilities | Modification::LoseAbility(_) => {
             Traits::KEYWORDS.or(Traits::RULES)
@@ -108,8 +112,12 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
+        | Wanted::RemoveKeywordKind(_)
         | Wanted::LockKeyword(_) => Traits::KEYWORDS,
-        Wanted::LoseAbilities | Wanted::LoseThisAbility => Traits::KEYWORDS.or(Traits::RULES),
+        Wanted::LoseAbilities | Wanted::LoseThisAbility | Wanted::LosePrinted(_) => {
+            Traits::KEYWORDS.or(Traits::RULES)
+        }
+        Wanted::ChangeTextChosen { .. } => Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES),
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. }
         | Wanted::SetPower(_)
@@ -118,7 +126,6 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SwitchPT => Traits::POWER.or(Traits::TOUGHNESS),
         Wanted::GrantAbility(_)
         | Wanted::GainAbilitiesOf(_)
-        | Wanted::RemoveSupertype(_)
         | Wanted::SetName(_)
         | Wanted::ThisAbility
         | Wanted::CantAttack
@@ -131,9 +138,10 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CanBlockOnly(_)
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)
-        | Wanted::BlocksAdditional(_) => Traits::NONE,
+        | Wanted::BlocksAdditional(_)
+        | Wanted::BlocksAdditionalPer(_) => Traits::NONE,
         Wanted::Goaded => Traits::GOADED,
-        Wanted::AddSupertype(_) => Traits::SUPERTYPES,
+        Wanted::AddSupertype(_) | Wanted::RemoveSupertype(_) => Traits::SUPERTYPES,
     }
 }
 
@@ -143,7 +151,9 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         Wanted::ModifyPT { power, toughness } | Wanted::SetPT { power, toughness } => {
             reads_of_amount(power).or(reads_of_amount(toughness))
         }
-        Wanted::SetPower(value) | Wanted::SetToughness(value) => reads_of_amount(value),
+        Wanted::SetPower(value)
+        | Wanted::SetToughness(value)
+        | Wanted::BlocksAdditionalPer(value) => reads_of_amount(value),
         Wanted::SetController(who) | Wanted::GainAbilitiesOf(who) => reads_of_ref(who),
         Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
             reads_of_selector(blockers)
@@ -161,6 +171,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetLandTypes(_)
         | Wanted::SetLandTypesChosen(_)
         | Wanted::SetCreatureTypesChosen(_)
+        | Wanted::ChangeTextChosen { .. }
         | Wanted::SetColorsChosen(_)
         | Wanted::AddChosenSubtype
         | Wanted::SetChosenColor
@@ -171,8 +182,10 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddProtectionFromChosenColor
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
+        | Wanted::RemoveKeywordKind(_)
         | Wanted::LockKeyword(_)
         | Wanted::LoseThisAbility
+        | Wanted::LosePrinted(_)
         | Wanted::GrantAbility(_)
         | Wanted::LoseAbilities
         | Wanted::CantAttack
@@ -256,17 +269,21 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Prepared
         | Pred::Suspected
         | Pred::Solved
+        | Pred::Harnessed
+        | Pred::FoughtSinceYourLastUpkeep { .. }
         | Pred::DoubleFaced
         | Pred::Transformed
         | Pred::Paired
         | Pred::EnteredThisTurn
         | Pred::SummoningSick
         | Pred::MilledThisTurn
+        | Pred::DrawnThisTurn
         | Pred::HasAdventure
         | Pred::DamagedThisTurn
         | Pred::AttackedThisTurn
         | Pred::Attacking
         | Pred::AttackingAlone
+        | Pred::AttackingBattle
         | Pred::Blocking
         | Pred::Unblocked
         | Pred::In(_)
@@ -401,6 +418,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Tallied { who, .. }
         | Amount::CommanderColors(who)
         | Amount::StartingLife(who)
+        | Amount::TurnsTaken(who)
+        | Amount::LifeAsTurnBegan(who)
         | Amount::CastLastTurn(who)
         | Amount::TalliedLastTurn { who, .. }
         | Amount::HighestCounters { who, .. }
@@ -418,6 +437,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             reads_of_amount(of).or(reads_of_amount(by))
         }
         Amount::Devotion(_) => Traits::CONTROL,
+        Amount::ManaSymbols { of, .. } => reads_of_ref(of),
         Amount::Greatest { of, stat }
         | Amount::Total { of, stat }
         | Amount::Distinct { of, stat }
@@ -473,17 +493,20 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::IsNight
         | Condition::Step(_)
         | Condition::BeforeAttackers
+        | Condition::AfterBlockers
         | Condition::InCombat
         | Condition::FirstCombat
         | Condition::NeitherDayNorNight
         | Condition::ChosenWord { .. }
         | Condition::EnteredAs(_)
-        | Condition::Performed => Traits::NONE,
+        | Condition::Performed
+        | Condition::ExtraTurn => Traits::NONE,
         Condition::Monarch(who)
         | Condition::MonarchAtTurnStart(who)
         | Condition::CompletedDungeon(who)
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who)
+        | Condition::EnduringStory(who)
         | Condition::MaxSpeed(who)
         | Condition::Among(who)
         | Condition::StartingPlayer(who)

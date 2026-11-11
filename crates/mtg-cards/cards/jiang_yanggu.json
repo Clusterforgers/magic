@@ -1,7 +1,7 @@
 {
   "oracle_id": "b15c8f43-685d-4901-9cad-47bc6dc6346f",
   "name": "Jiang Yanggu",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Jiang Yanggu",
@@ -23,9 +23,44 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 50, "end": 152 }
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "Named": "Mowu" }
+                        ]
+                      },
+                      "op": "Lt",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Mowu",
+                            "colors": ["Green"],
+                            "supertypes": ["Legendary"],
+                            "types": ["Creature"],
+                            "subtypes": ["Dog"],
+                            "power": 3,
+                            "toughness": 3
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

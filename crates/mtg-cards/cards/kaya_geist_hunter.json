@@ -1,0 +1,64 @@
+{
+  "oracle_id": "e0edb2fc-2533-407c-85e5-4337f4233f05",
+  "name": "Kaya, Geist Hunter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kaya, Geist Hunter",
+      "oracle_fingerprint": "524b6b3b9c157965be577ef2c41b9808",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 129, "end": 263 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "In": "Graveyard" }] }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": { "Count": [{ "Is": { "Bound": "exiled" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

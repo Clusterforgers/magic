@@ -1,7 +1,7 @@
 {
   "oracle_id": "e75f1834-10b8-4362-adbe-847ad9909dee",
   "name": "Thrashing Frontliner",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Thrashing Frontliner",
@@ -9,7 +9,18 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 8, "end": 81 } }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This", "AttackingBattle"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
         }
       ]
     }

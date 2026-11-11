@@ -1,0 +1,22 @@
+{
+  "oracle_id": "fc25ca51-f351-4877-a092-525fb48524a1",
+  "name": "Captive Audience",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Captive Audience",
+      "oracle_fingerprint": "7507e26187a09027be336b55530d0c02",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "UnderChosenOpponent" }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 73, "end": 255 }
+          }
+        }
+      ]
+    }
+  ]
+}

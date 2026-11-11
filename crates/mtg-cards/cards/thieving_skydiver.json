@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f509ac02-f22e-4d1a-9fe1-afa96dd7806d",
+  "name": "Thieving Skydiver",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thieving Skydiver",
+      "oracle_fingerprint": "efe15dae9619925d0d823ab2585f661b",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 81 }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 89, "end": 254 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b44d5457-b4d6-4521-a25a-8ef96adba461",
+  "name": "Tor Wauki the Younger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tor Wauki the Younger",
+      "oracle_fingerprint": "9613be06dc387383aadd19f42a501e38",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Lifelink" },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "source": ["Other", { "ControlledBy": "You" }], "combat": false }
+            },
+            "by": { "Add": 1 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

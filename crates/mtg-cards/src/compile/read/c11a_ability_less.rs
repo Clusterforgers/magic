@@ -117,6 +117,7 @@ fn c11a_less_texts(item: &CostItem) -> Vec<String> {
     .into_iter()
     .filter(|sentence| sentence.starts_with("This ability"))
     .map(|sentence| format!("{}.", sentence.replacen(" to cast", " to activate", 1)))
+    .flat_map(super::rmt7_atoms::rmt7_during_your_turn)
     .collect()
 }
 

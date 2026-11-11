@@ -1,0 +1,20 @@
+{
+  "oracle_id": "49a5c149-5067-4840-8385-c2989d7e5a34",
+  "name": "Leyline of Combustion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Leyline of Combustion",
+      "oracle_fingerprint": "1ed6bb8b2d5cc6a3ad6e904ffbe27544",
+      "abilities": [
+        "OpeningHand",
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 89, "end": 254 }
+          }
+        }
+      ]
+    }
+  ]
+}

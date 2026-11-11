@@ -285,10 +285,42 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
             state.combat.blockers_declared.push(*player);
         }
+        Event::BandFormed { attackers, .. } => {
+            let attacking = |id: &mtg_core::ids::ObjectId| {
+                state.combat.attackers.iter().any(|a| a.object == *id)
+            };
+            if attackers.len() < 2 || !attackers.iter().all(attacking) {
+                return Err(invalid("a band of creatures that are not attacking"));
+            }
+            if attackers
+                .iter()
+                .any(|id| state.combat.band_of(*id).is_some())
+            {
+                return Err(invalid("a creature in two bands"));
+            }
+            state.combat.bands.push(attackers.clone());
+        }
         Event::DamageAssigned {
             attacker,
             assignment,
         } => {
+            // A blocker that blocks several attackers divides its damage among them (CR 510.1d, 702.22k).
+            let blocks = state
+                .combat
+                .attackers
+                .iter()
+                .any(|a| a.blockers.contains(attacker));
+            if blocks {
+                state
+                    .combat
+                    .blocker_assignments
+                    .retain(|(blocker, _)| blocker != attacker);
+                state
+                    .combat
+                    .blocker_assignments
+                    .push((*attacker, assignment.clone()));
+                return Ok(());
+            }
             let target = state
                 .combat
                 .attackers
@@ -331,6 +363,17 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         Event::CombatEnded => state.combat = CombatState::default(),
         Event::JoinedAttack { object, target } => join_attack(state, *object, *target)?,
         Event::RemovedFromCombat { object } => state.combat.remove_object(*object),
+        Event::AttackersBlocked { attackers } => {
+            for attacker in attackers {
+                let target = state
+                    .combat
+                    .attackers
+                    .iter_mut()
+                    .find(|a| a.object == *attacker)
+                    .ok_or_else(|| invalid(format!("{attacker:?} is not attacking")))?;
+                target.blocked = true;
+            }
+        }
         Event::Regenerated { object } => {
             remove_damage(state, *object)?.tapped = true;
             state.combat.remove_object(*object);

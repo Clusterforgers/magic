@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "3074a8e8-765c-4f32-9bc1-a3f865448ef9",
+  "oracle_id": "3e1a6337-bb29-450f-bf29-ff71b357a983",
+  "multiverse_ids": [
+    559830
+  ],
+  "tcgplayer_id": 269291,
+  "cardmarket_id": 652842,
+  "name": "Reign of the Pit",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/3074a8e8-765c-4f32-9bc1-a3f865448ef9",
+  "scryfall_uri": "https://scryfall.com/card/ncc/258/reign-of-the-pit?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:14:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/0/3074a8e8-765c-4f32-9bc1-a3f865448ef9.jpg?1783923265",
+    "normal": "https://cards.scryfall.io/normal/front/3/0/3074a8e8-765c-4f32-9bc1-a3f865448ef9.jpg?1783923265",
+    "large": "https://cards.scryfall.io/large/front/3/0/3074a8e8-765c-4f32-9bc1-a3f865448ef9.jpg?1783923265",
+    "png": "https://cards.scryfall.io/png/front/3/0/3074a8e8-765c-4f32-9bc1-a3f865448ef9.png?1783923265",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/0/3074a8e8-765c-4f32-9bc1-a3f865448ef9.jpg?1783923265",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/0/3074a8e8-765c-4f32-9bc1-a3f865448ef9.jpg?1783923265",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/0/3074a8e8-765c-4f32-9bc1-a3f865448ef9.webp?1783923265",
+    "grid": "https://cards.scryfall.io/grid/front/3/0/3074a8e8-765c-4f32-9bc1-a3f865448ef9.webp?1783923265",
+    "display": "https://cards.scryfall.io/display/front/3/0/3074a8e8-765c-4f32-9bc1-a3f865448ef9.webp?1783923265",
+    "art": "https://cards.scryfall.io/art/front/3/0/3074a8e8-765c-4f32-9bc1-a3f865448ef9.webp?1783923265",
+    "crop": "https://cards.scryfall.io/crop/front/3/0/3074a8e8-765c-4f32-9bc1-a3f865448ef9.webp?1783923265",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/0/3074a8e8-765c-4f32-9bc1-a3f865448ef9.jpg?1783923265"
+  },
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each player sacrifices a creature of their choice. Create an X/X black Demon creature token with flying, where X is the total power of the creatures sacrificed this way.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "27fcc389-1da9-4ed1-b56b-6f313a3a748e",
+      "component": "token",
+      "name": "Demon",
+      "type_line": "Token Creature — Demon",
+      "uri": "https://api.scryfall.com/cards/27fcc389-1da9-4ed1-b56b-6f313a3a748e"
+    },
+    {
+      "object": "related_card",
+      "id": "3074a8e8-765c-4f32-9bc1-a3f865448ef9",
+      "component": "combo_piece",
+      "name": "Reign of the Pit",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/3074a8e8-765c-4f32-9bc1-a3f865448ef9"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "c51de34b-d4d6-4179-a432-573744ded119",
+  "set": "ncc",
+  "set_name": "New Capenna Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c51de34b-d4d6-4179-a432-573744ded119",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ancc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ncc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3074a8e8-765c-4f32-9bc1-a3f865448ef9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3e1a6337-bb29-450f-bf29-ff71b357a983&unique=prints",
+  "collector_number": "258",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Evan Shipard",
+  "artist_ids": [
+    "eea284ce-9377-49c1-9d96-f34b7d487cdf"
+  ],
+  "illustration_id": "bf333d23-3082-4d86-8a12-fa983ba6b683",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 14343,
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=559830&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DReign%2Bof%2Bthe%2BPit",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DReign%2Bof%2Bthe%2BPit",
+    "edhrec": "https://edhrec.com/route/?cc=Reign+of+the+Pit"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F269291%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=652842&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Reign+of+the+Pit&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

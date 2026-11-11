@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1201520a-d76a-4c8a-be5c-ff37ffd2c024",
+  "name": "Imi Statue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imi Statue",
+      "oracle_fingerprint": "ef604c9135b0ce66bb8bcbd3be47c676",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "UntapLimit": { "who": "EachPlayer", "what": [{ "Type": "Artifact" }], "count": 1 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

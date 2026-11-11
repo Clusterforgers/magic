@@ -17,6 +17,7 @@ use std::sync::OnceLock;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::Cost;
+use mtg_cards::effect::Place;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::{Attacked, GameRule, ManaChange, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
@@ -154,6 +155,8 @@ pub enum Rule {
     CantSearch(Vec<PlayerId>),
     /// The players may vote an additional time (CR 701.38d).
     VoteAgain(Vec<PlayerId>),
+    /// The players get an additional vote (CR 701.38d).
+    ExtraVote(Vec<PlayerId>),
     /// The players skip each extra turn they would begin (CR 500.7).
     SkipExtraTurns(Vec<PlayerId>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
@@ -189,6 +192,11 @@ pub enum Rule {
     RevealTop(Vec<PlayerId>),
     /// The players play with their hands revealed to every seat.
     RevealHand(Vec<PlayerId>),
+    /// The rule's controller controls the players while they search their libraries (CR 722).
+    ControlSearches(Vec<PlayerId>),
+    /// The players exile each card they find while they search their libraries, and the rule's controller may play
+    /// those cards while they remain exiled (Opposition Agent).
+    ExileFound(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Vec<PlayerId>),
     /// The players' maximum hand size is this many cards (CR 402.2).
@@ -210,6 +218,17 @@ pub enum Rule {
         what: Selector,
         /// The players whose untap steps untap them.
         whose: Vec<PlayerId>,
+    },
+    /// The players can't untap more than `count` of their permanents the selector picks during their untap steps (CR
+    /// 502.3).
+    UntapLimit {
+        /// The players whose untap steps are limited.
+        who: Vec<PlayerId>,
+        /// The permanents counted, judged when the step untaps.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// The most of them that untap.
+        count: u32,
     },
     /// The players skip their draw steps (CR 614.10).
     SkipDrawStep(Vec<PlayerId>),
@@ -328,6 +347,10 @@ pub enum Rule {
         /// Where they go instead.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         to: ZoneKind,
+        /// The place in its owner's library a countered spell goes to, when `to` is the library.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
+        place: Option<Place>,
         /// It covers a spell that is countered only, not one that resolves or fizzles.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
@@ -589,6 +612,8 @@ pub(crate) struct RulesInForce {
     /// The changes to the mana of a tap.
     pub(crate) mana: Vec<ManaRule>,
     vote_again: BTreeSet<PlayerId>,
+    /// The players who get an additional vote (CR 701.38d), once for each rule that gives one.
+    extra_vote: Vec<PlayerId>,
     skip_extra_turns: BTreeSet<PlayerId>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
@@ -608,6 +633,10 @@ pub(crate) struct RulesInForce {
     spend_mana_as: Vec<(PlayerId, mtg_cards::modify::SpendAs, Option<Selector>)>,
     reveal_top: BTreeSet<PlayerId>,
     reveal_hand: BTreeSet<PlayerId>,
+    /// Who controls each player while they search their library, the latest rule last.
+    control_searches: Vec<(PlayerId, PlayerId)>,
+    /// Whose searches exile what they find, with the controller and source of each rule that says so.
+    exile_found: Vec<(PlayerId, PlayerId, Option<ObjectRef>)>,
     no_hand_limit: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
@@ -620,6 +649,7 @@ pub(crate) struct RulesInForce {
     /// The creatures whose abilities may be activated as though they had haste, by rule.
     haste_for_abilities: Vec<NoLegendFor>,
     untap_during: Vec<UntapDuring>,
+    untap_limits: Vec<crate::rmt4_untap_limit::UntapLimit>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
     taxes: Vec<Taxing>,
@@ -962,6 +992,7 @@ impl RulesInForce {
                 }
             }
             Rule::VoteAgain(players) => self.vote_again.extend(players),
+            Rule::ExtraVote(players) => self.extra_vote.extend(players),
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
             Rule::ExtraDie(players) => self.extra_die.extend(players),
@@ -990,6 +1021,12 @@ impl RulesInForce {
             }
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::RevealHand(players) => self.reveal_hand.extend(players),
+            Rule::ExileFound(players) => self
+                .exile_found
+                .extend(players.iter().map(|player| (*player, controller, source))),
+            Rule::ControlSearches(players) => self
+                .control_searches
+                .extend(players.iter().map(|player| (*player, controller))),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::MaxHandSize(_)
             | Rule::HandSizeChange(_)
@@ -1000,6 +1037,17 @@ impl RulesInForce {
                 self.put_option(rule, controller, source);
             }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
+            Rule::UntapLimit { who, what, count } => {
+                if let Some(source) = source {
+                    self.untap_limits.push(crate::rmt4_untap_limit::UntapLimit {
+                        controller,
+                        source,
+                        who: who.clone(),
+                        what: what.clone(),
+                        count: *count,
+                    });
+                }
+            }
             Rule::LookAtTop(players) => self.look_top.extend(players),
             Rule::LookAtExiled { who, what, only } => {
                 if let Some(source) = source {
@@ -1273,6 +1321,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             change: *change,
         },
         GameRule::VoteAgain(who) => Rule::VoteAgain(scope.players(who)?),
+        GameRule::ExtraVote(who) => Rule::ExtraVote(scope.players(who)?),
         GameRule::SkipExtraTurns(who) => Rule::SkipExtraTurns(scope.players(who)?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
         GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
@@ -1300,6 +1349,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         }
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
         GameRule::RevealHand(who) => Rule::RevealHand(scope.players(who)?),
+        GameRule::ControlSearches(who) => Rule::ControlSearches(scope.players(who)?),
+        GameRule::ExileFound(who) => Rule::ExileFound(scope.players(who)?),
         GameRule::MayCast(permission) => Rule::MayCast {
             who: scope.players(&permission.who)?,
             what: permission.what.clone(),
@@ -1340,6 +1391,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
+        GameRule::UntapLimit { who, what, count } => Rule::UntapLimit {
+            who: scope.players(who)?,
+            what: what.clone(),
+            count: *count,
+        },
         GameRule::LookAtExiled { who, what, only } => Rule::LookAtExiled {
             who: scope.players(who)?,
             what: what.clone(),
@@ -1372,6 +1428,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::CanBeCommander => return Err(ResolveError::Unsupported("Rule.CanBeCommander")),
         // The deck check reads it from the card; nothing changes in a game.
         GameRule::AnyNumberInDeck => return Err(ResolveError::Unsupported("Rule.AnyNumberInDeck")),
+        // A draft rule works only during a booster draft; nothing changes in a game.
+        GameRule::Draft(_) => return Err(ResolveError::Unsupported("Rule.Draft")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }
@@ -1453,6 +1511,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
         | Rule::VoteAgain(players)
+        | Rule::ExtraVote(players)
         | Rule::SkipExtraTurns(players)
         | Rule::FlipTwoCoins(players)
         | Rule::ExtraDie(players)
@@ -1464,6 +1523,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::SpendManaAs { players, .. }
         | Rule::RevealTop(players)
         | Rule::RevealHand(players)
+        | Rule::ControlSearches(players)
+        | Rule::ExileFound(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
         | Rule::NoLegendRule(players)
@@ -1478,6 +1539,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::BlockLimitEach { who, .. }
+        | Rule::UntapLimit { who, .. }
         | Rule::PlayersHave { who, .. }
         | Rule::ManaProduced { who, .. } => who.is_empty(),
         Rule::Cant { who, .. } => who.is_empty(),
@@ -1610,6 +1672,7 @@ static NONE: RulesInForce = RulesInForce {
     no_search: BTreeSet::new(),
     mana: Vec::new(),
     vote_again: BTreeSet::new(),
+    extra_vote: Vec::new(),
     skip_extra_turns: BTreeSet::new(),
     flip_two: Vec::new(),
     extra_die: Vec::new(),
@@ -1621,6 +1684,8 @@ static NONE: RulesInForce = RulesInForce {
     spend_mana_as: Vec::new(),
     reveal_top: BTreeSet::new(),
     reveal_hand: BTreeSet::new(),
+    control_searches: Vec::new(),
+    exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
@@ -1632,6 +1697,7 @@ static NONE: RulesInForce = RulesInForce {
     no_legend_for: Vec::new(),
     haste_for_abilities: Vec::new(),
     untap_during: Vec::new(),
+    untap_limits: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
     taxes: Vec::new(),
@@ -1696,6 +1762,28 @@ impl GameState {
             return None;
         }
         self.zone(Zone::Library(player)).last().copied()
+    }
+
+    /// Who controls `player` while they search their library, by the latest rule in force that says so: the one place the
+    /// answerer of a search reads this rule.
+    pub fn search_controller(&self, player: PlayerId) -> Option<PlayerId> {
+        self.rules()
+            .control_searches
+            .iter()
+            .rev()
+            .find(|(searched, by)| *searched == player && *by != player && self.is_alive(*by))
+            .map(|(_, by)| *by)
+    }
+
+    /// The rules under which `player` exiles what they find in their library, as the player who may play those cards and
+    /// the source of the rule; an opponent's rule whose controller has left does nothing.
+    pub fn exile_found_by(&self, player: PlayerId) -> Vec<(PlayerId, Option<ObjectRef>)> {
+        self.rules()
+            .exile_found
+            .iter()
+            .filter(|(searched, by, _)| *searched == player && *by != player && self.is_alive(*by))
+            .map(|(_, by, source)| (*by, *source))
+            .collect()
     }
 
     /// Whether a rule has `player` play with their hand revealed to every seat.
@@ -2104,6 +2192,16 @@ pub fn ep22_coins_per_flip(state: &GameState, player: PlayerId) -> u32 {
     1 << doublings
 }
 
+/// How many additional votes `player` gets while voting (CR 701.38d): one for each rule that gives one.
+pub fn ep33_extra_votes(state: &GameState, player: PlayerId) -> usize {
+    state
+        .rules()
+        .extra_vote
+        .iter()
+        .filter(|seat| **seat == player)
+        .count()
+}
+
 /// Whether `player` may vote an additional time while voting (CR 701.38d).
 pub fn w17c_votes_again(state: &GameState, player: PlayerId) -> bool {
     state.rules().vote_again.contains(&player)
@@ -2218,6 +2316,11 @@ pub fn no_legend_rule_for(state: &GameState, id: ObjectId) -> bool {
             .selects(&rule.what, object.reference())
             .unwrap_or(false)
     })
+}
+
+/// The untap limits in force (CR 502.3).
+pub(crate) fn untap_limits(state: &GameState) -> &[crate::rmt4_untap_limit::UntapLimit] {
+    &state.rules().untap_limits
 }
 
 /// The permanents that untap during the untap step of `active` besides its own: those each rule in force selects among

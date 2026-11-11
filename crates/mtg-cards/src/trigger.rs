@@ -377,6 +377,15 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         to: Selector,
     },
+    /// An attachment becomes unattached from a permanent (unattached, moved, or leaving); the permanent it left triggers.
+    Unattached {
+        /// The attachment; any when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// The permanent it was attached to; any when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        from: Selector,
+    },
     /// A card is cycled (CR 702.29).
     Cycled {
         /// The card; any card when empty.
@@ -405,6 +414,28 @@ pub enum TriggerPattern {
     /// A player completes a dungeon ("whenever you complete a dungeon", CR 309.7); `Triggering` is that player.
     CompletedDungeon {
         /// Who completes it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
+    /// The visit ability of an Attraction (CR 702.159a, "Visit — "): its controller rolls to visit their Attractions and
+    /// the result is a number lit up on the source; `Triggering` is that player.
+    Visit {},
+    /// A player rolls to visit their Attractions ("whenever you roll to visit your Attractions", CR 701.52);
+    /// `Triggering` is that player.
+    RolledToVisit {
+        /// Who rolls.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
+    /// A player opens an Attraction ("whenever you open an Attraction", CR 701.51c); `Triggering` is that player.
+    OpenedAttraction {
+        /// Who opens it.
         #[serde(
             default = "Ref::each_player",
             skip_serializing_if = "Ref::is_each_player"
@@ -1052,6 +1083,10 @@ pub enum ShieldShape {
     Class,
     /// Damage prevented, changed or redirected.
     Damage,
+    /// The next draw, or the next loss of the game, of the players named is replaced by other steps, then the shield ends
+    /// ("the next time you would draw a card this turn, ... instead", "the next time you would lose the game this turn,
+    /// instead ..."; CR 614.1a).
+    Next,
 }
 
 impl ShieldShape {
@@ -1070,9 +1105,16 @@ impl ShieldShape {
                     _ => None,
                 }
             }
-            (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_)) => Some(Self::Countered),
+            (ReplaceWhen::Countered { .. }, ReplaceBy::MoveTo(_))
+            | (
+                ReplaceWhen::Countered { .. },
+                ReplaceBy::IntoLibrary {
+                    place: Place::Top | Place::Bottom,
+                    reveal: false,
+                },
+            ) => Some(Self::Countered),
             (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::MoveTo(_))
-            | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped)
+            | (ReplaceWhen::Enters { what }, ReplaceBy::Tapped | ReplaceBy::WithCounters { .. })
                 if !names_objects(what) =>
             {
                 Some(Self::Class)
@@ -1091,6 +1133,10 @@ impl ShieldShape {
                 | ReplaceBy::RedirectUpTo { .. }
                 | ReplaceBy::Redirect { .. },
             ) => Some(Self::Damage),
+            (
+                ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
+                ReplaceBy::InsteadNext(_),
+            ) => Some(Self::Next),
             _ => None,
         }
     }

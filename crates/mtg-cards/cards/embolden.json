@@ -1,0 +1,28 @@
+{
+  "oracle_id": "9904873c-7669-4485-b380-f28ff529b45c",
+  "name": "Embolden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Embolden",
+      "oracle_fingerprint": "dd194dbaff758da8d5312a07041635ed",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": null }, "divide": 4 }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventCounted": "Divided" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{1}{W}" } }
+      ]
+    }
+  ]
+}

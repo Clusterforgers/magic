@@ -1,0 +1,39 @@
+{
+  "oracle_id": "08af6751-5848-47fb-95f5-57215e899460",
+  "name": "Weftwalking",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Weftwalking",
+      "oracle_fingerprint": "188a31e4201e2b78fc32b64eccf5ec7c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "WasCast": { "by": "You" } }] } },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "count": 7 } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 120, "end": 222 }
+          }
+        }
+      ]
+    }
+  ]
+}

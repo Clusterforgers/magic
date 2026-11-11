@@ -1,0 +1,44 @@
+{
+  "oracle_id": "888582df-4fe2-4d05-9b62-10c90aaa76f2",
+  "name": "Words of Wilding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Words of Wilding",
+      "oracle_fingerprint": "9a7ad48374d1ffcb7b99d0b23f7abbfa",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Draw": {} },
+                  "by": {
+                    "InsteadNext": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Bear",
+                              "colors": ["Green"],
+                              "types": ["Creature"],
+                              "subtypes": ["Bear"],
+                              "power": 2,
+                              "toughness": 2
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

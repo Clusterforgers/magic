@@ -1,0 +1,32 @@
+{
+  "oracle_id": "648100cd-d44a-48f8-87e4-a1d5467f348c",
+  "name": "Cosima, God of the Voyage // The Omenkeel",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cosima, God of the Voyage",
+      "oracle_fingerprint": "1aca48da50a15a63f4ef622508238f9f",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 310 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Omenkeel",
+      "oracle_fingerprint": "92688bb3d2339262664a09bec32f073f",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 206 }
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

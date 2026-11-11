@@ -1,0 +1,39 @@
+{
+  "oracle_id": "a1399cb8-f22a-487e-b539-2db47b09a790",
+  "name": "Aeon Chronicler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aeon Chronicler",
+      "oracle_fingerprint": "c985c448126ceda759579e3c7ba996fb",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "toughness": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 90, "end": 124 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 125, "end": 206 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "9c8845d6-fa65-4731-b348-dc724fc2d285",
+  "name": "Nissa, Ascended Animist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nissa, Ascended Animist",
+      "oracle_fingerprint": "cfc11d520c2a32e96d079fcaab3fcbf7",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 139 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 140, "end": 224 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 269, "end": 369 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "cc950b6c-0346-4939-b36b-9f10a75f7a32",
+  "oracle_id": "58aec411-167d-4709-8560-793eaaed62c5",
+  "multiverse_ids": [
+    571384
+  ],
+  "mtgo_id": 101586,
+  "tcgplayer_id": 276478,
+  "cardmarket_id": 664290,
+  "name": "Gifts Ungiven",
+  "lang": "en",
+  "released_at": "2022-07-08",
+  "uri": "https://api.scryfall.com/cards/cc950b6c-0346-4939-b36b-9f10a75f7a32",
+  "scryfall_uri": "https://scryfall.com/card/2x2/51/gifts-ungiven?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:51:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.jpg?1783921916",
+    "normal": "https://cards.scryfall.io/normal/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.jpg?1783921916",
+    "large": "https://cards.scryfall.io/large/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.jpg?1783921916",
+    "png": "https://cards.scryfall.io/png/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.png?1783921916",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.jpg?1783921916",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.jpg?1783921916",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.webp?1783921916",
+    "grid": "https://cards.scryfall.io/grid/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.webp?1783921916",
+    "display": "https://cards.scryfall.io/display/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.webp?1783921916",
+    "art": "https://cards.scryfall.io/art/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.webp?1783921916",
+    "crop": "https://cards.scryfall.io/crop/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.webp?1783921916",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/c/cc950b6c-0346-4939-b36b-9f10a75f7a32.jpg?1783921916"
+  },
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Search your library for up to four cards with different names and reveal them. Target opponent chooses two of those cards. Put the chosen cards into your graveyard and the rest into your hand. Then shuffle.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "banned",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": true,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "5a645837-b050-449f-ac90-1e7ccbf45031",
+  "set": "2x2",
+  "set_name": "Double Masters 2022",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/5a645837-b050-449f-ac90-1e7ccbf45031",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A2x2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/2x2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cc950b6c-0346-4939-b36b-9f10a75f7a32/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A58aec411-167d-4709-8560-793eaaed62c5&unique=prints",
+  "collector_number": "51",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rallis",
+  "artist_ids": [
+    "a8e7b854-b15a-421a-b66d-6e68187ae285"
+  ],
+  "illustration_id": "b08ef0f7-9bb7-4fdd-9d99-ac7f4c46a02d",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 1534,
+  "penny_rank": 972,
+  "preview": {
+    "source": "CardMaster",
+    "source_uri": "https://facebook.com/cardmaster.tw/photos/pcb.10158743358508963/10158743339778963/",
+    "previewed_at": "2022-06-19"
+  },
+  "prices": {
+    "usd": "5.04",
+    "usd_foil": "6.45",
+    "usd_etched": null,
+    "eur": "2.88",
+    "eur_foil": "4.16",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=571384&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGifts%2BUngiven",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGifts%2BUngiven",
+    "edhrec": "https://edhrec.com/route/?cc=Gifts+Ungiven"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F276478%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=664290&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/101586?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

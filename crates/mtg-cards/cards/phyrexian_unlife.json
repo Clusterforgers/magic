@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6598d988-d60e-4441-88b6-8d0995c4675a",
+  "name": "Phyrexian Unlife",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Phyrexian Unlife",
+      "oracle_fingerprint": "dfbc7e956c11070dcbcac4897de63395",
+      "abilities": [
+        { "Rule": { "rule": { "CantLoseGame": { "who": "You", "life_only": true } } } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 51, "end": 203 }
+          }
+        }
+      ]
+    }
+  ]
+}

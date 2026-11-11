@@ -1,0 +1,92 @@
+{
+  "oracle_id": "f227ce07-7e96-4a36-ab7c-9be6e777d649",
+  "name": "Arlinn, the Pack's Hope // Arlinn, the Moon's Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arlinn, the Pack's Hope",
+      "oracle_fingerprint": "c9d6b4b317f2d83e79d2b554fbe9e33f",
+      "abilities": [
+        { "Keyword": "Daybound" },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "what": [{ "Type": "Creature" }], "flash": true } },
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  },
+                  "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Arlinn, the Moon's Fury",
+      "oracle_fingerprint": "a739687630a256bf15280bef3c8630b7",
+      "abilities": [
+        { "Keyword": "Nightbound" },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Green"] } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 5, "toughness": 5 } },
+                    { "SetCreatureTypes": ["Werewolf"] },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Trample" },
+                    { "AddKeyword": "Indestructible" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

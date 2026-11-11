@@ -1,0 +1,21 @@
+{
+  "oracle_id": "529178e8-425e-4d59-948c-ca7d0663f6ff",
+  "name": "Mikey & Don, Party Planners",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mikey & Don, Party Planners",
+      "oracle_fingerprint": "23e7378493d2edc479ceda1db839bea1",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 64, "end": 253 }
+          }
+        }
+      ]
+    }
+  ]
+}

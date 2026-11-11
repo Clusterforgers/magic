@@ -297,6 +297,31 @@ fn fused_spell(halves: &[CardDefinition]) -> Option<Ability> {
     })
 }
 
+/// The spell `spell` with the effects of the spell ability `card` spliced onto it (CR 702.47b): the targets of the spell and
+/// then those of the card, and the effects of the spell and then those of the card with their targets renumbered after the
+/// spell's. `None` when either is not a spell ability.
+pub fn spliced_spell(spell: &Ability, card: &Ability) -> Option<Ability> {
+    let (
+        Ability::Spell { targets, effects },
+        Ability::Spell {
+            targets: added_targets,
+            effects: added_effects,
+        },
+    ) = (spell, card)
+    else {
+        return None;
+    };
+    let by = i64::try_from(targets.len()).ok()?;
+    let mut moved = serde_json::to_value((added_targets, added_effects)).ok()?;
+    shift_targets(&mut moved, by).then_some(())?;
+    let (added_targets, added_effects): (Vec<crate::refs::TargetSpec>, Vec<Effect>) =
+        serde_json::from_value(moved).ok()?;
+    Some(Ability::Spell {
+        targets: targets.iter().cloned().chain(added_targets).collect(),
+        effects: effects.iter().cloned().chain(added_effects).collect(),
+    })
+}
+
 /// Adds `by` to every target index a reference or an amount names in the JSON of some effects; false when an index
 /// would go below 0.
 pub(crate) fn shift_targets(value: &mut serde_json::Value, by: i64) -> bool {
@@ -718,6 +743,8 @@ fn picked_by_the_planner(item: &CostItem) -> bool {
         | CostItem::ExileFromHand { count, .. } => {
             matches!(count, Amount::Fixed(number) if *number > 0) || matches!(count, Amount::X)
         }
+        // A Food or three graveyard cards, which the planner picks (`parts::forage::dk27_planned`).
+        CostItem::Forage => true,
         _ => false,
     }
 }
@@ -1272,6 +1299,35 @@ mod tests {
             type_line: type_line.into(),
             ..PrintedFace::default()
         }
+    }
+
+    fn spell(json: &str) -> Ability {
+        serde_json::from_str(json).unwrap()
+    }
+
+    const KILL: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#;
+    const DRAW: &str = r#"{"Spell":{"effects":[{"Draw":{}}]}}"#;
+
+    #[rstest]
+    #[case::targets_after_the_spells(KILL, KILL, r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}},{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"Destroy":{"what":{"Target":1}}}]}}"#)]
+    #[case::onto_a_spell_without_targets(DRAW, KILL, r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Draw":{}},{"Destroy":{"what":{"Target":0}}}]}}"#)]
+    #[case::no_targets_added(KILL, DRAW, r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}},{"Draw":{}}]}}"#)]
+    fn a_spliced_card_adds_its_targets_and_effects_after_the_spells(
+        #[case] onto: &str,
+        #[case] card: &str,
+        #[case] expected: &str,
+    ) {
+        assert_eq!(
+            spliced_spell(&spell(onto), &spell(card)),
+            Some(spell(expected))
+        );
+    }
+
+    #[test]
+    fn only_spell_abilities_splice() {
+        let keyword = Ability::Keyword(Keyword::Banding);
+        assert_eq!(spliced_spell(&spell(KILL), &keyword), None);
+        assert_eq!(spliced_spell(&keyword, &spell(KILL)), None);
     }
 
     fn card(front: PrintedFace) -> PrintedCard {

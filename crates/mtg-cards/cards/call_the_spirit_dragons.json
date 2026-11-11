@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3ceb23f5-abb1-4569-a1e4-1eed9a9babcf",
+  "name": "Call the Spirit Dragons",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Call the Spirit Dragons",
+      "oracle_fingerprint": "5c3b2ab01f32cbb30caec8060cb0e414",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Indestructible" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 41, "end": 218 }
+          }
+        }
+      ]
+    }
+  ]
+}

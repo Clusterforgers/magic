@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6f0d8900-8460-4b31-8b67-eb4e470c3317",
+  "name": "Winged Hive Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winged Hive Tyrant",
+      "oracle_fingerprint": "bb30e35b2d31e0404350e7bcee4d7d8b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }, "HasAnyCounter"]
+            },
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Haste" }]
+          }
+        }
+      ]
+    }
+  ]
+}

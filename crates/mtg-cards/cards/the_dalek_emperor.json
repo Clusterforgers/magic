@@ -1,0 +1,65 @@
+{
+  "oracle_id": "07799012-7051-400e-adde-b54b41b80c70",
+  "name": "The Dalek Emperor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Dalek Emperor",
+      "oracle_fingerprint": "f114e5f47f2d54c0937e0280186486af",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Dalek" }] } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Dalek" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "VillainousChoice": {
+                        "who": { "Bound": "opponent" },
+                        "first": [
+                          {
+                            "Sacrifice": {
+                              "who": { "Bound": "opponent" },
+                              "filter": [{ "Type": "Creature" }]
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Dalek",
+                                  "colors": ["Black"],
+                                  "types": ["Artifact", "Creature"],
+                                  "subtypes": ["Dalek"],
+                                  "power": 3,
+                                  "toughness": 3,
+                                  "abilities": [{ "Keyword": "Menace" }]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

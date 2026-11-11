@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT oracle_id, printing_id, attraction_lights\n               FROM printings WHERE oracle_id = ANY($1) AND attraction_lights <> 0\n               ORDER BY oracle_id, digital, released_at DESC NULLS LAST, printing_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "oracle_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "oracle_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "printing_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "printing_id"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "attraction_lights",
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "attraction_lights"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "UuidArray"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "2d83f8907b2d3704858799bbe9a23a3f92a01690d6b8aa726e2867549f6fd731"
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "9f2f12cc-0adb-482d-bbce-05e4ce8850c4",
+  "name": "Heroes in a Half Shell",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Heroes in a Half Shell",
+      "oracle_fingerprint": "dfd68360490fff617f77ce589be12c9b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 34, "end": 194 }
+          }
+        }
+      ]
+    }
+  ]
+}

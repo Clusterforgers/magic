@@ -82,6 +82,8 @@ pub enum CastWay {
     Evoke,
     /// Overload (CR 702.96): every "target" reads "each".
     Overload,
+    /// Cleave (CR 702.148): the spell reads without the words in square brackets.
+    Cleave,
     /// Madness (CR 702.35): from exile after it was discarded.
     Madness,
     /// Miracle (CR 702.94): from a hand for its miracle cost when it is the first card its owner drew this turn.
@@ -332,6 +334,9 @@ pub enum TurnTally {
     PermanentsLeftUnder,
     /// The times the player scried this turn, once for each scry that looked at a card.
     Scried,
+    /// The Attractions the player visited this turn, once for each visit (CR 701.52a); an Attraction that left since
+    /// still counts.
+    AttractionsVisited,
     /// The times the player surveilled this turn, once for each surveil that looked at a card.
     Surveilled,
     /// The permanents the player sacrificed this turn, each once, as the player who controlled it.
@@ -463,6 +468,14 @@ pub enum Amount {
     /// The controller's devotion to the colors: the mana symbols of those colors among the mana costs of the
     /// permanents they control (CR 700.5).
     Devotion(Vec<Color>),
+    /// The mana symbols of `color` in the mana costs of the objects `of` names (chroma); a hybrid symbol counts once for each
+    /// of its colors.
+    ManaSymbols {
+        /// The color counted.
+        color: Color,
+        /// The objects whose mana costs are read.
+        of: Ref,
+    },
     /// The greatest value of the characteristic among the objects that match the selector; zero when none match.
     Greatest {
         /// The objects compared.
@@ -571,6 +584,10 @@ pub enum Amount {
     },
     /// The life total the players the reference names began the game with (the least of them).
     StartingLife(Ref),
+    /// How many turns the players have begun this game (the most of them).
+    TurnsTaken(Ref),
+    /// The players' life total as the turn began (the most of them).
+    LifeAsTurnBegan(Ref),
     /// The most spells one of the players the reference names cast during the previous turn ("no spells were cast last turn":
     /// `EachPlayer`, equal to 0; "a player cast two or more spells last turn": at least 2); 0 before any turn has ended.
     CastLastTurn(Ref),
@@ -744,6 +761,10 @@ enum Tagged {
     EvenShare(Box<Amount>),
     TargetCount(u8),
     Devotion(Vec<Color>),
+    ManaSymbols {
+        color: Color,
+        of: Ref,
+    },
     Greatest {
         of: Selector,
         stat: StatKind,
@@ -790,6 +811,8 @@ enum Tagged {
         counter: CounterKind,
     },
     StartingLife(Ref),
+    TurnsTaken(Ref),
+    LifeAsTurnBegan(Ref),
     CastLastTurn(Ref),
     TalliedLastTurn {
         who: Ref,
@@ -877,6 +900,10 @@ enum TaggedRef<'a> {
     EvenShare(&'a Amount),
     TargetCount(u8),
     Devotion(&'a [Color]),
+    ManaSymbols {
+        color: &'a Color,
+        of: &'a Ref,
+    },
     Greatest {
         of: &'a Selector,
         stat: StatKind,
@@ -923,6 +950,8 @@ enum TaggedRef<'a> {
         counter: &'a CounterKind,
     },
     StartingLife(&'a Ref),
+    TurnsTaken(&'a Ref),
+    LifeAsTurnBegan(&'a Ref),
     CastLastTurn(&'a Ref),
     TalliedLastTurn {
         who: &'a Ref,
@@ -998,6 +1027,7 @@ impl From<Tagged> for Amount {
             Tagged::EvenShare(total) => Amount::EvenShare(total),
             Tagged::TargetCount(index) => Amount::TargetCount(index),
             Tagged::Devotion(colors) => Amount::Devotion(colors),
+            Tagged::ManaSymbols { color, of } => Amount::ManaSymbols { color, of },
             Tagged::Greatest { of, stat } => Amount::Greatest { of, stat },
             Tagged::Total { of, stat } => Amount::Total { of, stat },
             Tagged::CardTypes(of) => Amount::CardTypes(of),
@@ -1026,6 +1056,8 @@ impl From<Tagged> for Amount {
             Tagged::Largest { who, of } => Amount::Largest { who, of },
             Tagged::HighestCounters { who, counter } => Amount::HighestCounters { who, counter },
             Tagged::StartingLife(who) => Amount::StartingLife(who),
+            Tagged::TurnsTaken(who) => Amount::TurnsTaken(who),
+            Tagged::LifeAsTurnBegan(who) => Amount::LifeAsTurnBegan(who),
             Tagged::CastLastTurn(who) => Amount::CastLastTurn(who),
             Tagged::TalliedLastTurn { who, what } => Amount::TalliedLastTurn { who, what },
             Tagged::Party(who) => Amount::Party(who),
@@ -1085,6 +1117,9 @@ impl Serialize for Amount {
             Amount::EvenShare(total) => TaggedRef::EvenShare(total).serialize(serializer),
             Amount::TargetCount(index) => TaggedRef::TargetCount(*index).serialize(serializer),
             Amount::Devotion(colors) => TaggedRef::Devotion(colors).serialize(serializer),
+            Amount::ManaSymbols { color, of } => {
+                TaggedRef::ManaSymbols { color, of }.serialize(serializer)
+            }
             Amount::Greatest { of, stat } => {
                 TaggedRef::Greatest { of, stat: *stat }.serialize(serializer)
             }
@@ -1125,6 +1160,8 @@ impl Serialize for Amount {
                 TaggedRef::HighestCounters { who, counter }.serialize(serializer)
             }
             Amount::StartingLife(who) => TaggedRef::StartingLife(who).serialize(serializer),
+            Amount::TurnsTaken(who) => TaggedRef::TurnsTaken(who).serialize(serializer),
+            Amount::LifeAsTurnBegan(who) => TaggedRef::LifeAsTurnBegan(who).serialize(serializer),
             Amount::CastLastTurn(who) => TaggedRef::CastLastTurn(who).serialize(serializer),
             Amount::TalliedLastTurn { who, what } => {
                 TaggedRef::TalliedLastTurn { who, what: *what }.serialize(serializer)
@@ -1284,6 +1321,8 @@ pub enum Condition {
     ManaSpent(ManaType),
     /// It is the controller's turn.
     YourTurn,
+    /// The turn is an extra turn (CR 500.7): "~ can't attack during extra turns".
+    ExtraTurn,
     /// The player the reference names (all of them when it names several) took the first turn of the game.
     StartingPlayer(Ref),
     /// "You" are one of the players the reference names: inside a `PlayersWhere` test, the player tested ("each other
@@ -1324,6 +1363,8 @@ pub enum Condition {
     MonarchAtTurnStart(Ref),
     /// The player has the city's blessing (CR 702.131).
     CitysBlessing(Ref),
+    /// A player the reference names has an enduring story (storied).
+    EnduringStory(Ref),
     /// A player the reference names has max speed, a speed of 4 (CR 702.179): "Max speed — ...".
     MaxSpeed(Ref),
     /// It is day (CR 726): "if it's day".
@@ -1339,6 +1380,9 @@ pub enum Condition {
     Step(Step),
     /// The turn has not reached its declare attackers step: "Activate only ... before attackers are declared".
     BeforeAttackers,
+    /// The turn is in its combat phase after blockers are declared: "Activate only during combat after blockers are
+    /// declared" (the declare blockers step, the combat damage steps and the end of combat step).
+    AfterBlockers,
     /// The turn is in its combat phase: "Activate only during combat".
     InCombat,
     /// The turn is in the first combat phase it has had: "if it's the first combat phase of the turn" (CR 500.8).

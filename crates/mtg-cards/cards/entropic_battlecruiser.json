@@ -1,0 +1,33 @@
+{
+  "oracle_id": "90c5ea2b-d004-4219-b60c-d51bc1a5ee6b",
+  "name": "Entropic Battlecruiser",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Entropic Battlecruiser",
+      "oracle_fingerprint": "7aac7e57f61657a1b93818a5ba9f3bf5",
+      "abilities": [
+        { "Keyword": "Station" },
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Triggering", "amount": 3 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 224, "end": 350 }
+          }
+        }
+      ]
+    }
+  ]
+}

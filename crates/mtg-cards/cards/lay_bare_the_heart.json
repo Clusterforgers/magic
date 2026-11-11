@@ -17,7 +17,7 @@
               {
                 "Discard": {
                   "who": { "Target": 0 },
-                  "filter": [{ "Not": { "Type": "Land" } }, { "Not": { "Supertype": "Legendary" } }],
+                  "filter": [{ "Not": { "Supertype": "Legendary" } }, { "Not": { "Type": "Land" } }],
                   "by": "You"
                 }
               }

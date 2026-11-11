@@ -9,6 +9,7 @@ import { joinWords } from '../../eventText'
 import { useSeatNamer } from '../../names'
 import {
   clampedAmount,
+  damageSentence,
   defaultSplit,
   factsOf,
   hasDeathtouch,
@@ -20,6 +21,7 @@ import {
   toAnswer,
 } from '../damageSplit'
 import type { DamageRecipient, Trample } from '../damageSplit'
+import { combatRoleIn } from '../../selectors'
 import { markCards, useCardMarks } from '../marks'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
@@ -130,7 +132,9 @@ function Row({
  * Confirm once everything is assigned. Blockers are marked legal on the table, the row in use selected; a click on a
  * blocker's card moves focus to its row. An attacker with trample may leave damage unassigned: the rest goes to the
  * player or planeswalker it attacks, which a line below the rows names, once every blocker has lethal damage; the
- * lethal figures are the engine's, and an attacker's deathtouch is named where it shortens them.
+ * lethal figures are the engine's, and an attacker's deathtouch is named where it shortens them. Banding (CR 702.22) hands the
+ * split to the other side: the defending player divides an attacker's damage among blockers, the attacking player a
+ * blocker's among the band it blocks, and the sentence says so.
  */
 export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options }) => {
   const { attacker, power, blockers, excess, lethal, unblocked } = options
@@ -144,6 +148,18 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
     excess !== undefined && 'Object' in excess ? state.objectsById[excess.Object]?.name : undefined,
   )
   const objects = usePlay(useShallow((state) => blockers.map((id) => state.objectsById[id])))
+  // A blocker that divides its damage among a band, or an opponent's creature a banding creature fights (CR 702.22).
+  const blocking = usePlay(
+    (state) =>
+      combatRoleIn(state, attacker) === 'blocking' &&
+      blockers.length > 1 &&
+      blockers.every((id) => ['attacking', 'blocked'].includes(combatRoleIn(state, id) ?? '')),
+  )
+  const theirs = usePlay((state) => {
+    const controller = state.objectsById[attacker]?.controller
+    const viewer = state.view?.viewer
+    return controller !== undefined && viewer !== undefined && controller !== viewer
+  })
 
   const recipients = useMemo<DamageRecipient[]>(
     () =>
@@ -207,16 +223,13 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
     )
   }
 
-  const target = blockers.length === 1 ? 'its blocker' : 'its blockers'
-  const verb = blockers.length === 1 ? 'Assign' : 'Divide'
-  const where = blockers.length === 1 ? 'to' : 'among'
-  const text =
-    blockers.length === 0
-      ? `${attackerName} has no blocker to assign its ${power} combat damage to.`
-      : `${verb} the ${power} combat damage of ${attackerName} ${where} ${target}: ${joinWords(labels)}.` +
-        (defender === undefined
-          ? ''
-          : ` Damage not given to a blocker goes to ${defender}, once every blocker has lethal damage.`)
+  const text = damageSentence(
+    power,
+    { name: attackerName, blocking, banding: blocking || theirs },
+    labels,
+    joinWords(labels),
+    defender,
+  )
 
   return (
     <PromptLayout text={text}>

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "649e7237-b38b-43e9-83f4-763751fb1bea",
+  "name": "Polukranos, Unchained",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Polukranos, Unchained",
+      "oracle_fingerprint": "47227517b4362b6b930e50e2c55f893d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 101 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 102, "end": 241 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}{G}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{4}{B}{G}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 6 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

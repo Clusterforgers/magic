@@ -1,0 +1,59 @@
+{
+  "oracle_id": "34ace274-8401-4e3c-89cd-75fe2337bf7d",
+  "name": "Disciple of Deceit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disciple of Deceit",
+      "oracle_fingerprint": "19fe04f6d31b9c2dfe14dada5c6ac958",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": ["This"] } },
+            "effects": [
+              {
+                "Discard": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "optional": true,
+                  "as": "discarded"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Is": { "Bound": "discarded" } }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Eq",
+                              "to": {
+                                "Stat": { "of": { "Bound": "discarded" }, "stat": "ManaValue" }
+                              }
+                            }
+                          }
+                        ],
+                        "as": "found"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "found" } } },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

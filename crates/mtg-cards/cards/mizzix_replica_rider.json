@@ -1,0 +1,20 @@
+{
+  "oracle_id": "24a7e1d2-0bc9-40a9-a606-f0017bde3dab",
+  "name": "Mizzix, Replica Rider",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Mizzix, Replica Rider",
+      "oracle_fingerprint": "c75df990438593e0a443d434c089a875",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 7, "end": 325 }
+          }
+        }
+      ]
+    }
+  ]
+}

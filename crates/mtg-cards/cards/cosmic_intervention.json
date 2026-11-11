@@ -1,0 +1,20 @@
+{
+  "oracle_id": "cddccc2a-a76e-48b3-b4dd-dfeab89e1619",
+  "name": "Cosmic Intervention",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cosmic Intervention",
+      "oracle_fingerprint": "1b567cf33c6ec9597a870e6a7f33a4df",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you resolve this spell effect by hand",
+            "span": { "start": 0, "end": 200 }
+          }
+        },
+        { "Keyword": { "Foretell": "{1}{W}" } }
+      ]
+    }
+  ]
+}

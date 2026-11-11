@@ -1,7 +1,7 @@
 {
   "oracle_id": "91a45e96-2a93-4c48-b472-11904d2b856d",
   "name": "Vampire Socialite",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vampire Socialite",
@@ -29,9 +29,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 191, "end": 312 }
+          "Replacement": {
+            "when": {
+              "Enters": { "what": ["Other", { "Subtype": "Vampire" }, { "ControlledBy": "You" }] }
+            },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "LifeLost" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
           }
         }
       ]

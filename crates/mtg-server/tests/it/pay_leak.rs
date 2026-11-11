@@ -122,7 +122,7 @@ async fn play(tax: u32, brain: fn(&Decision) -> Answer, first: u64, dwell: Dwell
     for n in 0..2 {
         handle.send(seat(n), ClientMessage::Ready).await.unwrap();
     }
-    while since.elapsed() < Duration::from_secs(120) && batches(&tapes[WATCHER].heard()) < BATCHES {
+    while since.elapsed() < Duration::from_mins(2) && batches(&tapes[WATCHER].heard()) < BATCHES {
         tokio::time::sleep(Duration::from_millis(5)).await;
     }
     let status = handle.status().await.unwrap();

@@ -536,6 +536,14 @@ pub fn peek_and_reveal(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// `RollDice` of one die: the rows of `ResultSubAbilities` are the table of the roll.
 pub fn roll_dice(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    // "Roll to visit your Attractions" (CR 701.52): the roll of the game's own rules, not a table of the card.
+    if p.get("ToVisitYourAttractions") == Some("True") {
+        only(p, "RollDice", &["Sides", "ToVisitYourAttractions"])?;
+        if p.get("Sides").unwrap_or("6") != "6" {
+            return unmapped("key:RollDice.ToVisitYourAttractions-sides");
+        }
+        return Ok(vec![json!({"RollToVisit": {}})]);
+    }
     only(
         p,
         "RollDice",
@@ -660,6 +668,9 @@ fn e14c_type_list(p: &Params, kind: &str) -> Tr<Option<Value>> {
 /// `ChooseNumber`: one player picks a whole number from `Min$` (0) to `Max$`, read when the choice is made; the later lines
 /// read it as `ChosenNumber`. Without a `Max$` the range is open and stays a gap.
 pub fn choose_number(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    if p.has("Highest") || p.has("NotLowest") {
+        return super::dk27_numbers::dk27_secret_numbers(ctx, p);
+    }
     only(p, "ChooseNumber", &["Defined", "Min", "Max"])?;
     let Some(max) = p.get("Max") else {
         return unmapped("key:ChooseNumber.no-Max");

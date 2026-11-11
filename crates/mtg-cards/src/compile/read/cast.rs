@@ -49,7 +49,7 @@ pub fn exile_top(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// "You may play that card this turn.", "Until end of turn, you may play that card.", "Until the end of your next turn,
-/// you may play those cards.": the permission to play the cards an exile from the top of a library named.
+/// you may play those cards.", "You may play that card for as long as you control ~.": the permission to play the cards an exile from the top of a library named.
 fn may_play(r: &mut Reader<'_>, count: &Amount) -> Option<Duration> {
     let leading = r.attempt(|r| {
         let duration = if r.words("until end of turn") {
@@ -68,6 +68,9 @@ fn may_play(r: &mut Reader<'_>, count: &Amount) -> Option<Duration> {
     }
     match leading {
         Some(duration) => Some(duration),
+        None if r.words("for as long as you control") => {
+            r.source().then_some(Duration::WhileYouControlSource)
+        }
         None => r.need("this turn").map(|()| Duration::UntilEndOfTurn),
     }
 }
@@ -180,6 +183,9 @@ pub fn impulse_text(effects: &[Effect]) -> Option<(String, usize)> {
         Duration::UntilEndOfTurn => format!("You may play {cards} this turn"),
         Duration::UntilEndOfYourNextTurn => {
             format!("Until the end of your next turn, you may play {cards}")
+        }
+        Duration::WhileYouControlSource => {
+            format!("You may play {cards} for as long as you control ~")
         }
         _ => return None,
     };

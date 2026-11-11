@@ -67,4 +67,12 @@ devoid?: boolean,
 /**
  * It has flashback.
  */
-flashback?: boolean, };
+flashback?: boolean, 
+/**
+ * It is a commander its caster owns.
+ */
+your_commander?: boolean, 
+/**
+ * It is cast face down.
+ */
+face_down?: boolean, };

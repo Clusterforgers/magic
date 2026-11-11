@@ -2,6 +2,7 @@
 import type {
   CardType,
   Color,
+  SpecialAction,
   Spend as PaySpend,
   SpendFilter,
   SpendOn,
@@ -65,6 +66,10 @@ export function filterHolds(filter: SpendFilter, traits: SpendTraits): boolean {
           return traits.devoid === true
         case 'Flashback':
           return traits.flashback === true
+        case 'YourCommander':
+          return traits.your_commander === true
+        case 'FaceDown':
+          return traits.face_down === true
       }
     })
   )
@@ -86,11 +91,20 @@ export function spendAllows(spend: PaySpend | undefined, only: readonly SpendOn[
   return uses.some((on) => {
     if (on === 'Snow') return false
     if (on === 'CostWithX') return kind !== 'Other' && spend?.has_x === true
-    if (on === 'OtherCosts') return kind === 'Other'
+    // A special action is paid as a cost that is neither a spell's nor an ability's.
+    if (on === 'OtherCosts') return kind === 'Other' || typeof kind === 'object'
+    if ('Special' in on) return typeof kind === 'object' && kind.Special === on.Special
     if ('Spell' in on) return kind === 'Spell' && traits !== undefined && filterHolds(on.Spell, traits)
     if ('Ability' in on) return kind === 'Ability' && traits !== undefined && filterHolds(on.Ability, traits)
     return false
   })
+}
+
+/** The special actions in words. */
+const SPECIAL_WORDS: Record<SpecialAction, string> = {
+  TurnFaceUp: 'turning face up',
+  Unlock: 'unlocking a door',
+  Foretell: 'foretelling',
 }
 
 /** A use in words, for a button: "creature spells", "abilities", "costs with {X}". */
@@ -99,6 +113,7 @@ export function useWords(on: SpendOn): string {
   if (on === 'CostWithX') return 'costs with {X}'
   if (on === 'OtherCosts') return 'other costs'
   if ('Ability' in on) return 'abilities'
+  if ('Special' in on) return SPECIAL_WORDS[on.Special]
   if ('Spell' in on) {
     const { types = [], subtypes = [], colors = [] } = on.Spell
     const kinds = [...colors, ...subtypes, ...types].map((word) => word.toLowerCase())
