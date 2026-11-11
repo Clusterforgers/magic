@@ -1,0 +1,43 @@
+{
+  "oracle_id": "40362fe0-a1a9-4d76-8c35-eac474b91af5",
+  "name": "Mizzix's Mastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mizzix's Mastery",
+      "oracle_fingerprint": "43c984007ee90b76e8460be2fe4ca986",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "exiled" },
+                  "as": "card",
+                  "effects": [
+                    { "CopyCard": { "what": { "Bound": "card" }, "as": "copy" } },
+                    { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        },
+        { "Keyword": { "Overload": "{5}{R}{R}{R}" } }
+      ]
+    }
+  ]
+}

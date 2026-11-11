@@ -55,6 +55,7 @@ fn options() -> Options {
         max_input_tokens: 50_000_000,
         jobs: 1,
         status_every: Duration::ZERO,
+        ..Options::default()
     }
 }
 
@@ -87,6 +88,7 @@ fn run(
     })
 }
 
+/// The proposal files under a folder, the records and the summary of the run left out (they have tests of their own).
 fn files(dir: &Path) -> Vec<String> {
     let mut found = Vec::new();
     let mut stack = vec![dir.to_path_buf()];
@@ -96,7 +98,10 @@ fn files(dir: &Path) -> Vec<String> {
             if path.is_dir() {
                 stack.push(path);
             } else if let Ok(relative) = path.strip_prefix(dir) {
-                found.push(relative.display().to_string());
+                let name = relative.display().to_string();
+                if !name.starts_with("records/") && name != "summary.tsv" {
+                    found.push(name);
+                }
             }
         }
     }

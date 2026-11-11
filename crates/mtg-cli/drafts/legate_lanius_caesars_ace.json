@@ -1,0 +1,52 @@
+{
+  "oracle_id": "c6b5ca62-e5ee-4636-b12e-7c1d455e8384",
+  "name": "Legate Lanius, Caesar's Ace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legate Lanius, Caesar's Ace",
+      "oracle_fingerprint": "3b8ec959ecf86db13c2f97dae921fc7f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "each" },
+                        "filter": [{ "Type": "Creature" }],
+                        "count": {
+                          "Quotient": {
+                            "of": {
+                              "Count": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": { "Bound": "each" } }
+                              ]
+                            },
+                            "by": 10,
+                            "up": true
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "dc5dffc8-fac5-4956-bac4-1ad2cc16f6be",
+  "name": "Deflecting Palm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deflecting Palm",
+      "oracle_fingerprint": "fbf16ac0f4f8f459e199d113f049b3ff",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": {
+                    "InsteadNext": [
+                      {
+                        "DealDamage": {
+                          "to": { "ControllerOf": { "Bound": "source" } },
+                          "amount": "Triggering"
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -282,6 +282,9 @@ pub enum TriggerPattern {
             skip_serializing_if = "Ref::is_each_player"
         )]
         by: Ref,
+        /// Only a tap that makes mana of this type ("Whenever you tap a permanent for {C}"); any tap for mana when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        produced: Option<mtg_core::mana::ManaType>,
     },
     /// A creature matching the selector blocks.
     Blocks {

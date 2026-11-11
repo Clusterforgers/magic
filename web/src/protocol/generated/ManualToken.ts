@@ -5,4 +5,12 @@ import type { CustomToken } from "./CustomToken";
 /**
  * The token a manual action creates.
  */
-export type ManualToken = { "Common": CommonToken } | { "Custom": CustomToken };
+export type ManualToken = { "Common": CommonToken } | { "Custom": CustomToken } | { "Card": { 
+/**
+ * The name of a card the seat owns.
+ */
+card: string, 
+/**
+ * Its place among the tokens that card makes.
+ */
+index: number, } };

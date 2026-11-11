@@ -30,7 +30,7 @@ pub struct Suspect {
 }
 
 /// The card record of a fixture file as the strings the renderer reads.
-fn printed_of(path: &Path) -> Result<PrintedCard, CliError> {
+pub fn printed_of(path: &Path) -> Result<PrintedCard, CliError> {
     let text = std::fs::read_to_string(path).map_err(|source| CliError::io(path, source))?;
     let value: serde_json::Value = serde_json::from_str(&text)
         .map_err(|error| CliError::Config(format!("{}: {error}", path.display())))?;

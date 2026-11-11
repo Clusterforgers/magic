@@ -1,0 +1,37 @@
+{
+  "oracle_id": "b817bc56-9b4d-4c50-bafa-3c652b99578f",
+  "name": "Ulamog, the Infinite Gyre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ulamog, the Infinite Gyre",
+      "oracle_fingerprint": "f12600b837f655391e9b0320007eccf8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "from": "Stack",
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": "Indestructible" },
+        { "Keyword": { "Annihilator": 4 } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Graveyard" } },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "OwnerOf": "This" } }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

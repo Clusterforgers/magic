@@ -75,6 +75,7 @@ fn token(controller: PlayerId) -> Event {
         name: "Spirit".into(),
         tapped: false,
         attacking: None,
+        blocking: None,
         definition: Arc::new(CardDefinition::new("Spirit").with_type(CardType::Creature)),
     })
 }

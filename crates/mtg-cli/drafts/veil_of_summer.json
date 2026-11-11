@@ -1,0 +1,75 @@
+{
+  "oracle_id": "002965be-a36f-4a09-9ce0-c6535bca1703",
+  "name": "Veil of Summer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veil of Summer",
+      "oracle_fingerprint": "dfc84fd927efe4676722069b1b002726",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Tally": {
+                          "event": "SpellCast",
+                          "who": "Opponents",
+                          "filter": [{ "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }]
+                        }
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "CantBeCountered": { "Each": ["Spell", { "ControlledBy": "You" }] } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "PlayersHave": {
+                      "who": "You",
+                      "keyword": { "HexproofFrom": [{ "Color": "Blue" }] }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "PlayersHave": {
+                      "who": "You",
+                      "keyword": { "HexproofFrom": [{ "Color": "Black" }] }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "ControlledBy": "You" }] },
+                  "mods": [
+                    { "AddKeyword": { "HexproofFrom": [{ "Color": "Blue" }] } },
+                    { "AddKeyword": { "HexproofFrom": [{ "Color": "Black" }] } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

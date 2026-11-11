@@ -60,6 +60,23 @@ pub(super) fn copy_of_object(
         return Ok(None);
     };
     for modification in except {
+        // Base power and toughness set by amounts are worked out now ("half that creature's power, rounded up").
+        let fixed;
+        let modification = match modification {
+            Modification::SetPT { power, toughness } => {
+                let worked = |amount: &Amount| -> Result<Amount, ResolveError> {
+                    Ok(Amount::Fixed(
+                        i32::try_from(cx.scope.amount(amount)?).unwrap_or(i32::MAX),
+                    ))
+                };
+                fixed = Modification::SetPT {
+                    power: worked(power)?,
+                    toughness: worked(toughness)?,
+                };
+                &fixed
+            }
+            other => other,
+        };
         if !values.except(modification) {
             return Err(ResolveError::Unsupported("Effect.CreateToken.Copy.Except"));
         }
@@ -131,6 +148,30 @@ fn named_defender(
         .iter()
         .any(|(target, _)| *target == aim)
         .then_some(aim))
+}
+
+/// The attacking creature `player`'s tokens enter blocking: the one `blocking` names while it still attacks `player`
+/// or a planeswalker of theirs, after blockers are declared; none otherwise, and the tokens just enter.
+fn ep23_blocked(
+    cx: &Cx<'_>,
+    blocking: &Ref,
+    player: PlayerId,
+) -> Result<Option<ObjectId>, ResolveError> {
+    let state = cx.state();
+    let Some(Target::Object(named)) = cx.scope.refs(blocking)?.first().copied() else {
+        return Ok(None);
+    };
+    if state.object(named.id).map(GameObject::reference) != Some(named)
+        || !state.combat().blockers_declared().contains(&player)
+    {
+        return Ok(None);
+    }
+    Ok(state
+        .combat()
+        .attackers()
+        .iter()
+        .find(|attack| attack.object() == named.id && attack.defender(state) == Some(player))
+        .map(crate::combat::Attacker::object))
 }
 
 /// What each player's tokens attack when the effect names nothing: their controller chooses, once for all of them;
@@ -216,6 +257,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         tapped,
         attacking,
         against,
+        blocking,
         bind,
     } = effect
     else {
@@ -254,6 +296,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut made = 0;
     let mut events = Vec::with_capacity(players.len() * number * made_from.len());
     for (controller, aim) in aims {
+        let blocked = match blocking {
+            Some(blocking) if aim.is_none() => ep23_blocked(cx, blocking, controller)?,
+            _ => None,
+        };
         for (definition, copy_of) in &made_from {
             for _ in 0..number {
                 events.push(Event::TokenCreated(TokenCreated {
@@ -263,6 +309,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     name: definition.name.clone(),
                     tapped: *tapped,
                     attacking: aim,
+                    blocking: blocked,
                     definition: Arc::clone(definition),
                 }));
                 made += 1;

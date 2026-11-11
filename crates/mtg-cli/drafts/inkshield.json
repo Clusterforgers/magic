@@ -1,0 +1,45 @@
+{
+  "oracle_id": "da93264e-4e04-401a-9809-e4e1056cf604",
+  "name": "Inkshield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inkshield",
+      "oracle_fingerprint": "6b7b6dd22f8db3043692a623c1063505",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "combat": true } },
+                  "by": {
+                    "PreventAnd": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Inkling",
+                              "colors": ["White", "Black"],
+                              "types": ["Creature"],
+                              "subtypes": ["Inkling"],
+                              "power": 2,
+                              "toughness": 1,
+                              "abilities": [{ "Keyword": "Flying" }]
+                            }
+                          },
+                          "count": "Triggering"
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

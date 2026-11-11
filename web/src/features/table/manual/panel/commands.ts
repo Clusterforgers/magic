@@ -1,5 +1,13 @@
 /** Pure: the commands of the Commands panel, what each one says it does, the preview of its change and the action it sends. */
-import type { Color, CounterKind, ManaType, ManualAction, ObjectId, PlayerId } from '@/protocol/generated'
+import type {
+  Color,
+  CounterKind,
+  ManaType,
+  ManualAction,
+  ObjectId,
+  PlayerId,
+  TokenOfferView,
+} from '@/protocol/generated'
 import { counterKind, heldOf, LIMITS, MANA_KINDS } from '../offers'
 import { START_TOKEN, tokenPreview } from './customToken'
 import type { TokenDraft } from './customToken'
@@ -76,6 +84,8 @@ export interface PanelInput {
   searched?: readonly ObjectId[]
   /** The colours of the seat's commander identity in WUBRG order (empty: colourless); left out outside Commander. */
   identity?: readonly Color[]
+  /** The tokens the seat's cards make (`TableView.tokens`); none when left out. */
+  tokens?: readonly TokenOfferView[]
   /** Why nothing can be done by hand (a seat that lost, a finished game); left out while the seat plays. */
   off?: string
 }
@@ -346,7 +356,7 @@ export function previewOf(command: Command, draft: PanelDraft, input: PanelInput
         action: { Search: {} },
       }
     case 'token':
-      return tokenPreview(draft, amount)
+      return tokenPreview(draft, amount, input.tokens)
     case 'roll':
       return rollPreview(draft.roll, draft.sides)
     case 'mana': {

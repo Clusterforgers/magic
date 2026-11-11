@@ -1,0 +1,58 @@
+{
+  "oracle_id": "cb14b713-55e9-40cb-b769-6abe8e359580",
+  "name": "Tide of War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tide of War",
+      "oracle_fingerprint": "70e15069973abf26208604afb23317f8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "Blocks": { "what": [{ "Type": "Creature" }] } } },
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Each": [{ "Type": "Creature" }, "Blocking"] },
+                        "as": "blocker",
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": { "Bound": "blocker" } },
+                              "filter": [{ "Is": { "Bound": "blocker" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "lose": [
+                    {
+                      "RepeatEach": {
+                        "over": {
+                          "Each": [{ "Type": "Creature" }, "Attacking", { "Not": "Unblocked" }]
+                        },
+                        "as": "blocked",
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "who": { "ControllerOf": { "Bound": "blocked" } },
+                              "filter": [{ "Is": { "Bound": "blocked" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

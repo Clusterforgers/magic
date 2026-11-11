@@ -1,0 +1,30 @@
+{
+  "oracle_id": "baf80db7-2ca8-4bfc-b5b6-25ed51878dd7",
+  "name": "Baral, Chief of Compliance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baral, Chief of Compliance",
+      "oracle_fingerprint": "0beb3ae72bf366327bd8394545e10eb4",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Caused": { "inner": { "Did": { "action": "Countered" } }, "by": "You" } },
+            "effects": [{ "Pay": { "cost": [{ "Draw": 1 }], "paid": [{ "Discard": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

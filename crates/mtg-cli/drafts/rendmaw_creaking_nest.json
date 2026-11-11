@@ -1,0 +1,80 @@
+{
+  "oracle_id": "2207fb3f-45a1-401b-99e9-f75723495c3f",
+  "name": "Rendmaw, Creaking Nest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rendmaw, Creaking Nest",
+      "oracle_fingerprint": "c05a04c1dd304fe0d9b7d75d0a0a3e01",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "SpellCast": {
+                    "what": [
+                      {
+                        "Test": {
+                          "left": { "CardTypes": [{ "Is": "Candidate" }] },
+                          "op": "Ge",
+                          "right": 2
+                        }
+                      }
+                    ],
+                    "by": "You"
+                  }
+                },
+                {
+                  "Did": {
+                    "action": "PlayedLand",
+                    "who": "You",
+                    "what": [
+                      {
+                        "Test": {
+                          "left": { "CardTypes": [{ "Is": "Candidate" }] },
+                          "op": "Ge",
+                          "right": 2
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "EachPlayer",
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "tapped": true,
+                  "as": "birds"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "birds" },
+                  "mods": ["Goaded"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

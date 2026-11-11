@@ -1,0 +1,40 @@
+{
+  "oracle_id": "08f17ebc-c0fd-493f-84b3-e9250694543e",
+  "name": "Phial of Galadriel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phial of Galadriel",
+      "oracle_fingerprint": "53ab7ec906977382c2f0321e9f2d1146",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": { "Multiply": 2 },
+            "condition": {
+              "CountOf": {
+                "subject": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                "selector": [],
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "LifeGain": {} },
+            "by": { "Multiply": 2 },
+            "condition": { "Compare": { "left": { "Life": "You" }, "op": "Le", "right": 5 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -44,6 +44,7 @@ pub(super) fn enters_attached_to(token: TokenSpec) -> Ability {
                 tapped: false,
                 attacking: false,
                 against: None,
+                blocking: None,
                 bind: Some("germ".into()),
             },
             Effect::Attach {

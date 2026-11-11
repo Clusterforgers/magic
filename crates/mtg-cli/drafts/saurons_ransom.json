@@ -1,0 +1,33 @@
+{
+  "oracle_id": "fe04a81b-413c-4bc8-bb83-29978da9a43d",
+  "name": "Sauron's Ransom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sauron's Ransom",
+      "oracle_fingerprint": "94faf0ac43508b37be35af826f892851",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "opp" } },
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "SeparatePiles": {
+                  "who": { "Bound": "opp" },
+                  "what": { "Bound": "top" },
+                  "chooser": "You",
+                  "as": "pile",
+                  "rest_as": "other"
+                }
+              },
+              { "Move": { "what": { "Bound": "pile" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "other" }, "to": "Graveyard" } },
+              { "RingTempts": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

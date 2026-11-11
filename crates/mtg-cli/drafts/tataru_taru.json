@@ -1,0 +1,46 @@
+{
+  "oracle_id": "70dd5013-f18f-4501-882f-70590c424e20",
+  "name": "Tataru Taru",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tataru Taru",
+      "oracle_fingerprint": "f2844c056de15809d5097d928017a69d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Draw": {} },
+              {
+                "May": {
+                  "who": { "Target": 0 },
+                  "effects": [{ "Draw": { "who": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": { "who": "TriggeringPlayer", "test": { "Not": "YourTurn" } }
+                  }
+                },
+                "op": "Gt",
+                "right": 0
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

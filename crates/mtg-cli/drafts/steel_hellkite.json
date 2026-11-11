@@ -1,0 +1,67 @@
+{
+  "oracle_id": "6e64f1e0-ddd6-4ee7-8797-086e234b02e8",
+  "name": "Steel Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steel Hellkite",
+      "oracle_fingerprint": "4e616d81dc359fe40ee6de96a6a4373f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{X}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                      {
+                        "ControlledBy": {
+                          "PlayersWhere": {
+                            "who": "EachPlayer",
+                            "test": {
+                              "Matches": {
+                                "subject": "This",
+                                "selector": [
+                                  {
+                                    "DidThisTurn": {
+                                      "event": "Damaged",
+                                      "to": "You",
+                                      "combat": true
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

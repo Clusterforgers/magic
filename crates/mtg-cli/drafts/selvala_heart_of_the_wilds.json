@@ -1,0 +1,67 @@
+{
+  "oracle_id": "1d725121-e50c-42f0-9128-56802f07c89e",
+  "name": "Selvala, Heart of the Wilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selvala, Heart of the Wilds",
+      "oracle_fingerprint": "9da9233676ed6fbdee5378b844ad0c3e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "Type": "Creature" }, "Other"], "to": "Battlefield" }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                      "op": "Gt",
+                      "right": {
+                        "Greatest": {
+                          "of": [{ "Type": "Creature" }, { "Not": { "Is": "Triggering" } }],
+                          "stat": "Power"
+                        }
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "who": { "ControllerOf": "Triggering" },
+                        "effects": [{ "Draw": { "who": { "ControllerOf": "Triggering" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyCombination": {
+                      "count": {
+                        "Greatest": {
+                          "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                          "stat": "Power"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

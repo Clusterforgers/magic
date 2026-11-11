@@ -16,6 +16,9 @@ pub fn status_line(tally: &Tally, budget: &Budget, total: usize, elapsed: Durati
         format!(", {} not run", tally.not_run)
     };
     let usage = budget.usage();
+    let spent = budget
+        .cost()
+        .map_or_else(String::new, |cost| format!("; spent {cost}"));
     let millis = elapsed.as_millis().max(1);
     let tokens_per_second = tenths(u128::from(usage.output_tokens) * 10_000 / millis);
     let cards_per_minute = tenths(done_as_u128(done) * 600_000 / millis);
@@ -27,7 +30,7 @@ pub fn status_line(tally: &Tally, budget: &Budget, total: usize, elapsed: Durati
     };
     format!(
         "status: {done}/{total} cards done, {} failed{not_run}; Verified {}, Partial {}, Unchecked {}, Mismatch {}, Invalid {}, Empty {}; \
-         {} requests; tokens in {} (cached {}), out {}; {tokens_per_second} tok/s, {cards_per_minute} cards/min; ETA {eta}",
+         {} requests; tokens in {} (cached {}), out {}; {tokens_per_second} tok/s, {cards_per_minute} cards/min{spent}; ETA {eta}",
         tally.failed,
         tally.verified,
         tally.partial,
@@ -68,6 +71,7 @@ mod tests {
 
     use super::*;
     use crate::propose::model::Usage;
+    use crate::propose::price::Usd;
 
     fn budget(requests: u32, usage: Usage) -> Budget {
         let mut budget = Budget::new(1000, u64::MAX);
@@ -105,6 +109,7 @@ mod tests {
         };
         let usage = Usage {
             input_tokens: 340_000,
+            cache_write_tokens: 0,
             cache_read_tokens: 320_000,
             output_tokens: 6_000,
         };
@@ -115,6 +120,18 @@ mod tests {
             "status: 12/60 cards done, 1 failed; Verified 3, Partial 1, Unchecked 4, Mismatch 1, Invalid 2, Empty 0; \
              17 requests; tokens in 340000 (cached 320000), out 6000; 10.0 tok/s, 1.2 cards/min; ETA 40m 00s"
         );
+    }
+
+    #[test]
+    fn a_run_with_a_spend_cap_shows_what_it_has_spent() {
+        let mut budget = budget(1, Usage::default());
+        budget.add_cost(Usd(1_234_500));
+        let tally = Tally {
+            verified: 1,
+            ..Tally::default()
+        };
+        let line = status_line(&tally, &budget, 2, Duration::from_secs(60));
+        assert!(line.contains("cards/min; spent $1.234500; ETA"), "{line}");
     }
 
     #[test]

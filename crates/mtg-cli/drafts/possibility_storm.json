@@ -1,0 +1,53 @@
+{
+  "oracle_id": "8586169f-cb8c-4424-ba64-a7c1cc00680e",
+  "name": "Possibility Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Possibility Storm",
+      "oracle_fingerprint": "2e75ef44ce80c87a682b73bf775b1d62",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "CastFrom": "Hand" }] } },
+            "effects": [
+              { "Exile": { "what": "Triggering", "as": "spell" } },
+              {
+                "ExileUntil": {
+                  "who": "TriggeringPlayer",
+                  "filter": [{ "SharesType": { "Bound": "spell" } }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "who": "TriggeringPlayer",
+                  "what": { "Bound": "found" },
+                  "free": true
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Bound": "spell" } },
+                          { "Is": { "Bound": "exiled" } },
+                          { "Is": { "Bound": "found" } }
+                        ]
+                      },
+                      { "In": "Exile" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

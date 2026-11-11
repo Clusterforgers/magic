@@ -1,0 +1,37 @@
+{
+  "oracle_id": "3bba3b36-f8d7-4fd6-892a-797226210b6e",
+  "name": "Malcolm, Alluring Scoundrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malcolm, Alluring Scoundrel",
+      "oracle_fingerprint": "4e3582eab590f3c93f744c1adf073f5f",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "chorus" } } },
+              { "Draw": {} },
+              { "Discard": { "as": "d" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "chorus" } } },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "CastFromZone": { "what": { "Bound": "d" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

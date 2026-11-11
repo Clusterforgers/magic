@@ -34,9 +34,9 @@ pub struct Funnel {
     pub plain: usize,
     /// Cards with every rule line translated.
     pub whole: usize,
-    /// Cards with some rule lines translated and others left out.
+    /// Cards with some rule lines translated and others left out, or none translated and every gap on a line of its own.
     pub partial: usize,
-    /// Cards with rule lines and none translated.
+    /// Cards with rule lines, none translated and a gap that holds back the whole card.
     pub skipped: usize,
     /// With `--stored`: the cards by their state today, as counts of whole, partial, skipped and plain.
     states: BTreeMap<String, [usize; 4]>,
@@ -49,15 +49,11 @@ impl Funnel {
     pub fn add(&mut self, card: &CardOut, ranked: bool, weight: f64, today: &str) -> bool {
         let kind = self.add_card(card, ranked, weight);
         if !today.is_empty() {
-            let slot = match (
-                card.lines(),
-                card.translated(),
-                card.gaps().next().is_none(),
-            ) {
-                (0, _, _) => 3,
-                (_, 0, _) => 2,
-                (_, _, true) => 0,
-                _ => 1,
+            let slot = match card.state() {
+                "whole" => 0,
+                "partial" => 1,
+                "skipped" => 2,
+                _ => 3,
             };
             self.states.entry(today.to_owned()).or_default()[slot] += 1;
         }
@@ -82,7 +78,7 @@ impl Funnel {
             self.plain += 1;
             return false;
         }
-        if card.translated() == 0 {
+        if card.state() == "skipped" {
             self.skipped += 1;
             let reason = card.gaps().next().map_or("?", |gap| gap.0.as_str());
             *self.first.entry(reason.to_owned()).or_default() += 1;

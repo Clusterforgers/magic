@@ -333,6 +333,9 @@ pub(crate) fn legal_from(
         }
         Target::Player(player) => {
             !keywords::protects_player(state, *player, controller)
+                && !keywords::hexproof::ep23_player_hexproof_from(
+                    state, *player, source.id, controller,
+                )
                 && !forbidden_target(state, Target::Player(*player), source)
                 && !keywords::protected_from(state, keywords::Holder::Player(*player), origin)
         }

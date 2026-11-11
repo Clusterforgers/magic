@@ -1,0 +1,58 @@
+{
+  "oracle_id": "8514f20a-50c7-4319-84cb-2bf263548234",
+  "name": "Breeches, the Blastmaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breeches, the Blastmaker",
+      "oracle_fingerprint": "4404079ae5b98d402a1dab64c3598d9d",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 2 } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+                  "paid": [
+                    {
+                      "FlipCoin": {
+                        "win": [
+                          {
+                            "Reflexive": {
+                              "effects": [
+                                { "CopySpell": { "what": "Triggering", "new_targets": true } }
+                              ]
+                            }
+                          }
+                        ],
+                        "lose": [
+                          {
+                            "Reflexive": {
+                              "targets": [{ "what": "AnyTarget" }],
+                              "effects": [
+                                {
+                                  "DealDamage": {
+                                    "to": { "Target": 0 },
+                                    "amount": {
+                                      "Stat": { "of": "Triggering", "stat": "ManaValue" }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

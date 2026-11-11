@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2ffc6372-f63b-4f32-8dd0-2d7938aeb412",
+  "name": "Carpet of Flowers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carpet of Flowers",
+      "oracle_fingerprint": "0d2de50cd685923680cc0efe67bfefc0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "StepBegins": { "step": "Main1", "whose": "You" } },
+                { "StepBegins": { "step": "Main2", "whose": "You" } }
+              ]
+            },
+            "limit": "OncePerTurnDone",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "AddMana": {
+                        "mana": {
+                          "AnyColor": {
+                            "Count": [{ "Subtype": "Island" }, { "ControlledBy": { "Target": 0 } }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

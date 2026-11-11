@@ -518,9 +518,18 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     if matches!(ability, Ability::Static { mods, .. } if statics::repeated_keyword(mods)) {
         return Vec::new();
     }
-    let mut texts = super::written_memo::written(ability, written_anew);
+    let mut texts = super::written_memo::written(ability, ep23_written_anew);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
+    texts
+}
+
+/// [`written_anew`] without the wordings that leave out a block the ability's tokens enter with.
+fn ep23_written_anew(ability: &Ability) -> Vec<String> {
+    let mut texts = written_anew(ability);
+    if texts.iter().any(|text| !text.contains(" blocking ")) {
+        texts.retain(|text| super::ep23_three::ep23_says_its_block(ability, text));
+    }
     texts
 }
 

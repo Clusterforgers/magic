@@ -1,0 +1,54 @@
+{
+  "oracle_id": "f4ce6078-8c7b-4f68-b324-13130c63a983",
+  "name": "Angel of Serenity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of Serenity",
+      "oracle_fingerprint": "2c93aa5889cf1a20b8f51b5ed7bdfb9b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Type": "Creature" }, "Other"] },
+                    { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 3 }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                    { "Remember": { "what": { "Bound": "exiled" }, "slot": "exiled" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Remembered": { "on": "This", "slot": "exiled" } },
+                  "to": "Hand"
+                }
+              },
+              { "Forget": { "slot": "exiled" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

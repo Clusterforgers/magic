@@ -599,6 +599,11 @@ function effect(
 const say = (event: Event): string => describeEvent({ Public: event }, names).text
 
 describe('describeEvent', () => {
+  it('names the attacker a token enters blocking', () => {
+    const event: Event = { TokenCreated: { object: 93, controller: 1, name: 'Cat Soldier', blocking: 1 } }
+    expect(say(event)).toBe('Bo creates a Cat Soldier token blocking Grizzly Bears')
+  })
+
   it('leaves the Ring-bearer out when the player controls no creature', () => {
     expect(say({ RingTempted: { player: 1, level: 1 } })).toBe('The Ring tempts Bo (level 1)')
   })

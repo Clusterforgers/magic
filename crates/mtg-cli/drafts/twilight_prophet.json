@@ -14,24 +14,23 @@
             "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
             "if": { "CitysBlessing": "You" },
             "effects": [
-              { "LookAtTop": { "as": "top" } },
-              { "Reveal": { "what": { "Bound": "top" } } },
               {
-                "Move": {
-                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
-                  "to": "Hand",
-                  "as": "moved4"
+                "Bind": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"] },
+                  "as": "top"
                 }
               },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Move": { "what": { "Bound": "top" }, "to": "Hand" } },
               {
                 "LoseLife": {
                   "who": "Opponents",
-                  "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                  "amount": { "Stat": { "of": { "Bound": "top" }, "stat": "ManaValue" } }
                 }
               },
               {
                 "GainLife": {
-                  "amount": { "Stat": { "of": { "Bound": "moved4" }, "stat": "ManaValue" } }
+                  "amount": { "Stat": { "of": { "Bound": "top" }, "stat": "ManaValue" } }
                 }
               }
             ]

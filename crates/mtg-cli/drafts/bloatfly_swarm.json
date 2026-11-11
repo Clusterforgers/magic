@@ -1,0 +1,51 @@
+{
+  "oracle_id": "fc50e254-71bc-46b3-93e6-c6eb820a3473",
+  "name": "Bloatfly Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloatfly Swarm",
+      "oracle_fingerprint": "b9c004d995befb5782c26fdf691f5fd4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 5 } }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": {
+              "PreventAnd": [
+                {
+                  "Let": {
+                    "as": "before",
+                    "amount": { "Counters": { "on": "This", "counter": "+1/+1" } }
+                  }
+                },
+                { "RemoveCounters": { "from": "This", "counter": "+1/+1", "count": "Triggering" } },
+                {
+                  "PutCounters": {
+                    "on": "EachPlayer",
+                    "counter": { "Other": "rad" },
+                    "count": {
+                      "Difference": [
+                        { "Bound": "before" },
+                        { "Counters": { "on": "This", "counter": "+1/+1" } }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            "condition": {
+              "Matches": { "subject": "This", "selector": [{ "HasCounter": "+1/+1" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

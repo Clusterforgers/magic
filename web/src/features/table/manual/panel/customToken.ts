@@ -1,13 +1,44 @@
-/** Pure: the token a Tokens row makes, a common one or a custom creature, with the words of its preview and the action it sends. */
-import type { CardType, Color, CommonToken, ManualKeyword, ManualToken } from '@/protocol/generated'
+/** Pure: the token a Tokens row makes, a common one, one the seat's cards make or a custom creature, with the words of its preview and the action it sends. */
+import type {
+  CardType,
+  Color,
+  CommonToken,
+  ManualKeyword,
+  ManualToken,
+  TokenOfferView,
+} from '@/protocol/generated'
 import { COMMON_TOKENS, GRANT_KEYWORDS } from '../offers'
 import type { Preview } from './commands'
 
 /** The choice that makes a creature of the seat's own: name, power and toughness. */
 export const CUSTOM = 'custom'
 
-/** What the Tokens row's list offers: a common token or `custom`. */
-export type TokenChoice = CommonToken | typeof CUSTOM
+/** The choice of the token at a place of the table's list of tokens the seat's cards make (`TableView.tokens`). */
+export type CardTokenChoice = `card:${number}`
+
+/** What the Tokens row's list offers: a common token, a token of the seat's cards or `custom`. */
+export type TokenChoice = CommonToken | CardTokenChoice | typeof CUSTOM
+
+/** The list value of the token at `at` of the seat's card tokens. */
+export const cardChoice = (at: number): CardTokenChoice => `card:${at}`
+
+/** Whether a choice names a token of the seat's cards. */
+export const isCardChoice = (choice: TokenChoice): choice is CardTokenChoice => choice.startsWith('card:')
+
+/** The token of the seat's cards a choice names, or undefined for any other choice or one the list no longer has. */
+export function cardTokenOf(
+  choice: TokenChoice,
+  offers: readonly TokenOfferView[],
+): TokenOfferView | undefined {
+  if (!isCardChoice(choice)) return undefined
+  return offers[Number(choice.slice('card:'.length))]
+}
+
+/** "Eldrazi Scion 1/1": a token of the seat's cards as its option and buttons name it. */
+export function offerLabel(offer: TokenOfferView): string {
+  const stats = offer.power != null && offer.toughness != null ? ` ${offer.power}/${offer.toughness}` : ''
+  return `${offer.name}${stats}`
+}
 
 /** The longest name of a custom token the protocol takes. */
 export const TOKEN_NAME_MAX = 40
@@ -120,7 +151,29 @@ function customOf(
 }
 
 /** The preview of making `amount` tokens of `draft`, in the seat's words, with the action it sends. */
-export function tokenPreview(draft: TokenDraft, amount: number): Preview {
+export function tokenPreview(
+  draft: TokenDraft,
+  amount: number,
+  offers: readonly TokenOfferView[] = [],
+): Preview {
+  if (isCardChoice(draft.token)) {
+    const offer = cardTokenOf(draft.token, offers)
+    if (offer === undefined) return { problem: 'Choose a token from the list.' }
+    const label = offerLabel(offer)
+    const kind = [
+      ...(offer.colors ?? []).map((color) => color.toLowerCase()),
+      ...offer.types.map((type) => type.toLowerCase()),
+    ]
+    const abilities =
+      (offer.rules ?? []).length === 0
+        ? ''
+        : ` with its ${(offer.rules ?? []).length === 1 ? 'ability' : 'abilities'}`
+    return {
+      preview: `${plural(amount, `${label} ${kind.join(' ')} token`)}${abilities} ${amount === 1 ? 'enters' : 'enter'} under your control (from ${offer.card})`,
+      apply: `Create ${plural(amount, `${label} token`)}`,
+      action: { CreateToken: { token: { Card: { card: offer.card, index: offer.index } }, count: amount } },
+    }
+  }
   if (draft.token !== CUSTOM) {
     return {
       preview: `${plural(amount, `${draft.token} token`)} ${amount === 1 ? 'enters' : 'enter'} under your control`,

@@ -25,7 +25,7 @@ use crate::message::AutoYield;
 use crate::view::{
     AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView, CopyView,
     GivesView, LoyaltyAbilityView, MergedCardView, ObjectView, PermanentView, PlayerView,
-    PriorityView, StateView, TableView, TurnView, ZoneView,
+    PriorityView, StateView, TableView, TokenOfferView, TurnView, ZoneView,
 };
 use crate::wording::activated_views;
 
@@ -673,6 +673,7 @@ impl TableView {
             },
             combat_forecast: pending_combat_forecast(state),
             result: state.result(),
+            tokens: token_offers(state, viewer),
         }
     }
 }
@@ -700,6 +701,32 @@ pub fn spectator_viewer(state: &GameState) -> PlayerId {
 /// Whether `viewer` is no seat of the game `state`.
 fn is_spectator(state: &GameState, viewer: PlayerId) -> bool {
     viewer.index() >= state.players().len()
+}
+
+/// The tokens the cards of `viewer` make, as the manual panel offers them; none for a spectator.
+fn token_offers(state: &GameState, viewer: PlayerId) -> Vec<TokenOfferView> {
+    if is_spectator(state, viewer) {
+        return Vec::new();
+    }
+    mtg_engine::manual_tokens::card_tokens(state, viewer)
+        .into_iter()
+        .map(|offer| TokenOfferView {
+            card: offer.card,
+            index: offer.index,
+            rules: offer
+                .token
+                .abilities
+                .iter()
+                .filter_map(mtg_cards::read::ability_wording)
+                .collect(),
+            name: offer.token.name,
+            colors: offer.token.colors,
+            types: offer.token.types,
+            subtypes: offer.token.subtypes,
+            power: offer.token.power,
+            toughness: offer.token.toughness,
+        })
+        .collect()
 }
 
 impl StateView {

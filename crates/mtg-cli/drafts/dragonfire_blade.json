@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e809b847-b712-4558-95ea-9bb7356cde91",
+  "name": "Dragonfire Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonfire Blade",
+      "oracle_fingerprint": "fe110e0ca539ff3786a5e2d42315f997",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              {
+                "AddKeyword": {
+                  "HexproofFrom": [{ "Compare": { "stat": "Colors", "op": "Eq", "to": 1 } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

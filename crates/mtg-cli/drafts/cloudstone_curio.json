@@ -1,0 +1,44 @@
+{
+  "oracle_id": "5cd2fd32-4da2-40eb-b003-c0b9a9ec91c1",
+  "name": "Cloudstone Curio",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloudstone Curio",
+      "oracle_fingerprint": "e6cdb4fdd1905597a3b82b330b9ae083",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Not": { "Type": "Artifact" } }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Not": { "Is": "Triggering" } },
+                            { "ControlledBy": "You" },
+                            { "SharesType": "Triggering" }
+                          ]
+                        },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

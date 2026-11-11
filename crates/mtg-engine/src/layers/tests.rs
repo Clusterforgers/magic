@@ -921,6 +921,7 @@ fn token(game: &mut GameState, json: Option<&str>) {
         name: "Gem".into(),
         tapped: false,
         attacking: None,
+        blocking: None,
         definition: Arc::new(definition),
     };
     fold(game, &[Event::TokenCreated(created)]);

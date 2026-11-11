@@ -1,0 +1,49 @@
+{
+  "oracle_id": "d0dd425b-fdba-41b4-b9e6-f5161610bd7e",
+  "name": "Ezuri's Predation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ezuri's Predation",
+      "oracle_fingerprint": "ac86c3d8a593424f976c358063523542",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "as": "prey"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "prey" },
+                  "as": "victim",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Phyrexian Beast",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Phyrexian", "Beast"],
+                            "power": 4,
+                            "toughness": 4
+                          }
+                        },
+                        "as": "beast"
+                      }
+                    },
+                    { "Fight": { "what": { "Bound": "beast" }, "with": { "Bound": "victim" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

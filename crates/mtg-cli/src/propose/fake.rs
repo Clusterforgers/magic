@@ -60,6 +60,7 @@ impl ModelClient for ScriptedClient {
             Some(Ok(text)) => Ok(Response {
                 usage: Usage {
                     input_tokens: request.estimated_tokens(),
+                    cache_write_tokens: 0,
                     cache_read_tokens: 0,
                     output_tokens: u64::try_from(text.len().div_ceil(3)).unwrap_or(u64::MAX),
                 },

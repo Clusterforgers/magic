@@ -372,6 +372,13 @@ pub enum ManualToken {
     Common(CommonToken),
     /// A token the seat describes.
     Custom(Box<CustomToken>),
+    /// A token one of the seat's cards makes, with all its abilities (`manual_tokens::card_tokens`).
+    Card {
+        /// The name of a card the seat owns.
+        card: String,
+        /// Its place among the tokens that card makes.
+        index: u32,
+    },
 }
 
 /// What a seat does by hand. Zone moves, discards, attachments and damage sources are what the seat owns or controls;
@@ -1017,6 +1024,10 @@ fn create_tokens(
             .spec()
             .ok_or(ManualRefusal::BadToken("a token of the list"))?,
         ManualToken::Custom(custom) => custom.spec()?,
+        ManualToken::Card { card, index } => {
+            crate::manual_tokens::card_token(state, player, card, *index)
+                .ok_or(ManualRefusal::BadToken("a token one of your cards makes"))?
+        }
     };
     let definition = Arc::new(token_definition(&spec, &caps()));
     let first = state.next_object().get();
@@ -1029,6 +1040,7 @@ fn create_tokens(
                 name: definition.name.clone(),
                 tapped: false,
                 attacking: None,
+                blocking: None,
                 definition: Arc::clone(&definition),
             })
         })
@@ -1058,6 +1070,7 @@ fn copy_tokens(
                 name: definition.name.clone(),
                 tapped: false,
                 attacking: None,
+                blocking: None,
                 definition: Arc::clone(&definition),
             })
         })

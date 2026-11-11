@@ -370,6 +370,7 @@ fn token(id: u64, controller: PlayerId, attacking: Option<AttackTarget>) -> Toke
         name: "Treasure".into(),
         tapped: false,
         attacking,
+        blocking: None,
         definition: Arc::new(CardDefinition::new("Treasure").with_type(CardType::Artifact)),
     }
 }

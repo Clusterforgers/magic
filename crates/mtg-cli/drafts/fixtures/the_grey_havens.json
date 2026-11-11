@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d",
+  "oracle_id": "a1a9695e-073b-4a65-b3ec-2cfddc23202a",
+  "multiverse_ids": [
+    617085
+  ],
+  "mtgo_id": 112420,
+  "arena_id": 84947,
+  "tcgplayer_id": 499452,
+  "cardmarket_id": 716986,
+  "name": "The Grey Havens",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d",
+  "scryfall_uri": "https://scryfall.com/card/ltr/255/the-grey-havens?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:17:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/d/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d.jpg?1783916233",
+    "normal": "https://cards.scryfall.io/normal/front/d/d/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d.jpg?1783916233",
+    "large": "https://cards.scryfall.io/large/front/d/d/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d.jpg?1783916233",
+    "png": "https://cards.scryfall.io/png/front/d/d/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d.png?1783916233",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/d/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d.jpg?1783916233",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/d/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d.jpg?1783916233",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/d/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d.webp?1783916233",
+    "grid": "https://cards.scryfall.io/grid/front/d/d/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d.webp?1783916233",
+    "display": "https://cards.scryfall.io/display/front/d/d/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d.webp?1783916233",
+    "art": "https://cards.scryfall.io/art/front/d/d/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d.webp?1783916233",
+    "crop": "https://cards.scryfall.io/crop/front/d/d/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d.webp?1783916233",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/d/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d.jpg?1783916233"
+  },
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Legendary Land",
+  "oracle_text": "When The Grey Havens enters, scry 1.\n{T}: Add {C}.\n{T}: Add one mana of any color among legendary creature cards in your graveyard.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Scry"
+  ],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo",
+    "paper",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "08078706-ac5d-439b-8f01-894d38751367",
+  "set": "ltr",
+  "set_name": "The Lord of the Rings: Tales of Middle-earth",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/08078706-ac5d-439b-8f01-894d38751367",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/dd698f10-b0fc-42fc-84ec-f5a0d96bfa1d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa1a9695e-073b-4a65-b3ec-2cfddc23202a&unique=prints",
+  "collector_number": "255",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "There dwelt Círdan the Shipwright, and some say he dwells there still, until the Last Ship sets sail into the West.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alayna Danner",
+  "artist_ids": [
+    "bb677b1a-ce51-4888-83d6-5a94de461ff9"
+  ],
+  "illustration_id": "f8368deb-6234-4576-a5d7-04b06d188bf0",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 1563,
+  "preview": {
+    "source": "Nerd of the Rings",
+    "source_uri": "https://www.youtube.com/watch?v=CumSeVgDh5E",
+    "previewed_at": "2023-06-07"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.36",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.28",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=617085&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BGrey%2BHavens",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BGrey%2BHavens",
+    "edhrec": "https://edhrec.com/route/?cc=The+Grey+Havens"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F499452%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=716986&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/112420?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

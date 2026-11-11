@@ -1,0 +1,80 @@
+{
+  "oracle_id": "91df4cf5-d7ec-4fcd-87ed-e075ef6ceba9",
+  "name": "The Deck of Many Things",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Deck of Many Things",
+      "oracle_fingerprint": "497e99de393542eea668dc3f178dd221",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "plus": {
+                    "Times": {
+                      "by": -1,
+                      "of": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                    }
+                  },
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        {
+                          "ChooseAtRandom": {
+                            "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                            "as": "card"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+                      ]
+                    },
+                    { "from": 10, "to": 19, "effects": [{ "Draw": { "count": 2 } }] },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "In": "Graveyard" }, { "Type": "Creature" }] },
+                            "as": "card"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "card" },
+                            "to": { "Battlefield": { "under": "You" } },
+                            "as": "creature"
+                          }
+                        },
+                        {
+                          "DelayedTrigger": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": [{ "Is": { "Bound": "creature" } }],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "effects": [
+                              { "LoseGame": { "who": { "OwnerOf": { "Bound": "creature" } } } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "998daf11-c0ed-4801-b013-d8b3136f16d1",
+  "name": "Acolyte Hybrid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acolyte Hybrid",
+      "oracle_fingerprint": "018f559cbec2fc2b3b870a30922ef7c8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Destroyed": [{ "Type": "Artifact" }] },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": { "who": { "ControllerOf": { "Target": 0 } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
