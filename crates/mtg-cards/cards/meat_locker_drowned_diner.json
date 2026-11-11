@@ -29,7 +29,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "when": { "DoorUnlocked": { "who": "You", "door": 1 } },
             "effects": [{ "Draw": { "count": 3 } }, { "Discard": {} }]
           }
         }

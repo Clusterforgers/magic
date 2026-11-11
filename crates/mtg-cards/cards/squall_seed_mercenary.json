@@ -30,8 +30,6 @@
               {
                 "what": {
                   "Object": [
-                    { "OwnedBy": "You" },
-                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
                     {
                       "AnyOf": [
                         { "Type": "Artifact" },
@@ -42,7 +40,9 @@
                         { "Type": "Planeswalker" }
                       ]
                     },
-                    { "In": "Graveyard" }
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
                   ]
                 }
               }

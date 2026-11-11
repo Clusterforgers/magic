@@ -1,25 +1,13 @@
-//! Goal: the wf24 writers give the oracle wording of an activation trigger, whose ability is never a mana ability and
-//! whose source of an object type is on the battlefield; another player, source, zone or a source anywhere never reads
-//! back as the clause.
+//! Goal: the wf24 writers give the oracle wording of an activation trigger (never of a mana ability, its typed source on
+//! the battlefield), a target tapped and then named "it", an Equipment attached to the object of the event or the token
+//! made, attacks alone, battalion, a spell cast in an opponent's turn, the end of a combat fought in and the upkeep of
+//! enchanted creature's controller; another player, source, zone, count, step or condition never reads back as the clause.
 use super::*;
 
 fn reads(json: &str, clause: &str) -> bool {
     written_variants(&ability(json))
         .iter()
         .any(|wording| same_text(wording, clause))
-}
-
-#[test]
-#[ignore = "probe"]
-fn wf24_probe() {
-    let text = std::fs::read_to_string("/tmp/claude-1000/-home-chris-private-Clusterforgers-magic/91019583-d986-44a1-b4cd-f75462831666/scratchpad/wf24/probe.json").unwrap();
-    for line in text.lines().filter(|l| !l.trim().is_empty()) {
-        let a = ability(line);
-        println!("== {line}");
-        for w in written_variants(&a).iter().take(60) {
-            println!("  {w}");
-        }
-    }
 }
 
 fn activated(did: &str) -> String {
