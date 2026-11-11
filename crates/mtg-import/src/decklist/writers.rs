@@ -276,6 +276,8 @@ mod tests {
             Section::Main => 2,
             Section::Sideboard => 3,
             Section::Maybeboard => 4,
+            Section::Attractions => 5,
+            Section::Stickers => 6,
         });
         assert_eq!(again.entries, sorted);
     }

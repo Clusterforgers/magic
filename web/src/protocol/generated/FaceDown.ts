@@ -26,4 +26,4 @@ looker: PlayerId, } } | { "Sealed": {
 /**
  * The source of the effect.
  */
-by: ObjectRef, } };
+by: ObjectRef, } } | "Attraction";

@@ -175,6 +175,18 @@ impl GameSetup {
         self
     }
 
+    /// The setup with these Attraction decks, one entry for each seat in table order, top card first.
+    #[must_use]
+    pub fn with_attractions(
+        mut self,
+        decks: Vec<Vec<crate::un33_attractions::AttractionCard>>,
+    ) -> Self {
+        for (player, deck) in self.players.iter_mut().zip(decks) {
+            player.attractions = deck;
+        }
+        self
+    }
+
     /// The setup with these companions, one entry for each seat in table order.
     #[must_use]
     pub fn with_companions(mut self, companions: Vec<Option<Arc<CardDefinition>>>) -> Self {

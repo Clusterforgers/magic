@@ -770,7 +770,27 @@ sides: number,
 /**
  * The number rolled, from 1 to `sides`.
  */
-result: number, } } | { "CoinFlipped": { 
+result: number, } } | { "AttractionDeckShuffled": { 
+/**
+ * Whose deck.
+ */
+player: PlayerId, 
+/**
+ * The cards, top card last.
+ */
+order: Array<ObjectId>, } } | { "RolledToVisit": { 
+/**
+ * Who rolled.
+ */
+player: PlayerId, 
+/**
+ * The number rolled.
+ */
+result: number, 
+/**
+ * The Attractions visited.
+ */
+visited: Array<ObjectId>, } } | { "CoinFlipped": { 
 /**
  * Who flipped.
  */

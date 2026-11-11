@@ -5,7 +5,7 @@ use proptest::prelude::*;
 use rstest::rstest;
 
 use super::super::types::DeckFormat;
-use Section::{Commander, Main, Maybeboard, Sideboard};
+use Section::{Attractions, Commander, Main, Maybeboard, Sideboard, Stickers};
 
 fn archidekt() -> TextOptions {
     options(DeckFormat::Archidekt)
@@ -76,38 +76,32 @@ fn a_stray_line_inside_a_block_is_still_an_error() {
 #[case::moxfield(
     DeckFormat::Moxfield,
     "1 A (ABC) 1\n\nSIDEBOARD:\n1 B (ABC) 2\n\nSTICKERS:\n1 S (SUNF) 1\n3 T (SUNF) 2\n",
-    &[(1, "A", Main), (1, "B", Sideboard)],
-    &[("STICKERS", 4)]
+    &[(1, "A", Main), (1, "B", Sideboard), (1, "S", Stickers), (3, "T", Stickers)]
 )]
-#[case::mtgo_text(
-    DeckFormat::MtgoText,
-    "1 A\n\nSTICKERS:\n1 S\n\n1 C",
-    &[(1, "A", Main), (1, "C", Commander)],
-    &[("STICKERS", 1)]
+#[case::attractions(
+    DeckFormat::Moxfield,
+    "1 A (ABC) 1\n\nATTRACTIONS:\n1 R (UNF) 200\n1 Q (UNF) 201\n",
+    &[(1, "A", Main), (1, "R", Attractions), (1, "Q", Attractions)]
 )]
-#[case::plain_text_any_case(DeckFormat::PlainText, "4 A\nStickers (2)\n1 S\n1 T", &[(4, "A", Main)], &[("Stickers", 2)])]
-#[case::an_empty_section_is_not_reported(DeckFormat::Moxfield, "1 A (ABC) 1\n\nSTICKERS:\n", &[(1, "A", Main)], &[])]
+#[case::plain_text_any_case(
+    DeckFormat::PlainText,
+    "4 A\nStickers (2)\n1 S\n1 T",
+    &[(4, "A", Main), (1, "S", Stickers), (1, "T", Stickers)]
+)]
 #[case::a_recurring_section_is_one_section(
     DeckFormat::Moxfield,
     "1 A (ABC) 1\nSTICKERS:\n1 S\nSIDEBOARD:\n1 B (ABC) 2\nSTICKERS:\n2 T",
-    &[(1, "A", Main), (1, "B", Sideboard)],
-    &[("STICKERS", 3)]
+    &[(1, "A", Main), (1, "S", Stickers), (1, "B", Sideboard), (2, "T", Stickers)]
 )]
-fn sections_that_are_no_deck_cards_are_counted_and_kept_out(
+fn the_attraction_deck_and_the_sticker_sheets_are_parts_of_the_deck(
     #[case] format: DeckFormat,
     #[case] input: &str,
     #[case] expected: &[(u32, &str, Section)],
-    #[case] ignored: &[(&str, u64)],
 ) {
     let deck = parse_text(input, options(format));
     assert!(deck.errors.is_empty(), "{:?}", deck.errors);
     assert_eq!(sections(&deck), expected);
-    let reported: Vec<(&str, u64)> = deck
-        .ignored
-        .iter()
-        .map(|s| (s.name.as_str(), s.count))
-        .collect();
-    assert_eq!(reported, ignored);
+    assert!(deck.ignored.is_empty());
 }
 
 #[rstest]

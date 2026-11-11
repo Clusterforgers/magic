@@ -33,7 +33,8 @@ impl Lights {
     }
 
     /// Whether no number is lit up.
-    pub fn is_empty(self) -> bool {
+    #[allow(clippy::trivially_copy_pass_by_ref)] // serde hands over a reference
+    pub fn is_empty(&self) -> bool {
         self.numbers().is_empty()
     }
 }

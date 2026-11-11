@@ -187,6 +187,7 @@ impl TryFrom<RawCard> for CardRecord {
             all_parts,
             flavor_name,
             printed_name,
+            attraction_lights,
         } = raw;
 
         let name = non_empty(name).ok_or(InvalidRecord::MissingName)?;
@@ -256,6 +257,9 @@ impl TryFrom<RawCard> for CardRecord {
             melds_into,
             flavor_name,
             printed_name,
+            attraction_lights: mtg_core::attraction::Lights::of(
+                attraction_lights.unwrap_or_default(),
+            ),
             lang: non_empty(lang).unwrap_or_else(|| "en".to_owned()),
             digital: digital.unwrap_or(false),
             name,

@@ -833,6 +833,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('FirstPlayerChosen' in event) return line(`${n.seat(event.FirstPlayerChosen.player)} goes first`)
   if ('LibraryShuffled' in event)
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
+  if ('AttractionDeckShuffled' in event)
+    return quiet(`${n.seat(event.AttractionDeckShuffled.player)} shuffles their Attraction deck`)
   if ('HandDealt' in event) {
     return line(`${n.seat(event.HandDealt.player)} is dealt ${cards(event.HandDealt.cards.length)}`)
   }
@@ -924,6 +926,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('DieRolled' in event) {
     const { player, sides, result } = event.DieRolled
     return line(`${n.seat(player)} rolls a d${sides}: ${result}`)
+  }
+  if ('RolledToVisit' in event) {
+    const { player, result, visited } = event.RolledToVisit
+    const count = visited.length
+    return line(
+      `${n.seat(player)} rolls ${result} to visit their Attractions: ${count === 0 ? 'none is' : count === 1 ? 'one is' : `${count} are`} visited`,
+    )
   }
   if ('CoinFlipped' in event) {
     const { player, won, call, side } = event.CoinFlipped
@@ -1149,6 +1158,8 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
     return line(`${n.seat(event.HandDealt.player)} is dealt ${cards(event.HandDealt.count)}`)
   if ('LibraryShuffled' in event)
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
+  if ('AttractionDeckShuffled' in event)
+    return quiet(`${n.seat(event.AttractionDeckShuffled.player)} shuffles their Attraction deck`)
   if ('LibraryRefilled' in event) {
     return quiet(`${n.seat(event.LibraryRefilled.player)} shuffles their graveyard into their library`)
   }

@@ -10,6 +10,8 @@ fn section_from_word(word: &str) -> Option<Section> {
         "sideboard" | "side" | "side board" => Some(Section::Sideboard),
         "commander" | "commanders" | "command zone" => Some(Section::Commander),
         "companion" => Some(Section::Companion),
+        "attractions" | "attraction" | "attraction deck" => Some(Section::Attractions),
+        "stickers" | "sticker sheets" => Some(Section::Stickers),
         "maybeboard" | "maybe" | "maybe board" => Some(Section::Maybeboard),
         _ => None,
     }
@@ -22,6 +24,8 @@ pub fn header_word(section: Section) -> &'static str {
         Section::Sideboard => "Sideboard",
         Section::Commander => "Commander",
         Section::Companion => "Companion",
+        Section::Attractions => "Attractions",
+        Section::Stickers => "Stickers",
         Section::Maybeboard => "Maybeboard",
     }
 }
@@ -36,7 +40,7 @@ pub enum Header {
 }
 
 /// Sections some formats list next to the deck that hold no deck cards (case-insensitive).
-const IGNORED_WORDS: [&str; 1] = ["stickers"];
+const IGNORED_WORDS: [&str; 0] = [];
 
 /// The words of a header line without its colon and `(15)` count.
 fn header_text(line: &str) -> &str {

@@ -118,7 +118,14 @@ const STATES: Record<DeckState, true> = {
   unchecked: true,
 }
 const READ_STATES: Record<ReadState, true> = { pending: true, approved: true, wrong: true }
-const ZONES: Record<DeckZone, true> = { main: true, sideboard: true, commander: true, companion: true }
+const ZONES: Record<DeckZone, true> = {
+  main: true,
+  sideboard: true,
+  commander: true,
+  companion: true,
+  attractions: true,
+  stickers: true,
+}
 const SOURCES: Record<ImportSource, true> = {
   text: true,
   arena: true,

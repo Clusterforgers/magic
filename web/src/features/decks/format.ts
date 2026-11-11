@@ -135,6 +135,8 @@ const ZONE_PHRASE: Readonly<Record<DeckZone, (count: number) => string>> = {
   sideboard: (count) => `${count} in the sideboard`,
   commander: (count) => plural(count, 'commander'),
   companion: (count) => plural(count, 'companion'),
+  attractions: (count) => plural(count, 'Attraction'),
+  stickers: (count) => plural(count, 'sticker sheet'),
 }
 
 /** "Read as Arena: 100 cards (99 in the main deck, 1 commander)." for what an import resolved. */
