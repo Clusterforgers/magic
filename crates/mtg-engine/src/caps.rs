@@ -635,6 +635,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Damage",
     "ReplaceWhen.ZoneChange",
     "ReplaceWhen.Countered",
+    "ReplaceWhen.Discarded",
     "ReplaceWhen.TurnedFaceUp",
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
@@ -931,6 +932,7 @@ mod tests {
     #[case::replacing_token_creation("ReplaceWhen.TokenCreation", true)]
     #[case::replacing_damage("ReplaceWhen.Damage", true)]
     #[case::replacing_zone_changes("ReplaceWhen.ZoneChange", true)]
+    #[case::replacing_discards("ReplaceWhen.Discarded", true)]
     #[case::replacing_counters_put("ReplaceWhen.CountersPut", true)]
     #[case::replacing_life_gain("ReplaceWhen.LifeGain", true)]
     #[case::replacing_a_loss("ReplaceWhen.LoseGame", true)]
