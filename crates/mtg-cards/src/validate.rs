@@ -4816,8 +4816,16 @@ impl Walker<'_> {
         }
     }
 
-    /// The engine changes only the count of a mill (`ReplaceWhen.Mill.Other`).
+    /// Only the counters of an event are halved.
+    fn ep24_half(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        if *by == ReplaceBy::Half && !matches!(when, ReplaceWhen::CountersPut { .. }) {
+            self.problem("only the counters of an event are halved");
+        }
+    }
+
+    /// The engine changes only the count of a mill (`ReplaceWhen.Mill.Other`) and halves only counters.
     fn e19_mill(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        self.ep24_half(when, by);
         if matches!(when, ReplaceWhen::Mill { .. })
             && !matches!(by, ReplaceBy::Multiply(_) | ReplaceBy::Add(_))
         {
@@ -4918,9 +4926,6 @@ impl Walker<'_> {
                 | ReplaceWhen::Enters { .. }
         );
         match by {
-            ReplaceBy::Half if !matches!(when, ReplaceWhen::CountersPut { .. }) => {
-                self.problem("only the counters of an event are halved");
-            }
             ReplaceBy::Multiply(0) => self.problem("multiplying by zero is `Prevent`"),
             ReplaceBy::Add(0) => self.problem("adding nothing changes nothing"),
             ReplaceBy::Multiply(_) | ReplaceBy::Add(_) if zone_move => {

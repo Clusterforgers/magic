@@ -47,8 +47,8 @@ fn spell(kind: CardType, cost: &str) -> Arc<CardDefinition> {
     })
 }
 
-fn creatures() -> Option<Selector> {
-    Some(Selector(vec![Pred::Type(CardType::Creature)]))
+fn creatures() -> Selector {
+    Selector(vec![Pred::Type(CardType::Creature)])
 }
 
 /// Whether seat 0 may cast its spell now.
@@ -63,8 +63,8 @@ fn castable(driver: &Driver) -> bool {
 #[rstest]
 #[case::no_rule(None, CardType::Creature, "{G}{G}", 0, false)]
 #[case::any_color(Some((SpendAs::AnyColor, None)), CardType::Creature, "{G}{G}", 0, true)]
-#[case::any_color_for_creatures(Some((SpendAs::AnyColor, creatures())), CardType::Creature, "{G}{G}", 0, true)]
-#[case::creatures_only(Some((SpendAs::AnyColor, creatures())), CardType::Artifact, "{G}{G}", 0, false)]
+#[case::any_color_for_creatures(Some((SpendAs::AnyColor, Some(creatures()))), CardType::Creature, "{G}{G}", 0, true)]
+#[case::creatures_only(Some((SpendAs::AnyColor, Some(creatures()))), CardType::Artifact, "{G}{G}", 0, false)]
 #[case::any_color_is_no_colorless(Some((SpendAs::AnyColor, None)), CardType::Artifact, "{C}", 0, false)]
 #[case::any_type_pays_colorless(Some((SpendAs::AnyType, None)), CardType::Artifact, "{C}", 0, true)]
 #[case::an_opponent_s_rule(Some((SpendAs::AnyColor, None)), CardType::Creature, "{G}{G}", 1, false)]

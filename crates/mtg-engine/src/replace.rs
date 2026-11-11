@@ -615,6 +615,17 @@ fn is_self(when: &ReplaceWhen) -> bool {
     }
 }
 
+/// The counters of `changed` put `now` times instead; half of one counter is none, so nothing is put.
+fn counters_scaled(changed: CountersChanged, now: u32) -> Vec<Item> {
+    if now == 0 {
+        return Vec::new();
+    }
+    vec![Item::One(Event::CountersChanged(CountersChanged {
+        delta: i32::try_from(now).unwrap_or(i32::MAX),
+        ..changed
+    }))]
+}
+
 /// Whether the engine can apply `by` to this kind of event.
 fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
@@ -2345,18 +2356,9 @@ impl Pass<'_> {
                     unpreventable,
                 })]
             }
-            Item::One(Event::CountersChanged(CountersChanged { on, counter, delta })) => {
-                let now = i32::try_from(more(delta.unsigned_abs())).unwrap_or(i32::MAX);
-                // Half of one counter is none: nothing is put.
-                if now == 0 {
-                    self.slots.remove(at);
-                    return;
-                }
-                vec![Item::One(Event::CountersChanged(CountersChanged {
-                    on,
-                    counter,
-                    delta: now,
-                }))]
+            Item::One(Event::CountersChanged(changed)) => {
+                let now = more(changed.delta.unsigned_abs());
+                counters_scaled(changed, now)
             }
             Item::One(Event::LifeGained { player, amount }) => vec![Item::One(Event::LifeGained {
                 player,

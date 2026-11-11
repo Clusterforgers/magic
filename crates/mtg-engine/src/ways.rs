@@ -325,10 +325,21 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     if !own {
         spend_as_any(&permissions, &mut ways, printed);
     }
-    // "You may spend mana as though it were mana of any color" and "you may pay 2 life rather than {B}": the rules reach
-    // every way of the cast.
+    ep24_rule_costs(state, player, id, &mut ways, printed);
+    ways
+}
+
+/// "You may spend mana as though it were mana of any color" and "you may pay 2 life rather than {B}": the rules reach
+/// every way of the cast.
+fn ep24_rule_costs(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    ways: &mut [Way],
+    printed: Option<&ManaCost>,
+) {
     let spend_as = crate::rules::ep24_spend_as(state, player, Some(id));
-    for way in &mut ways {
+    for way in ways {
         let cost = way.cost(printed).map(|cost| match spend_as {
             SpendAs::AnyType => cost.paid_by_any_mana(),
             SpendAs::AnyColor => cost.paid_by_any_color(),
@@ -339,7 +350,6 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
             way.mana = cost;
         }
     }
-    ways
 }
 
 /// The ways the `AltCast` rules printed on the card give `player` now (CR 118.9): each names the zone the card is cast

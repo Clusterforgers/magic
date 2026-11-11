@@ -1075,13 +1075,8 @@ impl InvariantChecker {
                 self.spend_kept(*player)?;
                 self.check_pool(*player)
             }
-            Event::ManaPoolEmptied {
-                player,
-                through,
-                kept,
-                becomes,
-            } => {
-                self.empty_pool(*player, *through, kept, *becomes)?;
+            Event::ManaPoolEmptied { player, .. } => {
+                self.empty_pool(event)?;
                 self.check_pool(*player)
             }
             Event::DamageDealt {
@@ -1493,13 +1488,17 @@ impl InvariantChecker {
 
     /// The pool of `player` after the mana that lasts no longer than `through` is gone, as the history says: the mana of
     /// the `kept` types stays, and what goes becomes `becomes` when a rule says so.
-    fn empty_pool(
-        &mut self,
-        player: PlayerId,
-        through: ManaLasts,
-        kept: &[ManaType],
-        becomes: Option<ManaType>,
-    ) -> Result<(), Violation> {
+    fn empty_pool(&mut self, emptied: &Event) -> Result<(), Violation> {
+        let Event::ManaPoolEmptied {
+            player,
+            through,
+            kept,
+            becomes,
+        } = emptied
+        else {
+            return Ok(());
+        };
+        let (player, through, becomes) = (*player, *through, *becomes);
         let before = self
             .expected_pool
             .get(player.index())

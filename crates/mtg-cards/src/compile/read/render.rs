@@ -2494,6 +2494,16 @@ impl Writer<'_> {
         Some(vec![format!("choose {target}"), format!("{each}, {token}")])
     }
 
+    /// A change of the targets of the one target, named the first time.
+    fn ep24_retarget(&mut self, effect: &Effect) -> Option<String> {
+        if self.named {
+            return None;
+        }
+        let text = super::ep24_retarget::ep24_retarget_text(effect, self.targets.first()?)?;
+        self.named = true;
+        Some(text)
+    }
+
     /// A copy of a spell or an ability, or the card that becomes a copy of the target, naming the one target the first
     /// time.
     fn copy_effect(&mut self, effect: &Effect) -> Option<String> {
@@ -2635,11 +2645,7 @@ impl Writer<'_> {
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
             Effect::DealDamage { .. } if unpreventable(effect) => self.g11b_hard(effect)?,
-            Effect::ChangeTargets { .. } if !self.named => {
-                let text = super::ep24_retarget::ep24_retarget_text(effect, self.targets.first()?)?;
-                self.named = true;
-                text
-            }
+            Effect::ChangeTargets { .. } => self.ep24_retarget(effect)?,
             Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
                 self.copy_effect(effect)?
             }
