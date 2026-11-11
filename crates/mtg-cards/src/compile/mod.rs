@@ -283,6 +283,9 @@ fn read_clause(
             let mut block = block.unwrap_or_default().into_iter();
             (block.next(), block.collect())
         }
+        ClauseKind::Triggered if !reminds_counter && read::is_visit_line(text) => {
+            (read::visit_block(text, x_free, own), Vec::new())
+        }
         ClauseKind::Triggered if !reminds_counter && is_chapter_line(text) => {
             let mut block = read::chapter_block(text, x_free, own)
                 .unwrap_or_default()

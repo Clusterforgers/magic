@@ -41,6 +41,11 @@ pub(crate) fn pregame(state: &GameState) -> Vec<Event> {
         let order = shuffled(state, offset, state.zone(Zone::Library(player)).to_vec());
         events.push(Event::LibraryShuffled { player, order });
     }
+    // Each Attraction deck is shuffled before the game begins too (CR 103.3a).
+    events.extend(crate::un33_attractions::shuffles(
+        state,
+        u64::try_from(seats).unwrap_or(u64::MAX).saturating_add(1),
+    ));
     events.push(Event::MulliganPhaseBegan);
     events
 }

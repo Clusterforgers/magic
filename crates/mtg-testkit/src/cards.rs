@@ -506,6 +506,47 @@ pub fn w11d_venturer(name: &str) -> Arc<CardDefinition> {
     )
 }
 
+/// An Attraction with "Visit — Draw a card." (CR 717).
+pub fn un33_attraction(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Artifact)
+            .with_subtype("Attraction")
+            .with_rules(Ability::Triggered {
+                when: mtg_cards::trigger::TriggerPattern::Visit {},
+                intervening_if: None,
+                limit: None,
+                from: mtg_cards::refs::ZoneKind::Battlefield,
+                targets: Vec::new(),
+                effects: vec![Effect::Draw {
+                    who: Ref::You,
+                    count: mtg_cards::value::Amount::one(),
+                    bind: None,
+                }],
+            }),
+    )
+}
+
+/// An instant for {0} with "Open an Attraction." `count` times, or "Roll to visit your Attractions." for `None`.
+pub fn un33_opener(name: &str, count: Option<i32>) -> Arc<CardDefinition> {
+    let effect = match count {
+        Some(count) => Effect::OpenAttraction {
+            who: Ref::You,
+            count: mtg_cards::value::Amount::Fixed(count),
+        },
+        None => Effect::RollToVisit { who: Ref::You },
+    };
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![effect],
+            }),
+    )
+}
+
 /// A sorcery for `{generic}{U}` with "Surveil `count`."
 pub fn surveiler(name: &str, generic: u32, count: i32) -> Arc<CardDefinition> {
     Arc::new(

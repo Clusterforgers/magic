@@ -91,9 +91,15 @@ revealed_hand?: Array<ObjectId>,
  */
 graveyard: ZoneView, 
 /**
- * Command zone (public).
+ * Command zone (public): the commanders, the junkyard (the Attractions put there, CR 717.6a) and the rest; the
+ * face-down cards of the Attraction deck are not in it.
  */
 command: ZoneView, 
+/**
+ * The cards left in the seat's Attraction deck (CR 717.2), face down in its command zone; left out while there are
+ * none.
+ */
+attraction_deck?: number, 
 /**
  * The commanders the seat owns, wherever they are, with the times each was cast from the command zone and the tax
  * it carries; public, and left out outside Commander.

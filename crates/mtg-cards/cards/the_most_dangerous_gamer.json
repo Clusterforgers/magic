@@ -9,15 +9,20 @@
       "abilities": [
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 11, "end": 83 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [{ "OpenAttraction": {} }]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 84, "end": 165 }
+          "Triggered": {
+            "when": { "OpenedAttraction": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }
         },
         {

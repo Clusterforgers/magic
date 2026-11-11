@@ -32,6 +32,14 @@ type VariantName<E> = E extends string ? E : E extends object ? keyof E : never
 const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   FirstPlayerChosen: [{ FirstPlayerChosen: { player: 1 } }, 'Bo goes first'],
   LibraryShuffled: [{ LibraryShuffled: { player: 0, order: [] } }, 'Ana shuffles their library'],
+  AttractionDeckShuffled: [
+    { AttractionDeckShuffled: { player: 0, order: [3, 4] } },
+    'Ana shuffles their Attraction deck',
+  ],
+  RolledToVisit: [
+    { RolledToVisit: { player: 1, result: 6, visited: [5, 6] } },
+    'Bo rolls 6 to visit their Attractions: 2 are visited',
+  ],
   MulliganPhaseBegan: ['MulliganPhaseBegan', 'The mulligan phase begins'],
   HandDealt: [{ HandDealt: { player: 0, cards: [1, 2, 3, 4, 5, 6, 3] } }, 'Ana is dealt 7 cards'],
   MulliganDeclared: [{ MulliganDeclared: { player: 1 } }, 'Bo decides to mulligan'],
@@ -505,6 +513,7 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   AnnouncementRewound: [{ AnnouncementRewound: { player: 1 } }, 'Bo could not finish a play'],
   HandDealt: [{ HandDealt: { player: 1, count: 7 } }, 'Bo is dealt 7 cards'],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
+  AttractionDeckShuffled: [{ AttractionDeckShuffled: { player: 1 } }, 'Bo shuffles their Attraction deck'],
   LibraryRefilled: [
     { LibraryRefilled: { player: 1, count: 5 } },
     'Bo shuffles their graveyard into their library',

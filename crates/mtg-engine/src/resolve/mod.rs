@@ -8,7 +8,7 @@
 
 mod inline;
 mod left;
-mod prim;
+pub(crate) mod prim;
 mod share;
 mod tree;
 mod value;

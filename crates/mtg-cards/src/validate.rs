@@ -2234,7 +2234,9 @@ impl<'a> Walker<'a> {
             TriggerPattern::StepBegins { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
             }
-            TriggerPattern::DayNightChanges { .. } | TriggerPattern::DoorUnlocked { .. } => {}
+            TriggerPattern::DayNightChanges { .. }
+            | TriggerPattern::DoorUnlocked { .. }
+            | TriggerPattern::Visit {} => {}
             TriggerPattern::DealsDamage { source, to, .. } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(to) = to {
@@ -2246,6 +2248,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::BecomesMonarch { who }
             | TriggerPattern::TakesInitiative { who }
             | TriggerPattern::Ventured { who, .. }
+            | TriggerPattern::RolledToVisit { who }
+            | TriggerPattern::OpenedAttraction { who }
             | TriggerPattern::PlayerAttacked { who }
             | TriggerPattern::CompletedDungeon { who }
             | TriggerPattern::Proliferated { who }
@@ -2385,6 +2389,9 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::TakesInitiative { .. }
                 | TriggerPattern::Ventured { .. }
+                | TriggerPattern::Visit {}
+                | TriggerPattern::RolledToVisit { .. }
+                | TriggerPattern::OpenedAttraction { .. }
                 | TriggerPattern::CompletedDungeon { .. }
                 | TriggerPattern::DoorUnlocked { .. }
                 | TriggerPattern::DayNightChanges { .. }
@@ -3302,7 +3309,7 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
-            Effect::Incubate { who, count } => {
+            Effect::Incubate { who, count } | Effect::OpenAttraction { who, count } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
             }
@@ -3476,6 +3483,7 @@ impl Walker<'_> {
             | Effect::RingTempts { who }
             | Effect::TakeInitiative { who }
             | Effect::Venture { who, .. }
+            | Effect::RollToVisit { who }
             | Effect::UnlockDoor { who }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }

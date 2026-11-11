@@ -810,6 +810,23 @@ pub enum Event {
         /// The number rolled, from 1 to `sides`.
         result: u32,
     },
+    /// A player's Attraction deck was shuffled (CR 103.3a): its cards in the new order, top card last.
+    AttractionDeckShuffled {
+        /// Whose deck.
+        player: PlayerId,
+        /// The cards, top card last.
+        order: Vec<ObjectId>,
+    },
+    /// A player rolled to visit their Attractions (CR 701.52a): the result of the `DieRolled` before it and the
+    /// Attractions with that number lit up, each visited.
+    RolledToVisit {
+        /// Who rolled.
+        player: PlayerId,
+        /// The number rolled.
+        result: u32,
+        /// The Attractions visited.
+        visited: Vec<ObjectId>,
+    },
     /// A player flipped a coin (CR 705): the flip came from the game's random stream, which it moved on by one.
     CoinFlipped {
         /// Who flipped.
@@ -1160,6 +1177,8 @@ impl Event {
     pub fn touched_objects(&self) -> Vec<ObjectId> {
         match self {
             Event::LibraryShuffled { .. }
+            | Event::AttractionDeckShuffled { .. }
+            | Event::RolledToVisit { .. }
             | Event::MulliganTaken { .. }
             | Event::DamageCleared
             | Event::EffectCreated { .. }

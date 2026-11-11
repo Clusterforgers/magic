@@ -616,6 +616,7 @@ mod turn_structure;
 mod typecycling;
 mod umbra_armor;
 mod umbra_fuzz;
+mod un33_attractions;
 mod undaunted;
 mod unearth;
 mod unplayable;

@@ -47,6 +47,16 @@ A companion (CR 702.139, `companions.rs`) is a card a seat names before the game
 - Reveal: the opening reveals every hidden companion right after `FirstPlayerChosen` and before the first shuffle (`Event::CompanionRevealed`).
 - The action: `PriorityAction::BringCompanion`, offered as `PriorityOptions::companion` when the card is revealed and still outside, the holder could cast a sorcery and can pay {3} (cost modifiers do not apply). It shares the announcement of suspend and foretell (`announce/companion.rs`, `Special::Companion`): `PayMana` with a way back, then one `Event::CompanionBrought` that creates the object in the hand. The stack is not used and nothing can respond.
 
+## Attractions
+
+Attractions (CR 717, `un33_attractions.rs`) are implemented once in the engine; cards only carry `Effect::OpenAttraction`, `Effect::RollToVisit` and the triggers `Visit`, `RolledToVisit` and `OpenedAttraction`.
+
+- Setup: `PlayerSetup::attractions` is the seat's Attraction deck, top card first, each card with its `Lights` (the numbers lit up on its printing, `mtg-core`). Its cards are objects in the owner's command zone, face down as `FaceDown::Attraction` (no seat may look); `GameState::attraction_deck` keeps their order and `lights` the lights of every Attraction card. The opening shuffles each deck after the libraries (`AttractionDeckShuffled`, CR 103.3a).
+- Opening (CR 701.51) moves the top card onto the battlefield (`ZoneChanged` from the command zone, which turns it face up); a seat without a deck opens nothing. The move out of the command zone takes the card out of the deck, and the trigger detection reads it as `OpenedAttraction`.
+- Rolling to visit (CR 701.52) is a `DieRolled` (with `GameRule::ExtraDie`) and `RolledToVisit` naming the Attractions the player controls with the result lit up; the visit ability of each triggers (CR 702.159a), and the visits count for the turn (`TurnTally::AttractionsVisited`). The active player rolls as the precombat main phase begins while they control an Attraction (CR 505.5), after the Saga counters and the rad mill.
+- The junkyard (CR 717.6): an Attraction card that would go to a hand, a library or a graveyard goes to its owner's command zone face up instead, a replacement of the rules (`Origin::Junkyard`) that applies again to the same event. A token or a copy of an Attraction has no lights and goes where it would.
+- The table sees the deck as a count (`PlayerView.attraction_deck`) and the lights of every Attraction card it sees (`ObjectView.lights`); the deck's cards are in no zone view.
+
 ## Determinism and recovery
 
 - Random choices use a ChaCha8 substream keyed by (seed, counter in state). Events carry the results (a shuffle logs its whole order, a roll its result), so replay needs no RNG. A fold that draws a substream moves the counter on.

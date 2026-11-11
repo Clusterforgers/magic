@@ -79,6 +79,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Conjure { .. }
         | Effect::Seek { .. }
         | Effect::Venture { .. }
+        | Effect::OpenAttraction { .. }
+        | Effect::RollToVisit { .. }
         | Effect::UnlockDoor { .. }
         | Effect::TakeInitiative { .. }
         | Effect::Monstrosity { .. }

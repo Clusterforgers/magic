@@ -969,6 +969,7 @@ fn e15g_that_spell(when: &TriggerPattern, texts: impl Iterator<Item = String>) -
     out
 }
 
+#[allow(clippy::too_many_lines)] // one arm for each shape of ability
 fn ability_texts(ability: &Ability) -> Vec<String> {
     match ability {
         Ability::Spell { targets, effects } => alternatives(targets, effects)
@@ -983,6 +984,19 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } => chapter_texts(*number, targets, effects),
+        Ability::Triggered {
+            when: TriggerPattern::Visit {},
+            intervening_if: None,
+            limit: None,
+            from: ZoneKind::Battlefield,
+            targets,
+            effects,
+        } => super::un33_attractions::un33_visit_texts(
+            &alternatives(targets, effects)
+                .iter()
+                .map(|sentences| spell(sentences))
+                .collect::<Vec<_>>(),
+        ),
         Ability::Triggered {
             when: TriggerPattern::TappedForMana { .. },
             ..
@@ -1720,6 +1734,8 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Surveil { who: Ref::You, .. }
                 | Effect::Proliferate { who: Ref::You }
                 | Effect::Venture { who: Ref::You, .. }
+                | Effect::OpenAttraction { who: Ref::You, .. }
+                | Effect::RollToVisit { who: Ref::You }
                 | Effect::Incubate { who: Ref::You, .. }
                 | Effect::Conjure { who: Ref::You, .. }
                 | Effect::Seek { who: Ref::You, .. }
@@ -2739,6 +2755,14 @@ impl Writer<'_> {
             Effect::LookAtHand { of } => format!("look at {}'s hand", self.player(of)?),
             Effect::RingTempts { who: Ref::You } => "the Ring tempts you".to_owned(),
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
+            // "you get {TK}{TK}": tickets are counters on the player too (CR 107.17).
+            Effect::PutCounters {
+                on: Ref::You,
+                counter: CounterKind::Other(ticket),
+                count,
+            } if ticket == super::effects::TICKET => {
+                format!("you get {}", costs::tickets_text(count)?)
+            }
             Effect::PutCounters { count, .. } if gets_energy(effect) => {
                 format!("you get {}", costs::energy_text(count)?)
             }
@@ -3057,6 +3081,7 @@ impl Writer<'_> {
     /// "surveil 2", "proliferate", "transform ~", "you become the monarch", "return ~ from your graveyard to the
     /// battlefield", "if there are five or more charge counters on ~, transform ~": a keyword action, a designation,
     /// the card returning itself or an effect on a condition.
+    #[allow(clippy::too_many_lines)] // one arm for each keyword action
     fn keyword_action(&mut self, effect: &Effect) -> Option<String> {
         if let Some(text) = Self::card_returning_itself(effect) {
             return Some(text);
@@ -3140,6 +3165,9 @@ impl Writer<'_> {
                 super::w6b_emblem::w6b_text(&subject, *who == Ref::You, abilities)?
             }
             Effect::UnlockDoor { who } => super::dk1c5_rooms::dk1c5_unlock_text(who)?,
+            Effect::OpenAttraction { .. } | Effect::RollToVisit { .. } => {
+                super::un33_attractions::un33_effect_text(effect)?
+            }
             Effect::Either { first, second } => self.dk1c5_either_text(first, second)?,
             Effect::Venture { who, undercity } => {
                 let into = if *undercity {

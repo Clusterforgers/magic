@@ -58,7 +58,8 @@ impl FaceDown {
             FaceDown::Foretold { .. }
             | FaceDown::Hideaway { .. }
             | FaceDown::Held { .. }
-            | FaceDown::Sealed { .. } => None,
+            | FaceDown::Sealed { .. }
+            | FaceDown::Attraction => None,
             FaceDown::Morph | FaceDown::Manifest => Some(&MORPH),
             FaceDown::Disguise | FaceDown::Cloak => Some(&DISGUISE),
         }

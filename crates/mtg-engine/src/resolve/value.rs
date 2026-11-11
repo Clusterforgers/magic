@@ -480,6 +480,7 @@ impl<'a> Scope<'a> {
             TurnTally::LifeLostMost => Tally::Lost,
             TurnTally::LandsPlayed => Tally::LandsPlayed,
             TurnTally::Scried => Tally::Scried,
+            TurnTally::AttractionsVisited => Tally::AttractionsVisited,
             TurnTally::Surveilled => Tally::Surveilled,
             TurnTally::Sacrificed => Tally::Sacrificed,
             TurnTally::Descended => Tally::Descended,

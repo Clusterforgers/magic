@@ -73,6 +73,10 @@ power: number | null,
  */
 toughness: number | null, 
 /**
+ * The numbers lit up on an Attraction card (CR 717.1), ascending; left out for any other object.
+ */
+lights?: Array<number>, 
+/**
  * The power a token was created with, so a client can tell it from a buffed or debuffed one; left out for any other object.
  */
 printed_power?: number, 

@@ -401,6 +401,7 @@ Direct Current
 Dirgur Focusmage // Braingeyser
 Disallow
 Disciple of Griselbrand
+Discourtesy Clerk
 Disembowel
 Dismantling Blow
 Dismantling Wave
@@ -1113,6 +1114,7 @@ Perch Protection
 Persist
 Personal Sanctuary
 Pestilent Syphoner
+Petting Zookeeper
 Phantasmal Image
 Phantom Nantuko
 Phantom Nishoba
@@ -1178,6 +1180,7 @@ Pyreswipe Hawk
 Quantum Misalignment
 Quest for the Goblin Lord
 Questing Beast
+Quick Fixer
 Quietus Spike
 Rabble Rousing
 Rabid Wolverines
@@ -1424,6 +1427,7 @@ Sphinx of the Steel Wind
 Spider-Islanders
 Spikewheel Acrobat
 Spinerock Knoll
+Spinnerette, Arachnobat
 Spire Golem
 Spire Winder
 Spirit of the Hearth

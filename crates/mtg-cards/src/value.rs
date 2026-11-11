@@ -332,6 +332,9 @@ pub enum TurnTally {
     PermanentsLeftUnder,
     /// The times the player scried this turn, once for each scry that looked at a card.
     Scried,
+    /// The Attractions the player visited this turn, once for each visit (CR 701.52a); an Attraction that left since
+    /// still counts.
+    AttractionsVisited,
     /// The times the player surveilled this turn, once for each surveil that looked at a card.
     Surveilled,
     /// The permanents the player sacrificed this turn, each once, as the player who controlled it.

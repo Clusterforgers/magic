@@ -324,6 +324,12 @@ pub struct CardRecord {
     /// Name printed on this printing when it differs from the oracle name, as on the Arena and MTGO versions of Universes Beyond cards.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub printed_name: Option<String>,
+    /// The numbers lit up on an Attraction printing (CR 717.1); none for any other card.
+    #[serde(
+        default,
+        skip_serializing_if = "mtg_core::attraction::Lights::is_empty"
+    )]
+    pub attraction_lights: mtg_core::attraction::Lights,
 }
 
 impl CardRecord {

@@ -29,7 +29,11 @@ player: PlayerId,
 /**
  * Cards dealt.
  */
-count: number, } } | { "LibraryShuffled": { 
+count: number, } } | { "AttractionDeckShuffled": { 
+/**
+ * Owner of the deck.
+ */
+player: PlayerId, } } | { "LibraryShuffled": { 
 /**
  * Owner of the library.
  */

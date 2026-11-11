@@ -262,6 +262,9 @@ enum Origin {
     /// A commander that would be put into a hand or a library, which its owner may put into the command zone instead
     /// (CR 903.9b): the card, which is one card of a merged permanent that moves.
     Commander(ObjectId),
+    /// An Attraction card that would be put into a hand, a library or a graveyard, which its owner puts into the command
+    /// zone instead (CR 717.6): the junkyard.
+    Junkyard(ObjectId),
     /// A permanent with a finality counter that would be put into a graveyard from the battlefield, which is exiled instead
     /// (CR 122.1g).
     Finality,
@@ -319,7 +322,11 @@ fn returns_by_buyback(state: &GameState, item: &Item) -> bool {
 /// Whether a rule that is no ability sends the object of the event elsewhere: a commander to its command zone or a permanent
 /// with a finality counter to exile.
 fn moves_by_a_rule(state: &GameState, event: &Event) -> bool {
-    commander_leaves(state, event) || exiles_by_finality(state, event)
+    commander_leaves(state, event)
+        || exiles_by_finality(state, event)
+        || moving(state, event).is_some_and(|(object, _, to)| {
+            crate::un33_attractions::junkyard(state, object, to).is_some()
+        })
 }
 
 /// Whether the event puts a permanent with a finality counter into a graveyard from the battlefield (CR 122.1g).
@@ -1231,6 +1238,7 @@ impl Pass<'_> {
             found.extend(self.move_rule_candidates(slot));
         }
         found.extend(self.commander_candidates(at, &unit));
+        found.extend(self.junkyard_candidate(&unit));
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
     }
@@ -1392,6 +1400,24 @@ impl Pass<'_> {
                 is_self: false,
             })
             .collect()
+    }
+
+    /// The command zone in place of a hand, a library or a graveyard for an Attraction card (CR 717.6). It may apply again
+    /// to the same event (an exception to CR 614.5), so it is never marked as applied.
+    fn junkyard_candidate(&self, unit: &Unit) -> Option<Candidate> {
+        let Unit::Move { object, to, .. } = unit else {
+            return None;
+        };
+        crate::un33_attractions::junkyard(self.state, *object, *to)?;
+        let moving = self.state.object(*object)?;
+        Some(Candidate {
+            origin: Origin::Junkyard(*object),
+            object: moving.reference(),
+            controller: moving.owner(),
+            action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Command)),
+            // The rule is no effect of the card, so it is ordered with the others (CR 616.1).
+            is_self: false,
+        })
     }
 
     /// The zone a card of the merged permanent `permanent` was set to go to in this batch, in place of the permanent's.
@@ -1781,6 +1807,9 @@ impl Pass<'_> {
             }
             Origin::Commander(_) => {
                 "If ~ would be put into a hand or library, its owner may put it into the command zone instead."
+            }
+            Origin::Junkyard(_) => {
+                "If ~ would be put into a hand, library or graveyard, its owner puts it into their junkyard instead."
             }
         };
         self.named(fixed, candidate.object.id)
