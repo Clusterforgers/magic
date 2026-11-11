@@ -118,6 +118,30 @@ macro_rules! rmt1_card {
     "\"power\":5",
     "\"power\":4"
 )]
+#[case::alliance_of_arms_0(
+    rmt1_card!("alliance_of_arms"),
+    "Starting with you, each player may pay any amount of mana. Each player creates X 1/1 white Soldier creature tokens, where X is the total amount of mana paid this way.",
+    "\"power\":1",
+    "\"power\":2"
+)]
+#[case::collective_voyage_0(
+    rmt1_card!("collective_voyage"),
+    "Starting with you, each player may pay any amount of mana. Each player searches their library for up to X basic land cards, where X is the total amount of mana paid this way, puts them onto the battlefield tapped, then shuffles.",
+    "\"tapped\":true",
+    "\"tapped\":false"
+)]
+#[case::minds_aglow_0(
+    rmt1_card!("minds_aglow"),
+    "Starting with you, each player may pay any amount of mana. Each player draws X cards, where X is the total amount of mana paid this way.",
+    "\"Draw\":{\"who\":\"EachPlayer\"",
+    "\"Draw\":{\"who\":\"Opponents\""
+)]
+#[case::shared_trauma_0(
+    rmt1_card!("shared_trauma"),
+    "Starting with you, each player may pay any amount of mana. Each player mills X cards, where X is the total amount of mana paid this way.",
+    "\"cost\":\"{X}\"",
+    "\"cost\":\"{X}{X}\""
+)]
 fn rmt1_wholes_read_back_and_near_misses_do_not(
     #[case] file: &str,
     #[case] clause: &str,

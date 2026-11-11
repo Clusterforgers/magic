@@ -1,0 +1,40 @@
+{
+  "oracle_id": "b259f4e4-04a9-40e0-85e9-34b4b74ee388",
+  "name": "Minds Aglow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minds Aglow",
+      "oracle_fingerprint": "096a89ea2b88e35c3526e0c6eb37c25a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "player" },
+                        "cost": "{X}",
+                        "paid": [{ "RememberValue": { "value": "X", "slot": "paid" } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Draw": {
+                  "who": "EachPlayer",
+                  "count": { "Remembered": { "on": "This", "slot": "paid" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

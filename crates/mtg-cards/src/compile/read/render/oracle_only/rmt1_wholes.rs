@@ -5,7 +5,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording.
-const RMT1_WHOLES: [(&str, &str); 15] = [
+const RMT1_WHOLES: [(&str, &str); 19] = [
     (
         r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Choose":{"from":{"Each":[{"Not":{"Type":"Land"}},"Other",{"ControlledBy":"You"}]},"count":{"min":0,"max":null},"as":"chosen"}},{"Exile":{"what":{"Bound":"chosen"},"as":"exiled","duration":"WhileSourceOnBattlefield"}},{"CreateToken":{"token":{"Custom":{"name":"Soldier","colors":["White"],"types":["Creature"],"subtypes":["Soldier"],"power":1,"toughness":1}},"count":{"Count":[{"Is":{"Bound":"exiled"}}]}}}]}}"#,
         "When ~ enters, exile any number of other nonland permanents you control until ~ leaves the battlefield. Create a 1/1 white Soldier creature token for each permanent exiled this way.",
@@ -65,6 +65,22 @@ const RMT1_WHOLES: [(&str, &str); 15] = [
     (
         r#"{"Loyalty":{"cost":"Zero","targets":[{"what":{"Object":[{"Type":"Artifact"},{"ControlledBy":"You"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"AddType":"Creature"},{"SetPT":{"power":5,"toughness":5}}],"duration":"UntilYourNextTurn"}}]}}"#,
         "0: Until your next turn, target artifact you control becomes a 5/5 creature in addition to its other types.",
+    ),
+    (
+        r#"{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"player","effects":[{"Pay":{"who":{"Bound":"player"},"cost":"{X}","paid":[{"RememberValue":{"value":"X","slot":"paid"}}]}}]}},{"CreateToken":{"who":"EachPlayer","token":{"Custom":{"name":"Soldier","colors":["White"],"types":["Creature"],"subtypes":["Soldier"],"power":1,"toughness":1}},"count":{"Remembered":{"on":"This","slot":"paid"}}}}]}}"#,
+        "Starting with you, each player may pay any amount of mana. Each player creates X 1/1 white Soldier creature tokens, where X is the total amount of mana paid this way.",
+    ),
+    (
+        r#"{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"player","effects":[{"Pay":{"who":{"Bound":"player"},"cost":"{X}","paid":[{"RememberValue":{"value":"X","slot":"paid"}}]}}]}},{"RepeatEach":{"over":"EachPlayer","as":"searcher","effects":[{"Search":{"who":{"Bound":"searcher"},"filter":[{"Supertype":"Basic"},{"Type":"Land"}],"count":{"min":0,"max":{"Remembered":{"on":"This","slot":"paid"}}},"as":"lands"}},{"Move":{"what":{"Bound":"lands"},"to":{"Battlefield":{"tapped":true}}}},{"Shuffle":{"who":{"Bound":"searcher"}}}]}}]}}"#,
+        "Starting with you, each player may pay any amount of mana. Each player searches their library for up to X basic land cards, where X is the total amount of mana paid this way, puts them onto the battlefield tapped, then shuffles.",
+    ),
+    (
+        r#"{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"player","effects":[{"Pay":{"who":{"Bound":"player"},"cost":"{X}","paid":[{"RememberValue":{"value":"X","slot":"paid"}}]}}]}},{"Draw":{"who":"EachPlayer","count":{"Remembered":{"on":"This","slot":"paid"}}}}]}}"#,
+        "Starting with you, each player may pay any amount of mana. Each player draws X cards, where X is the total amount of mana paid this way.",
+    ),
+    (
+        r#"{"Spell":{"effects":[{"RepeatEach":{"over":"EachPlayer","as":"player","effects":[{"Pay":{"who":{"Bound":"player"},"cost":"{X}","paid":[{"RememberValue":{"value":"X","slot":"paid"}}]}}]}},{"Mill":{"who":"EachPlayer","count":{"Remembered":{"on":"This","slot":"paid"}}}}]}}"#,
+        "Starting with you, each player may pay any amount of mana. Each player mills X cards, where X is the total amount of mana paid this way.",
     ),
 ];
 

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ef9b7588-9bf0-4632-ae5d-1dfebc4d88eb",
+  "name": "Shared Trauma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shared Trauma",
+      "oracle_fingerprint": "2284956e372b41b8d63840a79f9ca5e6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "player" },
+                        "cost": "{X}",
+                        "paid": [{ "RememberValue": { "value": "X", "slot": "paid" } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Mill": {
+                  "who": "EachPlayer",
+                  "count": { "Remembered": { "on": "This", "slot": "paid" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -13,12 +13,14 @@ const PACK: &[&str] = &[
     "Aang, Swift Savior // Aang and La, Ocean's Fury",
     "Abdel Adrian, Gorion's Ward",
     "Adagia, Windswept Bastion",
+    "Alliance of Arms",
     "Aminatou, the Fateshifter",
     "Arid Archway",
     "Aurelia's Vindicator",
     "Bumi, Unleashed",
     "Burning-Rune Demon",
     "Clandestine Meddler",
+    "Collective Voyage",
     "Colossal Grave-Reaver",
     "Diffusion Sliver",
     "Donal, Herald of Wings",
@@ -35,6 +37,7 @@ const PACK: &[&str] = &[
     "Lich's Mastery",
     "Maddening Hex",
     "Mindlink Mech",
+    "Minds Aglow",
     "Mirror Sheen",
     "Mischievous Quanar",
     "Mizzix, Replica Rider",
@@ -48,6 +51,7 @@ const PACK: &[&str] = &[
     "Saheeli, Sublime Artificer",
     "Schema Thief",
     "Secret Invasion",
+    "Shared Trauma",
     "Sigil Tracer",
     "Silent Gravestone",
     "Start the TARDIS",
@@ -98,7 +102,7 @@ fn every_pack_card_reads_back_as_its_printed_text() {
                             .map(|it| serde_json::to_string(it).unwrap())
                             .unwrap_or_default()
                     ),
-                    state => format!("  {} => {state:?}", clause.text),
+                    state => format!("  {:?} {} => {state:?}", clause.kind, clause.text),
                 })
                 .collect();
             wrong.push(format!(
