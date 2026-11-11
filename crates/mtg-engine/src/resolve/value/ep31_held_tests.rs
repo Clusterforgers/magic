@@ -15,10 +15,11 @@ use crate::state::GameState;
 use crate::zones::Zone;
 
 fn ruled(name: &str, json: &str) -> Arc<CardDefinition> {
-    let mut card = (*creature(name, 1, 1)).clone();
-    card.rules
-        .push(Arc::new(serde_json::from_str::<Ability>(json).unwrap()));
-    Arc::new(card)
+    Arc::new(
+        (*creature(name, 1, 1))
+            .clone()
+            .with_rules(serde_json::from_str::<Ability>(json).unwrap()),
+    )
 }
 
 fn game() -> GameState {
