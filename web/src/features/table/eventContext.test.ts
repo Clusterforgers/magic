@@ -152,6 +152,40 @@ describe('what a resolving spell does', () => {
   })
 })
 
+describe('the answers of a coin flip', () => {
+  const option = (player: number, index: number): Event => ({
+    ChoiceMade: { player, choice: { Option: index } },
+  })
+  const flip = (player: number, coins?: ('Heads' | 'Tails')[]): Event => ({
+    CoinFlipped: {
+      player,
+      won: false,
+      call: 'Tails',
+      side: 'Heads',
+      ...(coins === undefined ? {} : { coins }),
+    },
+  })
+  const two = flip(1, ['Tails', 'Heads'])
+  it.each<[string, Event[], string[]]>([
+    ['the call of one coin', [option(1, 1), flip(1)], ['Bo calls tails']],
+    ['a call of heads', [option(1, 0), flip(1)], ['Bo calls heads']],
+    [
+      'a lost coin kept of two',
+      [option(1, 1), option(1, 1), two],
+      ['Bo calls tails', 'Bo keeps a lost coin'],
+    ],
+    ['a won coin kept of two', [option(1, 1), option(1, 0), two], ['Bo calls tails', 'Bo keeps a won coin']],
+    ["an option before another player's flip", [option(0, 1), flip(1)], ['Ana chooses option 2']],
+    [
+      'an option with no flip after it',
+      [option(1, 1), { LifeGained: { player: 1, amount: 1 } }],
+      ['Bo chooses option 2'],
+    ],
+  ])('says %s', (_, events, text) => {
+    expect(lines(events).slice(0, text.length)).toEqual(text)
+  })
+})
+
 describe('the context', () => {
   it('has one entry per event and none for an event outside any resolution', () => {
     const events: Event[] = [

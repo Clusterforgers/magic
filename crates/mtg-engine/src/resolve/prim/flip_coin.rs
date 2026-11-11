@@ -41,9 +41,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Ok(Run::events(Vec::new()));
     };
     // Krark's Thumb: two coins or more for one flip, one kept (`ep22_two_coins`).
-    let (call, side) = if crate::rules::ep22_coins_per_flip(state, player) > 1 {
+    let (call, side, coins) = if crate::rules::ep22_coins_per_flip(state, player) > 1 {
         match super::ep22_two_coins::ep22_flip(cx, player)? {
-            Ok(found) => found,
+            Ok(found) => (found.call, found.kept, found.coins),
             Err(asked) => return Ok(asked),
         }
     } else {
@@ -59,7 +59,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 .and_then(|(_, index)| SIDES.get(*index).copied())
                 .unwrap_or_default(),
         };
-        (call, side(state.seed(), state.rng_index()))
+        (call, side(state.seed(), state.rng_index()), Vec::new())
     };
     let won = call == side;
     // A won flip until a loss runs its `win` list again: the names the last pass bound are freed for this one.
@@ -88,6 +88,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             won,
             call,
             side,
+            coins,
         }],
         bound,
         snapshots: Vec::new(),
@@ -197,6 +198,7 @@ mod tests {
                 won,
                 call,
                 side: landed,
+                coins: Vec::new(),
             }]
         );
         assert_eq!(

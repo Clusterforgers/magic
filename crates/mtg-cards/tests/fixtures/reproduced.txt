@@ -980,6 +980,7 @@ Korozda Guildmage
 Korozda Monitor
 Koth, Fire of Resistance
 Kozilek's Translator
+Krark's Thumb
 Krenko's Enforcer
 Krenko, Tin Street Kingpin
 Krosan Cloudscraper

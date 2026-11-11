@@ -888,9 +888,14 @@ won: boolean,
  */
 call: CoinSide, 
 /**
- * The side the coin came up.
+ * The side the coin came up: the coin kept when the player flipped more than one.
  */
-side: CoinSide, } } | { "Proliferated": { 
+side: CoinSide, 
+/**
+ * Every coin flipped for this flip when a rule made it more than one (Krark's Thumb, CR 705.3), in the order
+ * they came up; empty for a single coin.
+ */
+coins?: Array<CoinSide>, } } | { "Proliferated": { 
 /**
  * Who proliferated.
  */

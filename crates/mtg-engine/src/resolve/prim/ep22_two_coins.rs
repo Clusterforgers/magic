@@ -14,13 +14,24 @@ const KEEP_WON: &str = "Keep a won flip";
 /// The option that keeps a lost flip.
 const KEEP_LOST: &str = "Keep a lost flip";
 
+/// What a flip of more than one coin gave: the call, the side of the coin kept and every coin in the order it came up.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(super) struct Ep22Coins {
+    /// The side the flipper called.
+    pub call: CoinSide,
+    /// The side of the coin kept.
+    pub kept: CoinSide,
+    /// Every coin flipped.
+    pub coins: Vec<CoinSide>,
+}
+
 /// The call and the side of the coin kept, or the question: the call is asked first; every coin comes from the next
 /// substream of the game's random stream (the first as a single flip would come up); when the coins differ the flipper
 /// picks a won or a lost one. The answers are read back from the journal in that order.
 pub(super) fn ep22_flip(
     cx: &Cx<'_>,
     player: PlayerId,
-) -> Result<Result<(CoinSide, CoinSide), Run>, ResolveError> {
+) -> Result<Result<Ep22Coins, Run>, ResolveError> {
     let state = cx.state();
     let mut answers = cx.journal().iter();
     let call = match answers.next() {
@@ -80,7 +91,11 @@ pub(super) fn ep22_flip(
             "an answer was given to a choice of a coin that was not asked".into(),
         ));
     }
-    Ok(Ok((call, kept)))
+    Ok(Ok(Ep22Coins {
+        call,
+        kept,
+        coins: sides,
+    }))
 }
 
 /// One `ChooseOption` of the flipper.
@@ -144,7 +159,7 @@ mod tests {
         game
     }
 
-    type Flipped = Result<Result<(CoinSide, CoinSide), Run>, ResolveError>;
+    type Flipped = Result<Result<Ep22Coins, Run>, ResolveError>;
 
     fn flip(game: &GameState, answers: &[usize]) -> Flipped {
         let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
@@ -190,8 +205,10 @@ mod tests {
             match flip(&game, &[0]).unwrap() {
                 Err(Run::Ask(_)) => {
                     asked += 1;
-                    let (call, kept) = flip(&game, &[0, answer]).unwrap().unwrap();
-                    assert_eq!(call == kept, won);
+                    let found = flip(&game, &[0, answer]).unwrap().unwrap();
+                    assert_eq!(found.call == found.kept, won);
+                    assert_eq!(found.coins.len(), 2);
+                    assert!(found.coins.contains(&found.kept));
                     assert!(flip(&game, &[0, 2]).is_err());
                     assert!(flip(&game, &[0, answer, answer]).is_err());
                 }
