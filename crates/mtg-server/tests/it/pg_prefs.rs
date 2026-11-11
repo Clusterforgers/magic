@@ -1,4 +1,4 @@
-//! Goal: account preferences work end to end over real HTTP on Postgres: only a signed-in account reaches them and only its own, a new account reads the defaults (its own declare attackers and postcombat main pinned), a saved update (an empty stop list too) reads back sorted and per account, bad stops are refused with 400, a server without a database says so, and deleting an account removes its row.
+//! Goal: account preferences work end to end over real HTTP on Postgres: only a signed-in account reaches them and only its own, a new account reads the defaults (its own declare attackers and postcombat main pinned), a saved update (an empty stop list too) reads back sorted and per account with its hand sort completed, bad stops are refused with 400, a server without a database says so, and deleting an account removes its row.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -32,8 +32,20 @@ fn stop(side: &str, step: &str, keep: bool) -> Value {
 }
 
 fn defaults() -> Value {
-    json!({"default_stops": [stop("Own", "DeclareAttackers", true), stop("Own", "Main2", true)], "end_turn_by_hand": false, "auto_yields": [], "auto_choices": {"order_triggers": false, "assign_damage": false, "smart_stops": false}})
+    json!({"default_stops": [stop("Own", "DeclareAttackers", true), stop("Own", "Main2", true)], "end_turn_by_hand": false, "auto_yields": [], "auto_choices": {"order_triggers": false, "assign_damage": false, "smart_stops": false}, "hand_sort": {"by": "Drawn", "groups": GROUPS}})
 }
+
+/// Every hand group in the order an account starts with.
+const GROUPS: [&str; 8] = [
+    "Land",
+    "Creature",
+    "Artifact",
+    "Enchantment",
+    "Planeswalker",
+    "Battle",
+    "Instant",
+    "Sorcery",
+];
 
 #[tokio::test]
 async fn a_server_without_a_database_keeps_no_preferences() {
@@ -67,7 +79,8 @@ async fn a_new_account_reads_the_defaults_and_a_save_reads_back_per_account(pool
     let body = json!({
         "default_stops": [stop("Opponent", "Upkeep", true), stop("Own", "Upkeep", true)],
         "end_turn_by_hand": true,
-        "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": true}
+        "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": true},
+        "hand_sort": {"by": "Groups", "groups": ["Land", "Artifact"]}
     });
     let saved = save(&server, &ann, &body).await;
     assert_eq!(saved.status, 200, "{}", saved.text());
@@ -75,7 +88,8 @@ async fn a_new_account_reads_the_defaults_and_a_save_reads_back_per_account(pool
         "default_stops": [stop("Own", "Upkeep", true), stop("Opponent", "Upkeep", true)],
         "end_turn_by_hand": true,
         "auto_yields": [],
-        "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": true}
+        "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": true},
+        "hand_sort": {"by": "Groups", "groups": ["Land", "Artifact", "Creature", "Enchantment", "Planeswalker", "Battle", "Instant", "Sorcery"]}
     });
     assert_eq!(saved.json(), expected);
     assert_eq!(ann.get(server.addr, ROUTE).await.json(), expected);

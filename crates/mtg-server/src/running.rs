@@ -9,8 +9,8 @@ use mtg_engine::manual::ManualAction;
 use mtg_engine::state::Stage;
 use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState, replay};
 use mtg_protocol::{
-    DecisionId, ErrorCode, FullControlMode, LogWindow, ProtocolError, SNAPSHOT_LOG, ServerMessage,
-    StateView, TableView, project_window,
+    DecidingView, DecisionId, ErrorCode, FullControlMode, LogWindow, ProtocolError, SNAPSHOT_LOG,
+    ServerMessage, StateView, TableView, project_window,
 };
 use tokio::time::Instant;
 
@@ -149,6 +149,8 @@ pub(crate) struct Running {
     deferred: VecDeque<(PlayerId, ManualAction)>,
     /// Set by a manual step: the next settle keeps the clock of a decision of the same seat and kind.
     clock_kept: bool,
+    /// The seats the table was last told it waits for (`ServerMessage::Deciding`).
+    told_deciding: Vec<DecidingView>,
 }
 
 pub(crate) fn count(len: usize) -> u64 {
@@ -179,6 +181,7 @@ impl Running {
             manual_play: false,
             deferred: VecDeque::new(),
             clock_kept: false,
+            told_deciding: Vec::new(),
         }
     }
 
@@ -437,7 +440,25 @@ impl Running {
         Some(millis(due.saturating_duration_since(Instant::now())))
     }
 
-    /// What a client needs to catch up: a snapshot, its pending decision and the result if the game is over.
+    /// Who the game waits for now and what each decides: every pending decision, a held-back priority window too.
+    pub(crate) fn deciding(&self) -> Vec<DecidingView> {
+        if self.engine.result().is_some() {
+            return Vec::new();
+        }
+        self.all().map(|p| DecidingView::of(&p.decision)).collect()
+    }
+
+    /// The list of [`deciding`](Running::deciding) when it changed since the table was last told, noting it as told.
+    pub(crate) fn deciding_news(&mut self) -> Option<Vec<DecidingView>> {
+        let now = self.deciding();
+        if now == self.told_deciding {
+            return None;
+        }
+        self.told_deciding.clone_from(&now);
+        Some(now)
+    }
+
+    /// What a client needs to catch up: a snapshot, who the game waits for, its pending decision and the result if the game is over.
     ///
     /// The decision carries the time its clock has left, not the time it started with. One that is held back for its
     /// dwell is not sent: the seat is passed for, and a snapshot taken meanwhile must not tell it so.
@@ -445,13 +466,18 @@ impl Running {
         let mut view = StateView::for_player(self.engine.state(), seat);
         self.banks.stamp(&mut view.table);
         let LogWindow { log, names, hosts } = self.recent_log(seat);
-        let mut messages = vec![ServerMessage::Snapshot {
-            seq: count(self.engine.events().len()),
-            state: Box::new(view),
-            log,
-            names,
-            hosts,
-        }];
+        let mut messages = vec![
+            ServerMessage::Snapshot {
+                seq: count(self.engine.events().len()),
+                state: Box::new(view),
+                log,
+                names,
+                hosts,
+            },
+            ServerMessage::Deciding {
+                seats: self.deciding(),
+            },
+        ];
         let visible = self.all().find(|p| p.decision.player == seat && !p.hidden);
         if let Some(pending) = visible {
             let now = Instant::now();
@@ -845,7 +871,13 @@ mod tests {
 
         let messages = running.sync_messages(SEATS[0]);
         assert!(
-            matches!(messages.as_slice(), [ServerMessage::Snapshot { .. }]),
+            matches!(
+                messages.as_slice(),
+                [
+                    ServerMessage::Snapshot { .. },
+                    ServerMessage::Deciding { .. }
+                ]
+            ),
             "a snapshot taken meanwhile does not hand the seat the decision: {messages:?}"
         );
         // Whatever id a client guessed, the decision was never sent to it.
@@ -927,7 +959,11 @@ mod tests {
         let messages = running.sync_messages(SEATS[0]);
         assert!(matches!(
             messages.as_slice(),
-            [ServerMessage::Snapshot { .. }, ServerMessage::Decision { id, .. }] if *id == issued.id
+            [
+                ServerMessage::Snapshot { .. },
+                ServerMessage::Deciding { .. },
+                ServerMessage::Decision { id, .. },
+            ] if *id == issued.id
         ));
         assert!(running.answer(SEATS[0], issued.id, pace::pass()).is_ok());
     }

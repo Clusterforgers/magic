@@ -10,6 +10,7 @@ mod companion_resume;
 mod companion_table;
 mod concede;
 mod concurrent_games;
+mod deciding;
 mod env_seed;
 mod full_games;
 mod game_close;

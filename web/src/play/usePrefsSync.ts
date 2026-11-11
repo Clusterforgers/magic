@@ -4,6 +4,7 @@ import type { PrefsApi } from '@/net/prefs'
 import { prefsApi } from '@/net/prefs'
 import type { FlowPrefs } from './flowPrefs'
 import { attachAccount, detachAccount } from './flowPrefs'
+import { DEFAULT_HAND_SORT, readHandSort } from './handSort'
 
 /**
  * While `enabled` (an account is signed in), loads the account's preferences and makes them the ones in use; every
@@ -23,6 +24,7 @@ export function usePrefsSync(enabled: boolean, api: PrefsApi = prefsApi): void {
             end_turn_by_hand: prefs.endTurnByHand,
             auto_choices: prefs.autoChoices,
             auto_yields: [...prefs.autoYields],
+            hand_sort: prefs.handSort,
           })
           .catch(() => {
             // The change stays for this page; the next one tries again.
@@ -38,6 +40,7 @@ export function usePrefsSync(enabled: boolean, api: PrefsApi = prefsApi): void {
             endTurnByHand: loaded.end_turn_by_hand,
             autoChoices: loaded.auto_choices,
             autoYields: loaded.auto_yields,
+            handSort: readHandSort(loaded.hand_sort) ?? DEFAULT_HAND_SORT,
           },
           (prefs) => {
             if (!stale) save(prefs)

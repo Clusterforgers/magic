@@ -7,6 +7,10 @@
 //! its rules) and that spells on the stack have for themselves. The result is kept with the state until an event that
 //! can change it (`GameState::rules`), and each rule is read by one function that the one place deciding it asks.
 
+mod player_effects;
+
+pub use player_effects::{PlayerEffect, player_effects};
+
 use std::cell::Cell;
 use std::collections::{BTreeMap, BTreeSet};
 use std::sync::OnceLock;

@@ -21,6 +21,7 @@ use mtg_engine::gives::GivenRule;
 use mtg_engine::mana::ManaPool;
 use mtg_engine::object::ObjectKind;
 use mtg_engine::player::{LossReason, MulliganStatus};
+use mtg_engine::rules::PlayerEffect;
 use mtg_engine::state::{GameResult, Stage};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
@@ -463,6 +464,10 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ObjectId>>", optional)]
     pub enchanted_by: Vec<ObjectId>,
+    /// The rules in force on the player and the keywords the player has; public, and left out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<PlayerEffect>>", optional)]
+    pub effects: Vec<PlayerEffect>,
     /// Mulligans taken.
     pub mulligans: u32,
     /// Opening-hand progress.

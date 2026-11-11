@@ -6,11 +6,10 @@ import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/components/ui/popover'
 import { parseChoice, useTheme } from '@/hooks/useTheme'
 import type { ThemeChoice } from '@/hooks/useTheme'
-import { useGame, usePlay } from '@/features/game/gameContext'
-import { HAND_SORTS } from './handOrder'
+import { usePlay } from '@/features/game/gameContext'
+import { HandOrderMenu } from './HandOrderMenu'
 import type { TableMode } from './layout'
 import { canConcede } from './selectors'
-import { useHandMode } from './useHandOrder'
 
 const THEMES: ReadonlyArray<{ value: ThemeChoice; label: string }> = [
   { value: 'light', label: 'Light' },
@@ -70,7 +69,6 @@ export function TableMenu({
   const { choice, setChoice } = useTheme()
   const concede = usePlay(canConcede)
   const images = useImageChoice()
-  const hand = useHandMode(useGame().game)
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger
@@ -133,19 +131,7 @@ export function TableMenu({
           </div>
         </Section>
         <Section title="Hand order">
-          <div className="inline-flex flex-wrap gap-0.5 rounded-lg bg-muted p-0.5">
-            {HAND_SORTS.map(({ value, label }) => (
-              <Button
-                key={value}
-                size="sm"
-                variant={hand.mode === value ? 'default' : 'ghost'}
-                aria-pressed={hand.mode === value}
-                onClick={() => hand.choose(value)}
-              >
-                {label}
-              </Button>
-            ))}
-          </div>
+          <HandOrderMenu />
         </Section>
         {concede ? (
           <Button

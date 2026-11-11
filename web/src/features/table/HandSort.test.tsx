@@ -1,4 +1,4 @@
-// Goal: the table menu's "Hand order" puts the viewer's hand in the chosen order, shows the order in force and remembers it, Alt with an arrow key, Home or End moves the focused card, keeps its focus and says where it went, and a custom order takes new cards at the end, drops cards that left and lasts through a reload of the game.
+// Goal: the table menu's "Hand order" puts the viewer's hand in the chosen order (as drawn, by mana value, or by type groups in an order the player sets), shows the order in force and keeps it as a preference for every game, Alt with an arrow key, Home or End moves the focused card, keeps its focus and says where it went, and a custom order takes new cards at the end, drops cards that left and lasts through a reload of the game.
 import { act, screen, within } from '@testing-library/react'
 import type { UserEvent } from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
@@ -8,7 +8,8 @@ import { indexById } from '@/play/view'
 import { clone, must } from '@/test-utils/batches'
 import { card } from '@/test-utils/cards'
 import { renderTable } from '@/test-utils/tableHarness'
-import { customOrder, HAND_SORT_KEY, handOrderKey, handSort, resetHandOrder } from './useHandOrder'
+import { flowPrefs, HAND_SORT_KEY, LEGACY_HAND_SORT_KEY, resetFlowPrefs } from '@/play/flowPrefs'
+import { customOrder, handOrderKey, resetHandOrder } from './useHandOrder'
 
 const HAND: ReadonlyArray<[number, string, CardType, number]> = [
   [9001, 'Shock', 'Instant', 1],
@@ -52,7 +53,7 @@ const names = (): string[] =>
   ].map((button) => must(HAND.find(([id]) => `${id}` === button.dataset.objectId))[1])
 
 /** The order in force in the test game. */
-const mode = (): string => (customOrder('test-game') === null ? handSort() : 'custom')
+const mode = (): string => (customOrder('test-game') === null ? flowPrefs().handSort.by : 'custom')
 
 /** The "Hand order" group of the table menu, opening the menu if it is closed. */
 async function handOrder(user: UserEvent): Promise<HTMLElement> {
@@ -69,6 +70,7 @@ beforeEach(() => {
   localStorage.clear()
   sessionStorage.clear()
   resetHandOrder()
+  resetFlowPrefs()
 })
 afterEach(() => {
   localStorage.clear()
@@ -77,9 +79,9 @@ afterEach(() => {
 
 describe('hand order in the table menu', () => {
   it.each([
-    ['Lands, creatures, spells', 'types', ['Forest', 'Mountain', 'Centaur', 'Shock', 'Bloom']],
-    ['Mana value', 'mana', ['Forest', 'Mountain', 'Shock', 'Centaur', 'Bloom']],
-    ['As drawn', 'drawn', ['Shock', 'Mountain', 'Centaur', 'Bloom', 'Forest']],
+    ['By type', 'Groups', ['Forest', 'Mountain', 'Centaur', 'Bloom', 'Shock']],
+    ['Mana value', 'ManaValue', ['Forest', 'Mountain', 'Shock', 'Centaur', 'Bloom']],
+    ['As drawn', 'Drawn', ['Shock', 'Mountain', 'Centaur', 'Bloom', 'Forest']],
   ])('%s orders the hand, shows as pressed and is remembered', async (label, key, want) => {
     const table = renderTable({ seats: 2, state: withHand(HAND) })
     expect(names()).toEqual(['Shock', 'Mountain', 'Centaur', 'Bloom', 'Forest'])
@@ -89,9 +91,10 @@ describe('hand order in the table menu', () => {
       .getAllByRole('button')
       .filter((button) => button.getAttribute('aria-pressed') === 'true')
     expect(pressed.map((button) => button.textContent)).toEqual([label])
-    expect(localStorage.getItem(HAND_SORT_KEY)).toBe(key)
+    expect(flowPrefs().handSort.by).toBe(key)
     table.unmount()
     resetHandOrder()
+    resetFlowPrefs()
     renderTable({ seats: 2, state: withHand(HAND) })
     expect(names()).toEqual(want)
   })
@@ -105,16 +108,47 @@ describe('hand order in the table menu', () => {
     }
   })
 
+  it('lets the player order the type groups, keeps the order for every game and drops a custom order', async () => {
+    const table = renderTable({ seats: 2, state: withHand(HAND) })
+    await choose(table.user, 'By type')
+    const groups = (): string[] =>
+      [...screen.getByRole('list', { name: 'Order of the type groups' }).querySelectorAll('li')].map(
+        (item) => item.dataset.group ?? '',
+      )
+    expect(groups().slice(0, 4)).toEqual(['Land', 'Creature', 'Artifact', 'Enchantment'])
+    const menu = await handOrder(table.user)
+    expect(within(menu).getByRole('button', { name: 'Move Lands up' })).toBeDisabled()
+    await table.user.click(within(menu).getByRole('button', { name: 'Move Enchantments up' }))
+    await table.user.click(within(menu).getByRole('button', { name: 'Move Enchantments up' }))
+    await table.user.click(within(menu).getByRole('button', { name: 'Move Lands down' }))
+    expect(groups().slice(0, 4)).toEqual(['Enchantment', 'Land', 'Creature', 'Artifact'])
+    expect(names()).toEqual(['Bloom', 'Forest', 'Mountain', 'Centaur', 'Shock'])
+    const kept = JSON.parse(localStorage.getItem(HAND_SORT_KEY) ?? 'null') as { by: string; groups: string[] }
+    expect(kept.by).toBe('Groups')
+    expect(kept.groups.slice(0, 4)).toEqual(['Enchantment', 'Land', 'Creature', 'Artifact'])
+    table.unmount()
+    resetHandOrder()
+    resetFlowPrefs()
+    renderTable({ seats: 2, state: withHand(HAND) })
+    expect(names()).toEqual(['Bloom', 'Forest', 'Mountain', 'Centaur', 'Shock'])
+  })
+
+  it('hides the groups unless "By type" holds', async () => {
+    const table = renderTable({ seats: 2, state: withHand(HAND) })
+    await handOrder(table.user)
+    expect(screen.queryByRole('list', { name: 'Order of the type groups' })).toBeNull()
+  })
+
   it('puts a drawn card into place under an auto sort', () => {
-    localStorage.setItem(HAND_SORT_KEY, 'types')
+    localStorage.setItem(LEGACY_HAND_SORT_KEY, 'types')
     const table = renderTable({ seats: 2, state: withHand(HAND.slice(0, 4)) })
-    expect(names()).toEqual(['Mountain', 'Centaur', 'Shock', 'Bloom'])
+    expect(names()).toEqual(['Mountain', 'Centaur', 'Bloom', 'Shock'])
     table.update(withHand(HAND))
-    expect(names()).toEqual(['Forest', 'Mountain', 'Centaur', 'Shock', 'Bloom'])
+    expect(names()).toEqual(['Forest', 'Mountain', 'Centaur', 'Bloom', 'Shock'])
   })
 
   it('reads a stored value that is no sort as "As drawn"', () => {
-    localStorage.setItem(HAND_SORT_KEY, 'bogus')
+    localStorage.setItem(HAND_SORT_KEY, '{"by":"Sideways","groups":[]}')
     renderTable({ seats: 2, state: withHand(HAND) })
     expect(names()).toEqual(['Shock', 'Mountain', 'Centaur', 'Bloom', 'Forest'])
   })
@@ -151,7 +185,7 @@ describe('keyboard reorder', () => {
     const table = renderTable({ seats: 2, state: withHand(HAND) })
     focusCard('Forest')
     await table.user.keyboard('{Alt>}{ArrowRight}{/Alt}')
-    expect(mode()).toBe('drawn')
+    expect(mode()).toBe('Drawn')
     await table.user.keyboard('{ArrowLeft}')
     expect(names()).toEqual(['Shock', 'Mountain', 'Centaur', 'Bloom', 'Forest'])
     expect(document.activeElement?.getAttribute('data-object-id')).toBe('9004')

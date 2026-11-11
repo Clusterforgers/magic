@@ -173,21 +173,78 @@ export function describeOpening(status: MulliganStatus, mulligans: number): stri
   }
 }
 
-/** What the game is waiting for: this seat's own decision, other seats, or nothing in particular. */
+/**
+ * What the game is waiting for: this seat's own decision, other seats (with what they decide when the server said
+ * and it is the same for each), or nothing in particular.
+ */
 export type Waiting =
-  { kind: 'you'; label: string } | { kind: 'others'; seats: PlayerId[] } | { kind: 'idle'; label: string }
+  | { kind: 'you'; label: string }
+  | { kind: 'others'; seats: PlayerId[]; what?: DecisionName }
+  | { kind: 'idle'; label: string }
 
 /** The label of a decision name; an unknown kind reads as a plain decision. */
 function decisionLabel(name: DecisionName | 'Unknown'): string {
   return name === 'Unknown' ? 'A decision' : DECISION_LABEL[name]
 }
 
-/** What the game waits for now, read from the pending decision and the table. */
+/** What a seat the game waits for does, after "Waiting for Bob": "to choose targets". */
+export const WAIT_PHRASE: Record<DecisionName, string> = {
+  Mulligan: 'to keep or mulligan',
+  BottomCards: 'to put cards on the bottom',
+  Priority: 'to act or pass',
+  PayMana: 'to pay mana',
+  DeclareAttackers: 'to declare attackers',
+  DeclareBlockers: 'to declare blockers',
+  AssignDamage: 'to assign combat damage',
+  Discard: 'to discard',
+  ChooseTargets: 'to choose targets',
+  ChooseMode: 'to choose modes',
+  ChooseNumber: 'to choose a number',
+  ChooseName: 'to name a card',
+  DivideAmount: 'to divide an amount',
+  ChooseCards: 'to choose cards',
+  OrderCards: 'to put cards in order',
+  Scry: 'to scry',
+  YesNo: 'to answer yes or no',
+  ChooseOption: 'to choose an option',
+  ChooseCosts: 'to choose costs',
+  OrderTriggers: 'to order triggers',
+  ChooseReplacement: 'to choose which effect applies first',
+}
+
+/** Whether `name` is a decision this page knows (a newer server may name one it does not). */
+function isKnown(name: string): name is DecisionName {
+  return Object.hasOwn(WAIT_PHRASE, name)
+}
+
+/**
+ * Who the server says it waits for besides this seat; null while it said nothing. The seat's own decision comes as
+ * `pending`, and a window the server passes for this seat is nobody's to wait for here.
+ */
+function fromServer(state: PlayState): Waiting | null {
+  const { deciding, seat } = state
+  if (deciding.length === 0) return null
+  const others = deciding.filter((entry) => entry.seat !== seat)
+  if (others.length === 0) return { kind: 'idle', label: 'Waiting for the game' }
+  const seats = [...new Set(others.map((entry) => entry.seat))]
+  const kinds = [...new Set(others.map((entry) => entry.kind))]
+  const only = kinds.length === 1 ? kinds[0] : undefined
+  return only !== undefined && isKnown(only)
+    ? { kind: 'others', seats, what: only }
+    : { kind: 'others', seats }
+}
+
+/**
+ * What the game waits for now: this seat's pending decision, else whom the server says decides (`Deciding`), else a
+ * reading of the table for a server that does not say.
+ */
 export function waitingOn(state: PlayState): Waiting {
   const { pending, view, seat } = state
   if (pending !== null) return { kind: 'you', label: decisionLabel(decisionName(pending.decision.kind)) }
   if (view === null) return { kind: 'idle', label: 'Waiting for the game' }
   if (view.stage === 'Finished' || view.result !== null) return { kind: 'idle', label: 'The game is over' }
+  const told = fromServer(state)
+  if (told !== null) return told
   const others = (seats: PlayerId[]): Waiting =>
     seats.length > 0 ? { kind: 'others', seats } : { kind: 'idle', label: 'Waiting for the game' }
   if (view.stage === 'Mulligan') {
@@ -212,7 +269,7 @@ export function waitingOn(state: PlayState): Waiting {
   return { kind: 'idle', label: 'Waiting for the game' }
 }
 
-/** The line under the banner: "Your decision: Priority", "Waiting for Bob". */
+/** The line under the banner: "Your decision: Priority", "Waiting for Bob to choose targets". */
 export function waitingText(waiting: Waiting, name: Names): string {
   switch (waiting.kind) {
     case 'you':
@@ -220,10 +277,11 @@ export function waitingText(waiting: Waiting, name: Names): string {
     case 'idle':
       return waiting.label
     case 'others': {
-      if (waiting.seats.length > 3) return `Waiting for ${waiting.seats.length} players`
+      const what = waiting.what === undefined ? '' : ` ${WAIT_PHRASE[waiting.what]}`
+      if (waiting.seats.length > 3) return `Waiting for ${waiting.seats.length} players${what}`
       const names = waiting.seats.map(name)
       const last = names.pop()
-      return `Waiting for ${names.length === 0 ? last : `${names.join(', ')} and ${last}`}`
+      return `Waiting for ${names.length === 0 ? last : `${names.join(', ')} and ${last}`}${what}`
     }
   }
 }

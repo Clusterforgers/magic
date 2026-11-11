@@ -74,6 +74,7 @@ mod paid_cost_hidden;
 mod phasing_view;
 mod player_aura_view;
 mod player_counter_kinds;
+mod player_effects_view;
 mod prepared_view;
 mod presence_view;
 mod preview_fixture;

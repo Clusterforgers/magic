@@ -1,25 +1,22 @@
 /**
- * The order the viewer's own hand dock draws its cards in (pure): an auto sort over the server's hand, or a custom
- * order the viewer dragged, merged with the cards that came and went since. The server's hand order is untouched.
+ * The order the viewer's own hand dock draws its cards in (pure): the account's auto sort over the server's hand, or a
+ * custom order the viewer dragged, merged with the cards that came and went since. The server's hand order is untouched.
  */
-import type { CardType, ObjectId } from '@/protocol/generated'
+import type { CardType, HandGroup, HandSort, HandSortBy, ObjectId } from '@/protocol/generated'
 
-/** The auto sorts of the hand: lands, creatures, other spells; mana value; the server's order ("as drawn"). */
-export type HandSort = 'types' | 'mana' | 'drawn'
+export type { HandGroup, HandSort, HandSortBy }
+export { DEFAULT_HAND_SORT, HAND_GROUPS, HAND_SORTS } from '@/play/handSort'
 
 /** What the dock draws: one of the auto sorts, or the order the viewer dragged. */
-export type HandOrderMode = HandSort | 'custom'
+export type HandOrderMode = HandSortBy | 'custom'
 
-/** The auto sorts in menu order, with their labels. */
-export const HAND_SORTS: ReadonlyArray<{ value: HandSort; label: string }> = [
-  { value: 'types', label: 'Lands, creatures, spells' },
-  { value: 'mana', label: 'Mana value' },
-  { value: 'drawn', label: 'As drawn' },
-]
-
-/** True for a stored value that names an auto sort. */
-export function isHandSort(value: unknown): value is HandSort {
-  return value === 'types' || value === 'mana' || value === 'drawn'
+/** `groups` with the group at `from` moved to `to`; an index out of range changes nothing. */
+export function moveGroup(groups: readonly HandGroup[], from: number, to: number): HandGroup[] {
+  const moved = [...groups]
+  if (from < 0 || from >= groups.length || to < 0 || to >= groups.length || from === to) return moved
+  const [group] = moved.splice(from, 1)
+  if (group !== undefined) moved.splice(to, 0, group)
+  return moved
 }
 
 /** What a sort reads of a card. */
@@ -29,29 +26,34 @@ export interface HandFacts {
   name: string
 }
 
-/** The group of a card under "Lands, creatures, spells": 0 a land (a land creature too), 1 a creature, 2 the rest. */
-export function handGroup(types: readonly CardType[]): number {
-  if (types.includes('Land')) return 0
-  if (types.includes('Creature')) return 1
-  return 2
+/** The place of a card among `groups`: the first group it belongs to (a land creature under "Land" when lands come first), after all of them when none. */
+export function handGroup(types: readonly CardType[], groups: readonly HandGroup[]): number {
+  const at = groups.findIndex((group) => types.includes(group))
+  return at === -1 ? groups.length : at
 }
 
 /**
- * The hand in the order of `sort`. Under `types` lands, then creatures, then other spells, each group by mana value
- * then name; under `mana` by mana value then name; `drawn` keeps `ids`. Ties and unknown cards keep the server order.
+ * The hand in the order of `sort`. Under `Groups` each card in the first of the account's groups it belongs to, each
+ * group by mana value then name; under `ManaValue` by mana value then name; `Drawn` keeps `ids`. Ties and unknown cards
+ * keep the server order.
  */
 export function sortHand(
   ids: readonly ObjectId[],
   facts: (id: ObjectId) => HandFacts | undefined,
   sort: HandSort,
 ): ObjectId[] {
-  if (sort === 'drawn') return [...ids]
+  if (sort.by === 'Drawn') return [...ids]
   const keyed = ids.map((id, index) => {
     const fact = facts(id)
     return {
       id,
       index,
-      group: sort !== 'types' ? 0 : fact === undefined ? 2 : handGroup(fact.types),
+      group:
+        sort.by !== 'Groups'
+          ? 0
+          : fact === undefined
+            ? sort.groups.length
+            : handGroup(fact.types, sort.groups),
       value: fact?.manaValue ?? 0,
       name: fact?.name ?? '',
     }
