@@ -917,9 +917,14 @@ pub enum Event {
         /// The side the player called.
         #[serde(default)]
         call: CoinSide,
-        /// The side the coin came up.
+        /// The side the coin came up: the coin kept when the player flipped more than one.
         #[serde(default)]
         side: CoinSide,
+        /// Every coin flipped for this flip when a rule made it more than one (Krark's Thumb, CR 705.3), in the order
+        /// they came up; empty for a single coin.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<Vec<CoinSide>>", optional))]
+        coins: Vec<CoinSide>,
     },
     /// A player proliferated (CR 701.34): the counters it gave are the `CountersChanged` events that follow it.
     Proliferated {

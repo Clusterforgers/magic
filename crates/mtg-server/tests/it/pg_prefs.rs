@@ -79,7 +79,7 @@ async fn a_new_account_reads_the_defaults_and_a_save_reads_back_per_account(pool
     let body = json!({
         "default_stops": [stop("Opponent", "Upkeep", true), stop("Own", "Upkeep", true)],
         "end_turn_by_hand": true,
-        "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": true},
+        "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": true, "skip_triggers": true},
         "hand_sort": {"by": "Groups", "groups": ["Land", "Artifact"]}
     });
     let saved = save(&server, &ann, &body).await;
@@ -88,7 +88,7 @@ async fn a_new_account_reads_the_defaults_and_a_save_reads_back_per_account(pool
         "default_stops": [stop("Own", "Upkeep", true), stop("Opponent", "Upkeep", true)],
         "end_turn_by_hand": true,
         "auto_yields": [],
-        "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": true},
+        "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": true, "skip_triggers": true},
         "hand_sort": {"by": "Groups", "groups": ["Land", "Artifact", "Creature", "Enchantment", "Planeswalker", "Battle", "Instant", "Sorcery"]}
     });
     assert_eq!(saved.json(), expected);

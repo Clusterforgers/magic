@@ -1,7 +1,8 @@
 /**
- * The trophy of a won game with its celebration: the badge rises in a gold glow and pieces in the five mana colours
- * burst out of it once (`winBurst.css`). Decoration: the headline says the win in words, and a viewer who asked for
- * reduced motion sees the badge still.
+ * The celebration of a won game (`winBurst.css`): the winner's trophy rises in a gold glow and pieces in the five mana
+ * colours burst out of it once; every other seat sees a short banner naming the winner rise in. Decoration: the
+ * headline and its sentence say the result in words, nothing here takes a click, and a viewer who asked for reduced
+ * motion sees both still.
  */
 import { TrophyIcon } from 'lucide-react'
 import type { CSSProperties } from 'react'
@@ -62,5 +63,19 @@ export function WinBurst() {
         <TrophyIcon aria-hidden="true" className="size-6" />
       </span>
     </span>
+  )
+}
+
+/** The winner's name with a small trophy, for every seat but the winner's. */
+export function WinnerBanner({ name }: { name: string }) {
+  return (
+    <p
+      aria-hidden="true"
+      data-slot="win-banner"
+      className="pointer-events-none flex w-fit shrink-0 items-center gap-2 rounded-full bg-turn-you px-3 py-1 text-sm font-medium text-on-turn-you ring-2 ring-turn-you-edge"
+    >
+      <TrophyIcon aria-hidden="true" className="size-4 shrink-0" />
+      <span className="min-w-0 truncate">{name} won</span>
+    </p>
   )
 }

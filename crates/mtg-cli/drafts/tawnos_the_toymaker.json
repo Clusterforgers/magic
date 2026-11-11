@@ -1,0 +1,53 @@
+{
+  "oracle_id": "48cce741-cfbd-4ed9-a7ac-38880867a286",
+  "name": "Tawnos, the Toymaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tawnos, the Toymaker",
+      "oracle_fingerprint": "30f1ce4da63bb5f8f47b20caf9188aac",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Beast" } },
+                            { "Not": { "Type": "Creature" } }
+                          ]
+                        }
+                      },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Subtype": "Bird" } },
+                            { "Not": { "Type": "Creature" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "CopySpell": { "what": "Triggering", "except": [{ "AddType": "Artifact" }] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

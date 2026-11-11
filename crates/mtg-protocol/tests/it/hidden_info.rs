@@ -41,6 +41,7 @@ const SCALAR_KEYS: &[&str] = &[
     "lands_played",
     "mulligans",
     "bank",
+    "turn_time_ms",
     "damage",
     "casts",
     "tax",
@@ -48,6 +49,8 @@ const SCALAR_KEYS: &[&str] = &[
     "commander_lethal",
     // The seat that protects a battle.
     "protector",
+    // The seat that is the monarch.
+    "monarch",
     "power",
     "toughness",
     "printed_power",

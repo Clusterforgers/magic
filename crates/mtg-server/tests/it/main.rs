@@ -1,6 +1,7 @@
 //! Goal: the server's games, transport, accounts and persistence end to end; one test binary so the crate's integration tests share one link and run together on the thread pool.
 
 mod auto_pass;
+mod auto_skips;
 mod auto_yields;
 mod by_hand_window;
 mod combat_flips;
@@ -93,6 +94,7 @@ mod stops;
 mod store_contract;
 mod store_failures;
 mod timer_bank;
+mod turn_time;
 mod tutorial;
 mod un33_attraction_recipe;
 mod un34_sticker_recipe;

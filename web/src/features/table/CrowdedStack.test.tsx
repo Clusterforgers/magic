@@ -59,6 +59,7 @@ describe('the chips of a crowded stack', () => {
     expect(
       within(chips())
         .getAllByRole('button')
+        .filter((button) => button.hasAttribute('data-stack-chip'))
         .map((chip) => chip.getAttribute('aria-label')),
     ).toEqual([
       'Top of the stack: Ability of Grizzly Bears (Draw a card.), controlled by Alice',

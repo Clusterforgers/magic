@@ -270,6 +270,7 @@ impl<S: EventStore> GameActor<S> {
             return;
         }
         loop {
+            self.pause_turn_time();
             let command = match self.due() {
                 None => tokio::select! {
                     biased;
@@ -379,6 +380,7 @@ impl<S: EventStore> GameActor<S> {
             end_turn_by_hand: self.stops.end_turn_by_hand(seat),
             auto_choices: self.stops.auto_choices(seat),
             auto_yields: self.stops.auto_yields(seat),
+            auto_skips: self.stops.auto_skips(seat),
         };
         self.seats.send(seat, welcome);
         self.sync(seat);
@@ -392,6 +394,14 @@ impl<S: EventStore> GameActor<S> {
         // After the reply, so the client never waits for the database.
         if let Some(recorder) = &mut self.recorder {
             recorder.joined(seat).await;
+        }
+    }
+
+    /// Stops the running turn's count while no seat is connected; every change of connection passes the loop first.
+    fn pause_turn_time(&mut self) {
+        let nobody = self.seats.connected().is_empty();
+        if let Phase::Running(running) = &mut self.phase {
+            running.pause_turn_time(nobody);
         }
     }
 
@@ -453,6 +463,12 @@ impl<S: EventStore> GameActor<S> {
             }
             ClientMessage::LoadAutoYields { yields } => {
                 return self.load_auto_yields(seat, yields).await;
+            }
+            ClientMessage::AutoSkip { rule } => {
+                return self.set_auto_skip(seat, rule).await;
+            }
+            ClientMessage::CancelAutoSkip { rule } => {
+                return self.cancel_auto_skip(seat, rule).await;
             }
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),

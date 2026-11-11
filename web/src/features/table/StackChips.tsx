@@ -19,6 +19,7 @@ import { stackTopFirst } from './selectors'
 import { SideContext } from './sideContext'
 import { chipsThatFit, groupStack } from './stackGroups'
 import type { StackGroup } from './stackGroups'
+import { AutoPassButton } from './AutoPassButton'
 import { hasNoLegalTarget } from './stackTargets'
 import { targetsAria, targetsLine } from './stackText'
 import { useRoving } from './useRoving'
@@ -53,7 +54,10 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
     ? `Ability of ${object.name}${object.rules_text === undefined ? '' : ` (${object.rules_text})`}, controlled`
     : `${cardLabel(object, null)}, cast`
   return (
-    <li className={cn('max-w-full shrink-0', hidden && 'invisible')} aria-hidden={hidden || undefined}>
+    <li
+      className={cn('flex max-w-full shrink-0 items-center gap-1', hidden && 'invisible')}
+      aria-hidden={hidden || undefined}
+    >
       <button
         type="button"
         data-object-id={hidden ? undefined : id}
@@ -102,6 +106,7 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
           </span>
         ) : null}
       </button>
+      {top && !hidden ? <AutoPassButton object={object} compact /> : null}
     </li>
   )
 })

@@ -134,6 +134,7 @@ pub enum FullControlMode {
 ///
 /// Full Control overrides them: a seat in Full Control is asked every question at every step.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
+#[allow(clippy::struct_excessive_bools)] // independent settings, each its own switch
 pub struct AutoChoices {
     /// Its triggers go on the stack in the order they triggered, by timestamp.
     pub order_triggers: bool,
@@ -142,6 +143,11 @@ pub struct AutoChoices {
     /// A step where a permanent of the seat has an ability its timing lets it use becomes a window for it.
     #[serde(default)]
     pub smart_stops: bool,
+    /// Every triggered ability on top of the stack, any seat's, is passed for at once at the seat's priority, out of
+    /// Full Control; left out (false) when off.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub skip_triggers: bool,
 }
 
 /// A triggered or activated ability a seat lets resolve unasked for the rest of the game (see
@@ -155,6 +161,63 @@ pub struct AutoYield {
     pub name: String,
     /// The ability's rules text as the stack shows it; empty for an ability the card writer cannot word.
     pub text: String,
+}
+
+/// The most rules a seat holds by [`ClientMessage::AutoSkip`].
+pub const MAX_AUTO_SKIPS: usize = 64;
+
+/// The most triggers an [`AutoSkip::Order`] rule puts in order.
+pub const MAX_ORDER_TRIGGERS: usize = 16;
+
+/// One of a seat's own triggered abilities as a trigger-order rule keys it (see [`AutoSkip::Order`]): the name of its
+/// source as every player reads it and the ability's index among the rules of the source's card.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, TS)]
+pub struct TriggerKey {
+    /// The name of the trigger's source, as every player sees it.
+    pub name: String,
+    /// The ability's index among the rules of the source's card (`TriggerEntry.ability`).
+    pub ability: u32,
+}
+
+/// A question about its own triggers a seat lets the server answer for the rest of the game (see
+/// [`ClientMessage::AutoSkip`]).
+///
+/// Like the yields, a rule reads only what every player sees and never applies in Full Control.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, TS)]
+#[serde(tag = "kind")]
+pub enum AutoSkip {
+    /// Answers every yes-or-no question ("you may …") that the seat's own ability with this key, an optional trigger most
+    /// often, asks it about its source while it resolves; one rule per key.
+    Answer {
+        /// The ability, keyed as on the stack.
+        ability: AutoYield,
+        /// The answer given.
+        yes: bool,
+    },
+    /// Puts the seat's triggers on the stack in this order (the last on top) whenever exactly these go on together; one
+    /// rule per set of triggers.
+    Order {
+        /// The triggers, in the order they go on the stack.
+        triggers: Vec<TriggerKey>,
+    },
+}
+
+impl AutoSkip {
+    /// What tells two rules apart: a new rule replaces the one with the same key, and a cancel names it.
+    #[must_use]
+    pub fn key(&self) -> AutoSkip {
+        match self {
+            AutoSkip::Answer { ability, .. } => AutoSkip::Answer {
+                ability: ability.clone(),
+                yes: false,
+            },
+            AutoSkip::Order { triggers } => {
+                let mut triggers = triggers.clone();
+                triggers.sort();
+                AutoSkip::Order { triggers }
+            }
+        }
+    }
 }
 
 /// A message from a client to the server.
@@ -297,6 +360,21 @@ pub enum ClientMessage {
         /// The keys to add.
         yields: Vec<AutoYield>,
     },
+    /// Lets the server answer a question about the seat's own triggers by `rule` for the rest of the game, from the
+    /// next such question on; [`ServerMessage::AutoSkips`] says what it holds.
+    ///
+    /// A rule replaces the seat's rule with the same key ([`AutoSkip::key`]). A key with no name, an order of fewer
+    /// than two or more than [`MAX_ORDER_TRIGGERS`] triggers, and a rule past
+    /// [`MAX_AUTO_SKIPS`] are refused with `Error{BadMessage}`. Kept per seat in memory like the stops.
+    AutoSkip {
+        /// The rule.
+        rule: AutoSkip,
+    },
+    /// Takes back the seat's rule with the key of `rule`; one it does not hold changes nothing.
+    CancelAutoSkip {
+        /// The rule, matched by its key.
+        rule: AutoSkip,
+    },
 }
 
 /// A message from the server to one client.
@@ -330,6 +408,10 @@ pub enum ServerMessage {
         /// The abilities this seat lets resolve unasked, in key order (see [`ClientMessage::AutoYield`]).
         #[serde(default)]
         auto_yields: Vec<AutoYield>,
+        /// The rules by which the server answers this seat's questions about its own triggers, in key order (see
+        /// [`ClientMessage::AutoSkip`]).
+        #[serde(default)]
+        auto_skips: Vec<AutoSkip>,
     },
     /// Who is at the table before the game starts.
     ///
@@ -458,6 +540,14 @@ pub enum ServerMessage {
     AutoYields {
         /// The whole list now held, in key order.
         yields: Vec<AutoYield>,
+    },
+    /// The rules by which the server answers this seat's questions about its own triggers changed (see
+    /// [`ClientMessage::AutoSkip`]).
+    ///
+    /// Sent whenever they change, in the same place as [`ServerMessage::Stops`].
+    AutoSkips {
+        /// The whole list now held, in key order.
+        rules: Vec<AutoSkip>,
     },
     /// A seat's bank of clock extensions changed with no event to carry it: an extension was spent at the deadline.
     ///

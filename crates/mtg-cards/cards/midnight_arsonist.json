@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d9ee7916-2c9d-4489-8dd8-86929b09c6ea",
+  "name": "Midnight Arsonist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Midnight Arsonist",
+      "oracle_fingerprint": "f5575437e66359111a85637e1b9af10d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Artifact" }, { "Not": { "HasAbility": "Mana" } }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "Count": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

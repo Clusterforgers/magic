@@ -1,0 +1,29 @@
+{
+  "oracle_id": "29fede1b-e379-46d4-93e9-a589c896add6",
+  "name": "Tarmogoyf Nest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tarmogoyf Nest",
+      "oracle_fingerprint": "f1b077ceff568814a71c6355f75bb12b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": [{ "Mana": "{1}{G}" }, "Tap"],
+                    "effects": [{ "CreateToken": { "token": { "Card": "Tarmogoyf" } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

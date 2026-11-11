@@ -1,5 +1,6 @@
-/* The win of the game-over screen: the trophy rises in a gold glow and pieces of the five mana colours burst out of
-   it and fall away once. Decoration only; nothing moves for a viewer who asked for reduced motion. */
+/* The win of the game-over screen: the winner's trophy rises in a gold glow and pieces of the five mana colours burst
+   out of it and fall away once; the other seats see the banner naming the winner rise in. Decoration only; nothing
+   moves for a viewer who asked for reduced motion. */
 
 @keyframes win-rise {
   0% {
@@ -57,8 +58,15 @@
   animation: win-piece 1400ms cubic-bezier(0.15, 0.6, 0.35, 1) var(--delay) both;
 }
 
+[data-slot='win-banner'] {
+  animation:
+    win-rise 600ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both,
+    win-glow 1600ms ease-out 300ms 2;
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-slot='win-badge'],
+  [data-slot='win-banner'],
   [data-slot='win-piece'] {
     animation: none;
   }

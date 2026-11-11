@@ -498,6 +498,22 @@ const MORE: [Event, string][] = [
   [{ ChoiceMade: { player: 1, choice: { SecretNumber: 4 } } }, 'Bo secretly chooses 4'],
   [{ ChoiceMade: { player: 1, choice: { Order: [1, 2] } } }, 'Bo puts 2 cards in order'],
   [{ ChoiceMade: { player: 1, choice: { Option: 0 } } }, 'Bo chooses option 1'],
+  [
+    { CoinFlipped: { player: 1, won: false, call: 'Tails', side: 'Heads', coins: ['Heads', 'Heads'] } },
+    'Bo calls tails and flips two coins: heads and heads; Bo keeps heads and loses the flip',
+  ],
+  [
+    {
+      CoinFlipped: {
+        player: 1,
+        won: true,
+        call: 'Heads',
+        side: 'Heads',
+        coins: ['Tails', 'Heads', 'Tails', 'Tails'],
+      },
+    },
+    'Bo calls heads and flips four coins: tails, heads, tails and tails; Bo keeps heads and wins the flip',
+  ],
   [{ ChoiceMade: { player: 1, choice: { Replacement: 1 } } }, 'Bo chooses which effect applies first'],
   [{ CountersChanged: { on: { Player: 1 }, counter: 'poison', delta: -1 } }, 'Bo loses a poison counter'],
   [{ CountersChanged: { on: { Player: 1 }, counter: 'poison', delta: 3 } }, 'Bo gets 3 poison counters'],

@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "e07b8142-6a49-46e7-b862-41f89a59b894",
+  "oracle_id": "d760f2f0-6653-47c4-bd7b-aab2f398ddf2",
+  "multiverse_ids": [
+    518462
+  ],
+  "mtgo_id": 89875,
+  "tcgplayer_id": 236282,
+  "cardmarket_id": 559084,
+  "name": "Ruxa, Patient Professor",
+  "lang": "en",
+  "released_at": "2021-04-23",
+  "uri": "https://api.scryfall.com/cards/e07b8142-6a49-46e7-b862-41f89a59b894",
+  "scryfall_uri": "https://scryfall.com/card/c21/66/ruxa-patient-professor?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:26:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/0/e07b8142-6a49-46e7-b862-41f89a59b894.jpg?1783927589",
+    "normal": "https://cards.scryfall.io/normal/front/e/0/e07b8142-6a49-46e7-b862-41f89a59b894.jpg?1783927589",
+    "large": "https://cards.scryfall.io/large/front/e/0/e07b8142-6a49-46e7-b862-41f89a59b894.jpg?1783927589",
+    "png": "https://cards.scryfall.io/png/front/e/0/e07b8142-6a49-46e7-b862-41f89a59b894.png?1783927589",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/0/e07b8142-6a49-46e7-b862-41f89a59b894.jpg?1783927589",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/0/e07b8142-6a49-46e7-b862-41f89a59b894.jpg?1783927589",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/0/e07b8142-6a49-46e7-b862-41f89a59b894.webp?1783927589",
+    "grid": "https://cards.scryfall.io/grid/front/e/0/e07b8142-6a49-46e7-b862-41f89a59b894.webp?1783927589",
+    "display": "https://cards.scryfall.io/display/front/e/0/e07b8142-6a49-46e7-b862-41f89a59b894.webp?1783927589",
+    "art": "https://cards.scryfall.io/art/front/e/0/e07b8142-6a49-46e7-b862-41f89a59b894.webp?1783927589",
+    "crop": "https://cards.scryfall.io/crop/front/e/0/e07b8142-6a49-46e7-b862-41f89a59b894.webp?1783927589",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/0/e07b8142-6a49-46e7-b862-41f89a59b894.jpg?1783927589"
+  },
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Bear Druid",
+  "oracle_text": "Whenever Ruxa enters or attacks, return target creature card with no abilities from your graveyard to your hand.\nCreatures you control with no abilities get +1/+1.\nFor each creature you control with no abilities, you may have that creature assign its combat damage as though it weren't blocked.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "27bf6dbd-a9e1-4904-afa7-d28fc7745c4f",
+  "set": "c21",
+  "set_name": "Commander 2021",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/27bf6dbd-a9e1-4904-afa7-d28fc7745c4f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac21&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c21?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e07b8142-6a49-46e7-b862-41f89a59b894/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad760f2f0-6653-47c4-bd7b-aab2f398ddf2&unique=prints",
+  "collector_number": "66",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ilse Gort",
+  "artist_ids": [
+    "12070c2e-4de6-46bc-b379-8a580dfb34c5"
+  ],
+  "illustration_id": "f172c7d7-64ef-4efd-b693-10035ee0a099",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6010,
+  "penny_rank": 10557,
+  "prices": {
+    "usd": "5.92",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "8.32",
+    "eur_foil": null,
+    "tix": "1.90"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=518462&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRuxa%252C%2BPatient%2BProfessor",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRuxa%252C%2BPatient%2BProfessor",
+    "edhrec": "https://edhrec.com/route/?cc=Ruxa%2C+Patient+Professor"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F236282%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=559084&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/89875?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

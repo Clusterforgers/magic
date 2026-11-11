@@ -370,6 +370,7 @@ mod keywords_triggers;
 mod keywords_triggers_fuzz;
 mod kicker;
 mod kicker_either;
+mod kt28_krarks_thumb;
 mod lands_and_sickness;
 mod last_turn_spells;
 mod layers;

@@ -20,6 +20,7 @@ import { useBoardFade } from './useBoardFade'
 import { useEdgeFade } from './useEdgeFade'
 import { useLeadInView } from './useLeadInView'
 import { useContentBox } from './useZoneFit'
+import { GridCardContext, useGridCard } from './gridCard'
 
 interface SeatAreaProps {
   seat: PlayerId
@@ -212,7 +213,7 @@ function LeftStrip({ seat }: { seat: PlayerId }) {
 }
 
 /**
- * The boards of several opponents, each in a bordered frame. A seat that left the game is a thin strip over the
+ * The boards of several opponents, each in a bordered frame, all at one card size (`gridCard.ts`). A seat that left the game is a thin strip over the
  * grid, so the seats still playing share its space.
  */
 function OpponentGrid({ plan, size }: { plan: SeatPlan; size: CardSize }) {
@@ -221,26 +222,29 @@ function OpponentGrid({ plan, size }: { plan: SeatPlan; size: CardSize }) {
   )
   const playing = plan.boards.filter((seat) => !gone.includes(seat))
   const columns = Math.max(1, Math.min(plan.columns, playing.length)) as SeatPlan['columns']
+  const card = useGridCard(playing)
   return (
-    <div className="flex min-h-0 min-w-0 flex-col gap-2">
-      {gone.map((seat) => (
-        <LeftStrip key={seat} seat={seat} />
-      ))}
-      <div
-        data-layout="grid"
-        data-columns={columns}
-        className={cn('grid min-h-0 min-w-0 flex-1 auto-rows-fr gap-2', COLUMNS[columns])}
-      >
-        {playing.map((seat) => (
-          <div
-            key={seat}
-            data-slot="seat-frame"
-            className="flex min-h-0 min-w-0 rounded-xl border-2 border-foreground/25 p-1"
-          >
-            <SeatArea seat={seat} size={size} facing="far" pod="line" />
-          </div>
+    <GridCardContext value={card}>
+      <div className="flex min-h-0 min-w-0 flex-col gap-2">
+        {gone.map((seat) => (
+          <LeftStrip key={seat} seat={seat} />
         ))}
+        <div
+          data-layout="grid"
+          data-columns={columns}
+          className={cn('grid min-h-0 min-w-0 flex-1 auto-rows-fr gap-2', COLUMNS[columns])}
+        >
+          {playing.map((seat) => (
+            <div
+              key={seat}
+              data-slot="seat-frame"
+              className="flex min-h-0 min-w-0 rounded-xl border-2 border-foreground/25 p-1"
+            >
+              <SeatArea seat={seat} size={size} facing="far" pod="line" />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </GridCardContext>
   )
 }

@@ -437,6 +437,7 @@ fn c8_vote_a_won_flip_triggers_for_the_players_the_pattern_names(
             } else {
                 CoinSide::Tails
             },
+            coins: Vec::new(),
         }],
     );
     assert_eq!(found.len(), expected);

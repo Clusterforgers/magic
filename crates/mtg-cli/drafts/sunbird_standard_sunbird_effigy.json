@@ -1,0 +1,69 @@
+{
+  "oracle_id": "c69742bf-f0f5-4216-a602-c21f9c5a6501",
+  "name": "Sunbird Standard // Sunbird Effigy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunbird Standard",
+      "oracle_fingerprint": "eb84e16b0c5c1234431bf0963affb855",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Keyword": {
+            "Craft": [{ "Mana": "{5}" }, { "Craft": { "filter": ["Other"], "count": "X" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sunbird Effigy",
+      "oracle_fingerprint": "a6f1a19b7dc23a8f6276d2b90e048ddd",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Distinct": {
+                      "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                      "stat": "Colors"
+                    }
+                  },
+                  "toughness": {
+                    "Distinct": {
+                      "of": [{ "ExiledWith": "This" }, { "In": "Exile" }],
+                      "stat": "Colors"
+                    }
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "EachColorAmong": [{ "ExiledWith": "This" }, { "In": "Exile" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

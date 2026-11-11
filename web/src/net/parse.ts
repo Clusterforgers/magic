@@ -9,6 +9,8 @@ import type {
   AttackerForecast,
   AttackerView,
   AutoChoices,
+  AutoSkip,
+  TriggerKey,
   AutoYield,
   CombatForecast,
   CreatureForecast,
@@ -68,6 +70,7 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   EndTurnByHand: true,
   AutoChoices: true,
   AutoYields: true,
+  AutoSkips: true,
   Bank: true,
   Presence: true,
 }
@@ -424,7 +427,8 @@ function isAutoChoices(value: unknown): value is SentAutoChoices {
     isRecord(value) &&
     isFlag(value.order_triggers) &&
     isFlag(value.assign_damage) &&
-    (value.smart_stops === undefined || isFlag(value.smart_stops))
+    (value.smart_stops === undefined || isFlag(value.smart_stops)) &&
+    (value.skip_triggers === undefined || isFlag(value.skip_triggers))
   )
 }
 
@@ -436,6 +440,19 @@ function autoChoices(value: SentAutoChoices): AutoChoices {
 /** Whether `value` is an `AutoYield`: the source's name and the ability's words. */
 function isAutoYield(value: unknown): value is AutoYield {
   return isRecord(value) && isText(value.name) && isText(value.text)
+}
+
+/** Whether `value` is an `AutoSkip`: an answer for an ability, or an order of triggers by name and ability index. */
+function isAutoSkip(value: unknown): value is AutoSkip {
+  if (!isRecord(value)) return false
+  if (value.kind === 'Answer') return isAutoYield(value.ability) && isFlag(value.yes)
+  if (value.kind !== 'Order') return false
+  return isListOf(value.triggers, isTriggerKey)
+}
+
+/** Whether `value` is a `TriggerKey`: a source's name and an ability index. */
+function isTriggerKey(value: unknown): value is TriggerKey {
+  return isRecord(value) && isText(value.name) && isCount(value.ability)
 }
 
 function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
@@ -457,6 +474,8 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
         return '"auto_choices" must hold order_triggers and assign_damage, each true or false'
       if (v.auto_yields !== undefined && !isListOf(v.auto_yields, isAutoYield))
         return '"auto_yields" must be a list of abilities (name, text)'
+      if (v.auto_skips !== undefined && !isListOf(v.auto_skips, isAutoSkip))
+        return '"auto_skips" must be a list of trigger rules (Answer or Order)'
       return {
         type,
         protocol_version: v.protocol_version,
@@ -470,6 +489,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
         end_turn_by_hand: v.end_turn_by_hand ?? false,
         auto_choices: v.auto_choices === undefined ? NO_AUTO_CHOICES : autoChoices(v.auto_choices),
         auto_yields: v.auto_yields ?? [],
+        auto_skips: v.auto_skips ?? [],
       }
     case 'Lobby':
       if (!isListOf(v.seats, isLobbySeat)) {
@@ -564,6 +584,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'AutoYields':
       if (!isListOf(v.yields, isAutoYield)) return '"yields" must be a list of abilities (name, text)'
       return { type, yields: v.yields }
+    case 'AutoSkips':
+      if (!isListOf(v.rules, isAutoSkip)) return '"rules" must be a list of trigger rules (Answer or Order)'
+      return { type, rules: v.rules }
     case 'Bank':
       if (!isCount(v.seat)) return '"seat" must be a whole number'
       if (!isCount(v.bank)) return '"bank" must be a whole number'

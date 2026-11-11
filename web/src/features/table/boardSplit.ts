@@ -93,6 +93,8 @@ export function splitRegions(
     ownChrome: frames.own.chrome,
     theirChrome: theirChrome + finite(reserve),
     theirFloor: podColumnFloor(regions, seats, overhang),
+    theirRows: frames.theirs.rows,
+    theirRowChrome: theirChrome,
     ownWidth: frames.own.width,
     theirWidth: frames.theirs.width,
     own: counts.own,
@@ -123,6 +125,10 @@ export interface SplitInput {
   theirChrome: number
   /** The height an opponent's pod column asks of the opponents' row (`podColumnFloor`). */
   theirFloor?: number
+  /** The rows of boards the opponents' area stacks (a grid of more opponents than columns); 1 when left out. */
+  theirRows?: number
+  /** What each row of opponents' boards after the first spends besides its lanes (its pod line and frame). */
+  theirRowChrome?: number
   /** The width of the lanes of your board and of each opponent's board in px. */
   ownWidth: number
   theirWidth: number
@@ -152,8 +158,8 @@ export function shareSplit(room: number): BoardSplit {
  * The largest card `w` of the ladder at which your lanes at `w` and every opponent's at `THEIR_SCALE` of it fit the
  * room together; the opponents' row gets what its lanes need and your row the rest, each at least `MIN_ROW_SHARE` of
  * the room. What is left lifts the opponents' cards further, up to `w`. Without a fit at the floor, or with no
- * permanent anywhere, the room splits by `OWN_SHARE`, the opponents' row keeping its chrome and `BOARD_KEEP_PX` (your
- * row keeping `MIN_ROW_SHARE`). The opponents' row is at least `theirFloor` where your creatures keep
+ * permanent anywhere, the room splits by `OWN_SHARE`, the opponents' row keeping its chrome and `BOARD_KEEP_PX`, and
+ * as much of what their lanes need at the floor as your row leaves above its own floor (at least `MIN_ROW_SHARE`). The opponents' row is at least `theirFloor` where your creatures keep
  * `FLOOR_OWN_CARD_PX`; elsewhere only room your lanes leave lifts it towards that.
  */
 export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS): BoardSplit {
@@ -164,14 +170,22 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
     Math.max(least, laneHeight(input.ownWidth, input.own, card, limits) + finite(input.ownChrome))
   const theirNeed = (card: number): number =>
     Math.max(0, ...input.theirs.map((counts) => laneHeight(input.theirWidth, counts, card, limits)))
-  const theirRow = (card: number): number => Math.max(least, theirNeed(card) + finite(input.theirChrome))
+  const rows = Math.max(1, Math.floor(finite(input.theirRows ?? 1)))
+  const theirRow = (card: number): number =>
+    Math.max(
+      least,
+      rows * theirNeed(card) + finite(input.theirChrome) + (rows - 1) * finite(input.theirRowChrome ?? 0),
+    )
   const theirCard = (card: number): number => Math.floor(card * THEIR_SCALE)
   const fits = (rung: number): boolean => ownRow(at(rung)) + theirRow(theirCard(at(rung))) <= room
   const empty = laneHeight(input.ownWidth, input.own, at(0), limits) + theirNeed(theirCard(at(0)))
   if (!fits(0) || empty === 0) {
     const share = shareSplit(room)
     if (input.theirs.length === 0) return share
-    const keep = Math.min(room - least, finite(input.theirChrome) + BOARD_KEEP_PX)
+    // Opponents that cannot fit even at the floor take what they need there before your row grows past its least.
+    const ownLeast = empty === 0 ? least : Math.max(least, ownRow(at(0)))
+    const crowded = empty === 0 ? 0 : Math.min(room - ownLeast, theirRow(at(0)))
+    const keep = Math.max(crowded, Math.min(room - least, finite(input.theirChrome) + BOARD_KEEP_PX))
     return share.opponents >= keep ? share : { ...share, opponents: keep, own: room - keep }
   }
   // The opponents' row is lifted to the floor where your creatures stay `FLOOR_OWN_CARD_PX` wide; otherwise it takes
@@ -192,6 +206,8 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
 export interface BoardFrame {
   width: number
   chrome: number
+  /** The rows of boards stacked in the row (a grid of opponents); 1 when left out. */
+  rows?: number
 }
 
 /** The width of a board's lanes and what its row spends besides them, for each seat shape. */
@@ -204,7 +220,9 @@ export function boardFrames(regions: Regions, seats: SeatPlan): { own: BoardFram
   const own = { width: regions.phone ? full : aside, chrome: pads + ownPod }
   if (seats.shape === 'columns') {
     const column = (main - 2 * ZONE_GAP_PX - (seats.columns - 1) * ZONE_GAP_PX) / seats.columns
-    return { own, theirs: { width: column - 2 * ZONE_PAD_PX, chrome: pads + LINE_POD_PX + ZONE_GAP_PX } }
+    const rows = Math.max(1, Math.ceil(seats.boards.length / seats.columns))
+    const chrome = pads + LINE_POD_PX + ZONE_GAP_PX
+    return { own, theirs: { width: column - 2 * ZONE_PAD_PX, chrome, rows } }
   }
   const strip = seats.shape === 'focus' ? TILE_STRIP_PX + ZONE_GAP_PX : 0
   return { own, theirs: { width: regions.phone ? full : aside, chrome: pads + strip } }

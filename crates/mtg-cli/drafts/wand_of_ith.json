@@ -1,0 +1,79 @@
+{
+  "oracle_id": "3ec1ccd7-4970-4032-be7a-9e76ca6a139e",
+  "name": "Wand of Ith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wand of Ith",
+      "oracle_fingerprint": "81a42f94a9a7b59f75bd2af99af7edbf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "condition": "YourTurn",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "revealed" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Pay": {
+                        "who": { "Target": 0 },
+                        "cost": [{ "PayLife": 1 }],
+                        "unpaid": [
+                          {
+                            "Discard": {
+                              "who": { "Target": 0 },
+                              "filter": [{ "Is": { "Bound": "revealed" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Pay": {
+                        "who": { "Target": 0 },
+                        "cost": [
+                          {
+                            "PayLife": {
+                              "Stat": { "of": { "Bound": "revealed" }, "stat": "ManaValue" }
+                            }
+                          }
+                        ],
+                        "unpaid": [
+                          {
+                            "Discard": {
+                              "who": { "Target": 0 },
+                              "filter": [{ "Is": { "Bound": "revealed" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -234,8 +234,13 @@ fn cut(heard: Vec<Taped>) -> Vec<Taped> {
 }
 
 /// The messages of `heard` as they are on the wire, without when they arrived.
+///
+/// The turn times are wall time at the send, as the arrival is, so they go with it (`gaps` holds the arrival).
 fn told(heard: &[Taped]) -> Vec<ServerMessage> {
-    heard.iter().map(|(_, message)| message.clone()).collect()
+    heard
+        .iter()
+        .map(|(_, message)| common::without_turn_time(message.clone()))
+        .collect()
 }
 
 /// The kinds of message in `heard`, in order.

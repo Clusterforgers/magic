@@ -8,12 +8,13 @@ import { PageShell } from '@/components/PageShell'
 import { Pill } from '@/components/Pill'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { useAuth } from '@/features/auth/context'
+import { formatTurnTime, turnTimeText } from '@/lib/turnTime'
 import { cn } from '@/lib/utils'
 import { useGame, usePlay } from './gameContext'
 import { describeResult, endKind, seatOutcomes } from './outcome'
 import type { EndKind } from './outcome'
 import { seatName } from './useGameInfo'
-import { WinBurst } from './WinBurst'
+import { WinBurst, WinnerBanner } from './WinBurst'
 
 /** The picture of each ending: a trophy for a win, crossed swords for a loss, a handshake, a flag for a concession. */
 const ICON: Record<EndKind, LucideIcon> = {
@@ -54,12 +55,17 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
   const seats = seatOutcomes(result, seat, name, players)
   const kind = endKind(result, seat, players)
   const Icon = ICON[kind]
+  // Every seat celebrates a winner: the winner with the burst, even when the last opponent conceded or left, and the
+  // others with a banner naming them.
+  const winner = result === 'Draw' ? null : result.Winner
+  const won = winner !== null && winner === seat
 
   return (
     <PageShell className="flex min-h-0 flex-1 flex-col gap-6 sm:py-6">
       <section aria-labelledby="over-title" data-end={kind} className="flex min-h-0 flex-1 flex-col gap-6">
+        {winner === null || won ? null : <WinnerBanner name={name(winner)} />}
         <header className="flex shrink-0 items-start gap-4">
-          {kind === 'won' ? (
+          {won ? (
             <WinBurst />
           ) : (
             <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
@@ -100,6 +106,7 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
                     {entry.status}
                   </span>
                   <span className="text-muted-foreground"> · life {entry.life}</span>
+                  <TurnTotal ms={players.find((player) => player.seat === entry.seat)?.turn_time_ms} />
                 </span>
               </li>
             ))}
@@ -139,5 +146,17 @@ export function GameOver({ onReview }: { onReview?: () => void }) {
         </div>
       </section>
     </PageShell>
+  )
+}
+
+/** A seat's time on its own turns in the list of seats, read aloud in words. */
+function TurnTotal({ ms }: { ms: number | undefined }) {
+  if (ms === undefined) return null
+  return (
+    <span data-slot="turn-total" className="text-muted-foreground">
+      {' · '}
+      <span aria-hidden="true">{formatTurnTime(ms)} on own turns</span>
+      <span className="sr-only">{turnTimeText(ms)}</span>
+    </span>
   )
 }

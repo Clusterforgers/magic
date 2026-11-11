@@ -21,6 +21,7 @@ export const welcome = {
   end_turn_by_hand: false,
   auto_choices: { order_triggers: false, assign_damage: false, smart_stops: false },
   auto_yields: [],
+  auto_skips: [],
 }
 /** The `Join` the socket must open with. */
 export const join = { type: 'Join', protocol_version: PROTOCOL_VERSION, game: GAME, name: 'Ana' }

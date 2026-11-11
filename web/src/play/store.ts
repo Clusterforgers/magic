@@ -4,6 +4,7 @@ import type { StoreApi } from 'zustand/vanilla'
 import type { ConnectionStatus } from '@/net/socket'
 import type {
   AutoChoices,
+  AutoSkip,
   AutoYield,
   DecidingView,
   Decision,
@@ -96,6 +97,8 @@ export interface PlayState {
   seatCount: number | null
   /** What this seat may know of the game; null until a Snapshot or the first batch arrives. */
   view: StateView | null
+  /** When the table of `view` arrived (`Date.now()`); a running turn time grows from it. Null until it is known. */
+  viewAt: number | null
   /** The same objects as `view.objects`, by id; the values are the very same references. */
   objectsById: Readonly<Record<ObjectId, ObjectView>>
   /** The log position of `view`, which is the `from_seq` the next batch must have; null while there is no view. */
@@ -158,6 +161,12 @@ export interface PlayState {
    */
   autoYields: AutoYield[]
   /**
+   * The rules by which the server answers this seat's questions about its own triggers (an optional trigger's yes or no,
+   * the order of triggers that go on together) for this game. The server's word: set by every Welcome and every
+   * `AutoSkips` message, never by the page.
+   */
+  autoSkips: AutoSkip[]
+  /**
    * The card in hand this seat clicked while the server passed for it (an instant or a flash card), or null: the
    * session asked for its next window and casts the card there if it is castable then.
    */
@@ -191,6 +200,7 @@ export function initialPlayState(): PlayState {
     seat: null,
     seatCount: null,
     view: null,
+    viewAt: null,
     objectsById: {},
     seq: null,
     pending: null,
@@ -210,6 +220,7 @@ export function initialPlayState(): PlayState {
     endTurnByHand: false,
     autoChoices: { order_triggers: false, assign_damage: false, smart_stops: false },
     autoYields: [],
+    autoSkips: [],
     castWhenAsked: null,
     byHand: null,
     away: {},

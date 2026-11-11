@@ -4,8 +4,10 @@
 //! with the stops ([`Stops::yields_to`]). At a priority decision of the seat, out of Full Control, an ability with a
 //! held key on top of the stack is passed for at once, whatever the seat holds and wherever the window is: the pass
 //! shows the seat's choice, as a stop does, and never its hand. Full Control asks anyway, and the yield waits until the
-//! mode is off again.
+//! mode is off again. A seat with `AutoChoices::skip_triggers` ("Auto-skip triggers") is passed for the same way at every
+//! triggered ability on top, any seat's: the stack alone decides.
 
+use mtg_cards::ability::Ability;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::{Decision, DecisionKind, GameState};
 use mtg_protocol::rest::MAX_AUTO_YIELDS;
@@ -16,16 +18,25 @@ use crate::running::Rejection;
 use crate::stops::Stops;
 use crate::store::EventStore;
 
-/// Whether the table passes for the holder of `decision` because it yields to the ability on top of the stack.
+/// Whether the table passes for the holder of `decision` because it yields to the ability on top of the stack, or
+/// skips every trigger and a triggered ability is on top.
 pub(crate) fn passes_for(decision: &Decision, stops: &Stops, state: &GameState) -> bool {
     let seat = decision.player;
+    let Some(top) = state.stack().last().copied() else {
+        return false;
+    };
     matches!(decision.kind, DecisionKind::Priority(_))
         && stops.full_control(seat) == FullControlMode::Off
-        && state
-            .stack()
-            .last()
-            .and_then(|top| AutoYield::of(state, *top))
-            .is_some_and(|key| stops.yields_to(seat, &key))
+        && ((stops.auto_choices(seat).skip_triggers && is_trigger(state, top))
+            || AutoYield::of(state, top).is_some_and(|key| stops.yields_to(seat, &key)))
+}
+
+/// Whether `id` is a triggered ability on the stack, which every player sees.
+fn is_trigger(state: &GameState, id: ObjectId) -> bool {
+    state
+        .object(id)
+        .and_then(|object| object.ability())
+        .is_some_and(|ability| matches!(ability.rules(), Ability::Triggered { .. }))
 }
 
 impl<S: EventStore> GameActor<S> {
@@ -56,6 +67,19 @@ impl<S: EventStore> GameActor<S> {
         };
         let mut stops = self.stops.clone();
         stops.set_auto_yield(seat, ability, true);
+        self.take_stops_passing(seat, stops).await
+    }
+
+    /// Takes `stops` for `seat` like [`Self::take_stops`]; a seat that faces a priority decision they now pass is
+    /// passed at once, as a unit with them.
+    pub(crate) async fn take_stops_passing(
+        &mut self,
+        seat: PlayerId,
+        stops: Stops,
+    ) -> Result<(), Fatal> {
+        let Phase::Running(running) = &mut self.phase else {
+            return self.take_stops(seat, stops).await;
+        };
         let facing = running.asks_priority_of(seat);
         if !(facing && running.passes_pending(seat, &stops, &self.yields)) {
             return self.take_stops(seat, stops).await;

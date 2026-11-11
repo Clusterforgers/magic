@@ -1177,6 +1177,7 @@ mod tests {
             order_triggers,
             assign_damage,
             smart_stops: false,
+            skip_triggers: false,
         }
     }
 

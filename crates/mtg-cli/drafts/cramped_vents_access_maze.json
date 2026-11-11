@@ -1,0 +1,43 @@
+{
+  "oracle_id": "1e847d69-e527-4bb9-a624-17c25ac4fed4",
+  "name": "Cramped Vents // Access Maze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cramped Vents",
+      "oracle_fingerprint": "7fcb319bd9515361cb382a2d19bb0ca6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 6, "excess": { "as": "excess" } } },
+              { "GainLife": { "amount": { "Bound": "excess" } } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Access Maze",
+      "oracle_fingerprint": "62ec398ffab1494d754b74719daa7db3",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Not": { "Type": "Land" } }],
+                "from": "Hand",
+                "once": true,
+                "rather": [{ "PayLife": { "Stat": { "of": "This", "stat": "ManaValue" } } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

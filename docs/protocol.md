@@ -90,6 +90,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
   - At zero the server answers for the seat (a pass, no blocks, keeping the hand) through the normal path; the decision id goes stale and the events arrive as a batch, so a client drops the prompt at zero and expects them.
 - `Decision.show_after_ms` is when the client starts to show the countdown (`MTG_CLOCK_GRACE_SECS`); the clock runs from issue all the same. It follows the kind and the seat as the clock does, never whether the seat can act.
 - A seat that holds an extension spends it at the deadline instead of being answered for: it is sent the same `Decision` again (same `id`) with the new `deadline_ms`, and every seat is sent `Bank { seat, bank }`. `PlayerView.bank` is public; the engine does not know it, the server writes it into every table.
+- `PlayerView.turn_time_ms` (public) is the wall time a seat has used on its own turns, the running turn up to the send included; `turn_time_running` marks the one seat whose figure keeps growing from the moment the table arrives. Like the bank, the server writes them into every table.
 - `PlayerView.connected` is public and never stored, hashed or put in the event log, so replays do not see it. The server writes it into every snapshot and batch and sends the other seats `Presence { seat, connected, deadline_ms? }` when a seat gains its first connection or loses its last, and again for an away seat when it is issued a decision or its clock is extended. A seat is never told of itself.
 
 ### Payments
@@ -113,6 +114,14 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 - The end rules look at the table only, never at what the seat could do, so the pace reveals nothing about a hand (`yields.rs` in `mtg-server`). A client asks for `Resolve` only over a stack: over an empty one it ends at once and the same window returns with a new id.
 - Yields live in memory per seat, so a resumed game has none. A seat that is out of the game or in Full Control, or a game that has not started or is over, gets `Error{BadMessage}`; turning Full Control on ends a yield.
 - `Yielding { until }` (`null` for none) reports every change, whatever the cause; `Welcome.yielding` gives it at join. It follows the events of the step that changed it and precedes the `Decision` that follows. A client that sees `Yielding` with a yield drops the `Priority` decision it still shows. A yielding seat is sent no `Priority` decision, except when the server cuts a run of 500 passes in one step: the yield ends first and `Yielding` says so.
+
+### Auto-skips
+
+- `AutoChoices.skip_triggers` ("Auto-skip triggers", absent reads as off) passes the seat at once at each priority decision with a triggered ability of any seat on top of the stack, out of Full Control. The rule reads the stack alone, never the hand or what the seat could do; an activated ability or a spell on top is handled as before. It is set and saved like the other auto choices.
+- `AutoYield { object }` is the auto-pass for one ability: the seat is passed for at once while an ability with that key (source name and words) is on top of the stack, for the rest of the game ([server.md](server.md), Stops, Full Control and yields).
+- `AutoSkip { rule }` lets the server answer the seat's questions about its own triggers from the next one on: `Answer { ability, yes }` answers each yes-or-no question its own ability with that key asks about its source while resolving (No when Yes cannot be paid); `Order { triggers }` puts exactly that set of its triggers (`TriggerKey`: source name and ability index) on the stack in that order. A rule replaces the one with the same key (`AutoSkip::key`: the ability, or the sorted set); `CancelAutoSkip { rule }` takes it back by key. An unnamed key, an order of fewer than 2 or more than `MAX_ORDER_TRIGGERS` triggers and a rule past `MAX_AUTO_SKIPS` get `Error{BadMessage}`.
+- A rule keys only what every player reads (a source hidden from a spectator never matches) and never applies to a question a hidden card could decide (`YesNoOptions::unseen`) or a commander's return, so the pace shows the choice and nothing hidden. The answer is logged like the seat's own.
+- `AutoSkips { rules }` reports the whole list at each change, in the place of `Stops`; `Welcome.auto_skips` gives it at join. Rules live in memory per seat for one game: a resumed game, a seat that leaves and a game that ends have none. Full Control asks every question while on and leaves the rules held.
 
 ### Stops and Full Control
 

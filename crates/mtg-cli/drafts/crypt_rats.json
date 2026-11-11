@@ -1,0 +1,26 @@
+{
+  "oracle_id": "104095ed-55e3-408e-bf70-4fe06bb16d2f",
+  "name": "Crypt Rats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crypt Rats",
+      "oracle_fingerprint": "c5732585f2296fe9167762bc37749909",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{X}",
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Union": [{ "Each": [{ "Type": "Creature" }] }, "EachPlayer"] },
+                  "amount": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

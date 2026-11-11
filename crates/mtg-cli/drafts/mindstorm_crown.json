@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0ad26c65-bc2c-4aa7-8c5d-e4c8f0629cb7",
+  "name": "Mindstorm Crown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindstorm Crown",
+      "oracle_fingerprint": "9770fe1f57f0adbcee8a3335806fa7ab",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "AtTrigger": {
+                      "Compare": {
+                        "left": { "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }] },
+                        "op": "Eq",
+                        "right": 0
+                      }
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

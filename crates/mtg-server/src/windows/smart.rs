@@ -184,6 +184,7 @@ mod tests {
             ME,
             AutoChoices {
                 smart_stops: smart,
+                skip_triggers: false,
                 ..AutoChoices::default()
             },
         );

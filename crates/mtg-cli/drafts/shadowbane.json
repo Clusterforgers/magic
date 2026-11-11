@@ -1,0 +1,46 @@
+{
+  "oracle_id": "9e9ec33b-b923-40e5-81a8-e1e78df63ec7",
+  "name": "Shadowbane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadowbane",
+      "oracle_fingerprint": "9d3a939c467958837af9ba92a2a4ae97",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": {
+                        "Union": [
+                          "You",
+                          { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        ]
+                      },
+                      "source": [{ "Is": { "Bound": "source" } }]
+                    }
+                  },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
