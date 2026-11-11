@@ -853,8 +853,14 @@ pub enum ReplaceBy {
     /// The number or amount in the event is increased.
     Add(u32),
     /// The number in the event is halved, rounded down ("they put half that many of each of those kinds of counters
-    /// on that permanent or player instead, rounded down").
+    /// on that permanent or player instead, rounded down", "it deals half that damage, rounded down, ... instead").
     Half,
+    /// The damage is decreased by this much, a replacement and not a prevention (CR 614.1a): "it deals that much damage
+    /// minus 1 to that creature instead"; damage brought to 0 is not dealt.
+    Subtract(u32),
+    /// Damage greater than this is this much instead, a replacement and not a prevention (CR 614.1a): "If a source would
+    /// deal 4 or more damage to a permanent or player, that source deals 3 damage to that permanent or player instead."
+    Cap(u32),
     /// The event does not happen (prevention, CR 615).
     Prevent,
     /// The next damage event it covers does not happen, and the shield ends ("the next time a source of your choice would

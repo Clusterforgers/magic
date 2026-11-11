@@ -60,6 +60,7 @@ fn read_keys(p: &Params, static_line: bool) -> Tr<()> {
         keys.extend(super::condition::KEYS);
         keys.push("PlayerTurn");
         keys.push("Hellbent");
+        keys.push("DamageAmount");
     }
     check_keys(p, "Replacement.DamageDone", &keys, |_, _| false)?;
     if p.has("DamageTarget") && !p.has("ReplaceWith") {
@@ -126,9 +127,13 @@ pub fn static_prevention(ctx: &Ctx, p: &Params) -> Tr<Vec<Value>> {
     let you = p.get("ValidTarget") == Some("You");
     let by = match p.get("ReplaceWith") {
         None => json!("Prevent"),
-        Some(name) if is_damage_scaling(ctx, name) => scaled(ctx, name)?,
+        Some(name) if is_damage_scaling(ctx, name) => scaled(ctx, name, p.get("DamageAmount"))?,
         Some(name) => super::replacements_damage_by::by(ctx, p, name, you, false)?,
     };
+    // Only a cap reads the amount of damage the line is about.
+    if p.has("DamageAmount") && by.get("Cap").is_none() {
+        return unmapped("key:Replacement.DamageDone.DamageAmount");
+    }
     // A list of one player and one permanent word names disjoint recipients, so one replacement for each is exact.
     let mut gates = Vec::new();
     match p.get("PlayerTurn") {
@@ -198,8 +203,9 @@ fn static_replacement(ctx: &Ctx, p: &Params, recipient: Option<Value>, by: &Valu
     Ok(json!({"Replacement": {"when": {"Damage": when}, "by": by}}))
 }
 
-/// `ReplaceEffect` of the damage amount (`ReplaceCount$DamageAmount/Twice`) as a multiplication or an addition.
-fn scaled(ctx: &Ctx, name: &str) -> Tr<Value> {
+/// `ReplaceEffect` of the damage amount (`ReplaceCount$DamageAmount/Twice`) as a multiplication, an addition, a
+/// subtraction (`Minus.N`) or a halving rounded down (`HalfDown`); a fixed amount N under `DamageAmount$ GE<N+1>` is a cap.
+fn scaled(ctx: &Ctx, name: &str, threshold: Option<&str>) -> Tr<Value> {
     let Some(part) = ctx.svar(name).map(Params::parse) else {
         return unmapped("svar:missing");
     };
@@ -212,20 +218,38 @@ fn scaled(ctx: &Ctx, name: &str) -> Tr<Value> {
     if part.get("DB") != Some("ReplaceEffect") || part.get("VarName") != Some("DamageAmount") {
         return unmapped("replacement:DamageDone-ReplaceWith-shape");
     }
+    let fixed = part.get("VarValue").and_then(|n| n.parse::<u32>().ok());
+    if let Some(most) = fixed {
+        let over = threshold
+            .and_then(|word| word.strip_prefix("GE"))
+            .and_then(|n| n.parse::<u32>().ok());
+        return match over {
+            Some(over) if most > 0 && over == most + 1 => Ok(json!({"Cap": most})),
+            _ => unmapped("replacement:DamageDone-fixed-amount"),
+        };
+    }
     let expression = part
         .get("VarValue")
         .and_then(|var| ctx.svar(var))
         .unwrap_or_default();
+    let number = |step: &str, prefix: &str| {
+        step.strip_prefix(prefix)
+            .and_then(|n| n.parse::<u32>().ok())
+            .filter(|n| *n > 0)
+    };
     match expression.strip_prefix("ReplaceCount$DamageAmount/") {
         Some("Twice") => Ok(json!({"Multiply": 2})),
         Some("Thrice") => Ok(json!({"Multiply": 3})),
-        Some(step) => match step
-            .strip_prefix("Plus.")
-            .and_then(|n| n.parse::<u32>().ok())
-        {
-            Some(n) => Ok(json!({"Add": n})),
-            None => unmapped("replacement:DamageDone-ReplaceCount-step"),
-        },
+        Some("HalfDown") => Ok(json!("Half")),
+        Some(step) => {
+            if let Some(n) = number(step, "Plus.") {
+                Ok(json!({"Add": n}))
+            } else if let Some(n) = number(step, "Minus.") {
+                Ok(json!({"Subtract": n}))
+            } else {
+                unmapped("replacement:DamageDone-ReplaceCount-step")
+            }
+        }
         None => unmapped("replacement:DamageDone-ReplaceCount"),
     }
 }
@@ -346,7 +370,14 @@ fn shield_by(ctx: &Ctx, (p, line): (&Params, &Params), remembered: Option<&Value
             let you = p.get("ValidTarget") == Some("You");
             super::replacements_damage_by::by(ctx, p, name, you, true)?
         }
-        Some(name) if is_damage_scaling(ctx, name) => scaled(ctx, name)?,
+        Some(name) if is_damage_scaling(ctx, name) => {
+            // A shield multiplies or adds; it does not lessen or halve damage.
+            let by = scaled(ctx, name, None)?;
+            if by.get("Multiply").is_none() && by.get("Add").is_none() {
+                return unmapped("replacement:DamageDone-shield-lessens");
+            }
+            by
+        }
         Some(name) if super::replacements_damage_by::splits(ctx, name) => {
             super::replacements_damage_by::split_redirect(
                 ctx,

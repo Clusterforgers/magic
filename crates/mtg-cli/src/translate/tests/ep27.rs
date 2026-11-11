@@ -1,4 +1,4 @@
-//! Goal: the pieces of ep27 translate as the card prints them. A card cast as though it had flash under a condition (`CastWithFlash | ValidCard$ Card.Self | EffectZone$ All | Caster$ You`) is a `MayCast` rule of the card from its hand with the line's condition; a check of the spell (X, its targets, teamwork), another caster or zone stays a gap. "You don't lose the game for having 0 or less life" (`GameLoss | ValidLoseReason$ LifeReachedZero | Layer$ CantHappen`) is a `CantLoseGame` rule for the loss by life alone, under the line's condition; another reason, text or player stays a gap. Hands played revealed (`MayLookAt$ Player` over `AffectedZone$ Hand`) are a `RevealHand` rule for every player, the opponents or you; a look by one seat or another owner stays a gap.
+//! Goal: the pieces of ep27 translate as the card prints them. A card cast as though it had flash under a condition (`CastWithFlash | ValidCard$ Card.Self | EffectZone$ All | Caster$ You`) is a `MayCast` rule of the card from its hand with the line's condition; a check of the spell (X, its targets, teamwork), another caster or zone stays a gap. "You don't lose the game for having 0 or less life" (`GameLoss | ValidLoseReason$ LifeReachedZero | Layer$ CantHappen`) is a `CantLoseGame` rule for the loss by life alone, under the line's condition; another reason, text or player stays a gap. Hands played revealed (`MayLookAt$ Player` over `AffectedZone$ Hand`) are a `RevealHand` rule for every player, the opponents or you; a look by one seat or another owner stays a gap. Damage lessened (`ReplaceCount$DamageAmount/Minus.N`), halved rounded down (`HalfDown`) or capped (a fixed N under `DamageAmount$ GE<N+1>`) is a `Subtract`, `Half` or `Cap` replacement; another threshold, a fixed amount alone, nothing subtracted or another rounding stays a gap.
 use rstest::rstest;
 use serde_json::json;
 
@@ -108,5 +108,50 @@ fn ep27_other_self_flash_stays_a_gap(#[case] line: &str) {
     assert!(
         found.iter().any(|gap| gap.contains("CastWithFlash")),
         "{line}: {found:?}"
+    );
+}
+
+fn lessening(line: &str, value: &str) -> String {
+    format!(
+        "Name:T\nTypes:Enchantment\nR:Event$ DamageDone | ActiveZones$ Battlefield | ValidTarget$ Permanent,Player | {line}ReplaceWith$ Dmg | Description$ x\nSVar:Dmg:DB$ ReplaceEffect | VarName$ DamageAmount | VarValue$ {value}\nSVar:X:ReplaceCount$DamageAmount/{value}\n"
+    )
+}
+
+#[rstest]
+#[case::minus_one("", "X", "Minus.1", json!({"Subtract": 1}))]
+#[case::half_down("", "X", "HalfDown", json!("Half"))]
+#[case::capped("DamageAmount$ GE4 | ", "3", "", json!({"Cap": 3}))]
+fn ep27_lessened_damage(
+    #[case] line: &str,
+    #[case] value: &str,
+    #[case] step: &str,
+    #[case] by: serde_json::Value,
+) {
+    let script = lessening(line, value).replace("/X\n", &format!("/{step}\n"));
+    assert_eq!(gaps(&script), Vec::<String>::new(), "{script}");
+    assert_eq!(
+        abilities(&script),
+        vec![json!({"Replacement": {"when": {"Damage": {}}, "by": by}})]
+    );
+}
+
+#[rstest]
+#[case::a_cap_under_another_threshold("DamageAmount$ GE5 | ", "3", "")]
+#[case::a_fixed_amount_without_a_threshold("", "3", "")]
+#[case::a_threshold_on_a_subtraction("DamageAmount$ GE2 | ", "X", "Minus.1")]
+#[case::minus_nothing("", "X", "Minus.0")]
+#[case::half_up("", "X", "HalfUp")]
+fn ep27_other_damage_amounts_stay_gaps(
+    #[case] line: &str,
+    #[case] value: &str,
+    #[case] step: &str,
+) {
+    let script = lessening(line, value).replace("/X\n", &format!("/{step}\n"));
+    let found = gaps(&script);
+    assert!(
+        found
+            .iter()
+            .any(|gap| gap.contains("DamageDone") || gap.contains("DamageAmount")),
+        "{script}: {found:?}"
     );
 }

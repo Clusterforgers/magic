@@ -101,6 +101,58 @@ const fn kind(combat: Option<bool>) -> &'static str {
     }
 }
 
+/// The ways "that ..." names the recipient again: as `recipient` says, and "that creature" for creatures.
+fn ep27_again(to: Option<&Ref>, again: &str) -> Vec<String> {
+    let mut found = vec![again.to_owned()];
+    if let Some(Ref::Each(what)) = to
+        && what
+            .0
+            .contains(&Pred::Type(mtg_core::card::CardType::Creature))
+    {
+        found.push("that creature".to_owned());
+    }
+    found
+}
+
+/// Damage lessened, capped or halved, a replacement and not a prevention: "If a source would deal damage to a creature
+/// you control, it deals that much damage minus 1 to that creature instead.", "If a source would deal 4 or more damage
+/// to a permanent or player, that source deals 3 damage to that permanent or player instead.", "... it deals half that
+/// damage, rounded down, to that permanent or player instead."
+fn ep27_lessened(
+    from: &str,
+    kind: &str,
+    whom: &str,
+    agains: &[String],
+    deals: &[String],
+    by: &ReplaceBy,
+) -> Vec<String> {
+    let mut found = Vec::new();
+    for deal in deals {
+        for again in agains {
+            match by {
+                ReplaceBy::Subtract(less) if *less > 0 => {
+                    for number in numbers(*less) {
+                        found.push(format!(
+                            "if {from} would deal {kind} to {whom}, {deal} that much damage minus {number} to {again} instead"
+                        ));
+                    }
+                }
+                ReplaceBy::Cap(most) if *most > 0 && kind == "damage" => {
+                    let over = most + 1;
+                    found.push(format!(
+                        "if {from} would deal {over} or more damage to {whom}, {deal} {most} damage to {again} instead"
+                    ));
+                }
+                ReplaceBy::Half => found.push(format!(
+                    "if {from} would deal {kind} to {whom}, {deal} half that damage, rounded down, to {again} instead"
+                )),
+                _ => {}
+            }
+        }
+    }
+    found
+}
+
 /// "If a source would deal damage to an opponent, it deals double that damage to that player instead."
 fn damage(
     to: Option<&Ref>,
@@ -138,6 +190,16 @@ fn damage(
                     ));
                 }
             }
+        }
+        ReplaceBy::Subtract(_) | ReplaceBy::Cap(_) | ReplaceBy::Half => {
+            found.extend(ep27_lessened(
+                &from,
+                kind,
+                &whom,
+                &ep27_again(to, again),
+                &deals,
+                by,
+            ));
         }
         ReplaceBy::Prevent => {
             found.push(format!("{head}, prevent that damage"));

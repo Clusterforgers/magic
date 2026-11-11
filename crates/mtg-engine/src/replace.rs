@@ -646,7 +646,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 ..
             }
         ),
-        ReplaceBy::Half => matches!(unit, Unit::Counters { .. }),
+        ReplaceBy::Half => matches!(unit, Unit::Counters { .. } | Unit::Damage { .. }),
+        ReplaceBy::Subtract(_) | ReplaceBy::Cap(_) => matches!(unit, Unit::Damage { .. }),
         ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
         | ReplaceBy::Prevent
@@ -2000,7 +2001,14 @@ impl Pass<'_> {
                 self.end_once_shield(candidate);
                 self.r6f_redirect_up_to(at, candidate, u32::MAX, applied);
             }
-            (ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Half, _) => {
+            (
+                ReplaceBy::Multiply(_)
+                | ReplaceBy::Add(_)
+                | ReplaceBy::Half
+                | ReplaceBy::Subtract(_)
+                | ReplaceBy::Cap(_),
+                _,
+            ) => {
                 self.scale(at, by, &applied);
             }
             (
@@ -2300,6 +2308,8 @@ impl Pass<'_> {
             ReplaceBy::Multiply(times) => amount.saturating_mul(*times),
             ReplaceBy::Add(extra) => amount.saturating_add(*extra),
             ReplaceBy::Half => amount / 2,
+            ReplaceBy::Subtract(less) => amount.saturating_sub(*less),
+            ReplaceBy::Cap(most) => amount.min(*most),
             _ => amount,
         };
         let item = self.slots[at].item.clone();
@@ -2346,15 +2356,20 @@ impl Pass<'_> {
             }) => {
                 let now = more(amount);
                 self.follow_lifelink(at, source, amount, now);
-                vec![Item::One(Event::DamageDealt {
-                    source,
-                    target,
-                    amount: now,
-                    deathtouch,
-                    form,
-                    toxic,
-                    unpreventable,
-                })]
+                // Damage brought to 0 by a replacement is not dealt (CR 120.8).
+                if now == 0 {
+                    Vec::new()
+                } else {
+                    vec![Item::One(Event::DamageDealt {
+                        source,
+                        target,
+                        amount: now,
+                        deathtouch,
+                        form,
+                        toxic,
+                        unpreventable,
+                    })]
+                }
             }
             Item::One(Event::CountersChanged(changed)) => {
                 let now = more(changed.delta.unsigned_abs());

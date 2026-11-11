@@ -641,6 +641,8 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Multiply",
     "ReplaceBy.Add",
     "ReplaceBy.Half",
+    "ReplaceBy.Subtract",
+    "ReplaceBy.Cap",
     "ReplaceBy.Prevent",
     "ReplaceBy.PreventNext",
     "ReplaceBy.PreventUpTo",

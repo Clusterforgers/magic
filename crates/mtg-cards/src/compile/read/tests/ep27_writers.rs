@@ -94,6 +94,56 @@ fn ep27_the_top_card_revealed_is_no_revealed_hand() {
     );
 }
 
+fn lessened(when: &str, by: &str) -> Ability {
+    ability(&format!(
+        r#"{{"Replacement":{{"when":{{"Damage":{when}}},"by":{by}}}}}"#
+    ))
+}
+
+const UNICORN: &str = "If a spell would deal damage to a permanent or player, it deals that much damage minus 1 to that permanent or player instead.";
+const BARRIER: &str = "If a source would deal damage to a creature you control, it deals that much damage minus 1 to that creature instead.";
+const PRESENCE: &str = "If a source would deal 4 or more damage to a permanent or player, that source deals 3 damage to that permanent or player instead.";
+const GHOSTS: &str = "If a source would deal damage to a permanent or player, it deals half that damage, rounded down, to that permanent or player instead.";
+const MINE: &str = r#"{"to":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#;
+
+#[rstest]
+#[case::unicorn(
+    lessened(r#"{"source":["Spell"]}"#, r#"{"Subtract":1}"#),
+    UNICORN,
+    true
+)]
+#[case::unicorn_minus_two(
+    lessened(r#"{"source":["Spell"]}"#, r#"{"Subtract":2}"#),
+    UNICORN,
+    false
+)]
+#[case::unicorn_any_source(lessened("{}", r#"{"Subtract":1}"#), UNICORN, false)]
+#[case::unicorn_plus(lessened(r#"{"source":["Spell"]}"#, r#"{"Add":1}"#), UNICORN, false)]
+#[case::unicorn_prevented(
+    lessened(r#"{"source":["Spell"]}"#, r#"{"PreventUpTo":1}"#),
+    UNICORN,
+    false
+)]
+#[case::barrier(lessened(MINE, r#"{"Subtract":1}"#), BARRIER, true)]
+#[case::barrier_any_creature(
+    lessened(r#"{"to":{"Each":[{"Type":"Creature"}]}}"#, r#"{"Subtract":1}"#),
+    BARRIER,
+    false
+)]
+#[case::presence(lessened("{}", r#"{"Cap":3}"#), PRESENCE, true)]
+#[case::presence_cap_four(lessened("{}", r#"{"Cap":4}"#), PRESENCE, false)]
+#[case::presence_combat_only(lessened(r#"{"combat":true}"#, r#"{"Cap":3}"#), PRESENCE, false)]
+#[case::ghosts(lessened("{}", r#""Half""#), GHOSTS, true)]
+#[case::ghosts_prevented_half(lessened("{}", r#""PreventHalf""#), GHOSTS, false)]
+fn ep27_lessened_damage_writes_as_printed(
+    #[case] ability: Ability,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let found = written_variants(&ability);
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
 const NO_LIFE_LOSS: &str = "You don't lose the game for having 0 or less life.";
 
 #[test]

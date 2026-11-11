@@ -1373,6 +1373,8 @@ fn ability() -> impl Strategy<Value = Ability> {
             prop_oneof![
                 (1u32..4).prop_map(ReplaceBy::Multiply),
                 (1u32..4).prop_map(ReplaceBy::Add),
+                (1u32..4).prop_map(ReplaceBy::Subtract),
+                (1u32..4).prop_map(ReplaceBy::Cap),
                 Just(ReplaceBy::Prevent),
                 (1u32..6).prop_map(ReplaceBy::PreventUpTo),
                 effects().prop_map(ReplaceBy::Instead),

@@ -4858,10 +4858,19 @@ impl Walker<'_> {
         }
     }
 
-    /// Only the counters of an event are halved.
+    /// Only the counters or the damage of an event are halved, and only damage is lessened or capped.
     fn ep24_half(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
-        if *by == ReplaceBy::Half && !matches!(when, ReplaceWhen::CountersPut { .. }) {
-            self.problem("only the counters of an event are halved");
+        let damage = matches!(when, ReplaceWhen::Damage { .. });
+        if *by == ReplaceBy::Half && !damage && !matches!(when, ReplaceWhen::CountersPut { .. }) {
+            self.problem("only the counters or the damage of an event are halved");
+        }
+        match by {
+            ReplaceBy::Subtract(_) | ReplaceBy::Cap(_) if !damage => {
+                self.problem("only damage is lessened or capped");
+            }
+            ReplaceBy::Subtract(0) => self.problem("subtracting nothing changes nothing"),
+            ReplaceBy::Cap(0) => self.problem("capping damage at 0 is `Prevent`"),
+            _ => {}
         }
     }
 
@@ -6252,6 +6261,18 @@ mod tests {
     #[case::a_state_in_a_delayed_trigger(
         r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"State":{"condition":"YourTurn"}},"effects":[{"Draw":{}}]}}]}}"#,
         "a state is the whole pattern of a triggered ability"
+    )]
+    #[case::ep27_tokens_lessened(
+        r#"{"Replacement":{"when":{"TokenCreation":{"controller":"You"}},"by":{"Subtract":1}}}"#,
+        "only damage is lessened or capped"
+    )]
+    #[case::ep27_damage_capped_at_nothing(
+        r#"{"Replacement":{"when":{"Damage":{}},"by":{"Cap":0}}}"#,
+        "capping damage at 0 is `Prevent`"
+    )]
+    #[case::ep27_draws_halved(
+        r#"{"Replacement":{"when":{"Draw":{"who":"You"}},"by":"Half"}}"#,
+        "only the counters or the damage of an event are halved"
     )]
     #[case::ep27_life_only_and_opponents_cant_win(
         r#"{"Rule":{"rule":{"CantLoseGame":{"who":"You","opponents_cant_win":true,"life_only":true}}}}"#,
