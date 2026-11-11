@@ -144,3 +144,28 @@ pub fn rmt2_twice_wordings(texts: &mut Vec<String>) {
         }
     }
 }
+
+/// "When the permanent you don't control dies this turn, you gain 2 life" for the delayed trigger on the second target of
+/// "target creature or planeswalker you don't control" ("When that card is put into a graveyard from the battlefield this
+/// turn, you gain 2 life").
+pub fn rmt2_dies_wordings(texts: &mut Vec<String>) {
+    const FROM: &str = "hen that card is put into a graveyard from the battlefield this turn, you ";
+    const TO: &str = "hen the permanent you don't control dies this turn, you ";
+    let found: Vec<String> = texts
+        .iter()
+        .filter(|text| {
+            text.find(FROM).is_some_and(|at| {
+                text[..at]
+                    .trim_end_matches(['W', 'w'])
+                    .trim_end_matches([' ', '.', ','])
+                    .ends_with("planeswalker you don't control")
+            })
+        })
+        .map(|text| text.replace(FROM, TO))
+        .collect();
+    for text in found {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
+}

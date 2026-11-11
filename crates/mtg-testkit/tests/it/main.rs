@@ -540,6 +540,7 @@ mod rmt2_countered_library;
 mod rmt2_divided_prevention;
 mod rmt2_held_down;
 mod rmt2_target_rules;
+mod rmt2_tendrils;
 mod rules_fuzz;
 mod rules_games;
 mod runed_crown;

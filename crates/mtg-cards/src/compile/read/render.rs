@@ -741,6 +741,7 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     rmt2_held_down::rmt2_protection_wordings(&mut texts);
     rmt2_held_down::rmt2_they_control_wordings(&mut texts);
     rmt2_held_down::rmt2_twice_wordings(&mut texts);
+    rmt2_held_down::rmt2_dies_wordings(&mut texts);
     w22_moves::w22_graved_wordings(&mut texts);
     w22_moves::w22_library_wordings(ability, &mut texts);
     super::r7e_events::wf24_activated_wordings(&mut texts);
