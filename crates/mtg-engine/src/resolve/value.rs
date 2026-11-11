@@ -1140,18 +1140,21 @@ impl<'a> Scope<'a> {
                 .into_iter()
                 .map(Target::Object)
                 .collect(),
-            Ref::Union(parts) => {
-                let mut named = Vec::new();
-                for part in parts {
-                    for found in self.refs(part)? {
-                        if !named.contains(&found) {
-                            named.push(found);
-                        }
-                    }
-                }
-                named
-            }
+            Ref::Union(parts) => self.union_refs(parts)?,
         })
+    }
+
+    /// Every player and object any of the references names, each once, in the order the references give them.
+    fn union_refs(&self, parts: &[Ref]) -> Result<Vec<Target>, ResolveError> {
+        let mut named = Vec::new();
+        for part in parts {
+            for found in self.refs(part)? {
+                if !named.contains(&found) {
+                    named.push(found);
+                }
+            }
+        }
+        Ok(named)
     }
 
     /// The object that dealt the damage or blocked, when the cause names one.

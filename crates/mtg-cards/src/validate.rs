@@ -1044,9 +1044,7 @@ impl<'a> Walker<'a> {
             | Amount::DieResult(_) => {
                 self.hand_or_life_lost(amount);
             }
-            Amount::Kicks | Amount::Promised | Amount::Devoured | Amount::AdditionalPaid => {
-                self.paid_amount(amount);
-            }
+            Amount::Kicks | Amount::Promised | Amount::Devoured => self.paid_amount(amount),
             Amount::RemovedThisWay(counter) => self.ep29_removed(counter),
             Amount::Bound(name) => {
                 if !self.scope.numbers.contains(name) {
@@ -1074,6 +1072,7 @@ impl<'a> Walker<'a> {
     #[allow(clippy::too_many_lines)]
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
+            Amount::AdditionalPaid => self.paid_amount(amount),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -1176,7 +1175,6 @@ impl<'a> Walker<'a> {
             | Amount::Exiled(_)
             | Amount::PhasedOut(_)
             | Amount::Kicks
-            | Amount::AdditionalPaid
             | Amount::Promised
             | Amount::ResolvedThisTurn
             | Amount::Devoured

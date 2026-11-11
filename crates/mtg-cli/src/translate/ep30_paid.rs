@@ -54,12 +54,11 @@ fn is_any_number_line(p: &Params) -> bool {
 /// through one `SVar$` alias.
 fn counted_var(ctx: &Ctx, p: &Params) -> Option<String> {
     let cost = p.get("Cost")?;
-    let name = match p.get("Amount") {
-        Some(name) => name.to_owned(),
-        None => {
-            let (_, rest) = cost.split_once('<')?;
-            rest.split('/').next()?.to_owned()
-        }
+    let name = if let Some(name) = p.get("Amount") {
+        name.to_owned()
+    } else {
+        let (_, rest) = cost.split_once('<')?;
+        rest.split('/').next()?.to_owned()
     };
     if name.parse::<i64>().is_ok() {
         return None;
