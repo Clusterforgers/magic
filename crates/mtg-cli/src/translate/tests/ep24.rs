@@ -1,4 +1,4 @@
-//! Goal: the pieces of ep24 translate as the card prints them: a change of one target to the source (`DefinedMagnet$ Self` with `ChangeSingleTarget$`) over spells and abilities or instant and sorcery spells with a single target; a magnet without a single change, another magnet or a magnet beside a chooser stays a gap. Unspent mana kept of one type or every type, and lost mana that becomes one type; another player, another type word or another replacement stays a gap. Mana spent as though of any color or type, for everything or for spells of one kind; white mana only, abilities or cards you do not own stay gaps. Mana of one color among objects on the battlefield, in your graveyard or of the card itself; an imprinted or exiled card and a count stay gaps. A draw limit of a number and opponents that can't make you sacrifice; a counted limit, costs or another kind of permanent stay gaps. Counter replacements by who puts them (`ValidSource$`), for effects only and halved; another putter, a list of objects or a half by you stay gaps.
+//! Goal: the pieces of ep24 translate as the card prints them: a change of one target to the source (`DefinedMagnet$ Self` with `ChangeSingleTarget$`) over spells and abilities or instant and sorcery spells with a single target; a magnet without a single change, another magnet or a magnet beside a chooser stays a gap. Unspent mana kept of one type or every type, and lost mana that becomes one type; another player, another type word or another replacement stays a gap. Mana spent as though of any color or type, for everything or for spells of one kind; white mana only, abilities or cards you do not own stay gaps. Mana of one color among objects on the battlefield, in your graveyard or of the card itself; an imprinted card without its imprint and a count stay gaps (ep26 reads the exiled cards). A draw limit of a number and opponents that can't make you sacrifice; a counted limit, costs or another kind of permanent stay gaps. Counter replacements by who puts them (`ValidSource$`), for effects only and halved; another putter, a list of objects or a half by you stay gaps.
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -187,7 +187,6 @@ fn ep24_mana_of_a_color_among_translates(#[case] line: &str, #[case] among: Valu
 
 #[rstest]
 #[case::imprinted("Valid$ Defined.Imprinted")]
-#[case::exiled_with("Valid$ Defined.ExiledWith")]
 #[case::counted("Valid$ Permanent.YouCtrl | Amount$ 2")]
 fn ep24_other_reflected_colors_stay_gaps(#[case] line: &str) {
     assert!(!gaps(&tapped(line)).is_empty(), "{line}");

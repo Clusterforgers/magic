@@ -30,6 +30,9 @@ pub(super) fn ep24_color_among_text(among: &Selector) -> Option<String> {
     if among.0 == [Pred::This] {
         return Some("one mana of any of this creature's colors".to_owned());
     }
+    if let Some(text) = super::ep26_mana::ep26_exiled_colors_text(among) {
+        return Some(text.to_owned());
+    }
     Some(format!(
         "one mana of any color among {}",
         among_words(among)?

@@ -1634,6 +1634,10 @@ fn zone_words(pred: &Pred, rest: &mut Peekable<Iter<'_, Pred>>, form: Form) -> O
             return Some(words.to_owned());
         }
     }
+    // Several targets may come from different graveyards: "up to three target cards from graveyards".
+    if form == Form::Targets {
+        return Some("from graveyards".to_owned());
+    }
     Some(OTHER_GRAVEYARDS[0].0.to_owned())
 }
 

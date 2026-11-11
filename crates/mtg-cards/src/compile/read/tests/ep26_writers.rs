@@ -1,4 +1,4 @@
-//! Goal: the writers of ep26 write the card's words and nothing near them: a target "chosen at random" ("deals 2 damage to any target chosen at random", "deals 2 damage to target opponent chosen at random") reads back only when the rules draw it, and a target the controller chooses does not read as one drawn at random. "Exile a creature you control" as a cost reads back and is read by the compiler; a graveyard, another type, another count or a sacrifice does not.
+//! Goal: the writers of ep26 write the card's words and nothing near them: a target "chosen at random" ("deals 2 damage to any target chosen at random", "deals 2 damage to target opponent chosen at random") reads back only when the rules draw it, and a target the controller chooses does not read as one drawn at random. "Exile a creature you control" as a cost reads back and is read by the compiler; a graveyard, another type, another count or a sacrifice does not. Mana of any of the exiled card's colors (an imprint) and of the exiled cards' colors (every card exiled with it), and several targets "from graveyards"; another slot, zone or source does not read back.
 use super::*;
 
 fn activated(target: &str, effect: &str) -> Ability {
@@ -85,4 +85,57 @@ fn ep26_the_compiler_reads_the_exile_cost(#[case] text: &str, #[case] permanent:
     let read = clause(text, ClauseKind::Activated, false).expect(text);
     let json = serde_json::to_string(&read).unwrap_or_default();
     assert_eq!(json.contains(EXILE_CREATURE), permanent, "{json}");
+}
+
+fn tap_for(among: &str) -> Ability {
+    ability(&format!(
+        r#"{{"Activated":{{"cost":["Tap"],"effects":[{{"AddMana":{{"mana":{{"AnyColorAmong":{among}}}}}}}]}}}}"#
+    ))
+}
+
+const IMPRINTED: &str =
+    r#"[{"Is":{"Remembered":{"on":"This","slot":"imprinted"}}},{"In":"Exile"}]"#;
+const EXILED_WITH: &str = r#"[{"ExiledWith":"This"},{"In":"Exile"}]"#;
+const MOX: &str = "{T}: Add one mana of any of the exiled card's colors.";
+const PIT: &str = "{T}: Add one mana of any of the exiled cards' colors.";
+
+#[rstest]
+#[case::mox(IMPRINTED, MOX, true)]
+#[case::mox_of_every_exiled_card(EXILED_WITH, MOX, false)]
+#[case::mox_in_the_graveyard(
+    r#"[{"Is":{"Remembered":{"on":"This","slot":"imprinted"}}},{"In":"Graveyard"}]"#,
+    MOX,
+    false
+)]
+#[case::mox_of_another_slot(
+    r#"[{"Is":{"Remembered":{"on":"This","slot":"chosen"}}},{"In":"Exile"}]"#,
+    MOX,
+    false
+)]
+#[case::pit(EXILED_WITH, PIT, true)]
+#[case::pit_of_the_imprint(IMPRINTED, PIT, false)]
+#[case::pit_of_another_source(r#"[{"ExiledWith":"Attached"},{"In":"Exile"}]"#, PIT, false)]
+fn ep26_mana_of_the_exiled_cards_colors_writes_as_printed(
+    #[case] among: &str,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let found = written_variants(&tap_for(among));
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
+const PIT_ENTERS: &str = r#"{"Triggered":{"effects":[{"Exile":{"what":{"Target":0}}}],"targets":[{"bounds":{"max":3,"min":0},"what":{"Object":[{"In":"Graveyard"}]}}],"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}}}}"#;
+
+#[rstest]
+#[case::several_from_graveyards(
+    "When ~ enters, exile up to three target cards from graveyards.",
+    true
+)]
+#[case::several_from_a_graveyard(
+    "When ~ enters, exile up to three target cards from a graveyard.",
+    false
+)]
+fn ep26_several_targets_come_from_graveyards(#[case] text: &str, #[case] reads: bool) {
+    let found = written_variants(&ability(PIT_ENTERS));
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
 }
