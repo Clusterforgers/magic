@@ -107,7 +107,11 @@ pub(super) fn discarded_filtered_text(
     let kind = super::selectors::phrase_text(filter, super::selectors::Form::Count)?;
     let kind = kind.strip_suffix(" card").unwrap_or(&kind);
     // A card in a hand is no permanent: "a nonland card", "a card with mana value 3 or greater".
-    if let Some(card) = wf26_in_hand(kind) {
+    if let Some(card) = kind
+        .contains("permanent")
+        .then(|| wf26_in_hand(filter))
+        .flatten()
+    {
         return match count {
             Amount::Fixed(1) => Some(format!("a {card}")),
             Amount::Fixed(number) => Some(format!(
@@ -128,17 +132,19 @@ pub(super) fn discarded_filtered_text(
     }
 }
 
-/// The words of a kind the selector writer says as a permanent ("nonland permanent", "permanent with mana value 3 or
-/// greater") said as a card.
-fn wf26_in_hand(kind: &str) -> Option<String> {
-    let (before, after) = if let Some(after) = kind.strip_prefix("permanent") {
-        ("", after)
-    } else {
-        let at = kind.find(" permanent")?;
-        (&kind[..at], &kind[at + " permanent".len()..])
-    };
-    let space = if before.is_empty() { "" } else { " " };
-    (after.is_empty() || after.starts_with(' ')).then(|| format!("{before}{space}card{after}"))
+/// The words of the cards a filter allows in a hand, which the selector writer says of a permanent without the zone:
+/// "nonland card" for `[Not Land]`, "nonland permanent card" for the permanent types but land.
+fn wf26_in_hand(filter: &Selector) -> Option<String> {
+    let mut said = filter.clone();
+    said.0
+        .extend([Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
+    let text = super::selectors::phrase_text(&said, super::selectors::Form::Subject)?;
+    let card = text
+        .strip_suffix(" from your hand")
+        .or_else(|| text.strip_suffix(" in your hand"))?;
+    card.split(' ')
+        .any(|word| word == "card")
+        .then(|| card.to_owned())
 }
 
 /// "an additional card", "three additional cards": the cards a draw step gives beyond the one it always draws.

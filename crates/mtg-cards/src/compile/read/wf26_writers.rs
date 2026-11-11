@@ -7,6 +7,7 @@ use serde_json::Value;
 
 use super::draws;
 use crate::ability::Ability;
+use crate::modify::Modification;
 use crate::refs::{Ref, Selector};
 use crate::value::Amount;
 
@@ -23,7 +24,12 @@ pub(super) fn wf26_wordings(
     wf26_top_or_bottom_wordings(ability, written, texts);
     wf26_boast_wordings(ability, written, texts);
     wf26_paid_wordings(ability, written, texts);
-    let those: Vec<String> = texts.iter().filter_map(|text| those_named(text)).collect();
+    wf26_counters_and_wordings(ability, written, texts);
+    let those: Vec<String> = texts
+        .iter()
+        .flat_map(|text| [those_named(text), opponent_as_player(text)])
+        .flatten()
+        .collect();
     for text in those {
         if !texts.contains(&text) {
             texts.push(text);
@@ -137,11 +143,101 @@ fn wf26_paid_wordings(
     texts.extend(found);
 }
 
+/// "If ~ was kicked, it enters with two +1/+1 counters on it and with haste.": a permanent that enters with counters and
+/// a keyword, written from the twin that enters with the counters alone.
+fn wf26_counters_and_wordings(
+    ability: &Ability,
+    written: fn(&Ability) -> Vec<String>,
+    texts: &mut Vec<String>,
+) {
+    let Ok(mut value) = serde_json::to_value(ability) else {
+        return;
+    };
+    let Some(by) = value.pointer_mut("/Replacement/by") else {
+        return;
+    };
+    let Some(and) = by.get("WithCountersAnd").and_then(Value::as_object) else {
+        return;
+    };
+    let Some(Ok(Modification::AddKeyword(keyword))) = and
+        .get("mods")
+        .and_then(Value::as_array)
+        .filter(|mods| mods.len() == 1)
+        .and_then(|mods| mods.first())
+        .map(|first| serde_json::from_value::<Modification>(first.clone()))
+    else {
+        return;
+    };
+    let Some(word) = super::selectors::keyword_text(&keyword) else {
+        return;
+    };
+    let mut counters = and.clone();
+    counters.remove("mods");
+    *by = serde_json::json!({ "WithCounters": counters });
+    let Ok(twin) = serde_json::from_value::<Ability>(value) else {
+        return;
+    };
+    let mut found = Vec::new();
+    for text in written(&twin) {
+        let Some(rest) = text.strip_suffix(" on it.") else {
+            continue;
+        };
+        if !rest.contains(" enters with ") {
+            continue;
+        }
+        let wording = format!("{rest} on it and with {}.", word.to_lowercase());
+        if !texts.contains(&wording) && !found.contains(&wording) {
+            found.push(wording);
+        }
+    }
+    texts.extend(found);
+}
+
 /// The text with its first letter in lower case.
 fn lower_first(text: &str) -> String {
     let mut letters = text.chars();
     letters.next().map_or_else(String::new, |first| {
         first.to_lowercase().chain(letters).collect()
+    })
+}
+
+/// "Target opponent ... If you control a Warrior, that opponent loses 2 life." as "... that player loses 2 life": the
+/// one target opponent is the one player named, and "that player" names them too.
+fn opponent_as_player(text: &str) -> Option<String> {
+    let players = [
+        "players",
+        "opponents",
+        "each opponent",
+        "an opponent",
+        "target player",
+        "each player",
+        "a player",
+    ];
+    let once = text.to_lowercase().matches("target opponent").count() == 1
+        && text.matches("that opponent").count() == 1
+        && !players.iter().any(|word| {
+            text.split(|c: char| !c.is_alphanumeric())
+                .any(|found| found == *word)
+                || (word.contains(' ') && text.to_lowercase().contains(word))
+        });
+    once.then(|| text.replacen("that opponent", "that player", 1))
+}
+
+/// "all nonland colorless cards" as "all colorless nonland cards": two adjectives before "card" in either order.
+fn adjectives_swapped(kind: &str) -> Option<String> {
+    let (lead, rest) = ["a ", "an ", "all "]
+        .iter()
+        .find_map(|lead| kind.strip_prefix(lead).map(|rest| (*lead, rest)))?;
+    let at = rest.find(" card")?;
+    let (first, second) = rest[..at].split_once(' ')?;
+    let word = |w: &str| !w.is_empty() && w.chars().all(|c| c.is_ascii_lowercase() || c == '-');
+    (word(first) && word(second)).then(|| {
+        let lead = match lead {
+            "a " | "an " if second.starts_with(['a', 'e', 'i', 'o', 'u']) => "an ",
+            "a " | "an " => "a ",
+            other => other,
+        };
+        format!("{lead}{second} {first}{}", &rest[at..])
     })
 }
 
@@ -195,11 +291,18 @@ fn wf26_revealed_wordings(
         if text.matches(&from).count() != 1 {
             continue;
         }
-        let tails: Vec<String> = if chosen {
-            chosen_tails(&kind)
-        } else {
-            vec![format!(" reveals their hand and discards {kind}")]
-        };
+        let mut kinds = vec![kind.clone()];
+        kinds.extend(adjectives_swapped(&kind));
+        let tails: Vec<String> = kinds
+            .iter()
+            .flat_map(|kind| {
+                if chosen {
+                    chosen_tails(kind)
+                } else {
+                    vec![format!(" reveals their hand and discards {kind}")]
+                }
+            })
+            .collect();
         for tail in tails {
             let wording = text.replacen(&from, &tail, 1);
             if !texts.contains(&wording) && !found.contains(&wording) {
@@ -306,13 +409,31 @@ fn wf26_chosen_wordings(
         if text.matches(STAND_IN).count() != 1 {
             continue;
         }
-        let wording = text.replacen(
+        let mut wordings = vec![text.replacen(
             STAND_IN,
             &format!(" becomes the {words} of your choice until end of turn"),
             1,
-        );
-        if !texts.contains(&wording) && !found.contains(&wording) {
-            found.push(wording);
+        )];
+        // "Choose a creature type. Each creature you control becomes that type until end of turn."
+        if words == "creature type"
+            && let Some(at) = text.find(STAND_IN)
+        {
+            let start = [": ", ". "]
+                .iter()
+                .filter_map(|mark| text[..at].rfind(mark).map(|found| found + mark.len()))
+                .max()
+                .unwrap_or(0);
+            wordings.push(format!(
+                "{}Choose a creature type. {} becomes that type until end of turn{}",
+                &text[..start],
+                super::render::capitalize(&text[start..at]),
+                &text[at + STAND_IN.len()..]
+            ));
+        }
+        for wording in wordings {
+            if !texts.contains(&wording) && !found.contains(&wording) {
+                found.push(wording);
+            }
         }
     }
     texts.extend(found);
@@ -391,17 +512,22 @@ fn wf26_top_or_bottom_wordings(
         if !object.starts_with("target ") || object.contains(['.', ',']) {
             continue;
         }
-        let subject = if lead.is_empty() || lead.ends_with(". ") {
+        let opens = lead.is_empty() || lead.ends_with(". ") || lead.ends_with(": ");
+        let tail = &text[end + ON_TOP.len()..];
+        let place = "puts it on their choice of the top or bottom of their library";
+        let owner = if opens { "The owner" } else { "the owner" };
+        let subject = if opens {
             super::render::capitalize(object)
         } else {
             object.to_owned()
         };
-        let wording = format!(
-            "{lead}{subject}'s owner puts it on their choice of the top or bottom of their library{}",
-            &text[end + ON_TOP.len()..]
-        );
-        if !texts.contains(&wording) && !found.contains(&wording) {
-            found.push(wording);
+        for wording in [
+            format!("{lead}{subject}'s owner {place}{tail}"),
+            format!("{lead}{owner} of {object} {place}{tail}"),
+        ] {
+            if !texts.contains(&wording) && !found.contains(&wording) {
+                found.push(wording);
+            }
         }
     }
     texts.extend(found);

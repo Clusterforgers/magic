@@ -204,3 +204,74 @@ const SURVEIL: &str = "Counter target spell unless its controller pays {2}. If t
 fn wf26_if_they_pay(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
     assert_eq!(reads(json, clause), same, "{clause}");
 }
+
+const KICKED_KAVU: &str = r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCountersAnd":{"counter":"+1/+1","count":2,"mods":[{"AddKeyword":"Haste"}]}},"condition":"Kicked"}}"#;
+const POUNCING: &str = "If ~ was kicked, it enters with two +1/+1 counters on it and with haste.";
+
+#[rstest]
+#[case::kicked_with_haste(KICKED_KAVU, POUNCING, true)]
+#[case::kicked_with_first_strike(&KICKED_KAVU.replace("Haste", "FirstStrike"), &POUNCING.replace("haste", "first strike"), true)]
+#[case::another_keyword(&KICKED_KAVU.replace("Haste", "Trample"), POUNCING, false)]
+#[case::three_counters(&KICKED_KAVU.replace(r#""count":2"#, r#""count":3"#), POUNCING, false)]
+#[case::always(&KICKED_KAVU.replace(r#","condition":"Kicked""#, ""), POUNCING, false)]
+#[case::two_keywords(&KICKED_KAVU.replace(r#"[{"AddKeyword":"Haste"}]"#, r#"[{"AddKeyword":"Haste"},{"AddKeyword":"Trample"}]"#), POUNCING, false)]
+fn wf26_kicked_with_counters_and_a_keyword(
+    #[case] json: &str,
+    #[case] clause: &str,
+    #[case] same: bool,
+) {
+    assert_eq!(reads(json, clause), same, "{clause}");
+}
+
+const WAKECASTER: &str = r#"{"Activated":{"cost":"{2}{U}{U}","effects":[{"ChooseValue":{"kind":"CreatureType","as":"chosen"}},{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"SetCreatureTypesChosen":"chosen"}],"duration":"UntilEndOfTurn"}}]}}"#;
+const THAT_TYPE: &str = "{2}{U}{U}: Choose a creature type. Each creature you control becomes that type until end of turn.";
+const DIPLOMACY: &str = r#"{"Spell":{"targets":[{"what":"Opponent"}],"effects":[{"LoseLife":{"who":{"Target":0},"amount":2}}]}}"#;
+const ASSUMPTIONS: &str = r#"{"Spell":{"targets":[{"what":"Opponent"}],"effects":[{"Reveal":{"what":{"Each":[{"OwnedBy":{"Target":0}},{"In":"Hand"}]}}},{"Discard":{"who":{"Target":0},"count":{"Count":[{"In":"Hand"},{"OwnedBy":{"Target":0}},{"Not":{"Type":"Land"}},"Colorless"]},"filter":[{"Not":{"Type":"Land"}},"Colorless"]}}]}}"#;
+
+#[rstest]
+#[case::that_type(WAKECASTER, THAT_TYPE, true)]
+#[case::that_type_for_a_color(&WAKECASTER.replace("CreatureType", "Color").replace("SetCreatureTypesChosen", "SetColorsChosen"), THAT_TYPE, false)]
+#[case::the_owner_of(
+    MOTES,
+    "The owner of target creature puts it on their choice of the top or bottom of their library.",
+    true
+)]
+#[case::the_owner_of_another(
+    MOTES,
+    "The owner of target land puts it on their choice of the top or bottom of their library.",
+    false
+)]
+#[case::adjectives_swapped(
+    ASSUMPTIONS,
+    "Target opponent reveals their hand and discards all colorless nonland cards.",
+    true
+)]
+#[case::adjectives_of_another_kind(
+    ASSUMPTIONS,
+    "Target opponent reveals their hand and discards all colorless noncreature cards.",
+    false
+)]
+#[case::nonland_for_nonland_permanent(&spell("Opponent", NONLAND), "Target opponent reveals their hand. You choose a nonland permanent card from it. That player discards that card.", false)]
+fn wf26_other_words_of_the_writers(#[case] json: &str, #[case] clause: &str, #[case] same: bool) {
+    assert_eq!(reads(json, clause), same, "{clause}");
+}
+
+#[rstest]
+#[case::that_player(
+    "Target opponent loses 2 life. If you control a Warrior, that opponent loses 2 life.",
+    Some("Target opponent loses 2 life. If you control a Warrior, that player loses 2 life.")
+)]
+#[case::another_player(
+    "Target opponent and target player lose 2 life. Then that opponent draws a card.",
+    None
+)]
+#[case::two_opponents(
+    "Target opponent loses 2 life. Each opponent loses 1 life, then that opponent draws a card.",
+    None
+)]
+fn wf26_that_opponent_is_that_player(#[case] text: &str, #[case] expected: Option<&str>) {
+    let ability = ability(DIPLOMACY);
+    let mut texts = vec![text.to_owned()];
+    super::super::wf26_writers::wf26_wordings(&ability, |_| Vec::new(), &mut texts);
+    assert_eq!(texts.get(1).map(String::as_str), expected, "{text}");
+}
