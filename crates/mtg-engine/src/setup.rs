@@ -658,6 +658,11 @@ impl GameState {
                 .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Protection(_)))
         });
         self.possible.protection = protection;
+        self.note_designations();
+    }
+
+    /// Notes whether some card can bring day and night, the city's blessing, an enduring story or speed.
+    fn note_designations(&mut self) {
         self.possible.day_night = self.any_face(crate::ability_reader::definition_has_day_night);
         self.possible.ascend = self.any_face(crate::ability_reader::definition_has_ascend);
         self.possible.storied = self.any_face(crate::ability_reader::definition_has_storied);

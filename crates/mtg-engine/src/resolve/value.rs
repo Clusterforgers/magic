@@ -2573,16 +2573,9 @@ impl<'a> Scope<'a> {
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
             Condition::Not(inner) => !self.holds(inner)?,
-            Condition::All(all) => {
-                let mut holds = true;
-                for inner in all {
-                    if !self.holds(inner)? {
-                        holds = false;
-                        break;
-                    }
-                }
-                holds
-            }
+            Condition::All(all) => all.iter().try_fold(true, |held, inner| {
+                Ok::<_, ResolveError>(held && self.holds(inner)?)
+            })?,
             Condition::Any(any) => {
                 let mut holds = false;
                 for inner in any {
