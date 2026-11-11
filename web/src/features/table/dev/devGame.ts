@@ -8,6 +8,7 @@ import { appendChat, createPlayStore, initialPlayState } from '@/play/store'
 import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById, withPresence } from '@/play/view'
 import type { FullControlMode, HouseRules, PlayerId, StateView, Step, Stop } from '@/protocol/generated'
+import { ruleKey } from '../autoSkips'
 import { devPreview } from './devForecast'
 import { withStop } from './devStops'
 import { withRealCards } from './realCards'
@@ -158,6 +159,19 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
         autoYields: state.autoYields.filter(
           (held) => held.name !== ability.name || held.text !== ability.text,
         ),
+      }))
+      return true
+    },
+    // As the server holds the rules: one per key, the newest in place of the last.
+    autoSkip(rule) {
+      store.setState((state) => ({
+        autoSkips: [...state.autoSkips.filter((held) => ruleKey(held) !== ruleKey(rule)), rule],
+      }))
+      return true
+    },
+    cancelAutoSkip(rule) {
+      store.setState((state) => ({
+        autoSkips: state.autoSkips.filter((held) => ruleKey(held) !== ruleKey(rule)),
       }))
       return true
     },

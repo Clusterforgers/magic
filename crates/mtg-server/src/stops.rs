@@ -18,7 +18,8 @@ use mtg_engine::events::ResolutionOutcome;
 use mtg_engine::turn::Step;
 use mtg_engine::{Event, GameState};
 use mtg_protocol::{
-    AutoChoices, AutoYield, ErrorCode, FullControlMode, ServerMessage, Stop, StopSide,
+    AutoChoices, AutoSkip, AutoYield, ErrorCode, FullControlMode, ServerMessage, Stop, StopSide,
+    TriggerKey,
 };
 use thiserror::Error;
 
@@ -60,6 +61,8 @@ struct Held {
     auto_choices: AutoChoices,
     /// The abilities the seat lets resolve unasked ([`crate::auto_yields`]).
     auto_yields: BTreeSet<AutoYield>,
+    /// The rules by which the server answers the seat's questions about its own triggers, by key ([`crate::auto_skips`]).
+    auto_skips: BTreeMap<AutoSkip, AutoSkip>,
 }
 
 /// The stops and the Full Control mode of every seat of one game.
@@ -199,6 +202,56 @@ impl Stops {
             } else {
                 held.auto_yields.remove(&ability);
             }
+        }
+    }
+
+    /// The rules by which the server answers `seat`'s questions about its own triggers, in key order.
+    pub(crate) fn auto_skips(&self, seat: PlayerId) -> Vec<AutoSkip> {
+        self.seats
+            .get(seat.index())
+            .map(|held| held.auto_skips.values().cloned().collect())
+            .unwrap_or_default()
+    }
+
+    /// The rule `seat` holds with the key of `rule`.
+    fn auto_skip(&self, seat: PlayerId, rule: &AutoSkip) -> Option<&AutoSkip> {
+        self.seats.get(seat.index())?.auto_skips.get(&rule.key())
+    }
+
+    /// The answer `seat` gives the yes-or-no questions of its own triggered ability with key `ability`, if it holds one.
+    pub(crate) fn auto_answer(&self, seat: PlayerId, ability: &AutoYield) -> Option<bool> {
+        let key = AutoSkip::Answer {
+            ability: ability.clone(),
+            yes: false,
+        };
+        match self.auto_skip(seat, &key)? {
+            AutoSkip::Answer { yes, .. } => Some(*yes),
+            AutoSkip::Order { .. } => None,
+        }
+    }
+
+    /// The order in which `seat` puts exactly the triggers `set` (sorted) on the stack, if it holds one.
+    pub(crate) fn auto_order(&self, seat: PlayerId, set: &[TriggerKey]) -> Option<&[TriggerKey]> {
+        let key = AutoSkip::Order {
+            triggers: set.to_vec(),
+        };
+        match self.auto_skip(seat, &key)? {
+            AutoSkip::Order { triggers } => Some(triggers),
+            AutoSkip::Answer { .. } => None,
+        }
+    }
+
+    /// Gives `seat` the rule `rule` in place of the one with the same key.
+    pub(crate) fn set_auto_skip(&mut self, seat: PlayerId, rule: AutoSkip) {
+        if let Some(held) = self.seats.get_mut(seat.index()) {
+            held.auto_skips.insert(rule.key(), rule);
+        }
+    }
+
+    /// Takes back `seat`'s rule with the key of `rule`.
+    pub(crate) fn cancel_auto_skip(&mut self, seat: PlayerId, rule: &AutoSkip) {
+        if let Some(held) = self.seats.get_mut(seat.index()) {
+            held.auto_skips.remove(&rule.key());
         }
     }
 
@@ -350,6 +403,10 @@ impl Stops {
             let yields = self.auto_yields(seat);
             if old.auto_yields(seat) != yields {
                 told.push((seat, ServerMessage::AutoYields { yields }));
+            }
+            let rules = self.auto_skips(seat);
+            if old.auto_skips(seat) != rules {
+                told.push((seat, ServerMessage::AutoSkips { rules }));
             }
         }
         told

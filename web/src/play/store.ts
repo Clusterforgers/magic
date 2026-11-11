@@ -4,6 +4,7 @@ import type { StoreApi } from 'zustand/vanilla'
 import type { ConnectionStatus } from '@/net/socket'
 import type {
   AutoChoices,
+  AutoSkip,
   AutoYield,
   DecidingView,
   Decision,
@@ -158,6 +159,12 @@ export interface PlayState {
    */
   autoYields: AutoYield[]
   /**
+   * The rules by which the server answers this seat's questions about its own triggers (an optional trigger's yes or no,
+   * the order of triggers that go on together) for this game. The server's word: set by every Welcome and every
+   * `AutoSkips` message, never by the page.
+   */
+  autoSkips: AutoSkip[]
+  /**
    * The card in hand this seat clicked while the server passed for it (an instant or a flash card), or null: the
    * session asked for its next window and casts the card there if it is castable then.
    */
@@ -210,6 +217,7 @@ export function initialPlayState(): PlayState {
     endTurnByHand: false,
     autoChoices: { order_triggers: false, assign_damage: false, smart_stops: false },
     autoYields: [],
+    autoSkips: [],
     castWhenAsked: null,
     byHand: null,
     away: {},
