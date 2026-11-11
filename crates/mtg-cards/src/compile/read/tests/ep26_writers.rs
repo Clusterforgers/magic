@@ -1,4 +1,4 @@
-//! Goal: the writers of ep26 write the card's words and nothing near them: a target "chosen at random" ("deals 2 damage to any target chosen at random", "deals 2 damage to target opponent chosen at random") reads back only when the rules draw it, and a target the controller chooses does not read as one drawn at random. "Exile a creature you control" as a cost reads back and is read by the compiler; a graveyard, another type, another count or a sacrifice does not. Mana of any of the exiled card's colors (an imprint) and of the exiled cards' colors (every card exiled with it), and several targets "from graveyards"; another slot, zone or source does not read back. "Discard your hand, Sacrifice ~: ... Activate only as an instant." in either order of the cost; another timing, one card or another zone does not. "The next (creature, instant or sorcery) spell you cast this turn can't be countered."; another kind, duration or benefit does not.
+//! Goal: the writers of ep26 write the card's words and nothing near them: a target "chosen at random" ("deals 2 damage to any target chosen at random", "deals 2 damage to target opponent chosen at random") reads back only when the rules draw it, and a target the controller chooses does not read as one drawn at random. "Exile a creature you control" as a cost reads back and is read by the compiler; a graveyard, another type, another count or a sacrifice does not. Mana of any of the exiled card's colors (an imprint) and of the exiled cards' colors (every card exiled with it), and several targets "from graveyards"; another slot, zone or source does not read back. "Discard your hand, Sacrifice ~: ... Activate only as an instant." in either order of the cost; another timing, one card or another zone does not. "The next (creature, instant or sorcery) spell you cast this turn can't be countered."; another kind, duration or benefit does not. "You may cast ~ from your graveyard or from exile." of the two permissions in that order; another order, zone or card does not.
 use super::*;
 
 fn activated(target: &str, effect: &str) -> Ability {
@@ -200,4 +200,35 @@ fn ep26_a_next_spell_that_cannot_be_countered_writes_as_printed(
 ) {
     let found = written_variants(&ability);
     assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
+fn cast_from(zone: &str, what: &str) -> Ability {
+    ability(&format!(
+        r#"{{"Rule":{{"from":"{zone}","rule":{{"MayCast":{{"from":"{zone}","what":{what}}}}}}}}}"#
+    ))
+}
+
+const SQUEE: &str = "You may cast ~ from your graveyard or from exile.";
+const ITSELF: &str = r#"["This"]"#;
+
+#[rstest]
+#[case::squee(cast_from("Graveyard", ITSELF), cast_from("Exile", ITSELF), true)]
+#[case::exile_first(cast_from("Exile", ITSELF), cast_from("Graveyard", ITSELF), false)]
+#[case::graveyard_twice(cast_from("Graveyard", ITSELF), cast_from("Graveyard", ITSELF), false)]
+#[case::another_card_from_exile(
+    cast_from("Graveyard", ITSELF),
+    cast_from("Exile", r#"[{"Type":"Creature"}]"#),
+    false
+)]
+fn ep26_a_card_cast_from_two_zones_writes_as_printed(
+    #[case] first: Ability,
+    #[case] second: Ability,
+    #[case] reads: bool,
+) {
+    let found = crate::compile::read::static_pair_texts(&first, &second);
+    assert_eq!(
+        found.iter().any(|w| same_text(w, SQUEE)),
+        reads,
+        "{found:?}"
+    );
 }

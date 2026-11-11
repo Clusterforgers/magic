@@ -73,3 +73,42 @@ pub(super) fn ep26_next_spell_text(effect: &crate::effect::Effect) -> Option<Str
         "the next {kind} you cast this turn can't be countered"
     ))
 }
+
+/// "You may cast ~ from your graveyard or from exile": the permission of the card from its graveyard, then the same
+/// permission from exile, each a rule that works from its own zone. Empty for any other pair.
+pub(super) fn ep26_two_zones_texts(
+    first: &crate::ability::Ability,
+    second: &crate::ability::Ability,
+) -> Vec<String> {
+    use crate::ability::Ability;
+    use crate::modify::GameRule;
+    let permission = |ability: &Ability, zone: ZoneKind| match ability {
+        Ability::Rule {
+            rule: GameRule::MayCast(permission),
+            condition: None,
+            from,
+        } if *from == zone && permission.from == Some(zone) => Some(permission.clone()),
+        _ => None,
+    };
+    let (Some(mut graveyard), Some(mut exile)) = (
+        permission(first, ZoneKind::Graveyard),
+        permission(second, ZoneKind::Exile),
+    ) else {
+        return Vec::new();
+    };
+    (graveyard.from, exile.from) = (None, None);
+    if graveyard != exile || graveyard.what != Selector::this() {
+        return Vec::new();
+    }
+    super::render::written_variants(first)
+        .into_iter()
+        .filter(|text| text.contains("from your graveyard"))
+        .map(|text| {
+            text.replacen(
+                "from your graveyard",
+                "from your graveyard or from exile",
+                1,
+            )
+        })
+        .collect()
+}

@@ -1,4 +1,4 @@
-//! Goal: the pieces of ep26 translate as the card prints them: a target chosen at random (`TargetsAtRandom$ True`) on any verb that reads targets, over players, opponents and objects; a random number of random targets stays a gap. Exiling permanents you control as a cost (`Exile<N/Type>`); a count "or more" or a total stays a gap. Mana of the colours of the imprinted card or of the cards exiled with the source; an imprint without its exile or another memory stays a gap. A mana ability activated only as an instant (`InstantSpeed$ True`); another word or both speeds stay gaps. The next spell that can't be countered this turn (a static `SpellCast` delayed trigger with a `CantHappen` counter replacement); another turn, memory, spell ability or event stays a gap.
+//! Goal: the pieces of ep26 translate as the card prints them: a target chosen at random (`TargetsAtRandom$ True`) on any verb that reads targets, over players, opponents and objects; a random number of random targets stays a gap. Exiling permanents you control as a cost (`Exile<N/Type>`); a count "or more" or a total stays a gap. Mana of the colours of the imprinted card or of the cards exiled with the source; an imprint without its exile or another memory stays a gap. A mana ability activated only as an instant (`InstantSpeed$ True`); another word or both speeds stay gaps. The next spell that can't be countered this turn (a static `SpellCast` delayed trigger with a `CantHappen` counter replacement); another turn, memory, spell ability or event stays a gap. A card cast from its graveyard or from exile (two permissions); other cards, another effect zone or three zones stay gaps.
 use rstest::rstest;
 use serde_json::{Value, json};
 
@@ -195,5 +195,29 @@ fn ep26_the_next_spell_cannot_be_countered(#[case] valid: &str, #[case] rule: Va
     "Event$ Destroy | ValidCard$ Card.IsRemembered | ValidSA$ Spell | Layer$ CantHappen"
 ))]
 fn ep26_other_next_spell_shields_stay_gaps(#[case] script: String) {
+    assert!(!gaps(&script).is_empty(), "{script}");
+}
+
+fn squee(affected: &str, zones: &str, effect_zones: &str) -> String {
+    format!(
+        "Name:T\nTypes:Creature Goblin\nPT:2/1\nS:Mode$ Continuous | Affected$ {affected} | MayPlay$ True | AffectedZone$ {zones} | EffectZone$ {effect_zones} | Description$ x\n"
+    )
+}
+
+#[rstest]
+#[case::exile_first("Exile,Graveyard")]
+#[case::graveyard_first("Graveyard,Exile")]
+fn ep26_a_card_cast_from_two_zones(#[case] zones: &str) {
+    let script = squee("Card.Self", zones, zones);
+    assert_eq!(gaps(&script), Vec::<String>::new(), "{zones}");
+    let one = |zone: &str| json!({"Rule": {"from": zone, "rule": {"MayCast": {"from": zone, "what": ["This"]}}}});
+    assert_eq!(abilities(&script), vec![one("Graveyard"), one("Exile")]);
+}
+
+#[rstest]
+#[case::other_cards(squee("Creature.YouOwn", "Exile,Graveyard", "Exile,Graveyard"))]
+#[case::from_the_battlefield(squee("Card.Self", "Exile,Graveyard", "Battlefield"))]
+#[case::three_zones(squee("Card.Self", "Exile,Graveyard,Hand", "Exile,Graveyard,Hand"))]
+fn ep26_other_two_zone_permissions_stay_gaps(#[case] script: String) {
     assert!(!gaps(&script).is_empty(), "{script}");
 }

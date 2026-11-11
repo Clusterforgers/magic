@@ -151,6 +151,26 @@ fn by_mode(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             }
             json!([play, {"Rule": {"rule": look}}])
         }
+        // "You may cast ~ from your graveyard or from exile": one permission of the card for each zone it is in.
+        "Continuous"
+            if p.has("MayPlay")
+                && matches!(
+                    p.get("AffectedZone"),
+                    Some("Exile,Graveyard" | "Graveyard,Exile")
+                )
+                && p.get("Affected") == Some("Card.Self")
+                && p.get("EffectZone") == p.get("AffectedZone") =>
+        {
+            let mut rules = Vec::new();
+            for zone in ["Graveyard", "Exile"] {
+                let one = p
+                    .without(&["AffectedZone", "EffectZone"])
+                    .with("AffectedZone", zone)
+                    .with("EffectZone", zone);
+                rules.push(by_mode(ctx, &one)?);
+            }
+            Value::Array(rules)
+        }
         "Continuous" if p.has("MayPlay") => {
             let mut rule = json!({"Rule": {"rule": super::mayplay::may_cast(ctx, p, None)?}});
             if let Some(zone) = super::mayplay::effect_zone(p)? {
