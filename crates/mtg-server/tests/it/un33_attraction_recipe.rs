@@ -14,7 +14,12 @@ const RIDES: [&str; 3] = ["ride-a", "ride-b", "ride-c"];
 
 fn cards() -> BTreeMap<String, Arc<CardDefinition>> {
     let mut cards: BTreeMap<String, Arc<CardDefinition>> = (0..20)
-        .map(|n| (format!("bear-{n}"), free_creature(&format!("Bear {n}"), 2, 2)))
+        .map(|n| {
+            (
+                format!("bear-{n}"),
+                free_creature(&format!("Bear {n}"), 2, 2),
+            )
+        })
         .collect();
     for (at, id) in RIDES.iter().enumerate() {
         cards.insert((*id).to_owned(), un33_attraction(&format!("Ride {at}")));
@@ -23,7 +28,11 @@ fn cards() -> BTreeMap<String, Arc<CardDefinition>> {
 }
 
 fn catalog_of(cards: &BTreeMap<String, Arc<CardDefinition>>) -> Catalog {
-    Catalog::new(cards.iter().map(|(id, card)| (id.clone(), Arc::clone(card))))
+    Catalog::new(
+        cards
+            .iter()
+            .map(|(id, card)| (id.clone(), Arc::clone(card))),
+    )
 }
 
 fn library() -> Vec<String> {
@@ -84,7 +93,11 @@ fn a_recipe_rebuilds_the_setup_with_the_attraction_decks(#[values(2, 3, 4)] seat
             Vec::new()
         };
         assert_eq!(deck, expected, "seat {seat}");
-        assert_eq!(player.library.len(), 20, "the Attractions are no cards of the deck");
+        assert_eq!(
+            player.library.len(),
+            20,
+            "the Attractions are no cards of the deck"
+        );
     }
 }
 
@@ -102,7 +115,10 @@ fn the_stored_shape_names_the_deck_and_a_seat_without_one_keeps_the_shape_it_had
         .with_fingerprints_from(&catalog)
         .unwrap();
     let library: Vec<_> = library().iter().map(|id| Arc::clone(&cards[id])).collect();
-    assert_eq!(without.fingerprints[0], DeckFingerprint::of(&library).unwrap());
+    assert_eq!(
+        without.fingerprints[0],
+        DeckFingerprint::of(&library).unwrap()
+    );
 }
 
 type Edit = fn(&mut GameRecipe, &mut BTreeMap<String, Arc<CardDefinition>>);
