@@ -48,6 +48,32 @@ impl Span {
         text.get(offset(self.start)?..offset(self.end)?)
     }
 
+    /// Whether the span cuts whole sentences out of `text`: no blanks at its edges, a start at the text, after a line
+    /// break or after the end of a sentence (or its reminder text), and an end at the text, before a line break or at
+    /// the end of a sentence.
+    pub fn is_whole_clause(&self, text: &str) -> bool {
+        let Some(clause) = self.slice(text) else {
+            return false;
+        };
+        if clause.trim() != clause {
+            return false;
+        }
+        let chars: Vec<char> = text.chars().collect();
+        let (start, end) = (self.start as usize, self.end as usize);
+        let before = |back: usize| start.checked_sub(back).and_then(|at| chars.get(at));
+        let starts = match before(1) {
+            None | Some('\n') => true,
+            Some(' ') => matches!(before(2), Some('.' | ')' | '"')),
+            Some(_) => false,
+        };
+        let ends = match chars.get(end) {
+            None | Some('\n') => true,
+            Some(' ') => clause.ends_with(['.', ')', '"']),
+            Some(_) => false,
+        };
+        starts && ends
+    }
+
     /// Whether the two spans share a character.
     pub const fn overlaps(&self, other: &Span) -> bool {
         self.start < other.end && other.start < self.end
@@ -157,6 +183,26 @@ mod tests {
     ) {
         let text = "ab \u{2212}1: ok";
         assert_eq!(Span { start, end }.slice(text), expected);
+    }
+
+    #[rstest]
+    #[case::whole_text(0, 52, true)]
+    #[case::first_sentence(0, 12, true)]
+    #[case::second_sentence(13, 20, true)]
+    #[case::a_line(22, 28, true)]
+    #[case::a_line_with_reminder_text(29, 46, true)]
+    #[case::after_reminder_text(47, 52, true)]
+    #[case::mid_sentence(0, 8, false)]
+    #[case::starts_mid_sentence(5, 12, false)]
+    #[case::blank_at_the_end(0, 13, false)]
+    #[case::past_the_end(30, 99, false)]
+    fn a_whole_clause_starts_and_ends_at_a_sentence(
+        #[case] start: u32,
+        #[case] end: u32,
+        #[case] whole: bool,
+    ) {
+        let text = "Draw a card. Scry 2.\n\nFlying\nFlash (Reminder.) Haste";
+        assert_eq!(Span { start, end }.is_whole_clause(text), whole);
     }
 
     #[test]

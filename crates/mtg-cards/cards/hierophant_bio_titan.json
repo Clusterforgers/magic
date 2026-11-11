@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f334c57b-0a57-4fbd-8798-948371d6589d",
+  "name": "Hierophant Bio-Titan",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hierophant Bio-Titan",
+      "oracle_fingerprint": "5a2135e727d77a36c488a72869c47712",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 210 }
+          }
+        },
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

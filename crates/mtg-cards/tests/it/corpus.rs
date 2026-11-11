@@ -7,7 +7,7 @@ use std::collections::BTreeSet;
 use std::path::Path;
 
 use mtg_cards::ability::Ability;
-use mtg_cards::card::{Card, TokenFile};
+use mtg_cards::card::{Card, ImplStatus, TokenFile};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::load::{Library, canonical, parse_json, slug};
 use mtg_cards::support::{Caps, Support};
@@ -204,17 +204,40 @@ fn the_requested_cards_are_all_there() {
 fn declared_status_decides_the_support_when_the_engine_runs_everything(#[case] caps: Caps) {
     let library = library();
     for shown in printed() {
+        let card = library.card(&shown.oracle_id).unwrap();
         let record = library.support(&shown, &caps);
-        let expected = match shown.name.as_str() {
-            "Auspicious Starrix" | "Aven Mindcensor" | "Bebop, Skull & Crossbones" => {
-                Support::Partial
-            }
-            _ => Support::Verified,
+        let manual: Vec<_> = card
+            .faces
+            .iter()
+            .enumerate()
+            .flat_map(|(face, rules)| {
+                rules
+                    .abilities
+                    .iter()
+                    .filter_map(move |ability| match ability {
+                        Ability::Manual { span, .. } => Some((face, *span)),
+                        _ => None,
+                    })
+            })
+            .collect();
+        let expected = match card.impl_status {
+            ImplStatus::Full => Support::Verified,
+            ImplStatus::Partial => Support::Partial,
+            other => panic!(
+                "{}: a corpus card is declared Full or Partial, not {other:?}",
+                shown.name
+            ),
         };
         assert_eq!(
             record.support, expected,
             "{}: {:?}",
             shown.name, record.clauses
+        );
+        let clauses: Vec<_> = record.clauses.iter().map(|c| (c.face, c.span)).collect();
+        assert_eq!(
+            clauses, manual,
+            "{}: the clauses left to the table are the Manual abilities",
+            shown.name
         );
         assert_eq!(record.fingerprint.len(), 32);
     }
@@ -407,6 +430,8 @@ fn the_worked_example_in_the_design_doc_is_the_file() {
     assert_eq!(in_doc, in_file);
 }
 
+/// Every `Manual` span of the corpus cuts whole sentences out of its face's text, so a card promoted with clauses
+/// left to the table needs no entry here.
 #[test]
 fn clause_spans_cut_out_the_sentences_they_name() {
     let library = library();
@@ -414,11 +439,25 @@ fn clause_spans_cut_out_the_sentences_they_name() {
     for shown in printed() {
         let card = library.card(&shown.oracle_id).unwrap();
         for (index, face) in card.faces.iter().enumerate() {
+            let text = &shown.faces[index].oracle_text;
+            let mut last_end = 0;
             for ability in &face.abilities {
-                if let Ability::Manual { span, .. } = ability {
-                    let clause = span.slice(&shown.faces[index].oracle_text).unwrap();
-                    found.push((card.name.clone(), clause.to_owned()));
-                }
+                let Ability::Manual { span, .. } = ability else {
+                    continue;
+                };
+                let clause = span.slice(text).unwrap();
+                assert!(
+                    span.is_whole_clause(text),
+                    "{}: {clause:?} is not a whole clause of {text:?}",
+                    card.name
+                );
+                assert!(
+                    span.start >= last_end,
+                    "{}: {clause:?} overlaps the clause before it",
+                    card.name
+                );
+                last_end = span.end;
+                found.push((card.name.clone(), clause.to_owned()));
             }
         }
     }
@@ -436,8 +475,10 @@ fn clause_spans_cut_out_the_sentences_they_name() {
             "Whenever Bebop deals combat damage to a player, you may draw X cards, where X is the number of counters on Bebop. If you do, you lose X life.",
         ),
     ];
-    assert_eq!(
-        found,
-        expected.map(|(name, clause)| (name.to_owned(), clause.to_owned()))
-    );
+    for (name, clause) in expected {
+        assert!(
+            found.contains(&(name.to_owned(), clause.to_owned())),
+            "{name}: {clause:?} is not a clause left to the table"
+        );
+    }
 }

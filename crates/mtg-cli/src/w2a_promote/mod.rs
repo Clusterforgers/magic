@@ -8,6 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 
+use mtg_cards::ability::Ability;
 use mtg_cards::compile::compile;
 use mtg_cards::load::{Library, canonical, slug, unwhole};
 use mtg_cards::proposal::partial::{LedgerLine, PartialProof};
@@ -44,6 +45,8 @@ pub enum W2aSkip {
     State(Support),
     /// The rules name a card without a corpus file (a partner), so the corpus would not load.
     NamesOutside,
+    /// A clause left to the table (`Manual`) does not cut whole sentences out of the card's text.
+    Clauses,
     /// An earlier file of the run promotes the same card.
     Repeated,
     /// The cached Oracle Cards file has no record of the card.
@@ -74,6 +77,7 @@ impl W2aSkip {
             W2aSkip::Rejected(verdict) => verdict.word().to_owned(),
             W2aSkip::State(state) => format!("accepted {state:?}"),
             W2aSkip::NamesOutside => "names a card outside the corpus".into(),
+            W2aSkip::Clauses => "a clause left to the table is not a whole sentence".into(),
             W2aSkip::Repeated => "an earlier file promotes it".into(),
             W2aSkip::NoRecord => "no record in the cached Oracle Cards file".into(),
             W2aSkip::NotWhole => "unchecked, and not a whole card".into(),
@@ -232,7 +236,19 @@ impl W2aBasis<'_> {
                 return direct;
             }
         }
-        let mut report = report;
+        self.corpus_card(printed, slug, report, detail)
+    }
+
+    /// The corpus promotion of an accepted proposal, merged with the compiler's reading where it reads a clause the
+    /// proposal lacks; a `Partial` card only with `--partial` and with whole sentences left to the table.
+    fn corpus_card(
+        &self,
+        printed: &PrintedCard,
+        slug: String,
+        mut report: Report,
+        detail: &mut Option<String>,
+    ) -> Result<W2aPromotion, W2aSkip> {
+        let verdict = report.verdict();
         if verdict == Verdict::Accepted
             && let Some(merged) = self.merged(&report, printed)
         {
@@ -255,6 +271,9 @@ impl W2aBasis<'_> {
         }
         if w2a_names_outside(self.library, &rules, printed, self.corpus) {
             return Err(W2aSkip::NamesOutside);
+        }
+        if !w2a_clauses_whole(&rules, printed) {
+            return Err(W2aSkip::Clauses);
         }
         Ok(W2aPromotion {
             slug,
@@ -288,6 +307,26 @@ pub fn w2a_names_outside(
     corpus: &BTreeSet<String>,
 ) -> bool {
     !library.check_generated(rules, printed, corpus).is_empty()
+}
+
+/// Whether every clause the rules leave to the table (`Manual`) cuts whole sentences out of its face's text, as the
+/// corpus tests require of a `Partial` card.
+pub fn w2a_clauses_whole(rules: &Card, printed: &PrintedCard) -> bool {
+    rules
+        .faces
+        .iter()
+        .zip(&printed.faces)
+        .all(|(rules, shown)| {
+            let mut end = 0;
+            rules.abilities.iter().all(|ability| match ability {
+                Ability::Manual { span, .. } => {
+                    let whole = span.start >= end && span.is_whole_clause(&shown.oracle_text);
+                    end = span.end;
+                    whole
+                }
+                _ => true,
+            })
+        })
 }
 
 /// The metadata of a proposal: `meta/<slug>.json` beside the proposal file; none is the default.
@@ -568,7 +607,8 @@ pub async fn w2a_promote_against(
 #[cfg(test)]
 mod tests {
     //! Goal: a card whose rules name a partner is promoted only when the partner is a corpus card, and rules that name
-    //! no card always pass; the corpus names are the lowercase card and face names.
+    //! no card always pass; the corpus names are the lowercase card and face names; a clause left to the table must be
+    //! a whole sentence, in order and without overlap.
     #![allow(clippy::unwrap_used)]
 
     use mtg_cards::support::PrintedFace;
@@ -616,6 +656,36 @@ mod tests {
         let corpus: BTreeSet<String> = corpus.iter().map(|name| (*name).to_owned()).collect();
         let rules = report.rules.unwrap();
         assert_eq!(w2a_names_outside(&library, &rules, &card, &corpus), outside);
+    }
+
+    #[rstest]
+    #[case::a_sentence(&[(0, 12)], true)]
+    #[case::the_next_sentence(&[(13, 20)], true)]
+    #[case::two_clauses_in_order(&[(0, 12), (13, 20)], true)]
+    #[case::cut_mid_sentence(&[(0, 8)], false)]
+    #[case::starts_mid_sentence(&[(5, 12)], false)]
+    #[case::overlapping(&[(0, 12), (0, 12)], false)]
+    #[case::out_of_order(&[(13, 20), (0, 12)], false)]
+    fn a_clause_left_to_the_table_must_be_a_whole_sentence(
+        #[case] spans: &[(u32, u32)],
+        #[case] whole: bool,
+    ) {
+        let card = printed("Draw a card. Scry 2.");
+        let manual: Vec<String> = spans
+            .iter()
+            .map(|(start, end)| {
+                format!(
+                    r#"{{"Manual":{{"reason":"by hand","span":{{"start":{start},"end":{end}}}}}}}"#
+                )
+            })
+            .collect();
+        let json = format!(
+            r#"{{"oracle_id":"{}","name":"Alpha","impl_status":"Partial","faces":[{{"name":"Alpha","oracle_fingerprint":"","abilities":[{}]}}]}}"#,
+            card.oracle_id,
+            manual.join(",")
+        );
+        let rules: Card = mtg_cards::load::parse_json("alpha.json", &json).unwrap();
+        assert_eq!(w2a_clauses_whole(&rules, &card), whole);
     }
 
     #[test]

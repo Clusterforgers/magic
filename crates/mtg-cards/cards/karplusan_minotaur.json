@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b3122a15-c7ab-40f1-9632-f5fbc4484c59",
+  "name": "Karplusan Minotaur",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Karplusan Minotaur",
+      "oracle_fingerprint": "62521f4919c3136632d65a53c639804c",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 180 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CoinFlipWon": { "who": "You" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 255, "end": 353 }
+          }
+        }
+      ]
+    }
+  ]
+}

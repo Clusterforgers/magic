@@ -1,0 +1,20 @@
+{
+  "oracle_id": "32620b26-10b9-47a7-bfa7-ca590ab5fa50",
+  "name": "Aradesh, the Founder",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aradesh, the Founder",
+      "oracle_fingerprint": "6a0ee6dec9de43e9fd1374f775c202f9",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "enlist", "amount": 0 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 176, "end": 376 }
+          }
+        }
+      ]
+    }
+  ]
+}

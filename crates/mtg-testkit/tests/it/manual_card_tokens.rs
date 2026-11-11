@@ -1,4 +1,4 @@
-//! Goal: the tokens a seat's cards make (predefined, described, fixed-size; never a copy or a counted size) are offered to that seat alone, by card name and place, and made by hand with every ability of the token: activated, triggered and keyword ones; a card the seat does not own or a place the card has not is refused and changes nothing.
+//! Goal: the tokens a seat's cards in sight make (never one in its library) (predefined, described, fixed-size; never a copy or a counted size) are offered to that seat alone, by card name and place, and made by hand with every ability of the token: activated, triggered and keyword ones; a card the seat does not own or a place the card has not is refused and changes nothing.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::ability::Ability;
@@ -45,12 +45,18 @@ fn has(abilities: &[Ability]) -> Has {
     }
 }
 
-/// Seat 0 holds `name` in its hand, seat 1 an Angelic Sleuth.
+/// Seat 0 holds `name` in its hand and Descendant of Storms in its library, seat 1 an Angelic Sleuth in hand.
 fn driver(name: &str) -> Driver {
     let scenario = Scenario::new(2)
         .hand(0, [card(name).unwrap()])
         .hand(1, [card("Angelic Sleuth").unwrap()])
-        .library(0, (0..10).map(|_| island()).collect::<Vec<_>>())
+        .library(
+            0,
+            [card("Descendant of Storms").unwrap()]
+                .into_iter()
+                .chain((0..10).map(|_| island()))
+                .collect::<Vec<_>>(),
+        )
         .library(1, (0..10).map(|_| island()).collect::<Vec<_>>());
     Driver::from_scenario(scenario).unwrap()
 }
@@ -123,6 +129,7 @@ fn each_card_offers_the_tokens_it_makes_and_the_token_is_made_with_its_abilities
 #[case::an_opponents_card("Angelic Sleuth", 0)]
 #[case::a_place_the_card_has_not("Abstruse Interference", 1)]
 #[case::a_card_nobody_owns("Baron Bertram Graywater", 0)]
+#[case::a_card_in_the_library("Descendant of Storms", 0)]
 fn a_token_of_a_card_the_seat_does_not_own_or_a_place_it_has_not_is_refused(
     #[case] card: &str,
     #[case] index: u32,

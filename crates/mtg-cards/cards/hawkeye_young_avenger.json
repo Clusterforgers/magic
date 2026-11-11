@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c8f8b4ed-8455-45cd-a24c-e2f42cd5e5b1",
+  "name": "Hawkeye, Young Avenger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hawkeye, Young Avenger",
+      "oracle_fingerprint": "cfbe19d80609f4b48d15a2f814c9d5e2",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 179 }
+          }
+        }
+      ]
+    }
+  ]
+}
