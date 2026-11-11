@@ -8,6 +8,7 @@ mod common;
 mod companion_recipe;
 mod companion_resume;
 mod companion_table;
+mod compression;
 mod concede;
 mod concurrent_games;
 mod env_seed;

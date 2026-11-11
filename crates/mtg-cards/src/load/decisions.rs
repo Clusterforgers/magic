@@ -9,6 +9,7 @@ use std::fmt;
 use std::sync::{Arc, Mutex, PoisonError};
 
 use crate::assemble::Assembled;
+use crate::deck::ReadDiffers;
 use crate::draft::ReadState;
 use crate::support::{Caps, PrintedCard, SupportRecord};
 
@@ -24,6 +25,8 @@ pub(crate) struct Decided {
     pub(crate) draft_state: Option<ReadState>,
     /// The definition the engine plays.
     pub(crate) assembled: Option<Assembled>,
+    /// The clauses the card's draft reads back as other text.
+    pub(crate) differs: Option<Vec<ReadDiffers>>,
 }
 
 impl Decided {
@@ -35,6 +38,7 @@ impl Decided {
             draft_known: false,
             draft_state: None,
             assembled: None,
+            differs: None,
         }
     }
 }

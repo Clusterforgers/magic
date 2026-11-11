@@ -320,7 +320,8 @@ fn pending_of(rules: &Rules, stored: &[Card]) -> Vec<Waiting> {
             (state == ReadState::Pending).then(|| Waiting {
                 oracle_id: card.oracle_id.clone(),
                 name: card.name.clone(),
-                differs: u32::try_from(differs_of(library, &printed).len()).unwrap_or(u32::MAX),
+                differs: u32::try_from(differs_of(library, &printed, rules.caps()).len())
+                    .unwrap_or(u32::MAX),
             })
         })
         .collect()

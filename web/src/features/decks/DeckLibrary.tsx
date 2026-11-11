@@ -7,7 +7,7 @@ import {
   TriangleAlertIcon,
   UploadIcon,
 } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { EmptyState } from '@/components/EmptyState'
 import { Loading } from '@/components/Loading'
 import { PageShell } from '@/components/PageShell'
@@ -26,6 +26,8 @@ type Overlay =
   | { key: number; kind: 'new' }
   | { key: number; kind: 'import' }
   | { key: number; kind: 'delete'; deck: DeckListItem }
+
+const NO_DECKS: DeckListItem[] = []
 
 // The shape of the list while it loads: rows like the ones that will come.
 function RowsSkeleton() {
@@ -56,12 +58,15 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
   const headingNext = useRef(false)
   const navigate = useNavigate()
 
-  const open = (
-    next: { kind: 'new' } | { kind: 'import' } | { kind: 'delete'; deck: DeckListItem },
-  ): void => {
-    opened.current += 1
-    setOverlay({ ...next, key: opened.current })
-  }
+  const open = useCallback(
+    (next: { kind: 'new' } | { kind: 'import' } | { kind: 'delete'; deck: DeckListItem }): void => {
+      opened.current += 1
+      setOverlay({ ...next, key: opened.current })
+    },
+    [],
+  )
+  // Stable, so the memoised rows draw again only when their deck changes.
+  const askDelete = useCallback((target: DeckListItem) => open({ kind: 'delete', deck: target }), [open])
   // A dialog that finishes closing after another one opened must not take the new one down with it.
   const closed = (key: number): void => {
     setOverlay((current) => (current?.key === key ? null : current))
@@ -83,8 +88,11 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
     reload()
   }
 
-  const decks = state.status === 'ready' ? state.decks : []
-  const now = clock()
+  const decks = state.status === 'ready' ? state.decks : NO_DECKS
+  // The ages are counted to the moment the list arrived, so a row has no reason to draw again until the next load.
+  const [aged, setAged] = useState(() => ({ decks, now: clock() }))
+  if (aged.decks !== decks) setAged({ decks, now: clock() })
+  const now = aged.decks === decks ? aged.now : clock()
   const importAction = (
     <Button type="button" aria-haspopup="dialog" onClick={() => open({ kind: 'import' })}>
       <UploadIcon aria-hidden="true" />
@@ -198,13 +206,7 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
               className="grid gap-3"
             >
               {decks.map((deck) => (
-                <DeckRow
-                  key={deck.id}
-                  deck={deck}
-                  api={api}
-                  now={now}
-                  onDelete={(target) => open({ kind: 'delete', deck: target })}
-                />
+                <DeckRow key={deck.id} deck={deck} api={api} now={now} onDelete={askDelete} />
               ))}
             </ul>
           </div>
