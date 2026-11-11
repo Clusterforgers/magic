@@ -1040,7 +1040,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`${n.seat(by)} restarts the game${cards}`)
   }
   if ('SpellControlGained' in event) {
-    return line(`${n.seat(event.SpellControlGained.player)} gains control of ${n.card(event.SpellControlGained.object)}`)
+    return line(
+      `${n.seat(event.SpellControlGained.player)} gains control of ${n.card(event.SpellControlGained.object)}`,
+    )
   }
   if ('PhasesAdded' in event) {
     return line(`${event.PhasesAdded.steps.length} additional phase(s) follow this phase`)

@@ -166,10 +166,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { PlayerControlGained: { player: 1, by: 0, extra_turn: true } },
     'Ana will control Bo during their next turn, then takes an extra turn',
   ],
-  GameRestarted: [
-    { GameRestarted: { by: 0, kept: [3] } },
-    'Ana restarts the game, keeping Forest in exile',
-  ],
+  GameRestarted: [{ GameRestarted: { by: 0, kept: [3] } }, 'Ana restarts the game, keeping Forest in exile'],
   SpellControlGained: [{ SpellControlGained: { object: 3, player: 1 } }, 'Bo gains control of Forest'],
   PhasesAdded: [
     { PhasesAdded: { steps: ['BeginCombat', 'Main2'] } },
