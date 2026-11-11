@@ -1,7 +1,7 @@
 {
   "oracle_id": "4c702b96-3288-435d-9154-5b7454419896",
   "name": "Corrupted Grafstone",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Corrupted Grafstone",
@@ -9,9 +9,15 @@
       "abilities": [
         { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 29, "end": 105 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColorAmong": [{ "OwnedBy": "You" }, { "In": "Graveyard" }] }
+                }
+              }
+            ]
           }
         }
       ]
