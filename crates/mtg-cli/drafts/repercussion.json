@@ -10,12 +10,26 @@
         {
           "Triggered": {
             "when": {
-              "Batch": {
-                "DealsDamage": { "source": [], "to": { "Each": [{ "Type": "Creature" }] } }
+              "DealsDamage": {
+                "source": [],
+                "to": {
+                  "Each": [
+                    {
+                      "Type": "Creature"
+                    }
+                  ]
+                }
               }
             },
             "effects": [
-              { "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": "Triggering" } }
+              {
+                "DealDamage": {
+                  "to": {
+                    "ControllerOf": "Triggering"
+                  },
+                  "amount": "Triggering"
+                }
+              }
             ]
           }
         }
