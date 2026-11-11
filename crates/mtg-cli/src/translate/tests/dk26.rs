@@ -47,3 +47,25 @@ fn dk26_target_player_dealt_damage_this_turn() {
             .is_some()
     );
 }
+
+const EXOSKELETON: &str = "Name:T\nTypes:Artifact Equipment\nK:Equip:2\nT:Mode$ Unattached | ValidAttachment$ Card.Self | ValidObject$ Permanent | Execute$ TrigSac | TriggerDescription$ Whenever CARDNAME becomes unattached from a permanent, sacrifice that permanent.\nSVar:TrigSac:DB$ SacrificeAll | Defined$ TriggeredObjectLKICopy | Controller$ You\n";
+
+#[test]
+fn dk26_unattached_from_a_permanent_sacrifices_it() {
+    assert_eq!(gaps(EXOSKELETON), Vec::<String>::new());
+    let trigger = abilities(EXOSKELETON)
+        .into_iter()
+        .find(|ability| ability.get("Triggered").is_some())
+        .expect("a trigger");
+    assert_eq!(
+        trigger,
+        json!({"Triggered": {"when": {"Unattached": {"what": ["This"]}}, "effects": [{"Sacrifice": {"filter": [{"Is": "Triggering"}]}}]}})
+    );
+}
+
+#[rstest]
+#[case::another_key(EXOSKELETON.replace("ValidObject$ Permanent", "ValidObject$ Permanent | Other$ True"))]
+#[case::the_object_of_another_mode(EXOSKELETON.replace("Mode$ Unattached", "Mode$ Taps"))]
+fn dk26_a_near_miss_of_the_unattachment_stays_a_gap(#[case] script: String) {
+    assert!(!gaps(&script).is_empty(), "{script}");
+}
