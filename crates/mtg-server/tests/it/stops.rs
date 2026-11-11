@@ -120,6 +120,7 @@ fn order(messages: &[ServerMessage]) -> Vec<&'static str> {
             ServerMessage::EndTurnByHand { .. } => "end turn by hand",
             ServerMessage::AutoChoices { .. } => "auto choices",
             ServerMessage::AutoYields { .. } => "auto yields",
+            ServerMessage::AutoSkips { .. } => "auto skips",
             ServerMessage::Yielding { .. } => "yielding",
             ServerMessage::GameOver { .. } => "game over",
             ServerMessage::Error { .. } => "error",

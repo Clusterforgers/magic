@@ -44,6 +44,7 @@ import { useCardMark } from './prompt/marks'
 import { noteName, revealedLine, revealedPlace } from './revealed'
 import { combatRoleIn } from './selectors'
 import { roomTitle } from './rooms'
+import { AutoPassButton } from './AutoPassButton'
 import { isStacked, shownObject, stackSummary } from './stackPreview'
 import { useStackEntries, useTargetNamer } from './useStackEntries'
 import { useLinks } from './useLinks'
@@ -211,6 +212,7 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
                 ))}
               </ul>
             )}
+            {held === undefined ? null : <AutoPassButton object={held} />}
           </div>
         )}
         {reason === undefined ? null : (

@@ -1,4 +1,4 @@
-// Goal: at every window width the controls dock holds at most five controls, with the stop ladder and Full Control as one row from 1600 up and behind one Stops button below, the primary pass button last and 44 px high in the corner, its words naming what passing does for the prompt on screen (whole, with key hints, from a 1150 px main area; short without them below it), every control reachable by Tab in the order of reading, and Space, Enter and Control meaning what they always meant.
+// Goal: at every window width the controls dock holds at most five controls, with the stop ladder and Full Control as one row from 1600 up and behind one Stops button below, "Auto-skip triggers" in sight at every width (in the Full Control group of the row, beside the Stops button below), the primary pass button last and 44 px high in the corner, its words naming what passing does for the prompt on screen (whole, with key hints, from a 1150 px main area; short without them below it), every control reachable by Tab in the order of reading, and Space, Enter and Control meaning what they always meant.
 import { act, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, FullControlMode, Step, YieldUntil } from '@/protocol/generated'
@@ -7,8 +7,8 @@ import { primaryButton } from '@/test-utils/passControls'
 import { renderTable } from '@/test-utils/tableHarness'
 
 const ROW = ['stop-ladder', 'full-control', 'secondary-action', 'more-passing', 'primary-action']
-const BUTTON = ['stops-button', 'secondary-action', 'more-passing', 'primary-action']
-const PHONE = ['stops-button', 'more-passing', 'primary-action']
+const BUTTON = ['stops-button', 'auto-skip', 'secondary-action', 'more-passing', 'primary-action']
+const PHONE = ['stops-button', 'auto-skip', 'more-passing', 'primary-action']
 
 /** Window widths with the controls each shows, in the order of reading. 1599 is one pixel short of the row. */
 const SIZES: ReadonlyArray<[number, number, string[]]> = [
@@ -135,7 +135,9 @@ describe('the Stops button', () => {
   it('opens the same ladder and Full Control as the row has, saying how many stops are set', async () => {
     const { unmount } = dockOf({ width: 1600 })
     const names = (root: ParentNode): string[] =>
-      [...root.querySelectorAll<HTMLElement>('button')].map(
+      [...root.querySelectorAll<HTMLElement>('button')]
+        .filter((button) => button.closest('[data-slot="auto-skip"]') === null)
+        .map(
         (button) => button.getAttribute('aria-label') ?? button.textContent ?? '',
       )
     const inRow = names(must(dock().querySelector('[data-slot="stops-bar"]')))
@@ -247,9 +249,9 @@ describe('the pass button', () => {
     expect(document.querySelector('[data-slot="primary-action"]')).toBeNull()
   })
 
-  it('leaves the Stops button alone in the dock of a phone without a decision', () => {
+  it('leaves the Stops button and Auto-skip triggers alone in the dock of a phone without a decision', () => {
     dockOf({ prompt: false, width: 390, height: 844 })
-    expect(controls().map(slotOf)).toEqual(['stops-button'])
+    expect(controls().map(slotOf)).toEqual(['stops-button', 'auto-skip'])
   })
 
   it('keeps "End turn" in the menu on a phone, where it asks for the same yield as the button does elsewhere', async () => {
@@ -290,6 +292,8 @@ describe('the keyboard', () => {
       'keep-stops',
       'full-control-toggle',
       'full-control-menu',
+      'auto-skip-switch',
+      'auto-skip-list-button',
       'secondary-action',
       'more-passing',
       'primary-action',
@@ -301,6 +305,8 @@ describe('the keyboard', () => {
     const stops = screen.getByRole('button', { name: /^Stops/ })
     expect(await walk(user, stops)).toEqual([
       'stops-button',
+      'auto-skip-switch',
+      'auto-skip-list-button',
       'secondary-action',
       'more-passing',
       'primary-action',

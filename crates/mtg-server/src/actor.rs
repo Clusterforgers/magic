@@ -380,6 +380,7 @@ impl<S: EventStore> GameActor<S> {
             end_turn_by_hand: self.stops.end_turn_by_hand(seat),
             auto_choices: self.stops.auto_choices(seat),
             auto_yields: self.stops.auto_yields(seat),
+            auto_skips: self.stops.auto_skips(seat),
         };
         self.seats.send(seat, welcome);
         self.sync(seat);
@@ -462,6 +463,12 @@ impl<S: EventStore> GameActor<S> {
             }
             ClientMessage::LoadAutoYields { yields } => {
                 return self.load_auto_yields(seat, yields).await;
+            }
+            ClientMessage::AutoSkip { rule } => {
+                return self.set_auto_skip(seat, rule).await;
+            }
+            ClientMessage::CancelAutoSkip { rule } => {
+                return self.cancel_auto_skip(seat, rule).await;
             }
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),

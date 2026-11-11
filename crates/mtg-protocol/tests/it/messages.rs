@@ -41,9 +41,9 @@ use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Answer, Decision, Engine, Event};
 use mtg_protocol::{
-    AutoChoices, AutoYield, ClientMessage, DecidingView, DecisionId, DecisionName, ErrorCode,
-    EventBatch, EventView, FullControlMode, HiddenEvent, LobbySeat, PROTOCOL_VERSION,
-    ServerMessage, StateView, Stop, StopSide, YieldUntil, project_events,
+    AutoChoices, AutoSkip, AutoYield, ClientMessage, DecidingView, DecisionId, DecisionName,
+    ErrorCode, EventBatch, EventView, FullControlMode, HiddenEvent, LobbySeat, PROTOCOL_VERSION,
+    ServerMessage, StateView, Stop, StopSide, TriggerKey, YieldUntil, project_events,
 };
 use mtg_testkit::fuzz_setup;
 use proptest::prelude::*;
@@ -52,8 +52,8 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 19;
-const SERVER_VARIANTS: usize = 18;
+const CLIENT_VARIANTS: usize = 21;
+const SERVER_VARIANTS: usize = 19;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -110,6 +110,8 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::AutoYield { .. } => 16,
         ClientMessage::ClearAutoYield { .. } => 17,
         ClientMessage::LoadAutoYields { .. } => 18,
+        ClientMessage::AutoSkip { .. } => 19,
+        ClientMessage::CancelAutoSkip { .. } => 20,
     }
 }
 
@@ -134,6 +136,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::AutoChoices { .. } => 15,
         ServerMessage::AutoYields { .. } => 16,
         ServerMessage::Deciding { .. } => 17,
+        ServerMessage::AutoSkips { .. } => 18,
     }
 }
 
@@ -637,6 +640,10 @@ fn client_samples() -> Vec<ClientMessage> {
     out.push(ClientMessage::LoadAutoYields {
         yields: auto_yields(),
     });
+    for rule in auto_skips() {
+        out.push(ClientMessage::AutoSkip { rule: rule.clone() });
+        out.push(ClientMessage::CancelAutoSkip { rule });
+    }
     out.extend(
         manual_samples()
             .into_iter()
@@ -667,19 +674,46 @@ fn mode_welcomes() -> [ServerMessage; 3] {
         end_turn_by_hand: true,
         auto_choices: AutoChoices::default(),
         auto_yields: Vec::new(),
+        auto_skips: Vec::new(),
     })
 }
 
 /// Every combination of the auto choices.
-fn auto_choices() -> [AutoChoices; 8] {
+fn auto_choices() -> [AutoChoices; 16] {
     std::array::from_fn(|bits| AutoChoices {
         order_triggers: bits & 1 != 0,
         assign_damage: bits & 2 != 0,
         smart_stops: bits & 4 != 0,
+        skip_triggers: bits & 8 != 0,
     })
 }
 
 /// Keys of abilities a seat yields to: worded, unworded and one name with two abilities.
+/// A rule of each kind.
+fn auto_skips() -> Vec<AutoSkip> {
+    vec![
+        AutoSkip::Answer {
+            ability: AutoYield {
+                name: "Owl".into(),
+                text: "You may gain 3 life.".into(),
+            },
+            yes: true,
+        },
+        AutoSkip::Order {
+            triggers: vec![
+                TriggerKey {
+                    name: "Second".into(),
+                    ability: 1,
+                },
+                TriggerKey {
+                    name: "First".into(),
+                    ability: 0,
+                },
+            ],
+        },
+    ]
+}
+
 fn auto_yields() -> Vec<AutoYield> {
     [
         (
@@ -712,6 +746,7 @@ fn server_samples() -> Vec<ServerMessage> {
             end_turn_by_hand: true,
             auto_choices: AutoChoices::default(),
             auto_yields: Vec::new(),
+            auto_skips: Vec::new(),
         },
         ServerMessage::Lobby {
             seats: lobby_seats(),
@@ -757,6 +792,7 @@ fn server_samples() -> Vec<ServerMessage> {
         end_turn_by_hand: false,
         auto_choices: AutoChoices::default(),
         auto_yields: Vec::new(),
+        auto_skips: Vec::new(),
     }));
     out.extend(YIELDS.map(|until| ServerMessage::Yielding { until: Some(until) }));
     out.push(ServerMessage::Yielding { until: None });
@@ -774,6 +810,7 @@ fn server_samples() -> Vec<ServerMessage> {
     out.extend([true, false].map(|on| ServerMessage::EndTurnByHand { on }));
     out.extend(auto_choices().map(|choices| ServerMessage::AutoChoices { choices }));
     out.extend([Vec::new(), auto_yields()].map(|yields| ServerMessage::AutoYields { yields }));
+    out.extend([Vec::new(), auto_skips()].map(|rules| ServerMessage::AutoSkips { rules }));
     out.extend([0, 1, 3].map(|bank| ServerMessage::Bank {
         seat: PlayerId(1),
         bank,
@@ -970,7 +1007,7 @@ fn every_event_view_variant_round_trips() {
     json!({"type": "EndTurnByHand", "on": true})
 )]
 #[case(
-    ClientMessage::AutoChoices { choices: AutoChoices { order_triggers: false, assign_damage: true, smart_stops: true } },
+    ClientMessage::AutoChoices { choices: AutoChoices { order_triggers: false, assign_damage: true, smart_stops: true, skip_triggers: false } },
     json!({"type": "AutoChoices", "choices": {"order_triggers": false, "assign_damage": true, "smart_stops": true}})
 )]
 #[case(
@@ -1013,14 +1050,19 @@ fn client_wire_shape_is_flat_and_tagged(
     ServerMessage::Welcome {
         protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true, yielding: None,
         stops: vec![], full_control: FullControlMode::Off, end_turn_by_hand: false,
-        auto_choices: AutoChoices { order_triggers: true, assign_damage: false, smart_stops: false },
+        auto_choices: AutoChoices { order_triggers: true, assign_damage: false, smart_stops: false, skip_triggers: false },
         auto_yields: vec![AutoYield { name: "Soul Warden".into(), text: "Whenever another creature enters, you gain 1 life.".into() }],
+        auto_skips: auto_skips(),
     },
     json!({
         "type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true,
         "yielding": null, "stops": [], "full_control": "Off", "end_turn_by_hand": false,
         "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": false},
-        "auto_yields": [{"name": "Soul Warden", "text": "Whenever another creature enters, you gain 1 life."}]
+        "auto_yields": [{"name": "Soul Warden", "text": "Whenever another creature enters, you gain 1 life."}],
+        "auto_skips": [
+            {"kind": "Answer", "ability": {"name": "Owl", "text": "You may gain 3 life."}, "yes": true},
+            {"kind": "Order", "triggers": [{"name": "Second", "ability": 1}, {"name": "First", "ability": 0}]}
+        ]
     })
 )]
 #[case(
@@ -1045,6 +1087,7 @@ fn client_wire_shape_is_flat_and_tagged(
         end_turn_by_hand: true,
         auto_choices: AutoChoices::default(),
         auto_yields: Vec::new(),
+        auto_skips: Vec::new(),
     },
     json!({
         "type": "Welcome", "protocol_version": 1, "game": "g", "player": 0, "seats": 2, "auto_pass": false,
@@ -1055,7 +1098,8 @@ fn client_wire_shape_is_flat_and_tagged(
         ],
         "full_control": "Held", "end_turn_by_hand": true,
         "auto_choices": {"order_triggers": false, "assign_damage": false, "smart_stops": false},
-        "auto_yields": []
+        "auto_yields": [],
+        "auto_skips": []
     })
 )]
 #[case(
@@ -1082,7 +1126,7 @@ fn client_wire_shape_is_flat_and_tagged(
     json!({"type": "EndTurnByHand", "on": false})
 )]
 #[case(
-    ServerMessage::AutoChoices { choices: AutoChoices { order_triggers: true, assign_damage: true, smart_stops: false } },
+    ServerMessage::AutoChoices { choices: AutoChoices { order_triggers: true, assign_damage: true, smart_stops: false, skip_triggers: false } },
     json!({"type": "AutoChoices", "choices": {"order_triggers": true, "assign_damage": true, "smart_stops": false}})
 )]
 #[case(

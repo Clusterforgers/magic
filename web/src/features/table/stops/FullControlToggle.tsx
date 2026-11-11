@@ -11,6 +11,7 @@ import {
 import { useGame, usePlay } from '@/features/game/gameContext'
 import type { FullControlMode } from '@/protocol/generated'
 import { canSetStops } from '../selectors'
+import { AutoSkipToggle } from './AutoSkipToggle'
 import { FlowMenuItems } from './FlowMenu'
 import {
   FULL_CONTROL_DESCRIPTION,
@@ -33,9 +34,9 @@ const CHOICES: { mode: FullControlMode; label: string; keys?: string }[] = [
  * or Control with Shift do the same from the keyboard. It shows what the server holds, in words, so it changes when
  * the server says so and not when it is pressed; the server also turns it off by itself after the next window. It is
  * drawn only for a seat that is still in a running game, and cannot be used while the connection is down. The menu ends
- * with the pace settings (`FlowMenuItems`).
+ * with the pace settings (`FlowMenuItems`). With `autoSkip` the "Auto-skip triggers" switch follows in the same group.
  */
-export function FullControlToggle() {
+export function FullControlToggle({ autoSkip = false }: { autoSkip?: boolean }) {
   const { session } = useGame()
   const { shown, mode, online } = usePlay(
     useShallow((state) => ({
@@ -107,6 +108,7 @@ export function FullControlToggle() {
           <FlowMenuItems />
         </DropdownMenuContent>
       </DropdownMenu>
+      {autoSkip ? <AutoSkipToggle /> : null}
     </div>
   )
 }

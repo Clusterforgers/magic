@@ -36,8 +36,9 @@
 //!   auto-pass off is the same as `Held`) is asked at every window. A seat that yields is passed for as well
 //!   (`ClientMessage::Yield`: until the stack is empty, the turn ends or its own turn begins; an
 //!   opponent's new object, whatever the seat could do about it, or a stop of its own ends it), and so is a
-//!   seat whose yield to an ability (`ClientMessage::AutoYield`) names the top of the stack. Stops, modes
-//!   and yields are held in memory per seat and reported back.
+//!   seat whose yield to an ability (`ClientMessage::AutoYield`) names the top of the stack. A seat's rules for its own triggers
+//!   (`ClientMessage::AutoSkip`) answer their yes-or-no questions and their order. Stops, modes, yields and
+//!   rules are held in memory per seat and reported back.
 //!   A seat that is not the active player has a clock on every priority decision, on the targets of a spell
 //!   or ability, on ordering triggers and on the questions of effects (yes or no, an option, modes, cards, an
 //!   order of cards) (10 s)
@@ -81,6 +82,7 @@ mod accounts;
 mod actor;
 mod api;
 mod auth;
+mod auto_skips;
 mod auto_yields;
 mod bank;
 mod bulk_reads;

@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { useGame } from '@/features/game/gameContext'
+import { orderRule } from '../../autoSkips'
 import {
   answerOf,
   defaultOrder,
@@ -20,10 +22,13 @@ type Move = 'up' | 'down'
  * OrderTriggers: the triggers are listed in the order they resolve, the top one first, with the engine's own order
  * (the last to trigger resolves first) already in place. Up and Down move one trigger a place and keep focus on the
  * button that was pressed, the sentence says where the trigger went, and Confirm order sends the list as the order
- * they go on the stack. Default order puts the list back.
+ * they go on the stack. Default order puts the list back. "Always use this order" asks the server to put the same set of
+ * triggers on in the confirmed order for the rest of the game, unasked.
  */
 export const OrderTriggersPrompt: PromptComponent<'OrderTriggers'> = ({ options }) => {
   const { answer } = usePrompt()
+  const { session } = useGame()
+  const [always, setAlways] = useState(false)
   const entries = options.triggers
   const count = entries.length
   const sources = useObjects(useMemo(() => entries.map((entry) => entry.source.id), [entries]))
@@ -36,6 +41,9 @@ export const OrderTriggersPrompt: PromptComponent<'OrderTriggers'> = ({ options 
     [entries, sources],
   )
 
+  const names = useMemo(() => sources.map((source) => source?.name), [sources])
+  // A rule keys each trigger by its source's name, so it is offered only when every source has one.
+  const keyed = orderRule(entries, names, defaultOrder(count)) !== null
   // The trigger at each place of the list, by its index among the options.
   const [shown, setShown] = useState<readonly number[]>(() => defaultOrder(count))
   const [note, setNote] = useState<string | null>(null)
@@ -62,7 +70,15 @@ export const OrderTriggersPrompt: PromptComponent<'OrderTriggers'> = ({ options 
 
   return (
     <PromptLayout text={orderSentence(count, note)}>
-      <Button className="h-10 px-4" onClick={() => answer({ OrderTriggers: answerOf(shown) })}>
+      <Button
+        className="h-10 px-4"
+        onClick={() => {
+          const order = answerOf(shown)
+          const rule = always ? orderRule(entries, names, order) : null
+          if (rule !== null) session.autoSkip(rule)
+          answer({ OrderTriggers: order })
+        }}
+      >
         Confirm order
       </Button>
       <Button
@@ -76,6 +92,18 @@ export const OrderTriggersPrompt: PromptComponent<'OrderTriggers'> = ({ options 
       >
         Default order
       </Button>
+      {keyed ? (
+        <label className="flex h-10 items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            data-slot="always-order"
+            className="size-4 accent-primary"
+            checked={always}
+            onChange={(event) => setAlways(event.target.checked)}
+          />
+          Always use this order
+        </label>
+      ) : null}
       <ol
         aria-label="Your triggers, the one that resolves first on top"
         data-slot="trigger-order"

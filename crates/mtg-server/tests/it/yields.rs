@@ -198,6 +198,7 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::EndTurnByHand { .. } => "end turn by hand".into(),
         ServerMessage::AutoChoices { .. } => "auto choices".into(),
         ServerMessage::AutoYields { .. } => "auto yields".into(),
+        ServerMessage::AutoSkips { .. } => "auto skips".into(),
         ServerMessage::Bank { .. } => "bank".into(),
         ServerMessage::Presence { .. } => "presence".into(),
         ServerMessage::Deciding { .. } => "deciding".into(),

@@ -9,7 +9,8 @@ import type { StopsLayout } from './stopModel'
 /**
  * The stops' controls (side switch and Keep) with the Full Control toggle beside them, for a seat that is still in a
  * running game: one line in the controls dock (`row`), or wrapped for the popover that opens from the dock's "Stops"
- * button (`panel`). The popover also holds the step ladder when the top bar has no room for it.
+ * button (`panel`). The popover also holds the step ladder when the top bar has no room for it. In the row the
+ * "Auto-skip triggers" switch sits in the Full Control group; with the popover it stands in the dock (`StopsDock`).
  */
 export function StopsBar({ layout }: { layout: StopsLayout }) {
   const shown = usePlay(canSetStops)
@@ -22,7 +23,7 @@ export function StopsBar({ layout }: { layout: StopsLayout }) {
       className={cn('flex items-center gap-2', layout === 'row' ? 'flex-nowrap' : 'flex-wrap justify-end')}
     >
       <StopLadder layout={layout} />
-      <FullControlToggle />
+      <FullControlToggle autoSkip={layout === 'row'} />
       {layout === 'panel' ? (
         <div className="basis-full">
           <StepLadder place="panel" />

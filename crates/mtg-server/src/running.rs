@@ -14,6 +14,7 @@ use mtg_protocol::{
 };
 use tokio::time::Instant;
 
+use crate::auto_skips;
 use crate::auto_yields;
 use crate::bank::Banks;
 use crate::dwell::Waits;
@@ -309,14 +310,17 @@ impl Running {
     }
 
     /// The answer the table gives for `decision` when its seat is out of Full Control, which asks every question: the
-    /// engine's when the rules leave one ([`mtg_engine::choose::sole_answer`]), else the plain answer of a kind the seat
+    /// engine's when the rules leave one ([`mtg_engine::choose::sole_answer`]), else the seat's rule for its own triggers
+    /// ([`auto_skips`]), else the plain answer of a kind the seat
     /// lets the server answer ([`AutoChoices`]).
     fn auto_answer(&self, decision: &Decision, stops: &Stops) -> Option<Answer> {
         let off = stops.full_control(decision.player) == FullControlMode::Off;
         if !off || pace::is_priority(decision) {
             return None;
         }
-        mtg_engine::choose::sole_answer(self.engine.state(), decision)
+        let state = self.engine.state();
+        mtg_engine::choose::sole_answer(state, decision)
+            .or_else(|| auto_skips::answer(decision, stops, state))
             .or_else(|| chosen_answer(decision, stops.auto_choices(decision.player)))
     }
 

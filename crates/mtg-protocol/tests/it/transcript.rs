@@ -119,6 +119,7 @@ fn welcome() -> ServerMessage {
         end_turn_by_hand: false,
         auto_choices: AutoChoices::default(),
         auto_yields: Vec::new(),
+        auto_skips: Vec::new(),
     }
 }
 

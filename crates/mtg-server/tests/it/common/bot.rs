@@ -185,6 +185,7 @@ impl Bot {
             | ServerMessage::EndTurnByHand { .. }
             | ServerMessage::AutoChoices { .. }
             | ServerMessage::AutoYields { .. }
+            | ServerMessage::AutoSkips { .. }
             | ServerMessage::Bank { .. }
             | ServerMessage::Presence { .. }
             | ServerMessage::Deciding { .. } => {}
