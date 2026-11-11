@@ -73,6 +73,8 @@ fn under(ctx: &mut Ctx, p: &Params, condition: Option<&Value>) -> Tr<Value> {
         |_, _| false,
     )?;
     let gives_control = moved.get("DB") == Some("ChangeZone")
+        && matches!(moved.get("Hidden"), None | Some("True"))
+        && matches!(moved.get("Origin"), None | Some("All"))
         && moved.get("Destination") == Some("Battlefield")
         && moved.get("Defined") == Some("ReplacedCard")
         && moved.get("GainControl") == Some("ChosenPlayer");
