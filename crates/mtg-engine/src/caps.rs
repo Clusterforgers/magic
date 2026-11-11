@@ -97,6 +97,7 @@ const RUNS: &[&str] = &[
     "Trigger.Caused",
     "Trigger.Did",
     "Ability.OpeningHand",
+    "Ability.OpeningHandWith",
     "Ability.OpeningReveal",
     "Amount.Triggering",
     "Amount.Players",

@@ -687,6 +687,9 @@ mod zones_fuzz;
 // dk1c
 mod dk1c_triggers;
 mod dk26_forage;
+mod dk26_gemstone_caverns;
+mod dk26_stack_cards;
+mod dk26_sylvan_library;
 mod dk26_unattached;
 // dk1b
 mod dk1b_attach;

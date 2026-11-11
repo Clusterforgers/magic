@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8c35fd11-be45-4984-bd83-6e4f3fbc47a9",
+  "name": "Wild Ricochet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Ricochet",
+      "oracle_fingerprint": "c52a66c10c81496881a4df8accfabbcd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "ChangeTargets": { "what": { "Target": 0 }, "to": "Choose" } },
+              { "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

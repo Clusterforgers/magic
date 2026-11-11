@@ -120,16 +120,53 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         }
         Event::OpeningCardsPlayed { player, cards } => {
             expect_status(state, *player, MulliganStatus::Opening)?;
+            let mut exile = 0u32;
             for card in cards {
                 if !state.zones.get(Zone::Hand(*player)).contains(card) {
                     return Err(invalid("opening card is not in hand"));
                 }
+                let (_, owed) = crate::mulligan::dk26_opening_riders(state, *card);
                 super::zones::move_object(state, *card, Zone::Battlefield, Placement::Top)?;
+                exile = exile.saturating_add(owed);
             }
-            player_mut(state, *player)?.mulligan = MulliganStatus::Kept;
+            // "If you do, exile a card from your hand": asked before the seat is done, when the hand holds a card.
+            let hand = state.zones.get(Zone::Hand(*player)).len();
+            let seat = player_mut(state, *player)?;
+            if exile > 0 && hand > 0 {
+                seat.opening_exile = exile;
+            } else {
+                seat.mulligan = MulliganStatus::Kept;
+            }
         }
         Event::MulliganPhaseEnded => state.stage = Stage::Turns,
         other => return Err(invalid(format!("not an opening event: {other:?}"))),
+    }
+    Ok(())
+}
+
+/// A card exiled from the hand of a seat that owes exiles in the opening (Gemstone Caverns): one fewer is owed, and the
+/// seat is done once none is, or once its hand is empty.
+pub(super) fn dk26_exiled(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
+    let Event::ZoneChanged {
+        from: Zone::Hand(player),
+        to: Zone::Exile,
+        ..
+    } = event
+    else {
+        return Ok(());
+    };
+    if state.stage != Stage::Mulligan {
+        return Ok(());
+    }
+    let empty = state.zones.get(Zone::Hand(*player)).is_empty();
+    let seat = player_mut(state, *player)?;
+    if seat.opening_exile == 0 {
+        return Ok(());
+    }
+    seat.opening_exile -= 1;
+    if seat.opening_exile == 0 || empty {
+        seat.opening_exile = 0;
+        seat.mulligan = MulliganStatus::Kept;
     }
     Ok(())
 }

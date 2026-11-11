@@ -121,7 +121,10 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Mutated { .. }
         | Event::CardParted { .. }
         | Event::CommanderStayed { .. }
-        | Event::ObjectLeftGame { .. } => zones::apply(state, event),
+        | Event::ObjectLeftGame { .. } => {
+            zones::apply(state, event)?;
+            opening::dk26_exiled(state, event)
+        }
         Event::CompanionRevealed { .. } | Event::CompanionBrought { .. } => {
             crate::companions::fold(state, event)
         }

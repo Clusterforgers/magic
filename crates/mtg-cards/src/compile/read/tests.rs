@@ -263,6 +263,7 @@ mod digital_wordings;
 mod dk1b_attached_writers;
 mod dk1c5_rooms;
 mod dk26_forage;
+mod dk26_opening;
 mod dk26_unattached;
 mod draws;
 mod e10a_writers;
