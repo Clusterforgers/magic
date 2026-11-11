@@ -276,6 +276,8 @@ export type { SpentFrom } from "./SpentFrom";
 export type { Stage } from "./Stage";
 export type { StateView } from "./StateView";
 export type { Step } from "./Step";
+export type { StickerSheetView } from "./StickerSheetView";
+export type { StickerView } from "./StickerView";
 export type { Stop } from "./Stop";
 export type { StopSide } from "./StopSide";
 export type { StoredCheck } from "./StoredCheck";

@@ -790,7 +790,39 @@ result: number,
 /**
  * The Attractions visited.
  */
-visited: Array<ObjectId>, } } | { "CoinFlipped": { 
+visited: Array<ObjectId>, } } | { "PrizeClaimed": { 
+/**
+ * Who claimed it.
+ */
+player: PlayerId, 
+/**
+ * The Attraction.
+ */
+attraction: ObjectId, } } | { "StickerSheetsChosen": { 
+/**
+ * Whose sheets.
+ */
+player: PlayerId, 
+/**
+ * The sheets, as indexes into the ones the seat brought, in that order.
+ */
+sheets: Array<number>, } } | { "StickerPut": { 
+/**
+ * Whose sticker.
+ */
+player: PlayerId, 
+/**
+ * The permanent.
+ */
+object: ObjectId, 
+/**
+ * The sheet, as an index into the sheets the player brought.
+ */
+sheet: number, 
+/**
+ * The sticker, as an index among the stickers of the sheet.
+ */
+sticker: number, } } | { "CoinFlipped": { 
 /**
  * Who flipped.
  */

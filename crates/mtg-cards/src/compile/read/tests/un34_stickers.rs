@@ -37,7 +37,7 @@ use crate::compile::read::visit_block;
 #[case::visited_count(
     "Draw cards equal to the number of Attractions you've visited this turn.",
     ClauseKind::Spell,
-    r#"{"Spell":{"effects":[{"Draw":{"count":{"Tallied":{"what":"AttractionsVisited"}}}}]}}"#
+    r#"{"Spell":{"effects":[{"Draw":{"count":{"Tallied":{"who":"You","what":"AttractionsVisited"}}}}]}}"#
 )]
 fn the_sticker_and_prize_wordings_read(
     #[case] text: &str,
