@@ -15,7 +15,12 @@
             "effects": [{ "SetLife": { "amount": 7 } }]
           }
         },
-        { "Rule": { "rule": { "LifeFloor": { "who": "You", "floor": 7 } } } }
+        {
+          "Rule": {
+            "rule": { "LifeFloor": { "who": "You", "floor": 7 } },
+            "condition": { "Compare": { "left": { "Life": "You" }, "op": "Ge", "right": 7 } }
+          }
+        }
       ]
     }
   ]

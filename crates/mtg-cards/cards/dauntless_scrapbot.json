@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b75ca527-4494-4957-b2e3-8c590df42e95",
+  "name": "Dauntless Scrapbot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dauntless Scrapbot",
+      "oracle_fingerprint": "50b69a0e551bd5d92ac49b00aba0ce26",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": { "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "Opponents" }] } }
+              },
+              { "CreateToken": { "token": { "Named": "lander" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -25,7 +25,7 @@ use crate::refs::Ref;
 use crate::value::Amount;
 
 /// The predefined tokens, as a card names them and as their files are named.
-const NAMED: [(&str, &str); 11] = [
+pub(super) const NAMED: [(&str, &str); 12] = [
     ("Treasure", "treasure"),
     ("Clue", "clue"),
     ("Food", "food"),
@@ -37,6 +37,7 @@ const NAMED: [(&str, &str); 11] = [
     ("Map", "map"),
     ("Mutagen", "mutagen"),
     ("Gingerbrute", "gingerbrute"),
+    ("Lander", "lander"),
 ];
 
 fn effect(who: Ref, token: TokenRef, count: Amount, tapped: bool, attacking: bool) -> Effect {

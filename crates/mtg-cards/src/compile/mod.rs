@@ -6,7 +6,7 @@
 //! templates that read spell effects and mana abilities (with the renderer that checks them) and
 //! `manual` leaves every other clause to the table.
 
-mod classify;
+pub(crate) mod classify;
 mod clauses;
 mod keywords;
 mod linked;

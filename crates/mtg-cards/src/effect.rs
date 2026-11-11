@@ -328,6 +328,8 @@ pub enum ValueKind {
     CardType,
     /// A land type (CR 205.3i).
     LandType,
+    /// A basic land type: Plains, Island, Swamp, Mountain or Forest (CR 205.3i).
+    BasicLandType,
     /// The name of a card of the game that the selector matches (CR 201.3); an empty selector is any card.
     CardName(Selector),
     /// A whole number from the first amount to the second, read when the choice is made.
@@ -338,8 +340,6 @@ pub enum ValueKind {
     CardTypeOf(Vec<CardType>),
     /// A creature type other than these ("choose a creature type other than Wall").
     CreatureTypeExcept(Vec<String>),
-    /// A basic land type (CR 205.3i): Plains, Island, Swamp, Mountain or Forest.
-    BasicLandType,
     /// A color word or a basic land type, the word a text change replaces (CR 612): "one color word or one basic land type".
     ColorOrBasicLandType,
     /// A word of the kind of the one chosen under this name, other than it: the word a text change writes ("with another").
