@@ -207,6 +207,17 @@ pub enum Rule {
         /// The players whose untap steps untap them.
         whose: Vec<PlayerId>,
     },
+    /// The players can't untap more than `count` of their permanents the selector picks during their untap steps (CR
+    /// 502.3).
+    UntapLimit {
+        /// The players whose untap steps are limited.
+        who: Vec<PlayerId>,
+        /// The permanents counted, judged when the step untaps.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// The most of them that untap.
+        count: u32,
+    },
     /// The players skip their draw steps (CR 614.10).
     SkipDrawStep(Vec<PlayerId>),
     /// The players may look at the top card of their library any time.
@@ -615,6 +626,7 @@ pub(crate) struct RulesInForce {
     /// The creatures whose abilities may be activated as though they had haste, by rule.
     haste_for_abilities: Vec<NoLegendFor>,
     untap_during: Vec<UntapDuring>,
+    untap_limits: Vec<crate::rmt4_untap_limit::UntapLimit>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
     taxes: Vec<Taxing>,
@@ -995,6 +1007,17 @@ impl RulesInForce {
                 self.put_option(rule, controller, source);
             }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
+            Rule::UntapLimit { who, what, count } => {
+                if let Some(source) = source {
+                    self.untap_limits.push(crate::rmt4_untap_limit::UntapLimit {
+                        controller,
+                        source,
+                        who: who.clone(),
+                        what: what.clone(),
+                        count: *count,
+                    });
+                }
+            }
             Rule::LookAtTop(players) => self.look_top.extend(players),
             Rule::LookAtExiled { who, what, only } => {
                 if let Some(source) = source {
@@ -1335,6 +1358,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
+        GameRule::UntapLimit { who, what, count } => Rule::UntapLimit {
+            who: scope.players(who)?,
+            what: what.clone(),
+            count: *count,
+        },
         GameRule::LookAtExiled { who, what, only } => Rule::LookAtExiled {
             who: scope.players(who)?,
             what: what.clone(),
@@ -1473,6 +1501,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             who.is_empty() || only.as_ref().is_some_and(Vec::is_empty)
         }
         Rule::BlockLimitEach { who, .. }
+        | Rule::UntapLimit { who, .. }
         | Rule::PlayersHave { who, .. }
         | Rule::ManaProduced { who, .. } => who.is_empty(),
         Rule::Cant { who, .. } => who.is_empty(),
@@ -1627,6 +1656,7 @@ static NONE: RulesInForce = RulesInForce {
     no_legend_for: Vec::new(),
     haste_for_abilities: Vec::new(),
     untap_during: Vec::new(),
+    untap_limits: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
     taxes: Vec::new(),
@@ -2213,6 +2243,11 @@ pub fn no_legend_rule_for(state: &GameState, id: ObjectId) -> bool {
             .selects(&rule.what, object.reference())
             .unwrap_or(false)
     })
+}
+
+/// The untap limits in force (CR 502.3).
+pub(crate) fn untap_limits(state: &GameState) -> &[crate::rmt4_untap_limit::UntapLimit] {
+    &state.rules().untap_limits
 }
 
 /// The permanents that untap during the untap step of `active` besides its own: those each rule in force selects among

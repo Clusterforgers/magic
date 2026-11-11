@@ -617,6 +617,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     if r.words("you gain life rather than lose life from radiation") {
         return Some(GameRule::RadiationGainsLife(Ref::You));
     }
+    if let Some(rule) = r.attempt(super::rmt4_untap_limit::read) {
+        return Some(rule);
+    }
     if r.words("skip your draw step") {
         return Some(GameRule::SkipDrawStep(Ref::You));
     }
@@ -1775,8 +1778,8 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             ZoneKind::Battlefield,
         ) => super::w17b_statics::w17b_texts(rule),
         (GameRule::Combat { .. }, ZoneKind::Battlefield) => super::r7d_statics::combat_texts(rule),
-        (GameRule::UntapDuring { .. }, ZoneKind::Battlefield) => {
-            super::e10c_granted::e10c_untap_during_texts(rule)
+        (GameRule::UntapDuring { .. } | GameRule::UntapLimit { .. }, ZoneKind::Battlefield) => {
+            super::rmt4_untap_limit::untap_rule_texts(rule)
         }
         (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
             vec!["~ can be your commander".to_owned()]

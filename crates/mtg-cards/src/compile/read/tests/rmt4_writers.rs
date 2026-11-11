@@ -41,3 +41,85 @@ const DRAIN_TEXT: &str = "When this creature enters, if it was bargained, each o
 fn rmt4_bargained_enters_trigger(#[case] json: String, #[case] clause: &str, #[case] reads: bool) {
     assert_eq!(written(&json, clause), reads, "{json}");
 }
+
+/// An untap limit as a static rule, under `condition` when one is given.
+fn untap_limit(who: &str, what: &str, count: u32, condition: Option<&str>) -> String {
+    let condition = condition.map_or_else(String::new, |c| format!(r#","condition":{c}"#));
+    format!(
+        r#"{{"Rule":{{"rule":{{"UntapLimit":{{"who":"{who}","what":{what},"count":{count}}}}}{condition}}}}}"#
+    )
+}
+
+const UNTAPPED: &str = r#"{"Matches":{"subject":"This","selector":["Untapped"]}}"#;
+const LANDS: &str = "Players can't untap more than one land during their untap steps.";
+
+#[rstest]
+#[case::players_one_land(
+    untap_limit("EachPlayer", r#"[{"Type":"Land"}]"#, 1, None),
+    LANDS,
+    true
+)]
+#[case::two_lands_is_not_one(
+    untap_limit("EachPlayer", r#"[{"Type":"Land"}]"#, 2, None),
+    LANDS,
+    false
+)]
+#[case::you_are_not_players(untap_limit("You", r#"[{"Type":"Land"}]"#, 1, None), LANDS, false)]
+#[case::artifacts_are_not_lands(
+    untap_limit("EachPlayer", r#"[{"Type":"Artifact"}]"#, 1, None),
+    LANDS,
+    false
+)]
+#[case::you_one_land(
+    untap_limit("You", r#"[{"Type":"Land"}]"#, 1, None),
+    "You can't untap more than one land during your untap step.",
+    true
+)]
+#[case::two_permanents(
+    untap_limit("EachPlayer", "[]", 2, Some(UNTAPPED)),
+    "As long as this artifact is untapped, players can't untap more than two permanents during their untap steps.",
+    true
+)]
+#[case::the_condition_is_said(
+    untap_limit("EachPlayer", r#"[{"Type":"Land"}]"#, 1, Some(UNTAPPED)),
+    LANDS,
+    false
+)]
+#[case::nonbasic_lands(
+    untap_limit(
+        "EachPlayer",
+        r#"[{"Not":{"Supertype":"Basic"}},{"Type":"Land"}]"#,
+        1,
+        None
+    ),
+    "Players can't untap more than one nonbasic land during their untap steps.",
+    true
+)]
+fn rmt4_untap_limit_reads_back(#[case] json: String, #[case] clause: &str, #[case] reads: bool) {
+    assert_eq!(written(&json, clause), reads, "{json}");
+}
+
+#[rstest]
+#[case::players(LANDS, untap_limit("EachPlayer", r#"[{"Type":"Land"}]"#, 1, None))]
+#[case::you(
+    "You can't untap more than one land during your untap step.",
+    untap_limit("You", r#"[{"Type":"Land"}]"#, 1, None)
+)]
+#[case::two_creatures(
+    "Players can't untap more than two creatures during their untap steps.",
+    untap_limit("EachPlayer", r#"[{"Type":"Creature"}]"#, 2, None)
+)]
+fn rmt4_untap_limit_is_read(#[case] text: &str, #[case] json: String) {
+    reads_as(text, ClauseKind::Static, false, &json);
+}
+
+#[rstest]
+#[case::no_number("Players can't untap more than lands during their untap steps.")]
+#[case::another_step("Players can't untap more than one land during their upkeeps.")]
+fn rmt4_untap_limit_near_misses_stay_unread(#[case] text: &str) {
+    assert!(
+        clause(text, ClauseKind::Static, false)
+            .is_none_or(|read| !matches!(read, Ability::Rule { .. })),
+        "{text}"
+    );
+}

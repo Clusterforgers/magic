@@ -692,6 +692,16 @@ pub enum GameRule {
         /// The players whose untap steps untap them.
         whose: Ref,
     },
+    /// The players can't untap more than `count` of their permanents the selector picks during their untap steps (CR
+    /// 502.3): "players can't untap more than one land during their untap steps".
+    UntapLimit {
+        /// The players whose untap steps are limited.
+        who: Ref,
+        /// The permanents counted, among those the untapping player controls.
+        what: Selector,
+        /// The most of them that untap.
+        count: u32,
+    },
     /// The players skip their draw steps (CR 614.10): the step does not begin on their turns.
     SkipDrawStep(Ref),
     /// The players may play additional lands each of their turns (CR 305.2).
@@ -867,7 +877,7 @@ mod tests {
     use super::*;
     use crate::ability::Timing;
     use crate::cost::Cost;
-    use crate::refs::ZoneKind;
+    use crate::refs::{Pred, ZoneKind};
     use rstest::rstest;
 
     fn granted() -> Arc<Ability> {
@@ -1085,6 +1095,10 @@ mod tests {
     #[case(
         GameRule::UntapDuring { what: Selector::this(), whose: Ref::Opponents },
         r#"{"UntapDuring":{"what":["This"],"whose":"Opponents"}}"#
+    )]
+    #[case(
+        GameRule::UntapLimit { who: Ref::EachPlayer, what: Selector(vec![Pred::Type(CardType::Land)]), count: 1 },
+        r#"{"UntapLimit":{"who":"EachPlayer","what":[{"Type":"Land"}],"count":1}}"#
     )]
     #[case(
         GameRule::TriggerAgain { cause: Some(TriggerPattern::Attacks { what: Selector::this() }), source: Some(Selector::this()) },

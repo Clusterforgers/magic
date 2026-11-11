@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6b2184ce-d6b1-411e-80ac-05a6e5993a39",
+  "name": "Damping Field",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Damping Field",
+      "oracle_fingerprint": "ef604c9135b0ce66bb8bcbd3be47c676",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "UntapLimit": { "who": "EachPlayer", "what": [{ "Type": "Artifact" }], "count": 1 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b922f057-1c91-43eb-b74a-8a933b1be2d2",
+  "name": "Winter Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter Moon",
+      "oracle_fingerprint": "0bfef2eabf2050b4f7cae6ece0129446",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "UntapLimit": {
+                "who": "EachPlayer",
+                "what": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }],
+                "count": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

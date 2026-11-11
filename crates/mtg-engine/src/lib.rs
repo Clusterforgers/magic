@@ -138,6 +138,7 @@ pub mod replace;
 pub mod resolve;
 pub mod retargeted;
 mod ring;
+mod rmt4_untap_limit;
 pub mod rng;
 #[cfg(test)]
 mod rule_options;

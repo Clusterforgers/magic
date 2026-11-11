@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1dcbd583-3388-4b34-a7cd-131648aa6abd",
+  "name": "Winter Orb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter Orb",
+      "oracle_fingerprint": "bc68e328136d1303b85b3ad10df2fb66",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "UntapLimit": { "who": "EachPlayer", "what": [{ "Type": "Land" }], "count": 1 }
+            },
+            "condition": { "Matches": { "subject": "This", "selector": ["Untapped"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

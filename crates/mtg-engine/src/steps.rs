@@ -84,19 +84,25 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
 
 /// The untap step: phasing, then the active player determines which permanents untap and they untap together (CR 502).
 /// A permanent that may stay tapped is asked about whatever the hand: one question lists every such tapped permanent that
-/// would untap, and the answer is the ones that stay tapped (CR 502.3); no such permanent, no question.
+/// would untap, and the answer is the ones that stay tapped (CR 502.3); no such permanent, no question. While an untap
+/// limit would hold back a permanent, the question lists those permanents too and the answer is the ones that untap
+/// (`rmt4_untap_limit`).
 fn untap_step(state: &GameState) -> Progress {
-    let (events, optional) = untap_events(state, &[]);
-    match (state.active_player(), optional.first()) {
+    let (events, asked) = untap_events(state, &[]);
+    match (state.active_player(), asked.from.first()) {
         (Some(player), Some(&source)) => Progress::Decide(Decision {
             player,
             kind: DecisionKind::ChooseCards(CardsOptions {
                 one_per_name: false,
                 source,
-                max: u32::try_from(optional.len()).unwrap_or(u32::MAX),
-                from: optional,
+                max: u32::try_from(asked.from.len()).unwrap_or(u32::MAX),
+                from: asked.from,
                 min: 0,
-                text: "Choose the permanents to keep tapped.".to_owned(),
+                text: if asked.untap {
+                    "Choose the permanents to untap; the untap limits keep the first ones they allow.".to_owned()
+                } else {
+                    "Choose the permanents to keep tapped.".to_owned()
+                },
                 can_cancel: false,
             }),
         }),
@@ -104,9 +110,17 @@ fn untap_step(state: &GameState) -> Progress {
     }
 }
 
-/// The events of the untap step with the permanents `kept` staying tapped, and the permanents that may stay tapped and
-/// would untap otherwise.
-pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>, Vec<ObjectId>) {
+/// The question of the untap step: the permanents it lists, and whether the answer names those that untap (an untap
+/// limit holds some back) rather than those kept tapped.
+pub(crate) struct UntapQuestion {
+    /// The permanents listed.
+    pub(crate) from: Vec<ObjectId>,
+    /// Whether the answer is the permanents that untap.
+    pub(crate) untap: bool,
+}
+
+/// The events of the untap step with the permanents `kept` staying tapped, and the question the step asks.
+pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>, UntapQuestion) {
     let active = state.active_player();
     // Phasing comes first (CR 502.1): what phases in untaps with the rest.
     let leaving = active.map_or_else(Vec::new, |active| {
@@ -163,7 +177,24 @@ pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>,
         events.extend(crate::c7_untap::c7_untap_spent(state, active));
     }
     events.extend(leave_step(state));
-    (events, optional)
+    let held = active.map_or_else(Vec::new, |active| {
+        crate::rmt4_untap_limit::held_back(state, active, &untapping)
+    });
+    let question = if held.is_empty() {
+        UntapQuestion {
+            from: optional,
+            untap: false,
+        }
+    } else {
+        let mut from = optional;
+        for id in held {
+            if !from.contains(&id) {
+                from.push(id);
+            }
+        }
+        UntapQuestion { from, untap: true }
+    };
+    (events, question)
 }
 
 /// The answer to the question of the untap step: the permanents chosen stay tapped and the others untap.
@@ -173,7 +204,19 @@ pub(crate) fn untap_answer(
     choice: &CardsChoice,
 ) -> Result<Outcome, EngineError> {
     check_cards(options, &choice.0)?;
-    Ok(Outcome::Events(untap_events(state, &choice.0).0))
+    let asked = untap_events(state, &[]).1;
+    let kept = match state.active_player() {
+        Some(active) if asked.untap => {
+            let untapping = crate::rmt4_untap_limit::allowed(state, active, &choice.0);
+            asked
+                .from
+                .into_iter()
+                .filter(|id| !untapping.contains(id))
+                .collect()
+        }
+        _ => choice.0.clone(),
+    };
+    Ok(Outcome::Events(untap_events(state, &kept).0))
 }
 
 /// Whether a choice of cards outside any resolution is the question of the untap step.

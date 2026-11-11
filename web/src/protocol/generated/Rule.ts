@@ -125,7 +125,19 @@ what: unknown,
 /**
  * The players whose untap steps untap them.
  */
-whose: Array<PlayerId>, } } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
+whose: Array<PlayerId>, } } | { "UntapLimit": { 
+/**
+ * The players whose untap steps are limited.
+ */
+who: Array<PlayerId>, 
+/**
+ * The permanents counted, judged when the step untaps.
+ */
+what: unknown, 
+/**
+ * The most of them that untap.
+ */
+count: number, } } | { "SkipDrawStep": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
 /**
  * The players who may look.
  */
