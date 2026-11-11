@@ -1,7 +1,7 @@
 {
   "oracle_id": "18ac2282-83af-4acc-b20b-6a95771da688",
   "name": "Loxodon Smiter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Loxodon Smiter",
@@ -9,9 +9,10 @@
       "abilities": [
         { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 31, "end": 177 }
+          "Replacement": {
+            "when": { "Discarded": { "what": ["This"], "by": "Opponents" } },
+            "by": { "Instead": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }] },
+            "from": "Hand"
           }
         }
       ]

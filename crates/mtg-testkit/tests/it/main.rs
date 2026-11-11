@@ -256,6 +256,7 @@ mod ep27_lose_game_instead;
 mod ep27_no_life_loss;
 mod ep27_self_flash;
 mod ep29_pieces;
+mod ep32_pieces;
 mod equip_to;
 mod equipment;
 mod equipment_creature;
