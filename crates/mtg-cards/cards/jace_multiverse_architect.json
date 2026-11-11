@@ -14,9 +14,20 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 150, "end": 231 }
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "back"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "back" }, "to": { "Library": { "place": "Bottom" } } }
+              }
+            ]
           }
         },
         {

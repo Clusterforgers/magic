@@ -202,13 +202,20 @@ impl Writer<'_> {
         let kind = if creatures { "creature" } else { "permanent" };
         let first = self.effect(&plain)?;
         let makes = super::create::text(token, self.per)?;
-        Some((
-            vec![
-                first,
-                format!("for each {kind} {verb} this way, its controller {makes}"),
-            ],
-            2,
-        ))
+        let mut sentences = vec![first];
+        // "Destroy all creatures. They can't be regenerated. For each creature destroyed this way, ...".
+        if let Effect::Destroy {
+            what,
+            regenerate: false,
+            ..
+        } = &plain
+        {
+            sentences.push(super::wf26_unregenerated(self.single(what), what));
+        }
+        sentences.push(format!(
+            "for each {kind} {verb} this way, its controller {makes}"
+        ));
+        Some((sentences, 2))
     }
 }
 

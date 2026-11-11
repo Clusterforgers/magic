@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8ab99b5e-c9e0-45c2-8df2-864ab0ad1caf",
+  "name": "Runic Repetition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runic Repetition",
+      "oracle_fingerprint": "2c6552e36448146c164bab6bfc74a1cf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Exile" },
+                    { "HasKeywordNamed": "Flashback" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

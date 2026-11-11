@@ -1,0 +1,27 @@
+{
+  "oracle_id": "bfcdf563-c6e5-4a54-bb63-4aba219b94e2",
+  "name": "Beacon of Immortality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beacon of Immortality",
+      "oracle_fingerprint": "11492b29768ccd5e3bc4fb7ee4f2dba9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "SetLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Times": { "by": 2, "of": { "Life": { "Target": 0 } } } }
+                }
+              },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

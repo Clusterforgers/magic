@@ -1,0 +1,34 @@
+{
+  "oracle_id": "977f0d8d-4359-44ae-8f22-2103ea909c40",
+  "name": "Errand of Duty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Errand of Duty",
+      "oracle_fingerprint": "bcc861dabe2052379e3f094d9026dce5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Knight",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Knight"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Banding" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

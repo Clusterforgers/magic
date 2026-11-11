@@ -125,12 +125,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 
 /// The cost with the life of a counted amount ("pay that much life", "pay X life, where X is ..."), the cards of a counted
 /// draw ("you may draw cards equal to its power") and the cards of a counted
-/// discard ("discard your hand") counted as the
+/// discard ("discard your hand") or exile from a graveyard ("exiles all cards from their graveyard") counted as the
 /// effect resolves (CR 119.4, CR 608.2h); a negative count pays nothing.
 fn c6_eg_counted(cx: &Cx<'_>, cost: &Cost) -> Result<Cost, ResolveError> {
     let mut counted = cost.clone();
     for item in &mut counted.0 {
-        if let CostItem::Discard { count: amount, .. } = item
+        if let CostItem::Discard { count: amount, .. }
+        | CostItem::ExileFromGraveyard { count: amount, .. } = item
             && !matches!(amount, Amount::Fixed(_) | Amount::X)
         {
             let count = cx.scope.amount(amount)?.clamp(0, i64::from(i32::MAX));

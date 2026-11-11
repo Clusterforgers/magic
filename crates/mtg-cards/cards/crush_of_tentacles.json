@@ -1,7 +1,7 @@
 {
   "oracle_id": "4ede153c-89cb-4121-bf23-a1d213d6f238",
   "name": "Crush of Tentacles",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Crush of Tentacles",
@@ -21,9 +21,31 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 116, "end": 249 }
+          "Spell": {
+            "effects": [
+              { "Move": { "what": { "Each": [{ "Not": { "Type": "Land" } }] }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "CastWith": "Surge" },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Octopus",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Octopus"],
+                            "power": 8,
+                            "toughness": 8
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

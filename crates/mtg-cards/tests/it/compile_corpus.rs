@@ -312,6 +312,18 @@ fn hand_keyword_is_written(
     Some(())
 }
 
+/// The spell lines without the rows of a die table, which are lines of their own that the read back pairs row by row
+/// (`chance_tables`).
+fn without_die_rows(lines: &[&str]) -> String {
+    let row = |line: &&&str| {
+        line.split_once(" | ").is_some_and(|(range, _)| {
+            !range.is_empty() && range.chars().all(|c| c.is_ascii_digit() || c == '\u{2014}')
+        })
+    };
+    let spell: Vec<&str> = lines.iter().filter(|line| !row(line)).copied().collect();
+    spell.join("\n")
+}
+
 /// Every spell, triggered or mana ability of a hand-written file that the renderer can write is
 /// written as the text of the card: the clauses of its kind, on the same face.
 #[test]
@@ -525,7 +537,7 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             .map(|clause| without_numerals(without_ability_word(&clause.text)))
             .collect();
         let wanted = if matches!(ability, Ability::Spell { .. }) {
-            vec![lines.join("\n")]
+            vec![lines.join("\n"), without_die_rows(&lines)]
         } else {
             lines.iter().map(|line| (*line).to_owned()).collect()
         };

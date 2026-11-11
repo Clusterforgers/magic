@@ -1,0 +1,19 @@
+{
+  "oracle_id": "6a3052a1-7a0b-4364-883d-cd2abca39c06",
+  "name": "Venomous Vines",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venomous Vines",
+      "oracle_fingerprint": "5264e201aea635df9d8ae0f3e6fe1003",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "HasAttached": [{ "Subtype": "Aura" }] }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

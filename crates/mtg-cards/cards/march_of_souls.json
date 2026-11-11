@@ -1,0 +1,50 @@
+{
+  "oracle_id": "bca7101b-e74b-42af-ac63-1b3defb4137d",
+  "name": "March of Souls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "March of Souls",
+      "oracle_fingerprint": "fabc9e7730fa7e413059fe9c660ef2a0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }] },
+                  "regenerate": false,
+                  "as": "destroyed"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "destroyed" },
+                  "as": "each2",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "who": { "ControllerOf": { "Departed": { "Bound": "each2" } } },
+                        "token": {
+                          "Custom": {
+                            "name": "Spirit",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spirit"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

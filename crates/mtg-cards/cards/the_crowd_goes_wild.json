@@ -1,7 +1,7 @@
 {
   "oracle_id": "21302f37-0632-4202-9823-f08c5aec016e",
   "name": "The Crowd Goes Wild",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Crowd Goes Wild",
@@ -9,15 +9,20 @@
       "abilities": [
         { "Keyword": "Assist" },
         {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 91, "end": 160 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 161, "end": 234 }
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": "X" } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "HasCounter": "+1/+1" }] },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

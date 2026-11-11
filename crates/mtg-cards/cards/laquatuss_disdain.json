@@ -1,0 +1,19 @@
+{
+  "oracle_id": "68f330ca-8279-46c5-900d-a9b443676104",
+  "name": "Laquatus's Disdain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laquatus's Disdain",
+      "oracle_fingerprint": "f66a2bbf7d4f67ba9a87fc083d3544d5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "CastFrom": "Graveyard" }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

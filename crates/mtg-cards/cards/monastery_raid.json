@@ -1,7 +1,7 @@
 {
   "oracle_id": "62f4a2db-6d7c-487b-be37-22f06c1e779e",
   "name": "Monastery Raid",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Monastery Raid",
@@ -9,9 +9,29 @@
       "abilities": [
         { "Keyword": { "Freerunning": "{X}{R}" } },
         {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 150, "end": 343 }
+          "Spell": {
+            "effects": [
+              {
+                "ExileTop": {
+                  "count": {
+                    "When": {
+                      "condition": { "CastWith": "Freerunning" },
+                      "then": "X",
+                      "otherwise": 2
+                    }
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
           }
         }
       ]

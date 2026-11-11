@@ -1,0 +1,57 @@
+{
+  "oracle_id": "3ceae65e-938d-4e76-b3f6-7be70232549e",
+  "name": "Gloomwidow's Feast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gloomwidow's Feast",
+      "oracle_fingerprint": "6b5b60ee41da153746e22323fe563775",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      {
+                        "Matches": { "subject": { "Target": 0 }, "selector": [{ "Color": "Blue" }] }
+                      },
+                      {
+                        "Matches": {
+                          "subject": { "Target": 0 },
+                          "selector": [{ "Color": "Black" }]
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Spider",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Spider"],
+                            "power": 1,
+                            "toughness": 2,
+                            "abilities": [{ "Keyword": "Reach" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

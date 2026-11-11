@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0144d9bb-d3cb-4c23-b133-6653d7c3a76d",
+  "name": "Grip of Amnesia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grip of Amnesia",
+      "oracle_fingerprint": "a96da0c55292afbfdc87cddc7c268bd8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": [
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [],
+                        "count": {
+                          "Count": [
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

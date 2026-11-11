@@ -1,0 +1,33 @@
+{
+  "oracle_id": "e86870b1-4028-4111-9717-7005f86afe85",
+  "name": "Feast of Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feast of Dreams",
+      "oracle_fingerprint": "8f3dddb41f755af3418379611cdcad10",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "AnyOf": [
+                        { "HasAttached": [{ "Subtype": "Aura" }] },
+                        { "Type": "Enchantment" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

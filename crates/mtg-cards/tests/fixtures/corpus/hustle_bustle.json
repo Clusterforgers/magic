@@ -133,19 +133,19 @@
   "textless": false,
   "booster": true,
   "story_spotlight": false,
-  "edhrec_rank": 28276,
-  "penny_rank": 14284,
+  "edhrec_rank": 28590,
+  "penny_rank": 14314,
   "preview": {
     "source": "Lega Nerd",
     "source_uri": "https://leganerd.com/2024/01/23/murders-at-karlov-manor-reveal-di-due-carte-in-anteprima-per-lega-nerd/",
     "previewed_at": "2024-01-23"
   },
   "prices": {
-    "usd": "0.09",
-    "usd_foil": "0.15",
+    "usd": "0.08",
+    "usd_foil": "0.16",
     "usd_etched": null,
-    "eur": "0.05",
-    "eur_foil": "0.08",
+    "eur": "0.02",
+    "eur_foil": "0.06",
     "tix": "0.03"
   },
   "related_uris": {

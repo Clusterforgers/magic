@@ -42,6 +42,7 @@ Alpha Deathclaw
 Alphinaud Leveilleur
 Altar's Reap
 Alter Reality
+Amass the Components
 Ambitious Aetherborn
 Anafenza, Kin-Tree Spirit
 Ancestral Vision
@@ -387,6 +388,7 @@ Custodi Lich
 Custodi Soulbinders
 Cut // Ribbons
 Cut of the Profits
+Cut the Earthly Bond
 Cybermen Squadron
 Cyclonic Rift
 Cytoshape
@@ -990,6 +992,7 @@ Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
 Lantern Flare
+Laquatus's Disdain
 Lash Out
 Lat-Nam Adept
 Latchkey Faerie
@@ -1245,6 +1248,7 @@ Ostracize
 Otherworldly Gaze
 Oubliette
 Out of Time
+Outwit
 Overcharged Amalgam
 Overgrown Arch
 Overgrowth
@@ -1382,6 +1386,7 @@ Realm Seekers
 Reap the Past
 Reassembling Skeleton
 Reaver Titan
+Reciprocate
 Reckless Endeavor
 Reckless Impulse
 Reconstructed Thopter
@@ -1927,6 +1932,7 @@ Vastwood Surge
 Vault 75: Middle School
 Vedalken Engineer
 Vengeful Vampire
+Venomous Vines
 Verdant Confluence
 Vestige of Emrakul
 Vesuva

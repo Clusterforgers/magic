@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ebdd29c0-2c33-4410-a05c-80ced58c7b81",
+  "name": "Reciprocate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reciprocate",
+      "oracle_fingerprint": "b874b2819994cd78e9506325312e82c4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "DidThisTurn": { "event": "Damaged", "to": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

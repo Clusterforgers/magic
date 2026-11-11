@@ -382,6 +382,8 @@ struct Walker<'a> {
     /// Whether a required additional cost of the card counts the X the caster announces, which the effects read.
     counts_x: bool,
     x_free: bool,
+    /// Whether a madness, foretell or freerunning cost of the face holds an `{X}`, which its spell reads.
+    r283_keyword_x: bool,
     /// Whether an `X` read here is the one announced for the ability being walked, which its effects read as it resolves.
     x_now: bool,
     /// Whether a choice between costs is walked as the required additional cost of a spell, the one place the engine asks it.
@@ -424,6 +426,7 @@ impl<'a> Walker<'a> {
             rather_cost: false,
             counts_x: false,
             x_free: false,
+            r283_keyword_x: false,
             x_now: false,
             choosing: false,
             amounting: Amounting::Other,
@@ -1377,7 +1380,15 @@ impl<'a> Walker<'a> {
                 CostItem::PayLife(amount) if !is_fixed(item) => Some((i, amount)),
                 CostItem::Draw(amount) if !is_fixed(item) && *who == Ref::You => Some((i, amount)),
                 CostItem::Discard { count, .. }
-                    if !is_fixed(item) && (*who == Ref::You || r5g_fixed_by_condition(count)) =>
+                    if !is_fixed(item)
+                        && (*who == Ref::You
+                            || r5g_fixed_by_condition(count)
+                            || r283_counts_payers_own(count, who)) =>
+                {
+                    Some((i, count))
+                }
+                CostItem::ExileFromGraveyard { count, .. }
+                    if !is_fixed(item) && r283_counts_payers_own(count, who) =>
                 {
                     Some((i, count))
                 }
@@ -1390,7 +1401,9 @@ impl<'a> Walker<'a> {
         let mut fixed = cost.clone();
         for (i, _) in &counted {
             match &mut fixed.0[*i] {
-                CostItem::Discard { count, .. } | CostItem::Draw(count) => {
+                CostItem::Discard { count, .. }
+                | CostItem::Draw(count)
+                | CostItem::ExileFromGraveyard { count, .. } => {
                     *count = Amount::Fixed(1);
                 }
                 item => *item = CostItem::PayLife(Amount::Fixed(0)),
@@ -4545,6 +4558,8 @@ impl Walker<'_> {
             Ability::Spell { targets, effects } => {
                 // The spell has the X of its own cost; one that another ability grants or a token carries has none.
                 w.x_now = w.nested == 0;
+                // A madness, foretell or freerunning cost with `{X}` gives the spell its X.
+                w.x_free |= w.nested == 0 && w.r283_keyword_x;
                 w.body(targets, effects, false);
             }
             Ability::Loyalty {
@@ -5377,6 +5392,7 @@ impl Walker<'_> {
     fn face(&mut self, index: usize, face: &Face) {
         self.face = index;
         self.w6c_cost_x = w6c_cost_x(face);
+        self.r283_keyword_x = r283_keyword_x(face);
         self.spell_targets = face
             .abilities
             .iter()
@@ -5396,6 +5412,24 @@ fn w6c_reads_cost_x(when: &TriggerPattern) -> bool {
         TriggerPattern::Cycled { what, .. } | TriggerPattern::BecomesMonstrous { what }
             if what.0.contains(&Pred::This)
     )
+}
+
+/// Whether a counted cost counts the cards of the payer named as such ("unless its controller discards their hand": the
+/// cards in the hand of the controller of the target), which reads the same whoever counts it.
+fn r283_counts_payers_own(count: &Amount, who: &Ref) -> bool {
+    matches!(count, Amount::Count(Selector(preds))
+        if preds.contains(&Pred::OwnedBy(who.clone())) && !matches!(who, Ref::You))
+}
+
+/// Whether the face has a madness, foretell or freerunning cost with an `{X}` ("Madness {X}{B}{B}").
+fn r283_keyword_x(face: &Face) -> bool {
+    face.abilities.iter().any(|ability| {
+        matches!(
+            ability,
+            Ability::Keyword(Keyword::Madness(cost) | Keyword::Foretell(cost) | Keyword::Freerunning(cost))
+                if has_x_mana(cost)
+        )
+    })
 }
 
 /// Whether the face has an `{X}` in a cycling cost or in the cost of an activated ability that makes it monstrous.

@@ -504,6 +504,8 @@ mod pump_spells;
 mod r1a_spend;
 mod r1c;
 mod r1fix;
+mod r283_counted_pay;
+mod r283_keyword_x;
 mod r2e_cost_parts;
 mod r4_audit;
 mod r4a_amplify;

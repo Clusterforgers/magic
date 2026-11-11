@@ -1,7 +1,7 @@
 {
   "oracle_id": "f944c245-08ff-41a8-bdfc-7d21a6a63eae",
   "name": "Illuminate",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Illuminate",
@@ -10,9 +10,25 @@
         { "Keyword": { "Kicker": "{2}{R}" } },
         { "Keyword": { "Kicker": "{3}{U}" } },
         {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 101, "end": 311 }
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "If": {
+                  "condition": { "KickedWith": "{2}{R}" },
+                  "then": [
+                    { "DealDamage": { "to": { "ControllerOf": { "Target": 0 } }, "amount": "X" } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "KickedWith": "{3}{U}" },
+                  "then": [{ "Draw": { "count": "X" } }]
+                }
+              }
+            ]
           }
         }
       ]

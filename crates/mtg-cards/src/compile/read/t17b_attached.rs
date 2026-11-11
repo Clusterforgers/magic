@@ -14,9 +14,13 @@ fn attached(kind: &str) -> Pred {
     Pred::HasAttached(Selector(vec![Pred::Subtype(Subtype(kind.to_owned()))]))
 }
 
-/// Whether the form is a group or a count of them; a single "enchanted creature" is the host of an Aura (`Ref::Attached`).
+/// Whether the form is a group, a count of them or a target ("target enchanted permanent"); any other single "enchanted
+/// creature" is the host of an Aura (`Ref::Attached`).
 const fn grouped(form: Form) -> bool {
-    matches!(form, Form::All | Form::Targets | Form::Each | Form::Count)
+    matches!(
+        form,
+        Form::All | Form::Targets | Form::Each | Form::Count | Form::Target
+    )
 }
 
 /// "Enchanted creatures you control" and "equipped Warriors you control": the permanents that have an Aura or an

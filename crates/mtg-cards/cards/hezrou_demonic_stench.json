@@ -1,16 +1,28 @@
 {
   "oracle_id": "65d257c2-b3be-4244-a74c-bc4b5d7cedc3",
   "name": "Hezrou // Demonic Stench",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hezrou",
       "oracle_fingerprint": "415b6f39e75a540e0f2537e75afc0e8a",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 111 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "BecomesBlocked": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, "Blocking"] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

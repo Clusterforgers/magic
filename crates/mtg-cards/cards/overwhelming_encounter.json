@@ -1,0 +1,74 @@
+{
+  "oracle_id": "7573ce9f-fc35-4d20-9b60-c739b8408444",
+  "name": "Overwhelming Encounter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overwhelming Encounter",
+      "oracle_fingerprint": "f928d957a75990f8f013bc68fec27dcc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Vigilance" }, { "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 9,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            },
+                            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 10,
+                      "to": 19,
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "counter": "+1/+1",
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 20,
+                      "to": 20,
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "counter": "+1/+1",
+                            "count": 4
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

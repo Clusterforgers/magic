@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3260bede-d78d-41a6-8fe1-95ce14a2ba8c",
+  "name": "Lava Blister",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lava Blister",
+      "oracle_fingerprint": "16a440ea0e2343e1eba18aaea9b26370",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] } }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": [{ "DamageToYou": 6 }],
+                  "unpaid": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
