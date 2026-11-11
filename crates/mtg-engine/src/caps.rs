@@ -826,6 +826,7 @@ const RUNS: &[&str] = &[
     "Condition.FirstCombat",
     "Rule.CanBeCommander",
     "Rule.AnyNumberInDeck",
+    "Rule.UpToInDeck",
     "Rule.Draft",
     "Pred.Modified",
     "Pred.RingBearer",
@@ -1353,6 +1354,7 @@ mod tests {
     #[case::additional_land_plays("Rule.AdditionalLandPlays", true)]
     #[case::commander_eligibility("Rule.CanBeCommander", true)]
     #[case::r5g_any_number_in_a_deck("Rule.AnyNumberInDeck", true)]
+    #[case::fb27_up_to_in_a_deck("Rule.UpToInDeck", true)]
     #[case::w17b_untargetable_graveyards("Rule.GraveyardCardsUntargetable", true)]
     #[case::w17b_cant_lose("Rule.CantLoseGame", true)]
     #[case::w17b_cant_cast("Rule.CantCastSpells", true)]

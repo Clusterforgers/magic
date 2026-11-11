@@ -3935,8 +3935,8 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::Draft(_)) {
                     w.problem("a card follows a draft rule by a static ability, not by an effect");
                 }
-                if matches!(rule, GameRule::AnyNumberInDeck) {
-                    w.problem("a deck holds any number of a card by a static ability, not by an effect");
+                if matches!(rule, GameRule::AnyNumberInDeck | GameRule::UpToInDeck(_)) {
+                    w.problem("a deck holds more than one of a card by a static ability, not by an effect");
                 }
                 if matches!(rule, GameRule::CountersRemain) {
                     w.problem("counters remain on a card by a static ability, not by an effect");
@@ -4704,6 +4704,11 @@ impl Walker<'_> {
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::CanBeCommander | GameRule::AnyNumberInDeck | GameRule::Draft(_) => {}
+            GameRule::UpToInDeck(most) => {
+                if *most < 2 {
+                    self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
+                }
+            }
             GameRule::GraveyardCardsUntargetable
             | GameRule::CantLoseGame { .. }
             | GameRule::CantCastSpells { .. }
@@ -4888,7 +4893,10 @@ impl Walker<'_> {
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
                 w.problem("a card can be a commander in every zone: write the rule without `from`");
             }),
-            _ if matches!(rule, GameRule::AnyNumberInDeck | GameRule::Draft(_)) => self.at("from", |w| {
+            _ if matches!(
+                rule,
+                GameRule::AnyNumberInDeck | GameRule::UpToInDeck(_) | GameRule::Draft(_)
+            ) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),
             _ => self.at("from", |w| {

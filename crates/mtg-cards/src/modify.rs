@@ -740,6 +740,9 @@ pub enum GameRule {
     /// A deck can hold any number of cards with the card's name (CR 100.2a); it changes nothing in a game, and the rule is
     /// written without `from`.
     AnyNumberInDeck,
+    /// A deck can hold up to this many cards with the card's name (CR 100.2a, "A deck can have up to nine cards named
+    /// ~"); it changes nothing in a game, and the rule is written without `from`.
+    UpToInDeck(u32),
     /// A booster draft rule: nothing in a game; no `from`.
     Draft(DraftRule),
     /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
@@ -1086,6 +1089,7 @@ mod tests {
     )]
     #[case(GameRule::CanBeCommander, r#""CanBeCommander""#)]
     #[case(GameRule::AnyNumberInDeck, r#""AnyNumberInDeck""#)]
+    #[case(GameRule::UpToInDeck(9), r#"{"UpToInDeck":9}"#)]
     #[case(
         GameRule::GraveyardCardsUntargetable,
         r#""GraveyardCardsUntargetable""#
