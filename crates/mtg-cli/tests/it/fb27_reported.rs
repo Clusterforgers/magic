@@ -456,6 +456,41 @@ fn homing_sliver_gives_each_sliver_card_in_hand_slivercycling(
     Ok(())
 }
 
+/// Nazgûl plays whole now that its deck rule is a rule: the Ring tempts you as it enters and each Wraith you control gets a
+/// +1/+1 counter for each Nazgûl that sees the temptation, the one already out too.
+#[rstest]
+#[case::alone(0, vec![1])]
+#[case::beside_another_both_trigger(1, vec![2, 2])]
+fn nazgul_tempts_and_grows_each_wraith(
+    #[values(2, 4)] seats: usize,
+    #[case] out: usize,
+    #[case] counters: Vec<u32>,
+) -> Result<(), ScriptError> {
+    let nazgul = || corpus::card("Nazgûl").unwrap();
+    let mut permanents: Vec<_> = (0..3).map(|_| ready(swamp())).collect();
+    permanents.extend((0..out).map(|_| ready(nazgul())));
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .hand(0, [nazgul()])
+            .battlefield(0, permanents),
+    )?;
+    driver.cast("Nazgûl")?;
+    settle(&mut driver)?;
+    let grown: Vec<u32> = driver
+        .state()
+        .objects()
+        .filter(|object| object.card().name == "Nazgûl")
+        .filter_map(|object| {
+            object
+                .permanent()
+                .map(|p| p.counters_of(&CounterKind::PlusOnePlusOne))
+        })
+        .collect();
+    assert_eq!(grown, counters);
+    assert_eq!(nazgul().singleton_limit(), Some(9));
+    Ok(())
+}
+
 /// Seat 0 casts `name` announcing `x` and choosing `targets`, pays automatically and lets everything resolve.
 fn cast_with(
     driver: &mut Driver,
