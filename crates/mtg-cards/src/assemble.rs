@@ -743,6 +743,8 @@ fn picked_by_the_planner(item: &CostItem) -> bool {
         | CostItem::ExileFromHand { count, .. } => {
             matches!(count, Amount::Fixed(number) if *number > 0) || matches!(count, Amount::X)
         }
+        // A Food or three graveyard cards, which the planner picks (`parts::forage::dk27_planned`).
+        CostItem::Forage => true,
         _ => false,
     }
 }
