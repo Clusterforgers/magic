@@ -456,6 +456,17 @@ fn game(ctx: &Ctx, effect: &Effect) -> Option<String> {
             &format!("{} extra", phrase::counted(ctx, count, "turn")),
         ),
         Effect::BecomeMonarch { who } => act(ctx, who, "become", "the monarch"),
+        Effect::ControlPlayer { who, extra_turn } => {
+            let then = if *extra_turn {
+                ", then that player takes an extra turn"
+            } else {
+                ""
+            };
+            format!(
+                "you control {} during that player's next turn{then}",
+                phrase::who(ctx, who)
+            )
+        }
         Effect::Proliferate { who } => act(ctx, who, "proliferate", ""),
         Effect::Rule { rule, duration } => {
             format!("{} {}", parts::rule(ctx, rule), phrase::duration(duration))
@@ -697,6 +708,10 @@ mod tests {
 
     #[rstest]
     #[case::draw(r#"{"Draw":{}}"#, "draw a card")]
+    #[case::control_player(
+        r#"{"ControlPlayer":{"who":"Opponents","extra_turn":true}}"#,
+        "you control each opponent during that player's next turn, then that player takes an extra turn"
+    )]
     #[case::draw_two_for_them(
         r#"{"Draw":{"who":"Opponents","count":2}}"#,
         "each opponent draws 2 cards"

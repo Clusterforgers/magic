@@ -422,6 +422,13 @@ pub fn read(item: &str) -> Option<Keyword> {
         "disguise" => spell_cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
+        "cleave" => spell_cost(rest).map(|cost| Keyword::Cleave {
+            cost,
+            spell: Box::new(crate::ability::Ability::Spell {
+                targets: Vec::new(),
+                effects: Vec::new(),
+            }),
+        }),
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
         "squad" => spell_cost(rest).map(Keyword::Squad),
@@ -1992,6 +1999,7 @@ mod tests {
             "Recover {1}",
             "Ripple 4",
             "Epic",
+            "Cleave {1}{R}",
             "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",

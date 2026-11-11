@@ -206,6 +206,7 @@ mod t18_dead;
 mod t18_demorgan;
 mod t18_words;
 mod target_phrases;
+mod tc34_control;
 #[cfg(test)]
 mod tests;
 mod token_binds;

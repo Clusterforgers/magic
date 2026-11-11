@@ -60,6 +60,7 @@ mod shuffled_in;
 mod stolen;
 mod switched;
 mod target_counts;
+mod tc34_control;
 mod those;
 mod together;
 mod token_attach;
@@ -3257,6 +3258,8 @@ impl Writer<'_> {
             .or_else(|| self.mill_then_hand(effects))
             .or_else(|| self.w20c_untapped_taken(effects))
             .or_else(|| self.w20c_taken_changed(effects))
+            .or_else(|| self.tc34_text_change(effects))
+            .or_else(|| self.tc34_take_spell(effects))
             .or_else(|| Self::untapped_and_controlled(effects))
             .or_else(|| self.stolen(effects))
             .or_else(|| self.w6e_stolen(effects))
@@ -3331,6 +3334,9 @@ impl Writer<'_> {
 
     /// The effects of the modules that write their own words; a player who acts is named first.
     fn module_effect(&mut self, effect: &Effect) -> Option<String> {
+        if matches!(effect, Effect::ControlPlayer { .. }) {
+            return self.tc34_control_player(effect);
+        }
         if let Effect::ExtraTurn { who, .. } = effect {
             let subject = self.player(who)?;
             return super::turns::effect_text(effect, Some(&subject));
