@@ -43,6 +43,10 @@ pub struct NumberOptions {
     #[serde(default, skip_serializing_if = "is_zero")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
     pub per_x: u32,
+    /// The number is chosen face down ("secretly chooses a number"): the other seats learn it when all are revealed.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub secret: bool,
 }
 
 // serde's `skip_serializing_if` passes the field by reference.
@@ -85,7 +89,11 @@ pub(crate) fn answer(
     } else {
         Outcome::Events(vec![Event::ChoiceMade {
             player,
-            choice: Choice::Number(number),
+            choice: if options.secret {
+                Choice::SecretNumber(number)
+            } else {
+                Choice::Number(number)
+            },
         }])
     })
 }
@@ -107,6 +115,7 @@ mod tests {
             can_cancel,
             cost: None,
             per_x: 0,
+            secret: false,
         }
     }
 

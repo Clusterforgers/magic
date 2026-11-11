@@ -82,6 +82,8 @@ pub enum CastWay {
     Evoke,
     /// Overload (CR 702.96): every "target" reads "each".
     Overload,
+    /// Cleave (CR 702.148): the spell reads without the words in square brackets.
+    Cleave,
     /// Madness (CR 702.35): from exile after it was discarded.
     Madness,
     /// Miracle (CR 702.94): from a hand for its miracle cost when it is the first card its owner drew this turn.
@@ -466,6 +468,14 @@ pub enum Amount {
     /// The controller's devotion to the colors: the mana symbols of those colors among the mana costs of the
     /// permanents they control (CR 700.5).
     Devotion(Vec<Color>),
+    /// The mana symbols of `color` in the mana costs of the objects `of` names (chroma); a hybrid symbol counts once for each
+    /// of its colors.
+    ManaSymbols {
+        /// The color counted.
+        color: Color,
+        /// The objects whose mana costs are read.
+        of: Ref,
+    },
     /// The greatest value of the characteristic among the objects that match the selector; zero when none match.
     Greatest {
         /// The objects compared.
@@ -751,6 +761,10 @@ enum Tagged {
     EvenShare(Box<Amount>),
     TargetCount(u8),
     Devotion(Vec<Color>),
+    ManaSymbols {
+        color: Color,
+        of: Ref,
+    },
     Greatest {
         of: Selector,
         stat: StatKind,
@@ -886,6 +900,10 @@ enum TaggedRef<'a> {
     EvenShare(&'a Amount),
     TargetCount(u8),
     Devotion(&'a [Color]),
+    ManaSymbols {
+        color: &'a Color,
+        of: &'a Ref,
+    },
     Greatest {
         of: &'a Selector,
         stat: StatKind,
@@ -1009,6 +1027,7 @@ impl From<Tagged> for Amount {
             Tagged::EvenShare(total) => Amount::EvenShare(total),
             Tagged::TargetCount(index) => Amount::TargetCount(index),
             Tagged::Devotion(colors) => Amount::Devotion(colors),
+            Tagged::ManaSymbols { color, of } => Amount::ManaSymbols { color, of },
             Tagged::Greatest { of, stat } => Amount::Greatest { of, stat },
             Tagged::Total { of, stat } => Amount::Total { of, stat },
             Tagged::CardTypes(of) => Amount::CardTypes(of),
@@ -1098,6 +1117,9 @@ impl Serialize for Amount {
             Amount::EvenShare(total) => TaggedRef::EvenShare(total).serialize(serializer),
             Amount::TargetCount(index) => TaggedRef::TargetCount(*index).serialize(serializer),
             Amount::Devotion(colors) => TaggedRef::Devotion(colors).serialize(serializer),
+            Amount::ManaSymbols { color, of } => {
+                TaggedRef::ManaSymbols { color, of }.serialize(serializer)
+            }
             Amount::Greatest { of, stat } => {
                 TaggedRef::Greatest { of, stat: *stat }.serialize(serializer)
             }

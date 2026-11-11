@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d3b7b541-6f05-46c1-8031-c848c4bd4635",
+  "name": "Ojer Axonil, Deepest Might // Temple of Power",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ojer Axonil, Deepest Might",
+      "oracle_fingerprint": "0e6286ecc130a81e665feb0f94aff1be",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 8, "end": 185 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 186, "end": 287 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Temple of Power",
+      "oracle_fingerprint": "fa4d55ecab8f4bd6d9f7f66d03689619",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 60, "end": 203 }
+          }
+        }
+      ]
+    }
+  ]
+}

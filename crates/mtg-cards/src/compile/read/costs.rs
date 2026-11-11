@@ -120,6 +120,10 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
     if r.word("mill") {
         return cards(r).map(CostItem::Mill);
     }
+    // Forage (CR 701.61): a Food sacrificed or three graveyard cards exiled, which the payer chooses as they pay.
+    if r.word("forage") {
+        return Some(CostItem::Forage);
+    }
     if r.word("put") {
         return r.attempt(blight).or_else(|| put_on_source(r));
     }
@@ -278,12 +282,50 @@ fn put_on_source(r: &mut Reader<'_>) -> Option<CostItem> {
     })
 }
 
+/// After "Remove X +1/+1 counters from among": the permanents of the payer the counters come from ("creatures you
+/// control"); the cost names the payer's own permanents, so the words must say "you control".
+fn dk27_among(r: &mut Reader<'_>, counter: Option<CounterKind>, count: Amount) -> Option<CostItem> {
+    let mut from = super::selectors::phrase(r, super::selectors::Form::All)?;
+    let mine = from
+        .0
+        .iter()
+        .position(|pred| *pred == Pred::ControlledBy(Ref::You))?;
+    from.0.remove(mine);
+    (!from.is_empty()).then_some(CostItem::RemoveCountersAmong {
+        counter,
+        count,
+        from,
+    })
+}
+
+/// The words of [`dk27_among`]: "Remove X +1/+1 counters from among creatures you control".
+fn dk27_among_text(
+    counter: Option<&CounterKind>,
+    count: &Amount,
+    from: &Selector,
+) -> Option<String> {
+    // One counter is "a counter from a creature you control", which the payer picks (`RemoveCounters` with `from`).
+    if from.is_empty() || from.0.contains(&Pred::ControlledBy(Ref::You)) || count.is_one() {
+        return None;
+    }
+    let mut said = from.clone();
+    said.0.push(Pred::ControlledBy(Ref::You));
+    Some(format!(
+        "Remove {} from among {}",
+        w2f_text(counter, count)?,
+        super::selectors::phrase_text(&said, super::selectors::Form::All)?
+    ))
+}
+
 fn remove(r: &mut Reader<'_>) -> Option<CostItem> {
     if let Some(all) = r.attempt(ep29_remove_all) {
         return Some(all);
     }
     let (counter, count) = super::w2f_any_counters::w2f_counters(r)?;
     r.need("from")?;
+    if r.word("among") {
+        return dk27_among(r, counter, count);
+    }
     if r.source() {
         // A counter of any kind from the source asks for its kind, which the engine does not yet.
         counter.as_ref()?;
@@ -442,6 +484,7 @@ pub fn text(cost: &Cost) -> Option<String> {
     (!parts.is_empty()).then(|| parts.join(", "))
 }
 
+#[allow(clippy::too_many_lines)]
 fn item_text(item: &CostItem) -> Option<String> {
     Some(match item {
         CostItem::Mana(mana) => mana.to_string(),
@@ -457,6 +500,7 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::Mill(count) => format!("Mill {}", cards_text(count)?),
         CostItem::DiscardRandom(count) => format!("Discard {} at random", cards_text(count)?),
         CostItem::Exert => "Exert ~".to_owned(),
+        CostItem::Forage => "Forage".to_owned(),
         CostItem::PutCounters { counter, count } => {
             format!("Put {} on ~", w2f_text(Some(counter), count)?)
         }
@@ -485,6 +529,7 @@ fn item_text(item: &CostItem) -> Option<String> {
             format!("Discard {}", text.strip_suffix(" from your hand")?)
         }
         CostItem::TapPermanents { filter, count } => tap_text(filter, count)?,
+        CostItem::Waterbend(generic) => format!("Waterbend {{{generic}}}"),
         CostItem::ExileFromGraveyard {
             filter,
             count,
@@ -541,8 +586,21 @@ fn item_text(item: &CostItem) -> Option<String> {
                 taken_text(&said, &Amount::one())?
             )
         }
-        _ => return None,
+        other => return dk27_among_item(other),
     })
+}
+
+/// The words of a `RemoveCountersAmong` part ([`dk27_among_text`]); `None` for another part.
+fn dk27_among_item(item: &CostItem) -> Option<String> {
+    let CostItem::RemoveCountersAmong {
+        counter,
+        count,
+        from,
+    } = item
+    else {
+        return None;
+    };
+    dk27_among_text(counter.as_ref(), count, from)
 }
 
 /// "Tap an untapped creature you control", "Tap another untapped Rogue you control": untapped permanents the payer

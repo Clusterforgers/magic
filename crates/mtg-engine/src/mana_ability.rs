@@ -79,6 +79,18 @@ fn takes_of(
         .iter()
         .filter_map(|item| {
             let part = Part::read(item).ok().flatten()?;
+            if matches!(item, mtg_cards::cost::CostItem::Forage) {
+                // Forage takes one Food or three graveyard cards, never a mix (CR 701.61a).
+                let (sacrifice, count, from) =
+                    crate::parts::forage::dk27_planned(&owner).unwrap_or((true, 1, Vec::new()));
+                let take = Take {
+                    sacrifice,
+                    exile: !sacrifice,
+                    count: u32::try_from(count).unwrap_or(u32::MAX),
+                    from,
+                };
+                return Some((take, false));
+            }
             let counted = part.is_counted();
             let pick = match part {
                 Part::Pick(pick) => pick,

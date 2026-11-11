@@ -100,6 +100,8 @@ pub(crate) struct Possible {
 pub(crate) enum Tally {
     /// A card drawn.
     Drawn,
+    /// A card drawn (counted for the card as it lies in the hand it was drawn into).
+    Dk26Drawn,
     /// A card drawn by the active player in the draw step under way (cleared as each draw step begins).
     C6BlkDrawStepDrawn,
     /// A spell cast.
@@ -272,6 +274,8 @@ pub struct GameState {
     pub(crate) turn: TurnState,
     /// The extra turns still to take, the latest added last: it is taken first (CR 500.7).
     pub(crate) extra_turns: Vec<ExtraTurn>,
+    /// The controls of players scheduled or under way (CR 722), oldest first.
+    pub(crate) player_controls: Vec<crate::player_control::PlayerControl>,
     pub(crate) priority: Option<PriorityState>,
     pub(crate) combat: CombatState,
     pub(crate) effects: Vec<ContinuousEffect>,
@@ -350,6 +354,8 @@ pub struct GameState {
     pub(crate) notes: Vec<(crate::object::ObjectRef, String)>,
     /// What each source remembers by slot (`Effect::Remember`); ends with the source.
     pub(crate) memory: crate::memory::Memory,
+    /// The restart under way (CR 727): who restarted the game and the cards that enter after the opening.
+    pub(crate) restart: Option<crate::restart::Restart>,
 }
 
 impl GameState {
@@ -421,13 +427,15 @@ impl GameState {
     }
 
     /// The permanent `id` is attached to (it is an Aura or Equipment), if that host is still the very object it was
-    /// attached to and on the battlefield: a host that left is a new object (CR 400.7).
+    /// attached to and on the battlefield (or the card in a graveyard it was attached to there): a host that left is a
+    /// new object (CR 400.7).
     pub fn host_of(&self, id: ObjectId) -> Option<ObjectId> {
         let object = self.object(id).filter(|o| o.zone() == Zone::Battlefield)?;
         let attached = object.permanent()?.attached_to()?;
         let host = self.object(attached.id)?;
-        (host.zone() == Zone::Battlefield && host.counter() == attached.counter)
-            .then_some(attached.id)
+        // A card in a graveyard hosts only an Aura that enchants one there (`attach::dk27_enchants_graveyard`).
+        let here = host.zone() == Zone::Battlefield || matches!(host.zone(), Zone::Graveyard(_));
+        (here && host.counter() == attached.counter).then_some(attached.id)
     }
 
     /// The player `id` is attached to (an Aura that enchants a player), while that player is still in the game: a
@@ -891,6 +899,10 @@ impl Hash for GameState {
         if !self.memory.is_empty() {
             self.memory.hash(state);
         }
+        // Likewise a game that was never restarted.
+        if let Some(restart) = &self.restart {
+            restart.hash(state);
+        }
         // Likewise a game that counted nothing this turn.
         if !self.tallies.players.is_empty() {
             self.tallies.players.hash(state);
@@ -935,6 +947,10 @@ impl Hash for GameState {
         self.rmt8_turns.hash(state);
         self.rmt8_lives.hash(state);
         self.rmt8_upkeeps.hash(state);
+        // Likewise a game where no player controlled another.
+        if !self.player_controls.is_empty() {
+            self.player_controls.hash(state);
+        }
         // Likewise a game without a monarch.
         if let Some(monarch) = self.monarch {
             monarch.hash(state);

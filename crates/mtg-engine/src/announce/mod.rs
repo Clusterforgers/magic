@@ -468,7 +468,7 @@ impl Pending {
         } else {
             state
         };
-        let held = rules_of(state, &self.what, self.choices.spliced());
+        let held = rules_of(state, &self.what, self.choices.spliced(), self.choices.way);
         let ctx = Ctx {
             state,
             player: self.player,
@@ -673,13 +673,22 @@ fn source_of(what: &What) -> ObjectId {
     }
 }
 
-/// The rules of the spell or ability being announced, with the effects of the cards `spliced` onto a spell.
-fn rules_of(state: &GameState, what: &What, spliced: &[ObjectId]) -> Option<Arc<Ability>> {
+/// The rules of the spell or ability being announced: read without its bracketed words when it is cast for its cleave
+/// cost, with the effects of the cards `spliced` onto a spell.
+fn rules_of(
+    state: &GameState,
+    what: &What,
+    spliced: &[ObjectId],
+    way: Option<CastWay>,
+) -> Option<Arc<Ability>> {
     let object = state.object(source_of(what));
     match what {
         What::Spell(spell) => object
-            .and_then(|_| spell_ability(state, *spell))
-            .map(|(_, rules)| crate::keywords::splice::with_spliced(state, rules, spliced)),
+            .and_then(|_| {
+                crate::keywords::cleave::cleaved(state, *spell, way)
+                    .or_else(|| spell_ability(state, *spell).map(|(_, rules)| rules))
+            })
+            .map(|rules| crate::keywords::splice::with_spliced(state, rules, spliced)),
         What::Ability(address) => object.and_then(|_| ability_reader::ability(state, *address)),
         What::Trigger(waiting) => Some(Arc::clone(&waiting.rules)),
         What::Attack(..) | What::Block(_) => None,
@@ -743,7 +752,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         }
         _ => state,
     };
-    let held = rules_of(state, what, choices.spliced());
+    let held = rules_of(state, what, choices.spliced(), choices.way);
     let needs: &Needs = needs
         .get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref(), granted.clone()));
     let ctx = Ctx {

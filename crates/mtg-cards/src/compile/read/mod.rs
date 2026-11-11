@@ -77,6 +77,11 @@ mod defining;
 mod dk1a_attached;
 mod dk1c5_rooms;
 mod dk1d_by_paying;
+mod dk27_animate;
+mod dk27_batches;
+mod dk27_bid;
+mod dk27_numbers;
+mod dk27_pairs;
 mod draws;
 mod e10a_targets;
 mod e10c_granted;
@@ -192,6 +197,10 @@ mod replacements;
 mod restrictions;
 mod reveal;
 mod reveal_until;
+mod rmt0_chroma;
+mod rmt0_hand_pick;
+mod rmt0_kinds;
+mod rmt0_x_is;
 mod rmt4_untap_limit;
 mod rmt4_wordings;
 pub(crate) mod rmt7_atoms;
@@ -214,6 +223,7 @@ mod t18_dead;
 mod t18_demorgan;
 mod t18_words;
 mod target_phrases;
+mod tc34_control;
 #[cfg(test)]
 mod tests;
 mod token_binds;
@@ -309,7 +319,7 @@ pub use un33_attractions::{is_visit_line, un33_visit_block as visit_block};
 use super::{ClauseKind, classify};
 use crate::ability::Ability;
 use crate::cost::Cost;
-use crate::refs::{Pred, Selector};
+use crate::refs::{Pred, Selector, ZoneKind};
 use tokens::{Reader, tokenize};
 
 /// Whether a cost modifier counts the targets of its spell ("for each target beyond the first"), so that it needs the
@@ -330,6 +340,13 @@ pub fn cost_in_words(text: &str) -> Option<Cost> {
 /// What an Aura may enchant, from the words after "Enchant": the objects a phrase names ("creature you control",
 /// "nonland permanent", "artifact or land", "creature, land, or planeswalker", "Forest"), when all of the text reads.
 pub fn enchant_filter(text: &str) -> Option<Selector> {
+    // "Enchant creature card in a graveyard" (Animate Dead): the kind of card, in a graveyard.
+    if let Some(kind) = text.strip_suffix(" card in a graveyard") {
+        let mut selector =
+            enchant_filter(kind).filter(|found| matches!(found.0.as_slice(), [Pred::Type(_)]))?;
+        selector.0.push(Pred::In(ZoneKind::Graveyard));
+        return Some(selector);
+    }
     // An article in front keeps a subtype at the start from being read as the capital of a sentence.
     let spelled = format!("a {}", text.replace(", or ", " or ").replace(", ", " or "));
     let tokens = tokenize(&spelled);
@@ -390,10 +407,15 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
     reader.subtypes.clone_from(&own.subtypes);
-    let found = static_pairs::read(&mut reader)?;
-    if !reader.end() {
-        return None;
-    }
+    let found = if let Some(found) = dk27_pairs::dk27_any_number_less(text) {
+        found
+    } else {
+        let found = static_pairs::read(&mut reader)?;
+        if !reader.end() {
+            return None;
+        }
+        found
+    };
     let [first, second] = found.as_slice() else {
         return None;
     };
@@ -447,6 +469,20 @@ const MEANINGFUL_WORDS: [&str; 5] = [
 
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    if kind == ClauseKind::Spell
+        && let Some(joined) = rmt0_x_is::rmt0_joined(text)
+    {
+        let ability = clause_with(&joined, kind, x_free, own)?;
+        return render::variants(&ability)
+            .iter()
+            .any(|written| same_text(written, text))
+            .then_some(ability);
+    }
+    if kind == ClauseKind::Triggered
+        && let Some(found) = dk27_animate::dk27_animate_read(text)
+    {
+        return Some(found);
+    }
     if let Some(granted) = text.strip_prefix("Max speed \u{2014} ") {
         let inner = classify::classify(granted, false);
         if kind != ClauseKind::Static {

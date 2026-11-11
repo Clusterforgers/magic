@@ -62,7 +62,7 @@ pub fn damage_on(driver: &Driver, name: &str) -> u32 {
         .state()
         .object(id)
         .and_then(|object| object.permanent())
-        .map_or(0, |permanent| permanent.damage())
+        .map_or(0, mtg_engine::object::PermanentState::damage)
 }
 
 /// The counters of `kind` on the permanent `name`, or `None` once it left the battlefield.
@@ -390,7 +390,7 @@ fn obelisk_spider_drains_when_you_put_minus_counters_on_a_creature(
     Ok(())
 }
 
-/// Butch DeLoria's attack bonus counts the Rogues and Snakes as it resolves (CR 611.2c): a creature that becomes a Rogue
+/// The attack bonus of Butch `DeLoria` counts the Rogues and Snakes as it resolves (CR 611.2c): a creature that becomes a Rogue
 /// later in the turn adds nothing.
 #[rstest]
 #[case::rogue_before_the_attack(true, 3)]

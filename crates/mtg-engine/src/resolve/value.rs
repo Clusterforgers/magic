@@ -1758,6 +1758,7 @@ impl<'a> Scope<'a> {
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
             Pred::SummoningSick => crate::keywords::summoning_sick(state, reference.id),
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,
+            Pred::DrawnThisTurn => state.object_tallied(reference, None, Tally::Dk26Drawn) > 0,
             Pred::HasAdventure => seen
                 .card
                 .is_some_and(|c| c.whole_card().layout == Layout::Adventure),
@@ -2018,6 +2019,7 @@ impl<'a> Scope<'a> {
             Amount::TargetCount(index) => i64::try_from(self.chosen(usize::from(*index)).len())
                 .map_err(|_| ResolveError::Invalid("too many targets".into()))?,
             Amount::Devotion(colors) => self.devotion(colors)?,
+            Amount::ManaSymbols { color, of } => self.mana_symbols(*color, of)?,
             Amount::Greatest { of, stat } => self.stats(of, *stat)?.into_iter().max().unwrap_or(0),
             Amount::Total { of, stat } => self.stats(of, *stat)?.into_iter().sum(),
             Amount::Distinct { of, stat } => self.w2c_distinct(of, *stat)?,
@@ -2256,6 +2258,24 @@ impl<'a> Scope<'a> {
             let counted = symbols
                 .iter()
                 .filter(|symbol| colors.iter().any(|color| symbol.colors().contains(*color)))
+                .count();
+            total += i64::try_from(counted).unwrap_or(i64::MAX);
+        }
+        Ok(total)
+    }
+
+    /// The mana symbols of `color` in the mana costs of the objects `of` names (chroma): a hybrid symbol counts once.
+    fn mana_symbols(&self, color: Color, of: &Ref) -> Result<i64, ResolveError> {
+        let mut total = 0i64;
+        for object in self.objects(of)? {
+            let cost = self
+                .seen(object)
+                .and_then(|seen| seen.card)
+                .and_then(|card| card.mana_cost());
+            let symbols = cost.map_or(&[][..], ManaCost::symbols);
+            let counted = symbols
+                .iter()
+                .filter(|symbol| symbol.colors().contains(color))
                 .count();
             total += i64::try_from(counted).unwrap_or(i64::MAX);
         }

@@ -1,7 +1,7 @@
 {
   "oracle_id": "0b299983-9f0f-404a-acd1-8f142572b1f1",
   "name": "Extus, Oriq Overlord // Awaken the Blood Avatar",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Extus, Oriq Overlord",
@@ -48,10 +48,13 @@
       "oracle_fingerprint": "b7eb76397dc81c4ef5b4e2193b748f70",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 157 }
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": "X" } }],
+            "required": true
           }
+        },
+        {
+          "CostModifier": { "applies_to": ["This"], "change": "Reduce", "mana": "{2}", "per": "X" }
         },
         {
           "Spell": {

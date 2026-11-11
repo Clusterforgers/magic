@@ -65,6 +65,7 @@ const RUNS: &[&str] = &[
     "Trigger.PlayerCountersPut",
     "Trigger.Chapter",
     "Trigger.Attached",
+    "Trigger.Unattached",
     "Trigger.Cycled",
     "Trigger.BecomesMonarch",
     "Trigger.Proliferated",
@@ -96,6 +97,7 @@ const RUNS: &[&str] = &[
     "Trigger.Caused",
     "Trigger.Did",
     "Ability.OpeningHand",
+    "Ability.OpeningHandWith",
     "Ability.OpeningReveal",
     "Amount.Triggering",
     "Amount.Players",
@@ -300,6 +302,8 @@ const RUNS: &[&str] = &[
     "Effect.Learn",
     "Effect.Crewed",
     "Effect.BecomeMonarch",
+    "Effect.ControlPlayer",
+    "Effect.RestartGame",
     "Effect.RingTempts",
     "Effect.Venture",
     "Effect.OpenAttraction",
@@ -395,6 +399,8 @@ const RUNS: &[&str] = &[
     "Rule.UnspentManaBecomes",
     "Rule.RevealTop",
     "Rule.RevealHand",
+    "Rule.ControlSearches",
+    "Rule.ExileFound",
     "Rule.NoMaxHandSize",
     "Rule.MaxHandSize",
     "Rule.HandSizeChange",
@@ -458,7 +464,9 @@ const RUNS: &[&str] = &[
     "Mod.AddColors",
     "Mod.SetColorsChosen",
     "Mod.SetLandTypesChosen",
+    "Mod.ChangeTextChosen",
     "Mod.SetCreatureTypesChosen",
+    "Mod.ChangeTextChosen",
     "Mod.AddChosenSubtype",
     "Mod.SetChosenColor",
     "Mod.RemoveKeyword",
@@ -515,6 +523,8 @@ const RUNS: &[&str] = &[
     "Effect.Modal.OnceEver",
     "Effect.Modal.AllIf",
     "Effect.Vote",
+    "Effect.ChooseNumbers",
+    "Effect.BidLife",
     "Effect.Let",
     "Effect.Bind",
     "Effect.Modal.Who",
@@ -547,6 +557,7 @@ const RUNS: &[&str] = &[
     "Keyword.BattleCry",
     "Keyword.Ward",
     "Keyword.Enchant",
+    "Keyword.Enchant.Graveyard",
     "Keyword.EnchantPlayer",
     "Keyword.Equip",
     "Keyword.Reconfigure",
@@ -814,6 +825,7 @@ const RUNS: &[&str] = &[
     "Keyword.Banding",
     "Keyword.BandsWithOther",
     "Keyword.Splice",
+    "Keyword.Cleave",
     "ReplaceWhen.Destroyed",
     "ReplaceBy.UmbraArmor",
     "Condition.NewlyControlled",
@@ -1147,6 +1159,7 @@ mod tests {
     #[case::attaching("Effect.Attach", true)]
     #[case::enchanting("Keyword.Enchant", true)]
     #[case::enchanting_cards_elsewhere("Keyword.Enchant.Elsewhere", false)]
+    #[case::enchanting_cards_in_a_graveyard("Keyword.Enchant.Graveyard", true)]
     #[case::winning_the_game("Effect.WinGame", true)]
     #[case::creating_tokens("Effect.CreateToken", true)]
     #[case::creating_copies("Effect.CreateToken.Copy", true)]
@@ -1298,6 +1311,7 @@ mod tests {
     #[case::e16c_player_counter_triggers("Trigger.PlayerCountersPut", true)]
     #[case::chapter_triggers("Trigger.Chapter", true)]
     #[case::attach_triggers("Trigger.Attached", true)]
+    #[case::dk26_unattach_triggers("Trigger.Unattached", true)]
     #[case::cycle_triggers("Trigger.Cycled", true)]
     #[case::becoming_the_monarch_triggers("Trigger.BecomesMonarch", true)]
     #[case::proliferating_triggers("Trigger.Proliferated", true)]

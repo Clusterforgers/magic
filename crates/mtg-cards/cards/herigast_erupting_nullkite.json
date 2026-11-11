@@ -1,0 +1,27 @@
+{
+  "oracle_id": "76243b38-cab1-465f-aa7d-5bc617541753",
+  "name": "Herigast, Erupting Nullkite",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Herigast, Erupting Nullkite",
+      "oracle_fingerprint": "c78522a30da07e142f4ed9b4266542b2",
+      "abilities": [
+        { "Keyword": { "Emerge": "{6}{R}{R}" } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 135, "end": 214 }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 222, "end": 305 }
+          }
+        }
+      ]
+    }
+  ]
+}

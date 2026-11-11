@@ -867,6 +867,7 @@ impl<'a> Walker<'a> {
             | Pred::EnteredThisTurn
             | Pred::SummoningSick
             | Pred::MilledThisTurn
+            | Pred::DrawnThisTurn
             | Pred::DamagedThisTurn
             | Pred::AttackedThisTurn
             | Pred::Attacking
@@ -1086,6 +1087,7 @@ impl<'a> Walker<'a> {
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
             Amount::AdditionalPaid => self.paid_amount(amount),
+            Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -1896,13 +1898,43 @@ impl<'a> Walker<'a> {
     /// What an enchant ability may enchant.
     fn enchant(&mut self, selector: &Selector) {
         self.selector(selector);
-        // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.
-        if selector
-            .0
-            .iter()
-            .any(|pred| matches!(pred, Pred::In(zone) if !zone.is_battlefield()))
-        {
-            self.uses("Keyword", "Enchant.Elsewhere");
+        // An Aura is attached to a permanent or, enchanting a card in a graveyard, to a card there (Animate Dead); one
+        // that enchants a card in another zone waits for the cards that do.
+        let zones = selector.0.iter().filter_map(|pred| match pred {
+            Pred::In(zone) if !zone.is_battlefield() => Some(*zone),
+            _ => None,
+        });
+        for zone in zones {
+            if zone == ZoneKind::Graveyard {
+                self.uses("Keyword", "Enchant.Graveyard");
+            } else {
+                self.uses("Keyword", "Enchant.Elsewhere");
+            }
+        }
+    }
+
+    /// The keywords `keyword` leaves out.
+    fn later_keyword(&mut self, keyword: &Keyword) {
+        if let Keyword::Cleave { cost, spell } = keyword {
+            self.cleave(cost, spell);
+        }
+    }
+
+    /// Only mana is paid for a cleave cost; the cleaved spell is walked as the spell it is when cast that way.
+    fn cleave(&mut self, cost: &Cost, spell: &Ability) {
+        self.at("cost", |w| w.cost(cost));
+        self.parts_that_need_an_announcement("Keyword", "Cost", cost);
+        match spell {
+            Ability::Spell { targets, effects } => {
+                // A cleave cost with {X} gives the cleaved spell its X.
+                let saved = std::mem::replace(&mut self.x_now, self.nested == 0);
+                let free = self.x_free;
+                self.x_free |= cost.has_x();
+                self.at("spell", |w| w.body(targets, effects, false));
+                self.x_now = saved;
+                self.x_free = free;
+            }
+            _ => self.problem("the cleaved spell is a Spell ability"),
         }
     }
 
@@ -1977,6 +2009,7 @@ impl<'a> Walker<'a> {
                 // Only mana is paid for these: a part that takes objects, life or counters is not.
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
+            // Only mana is paid for the cost; the cleaved spell is walked as the spell it is when cast that way.
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
             Keyword::Backup { count, abilities } => self.backup(*count, abilities),
             Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
@@ -2015,7 +2048,7 @@ impl<'a> Walker<'a> {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
             }
-            _ => {}
+            _ => self.later_keyword(keyword),
         }
     }
 
@@ -2081,6 +2114,7 @@ impl<'a> Walker<'a> {
             | Modification::SetLandTypes(_)
             | Modification::SetLandTypesChosen(_)
             | Modification::SetCreatureTypesChosen(_)
+            | Modification::ChangeTextChosen { .. }
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
@@ -2343,6 +2377,7 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::BecomesBlocked { what, by, .. } => self.becomes_blocked(what, by),
             TriggerPattern::Attached { what, to } => self.w11b_attached(what, to),
+            TriggerPattern::Unattached { what, from } => self.w11b_attached(what, from),
             TriggerPattern::GroupAttacks { .. }
             | TriggerPattern::GroupAttacksAt { .. }
             | TriggerPattern::Chapter { .. } => {
@@ -3353,6 +3388,7 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
+            Effect::RestartGame { keep } => w.at("keep", |w| w.selector(keep)),
             Effect::Fight { what, with } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
@@ -3538,6 +3574,7 @@ impl Walker<'_> {
             | Effect::WinGame { who }
             | Effect::LoseGame { who }
             | Effect::Proliferate { who }
+            | Effect::ControlPlayer { who, .. }
             | Effect::BecomeMonarch { who }
             | Effect::RingTempts { who }
             | Effect::TakeInitiative { who }
@@ -3737,6 +3774,39 @@ impl Walker<'_> {
                 secret,
                 bind,
             } => w.vote(options, *secret, bind.as_deref()),
+            Effect::BidLife {
+                who,
+                start,
+                bind,
+                winner,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                if let Some(start) = start {
+                    w.at("start", |w| w.amount(start));
+                }
+                if bind == winner {
+                    w.problem("the high bid and the high bidder have names of their own");
+                }
+                w.at("as", |w| w.bind(bind, Kind::Value));
+                w.at("winner", |w| w.bind(winner, Kind::Player));
+            }
+            Effect::ChooseNumbers {
+                who,
+                min,
+                bind,
+                highest,
+                lowest,
+                ..
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("min", |w| w.amount(min));
+                if bind == highest || bind == lowest || highest == lowest {
+                    w.problem("the highest number and the players of each end have names of their own");
+                }
+                w.at("as", |w| w.bind(bind, Kind::Value));
+                w.at("highest", |w| w.bind(highest, Kind::Player));
+                w.at("lowest", |w| w.bind(lowest, Kind::Player));
+            }
             Effect::MultiplyCounters { on, factor, .. } => {
                 w.at("on", |w| w.reference(on, Kind::Either));
                 if *factor < 2 {
@@ -4295,6 +4365,7 @@ impl Walker<'_> {
                     | Modification::SetColorsChosen(_)
                     | Modification::SetLandTypesChosen(_)
                     | Modification::SetCreatureTypesChosen(_)
+                    | Modification::ChangeTextChosen { .. }
             )
         }) {
             self.at("mods", |w| {
@@ -4536,7 +4607,7 @@ impl Walker<'_> {
                 }
             }
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
-            Ability::OpeningHand => {}
+            Ability::OpeningHand | Ability::OpeningHandWith { .. } => {}
             Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {
@@ -4719,6 +4790,8 @@ impl Walker<'_> {
                 w.cant_action(action);
             }),
             GameRule::TriggerAgain { .. }
+            | GameRule::ControlSearches(_)
+            | GameRule::ExileFound(_)
             | GameRule::NoLegendRule(_)
             | GameRule::NoLegendRuleFor(_)
             | GameRule::AbilitiesAsThoughHaste(_)
@@ -4751,7 +4824,9 @@ impl Walker<'_> {
                 });
                 self.scope = saved;
             }
-            GameRule::NoLegendRule(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::NoLegendRule(who)
+            | GameRule::ControlSearches(who)
+            | GameRule::ExileFound(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
             GameRule::NoLegendRuleFor(what) | GameRule::AbilitiesAsThoughHaste(what) => {
                 self.at(tag, |w| w.selector(what));
             }
@@ -6194,7 +6269,8 @@ mod tests {
     #[case::reconfigure_pays_a_mana_cost(r#"{"Keyword":{"Reconfigure":"{2}"}}"#, &["Cost.Mana", "Keyword.Reconfigure"])]
     #[case::unattaching_the_source_only_while_it_is_attached(r#"{"Activated":{"cost":"{2}","timing":"Sorcery","condition":{"Compare":{"left":{"Count":[{"Is":"Attached"},{"Type":"Creature"}]},"op":"Ge","right":1}},"effects":[{"Unattach":{"what":"This"}}]}}"#, &["Ability.Activated", "Ability.Condition", "Ability.Sorcery", "Cost.Mana", "Effect.Unattach"])]
     #[case::an_aura_that_enchants_a_creature(r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}}"#, &["Keyword.Enchant"])]
-    #[case::an_aura_that_enchants_a_card_in_a_graveyard(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Elsewhere"])]
+    #[case::an_aura_that_enchants_a_card_in_a_graveyard(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Graveyard"])]
+    #[case::an_aura_that_enchants_a_card_in_exile(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Exile"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Elsewhere"])]
     #[case::a_treasure_like_mana_ability(r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana"])]
     #[case::sol_ring(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#, &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana"])]
     #[case::mana_for_creature_spells_only(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1},"only":[{"Spell":{"types":["Creature"]}}]}}]}}"#, &["Ability.Activated", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.Restricted"])]

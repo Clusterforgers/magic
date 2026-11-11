@@ -338,6 +338,12 @@ pub enum ValueKind {
     CardTypeOf(Vec<CardType>),
     /// A creature type other than these ("choose a creature type other than Wall").
     CreatureTypeExcept(Vec<String>),
+    /// A basic land type (CR 205.3i): Plains, Island, Swamp, Mountain or Forest.
+    BasicLandType,
+    /// A color word or a basic land type, the word a text change replaces (CR 612): "one color word or one basic land type".
+    ColorOrBasicLandType,
+    /// A word of the kind of the one chosen under this name, other than it: the word a text change writes ("with another").
+    LikeChosen(String),
 }
 
 /// One instruction of a spell or ability. Optional fields have defaults: `who` is the
@@ -1006,6 +1012,20 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The controller of the effect controls the player during that player's next turn (CR 722): "You control target
+    /// player during that player's next turn."
+    ControlPlayer {
+        /// The player controlled.
+        who: Ref,
+        /// Whether that player takes an extra turn after that turn (Emrakul, the Promised End).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        extra_turn: bool,
+    },
+    /// The game restarts (CR 727); `keep` stays exiled, then enters under your control.
+    RestartGame {
+        /// The exiled cards kept.
+        keep: Selector,
+    },
     /// The player becomes the monarch (CR 724).
     BecomeMonarch {
         /// Who becomes it.
@@ -1431,6 +1451,51 @@ pub enum Effect {
         /// Names the players or objects with the most votes when `options` is `Of`.
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
+    },
+    /// Each player `who` names chooses a whole number from `min` up, the controller first and the others in turn order;
+    /// secret numbers are chosen face down and revealed together ("each player secretly chooses a number 0 or greater").
+    /// The highest number is remembered under `bind` (`Amount::ChosenAs`), the players who chose it are bound to
+    /// `highest` and those who chose the lowest to `lowest`.
+    ChooseNumbers {
+        /// Who chooses.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The least number allowed.
+        #[serde(default = "Amount::zero", skip_serializing_if = "Amount::is_zero")]
+        min: Amount,
+        /// The numbers are chosen face down and revealed together.
+        #[serde(default, skip_serializing_if = "is_false")]
+        secret: bool,
+        /// The name the highest number is remembered under.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name the players who chose the highest number are bound to.
+        highest: String,
+        /// The name the players who chose the lowest number are bound to.
+        lowest: String,
+    },
+    /// The players `who` names bid life: the controller opens with a bid (`start`, or any number from 0), then in turn
+    /// order each other player may top the high bid, and the bidding ends when the high bid stands. The high bid is
+    /// remembered under `bind` (`Amount::ChosenAs`) and the high bidder is bound to `winner`; bidding loses no life by
+    /// itself.
+    BidLife {
+        /// Who may bid.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The controller's opening bid ("a bid of 0"); any number they choose when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        start: Option<Amount>,
+        /// The name the high bid is remembered under.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name the high bidder is bound to.
+        winner: String,
     },
     /// The player faces a villainous choice (CR 701.56): they choose one of the two lists and it is done.
     VillainousChoice {

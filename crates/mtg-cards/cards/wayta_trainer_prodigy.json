@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e507df33-d150-4b21-8ddb-90799f412dd8",
+  "name": "Wayta, Trainer Prodigy",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wayta, Trainer Prodigy",
+      "oracle_fingerprint": "b3d96ca3534ea2a532e3249001aedd74",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 6, "end": 159 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 160, "end": 312 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -131,7 +131,7 @@ fn every_export_resolves_to_the_cards_of_its_deck() {
     // The lines with a set and a number, the lines with a card name only, and the lines named by a flavor or digital name.
     assert_eq!(
         (tally.printing, tally.name, tally.other_name),
-        (11_924, 6_043, 24),
+        (11_984, 6_063, 24),
         "{tally:?}"
     );
 }

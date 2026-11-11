@@ -72,6 +72,24 @@ pub enum Violation {
     Counters(String),
 }
 
+/// The restriction an enchant keyword sets for a host, without "in a graveyard" for a host on the battlefield; `None`
+/// for another keyword.
+fn keyword_selector_here(
+    keyword: &Keyword,
+    on_battlefield: bool,
+) -> Option<mtg_cards::refs::Selector> {
+    let Keyword::Enchant(selector) = keyword else {
+        return None;
+    };
+    let mut selector = selector.clone();
+    if on_battlefield {
+        selector.0.retain(|pred| {
+            *pred != mtg_cards::refs::Pred::In(mtg_cards::refs::ZoneKind::Graveyard)
+        });
+    }
+    Some(selector)
+}
+
 fn zone_error(message: impl Into<String>) -> Violation {
     Violation::Zones(message.into())
 }
@@ -155,7 +173,7 @@ fn check_merged(state: &GameState) -> Result<(), Violation> {
 /// active player declares attackers (CR 800.4), and a player asked for priority has no triggered ability waiting for
 /// the stack, since they go on it before a player would receive priority (CR 117.5, 603.3).
 pub fn check_decision(engine: &Engine) -> Result<(), Violation> {
-    if let Some(decision) = engine.decision() {
+    if let Some(decision) = engine.decision_owned() {
         let state = engine.state();
         if !state.is_alive(decision.player) {
             return Err(Violation::Bookkeeping(format!(
@@ -317,8 +335,11 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
             let controller = controller_of(state, id).unwrap_or(object.controller());
             let scope = Scope::announcing(state, controller, object.reference());
             for keyword in keywords_of(state, id) {
-                if let Keyword::Enchant(selector) = keyword
-                    && !scope.selects(selector, host.reference()).unwrap_or(false)
+                // An Aura that enchants a card in a graveyard and returned it is judged on the battlefield by the rest of
+                // its restriction (`docs/engine.md`, attachments).
+                let judged = keyword_selector_here(keyword, host.zone() == Zone::Battlefield);
+                if let Some(selector) = judged
+                    && !scope.selects(&selector, host.reference()).unwrap_or(false)
                 {
                     return Err(bad("is attached to what it may not enchant"));
                 }
@@ -392,7 +413,7 @@ fn check_legends(engine: &Engine) -> Result<(), Violation> {
     if groups.is_empty() {
         return Ok(());
     }
-    let asked = match engine.decision() {
+    let asked = match engine.decision_owned() {
         Some(Decision {
             player,
             kind: DecisionKind::ChooseCards(options),
@@ -692,6 +713,11 @@ impl InvariantChecker {
     /// Starts from the initial state of `setup`.
     pub fn new(setup: &GameSetup) -> Result<Self, Violation> {
         let shadow = GameState::from_setup(setup).map_err(|e| Violation::Fold(e.to_string()))?;
+        Ok(Self::from_shadow(setup, shadow))
+    }
+
+    /// Starts from `shadow`, a state of the game `setup` began, with every expectation read from it.
+    fn from_shadow(setup: &GameSetup, shadow: GameState) -> Self {
         let expected_damage = shadow
             .objects()
             .filter_map(|o| Some((o.id(), o.permanent()?.damage())))
@@ -728,7 +754,7 @@ impl InvariantChecker {
             .objects()
             .filter_map(|o| Some((o.id(), o.permanent()?.attached_player()?)))
             .collect();
-        Ok(InvariantChecker {
+        InvariantChecker {
             setup: setup.clone(),
             expected_attached,
             expected_enchanted,
@@ -750,7 +776,7 @@ impl InvariantChecker {
             replacing: false,
             announcing: false,
             since_full: 0,
-        })
+        }
     }
 
     /// [`observe`](Self::observe) for a live engine, with the checks that depend on the decision it stands at.
@@ -886,6 +912,20 @@ impl InvariantChecker {
 
     #[allow(clippy::too_many_lines)]
     fn observe_event(&mut self, event: &Event) -> Result<(), Violation> {
+        // A restart starts the game over (CR 727): every expectation is read from the new game again.
+        if matches!(event, Event::GameRestarted { .. }) {
+            apply_event(&mut self.shadow, event)
+                .map_err(|e| Violation::Fold(format!("{event:?}: {e}")))?;
+            let fresh = Self::from_shadow(&self.setup, self.shadow.clone());
+            *self = InvariantChecker {
+                events_seen: self.events_seen,
+                full_every: self.full_every,
+                replacing: self.replacing,
+                announcing: self.announcing,
+                ..fresh
+            };
+            return Ok(());
+        }
         // An ability ceases to exist when its resolution ends, and the fold removes it, so look first.
         let ability_ends = matches!(event, Event::ResolutionEnded { object, .. }
             if self.shadow.object(*object).is_some_and(|o| o.kind() == ObjectKind::Ability));

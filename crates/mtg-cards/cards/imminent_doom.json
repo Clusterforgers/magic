@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6ded956d-30ed-49ca-8653-cbaaae676b0c",
+  "name": "Imminent Doom",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Imminent Doom",
+      "oracle_fingerprint": "eee3c30ed52d5217b4155e052bebc456",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "doom" }, "count": 1 } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 51, "end": 250 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -412,6 +412,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             can_cancel: false,
             cost: None,
             per_x: 0,
+            secret: false,
         }),
         DecisionKind::ChooseNumber(NumberOptions {
             source: b,
@@ -422,6 +423,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             can_cancel: true,
             cost: None,
             per_x: 0,
+            secret: false,
         }),
         DecisionKind::DivideAmount(DivideOptions {
             source: b,

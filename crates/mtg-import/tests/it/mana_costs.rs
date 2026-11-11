@@ -73,8 +73,9 @@ fn every_single_faced_cost_reads_with_the_value_and_colors_scryfall_gives_it() {
                 };
                 assert!(
                     (f64::from(cost.mana_value()) - cmc).abs() < f64::EPSILON,
-                    "{}: mana value",
-                    row.cost
+                    "{}: mana value {} is not {cmc}",
+                    row.cost,
+                    cost.mana_value()
                 );
                 if let Some(colors) = colors {
                     assert_eq!(cost.colors(), colors, "{}: colors", row.cost);

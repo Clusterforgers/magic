@@ -20,6 +20,7 @@ import type {
   PlayerId,
   RuleEffect,
   Target,
+  TextWord,
   Zone,
   ZoneCause,
 } from '@/protocol/generated'
@@ -155,6 +156,9 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
   if ('AddSupertype' in modification) {
     return `${becomes} ${modification.AddSupertype.toLowerCase()} too`
   }
+  if ('RemoveSupertype' in modification) {
+    return `${loses} ${modification.RemoveSupertype.toLowerCase()}`
+  }
   if ('AddSubtype' in modification) return `${becomes} ${modification.AddSubtype} too`
   if ('SetCreatureTypes' in modification) {
     return `${becomes} ${joinWords(modification.SetCreatureTypes)}`
@@ -197,6 +201,11 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       Both: `${seat} or planeswalkers ${seat} controls`,
     }[attacked]
     return `can't attack ${whom}`
+  }
+  if ('ChangeText' in modification) {
+    const word = (text: TextWord) => ('Color' in text ? text.Color.toLowerCase() : text.Subtype)
+    const { from, to } = modification.ChangeText
+    return `${group ? 'have' : 'has'} "${word(from)}" changed to "${word(to)}" in ${group ? 'their' : 'its'} text`
   }
   const { power, toughness } = modification.ModifyPowerToughness
   return `${group ? 'get' : 'gets'} ${power >= 0 ? '+' : ''}${power}/${toughness >= 0 ? '+' : ''}${toughness}`
@@ -590,6 +599,7 @@ function describeChoice(choice: Choice, n: EventNames): string {
   if ('YesNo' in choice) return choice.YesNo ? 'answers yes' : 'answers no'
   if ('Option' in choice) return `chooses option ${choice.Option + 1}`
   if ('Vote' in choice) return `votes for option ${choice.Vote + 1}`
+  if ('SecretNumber' in choice) return `secretly chooses ${choice.SecretNumber}`
   return 'chooses which effect applies first'
 }
 
@@ -1059,6 +1069,21 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('ExtraTurnSkipped' in event) {
     return quiet(`${n.seat(event.ExtraTurnSkipped.player)} skips an extra turn`)
+  }
+  if ('PlayerControlGained' in event) {
+    const { player, by, extra_turn } = event.PlayerControlGained
+    const after = extra_turn === true ? ', then takes an extra turn' : ''
+    return line(`${n.seat(by)} will control ${n.seat(player)} during their next turn${after}`)
+  }
+  if ('GameRestarted' in event) {
+    const { by, kept } = event.GameRestarted
+    const cards = kept.length === 0 ? '' : `, keeping ${kept.map((id) => n.card(id)).join(', ')} in exile`
+    return line(`${n.seat(by)} restarts the game${cards}`)
+  }
+  if ('SpellControlGained' in event) {
+    return line(
+      `${n.seat(event.SpellControlGained.player)} gains control of ${n.card(event.SpellControlGained.object)}`,
+    )
   }
   if ('PhasesAdded' in event) {
     return line(`${event.PhasesAdded.steps.length} additional phase(s) follow this phase`)

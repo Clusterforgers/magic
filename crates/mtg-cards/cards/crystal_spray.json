@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fe371e3a-976f-41d8-ad58-4b3b61415d71",
+  "name": "Crystal Spray",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crystal Spray",
+      "oracle_fingerprint": "621f51f3ca5d0e67788d5f278d40c3c1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "AnyOf": ["Spell", { "In": "Battlefield" }] }] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "ColorOrBasicLandType", "as": "from" } },
+              { "ChooseValue": { "kind": { "LikeChosen": "from" }, "as": "to" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ChangeTextChosen": { "from": "from", "to": "to" } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "38de7183-81ef-4a79-b231-7195ba89a281",
+  "name": "Jetfire, Ingenious Scientist // Jetfire, Air Guardian",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jetfire, Ingenious Scientist",
+      "oracle_fingerprint": "6392b8366351ef3577bf19e397350746",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 77 }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 85, "end": 256 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jetfire, Air Guardian",
+      "oracle_fingerprint": "1e198bd8f52c5b0a38cdb138954be007",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 0, "end": 65 }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 73, "end": 183 }
+          }
+        }
+      ]
+    }
+  ]
+}

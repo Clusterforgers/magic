@@ -6,7 +6,7 @@ use crate::effect::Effect;
 use crate::refs::{Bounds, Pred, Ref, Targetable, ZoneKind};
 
 impl Writer<'_> {
-    /// A player's choice of a card of their graveyard and its exile, as one sentence, and the number of effects it
+    /// A player's choice of a card of their graveyard or hand and its exile, as one sentence, and the number of effects it
     /// covers: "target player exiles a card from their graveyard".
     pub(super) fn exile_chosen_from_graveyard(
         &mut self,
@@ -30,9 +30,12 @@ impl Writer<'_> {
         else {
             return None;
         };
-        let theirs = [Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(who.clone())];
-        (selector.0 == theirs
-            && *count == Bounds::default()
+        let zone = match selector.0.as_slice() {
+            [Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(owner)] if owner == who => "graveyard",
+            [Pred::In(ZoneKind::Hand), Pred::OwnedBy(owner)] if owner == who => "hand",
+            _ => return None,
+        };
+        (*count == Bounds::default()
             && bind == EXILED_CARD
             && exiled == bind
             && self.single(who)
@@ -40,7 +43,7 @@ impl Writer<'_> {
         .then_some(())?;
         Some((
             vec![format!(
-                "{} exiles a card from their graveyard",
+                "{} exiles a card from their {zone}",
                 self.name_target()?
             )],
             2,

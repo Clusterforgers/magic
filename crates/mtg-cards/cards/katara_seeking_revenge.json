@@ -1,0 +1,42 @@
+{
+  "oracle_id": "124cc815-0877-40f2-98c8-e7c4f8cd6598",
+  "name": "Katara, Seeking Revenge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Katara, Seeking Revenge",
+      "oracle_fingerprint": "d64f8be9bb39b7136ca658d9ca5221ff",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Waterbend": 2 }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": { "condition": { "Not": "AdditionalCostPaid" }, "then": [{ "Discard": {} }] }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [{ "Subtype": "Lesson" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "toughness": {
+                    "Count": [{ "Subtype": "Lesson" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

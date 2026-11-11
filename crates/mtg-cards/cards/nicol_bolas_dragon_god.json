@@ -1,0 +1,44 @@
+{
+  "oracle_id": "581eedc4-efe4-4ae4-baf2-88071e7e6f6d",
+  "name": "Nicol Bolas, Dragon-God",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nicol Bolas, Dragon-God",
+      "oracle_fingerprint": "07218eb747e32718fc80e22ff0c3097c",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 0, "end": 84 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 85, "end": 178 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 224, "end": 314 }
+          }
+        }
+      ]
+    }
+  ]
+}

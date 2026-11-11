@@ -1,0 +1,26 @@
+{
+  "oracle_id": "36396a14-9d0b-4670-bf8a-5c346fdda197",
+  "name": "King Solomon's Frogs",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "King Solomon's Frogs",
+      "oracle_fingerprint": "58771de3cd40e01456ba9408a77aee8f",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 6, "end": 223 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", "ExileSelf"],
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

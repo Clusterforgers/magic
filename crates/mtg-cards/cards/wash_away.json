@@ -1,0 +1,32 @@
+{
+  "oracle_id": "a4630da0-fe9b-4ead-9621-eac4b7825c35",
+  "name": "Wash Away",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wash Away",
+      "oracle_fingerprint": "4e256c46b3702c58022ed2469ce987d5",
+      "abilities": [
+        {
+          "Keyword": {
+            "Cleave": {
+              "cost": "{1}{U}{U}",
+              "spell": {
+                "Spell": {
+                  "targets": [{ "what": { "Object": ["Spell"] } }],
+                  "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "CastFrom": "Hand" } }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

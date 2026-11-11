@@ -175,6 +175,12 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],
   ExtraTurnAdded: [{ ExtraTurnAdded: { player: 1 } }, 'Bo takes an extra turn after this one'],
   ExtraTurnSkipped: [{ ExtraTurnSkipped: { player: 1 } }, 'Bo skips an extra turn'],
+  PlayerControlGained: [
+    { PlayerControlGained: { player: 1, by: 0, extra_turn: true } },
+    'Ana will control Bo during their next turn, then takes an extra turn',
+  ],
+  GameRestarted: [{ GameRestarted: { by: 0, kept: [3] } }, 'Ana restarts the game, keeping Forest in exile'],
+  SpellControlGained: [{ SpellControlGained: { object: 3, player: 1 } }, 'Bo gains control of Forest'],
   PhasesAdded: [
     { PhasesAdded: { steps: ['BeginCombat', 'Main2'] } },
     '2 additional phase(s) follow this phase',
@@ -483,6 +489,7 @@ const MORE: [Event, string][] = [
   [{ ChoiceMade: { player: 1, choice: { YesNo: true } } }, 'Bo answers yes'],
   [{ ChoiceMade: { player: 1, choice: { YesNo: false } } }, 'Bo answers no'],
   [{ ChoiceMade: { player: 1, choice: { Vote: 1 } } }, 'Bo votes for option 2'],
+  [{ ChoiceMade: { player: 1, choice: { SecretNumber: 4 } } }, 'Bo secretly chooses 4'],
   [{ ChoiceMade: { player: 1, choice: { Order: [1, 2] } } }, 'Bo puts 2 cards in order'],
   [{ ChoiceMade: { player: 1, choice: { Option: 0 } } }, 'Bo chooses option 1'],
   [{ ChoiceMade: { player: 1, choice: { Replacement: 1 } } }, 'Bo chooses which effect applies first'],

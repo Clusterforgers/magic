@@ -1,0 +1,31 @@
+{
+  "oracle_id": "4faa5a70-ac0c-4a29-8bec-218a35a29fdf",
+  "name": "Reset",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reset",
+      "oracle_fingerprint": "c05436b405b10232f83aadde136c4f42",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "All": [
+                { "Not": "YourTurn" },
+                { "Not": { "Step": "Untap" } },
+                { "Not": { "Step": "Upkeep" } }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

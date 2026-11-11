@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b4faba1a-23db-4678-9ce6-a7816105f22a",
+  "name": "Infinite Authority",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Infinite Authority",
+      "oracle_fingerprint": "1fad6e4846f276c25490da9bb9de03cb",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 17, "end": 278 }
+          }
+        }
+      ]
+    }
+  ]
+}

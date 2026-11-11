@@ -40,11 +40,54 @@ const NOUNS: [&str; 8] = [
 /// The wordings of an ability no other writer says whole: "If this card is in your opening hand, you may begin the game
 /// with it on the battlefield."
 pub(super) fn wf25_whole(ability: &Ability) -> Option<Vec<String>> {
+    if let Ability::OpeningHandWith {
+        not_starting,
+        counter,
+        exile_from_hand,
+    } = ability
+    {
+        return dk26_opening_with(*not_starting, counter.as_ref(), *exile_from_hand)
+            .map(|text| vec![text]);
+    }
     matches!(ability, Ability::OpeningHand).then(|| {
         vec![
             "If ~ is in your opening hand, you may begin the game with it on the battlefield."
                 .to_owned(),
         ]
+    })
+}
+
+/// "If ~ is in your opening hand and you're not the starting player, you may begin the game with ~ on the battlefield
+/// with a luck counter on it. If you do, exile a card from your hand.": the opening-hand ability with its riders.
+fn dk26_opening_with(
+    not_starting: bool,
+    counter: Option<&crate::value::CounterKind>,
+    exile_from_hand: u32,
+) -> Option<String> {
+    let condition = if not_starting {
+        " and you're not the starting player"
+    } else {
+        ""
+    };
+    let with = match counter {
+        Some(crate::value::CounterKind::Other(name)) => {
+            format!(
+                " with {} {name} counter on it",
+                super::triggers::article(name)
+            )
+        }
+        Some(_) => return None,
+        None => String::new(),
+    };
+    let exile = match exile_from_hand {
+        0 => String::new(),
+        1 => " If you do, exile a card from your hand.".to_owned(),
+        _ => return None,
+    };
+    (not_starting || counter.is_some() || exile_from_hand > 0).then(|| {
+        format!(
+            "If ~ is in your opening hand{condition}, you may begin the game with ~ on the battlefield{with}.{exile}"
+        )
     })
 }
 

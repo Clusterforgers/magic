@@ -60,7 +60,7 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             } | CostItem::Sacrifice {
                 count: Amount::Fixed(_),
                 ..
-            }]
+            } | CostItem::Forage]
         )
         .then_some(cost)?
     };
@@ -176,6 +176,7 @@ fn phrase(cost: &Cost) -> Option<String> {
             filter: None,
         } => Some(format!("discard {}", cards_text(count)?)),
         CostItem::SacrificeSelf => Some("sacrifice ~".to_owned()),
+        CostItem::Forage => Some("forage".to_owned()),
         CostItem::PayEnergy(Amount::Fixed(_))
         | CostItem::ReturnToHand {
             count: Amount::Fixed(_),

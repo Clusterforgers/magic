@@ -702,6 +702,16 @@ mod zones_fuzz;
 
 // dk1c
 mod dk1c_triggers;
+mod dk26_forage;
+mod dk26_gemstone_caverns;
+mod dk26_stack_cards;
+mod dk26_sylvan_library;
+mod dk26_unattached;
+mod dk27_animate_dead;
+mod dk27_bid_life;
+mod dk27_counted_less;
+mod dk27_forage_mana;
+mod dk27_secret_numbers;
 // dk1b
 mod dk1b_attach;
 mod enchanted_dies;
@@ -791,6 +801,8 @@ mod r4i_or_controller;
 mod r5e_done_once;
 mod ri23_asking_instead;
 mod ring;
+mod rmt0_chroma;
+mod rmt0_hand_pick;
 mod rmt3_enters;
 mod rmt3_skips;
 mod rmt4_each_opponent_tokens;
@@ -805,4 +817,9 @@ mod rmt7_lose_printed;
 mod rmt7_turn_rules;
 mod tapped_for_mana;
 mod target_reductions;
+mod tc34_cleave;
+mod tc34_opposition_agent;
+mod tc34_player_control;
+mod tc34_restart;
+mod tc34_text_change;
 mod together_batch;

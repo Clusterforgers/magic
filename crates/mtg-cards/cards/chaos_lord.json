@@ -1,0 +1,26 @@
+{
+  "oracle_id": "16d0aea2-4ca4-4a9d-8674-2863e085f514",
+  "name": "Chaos Lord",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chaos Lord",
+      "oracle_fingerprint": "49389a3f30d1e8db15221e60d231c81f",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 13, "end": 129 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 130, "end": 206 }
+          }
+        }
+      ]
+    }
+  ]
+}

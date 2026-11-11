@@ -1,6 +1,8 @@
 //! Effects as steps: the common ones in a sentence, the ones that hold other effects as an indented block, and every
 //! other effect by its variant and fields.
 
+use std::fmt::Write as _;
+
 use super::generic;
 use super::parts;
 use super::phrase::{self, Ctx};
@@ -461,6 +463,21 @@ fn game(ctx: &Ctx, effect: &Effect) -> Option<String> {
             &format!("{} extra", phrase::counted(ctx, count, "turn")),
         ),
         Effect::BecomeMonarch { who } => act(ctx, who, "become", "the monarch"),
+        Effect::RestartGame { keep } => format!(
+            "restart the game, leaving in exile each {}, then put those cards onto the battlefield under your control",
+            phrase::selector(ctx, keep)
+        ),
+        Effect::ControlPlayer { who, extra_turn } => {
+            let then = if *extra_turn {
+                ", then that player takes an extra turn"
+            } else {
+                ""
+            };
+            format!(
+                "you control {} during that player's next turn{then}",
+                phrase::who(ctx, who)
+            )
+        }
         Effect::Proliferate { who } => act(ctx, who, "proliferate", ""),
         Effect::Rule { rule, duration } => {
             format!("{} {}", parts::rule(ctx, rule), phrase::duration(duration))
@@ -672,13 +689,13 @@ fn repeated(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool 
                 |times| format!("repeat {} times", phrase::amount(ctx, times)),
             );
             if !always {
-                head += &format!(" while {}", phrase::condition(ctx, condition));
+                let _ = write!(head, " while {}", phrase::condition(ctx, condition));
             }
             if *at_least_once {
                 head += ", at least once";
             }
             if let Some(who) = ask {
-                head += &format!(", each time {} chooses to", phrase::who(ctx, who));
+                let _ = write!(head, ", each time {} chooses to", phrase::who(ctx, who));
             }
             out.push(Step::new(depth, format!("{head}:")));
             list(ctx, effects, depth + 1, out);
@@ -740,6 +757,14 @@ mod tests {
 
     #[rstest]
     #[case::draw(r#"{"Draw":{}}"#, "draw a card")]
+    #[case::restart_game(
+        r#"{"RestartGame":{"keep":[{"ExiledWith":"This"}]}}"#,
+        "restart the game, leaving in exile each permanent exiled with this, then put those cards onto the battlefield under your control"
+    )]
+    #[case::control_player(
+        r#"{"ControlPlayer":{"who":"Opponents","extra_turn":true}}"#,
+        "you control each opponent during that player's next turn, then that player takes an extra turn"
+    )]
     #[case::draw_two_for_them(
         r#"{"Draw":{"who":"Opponents","count":2}}"#,
         "each opponent draws 2 cards"

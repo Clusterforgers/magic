@@ -61,7 +61,14 @@ pub(crate) fn pair_card(card: &Card, clauses: &[Clause], printed: &PrintedCard) 
                     enchanted_noun(&printed.oracle_text),
                 )
             });
-        let found = Pairer::new(face, abilities, &of_face, (creature_at, names, attachment)).run();
+        let cleaved = printed
+            .faces
+            .get(face)
+            .map(crate::compile::cleaved_lines)
+            .unwrap_or_default();
+        let mut pairing = Pairer::new(face, abilities, &of_face, (creature_at, names, attachment));
+        pairing.cleaved = cleaved;
+        let found = pairing.run();
         paired.clauses.extend(found.clauses);
         paired.strays.extend(found.strays);
         paired.places.extend(found.places);
@@ -106,6 +113,7 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::InstantActivation { .. }
         | Ability::CastOnly { .. }
         | Ability::OpeningHand
+        | Ability::OpeningHandWith { .. }
         | Ability::OpeningReveal { .. }
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
         Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
@@ -198,6 +206,14 @@ fn bare(keyword: &Keyword) -> Keyword {
             count: *count,
             abilities: Vec::new(),
         },
+        // The spell of cleave is read from the spell lines without the bracketed words, not from the keyword line.
+        Keyword::Cleave { cost, .. } => Keyword::Cleave {
+            cost: cost.clone(),
+            spell: Box::new(Ability::Spell {
+                targets: Vec::new(),
+                effects: Vec::new(),
+            }),
+        },
         other => super::r6c_bare::canonical(other),
     }
 }
@@ -256,6 +272,8 @@ struct Pairer<'a> {
     /// What the face attaches by: "equipped" for an Equipment, "enchanted" for an Aura, nothing for another card; and
     /// the noun of what an Aura enchants ("land" for "Enchant land").
     attachment: (&'static str, String),
+    /// The spell lines of a cleave face without the words in square brackets.
+    cleaved: Vec<String>,
     slots: Vec<Slot<'a>>,
     taken: Vec<bool>,
     slot_of: Vec<Option<usize>>,
@@ -277,6 +295,7 @@ impl<'a> Pairer<'a> {
             names,
             beheld: super::e15c_beheld::paid_words(abilities),
             attachment,
+            cleaved: Vec::new(),
             slots: clauses
                 .iter()
                 .map(|&clause| Slot {
@@ -294,6 +313,7 @@ impl<'a> Pairer<'a> {
 
     fn run(mut self) -> Paired {
         self.manual();
+        self.rmt0_cleave();
         self.keywords();
         self.alt_keywords();
         self.equip_options();
@@ -588,6 +608,38 @@ impl<'a> Pairer<'a> {
                 self.slot_of[at] = Some(slot);
                 self.places[at] = self.places[at - 1];
             }
+        }
+    }
+
+    /// Cleave: the keyword stands for its line when its cleaved spell writes the face's spell text without the words in
+    /// square brackets, and differs from it otherwise.
+    fn rmt0_cleave(&mut self) {
+        let abilities = self.abilities;
+        let Some((at, (line, cleaved))) = abilities
+            .iter()
+            .enumerate()
+            .find_map(|(at, ability)| super::rmt0_cleave::cleave(ability).map(|found| (at, found)))
+        else {
+            return;
+        };
+        let Some(slot) = self.find_text(&[ClauseKind::Keyword], &[line], false) else {
+            return;
+        };
+        let text = self.cleaved.join(" ");
+        let written = crate::compile::written_variants(&cleaved);
+        if !text.is_empty()
+            && written
+                .iter()
+                .any(|variant| self.same(variant, stripped(&text)))
+        {
+            self.settle(at, slot, ClauseState::Reads { ability: at });
+        } else {
+            let wanted = written.first().cloned().unwrap_or_default();
+            let state = ClauseState::Differs {
+                ability: at,
+                written: wanted,
+            };
+            self.settle(at, slot, state);
         }
     }
 

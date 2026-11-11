@@ -1,0 +1,58 @@
+{
+  "oracle_id": "92eed395-62ca-4293-882b-8565c40daab5",
+  "name": "Sylvan Library",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvan Library",
+      "oracle_fingerprint": "32a6459a69873eb74023faaedb891e3a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw", "whose": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "Draw": { "count": 2 } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, "DrawnThisTurn"]
+                        },
+                        "count": { "min": 2, "max": 2 },
+                        "as": "chosen"
+                      }
+                    },
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "chosen" },
+                        "as": "card",
+                        "effects": [
+                          {
+                            "Pay": {
+                              "cost": [{ "PayLife": 4 }],
+                              "unpaid": [
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "card" },
+                                    "to": { "Library": { "place": "Top" } }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

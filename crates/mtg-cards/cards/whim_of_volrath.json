@@ -1,7 +1,7 @@
 {
   "oracle_id": "51a20c9f-68d2-471b-8622-67d481b53b92",
   "name": "Whim of Volrath",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Whim of Volrath",
@@ -9,9 +9,19 @@
       "abilities": [
         { "Keyword": { "Buyback": "{2}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 124, "end": 375 }
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "ChooseValue": { "kind": "ColorOrBasicLandType", "as": "from" } },
+              { "ChooseValue": { "kind": { "LikeChosen": "from" }, "as": "to" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ChangeTextChosen": { "from": "from", "to": "to" } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "4ce785b9-aee0-4ac6-ab20-ee20d0551be4",
+  "name": "Yotia Declares War",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Yotia Declares War",
+      "oracle_fingerprint": "9ce77a3c0ee019d6a49ca45cc48f26da",
+      "abilities": [
+        { "Keyword": "ReadAhead" },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ornithopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 0,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 243, "end": 379 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 380, "end": 505 }
+          }
+        }
+      ]
+    }
+  ]
+}

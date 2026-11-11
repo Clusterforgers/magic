@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4d6ad734-b8b5-4d91-9b7b-1fa0c55bfa4f",
+  "name": "Light from Within",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Light from Within",
+      "oracle_fingerprint": "4d1539dc5ecf97648b4819af03ab1913",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "ManaSymbols": { "color": "White", "of": "Affected" } },
+                  "toughness": { "ManaSymbols": { "color": "White", "of": "Affected" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "efe4194a-b3c5-4308-abfe-553e035f5e64",
+  "name": "Dread Fugue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dread Fugue",
+      "oracle_fingerprint": "065248aebe001bab4d137886d3a6d62d",
+      "abilities": [
+        {
+          "Keyword": {
+            "Cleave": {
+              "cost": "{2}{B}",
+              "spell": {
+                "Spell": {
+                  "targets": [{ "what": "Player" }],
+                  "effects": [
+                    {
+                      "Reveal": {
+                        "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                      }
+                    },
+                    {
+                      "Discard": {
+                        "who": { "Target": 0 },
+                        "filter": [{ "Not": { "Type": "Land" } }],
+                        "by": "You"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                  ],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

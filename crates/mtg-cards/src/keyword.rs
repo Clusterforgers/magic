@@ -406,6 +406,14 @@ pub enum Keyword {
         /// The splice cost.
         cost: Cost,
     },
+    /// Cleave (CR 702.148): the spell may be cast for `cost` rather than its mana cost, and then its text reads without the
+    /// words in square brackets: `spell` is the `Spell` ability as it reads then.
+    Cleave {
+        /// The cleave cost.
+        cost: Cost,
+        /// The spell ability without the bracketed words.
+        spell: Box<Ability>,
+    },
     /// A keyword the macro table expands into abilities of existing nodes (`macros::KEYWORDS`), with its number (0 for a keyword that prints none).
     Macro {
         /// The name in the table.
@@ -611,6 +619,7 @@ impl Keyword {
         "Banding",
         "Bands with other",
         "Splice",
+        "Cleave",
         "Macro",
     ];
 
@@ -809,6 +818,7 @@ impl Keyword {
             Keyword::Banding => "Banding",
             Keyword::BandsWithOther(_) => "Bands with other",
             Keyword::Splice { .. } => "Splice",
+            Keyword::Cleave { .. } => "Cleave",
             Keyword::Macro { .. } => "Macro",
             // The keywords before it are named by `name`; the test of the names lists every variant.
             _ => "",
@@ -1068,6 +1078,13 @@ mod tests {
             Keyword::Splice {
                 onto: SpliceOnto::Arcane,
                 cost: Cost::default(),
+            },
+            Keyword::Cleave {
+                cost: Cost::default(),
+                spell: Box::new(Ability::Spell {
+                    targets: Vec::new(),
+                    effects: Vec::new(),
+                }),
             },
             Keyword::Macro {
                 name: "bushido".to_owned(),

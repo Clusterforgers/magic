@@ -38,9 +38,9 @@ fn c11c_counter_cost_near_misses_stay_unread(#[case] text: &str) {
     let json = clause(text, ClauseKind::Activated, false)
         .map(|read| serde_json::to_string(&read).unwrap());
     assert!(
-        !json
-            .as_deref()
-            .is_some_and(|json| json.contains(r#""from":"#)),
+        !json.as_deref().is_some_and(
+            |json| json.contains(r#""RemoveCounters":{"#) && json.contains(r#""from":"#)
+        ),
         "{text}: {json:?}"
     );
 }

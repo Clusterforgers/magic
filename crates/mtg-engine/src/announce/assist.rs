@@ -120,6 +120,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
                 can_cancel: false,
                 cost: None,
                 per_x: 0,
+                secret: false,
             }),
         }));
     };

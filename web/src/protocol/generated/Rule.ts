@@ -117,7 +117,7 @@ spend_as: unknown,
 /**
  * The spells it is for; everything when absent.
  */
-spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "AbilitiesAsThoughHaste": unknown } | { "UntapDuring": { 
+spells: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "AbilitiesAsThoughHaste": unknown } | { "UntapDuring": { 
 /**
  * The permanents, judged when the step untaps.
  */
@@ -250,6 +250,10 @@ objects: Array<ObjectRef>,
  * Where they go instead.
  */
 to: unknown, 
+/**
+ * The place in its owner's library a countered spell goes to, when `to` is the library.
+ */
+place?: unknown, 
 /**
  * It covers a spell that is countered only, not one that resolves or fizzles.
  */

@@ -74,6 +74,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Goad { .. }
         | Effect::Fight { .. }
         | Effect::BecomeMonarch { .. }
+        | Effect::ControlPlayer { .. }
+        | Effect::RestartGame { .. }
         | Effect::RingTempts { .. }
         | Effect::CreateEmblem { .. }
         | Effect::BecomeDayNight { .. }
@@ -133,7 +135,7 @@ fn reports(effect: &Effect) -> Reports {
         Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
         | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
-        | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::VillainousChoice { .. }
+        | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::ChooseNumbers { .. } | Effect::BidLife { .. } | Effect::VillainousChoice { .. }
         | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
         | Effect::Either { .. } | Effect::OneOf { .. } => Reports::Nothing,
     }

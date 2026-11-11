@@ -16,6 +16,7 @@ mod r6c_bare;
 mod render;
 mod repair;
 mod ri23_skipped;
+mod rmt0_cleave;
 
 pub use merge::{MergeRefusal, merge, refusal};
 pub(crate) use pairing::pair_card;

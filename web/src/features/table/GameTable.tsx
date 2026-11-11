@@ -25,7 +25,7 @@ import { createMarksStore, MarksContext } from './prompt/marks'
 import { promptInStrip } from './prompt/ownDecision'
 import { createPreviewStore, PreviewContext } from './preview'
 import { Opponents, SeatArea } from './Seats'
-import { defaultFocusOf, seatCountOf, turnLeft } from './selectors'
+import { defaultFocusOf, handSeat, seatCountOf, turnLeft } from './selectors'
 import { SharedStrip } from './SharedStrip'
 import { SideProvider } from './sideState'
 import { StopControlsProvider } from './stops/stopControls'
@@ -56,6 +56,8 @@ const Table = memo(function Table() {
   const followed = usePlay(defaultFocusOf)
   const active = usePlay((state) => (turnLeft(state) ? null : (state.view?.turn.active ?? null)))
   const lowered = usePlay(promptInStrip)
+  // The hand of the player the viewer controls this turn, else the viewer's own (CR 722).
+  const handFrom = usePlay((state) => handSeat(state, seat ?? 0))
   const [mode, setMode] = useState<TableMode | undefined>(options.mode)
   const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)
   const [previews] = useState(createPreviewStore)
@@ -129,7 +131,7 @@ const Table = memo(function Table() {
                           own={<SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} />}
                           hand={
                             <HandDock
-                              seat={plan.viewer}
+                              seat={handFrom}
                               growMost={handGrowMost(regions)}
                               openingMost={openingGrowMost(regions)}
                             />

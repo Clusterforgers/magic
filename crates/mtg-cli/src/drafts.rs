@@ -661,7 +661,7 @@ mod tests {
             (1, 0, 0)
         );
         assert_eq!(change.put, vec![draft("a", "h1")]);
-        assert!(change.retire.is_empty());
+        assert_eq!(change.retire, Vec::<DraftKey>::new());
     }
 
     #[test]

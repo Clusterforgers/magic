@@ -40,6 +40,7 @@ const CAST_WAYS: Record<CastWay, string> = {
   Free: 'Without paying its mana cost',
   Emerge: 'Emerge',
   Harmonize: 'Harmonize',
+  Cleave: 'Cleave',
   Alternative: 'Alternative cost',
 }
 
@@ -52,6 +53,7 @@ const FACE_DOWN: Record<FaceDownKind, string> = {
   Hideaway: 'Hideaway',
   Held: 'Face down',
   Sealed: 'Face down',
+  Attraction: 'Attraction',
 }
 
 const DAY_NIGHT: Record<DayNight, string> = { Day: 'Day', Night: 'Night' }

@@ -29,6 +29,7 @@ pub fn pattern(ctx: &Ctx, p: &Params, mode: &str) -> Option<Tr<Value>> {
         "RingTemptsYou" => ring_tempts(ctx, p),
         "BecomesCrewed" => becomes_crewed(ctx, p),
         "Attached" => attached(ctx, p),
+        "Unattached" => dk26_unattached(ctx, p),
         "CounterAddedOnce" if p.has("ValidPlayer") && !p.has("ValidCard") => {
             player_counters(p).map(|inner| batch(&inner))
         }
@@ -210,6 +211,21 @@ fn attached(ctx: &Ctx, p: &Params) -> Tr<Value> {
         }
     }
     Ok(json!({ "Attached": pattern }))
+}
+
+/// "Whenever ~ becomes unattached from a permanent" (`Mode$ Unattached`): the attachment and the permanent it left.
+fn dk26_unattached(ctx: &Ctx, p: &Params) -> Tr<Value> {
+    keys(p, "Unattached", &["ValidAttachment", "ValidObject"])?;
+    let mut pattern = json!({});
+    for (key, field) in [("ValidAttachment", "what"), ("ValidObject", "from")] {
+        if let Some(valid) = p.get(key) {
+            let selector = selector_any(ctx, valid)?;
+            if !selector.is_empty() {
+                pattern[field] = json!(selector);
+            }
+        }
+    }
+    Ok(json!({ "Unattached": pattern }))
 }
 
 /// Marks a batch of counters put on permanents `each` when its description names a single permanent ("one or more -1/-1

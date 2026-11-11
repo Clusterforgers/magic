@@ -138,6 +138,10 @@ pub fn for_each(r: &mut Reader<'_>) -> Option<Amount> {
         if r.words("creature in your party") {
             return Some(Amount::Party(Ref::You));
         }
+        // "for each card type among cards in your graveyard" (Emrakul, the Promised End).
+        if r.words("card type among") {
+            return Some(Amount::CardTypes(defining::counted(r)?));
+        }
         // The permanent that devoured: "draw a card for each creature it devoured" (Skullmulcher).
         if r.words("creature it devoured") {
             return Some(Amount::Devoured);
@@ -292,6 +296,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
         Amount::Players(Ref::PlayersWhere { .. }) => super::r9w_players::r9w_each_text(counted)?,
         Amount::Players(Ref::Bound(_)) => super::vote::w2d_tally_text(counted, false)?,
         Amount::Party(Ref::You) => "creature in your party".to_owned(),
+        Amount::CardTypes(of) => format!("card type among {}", defining::counted_text(of)?),
         Amount::Devoured => "creature it devoured".to_owned(),
         Amount::CommanderCasts(Ref::You) => {
             "time you've cast your commander from the command zone this game".to_owned()
@@ -321,6 +326,7 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
         }
         Amount::PhasedOut(_) => super::w11b_phase::w11b_phased_each_text(counted)?,
         Amount::Distinct { .. } => super::w2c_counts::w2c_distinct_text(counted, false)?,
+        Amount::ManaSymbols { .. } => super::rmt0_chroma::each_text(counted)?,
         _ => return None,
     })
 }

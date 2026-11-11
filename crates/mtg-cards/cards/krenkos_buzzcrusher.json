@@ -1,0 +1,21 @@
+{
+  "oracle_id": "79a63064-f25b-4c34-867e-a9d32da97b14",
+  "name": "Krenko's Buzzcrusher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Krenko's Buzzcrusher",
+      "oracle_fingerprint": "8c866d11d85db726af5013be6f93aa0a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 16, "end": 260 }
+          }
+        }
+      ]
+    }
+  ]
+}

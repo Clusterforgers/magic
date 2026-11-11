@@ -263,6 +263,9 @@ mod died_under;
 mod digital_wordings;
 mod dk1b_attached_writers;
 mod dk1c5_rooms;
+mod dk26_forage;
+mod dk26_opening;
+mod dk26_unattached;
 mod draws;
 mod e10a_writers;
 mod e10b_writers;
@@ -1213,6 +1216,10 @@ mod r9w;
 // r11w
 mod r11w;
 // e10c
+mod dk27_animate;
+mod dk27_bid;
+mod dk27_numbers;
+mod dk27_readers;
 mod e10c_writers;
 mod e17a_writers;
 mod e18a_writers;
@@ -1224,6 +1231,7 @@ mod g10d_writers;
 mod g11a_writers;
 mod g12a_writers;
 mod g13d_writers;
+mod tc34_control;
 mod w20_attached;
 mod w22_moves;
 mod w22_shields;

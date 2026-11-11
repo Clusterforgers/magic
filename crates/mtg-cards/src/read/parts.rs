@@ -1,5 +1,7 @@
 //! The parts an ability is made of besides its effects: triggers, costs, mana, rules, modifications and replacements.
 
+use std::fmt::Write as _;
+
 use super::generic;
 use super::phrase::{self, Ctx};
 use super::{Step, effects, steps};
@@ -273,21 +275,26 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
         TriggerPattern::Nth { event, nth } => {
             format!("{} for the {nth}th time each turn", trigger(ctx, event))
         }
-        TriggerPattern::Caused { inner, by, source } => format!(
-            "{}, caused by {}{}",
-            trigger(ctx, inner),
-            by.as_ref().map_or_else(
-                || "a spell or ability".to_owned(),
-                |who| phrase::who(ctx, who)
-            ),
-            if source.is_empty() {
-                String::new()
-            } else {
-                format!(" with {}", phrase::source(ctx, source))
-            }
-        ),
+        TriggerPattern::Caused { inner, by, source } => caused(ctx, inner, by.as_ref(), source),
         other => generic::node(ctx, other),
     }
+}
+
+/// An event someone caused: who caused it and with what source, when the pattern says.
+fn caused(ctx: &Ctx, inner: &TriggerPattern, by: Option<&Ref>, source: &Selector) -> String {
+    format!(
+        "{}, caused by {}{}",
+        trigger(ctx, inner),
+        by.map_or_else(
+            || "a spell or ability".to_owned(),
+            |who| phrase::who(ctx, who)
+        ),
+        if source.is_empty() {
+            String::new()
+        } else {
+            format!(" with {}", phrase::source(ctx, source))
+        }
+    )
 }
 
 /// An object changing zones, by where it came from and where it went.
@@ -397,6 +404,14 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
                 permission_terms(ctx, permission)
             )
         }
+        GameRule::ExileFound(who) => format!(
+            "{} exile each card they find while they search their libraries, and you may play those cards while they remain exiled, spending mana as though it were mana of any color",
+            phrase::who(ctx, who)
+        ),
+        GameRule::ControlSearches(who) => format!(
+            "you control {} while they search their libraries",
+            phrase::who(ctx, who)
+        ),
         GameRule::AttackLimit(most) => {
             format!("no more than {most} creatures can attack each combat")
         }
@@ -411,10 +426,11 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
 fn permission_terms(ctx: &Ctx, permission: &CastPermission) -> String {
     let mut terms = String::new();
     if let Some(rather) = &permission.rather {
-        terms += &format!(" (instead of its mana cost: {})", cost(ctx, rather));
+        let _ = write!(terms, " (instead of its mana cost: {})", cost(ctx, rather));
     }
     if let Some(additional) = &permission.additional {
-        terms += &format!(
+        let _ = write!(
+            terms,
             " (in addition to its other costs: {})",
             cost(ctx, additional)
         );
@@ -428,7 +444,7 @@ fn permission_terms(ctx: &Ctx, permission: &CastPermission) -> String {
         terms += " as though it had flash";
     }
     if let Some(when) = &permission.when {
-        terms += &format!(" while {}", phrase::condition(ctx, when));
+        let _ = write!(terms, " while {}", phrase::condition(ctx, when));
     }
     terms
 }
@@ -511,6 +527,11 @@ fn modification(ctx: &Ctx, change: &Modification) -> String {
         Modification::CantBlock => "can't block".to_owned(),
         Modification::CantBeBlocked => "can't be blocked".to_owned(),
         Modification::DoesntUntap => "doesn't untap during its controller's untap step".to_owned(),
+        Modification::ChangeTextChosen { from, to } => {
+            format!(
+                "has every instance of the word chosen as {from} replaced by the word chosen as {to}"
+            )
+        }
         Modification::SetController(player) => {
             format!("is controlled by {}", phrase::who(ctx, player))
         }

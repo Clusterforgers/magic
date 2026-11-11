@@ -222,9 +222,9 @@ fn signature_spells_stay_in_main() {
     assert!(spells >= 4, "only {spells} signature spells were found");
 }
 
-/// Stickers are listed in the export but are not deck cards: they are reported, never added to a section.
+/// Stickers are listed in the export as sticker sheets: they are read into their own section with their count.
 #[test]
-fn stickers_are_reported_by_name_and_count_and_kept_out_of_the_deck() {
+fn stickers_are_read_into_their_own_section_with_their_count() {
     let mut with_stickers = 0;
     for deck in Deck::all() {
         let stickers: u64 = deck
@@ -239,25 +239,15 @@ fn stickers_are_reported_by_name_and_count_and_kept_out_of_the_deck() {
             let parsed = parse_as(shape(deck.site, name).format, &text);
             let listed = text.lines().any(|l| l.trim() == "STICKERS:");
             let label = format!("{}/{name}", deck.label());
-            assert_eq!(parsed.ignored.is_empty(), !listed, "{label}");
+            assert!(parsed.ignored.is_empty(), "{label}");
             if listed {
-                assert_eq!(parsed.ignored.len(), 1, "{label}");
-                assert_eq!(parsed.ignored[0].name, "STICKERS", "{label}");
-                assert_eq!(parsed.ignored[0].count, stickers, "{label}");
-                let sticker_names: Vec<&str> = deck
-                    .truth
-                    .boards
-                    .stickers
+                let read: u64 = parsed
+                    .entries
                     .iter()
-                    .map(|row| row.name.as_str())
-                    .collect();
-                assert!(
-                    parsed
-                        .entries
-                        .iter()
-                        .all(|e| !sticker_names.contains(&e.name.as_str())),
-                    "{label}"
-                );
+                    .filter(|e| e.section == Section::Stickers)
+                    .map(|e| u64::from(e.count))
+                    .sum();
+                assert_eq!(read, stickers, "{label}");
                 with_stickers += 1;
             }
         }

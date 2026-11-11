@@ -1,0 +1,27 @@
+{
+  "oracle_id": "85842fa9-e7e8-4380-9034-c93a5497d3d8",
+  "name": "Fiery Bombardment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiery Bombardment",
+      "oracle_fingerprint": "6e27ed256dc7db0dc473e261fd6ac61b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "ManaSymbols": { "color": "Red", "of": "Paid" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

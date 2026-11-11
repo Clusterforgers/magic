@@ -1,0 +1,41 @@
+{
+  "oracle_id": "76f839b0-1d4c-4ad9-b44f-a8a13d6d109f",
+  "name": "Essence Bottle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Essence Bottle",
+      "oracle_fingerprint": "49429c7394f8825d5315bd131d86920b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "elixir" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              {
+                "RemoveCounters": {
+                  "counter": { "Other": "elixir" },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "elixir" } } }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": { "by": 2, "of": { "RemovedThisWay": { "Other": "elixir" } } }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

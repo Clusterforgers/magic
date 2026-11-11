@@ -28,6 +28,7 @@ pub mod combat_keyword_cards;
 pub mod commander_cards;
 pub mod companion_cards;
 pub mod conditional_static_cards;
+pub mod control_cards;
 pub mod copy_cards;
 pub mod copy_keyword_cards;
 pub mod corpus;

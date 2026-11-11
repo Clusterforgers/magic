@@ -46,6 +46,7 @@ const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Pili-Pala", Partial, 1),
     ("Sickening Shoal", Partial, 1),
     ("Skirge Familiar", Partial, 1),
+    ("Vexing Puzzlebox", Partial, 1),
     ("Wizard's Rockets", Partial, 2),
     ("Yurlok of Scorch Thrash", Partial, 1),
 ];

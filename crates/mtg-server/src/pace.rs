@@ -791,6 +791,7 @@ mod tests {
             can_cancel,
             cost: None,
             per_x: 0,
+            secret: false,
         })
     }
 

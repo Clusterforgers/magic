@@ -1,16 +1,17 @@
 {
   "oracle_id": "c0adbddc-b070-4c5f-afe0-0474c72a9251",
   "name": "Gemstone Caverns",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Gemstone Caverns",
       "oracle_fingerprint": "a13c11582e1f7d1f934097d9fd709fc5",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 203 }
+          "OpeningHandWith": {
+            "not_starting": true,
+            "counter": { "Other": "luck" },
+            "exile_from_hand": 1
           }
         },
         {

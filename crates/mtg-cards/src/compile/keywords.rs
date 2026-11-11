@@ -405,6 +405,7 @@ fn hexproof_quality(word: &str) -> Option<Selector> {
 
 /// The keyword an item names, when the DSL declares it and its parameter reads; `None` leaves the
 /// item to the table.
+#[allow(clippy::too_many_lines)]
 pub fn read(item: &str) -> Option<Keyword> {
     let found = find(item)?;
     let rest = found.rest;
@@ -429,6 +430,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "disguise" => spell_cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
+        "cleave" => spell_cost(rest).map(cleave),
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
         "squad" => spell_cost(rest).map(Keyword::Squad),
@@ -797,6 +799,17 @@ fn plain(name: &str) -> Option<Keyword> {
     })
 }
 
+/// Cleave at `cost`, its spell filled in by the compiler from the text without the bracketed words.
+fn cleave(cost: crate::cost::Cost) -> Keyword {
+    Keyword::Cleave {
+        cost,
+        spell: Box::new(crate::ability::Ability::Spell {
+            targets: Vec::new(),
+            effects: Vec::new(),
+        }),
+    }
+}
+
 /// The quality a protection names, when it is one colour, colourless, multicolored, one kind of permanent, a mana value
 /// bound or everything: "from red", "from creatures", "from mana value 3 or less", "from everything". The empty selector
 /// matches every source.
@@ -828,6 +841,7 @@ fn kind_quality(words: &str) -> Option<Selector> {
             }]));
         }
         "snow" => return Some(Selector(vec![Pred::Supertype(Supertype::Snow)])),
+        "instants" => return Some(Selector(vec![Pred::Type(CardType::Instant)])),
         "legendary creatures" => {
             return Some(Selector(vec![
                 creature,
@@ -869,6 +883,7 @@ pub fn kind_quality_word(quality: &Selector) -> Option<String> {
             },
         ] => "monocolored".to_owned(),
         [Pred::Supertype(Supertype::Snow)] => "snow".to_owned(),
+        [Pred::Type(CardType::Instant)] => "instants".to_owned(),
         [kind, Pred::Supertype(Supertype::Legendary)] if *kind == creature => {
             "legendary creatures".to_owned()
         }
@@ -1185,6 +1200,7 @@ mod tests {
         &[protects(Pred::Compare { stat: StatKind::Colors, op: Cmp::Eq, to: Amount::Fixed(1) })]
     )]
     #[case::snow("Protection from snow", &[protects(Pred::Supertype(Supertype::Snow))])]
+    #[case::instants("Protection from instants", &[protects(Pred::Type(CardType::Instant))])]
     #[case::two_colours(
         "Protection from white and from blue",
         &[protects(Pred::Color(Color::White)), protects(Pred::Color(Color::Blue))]
@@ -1660,6 +1676,10 @@ mod tests {
         "Enchant Forest",
         Keyword::Enchant(Selector(vec![Pred::Subtype(Subtype("Forest".into()))]))
     )]
+    #[case::dk27_enchant_a_card_in_a_graveyard(
+        "Enchant creature card in a graveyard",
+        Keyword::Enchant(Selector(vec![Pred::Type(CardType::Creature), Pred::In(crate::refs::ZoneKind::Graveyard)]))
+    )]
     #[case::companion(
         "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         Keyword::companion(DeckCondition::Distinct {
@@ -1753,7 +1773,7 @@ mod tests {
     #[case::ward_with_nothing_to_pay("Ward\u{2014}")]
     #[case::ward_sacrificing_a_made_up_kind("Ward\u{2014}Sacrifice a frobnicator.")]
     #[case::ward_with_a_cost_that_is_a_sentence("Ward\u{2014}Draw a card.")]
-    #[case::enchant_a_card_in_a_graveyard("Enchant creature card in a graveyard")]
+    #[case::enchant_a_card_in_your_graveyard("Enchant creature card in your graveyard")]
     #[case::enchant_with_a_quality_the_table_keeps("Enchant bewildered creature")]
     #[case::enchant_with_another_aura("Enchant creature with another Aura attached to it")]
     #[case::enchant_nothing("Enchant")]
@@ -2038,6 +2058,7 @@ mod tests {
             "Banding",
             "Bands with other Dinosaurs",
             "Splice onto Arcane {1}{R}",
+            "Cleave {1}{R}",
             "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",

@@ -405,7 +405,7 @@ pub(super) fn counting_text(amount: &Amount) -> Option<String> {
                 .collect();
             Some(format!("your devotion to {}", names.join(" and ")))
         }
-        _ => None,
+        _ => super::rmt0_chroma::counting_text(amount),
     }
 }
 

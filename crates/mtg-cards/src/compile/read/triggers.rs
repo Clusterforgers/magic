@@ -641,6 +641,9 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             by,
         })
     } else if verb == if third { "sacrifices" } else { "sacrifice" } {
+        if r.words("one or more") {
+            return super::dk27_batches::dk27_sacrificed_batch(r, by);
+        }
         Some(TriggerPattern::Sacrificed {
             what: subject(r)?,
             by,
@@ -654,6 +657,9 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "draws" } else { "draw" } {
         draw_event(r, by, whose)
     } else if verb == if third { "discards" } else { "discard" } {
+        if r.words("one or more") {
+            return super::dk27_batches::dk27_discarded_batch(r, by);
+        }
         r.need("a card")?;
         Some(TriggerPattern::Discarded {
             what: Selector::default(),
@@ -931,6 +937,11 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::Attached {
             what: what.clone(),
             to: subject(r)?,
+        });
+    } else if r.words("becomes unattached from a permanent") {
+        return Some(TriggerPattern::Unattached {
+            what: what.clone(),
+            from: Selector::default(),
         });
     } else if r.word("deals") {
         return deals_damage(r, what);
@@ -1447,6 +1458,9 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Adapted { what } => said(what, "adapts"),
         TriggerPattern::Attached { what, to } if !what.is_empty() && !to.is_empty() => {
             said(what, &format!("becomes attached to {}", subject_text(to)?))
+        }
+        TriggerPattern::Unattached { what, from } if !what.is_empty() && from.is_empty() => {
+            said(what, "becomes unattached from a permanent")
         }
         TriggerPattern::BecomesTarget { what, by } => {
             let whose = match by.0.as_slice() {

@@ -364,6 +364,8 @@ pub enum Choice {
     Option(usize),
     /// One of the options of a secret vote, by index (`ChoiceOption::Secret`); the other seats do not see which.
     Vote(usize),
+    /// A number chosen face down (`NumberOptions::secret`); the other seats do not see it until the step reveals all.
+    SecretNumber(u32),
     /// One of the applicable replacement effects, by index (`ChooseReplacement`).
     Replacement(usize),
     /// The targets chosen for a copy of a spell or ability (`ChooseTargets`); targets are public.
@@ -381,6 +383,7 @@ impl Choice {
             | Choice::YesNo(_)
             | Choice::Option(_)
             | Choice::Vote(_)
+            | Choice::SecretNumber(_)
             | Choice::Replacement(_)
             | Choice::Targets(_) => Vec::new(),
         }

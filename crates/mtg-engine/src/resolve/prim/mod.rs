@@ -25,6 +25,7 @@ mod choose_value;
 mod conjure;
 mod connive;
 mod continuous;
+mod control_player;
 mod copy_ability;
 mod copy_card;
 mod copy_spell;
@@ -93,11 +94,14 @@ mod one_of;
 mod pair;
 mod reflexive;
 mod remember;
+mod restart_game;
 mod rmt8_turn_down;
 mod spell_enters_with;
 mod turn_up;
 // dk1b
 mod dk1c5_unlock;
+mod dk27_bid;
+mod dk27_numbers;
 mod g12b_counters_of;
 #[cfg(test)]
 mod move_attached;
@@ -255,6 +259,8 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Goad { .. } => goad::run(cx, effect),
         Effect::Fight { .. } => fight::run(cx, effect),
         Effect::BecomeMonarch { .. } => become_monarch::run(cx, effect),
+        Effect::ControlPlayer { .. } => control_player::run(cx, effect),
+        Effect::RestartGame { .. } => restart_game::run(cx, effect),
         Effect::RingTempts { .. } => ring_tempts::run(cx, effect),
         Effect::CreateEmblem { .. } => w6b_create_emblem::run(cx, effect),
         Effect::BecomeDayNight { .. } => become_day_night::run(cx, effect),
@@ -320,6 +326,8 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::FlipCoin { .. } => flip_coin::run(cx, effect),
         Effect::Clash { .. } => w9b_clash::run(cx, effect),
         Effect::Vote { .. } => vote::run(cx, effect),
+        Effect::ChooseNumbers { .. } => dk27_numbers::run(cx, effect),
+        Effect::BidLife { .. } => dk27_bid::run(cx, effect),
         Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
         Effect::VillainousChoice { .. } => w2d_villainous::run(cx, effect),
         Effect::Either { .. } | Effect::OneOf { .. } => choice_of_lists(cx, effect),
@@ -359,6 +367,7 @@ mod tests {
         {"Untap":{"what":"This"}}, {"TapOrUntap":{"what":"This"}}, {"PhaseOut":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Pair":{"what":"This","with":"This"}}, {"MyriadCopies":{"of":"This"}}, {"Transform":{"what":"This"}}, {"Flip":{"what":"This"}}, {"Prepare":{"what":"This"}}, {"WinGame":{}}, {"LoseGame":{}}, {"DrawGame":{}}, {"SetLife":{"amount":20}}, {"ExchangeLife":{"with":"Opponents"}}, {"RemoveDamage":{"what":"This"}}, {"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}, {"SeparatePiles":{"what":"This","chooser":"Opponents","as":"pile_a","rest_as":"pile_b"}}, {"AddPhase":{"phases":["Combat","Main"]}},
         {"TurnFaceDown":{"what":"This"}}, {"Harness":{"what":"This"}},
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
+        {"ControlPlayer":{"who":"Opponents"}}, {"RestartGame":{"keep":[]}},
         {"BecomeMonarch":{}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
         {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}}, "EndTurn",
@@ -401,7 +410,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 121, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 123, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -490,6 +499,8 @@ mod tests {
         "Effect.Proliferate",
         "Effect.Goad",
         "Effect.Fight",
+        "Effect.ControlPlayer",
+        "Effect.RestartGame",
         "Effect.BecomeMonarch",
         "Effect.RingTempts",
         "Effect.CreateEmblem",

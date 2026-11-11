@@ -22,6 +22,10 @@ subtypes?: Array<Subtype>,
  */
 supertypes?: Array<Supertype>, 
 /**
+ * The supertypes effects took away, printed ones included ("~ isn't legendary if it's a token").
+ */
+supertypes_removed?: Array<Supertype>, 
+/**
  * An effect replaced the creature types: the printed ones no longer count, only those in `subtypes` do.
  */
 creature_types_set?: boolean, 

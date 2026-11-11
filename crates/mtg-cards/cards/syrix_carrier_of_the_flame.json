@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ec97bb0e-0dc8-4b9b-8762-2f1649cc9044",
+  "name": "Syrix, Carrier of the Flame",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Syrix, Carrier of the Flame",
+      "oracle_fingerprint": "d14f084c22492e59eb961152af0d3e90",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 14, "end": 172 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 173, "end": 259 }
+          }
+        }
+      ]
+    }
+  ]
+}

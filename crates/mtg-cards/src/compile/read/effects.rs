@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 107] = [
+const TEMPLATES: [Template; 114] = [
     super::keyword_actions::keyword_action,
     super::w20c_counter::w20c_counter_unless,
     super::w20c_owners::w20c_each_owner,
@@ -51,6 +51,10 @@ const TEMPLATES: [Template; 107] = [
     super::w7e_phase::w7e_protected,
     super::w7e_phase::w7e_phase_out,
     super::w6e_control::w6e_those_untapped,
+    super::tc34_control::tc34_control_player,
+    super::tc34_control::tc34_text_change,
+    super::tc34_control::tc34_take_spell,
+    super::tc34_control::tc34_restart,
     super::w6e_control::w6e_gain_control,
     super::w6e_control::w6e_exchange,
     super::c11b_cast_target::c11b_cast_target,
@@ -66,6 +70,8 @@ const TEMPLATES: [Template; 107] = [
     super::w9b_clash::w9b_clash,
     super::chance::roll,
     super::vote::named,
+    super::dk27_numbers::dk27_numbers,
+    super::dk27_bid::dk27_bid,
     super::w2d_villainous::w2d_villainous,
     super::repeat::each_player,
     super::spent::sacrifice_unless,
@@ -134,6 +140,7 @@ const TEMPLATES: [Template; 107] = [
     library::search_by_controller,
     among::among,
     super::w20a_look_pick::w20a_look_pick,
+    super::rmt0_hand_pick::rmt0_hand_pick,
     library::look,
     library::put_on_library,
     super::mass_moves::put_all,
@@ -547,6 +554,15 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
 /// What follows "sacrifice" when the card sacrifices itself: "sacrifice ~", and "sacrifice it" once the ability has
 /// spoken of the card.
 fn itself_sacrificed(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
+    // "sacrifice that permanent": the one permanent of the trigger's event, which its controller may sacrifice.
+    if r.that_permanent && who == Ref::You && r.words("that permanent") {
+        return Some(Effect::Sacrifice {
+            who,
+            filter: Selector(vec![Pred::Is(Ref::Triggering)]),
+            count: Amount::one(),
+            bind: None,
+        });
+    }
     // "When ~ enters, sacrifice it unless you pay {1}": the card, since nothing else has entered.
     let itself = r.it == Some(Ref::This) || (r.acts_itself && r.word_at(1) == Some("unless"));
     (r.source() || (itself && r.word("it"))).then_some(())?;
@@ -711,19 +727,23 @@ fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     predicate(r, who).map(|effect| vec![effect])
 }
 
-/// "Target player exiles a card from their graveyard.": that player chooses the card, bound as `exiled_card`, and it is
-/// exiled.
+/// "Target player exiles a card from their graveyard." (or "from their hand", Karn Liberated): that player chooses the
+/// card, bound as `exiled_card`, and it is exiled.
 fn exiles_from_graveyard(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     matches!(who, Ref::Target(_)).then_some(())?;
     (r.word("exile") || r.word("exiles")).then_some(())?;
-    r.need("a card from their graveyard")?;
+    r.need("a card from their")?;
+    let zone = if r.word("graveyard") {
+        ZoneKind::Graveyard
+    } else if r.word("hand") {
+        ZoneKind::Hand
+    } else {
+        return None;
+    };
     Some(vec![
         Effect::Choose {
             who: who.clone(),
-            from: Ref::Each(Selector(vec![
-                Pred::In(ZoneKind::Graveyard),
-                Pred::OwnedBy(who.clone()),
-            ])),
+            from: Ref::Each(Selector(vec![Pred::In(zone), Pred::OwnedBy(who.clone())])),
             count: Bounds::default(),
             bind: EXILED_CARD.to_owned(),
             rest_as: None,
