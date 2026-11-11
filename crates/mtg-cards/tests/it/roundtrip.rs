@@ -560,6 +560,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
         reference().prop_map(GameRule::CantDraw),
         reference().prop_map(GameRule::CantSearch),
         reference().prop_map(GameRule::RevealTop),
+        reference().prop_map(GameRule::RevealHand),
         reference().prop_map(GameRule::LookAtTopAnyTime),
         reference().prop_map(GameRule::NoMaxHandSize),
         (reference(), amount())

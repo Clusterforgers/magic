@@ -636,6 +636,8 @@ pub enum GameRule {
     FlipTwoCoins(Ref),
     /// The players play with the top card of their library revealed to every seat.
     RevealTop(Ref),
+    /// The players play with their hands revealed to every seat: "Players play with their hands revealed."
+    RevealHand(Ref),
     /// Players may cast cards the ordinary rules do not let them cast: from another zone, without paying their mana
     /// costs, or as though they had flash (CR 601.3).
     MayCast(CastPermission),

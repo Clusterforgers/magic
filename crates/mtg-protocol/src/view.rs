@@ -480,8 +480,8 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ObjectId>>", optional)]
     pub known_top: Vec<ObjectId>,
-    /// The cards of the hand that the seat showed to every seat by hand and that are still there; left out while there
-    /// are none.
+    /// The cards of the hand that the seat showed to every seat by hand and that are still there, or the whole hand while
+    /// a rule has it played revealed; left out while there are none.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ObjectId>>", optional)]
     pub revealed_hand: Vec<ObjectId>,

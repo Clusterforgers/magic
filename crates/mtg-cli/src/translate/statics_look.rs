@@ -1,5 +1,5 @@
 //! `MayLookAt$`: looking at the top card of a library any time (`LookAtTopAnyTime`), playing with it revealed
-//! (`RevealTop`) and looking at face-down cards in exile (`LookAtExiled`); the hand and face-down permanents stay gaps.
+//! (`RevealTop`) and looking at face-down cards in exile (`LookAtExiled`), playing with hands revealed (`RevealHand`); face-down permanents stay gaps.
 
 use serde_json::{Value, json};
 
@@ -17,6 +17,9 @@ pub fn look(p: &Params) -> Tr<Value> {
     if p.get("AffectedZone") == Some("Exile") {
         return exiled(p, None);
     }
+    if p.get("AffectedZone") == Some("Hand") {
+        return ep27_hand(p);
+    }
     if p.get("AffectedZone") != Some("Library") {
         return unmapped("static:MayLookAt-zone");
     }
@@ -31,6 +34,22 @@ pub fn look(p: &Params) -> Tr<Value> {
         (Some("Player"), _) => Ok(json!({"RevealTop": who})),
         _ => unmapped("static:MayLookAt-who"),
     }
+}
+
+/// The `RevealHand` rule of a `MayLookAt$ Player` line over the cards in hands: "Players play with their hands revealed"
+/// (no `Affected$`), "Your opponents ..." (`Card.OppOwn`) or "Play with your hand revealed" (`Card.YouOwn`). A look by
+/// fewer seats than all, or another owner, is a gap.
+fn ep27_hand(p: &Params) -> Tr<Value> {
+    if p.get("MayLookAt") != Some("Player") {
+        return unmapped("static:MayLookAt-hand-who");
+    }
+    let who = match p.get("Affected") {
+        None | Some("Card") => "EachPlayer",
+        Some("Card.OppOwn") => "Opponents",
+        Some("Card.YouOwn" | "Card.YouCtrl") => "You",
+        Some(_) => return unmapped("static:MayLookAt-hand-affected"),
+    };
+    Ok(json!({ "RevealHand": who }))
 }
 
 /// The `LookAtExiled` rule of a `MayLookAt$` line about cards in exile: "you may look at the cards exiled with ~"

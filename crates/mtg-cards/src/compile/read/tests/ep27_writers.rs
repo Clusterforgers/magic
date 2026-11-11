@@ -54,6 +54,46 @@ fn ep27_self_flash_near_misses_differ(
     assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
 }
 
+#[rstest]
+#[case::players("Players play with their hands revealed.", "EachPlayer")]
+#[case::opponents("Your opponents play with their hands revealed.", "Opponents")]
+#[case::you("Play with your hand revealed.", "You")]
+fn ep27_hands_revealed_read_and_write(#[case] text: &str, #[case] who: &str) {
+    let read = golden(text, ClauseKind::Static, false);
+    assert_eq!(
+        read,
+        ability(&format!(
+            r#"{{"Rule":{{"rule":{{"RevealHand":"{who}"}}}}}}"#
+        ))
+    );
+}
+
+#[rstest]
+#[case::players("EachPlayer", "Players play with their hands revealed.", true)]
+#[case::opponents_for_players("Opponents", "Players play with their hands revealed.", false)]
+#[case::you_for_opponents("You", "Your opponents play with their hands revealed.", false)]
+#[case::the_active_player("ActivePlayer", "Players play with their hands revealed.", false)]
+fn ep27_hands_revealed_near_misses_differ(
+    #[case] who: &str,
+    #[case] text: &str,
+    #[case] reads: bool,
+) {
+    let rule = format!(r#"{{"Rule":{{"rule":{{"RevealHand":"{who}"}}}}}}"#);
+    let found = written_variants(&ability(&rule));
+    assert_eq!(found.iter().any(|w| same_text(w, text)), reads, "{found:?}");
+}
+
+#[test]
+fn ep27_the_top_card_revealed_is_no_revealed_hand() {
+    let top = ability(r#"{"Rule":{"rule":{"RevealTop":"You"}}}"#);
+    let found = written_variants(&top);
+    assert!(
+        !found
+            .iter()
+            .any(|w| same_text(w, "Play with your hand revealed."))
+    );
+}
+
 const NO_LIFE_LOSS: &str = "You don't lose the game for having 0 or less life.";
 
 #[test]

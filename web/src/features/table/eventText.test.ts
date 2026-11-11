@@ -1066,6 +1066,10 @@ describe('events with more than one shape', () => {
       'Cy play with the top card of their library revealed until end of turn',
     ],
     [
+      ruleEffect({ RevealHand: [1, 2] }, 'UntilEndOfTurn'),
+      'Bo and Cy play with their hands revealed until end of turn',
+    ],
+    [
       ruleEffect(
         {
           MayCast: {

@@ -1,8 +1,38 @@
-//! Goal: the pieces of ep27 translate as the card prints them. A card cast as though it had flash under a condition (`CastWithFlash | ValidCard$ Card.Self | EffectZone$ All | Caster$ You`) is a `MayCast` rule of the card from its hand with the line's condition; a check of the spell (X, its targets, teamwork), another caster or zone stays a gap. "You don't lose the game for having 0 or less life" (`GameLoss | ValidLoseReason$ LifeReachedZero | Layer$ CantHappen`) is a `CantLoseGame` rule for the loss by life alone, under the line's condition; another reason, text or player stays a gap.
+//! Goal: the pieces of ep27 translate as the card prints them. A card cast as though it had flash under a condition (`CastWithFlash | ValidCard$ Card.Self | EffectZone$ All | Caster$ You`) is a `MayCast` rule of the card from its hand with the line's condition; a check of the spell (X, its targets, teamwork), another caster or zone stays a gap. "You don't lose the game for having 0 or less life" (`GameLoss | ValidLoseReason$ LifeReachedZero | Layer$ CantHappen`) is a `CantLoseGame` rule for the loss by life alone, under the line's condition; another reason, text or player stays a gap. Hands played revealed (`MayLookAt$ Player` over `AffectedZone$ Hand`) are a `RevealHand` rule for every player, the opponents or you; a look by one seat or another owner stays a gap.
 use rstest::rstest;
 use serde_json::json;
 
 use super::{abilities, gaps};
+
+fn revelation(line: &str) -> String {
+    format!(
+        "Name:T\nTypes:Enchantment\nS:Mode$ Continuous | AffectedZone$ Hand | {line} | Description$ x\n"
+    )
+}
+
+#[rstest]
+#[case::players("MayLookAt$ Player", "EachPlayer")]
+#[case::opponents("Affected$ Card.OppOwn | MayLookAt$ Player", "Opponents")]
+#[case::you("Affected$ Card.YouOwn | MayLookAt$ Player", "You")]
+fn ep27_hands_revealed(#[case] line: &str, #[case] who: &str) {
+    let script = revelation(line);
+    assert_eq!(gaps(&script), Vec::<String>::new(), "{line}");
+    assert_eq!(
+        abilities(&script),
+        vec![json!({"Rule": {"rule": {"RevealHand": who}}})]
+    );
+}
+
+#[rstest]
+#[case::a_look_by_you_alone("Affected$ Card.OppOwn | MayLookAt$ You")]
+#[case::another_owner("Affected$ Card.RememberedPlayerOwn | MayLookAt$ Player")]
+fn ep27_other_hand_looks_stay_gaps(#[case] line: &str) {
+    let found = gaps(&revelation(line));
+    assert!(
+        found.iter().any(|gap| gap.contains("MayLookAt")),
+        "{line}: {found:?}"
+    );
+}
 
 fn unlife(line: &str) -> String {
     format!("Name:T\nTypes:Enchantment\nR:Event$ GameLoss | ActiveZones$ Battlefield | {line}\n")

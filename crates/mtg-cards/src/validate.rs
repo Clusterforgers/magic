@@ -4519,6 +4519,7 @@ impl Walker<'_> {
                 who, spells: None, ..
             }
             | GameRule::RevealTop(who)
+            | GameRule::RevealHand(who)
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
             | GameRule::NoMaxHandSize(who) => self.at(tag, |w| w.reference(who, Kind::Player)),

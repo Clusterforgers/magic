@@ -303,6 +303,7 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
     what = `Creatures of ${seats(rule.ToughnessAssignsDamage)} deal combat damage by toughness`
   else if ('RevealTop' in rule)
     what = `${seats(rule.RevealTop)} play with the top card of their library revealed`
+  else if ('RevealHand' in rule) what = `${seats(rule.RevealHand)} play with their hands revealed`
   else if ('MayCast' in rule) {
     const { who, only, play } = rule.MayCast
     what = `${seats(who)} may ${play ? 'play' : 'cast'} ${only === null ? 'cards they could not' : named(only)}`

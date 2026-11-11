@@ -522,11 +522,39 @@ pub(super) fn one_kind(r: &mut Reader<'_>) -> Option<Selector> {
     }))
 }
 
+/// The wordings of "the players play with their hands revealed", by the players it names.
+const EP27_HANDS: [(&str, Ref); 3] = [
+    ("play with your hand revealed", Ref::You),
+    (
+        "your opponents play with their hands revealed",
+        Ref::Opponents,
+    ),
+    ("players play with their hands revealed", Ref::EachPlayer),
+];
+
+/// "Players play with their hands revealed.", "Your opponents play with ...", "Play with your hand revealed."
+fn ep27_hand_revealed(r: &mut Reader<'_>) -> Option<Ref> {
+    EP27_HANDS
+        .iter()
+        .find(|(text, _)| r.words(text))
+        .map(|(_, who)| who.clone())
+}
+
+/// The sentence of a `RevealHand` rule; none for players it has no wording for.
+fn ep27_hand_revealed_text(who: &Ref) -> Option<String> {
+    let (text, _) = EP27_HANDS.iter().find(|(_, named)| named == who)?;
+    let mut chars = text.chars();
+    let first = chars.next()?;
+    Some(first.to_uppercase().chain(chars).collect())
+}
+
 /// "~ can't be countered.", "~ attacks each combat if able.", "All creatures attack each combat if able.",
 /// "Play with the top card of your library revealed."
 fn rule(r: &mut Reader<'_>) -> Option<Ability> {
     let rule = if r.words("play with the top card of your library revealed") {
         GameRule::RevealTop(Ref::You)
+    } else if let Some(who) = r.attempt(ep27_hand_revealed) {
+        GameRule::RevealHand(who)
     } else if r
         .attempt(|r| {
             (r.words("a deck can have any number of cards named") && r.source()).then_some(())
@@ -1662,6 +1690,9 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
         }
         (GameRule::RevealTop(Ref::You), ZoneKind::Battlefield) => {
             vec!["Play with the top card of your library revealed".to_owned()]
+        }
+        (GameRule::RevealHand(who), ZoneKind::Battlefield) => {
+            ep27_hand_revealed_text(who).into_iter().collect()
         }
         (GameRule::NoMaxHandSize(Ref::You), ZoneKind::Battlefield) => {
             vec!["You have no maximum hand size".to_owned()]
