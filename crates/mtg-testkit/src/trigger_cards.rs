@@ -365,6 +365,7 @@ pub fn delaying(when: TriggerPattern, once: bool, effects: Vec<Effect>) -> Abili
             when,
             once,
             this_turn: false,
+            targets: Vec::new(),
             effects,
         }],
     }

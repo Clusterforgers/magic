@@ -100,6 +100,7 @@ fn a_card_returns_to_its_owners_hand_at_the_next_end_step(#[case] text: &str, #[
             when,
             once: true,
             this_turn: false,
+            targets: _,
             effects,
         },
     ] = read.as_slice()

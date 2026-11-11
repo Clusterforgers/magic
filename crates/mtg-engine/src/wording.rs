@@ -801,6 +801,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Chapter { number } => {
             (format!("its lore counters reach chapter {number}"), true)
         }
+        TriggerPattern::FinalChapter { what, resolves } => (
+            format!(
+                "the final chapter ability of {} {}",
+                subject(what),
+                if *resolves { "resolves" } else { "triggers" }
+            ),
+            false,
+        ),
         TriggerPattern::Attached { what, to } => {
             let attachment = if what.is_empty() {
                 "an attachment".to_owned()

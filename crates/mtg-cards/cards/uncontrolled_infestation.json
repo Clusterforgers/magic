@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1de91c79-e9e6-4e37-98ff-ed92fc89d4bc",
+  "name": "Uncontrolled Infestation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uncontrolled Infestation",
+      "oracle_fingerprint": "bfee8de1e83841f32408c2a96f4e9094",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }, { "Not": { "Supertype": "Basic" } }] } },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

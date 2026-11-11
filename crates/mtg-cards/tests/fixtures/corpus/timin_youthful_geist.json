@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "a3d4102e-b48c-4da8-b181-092c7ab1849a",
+  "oracle_id": "0a836332-5905-4afa-a442-47d0bcf8acea",
+  "multiverse_ids": [
+    546980
+  ],
+  "mtgo_id": 95190,
+  "tcgplayer_id": 254027,
+  "cardmarket_id": 584026,
+  "name": "Timin, Youthful Geist",
+  "lang": "en",
+  "released_at": "2021-11-19",
+  "uri": "https://api.scryfall.com/cards/a3d4102e-b48c-4da8-b181-092c7ab1849a",
+  "scryfall_uri": "https://scryfall.com/card/voc/16/timin-youthful-geist?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:43:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/3/a3d4102e-b48c-4da8-b181-092c7ab1849a.jpg?1783925003",
+    "normal": "https://cards.scryfall.io/normal/front/a/3/a3d4102e-b48c-4da8-b181-092c7ab1849a.jpg?1783925003",
+    "large": "https://cards.scryfall.io/large/front/a/3/a3d4102e-b48c-4da8-b181-092c7ab1849a.jpg?1783925003",
+    "png": "https://cards.scryfall.io/png/front/a/3/a3d4102e-b48c-4da8-b181-092c7ab1849a.png?1783925003",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/3/a3d4102e-b48c-4da8-b181-092c7ab1849a.jpg?1783925003",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/3/a3d4102e-b48c-4da8-b181-092c7ab1849a.jpg?1783925003",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/3/a3d4102e-b48c-4da8-b181-092c7ab1849a.webp?1783925003",
+    "grid": "https://cards.scryfall.io/grid/front/a/3/a3d4102e-b48c-4da8-b181-092c7ab1849a.webp?1783925003",
+    "display": "https://cards.scryfall.io/display/front/a/3/a3d4102e-b48c-4da8-b181-092c7ab1849a.webp?1783925003",
+    "art": "https://cards.scryfall.io/art/front/a/3/a3d4102e-b48c-4da8-b181-092c7ab1849a.webp?1783925003",
+    "crop": "https://cards.scryfall.io/crop/front/a/3/a3d4102e-b48c-4da8-b181-092c7ab1849a.webp?1783925003",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/3/a3d4102e-b48c-4da8-b181-092c7ab1849a.jpg?1783925003"
+  },
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Spirit",
+  "oracle_text": "Partner with Rhoda, Geist Avenger (When this creature enters, target player may put Rhoda into their hand from their library, then shuffle.)\nFlying\nAt the beginning of each combat, tap up to one target creature.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Partner with",
+    "Partner"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "8d58a295-f5cc-4d32-b314-a66a7c4a4636",
+      "component": "combo_piece",
+      "name": "Timin, Youthful Geist",
+      "type_line": "Legendary Creature — Spirit",
+      "uri": "https://api.scryfall.com/cards/8d58a295-f5cc-4d32-b314-a66a7c4a4636"
+    },
+    {
+      "object": "related_card",
+      "id": "aae81a4a-652d-45fe-b702-6541bf0971de",
+      "component": "combo_piece",
+      "name": "Rhoda, Geist Avenger",
+      "type_line": "Legendary Creature — Human Soldier",
+      "uri": "https://api.scryfall.com/cards/aae81a4a-652d-45fe-b702-6541bf0971de"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b2e444f7-41e6-4172-ba01-47d91d5e7bbc",
+  "set": "voc",
+  "set_name": "Crimson Vow Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/b2e444f7-41e6-4172-ba01-47d91d5e7bbc",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/voc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a3d4102e-b48c-4da8-b181-092c7ab1849a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0a836332-5905-4afa-a442-47d0bcf8acea&unique=prints",
+  "collector_number": "16",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Vargas",
+  "artist_ids": [
+    "d20672ca-0555-4238-a984-fd171d36b247"
+  ],
+  "illustration_id": "b202f9f8-96e5-44f0-a672-26483f0327f4",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 10381,
+  "prices": {
+    "usd": "0.42",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.53",
+    "eur_foil": null,
+    "tix": "0.77"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=546980&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTimin%252C%2BYouthful%2BGeist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTimin%252C%2BYouthful%2BGeist",
+    "edhrec": "https://edhrec.com/route/?cc=Timin%2C+Youthful+Geist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F254027%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=584026&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/95190?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

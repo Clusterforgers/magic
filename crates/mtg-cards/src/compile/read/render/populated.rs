@@ -63,6 +63,7 @@ fn later(effects: &[Effect]) -> Option<(String, usize)> {
                 },
             once: true,
             this_turn: false,
+            targets: delayed_targets,
             effects: later,
         },
         ..,
@@ -70,6 +71,9 @@ fn later(effects: &[Effect]) -> Option<(String, usize)> {
     else {
         return None;
     };
+    if !delayed_targets.is_empty() {
+        return None;
+    }
     let token = Ref::Bound(TOKENS.to_owned());
     (bind.as_deref() == Some(TOKENS) && *affected == token).then_some(())?;
     // Populate without the name of its token is the two steps the readers know.

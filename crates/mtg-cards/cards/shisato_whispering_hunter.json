@@ -1,7 +1,7 @@
 {
   "oracle_id": "8658cd14-6826-4308-b6ce-fcfd8f2e17ed",
   "name": "Shisato, Whispering Hunter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Shisato, Whispering Hunter",
@@ -14,9 +14,16 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 52, "end": 142 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "Triggering", "action": { "SkipStep": "Untap" } } },
+                  "duration": "UntilSkipped"
+                }
+              }
+            ]
           }
         }
       ]

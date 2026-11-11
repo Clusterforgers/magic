@@ -1,7 +1,7 @@
 {
   "oracle_id": "d0cc7e79-69dc-4f9d-9eed-1848f8ddb1be",
   "name": "Harald Unites the Elves",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Harald Unites the Elves",
@@ -48,9 +48,34 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 236, "end": 355 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Attacks": { "what": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] }
+                  },
+                  "once": false,
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                      }
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

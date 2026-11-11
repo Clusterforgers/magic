@@ -47,12 +47,16 @@ impl Writer<'_> {
                     },
                 once: true,
                 this_turn: false,
+                targets: delayed_targets,
                 effects: later,
             },
         ] = then.as_slice()
         else {
             return None;
         };
+        if !delayed_targets.is_empty() {
+            return None;
+        }
         let with = returned(later, exiled, true)?;
         Some((
             vec![

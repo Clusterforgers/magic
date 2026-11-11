@@ -28,6 +28,7 @@ impl Writer<'_> {
                     },
                 once: true,
                 this_turn: false,
+                targets: delayed_targets,
                 effects: later,
             },
             ..,
@@ -35,6 +36,9 @@ impl Writer<'_> {
         else {
             return None;
         };
+        if !delayed_targets.is_empty() {
+            return None;
+        }
         let step = super::super::w14a_wanderer::w14a_end_step(whose, exiled)?;
         let [
             Effect::Move {
@@ -98,6 +102,7 @@ impl Writer<'_> {
                     },
                 once: true,
                 this_turn: false,
+                targets: delayed_targets,
                 effects: later,
             },
             ..,
@@ -105,6 +110,9 @@ impl Writer<'_> {
         else {
             return None;
         };
+        if !delayed_targets.is_empty() {
+            return None;
+        }
         let [
             Effect::Move {
                 what: Ref::Bound(moved),

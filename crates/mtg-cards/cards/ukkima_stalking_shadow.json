@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b8c3cb84-0a30-420d-8fc3-bb85ce69b5e8",
+  "name": "Ukkima, Stalking Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ukkima, Stalking Shadow",
+      "oracle_fingerprint": "cc5be8ecb58bcfdaf034e73d1d227eee",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Cazur, Ruthless Stalker" } },
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              },
+              { "GainLife": { "amount": { "Stat": { "of": "This", "stat": "Power" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

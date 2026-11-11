@@ -58,6 +58,7 @@ impl KeywordRules for FlashSacrifice {
                     },
                     once: true,
                     this_turn: false,
+                    targets: Vec::new(),
                     effects: vec![Effect::Sacrifice {
                         who: Ref::ControllerOf(Box::new(flashed.clone())),
                         filter: Selector(vec![Pred::Is(flashed)]),

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "f2fe3d93-77f0-400f-85f1-dc6e84111bff",
+  "name": "Bumper Cars",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bumper Cars",
+      "oracle_fingerprint": "30654c81dd42259488eae1626a1e39b6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Visit": {} },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Combat": { "who": { "Target": 0 }, "quirk": { "MustBeBlocked": "AtLeastOne" } }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

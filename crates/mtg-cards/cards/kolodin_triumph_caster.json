@@ -1,7 +1,7 @@
 {
   "oracle_id": "45682055-d02a-450c-a41d-aa67162ff015",
   "name": "Kolodin, Triumph Caster",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Kolodin, Triumph Caster",
@@ -19,9 +19,22 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 44, "end": 118 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Mount" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Saddled" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         {

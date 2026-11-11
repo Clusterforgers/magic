@@ -1,0 +1,41 @@
+{
+  "oracle_id": "fcd0ef3b-46dc-4a1c-8163-8c2319769419",
+  "name": "Haunted House",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunted House",
+      "oracle_fingerprint": "4a514dd038fab0a6b915c286f258db41",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Visit": {} },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

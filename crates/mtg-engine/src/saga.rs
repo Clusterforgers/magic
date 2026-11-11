@@ -86,6 +86,11 @@ pub(crate) fn final_chapter(state: &GameState, id: ObjectId) -> Option<u32> {
         .max()
 }
 
+/// The number of the chapter an ability is, for the final chapter triggers.
+pub(crate) fn r288_chapter_number(rules: &Ability) -> Option<u32> {
+    chapter_of(rules)
+}
+
 /// The number of the chapter an ability is.
 fn chapter_of(rules: &Ability) -> Option<u32> {
     match rules {

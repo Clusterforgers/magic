@@ -1,16 +1,19 @@
 {
   "oracle_id": "2867d539-6a63-4fae-aae2-a7fdd4dd9f28",
   "name": "Chandra, Fire Artisan",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Chandra, Fire Artisan",
       "oracle_fingerprint": "a4ce6579f687da295492c04c7cea0e9e",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 126 }
+          "Triggered": {
+            "when": { "Batch": { "CountersRemoved": { "what": ["This"], "counter": "loyalty" } } },
+            "targets": [
+              { "what": { "Either": ["Opponent", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
           }
         },
         {

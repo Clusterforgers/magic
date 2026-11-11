@@ -1,0 +1,43 @@
+{
+  "oracle_id": "3affd37a-d4f6-488a-b30f-8e824b640687",
+  "name": "Ral and the Implicit Maze",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ral and the Implicit Maze",
+      "oracle_fingerprint": "27582f2362b7ddaa6f4434aa353b250d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 176, "end": 307 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 308, "end": 470 }
+          }
+        }
+      ]
+    }
+  ]
+}

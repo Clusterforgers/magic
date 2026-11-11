@@ -706,6 +706,7 @@ fn repeated(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool 
             once,
             this_turn,
             until,
+            targets,
         } => {
             let scope = match until {
                 Some(until) => format!(" {}", phrase::duration(until)),
@@ -717,7 +718,14 @@ fn repeated(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool 
                 depth,
                 format!("{times}{scope}, {}:", parts::trigger(ctx, when)),
             ));
-            list(ctx, effects, depth + 1, out);
+            if targets.is_empty() {
+                list(ctx, effects, depth + 1, out);
+            } else {
+                // A delayed trigger with targets of its own names them in its effects.
+                let inner = Ctx::new(targets);
+                steps::targets(&inner, depth + 1, out);
+                list(&inner, effects, depth + 1, out);
+            }
         }
         Effect::Continuous {
             affected,

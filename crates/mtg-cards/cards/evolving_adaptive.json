@@ -1,7 +1,7 @@
 {
   "oracle_id": "e350c2d5-0ca2-4b9c-b01f-a3c31cbf8d10",
   "name": "Evolving Adaptive",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Evolving Adaptive",
@@ -27,9 +27,32 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 101, "end": 251 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "Any": [
+                {
+                  "Compare": {
+                    "left": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                    "op": "Gt",
+                    "right": { "Stat": { "of": "This", "stat": "Power" } }
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Stat": { "of": "Triggering", "stat": "Toughness" } },
+                    "op": "Gt",
+                    "right": { "Stat": { "of": "This", "stat": "Toughness" } }
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "oil" } } }]
           }
         }
       ]

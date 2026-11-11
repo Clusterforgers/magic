@@ -1,7 +1,7 @@
 {
   "oracle_id": "59a405d7-2f28-41b8-a5bb-011f45a5fdf2",
   "name": "Bebop, Skull & Crossbones",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bebop, Skull & Crossbones",
@@ -10,9 +10,18 @@
         { "Keyword": { "PartnerWith": "Rocksteady, Mutant Marauder" } },
         { "Keyword": "Deathtouch" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 164, "end": 305 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Draw": { "count": { "AnyCounters": "This" } } },
+                    { "LoseLife": { "amount": { "AnyCounters": "This" } } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

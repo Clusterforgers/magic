@@ -504,6 +504,8 @@ mod pump_spells;
 mod r1a_spend;
 mod r1c;
 mod r1fix;
+mod r288_delayed_targets;
+mod r288_final_chapter;
 mod r2e_cost_parts;
 mod r4_audit;
 mod r4a_amplify;

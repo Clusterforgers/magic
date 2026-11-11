@@ -1,0 +1,40 @@
+{
+  "oracle_id": "421ec8a8-2b20-4296-b8f7-010acc3f8097",
+  "name": "Pippin, Warden of Isengard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pippin, Warden of Isengard",
+      "oracle_fingerprint": "5bbcf24deb708f8b27120028a42d76d7",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Merry, Warden of Isengard" } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Subtype": "Food" }], "count": 4 } }],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 3 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

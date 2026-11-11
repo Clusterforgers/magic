@@ -51,6 +51,7 @@ impl KeywordRules for Decayed {
                 },
                 once: true,
                 this_turn: false,
+                targets: Vec::new(),
                 effects: vec![Effect::Sacrifice {
                     who: Ref::ControllerOf(Box::new(Ref::This)),
                     filter: Selector(vec![Pred::Is(Ref::This)]),
@@ -95,6 +96,7 @@ mod tests {
                     },
                 once: true,
                 this_turn: false,
+                targets: _,
                 effects,
             },
         ] = effects.as_slice()
