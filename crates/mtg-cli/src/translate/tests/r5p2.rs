@@ -42,17 +42,17 @@ fn a_card_that_cannot_lose(#[case] line: &str, #[case] want: Value) {
 }
 
 #[rstest]
-#[case::instead(
-    "Event$ GameLoss | ActiveZones$ Battlefield | ValidPlayer$ You | ReplaceWith$ ExileSetLife | Description$ If you would lose the game, instead exile CARDNAME.",
-    "key:Replacement.GameLoss.ReplaceWith"
+#[case::instead_for_an_opponent(
+    "Event$ GameLoss | ActiveZones$ Battlefield | ValidPlayer$ Opponent | ReplaceWith$ ExileSetLife | Description$ If an opponent would lose the game, instead exile CARDNAME.",
+    "replacement:GameLoss-ValidPlayer"
 )]
 #[case::opponent(
     "Event$ GameLoss | ActiveZones$ Battlefield | ValidPlayer$ Opponent | Layer$ CantHappen | Description$ You can't win the game and your opponents can't lose the game.",
     "replacement:GameLoss-ValidPlayer"
 )]
-#[case::reason(
-    "Event$ GameLoss | ActiveZones$ Battlefield | ValidPlayer$ You | ValidLoseReason$ LifeReachedZero | Layer$ CantHappen | Description$ You don't lose the game for having 0 or less life.",
-    "key:Replacement.GameLoss.ValidLoseReason"
+#[case::another_reason(
+    "Event$ GameLoss | ActiveZones$ Battlefield | ValidPlayer$ You | ValidLoseReason$ Milled | Layer$ CantHappen | Description$ You don't lose the game for drawing from an empty library.",
+    "key:Replacement.GameLoss.ValidLoseReason=Milled"
 )]
 #[case::other_text(
     "Event$ GameLoss | ActiveZones$ Battlefield | ValidPlayer$ You | Layer$ CantHappen | Description$ Something else.",

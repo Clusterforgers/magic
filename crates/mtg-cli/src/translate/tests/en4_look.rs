@@ -22,9 +22,9 @@ fn a_look_line_maps(#[case] line: &str, #[case] rule: Value) {
 }
 
 #[rstest]
-#[case::hand(
-    "AffectedZone$ Hand | MayLookAt$ Player | Description$ x",
-    "static:MayLookAt-zone"
+#[case::hand_by_you_alone(
+    "AffectedZone$ Hand | MayLookAt$ You | Description$ x",
+    "static:MayLookAt-hand-who"
 )]
 #[case::face_down(
     "Affected$ Creature.faceDown+OppCtrl | AffectedZone$ Battlefield | MayLookAt$ You",
