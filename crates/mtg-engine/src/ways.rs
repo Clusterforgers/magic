@@ -31,7 +31,7 @@ use crate::mana_takes::for_card;
 use crate::merged;
 use crate::object::{FaceDown, GameObject, ObjectKind};
 use crate::parts::Part;
-use crate::permit_costs::{self, Added};
+use crate::permit_costs;
 use crate::price::Price;
 use crate::priority::{mana_options, sorcery_timing};
 use crate::resolve::{Scope, spell_ability, zone_kind};
@@ -264,7 +264,21 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
     let types = card.base_types();
     let instant = types.contains(CardType::Instant)
         || keywords::grants_instant_timing(state, id)
-        || permissions.iter().any(|permission| permission.flash);
+        || permissions
+            .iter()
+            .any(|permission| permission.flash && permission.additional.is_none());
+    // "You may cast this spell as though it had flash if you pay {2} more": when only an instant could be cast now, the
+    // cast from a hand goes through such a permission and pays what it adds (CR 601.3b).
+    let ep29_paid_flash = (!instant && in_hand && !sorcery_timing(state, player))
+        .then(|| {
+            permit_costs::added(
+                permissions
+                    .iter()
+                    .copied()
+                    .filter(|permission| permission.flash && permission.additional.is_some()),
+            )
+        })
+        .flatten();
     let mut ways = Vec::new();
     let printed = card.card().mana_cost.as_ref();
     // Cast for its mana cost from a hand, or from the zone a permission names, which may add costs.
@@ -274,8 +288,9 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         .copied()
         .filter(|permission| permission.adds_to_printed(zone_kind(zone)))
         .collect();
+    let paid_flash = ep29_paid_flash.is_some();
     let added = if own {
-        Some(Added::default())
+        Some(ep29_paid_flash.unwrap_or_default())
     } else {
         permit_costs::added(by_permission)
     };
@@ -287,7 +302,7 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
                 alternative: None,
                 label: format!("Cast for {cost}"),
                 mana: None,
-                instant,
+                instant: instant || paid_flash,
                 variant: 0,
                 parts: Vec::new(),
             },

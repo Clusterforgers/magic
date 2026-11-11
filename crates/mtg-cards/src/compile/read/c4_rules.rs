@@ -32,6 +32,11 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<GameRule> {
         r.need("instead flip two coins and ignore one")?;
         return Some(GameRule::FlipTwoCoins(Ref::You));
     }
+    if r.words("you would roll one or more dice") {
+        r.punct(',').then_some(())?;
+        r.need("instead roll that many dice plus one and ignore the lowest roll")?;
+        return Some(GameRule::ExtraDie(Ref::You));
+    }
     let who = group(r, "an opponent", "a player")?;
     r.need("would begin an extra turn")?;
     r.punct(',').then_some(())?;
@@ -45,6 +50,12 @@ pub(super) fn texts(rule: &GameRule) -> Vec<String> {
         GameRule::FlipTwoCoins(Ref::You) => {
             return vec![
                 "If you would flip a coin, instead flip two coins and ignore one".to_owned(),
+            ];
+        }
+        GameRule::ExtraDie(Ref::You) => {
+            return vec![
+                "If you would roll one or more dice, instead roll that many dice plus one and ignore the lowest roll"
+                    .to_owned(),
             ];
         }
         GameRule::CantSearch(who) => (who, true),

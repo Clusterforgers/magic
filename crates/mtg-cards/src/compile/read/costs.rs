@@ -279,6 +279,9 @@ fn put_on_source(r: &mut Reader<'_>) -> Option<CostItem> {
 }
 
 fn remove(r: &mut Reader<'_>) -> Option<CostItem> {
+    if let Some(all) = r.attempt(ep29_remove_all) {
+        return Some(all);
+    }
     let (counter, count) = super::w2f_any_counters::w2f_counters(r)?;
     r.need("from")?;
     if r.source() {
@@ -499,6 +502,9 @@ fn item_text(item: &CostItem) -> Option<String> {
             count,
             from: None,
         } => {
+            if let Some(said) = ep29_remove_all_text(counter.as_ref(), count) {
+                return Some(said);
+            }
             format!("Remove {} from ~", w2f_text(counter.as_ref(), count)?)
         }
         CostItem::RemoveCounters {
@@ -730,4 +736,37 @@ fn additional_text(cost: &Cost, required: bool) -> Option<String> {
     };
     let may = if required { "" } else { "you may " };
     Some(format!("As an additional cost to cast ~, {may}{body}."))
+}
+
+/// "Remove all charge counters from ~": every counter of the kind on the source, counted as the ability is announced;
+/// "for each counter removed this way" reads the number (`Amount::CountersRemoved`).
+fn ep29_remove_all(r: &mut Reader<'_>) -> Option<CostItem> {
+    r.word("all").then_some(())?;
+    let counter = super::counters::kind(r)?;
+    r.need("counters from")?;
+    r.source().then_some(())?;
+    Some(CostItem::RemoveCounters {
+        count: Amount::Counters {
+            on: Ref::This,
+            counter: counter.clone(),
+        },
+        counter: Some(counter),
+        from: None,
+    })
+}
+
+/// The words of [`ep29_remove_all`]; `None` for another count.
+fn ep29_remove_all_text(counter: Option<&CounterKind>, count: &Amount) -> Option<String> {
+    let Amount::Counters {
+        on: Ref::This,
+        counter: all,
+    } = count
+    else {
+        return None;
+    };
+    (Some(all) == counter).then_some(())?;
+    Some(format!(
+        "Remove all {} counters from ~",
+        super::counters::kind_text(all)?
+    ))
 }

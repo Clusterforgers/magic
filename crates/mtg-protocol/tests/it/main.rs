@@ -31,6 +31,7 @@ mod crew_hidden;
 mod e10b_sealed_view;
 mod e15a_speed_view;
 mod effect_view;
+mod ep29_hidden_pick_view;
 mod exerted_view;
 mod exile_open;
 mod extra_turn_view;

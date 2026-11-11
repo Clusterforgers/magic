@@ -523,6 +523,7 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   LibraryLooked: [{ LibraryLooked: { player: 1, count: 2 } }, 'Bo looks at 2 cards of their library'],
   HandLooked: [{ HandLooked: { player: 1, of: 0, count: 2 } }, "Bo looks at 2 cards of Ana's hand"],
   CardsFound: [{ CardsFound: { player: 1, count: 1 } }, 'Bo finds 1 card'],
+  PickedAtRandom: [{ PickedAtRandom: { count: 1 } }, '1 card from a hidden zone is picked at random'],
   Scried: [{ Scried: { player: 1, top: 1, bottom: 1 } }, 'Bo scries 2'],
   Surveilled: [{ Surveilled: { player: 1, top: 1, graveyard: 2 } }, 'Bo surveils 3'],
   ZoneChanged: [

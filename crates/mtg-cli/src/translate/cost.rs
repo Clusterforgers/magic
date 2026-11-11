@@ -330,6 +330,12 @@ fn remove_counters(ctx: &Ctx, number: &str, what: &str) -> Tr<Value> {
     let Some(kind) = counter_kind(what) else {
         return unmapped("cost:SubCounter-kind");
     };
+    // "Remove all charge counters from ~": as many as the card has as the ability is announced.
+    if number == "All" {
+        return Ok(
+            json!({"RemoveCounters": {"counter": kind, "count": {"Counters": {"on": "This", "counter": kind}}}}),
+        );
+    }
     Ok(json!({"RemoveCounters": {"counter": kind, "count": amount(ctx, number)?}}))
 }
 
@@ -358,4 +364,31 @@ pub fn exiled_paid(ctx: &Ctx, gap: &str) -> Tr<Value> {
         return unmapped(format!("{gap}:Exiled-beside-other-cost-picks"));
     }
     Ok(json!("Paid"))
+}
+
+/// `SVar$CostCountersRemoved`: the counters the ability's cost removed from the card ("for each charge counter removed this
+/// way"), read only after a cost that removes every counter of one kind (`SubCounter<All/KIND>`); a removal of X counters
+/// or of counters from other permanents is a gap.
+pub fn ep29_removed(ctx: &Ctx) -> Tr<Value> {
+    let Some(text) = ctx.ability_cost.as_deref() else {
+        return unmapped("amount:CostCountersRemoved-without-a-cost");
+    };
+    let removals: Vec<&str> = parts(text)
+        .into_iter()
+        .filter(|word| word.starts_with("SubCounter<"))
+        .collect();
+    let [removal] = removals.as_slice() else {
+        return unmapped("amount:CostCountersRemoved");
+    };
+    let inner = removal
+        .trim_start_matches("SubCounter<")
+        .trim_end_matches('>');
+    let fields: Vec<&str> = inner.split('/').collect();
+    match fields.as_slice() {
+        ["All", kind] => match counter_kind(kind) {
+            Some(kind) => Ok(json!({ "RemovedThisWay": kind })),
+            None => unmapped("cost:SubCounter-kind"),
+        },
+        _ => unmapped("amount:CostCountersRemoved"),
+    }
 }

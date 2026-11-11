@@ -1954,6 +1954,7 @@ impl<'a> Scope<'a> {
             Amount::Promised => i64::from(self.payments(OptionalKind::Gift) > 0),
             Amount::ResolvedThisTurn => self.resolved_this_turn(),
             Amount::Devoured => self.w7e_devoured(),
+            Amount::RemovedThisWay(_) => i64::from(self.choices.cost_counters_removed()),
             Amount::Bound(name) => self.kept_number(name),
             Amount::CastWith(way) => i64::from(self.cast_way() == Some(*way)),
             Amount::ColorsSpent => i64::try_from(colors_among(&self.mana_spent())).unwrap_or(0),

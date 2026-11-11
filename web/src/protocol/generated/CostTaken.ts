@@ -38,4 +38,8 @@ sources?: Array<SpentFrom>,
  * The creatures tapped to help cast the spell with convoke, as they were then (CR 702.51): "each creature that
  * convoked it" reads them.
  */
-convoked?: Array<ObjectRef>, };
+convoked?: Array<ObjectRef>, 
+/**
+ * How many counters the cost removed from the source of the ability: "for each counter removed this way" reads it.
+ */
+removed?: number, };

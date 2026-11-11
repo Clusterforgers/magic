@@ -89,6 +89,10 @@ of: PlayerId,
 /**
  * Cards looked at.
  */
+count: number, } } | { "PickedAtRandom": { 
+/**
+ * Cards picked.
+ */
 count: number, } } | { "CardsFound": { 
 /**
  * Who searched.

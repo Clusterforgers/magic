@@ -305,6 +305,9 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             counter,
         } => format!("{} counter on ~", counters::kind_text(counter)?),
         Amount::AnyCounters(Ref::This) => "counter on ~".to_owned(),
+        Amount::RemovedThisWay(counter) => {
+            format!("{} counter removed this way", counters::kind_text(counter)?)
+        }
         Amount::Counters {
             on: Ref::You,
             counter,

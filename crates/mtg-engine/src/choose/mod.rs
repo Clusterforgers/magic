@@ -198,6 +198,16 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectRef>>", optional))]
     pub convoked: Vec<ObjectRef>,
+    /// How many counters the cost removed from the source of the ability: "for each counter removed this way" reads it.
+    #[serde(default, skip_serializing_if = "is_zero_u32")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub removed: u32,
+}
+
+/// Whether a number of counters is 0, so serialization can leave it out.
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero_u32(count: &u32) -> bool {
+    *count == 0
 }
 
 /// Whether a count is 0, so serialization can leave it out.
@@ -254,6 +264,19 @@ impl Choices {
             self.cost_taken.get_or_insert_with(Box::default).shots = shots;
         }
         self
+    }
+
+    /// These choices with `removed` as the counters the cost removed from the source.
+    pub(crate) fn with_counters_removed(mut self, removed: u32) -> Choices {
+        if removed > 0 {
+            self.cost_taken.get_or_insert_with(Box::default).removed = removed;
+        }
+        self
+    }
+
+    /// How many counters the cost removed from the source of the ability (`CostTaken::removed`).
+    pub fn cost_counters_removed(&self) -> u32 {
+        self.cost_taken.as_deref().map_or(0, |taken| taken.removed)
     }
 
     /// Forgets the objects picked, as a copy of a spell pays nothing; what the cost of the original took stays named.

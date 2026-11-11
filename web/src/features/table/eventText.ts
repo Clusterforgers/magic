@@ -1171,6 +1171,10 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   }
   if ('CardsFound' in event)
     return line(`${n.seat(event.CardsFound.player)} finds ${cards(event.CardsFound.count)}`)
+  if ('PickedAtRandom' in event) {
+    const { count } = event.PickedAtRandom
+    return line(`${cards(count)} from a hidden zone ${count === 1 ? 'is' : 'are'} picked at random`)
+  }
   if ('Scried' in event) {
     const { player, top, bottom } = event.Scried
     return line(`${n.seat(player)} scries ${top + bottom}`)
