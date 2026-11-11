@@ -567,11 +567,9 @@ pub enum Amount {
     },
     /// The life total the players the reference names began the game with (the least of them).
     StartingLife(Ref),
-    /// How many turns the players the reference names have begun this game, the current one included (the most of
-    /// them): "your first, second, or third turn of the game" is your turn while this is 3 or less.
+    /// How many turns the players have begun this game (the most of them).
     TurnsTaken(Ref),
-    /// The life total the players the reference names had as the turn began (the most of them): "that player's life
-    /// total as the turn began".
+    /// The players' life total as the turn began (the most of them).
     LifeAsTurnBegan(Ref),
     /// The most spells one of the players the reference names cast during the previous turn ("no spells were cast last turn":
     /// `EachPlayer`, equal to 0; "a player cast two or more spells last turn": at least 2); 0 before any turn has ended.

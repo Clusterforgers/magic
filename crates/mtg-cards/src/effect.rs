@@ -868,8 +868,7 @@ pub enum Effect {
         /// What is turned.
         what: Ref,
     },
-    /// Turns permanents face down (CR 708.2a): each becomes a nameless, colorless 2/2 creature with no abilities until it
-    /// is turned face up for its morph cost; a permanent that is face down already is passed over.
+    /// Turns face-up permanents face down as 2/2 morphs (CR 708.2a).
     TurnFaceDown {
         /// What is turned.
         what: Ref,
@@ -896,8 +895,7 @@ pub enum Effect {
         /// What becomes solved.
         what: Ref,
     },
-    /// Harnesses permanents (an Infinity Stone's keyword action): each becomes harnessed until it leaves the battlefield,
-    /// and its ∞ ability works from then on. One harnessed already or not on the battlefield is passed over.
+    /// Harnesses permanents: their ∞ abilities work from then on.
     Harness {
         /// What becomes harnessed.
         what: Ref,

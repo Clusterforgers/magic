@@ -286,10 +286,9 @@ pub enum Pred {
     Suspected,
     /// Is solved (CR 719.3): a Case on the battlefield that has been solved.
     Solved,
-    /// Is harnessed: a permanent on the battlefield that has been harnessed, whose ∞ ability works.
+    /// Is a harnessed permanent: its ∞ ability works.
     Harnessed,
-    /// Is a permanent that did one of the marked things in combat since the last upkeep of the ability's controller
-    /// began before this one ("if it attacked or blocked since your last upkeep"), as the same object.
+    /// Attacked, blocked or became blocked (as marked) since your last upkeep.
     FoughtSinceYourLastUpkeep {
         /// It attacked.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
@@ -318,7 +317,7 @@ pub enum Pred {
     AttackingPlaneswalkerOf(Ref),
     /// Is the only creature attacking ("attacking alone", CR 506.5).
     AttackingAlone,
-    /// Is attacking a battle (CR 506.2): "whenever this creature attacks a battle".
+    /// Is attacking a battle.
     AttackingBattle,
     /// Is attacking the player or a planeswalker they control ("whenever an opponent attacks you and/or a planeswalker you
     /// control").

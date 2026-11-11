@@ -74,7 +74,7 @@ pub enum Action {
     Bolstered,
     /// A creature adapted.
     Adapted,
-    /// A creature evolved (CR 702.100d): +1/+1 counters were put on it as its evolve ability resolved.
+    /// A creature evolved (CR 702.100d).
     Evolved,
     /// A creature became monstrous.
     BecameMonstrous,

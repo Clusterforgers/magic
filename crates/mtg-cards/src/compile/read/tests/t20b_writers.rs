@@ -131,15 +131,29 @@ fn another_factor_player_or_count_is_not_the_text(#[case] json: &str, #[case] cl
 }
 
 #[rstest]
-#[case::a_condition_on_the_triple(
-    r#"{"Replacement":{"when":{"Damage":{}},"by":{"Multiply":3},"condition":"YourTurn"}}"#
-)]
 #[case::another_zone_for_the_triple(
     r#"{"Replacement":{"when":{"Damage":{}},"by":{"Multiply":3},"from":"Graveyard"}}"#
+)]
+fn a_replacement_the_writers_cannot_say_is_not_written(#[case] json: &str) {
+    assert_eq!(written_variants(&ability(json)), Vec::<String>::new());
+}
+
+/// A condition on a replacement is said with the event ("while it's your turn"), never dropped.
+#[rstest]
+#[case::a_condition_on_the_triple(
+    r#"{"Replacement":{"when":{"Damage":{}},"by":{"Multiply":3},"condition":"YourTurn"}}"#
 )]
 #[case::a_condition_on_the_skip(
     r#"{"Replacement":{"when":{"Draw":{"who":"Opponents"}},"by":{"Instead":[{"Draw":{}}]},"condition":"YourTurn"}}"#
 )]
-fn a_replacement_the_writers_cannot_say_is_not_written(#[case] json: &str) {
-    assert_eq!(written_variants(&ability(json)), Vec::<String>::new());
+fn a_condition_on_a_replacement_is_said_with_its_event(#[case] json: &str) {
+    let texts = written_variants(&ability(json));
+    assert!(!texts.is_empty());
+    assert!(
+        texts
+            .iter()
+            .all(|text| text.contains(" while it's your turn, ")
+                || text.starts_with("As long as it's your turn, ")),
+        "{texts:?}"
+    );
 }
