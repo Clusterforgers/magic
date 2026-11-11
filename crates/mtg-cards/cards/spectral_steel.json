@@ -1,0 +1,39 @@
+{
+  "oracle_id": "95f74c0d-3f89-4944-997e-1bdc408bae71",
+  "name": "Spectral Steel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Steel",
+      "oracle_fingerprint": "489c25d91dd77ba50ca749642415cd6c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "ExileSelf"],
+            "from": "Graveyard",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                    "Other",
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

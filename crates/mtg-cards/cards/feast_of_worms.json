@@ -1,0 +1,39 @@
+{
+  "oracle_id": "905889fb-a123-4f7a-afc6-b4c6ccac9105",
+  "name": "Feast of Worms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Feast of Worms",
+      "oracle_fingerprint": "efe21bc56a284808cd06b4ae7b403cf0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Supertype": "Legendary" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Type": "Land" }, { "Not": { "Is": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

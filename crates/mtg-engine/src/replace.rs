@@ -704,7 +704,13 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::Instead(_) => !matches!(unit, Unit::Other),
         ReplaceBy::Plus(_) => matches!(unit, Unit::Tokens { .. }),
-        ReplaceBy::InsteadNext(_) | ReplaceBy::RedirectUpTo { .. } | ReplaceBy::Redirect { .. } => {
+        ReplaceBy::InsteadNext(_) => {
+            matches!(
+                unit,
+                Unit::Damage { .. } | Unit::Draw { .. } | Unit::Loss { .. }
+            )
+        }
+        ReplaceBy::RedirectUpTo { .. } | ReplaceBy::Redirect { .. } => {
             matches!(unit, Unit::Damage { .. })
         }
     }
@@ -1517,6 +1523,7 @@ impl Pass<'_> {
             };
             let origin = Origin::Shield(effect.id);
             if slot.applied.contains(&origin)
+                || self.rmt5_next_spent(effect)
                 || !applies_to(by, unit)
                 || !self.matches_for((effect.controller, maker), when, unit)?
             {
@@ -1526,7 +1533,7 @@ impl Pass<'_> {
                 origin,
                 object: maker,
                 controller: effect.controller,
-                action: Action::Replace(by.clone()),
+                action: Action::Replace(rmt5_next_as_instead(by)),
                 is_self: false,
             });
         }
@@ -2274,7 +2281,9 @@ impl Pass<'_> {
             return;
         };
         let once = self.shields.iter().any(|effect| {
-            effect.id == id && matches!(&effect.rule, Rule::PreventDamage(shield) if shield.once)
+            effect.id == id
+                && (matches!(&effect.rule, Rule::PreventDamage(shield) if shield.once)
+                    || rmt5_next::is_next(&effect.rule))
         });
         if once {
             self.spent.insert(id);
@@ -3325,6 +3334,8 @@ fn zone_word(zone: Zone) -> &'static str {
 }
 
 mod day;
+mod rmt5_next;
+use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;
 mod g12a_library;
 

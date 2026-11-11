@@ -1,0 +1,35 @@
+{
+  "oracle_id": "44eb0caa-ba16-49e4-915c-bd5e1ce770e6",
+  "name": "Curse of Leeches // Leeching Lurker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Curse of Leeches",
+      "oracle_fingerprint": "0354f92213df897fb2c9616355ae2775",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 15, "end": 89 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "AttachedPlayer" } },
+            "effects": [
+              { "LoseLife": { "who": "AttachedPlayer", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        { "Keyword": "Daybound" }
+      ]
+    },
+    {
+      "name": "Leeching Lurker",
+      "oracle_fingerprint": "54d786f423aa4079f0398aa427e6c78a",
+      "abilities": [{ "Keyword": "Lifelink" }, { "Keyword": "Nightbound" }]
+    }
+  ]
+}

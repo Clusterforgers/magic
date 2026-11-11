@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1cc00abb-b130-48a2-95f9-f1f986cd75d4",
+  "name": "Wicked Akuba",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wicked Akuba",
+      "oracle_fingerprint": "bf761a77d621468377da5668ea511f39",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{B}",
+            "targets": [
+              {
+                "what": {
+                  "PlayerAmong": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Matches": {
+                          "subject": "This",
+                          "selector": [{ "DidThisTurn": { "event": "Damaged", "to": "You" } }]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

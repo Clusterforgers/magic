@@ -1,0 +1,37 @@
+{
+  "oracle_id": "d14d9f44-9cff-4a11-be86-0cea5fe9b551",
+  "name": "Artificer's Hex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Artificer's Hex",
+      "oracle_fingerprint": "be859b1f8d51e06f32fe7cb9bc042dd8",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Subtype": "Equipment" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "HasAttached": [{ "Is": "Attached" }] }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "HasAttached": [{ "Is": "Attached" }] }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

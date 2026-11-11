@@ -1,0 +1,32 @@
+{
+  "oracle_id": "b9cec31a-9891-414f-b528-954612168832",
+  "name": "Tangleweave Armor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tangleweave Armor",
+      "oracle_fingerprint": "66b77e69fb86334d26a70b3917a24748",
+      "abilities": [
+        { "Keyword": "LivingWeapon" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Greatest": { "of": ["Commander", { "OwnedBy": "You" }], "stat": "ManaValue" }
+                  },
+                  "toughness": {
+                    "Greatest": { "of": ["Commander", { "OwnedBy": "You" }], "stat": "ManaValue" }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

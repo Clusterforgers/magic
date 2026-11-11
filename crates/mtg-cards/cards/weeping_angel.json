@@ -1,0 +1,46 @@
+{
+  "oracle_id": "1a89c623-c9c3-443c-bbd3-834767b6bdb8",
+  "name": "Weeping Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weeping Angel",
+      "oracle_fingerprint": "bc8907e7ecf6cc08d81ce48b21a297ac",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "Opponents" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "RemoveType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": { "Each": [{ "Type": "Creature" }] },
+                "source": ["This"],
+                "combat": true
+              }
+            },
+            "by": {
+              "PreventAnd": [
+                { "Move": { "what": "Triggering", "to": { "Library": { "place": "Shuffled" } } } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cdf34da6-d952-43ca-855d-fcd9d49efae6",
+  "name": "Exocrine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exocrine",
+      "oracle_fingerprint": "7d75fde5e1faf4ff66af32b52a824fb4",
+      "abilities": [
+        { "Keyword": "Ravenous" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "DealDamage": { "to": "EachPlayer", "amount": "X" } },
+              {
+                "DealDamage": { "to": { "Each": [{ "Type": "Creature" }, "Other"] }, "amount": "X" }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

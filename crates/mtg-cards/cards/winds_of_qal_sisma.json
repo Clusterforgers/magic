@@ -1,0 +1,59 @@
+{
+  "oracle_id": "e7871b4d-a408-4377-beee-6b1d3c7dd57d",
+  "name": "Winds of Qal Sisma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winds of Qal Sisma",
+      "oracle_fingerprint": "3364a3be27073ff254847bba40860b73",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Shield": {
+                        "when": {
+                          "Damage": {
+                            "source": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                            "combat": true
+                          }
+                        },
+                        "by": "Prevent",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "combat": true } },
+                        "by": "Prevent",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

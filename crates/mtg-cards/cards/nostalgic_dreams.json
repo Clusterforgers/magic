@@ -1,0 +1,28 @@
+{
+  "oracle_id": "fabbc474-682c-4565-861c-d41de05abb8f",
+  "name": "Nostalgic Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nostalgic Dreams",
+      "oracle_fingerprint": "e3492809784f0039a155ae0b2ad52ab2",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Discard": { "count": "X" } }], "required": true } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

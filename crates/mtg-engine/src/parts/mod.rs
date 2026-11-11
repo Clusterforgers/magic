@@ -23,6 +23,8 @@ mod forage;
 mod life;
 pub(crate) mod mill;
 mod random;
+mod rmt5_top_shots;
+pub(crate) use rmt5_top_shots::rmt5_top_shots;
 mod reveal;
 mod sacrifice;
 mod source;

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f4a8756d-94df-40bc-a363-2938ada0a808",
+  "name": "In Oketra's Name",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "In Oketra's Name",
+      "oracle_fingerprint": "249e392510614cba6940c1e712538598",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

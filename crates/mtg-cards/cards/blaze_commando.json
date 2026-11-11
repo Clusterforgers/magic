@@ -1,0 +1,44 @@
+{
+  "oracle_id": "92e2f982-f8b9-4c3b-ab50-14c025370e5c",
+  "name": "Blaze Commando",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blaze Commando",
+      "oracle_fingerprint": "a1113efd255bcd63231bda2210621e1b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  "Spell",
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["Red", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5859fd59-8732-414a-8932-007980af495d",
+  "name": "Woodland Bellower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woodland Bellower",
+      "oracle_fingerprint": "b2bf00cead1ef138a74995f33637e3f7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Not": { "Supertype": "Legendary" } },
+                          { "Color": "Green" },
+                          { "Type": "Creature" },
+                          { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                        ],
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

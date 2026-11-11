@@ -1,0 +1,89 @@
+{
+  "oracle_id": "30bb01c1-9253-4251-80e7-fb8236b3d858",
+  "name": "Chandra, Spark Hunter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chandra, Spark Hunter",
+      "oracle_fingerprint": "6ae2c2e312a2be764057c084bb2ab96c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this loyalty ability by hand",
+            "span": { "start": 154, "end": 230 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vehicle",
+                      "types": ["Artifact"],
+                      "subtypes": ["Vehicle"],
+                      "power": 3,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": { "Crew": 1 } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Type": "Artifact" }, { "ControlledBy": "You" }],
+                            "to": "Battlefield"
+                          }
+                        },
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

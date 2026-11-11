@@ -1,0 +1,37 @@
+{
+  "oracle_id": "d0c0a2ef-27b4-4186-8538-6ba5d35d85bb",
+  "name": "Galadriel, Gift-Giver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galadriel, Gift-Giver",
+      "oracle_fingerprint": "acb9448a7db04564bd5ca5f9cd1666e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+                      "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                    },
+                    { "effects": [{ "CreateToken": { "token": { "Named": "food" } } }] },
+                    { "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

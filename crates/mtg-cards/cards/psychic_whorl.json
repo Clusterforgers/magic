@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3df4eb80-e8dd-4a9e-bd8a-b4b23fb9de6c",
+  "name": "Psychic Whorl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Whorl",
+      "oracle_fingerprint": "339e09fb0e27e1bf3c215133a0732733",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Subtype": "Rat" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Surveil": { "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

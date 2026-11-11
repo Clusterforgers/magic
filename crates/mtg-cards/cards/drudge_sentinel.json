@@ -1,0 +1,28 @@
+{
+  "oracle_id": "71ecb454-3598-4860-bba1-b3932f906171",
+  "name": "Drudge Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drudge Sentinel",
+      "oracle_fingerprint": "9ff487165f3ffa6c24e1af92c7518ef8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              { "Tap": { "what": "This" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

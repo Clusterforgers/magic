@@ -1,0 +1,54 @@
+{
+  "oracle_id": "c3d38129-b955-4fb5-8486-095f918935b9",
+  "name": "Quintorius, Loremaster",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Quintorius, Loremaster",
+      "oracle_fingerprint": "9063bd50742430b675f6899e746fd78e",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Creature" } },
+                    { "Not": { "Type": "Land" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["Red", "White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 3,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 155, "end": 394 }
+          }
+        }
+      ]
+    }
+  ]
+}

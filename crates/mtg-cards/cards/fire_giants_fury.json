@@ -1,0 +1,60 @@
+{
+  "oracle_id": "e5f83bfc-ff74-4bb9-82c8-a07fedc6e916",
+  "name": "Fire Giant's Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire Giant's Fury",
+      "oracle_fingerprint": "8de28317726ff042ed8b84b0ef6888eb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Giant" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Is": { "Target": 0 } }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    { "ExileTop": { "count": "Triggering", "as": "exiled" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "what": [{ "Is": { "Bound": "exiled" } }],
+                            "from": "Exile",
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

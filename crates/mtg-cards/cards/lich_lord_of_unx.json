@@ -1,0 +1,54 @@
+{
+  "oracle_id": "6643fc8e-548e-48db-9f67-ffbca9e57016",
+  "name": "Lich Lord of Unx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lich Lord of Unx",
+      "oracle_fingerprint": "45fd34daaef18415d4c254d39f9684b7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{B}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie Wizard",
+                      "colors": ["Blue", "Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie", "Wizard"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}{U}{B}{B}",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Mill": {
+                  "who": { "Target": 0 },
+                  "count": { "Count": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

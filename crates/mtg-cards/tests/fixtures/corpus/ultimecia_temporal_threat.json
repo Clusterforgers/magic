@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "b64e4475-f1c6-4d85-b42f-6d84d06855bb",
+  "oracle_id": "5a8e7e35-e9ea-4808-8aa7-7580a23b9d9d",
+  "multiverse_ids": [],
+  "resource_id": "6F97FF639A9360E7F5A192EFA0947A4457E5B61FC5478B55605427D989FE61DC",
+  "mtgo_id": 142131,
+  "arena_id": 96199,
+  "tcgplayer_id": 631672,
+  "cardmarket_id": 826157,
+  "name": "Ultimecia, Temporal Threat",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/b64e4475-f1c6-4d85-b42f-6d84d06855bb",
+  "scryfall_uri": "https://scryfall.com/card/fin/556/ultimecia-temporal-threat?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:33:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/6/b64e4475-f1c6-4d85-b42f-6d84d06855bb.jpg?1783906436",
+    "normal": "https://cards.scryfall.io/normal/front/b/6/b64e4475-f1c6-4d85-b42f-6d84d06855bb.jpg?1783906436",
+    "large": "https://cards.scryfall.io/large/front/b/6/b64e4475-f1c6-4d85-b42f-6d84d06855bb.jpg?1783906436",
+    "png": "https://cards.scryfall.io/png/front/b/6/b64e4475-f1c6-4d85-b42f-6d84d06855bb.png?1783906436",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/6/b64e4475-f1c6-4d85-b42f-6d84d06855bb.jpg?1783906436",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/6/b64e4475-f1c6-4d85-b42f-6d84d06855bb.jpg?1783906436",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/6/b64e4475-f1c6-4d85-b42f-6d84d06855bb.webp?1783906436",
+    "grid": "https://cards.scryfall.io/grid/front/b/6/b64e4475-f1c6-4d85-b42f-6d84d06855bb.webp?1783906436",
+    "display": "https://cards.scryfall.io/display/front/b/6/b64e4475-f1c6-4d85-b42f-6d84d06855bb.webp?1783906436",
+    "art": "https://cards.scryfall.io/art/front/b/6/b64e4475-f1c6-4d85-b42f-6d84d06855bb.webp?1783906436",
+    "crop": "https://cards.scryfall.io/crop/front/b/6/b64e4475-f1c6-4d85-b42f-6d84d06855bb.webp?1783906436",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/6/b64e4475-f1c6-4d85-b42f-6d84d06855bb.jpg?1783906436"
+  },
+  "mana_cost": "{4}{U}{U}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Human Warlock",
+  "oracle_text": "When Ultimecia enters, tap all creatures your opponents control.\nWhenever a creature you control deals combat damage to a player, draw a card.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set": "fin",
+  "set_name": "Final Fantasy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afin&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fin?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b64e4475-f1c6-4d85-b42f-6d84d06855bb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5a8e7e35-e9ea-4808-8aa7-7580a23b9d9d&unique=prints",
+  "collector_number": "556",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Ultimecia is a fearful sorceress. Her heart is filled with anger and hate.\"\n—Edea Kramer",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bachzim",
+  "artist_ids": [
+    "c1a926d5-abed-4ecc-a653-17d389cac12a"
+  ],
+  "illustration_id": "7f2487da-08aa-449d-9d8c-290f47975f40",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "starterdeck",
+    "universesbeyond",
+    "ffviii"
+  ],
+  "edhrec_rank": 7328,
+  "prices": {
+    "usd": "0.54",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.41",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUltimecia%252C%2BTemporal%2BThreat",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUltimecia%252C%2BTemporal%2BThreat",
+    "edhrec": "https://edhrec.com/route/?cc=Ultimecia%2C+Temporal+Threat"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631672%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=826157&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/142131?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

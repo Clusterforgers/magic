@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6c134ef7-5c2f-4e4c-ae40-ef338fbf41e6",
+  "name": "Spreading Plague",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spreading Plague",
+      "oracle_fingerprint": "b4d4b31122d9bab2ed33c6ee393c0e66",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "SharesColor": "Triggering" }]
+                  },
+                  "regenerate": false
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

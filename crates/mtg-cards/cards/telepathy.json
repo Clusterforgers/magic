@@ -1,0 +1,12 @@
+{
+  "oracle_id": "d2e647ac-717f-46e6-baa8-6a793e7bdc32",
+  "name": "Telepathy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Telepathy",
+      "oracle_fingerprint": "86dc9f1c36359b17d628e854a3aae15f",
+      "abilities": [{ "Rule": { "rule": { "RevealHand": "Opponents" } } }]
+    }
+  ]
+}

@@ -28,7 +28,7 @@
               {
                 "LoseLife": {
                   "who": { "Target": 0 },
-                  "amount": { "Tallied": { "who": "You", "what": "LifeGained" } }
+                  "amount": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
                 }
               }
             ]

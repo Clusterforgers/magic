@@ -1,0 +1,59 @@
+{
+  "oracle_id": "cfc5dc9c-6f26-460b-a624-3681b8584eb3",
+  "name": "Zur, Eternal Schemer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zur, Eternal Schemer",
+      "oracle_fingerprint": "53310f9198b623e38987b8d603dcd066",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Enchantment" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [
+              { "AddKeyword": "Deathtouch" },
+              { "AddKeyword": "Lifelink" },
+              { "AddKeyword": "Hexproof" }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Enchantment" },
+                    { "Not": { "Subtype": "Aura" } },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    {
+                      "SetPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                        "toughness": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

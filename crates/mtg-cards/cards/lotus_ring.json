@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ca4d3d27-ea3a-44ac-96e9-b52b563129f8",
+  "name": "Lotus Ring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lotus Ring",
+      "oracle_fingerprint": "229164e5518b9917bb4e83e39b598b3f",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 3, "toughness": 3 } },
+              { "AddKeyword": "Vigilance" },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", "SacrificeSelf"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

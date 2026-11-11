@@ -1,0 +1,25 @@
+{
+  "oracle_id": "8aaf248e-66cf-447b-b062-9aa2ab1ec864",
+  "name": "Orzhov Locket",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orzhov Locket",
+      "oracle_fingerprint": "2335eddb18a0214548724997b63ac07c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W/B}{W/B}{W/B}{W/B}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

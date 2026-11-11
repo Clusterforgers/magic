@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3fe5cfcd-b25f-49d8-9f60-8b4c388a9c68",
+  "name": "Words of Waste",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Words of Waste",
+      "oracle_fingerprint": "a3cd05e9c0d36253994685e264c3b84d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Draw": {} },
+                  "by": { "InsteadNext": [{ "Discard": { "who": "Opponents" } }] },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

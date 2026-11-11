@@ -1,0 +1,55 @@
+{
+  "oracle_id": "40961b23-b153-434a-aeb9-b9c2ff613dcb",
+  "name": "Konstrari Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Konstrari Charm",
+      "oracle_fingerprint": "c404bad20d38d7b7777cbbb62082adec",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 6 } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "Trample" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "AddMana": {
+                            "mana": { "Fixed": ["Colorless", "Colorless", "Colorless"] }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

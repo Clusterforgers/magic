@@ -1,0 +1,50 @@
+{
+  "oracle_id": "522a04ff-cbfe-47b0-bd29-ef6fc27a6905",
+  "name": "Combustion Technique",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Combustion Technique",
+      "oracle_fingerprint": "e4434f21c814235a9c7f50a72bc2d676",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Sum": [
+                      2,
+                      {
+                        "Count": [
+                          { "Subtype": "Lesson" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

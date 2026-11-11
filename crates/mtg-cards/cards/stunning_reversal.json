@@ -1,0 +1,29 @@
+{
+  "oracle_id": "3db00947-d568-45d7-82cd-b54b4fcb1312",
+  "name": "Stunning Reversal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stunning Reversal",
+      "oracle_fingerprint": "b4bcfe1451d850e511884962cd0dcdbf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "LoseGame": {} },
+                  "by": {
+                    "InsteadNext": [{ "Draw": { "count": 7 } }, { "SetLife": { "amount": 1 } }]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

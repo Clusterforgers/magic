@@ -1,0 +1,46 @@
+{
+  "oracle_id": "523d3e3d-8fdf-44f8-868d-7b00995e4577",
+  "name": "Words of Wind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Words of Wind",
+      "oracle_fingerprint": "7dc1bf979ec468f8ff4f743d512871be",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Draw": {} },
+                  "by": {
+                    "InsteadNext": [
+                      {
+                        "RepeatEach": {
+                          "over": "EachPlayer",
+                          "as": "player",
+                          "effects": [
+                            {
+                              "Choose": {
+                                "who": { "Bound": "player" },
+                                "from": { "Each": [{ "ControlledBy": { "Bound": "player" } }] },
+                                "as": "picked"
+                              }
+                            },
+                            { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

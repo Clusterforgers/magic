@@ -1,0 +1,49 @@
+{
+  "oracle_id": "de52b262-418e-418c-b2aa-8d5a776e3a75",
+  "name": "Shrouded Shepherd // Cleave Shadows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shrouded Shepherd",
+      "oracle_fingerprint": "6e6042713b69c84139191ba553cebfa3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cleave Shadows",
+      "oracle_fingerprint": "903d983cbd2b91f30920c841f3dbee15",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

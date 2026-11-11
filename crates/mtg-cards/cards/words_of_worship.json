@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f1fad5ab-d087-4912-b1b9-42733fa34707",
+  "name": "Words of Worship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Words of Worship",
+      "oracle_fingerprint": "91e13e6aeb6b0a4729766d3cba3bfec1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Draw": {} },
+                  "by": { "InsteadNext": [{ "GainLife": { "amount": 5 } }] },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

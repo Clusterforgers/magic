@@ -1,0 +1,40 @@
+{
+  "oracle_id": "fddd1c39-bdf8-4aee-897c-666498cc4dd3",
+  "name": "Withering Curse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Withering Curse",
+      "oracle_fingerprint": "0b03a25837242bf5e7d7221c41a0bef8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "LifeGained" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }],
+                  "otherwise": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }] },
+                        "mods": [{ "ModifyPT": { "power": -2, "toughness": -2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

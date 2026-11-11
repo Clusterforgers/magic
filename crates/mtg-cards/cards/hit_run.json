@@ -1,0 +1,63 @@
+{
+  "oracle_id": "2554a591-8592-4a9f-a4dc-eb9a7e6dc3eb",
+  "name": "Hit // Run",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hit",
+      "oracle_fingerprint": "65d1c4103992ebb881d6698ff0e05e64",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Total": { "of": [{ "Is": { "Bound": "sacrificed" } }], "stat": "ManaValue" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Run",
+      "oracle_fingerprint": "2990531232fc2725f1e3962c0d3b7a52",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Creature" }, "Attacking", "Other"] },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

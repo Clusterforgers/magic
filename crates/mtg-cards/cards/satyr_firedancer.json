@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b30edff0-3716-4dbb-b445-5329b08e36f4",
+  "name": "Satyr Firedancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Satyr Firedancer",
+      "oracle_fingerprint": "82803c76170385eb0042d0253e6ee1ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  "Spell",
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Opponents"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

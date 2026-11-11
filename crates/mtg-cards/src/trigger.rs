@@ -1048,6 +1048,10 @@ pub enum ShieldShape {
     Class,
     /// Damage prevented, changed or redirected.
     Damage,
+    /// The next draw, or the next loss of the game, of the players named is replaced by other steps, then the shield ends
+    /// ("the next time you would draw a card this turn, ... instead", "the next time you would lose the game this turn,
+    /// instead ..."; CR 614.1a).
+    Next,
 }
 
 impl ShieldShape {
@@ -1087,6 +1091,10 @@ impl ShieldShape {
                 | ReplaceBy::RedirectUpTo { .. }
                 | ReplaceBy::Redirect { .. },
             ) => Some(Self::Damage),
+            (
+                ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
+                ReplaceBy::InsteadNext(_),
+            ) => Some(Self::Next),
             _ => None,
         }
     }
