@@ -1,4 +1,4 @@
-//! Goal: the drafts players reported as reading wrong play as their Oracle text and rulings say, at two to four seats: a source of any kind triggers Ghyrson Starn, each creature and each planeswalker of each opponent is hit once by End the Festivities and Goblin Chainwhirler, empower Jace makes a Jace token that keeps its counters, the draws of Peer into the Abyss and The One Ring and the life Dark Confidant takes.
+//! Goal: the cards players reported as reading wrong play as their Oracle text and rulings say, at two to four seats: a source of any kind triggers Ghyrson Starn, each creature and each planeswalker of each opponent is hit once by End the Festivities and Goblin Chainwhirler, empower Jace makes one Jace token that keeps its counters, Toxin, Homing and Obelisk triggers and grants, a bonus counted as it resolves, X spells, draws and life of Peer into the Abyss, Dark Confidant, The One Ring, Memory Deluge, Torment of Hailfire and Crackle with Power, and Nazgûl whole.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::fs;
