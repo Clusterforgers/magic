@@ -2867,6 +2867,22 @@ impl Writer<'_> {
         Some(format!("{subject} {verb}"))
     }
 
+    /// "put target nonland permanent into its owner's library just beneath the top X cards of that library".
+    fn rmt1_beneath(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::PutBeneathTop {
+            what,
+            below: Amount::X,
+        } = effect
+        else {
+            return None;
+        };
+        self.is_a_permanent(what).then_some(())?;
+        Some(format!(
+            "put {} into its owner's library just beneath the top X cards of that library",
+            self.object(what)?
+        ))
+    }
+
     /// {1} paid X times is "{X}" (r5b).
     fn r5b_x_payment(&mut self, effect: &Effect) -> Option<String> {
         let Effect::Pay {
@@ -2903,6 +2919,7 @@ impl Writer<'_> {
             .or_else(|| self.exiled(effect))
             .or_else(|| self.left_combat(effect))
             .or_else(|| self.rmt1_become_blocked(effect))
+            .or_else(|| self.rmt1_beneath(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| mass_moves::text(effect))
             .or_else(|| all_graveyards::text(effect))

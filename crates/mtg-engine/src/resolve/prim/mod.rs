@@ -113,6 +113,7 @@ mod repeat_each;
 mod reveal;
 mod reveal_until;
 mod rmt1_become_blocked;
+mod rmt1_beneath;
 mod roll_dice;
 mod rule;
 mod sacrifice;
@@ -284,6 +285,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
         Effect::BecomeBlocked { .. } => rmt1_become_blocked::run(cx, effect),
+        Effect::PutBeneathTop { .. } => rmt1_beneath::run(cx, effect),
         Effect::Shield { .. } => shield::run(cx, effect),
         Effect::DelayedTrigger { .. } => delayed_trigger::run(cx, effect),
         Effect::Reflexive { .. } => reflexive::run(cx, effect),
@@ -356,6 +358,7 @@ mod tests {
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}},
         {"BecomeBlocked":{"what":"This"}},
+        {"PutBeneathTop":{"what":"This","below":2}},
         {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
         {"Reflexive":{"effects":[]}},
@@ -384,7 +387,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 114, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 115, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -516,6 +519,7 @@ mod tests {
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",
         "Effect.BecomeBlocked",
+        "Effect.PutBeneathTop",
         "Effect.Shield",
         "Effect.DelayedTrigger",
         "Effect.Reflexive",

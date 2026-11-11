@@ -262,6 +262,24 @@ macro_rules! rmt1_card {
     "\"Unblocked\",",
     ""
 )]
+#[case::tatsunari_toad_rider_0(
+    rmt1_card!("tatsunari_toad_rider"),
+    "{1}{G/U}: ~ and target Frog you control can't be blocked this turn except by creatures with flying or reach.",
+    "\"Reach\"",
+    "\"Vigilance\""
+)]
+#[case::unexpectedly_absent_0(
+    rmt1_card!("unexpectedly_absent"),
+    "Put target nonland permanent into its owner's library just beneath the top X cards of that library.",
+    "\"below\":\"X\"",
+    "\"below\":2"
+)]
+#[case::quarry_colossus_0(
+    rmt1_card!("quarry_colossus"),
+    "When this creature enters, put target creature into its owner's library just beneath the top X cards of that library, where X is the number of Plains you control.",
+    "\"Plains\"",
+    "\"Forest\""
+)]
 fn rmt1_wholes_read_back_and_near_misses_do_not(
     #[case] file: &str,
     #[case] clause: &str,

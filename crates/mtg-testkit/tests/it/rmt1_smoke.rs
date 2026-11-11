@@ -47,6 +47,7 @@ use rstest::rstest;
 #[case("Nihil Spellbomb")]
 #[case("Peter Parker's Camera")]
 #[case("Professor Onyx")]
+#[case("Quarry Colossus")]
 #[case("Ratadrabik of Urborg")]
 #[case("Reality Smasher")]
 #[case("Reunion of the House")]
@@ -60,6 +61,7 @@ use rstest::rstest;
 #[case("Start the TARDIS")]
 #[case("Summon: Primal Odin")]
 #[case("Sword of Hearth and Home")]
+#[case("Tatsunari, Toad Rider")]
 #[case("Tezzeret, Cruel Machinist")]
 #[case("The Jolly Balloon Man")]
 #[case("The Phasing of Zhalfir")]
@@ -68,6 +70,7 @@ use rstest::rstest;
 #[case("Trap Runner")]
 #[case("Triumph of Saint Katherine")]
 #[case("Ulalek, Fused Atrocity")]
+#[case("Unexpectedly Absent")]
 #[case("Ursine Champion")]
 fn rmt1_pack_card_plays_in_bot_games(#[case] name: &str) {
     let corpus = corpus().unwrap_or_else(|e| panic!("{e}"));

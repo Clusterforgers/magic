@@ -112,6 +112,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }
         | Effect::BecomeBlocked { .. }
+        | Effect::PutBeneathTop { .. }
         | Effect::Shield { .. }
         | Effect::EndTurn
         | Effect::LoseGame { .. }

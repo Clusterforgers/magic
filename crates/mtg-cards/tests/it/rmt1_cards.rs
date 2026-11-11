@@ -54,6 +54,7 @@ const PACK: &[&str] = &[
     "Nihil Spellbomb",
     "Peter Parker's Camera",
     "Professor Onyx",
+    "Quarry Colossus",
     "Ratadrabik of Urborg",
     "Reality Smasher",
     "Reunion of the House",
@@ -67,6 +68,7 @@ const PACK: &[&str] = &[
     "Start the TARDIS",
     "Summon: Primal Odin",
     "Sword of Hearth and Home",
+    "Tatsunari, Toad Rider",
     "Tezzeret, Cruel Machinist",
     "The Jolly Balloon Man",
     "The Phasing of Zhalfir",
@@ -75,6 +77,7 @@ const PACK: &[&str] = &[
     "Trap Runner",
     "Triumph of Saint Katherine",
     "Ulalek, Fused Atrocity",
+    "Unexpectedly Absent",
     "Ursine Champion",
 ];
 

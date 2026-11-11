@@ -3864,6 +3864,10 @@ impl Walker<'_> {
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::RemoveFromCombat { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::BecomeBlocked { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::PutBeneathTop { what, below } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("below", |w| w.amount(below));
+            }
             Effect::Shield {
                 when,
                 by,
