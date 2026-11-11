@@ -509,6 +509,15 @@ pub(super) fn amount(ctx: &Ctx, value: &Amount) -> String {
             format!("the total {} of {}", stat_text(*stat), selectors(ctx, of))
         }
         Amount::Triggering => "the amount from the triggering event".to_owned(),
+        Amount::Distinct { of, stat } => format!(
+            "the number of different {} among {}",
+            match stat {
+                StatKind::BasicLandTypes => "basic land types".to_owned(),
+                StatKind::Colors => "colors".to_owned(),
+                other => format!("{}s", stat_text(*other)),
+            },
+            selectors(ctx, of)
+        ),
         Amount::Players(players) => format!("the number of players in {}", who(ctx, players)),
         other => generic::node(ctx, other),
     }
@@ -538,6 +547,11 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
             .map(|part| condition(ctx, part))
             .collect::<Vec<_>>()
             .join(" or "),
+        Condition::Compare {
+            left: Amount::Count(objects),
+            op: Cmp::Eq,
+            right: Amount::Fixed(1),
+        } if objects.0 == [Pred::This] => "this permanent is on the battlefield".to_owned(),
         Condition::Compare { left, op, right } => {
             format!(
                 "{} {}",

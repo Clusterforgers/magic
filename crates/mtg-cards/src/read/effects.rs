@@ -8,7 +8,7 @@ use super::{Step, steps};
 use crate::card::TokenSpec;
 use crate::effect::{Destination, Effect, Mode, Order, Place, TokenRef};
 use crate::refs::{Bounds, Ref, Selector};
-use crate::value::Amount;
+use crate::value::{Amount, Cmp, Condition};
 
 /// Adds the steps of one effect at a depth.
 pub(super) fn push(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) {
@@ -522,7 +522,15 @@ fn spec_text(ctx: &Ctx, spec: &TokenSpec) -> String {
         .iter()
         .map(|ability| match ability {
             crate::ability::Ability::Keyword(keyword) => parts::keyword(ctx, keyword),
-            other => format!("an ability ({})", steps::label(other)),
+            // The words of the ability itself, so a reader can check them ("[−1]: Surveil 1" of a Jace token).
+            other => format!(
+                "“{}”",
+                steps::ability(other)
+                    .iter()
+                    .map(|step| step.text.as_str())
+                    .collect::<Vec<_>>()
+                    .join("; ")
+            ),
         })
         .collect();
     let abilities = if keywords.is_empty() {
@@ -644,6 +652,35 @@ fn repeated(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool 
                     phrase::who(ctx, over).trim_start_matches("each ")
                 ),
             ));
+            list(ctx, effects, depth + 1, out);
+        }
+        Effect::RepeatWhile {
+            condition,
+            effects,
+            most,
+            times,
+            at_least_once,
+            ask,
+        } => {
+            // A condition that always holds ("0 is 0") bounds nothing: the repeat is "X times".
+            let always = matches!(
+                condition,
+                Condition::Compare { left, op: Cmp::Eq, right } if left == right
+            );
+            let mut head = times.as_ref().map_or_else(
+                || format!("repeat at most {most} times"),
+                |times| format!("repeat {} times", phrase::amount(ctx, times)),
+            );
+            if !always {
+                head += &format!(" while {}", phrase::condition(ctx, condition));
+            }
+            if *at_least_once {
+                head += ", at least once";
+            }
+            if let Some(who) = ask {
+                head += &format!(", each time {} chooses to", phrase::who(ctx, who));
+            }
+            out.push(Step::new(depth, format!("{head}:")));
             list(ctx, effects, depth + 1, out);
         }
         Effect::DelayedTrigger {

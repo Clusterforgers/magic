@@ -9,7 +9,8 @@ use mtg_cards::builtin;
 use mtg_cards::card::Card;
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::PlayerId;
-use mtg_engine::decision::{Answer, DecisionKind};
+use mtg_engine::characteristics;
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_import::scryfall::cards;
@@ -335,6 +336,99 @@ fn toxin_sliver_destroys_a_creature_it_deals_combat_damage_to(
     });
     assert_eq!(wall_alive.is_none(), blocked);
     assert_eq!(life(&driver, 1), if blocked { 20 } else { 17 });
+    Ok(())
+}
+
+/// Seat 0 attacks seat 1 with `attacker` and seat 1 blocks with `blockers`; answers until combat ends.
+fn fight(
+    driver: &mut Driver,
+    attacker: &str,
+    blockers: &[(&str, &str)],
+) -> Result<(), ScriptError> {
+    driver.attack(&[(attacker, 1)])?;
+    for _ in 0..40 {
+        let decision = driver.decision()?.clone();
+        if matches!(decision.kind, DecisionKind::DeclareBlockers(_))
+            && decision.player == PlayerId::from_index(1)
+        {
+            driver.block(blockers)?;
+            break;
+        }
+        driver.answer(Driver::passive_answer(&decision))?;
+    }
+    driver.idle_until(2, Step::EndCombat)
+}
+
+#[rstest]
+#[case::blocked(true, 21, 19)]
+#[case::unblocked(false, 20, 19)]
+fn obelisk_spider_drains_when_you_put_minus_counters_on_a_creature(
+    #[values(2, 4)] seats: usize,
+    #[case] blocked: bool,
+    #[case] mine: i32,
+    #[case] theirs: i32,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .at(2, 0, Step::DeclareAttackers)
+            .battlefield(0, [ready(draft("obelisk_spider"))])
+            .battlefield(1, [ready(free_creature("Wall", 0, 7))]),
+    )?;
+    let blocks: &[(&str, &str)] = if blocked {
+        &[("Wall", "Obelisk Spider")]
+    } else {
+        &[]
+    };
+    fight(&mut driver, "Obelisk Spider", blocks)?;
+    assert_eq!(life(&driver, 0), mine);
+    // Unblocked, the spider hits seat 1 for 1 and puts no counter.
+    assert_eq!(life(&driver, 1), theirs);
+    for seat in 2..seats {
+        assert_eq!(life(&driver, seat), if blocked { 19 } else { 20 });
+    }
+    Ok(())
+}
+
+/// Butch DeLoria's attack bonus counts the Rogues and Snakes as it resolves (CR 611.2c): a creature that becomes a Rogue
+/// later in the turn adds nothing.
+#[rstest]
+#[case::rogue_before_the_attack(true, 3)]
+#[case::rogue_after_the_bonus(false, 2)]
+fn butch_deloria_counts_rogues_as_the_bonus_resolves(
+    #[case] before: bool,
+    #[case] power: i32,
+) -> Result<(), ScriptError> {
+    const BUTCH: &str = "Butch DeLoria, Tunnel Snake";
+    let mut driver = Driver::from_scenario(Scenario::new(2).at(2, 0, Step::Main1).battlefield(
+        0,
+        [
+            ready(draft("butch_deloria_tunnel_snake")),
+            ready(free_creature("Mate", 1, 1)),
+            ready(swamp()),
+            ready(swamp()),
+        ],
+    ))?;
+    let rogue = |driver: &mut Driver| -> Result<(), ScriptError> {
+        driver.begin_activation(BUTCH)?;
+        let mate = driver.target_named("Mate")?;
+        driver.choose_targets(&[mate])?;
+        if matches!(driver.decision()?.kind, DecisionKind::PayMana(_)) {
+            driver.answer(Answer::PayMana(PayChoice::Auto))?;
+        }
+        settle(driver)
+    };
+    if before {
+        rogue(&mut driver)?;
+    }
+    driver.pass_until(Step::DeclareAttackers)?;
+    driver.attack(&[(BUTCH, 1)])?;
+    settle(&mut driver)?;
+    if !before {
+        rogue(&mut driver)?;
+    }
+    let id = driver.id_of(BUTCH)?;
+    let derived = characteristics(driver.state(), id).unwrap();
+    assert_eq!(derived.power, Some(power));
     Ok(())
 }
 

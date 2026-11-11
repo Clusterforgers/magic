@@ -457,6 +457,48 @@ mod tests {
         }
     }
 
+    /// What a reader must check is in words, never a node name: the abilities of a token (empower Jace), a repeat's count
+    /// (Torment of Hailfire) and a count of different names (Liliana's Contract).
+    #[rstest]
+    #[case::token_abilities(
+        r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Jace","colors":["Blue"],"types":["Planeswalker"],"subtypes":["Jace"],"abilities":[{"Loyalty":{"cost":{"Minus":1},"effects":[{"Surveil":{}}]}},{"Loyalty":{"cost":{"Minus":3},"effects":[{"Draw":{}}]}}]}}}}]}}"#,
+        &["“loyalty: -1; surveil 1”", "“loyalty: -3; draw a card”"][..],
+        &["an ability ("][..]
+    )]
+    #[case::repeat_x_times(
+        r#"{"Spell":{"effects":[{"RepeatWhile":{"condition":{"Compare":{"left":0,"op":"Eq","right":0}},"effects":[{"Draw":{}}],"most":1000,"times":"X"}}]}}"#,
+        &["repeat X times:"][..],
+        &["condition", "most", "while"][..]
+    )]
+    #[case::repeat_while(
+        r#"{"Spell":{"effects":[{"RepeatWhile":{"condition":"YourTurn","effects":[{"Draw":{}}],"most":3}}]}}"#,
+        &["repeat at most 3 times while it is your turn:"][..],
+        &[][..]
+    )]
+    #[case::different_names(
+        r#"{"Spell":{"effects":[{"If":{"condition":{"Compare":{"left":{"Distinct":{"of":[{"Subtype":"Demon"},{"ControlledBy":"You"}],"stat":"Name"}},"op":"Ge","right":4}},"then":[{"WinGame":{}}]}}]}}"#,
+        &["the number of different names among Demons you control"][..],
+        &["distinct ("][..]
+    )]
+    #[case::still_on_the_battlefield(
+        r#"{"Activated":{"cost":"{0}","effects":[{"If":{"condition":{"Compare":{"left":{"Count":["This"]},"op":"Eq","right":1}},"then":[{"Draw":{}}]}}]}}"#,
+        &["if this permanent is on the battlefield:"][..],
+        &["the number of"][..]
+    )]
+    fn a_sheet_words_what_a_reader_checks(
+        #[case] json: &str,
+        #[case] said: &[&str],
+        #[case] unsaid: &[&str],
+    ) {
+        let text = shown(json).join("\n");
+        for words in said {
+            assert!(text.contains(words), "{text}");
+        }
+        for words in unsaid {
+            assert!(!text.contains(words), "{text}");
+        }
+    }
+
     #[test]
     fn a_condition_checked_only_as_it_triggers_says_so() {
         let steps = shown(
