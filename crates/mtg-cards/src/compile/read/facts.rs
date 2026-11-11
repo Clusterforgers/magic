@@ -266,7 +266,9 @@ fn ep28_last_turn(this_turn: &Condition) -> Vec<String> {
     texts(this_turn)
         .iter()
         .filter_map(|text| text.strip_suffix(" this turn"))
-        .filter(|head| !head.contains("this turn") && !head.contains("last turn"))
+        .filter(|head| {
+            !head.contains("this turn") && !head.contains("last turn") && !head.contains("'ve ")
+        })
         .map(|head| format!("{head} last turn"))
         .collect()
 }
@@ -439,7 +441,10 @@ fn state_texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
                 what: TurnTally::LifeLost,
             },
             Cmp::Ge,
-        ) if number == 1 => vec!["you lost life this turn".to_owned()],
+        ) if number == 1 => vec![
+            "you lost life this turn".to_owned(),
+            "you've lost life this turn".to_owned(),
+        ],
         (
             Amount::Tallied {
                 who: Ref::You,
