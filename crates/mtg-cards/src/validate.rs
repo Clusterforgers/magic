@@ -725,6 +725,7 @@ impl<'a> Walker<'a> {
     fn pred(&mut self, pred: &Pred) {
         match pred {
             Pred::Subtype(subtype) => self.known_subtype(subtype),
+            Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
             Pred::ControlledBy(r)
             | Pred::OwnedBy(r)
             | Pred::AttackingPlayer(r)

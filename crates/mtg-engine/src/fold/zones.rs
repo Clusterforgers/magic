@@ -65,6 +65,7 @@ pub(super) fn move_object(
     }
     (object.adventure, object.plotted) = (None, None);
     object.exiled_until = None;
+    object.exiled_from_hand = false;
     object.encoded_on = None;
     object.haunting = None;
     object.monarch_wait = None;
@@ -571,6 +572,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 state.possible.linked_exile = true;
                 if let Some(object) = state.objects.get_mut(object) {
                     object.exiled_until = Some(*by);
+                    object.exiled_from_hand = matches!(from, Zone::Hand(_));
                 }
             }
             if let ZoneCause::Encoded { by } = cause
