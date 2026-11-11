@@ -773,6 +773,7 @@ mod r4i_or_controller;
 mod r5e_done_once;
 mod ri23_asking_instead;
 mod ring;
+mod rmt4_each_opponent_tokens;
 mod rmt4_untap_limits;
 mod rmt4_while_controlled;
 mod tapped_for_mana;

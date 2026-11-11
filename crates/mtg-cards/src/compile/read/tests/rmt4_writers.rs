@@ -123,3 +123,30 @@ fn rmt4_untap_limit_near_misses_stay_unread(#[case] text: &str) {
         "{text}"
     );
 }
+
+/// An attack trigger making a Boar for each player `over` names, tapped as `tapped`, attacking the player bound as `against`.
+fn boars(over: &str, tapped: bool, against: &str) -> String {
+    format!(
+        r#"{{"Triggered":{{"when":{{"Attacks":{{"what":["This"]}}}},"effects":[{{"RepeatEach":{{"over":"{over}","as":"opponent","effects":[{{"CreateToken":{{"token":{{"Custom":{{"name":"Boar","colors":["Green"],"types":["Creature"],"subtypes":["Boar"],"power":2,"toughness":2}}}},"tapped":{tapped},"attacking":true,"against":{{"Bound":"{against}"}}}}}}]}}}}]}}}}"#
+    )
+}
+
+const BOARS: &str = "Whenever this creature attacks, for each opponent, you create a 2/2 green Boar creature token that's tapped and attacking that opponent.";
+
+#[rstest]
+#[case::each_opponent(boars("Opponents", true, "opponent"), BOARS, true)]
+#[case::that_player(
+    boars("Opponents", true, "opponent"),
+    "Whenever this creature attacks, for each opponent, create a 2/2 green Boar creature token that's tapped and attacking that player.",
+    true
+)]
+#[case::each_player_is_not_each_opponent(boars("EachPlayer", true, "opponent"), BOARS, false)]
+#[case::untapped_is_not_tapped(boars("Opponents", false, "opponent"), BOARS, false)]
+#[case::another_name_is_not_that_opponent(boars("Opponents", true, "someone"), BOARS, false)]
+fn rmt4_a_token_attacking_each_opponent(
+    #[case] json: String,
+    #[case] clause: &str,
+    #[case] reads: bool,
+) {
+    assert_eq!(written(&json, clause), reads, "{json}");
+}

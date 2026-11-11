@@ -1,7 +1,7 @@
 {
   "oracle_id": "22640b75-8db6-4264-a4aa-9174c159a228",
   "name": "Stampede Surfer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Stampede Surfer",
@@ -9,9 +9,35 @@
       "abilities": [
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 6, "end": 142 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Boar",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Boar"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "tapped": true,
+                        "attacking": true,
+                        "against": { "Bound": "opponent" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
