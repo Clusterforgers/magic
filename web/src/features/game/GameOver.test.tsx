@@ -1,4 +1,6 @@
-// Goal: the game over screen says the result in words and in a picture for every ending (a win, a loss, a draw, a concession, a result with no board to read), celebrates only a win with a burst that is decoration, gives each seat's time on its own turns, fits the window under the header with only the list of seats scrolling, and offers the ways on: a new game, the Play page and, for an account, My games.
+// Goal: the game over screen says the result in words and in a picture for every ending (a win, a loss, a draw, a concession, a result with no board to read), celebrates a winner for every seat (the burst for the winner, a banner naming them for the others) as decoration that keeps still under reduced motion, gives each seat's time on its own turns, fits the window under the header with only the list of seats scrolling, and offers the ways on: a new game, the Play page and, for an account, My games.
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { useIsFitWindow } from '@/components/appChrome'
@@ -84,6 +86,10 @@ const ENDINGS: [string, Ending, string, string, string][] = [
   ],
 ]
 
+const winCss = readFileSync(join(import.meta.dirname, 'winBurst.css'), 'utf8')
+
+const winnerOf = (ending: Ending): number | null => (ending.result === 'Draw' ? null : ending.result.Winner)
+
 const ICON = {
   won: 'lucide-trophy',
   lost: 'lucide-swords',
@@ -108,19 +114,41 @@ describe('the result', () => {
       expect(section).toHaveAttribute('data-end', kind)
       const icon = section.querySelector('header svg')
       expect(icon).toHaveAttribute('aria-hidden', 'true')
-      expect(icon).toHaveClass(ICON[kind as keyof typeof ICON])
+      // The winner's picture is the trophy, also when the last opponent conceded.
+      const mine = winnerOf(ending) === (ending.me ?? 0)
+      expect(icon).toHaveClass(mine ? ICON.won : ICON[kind as keyof typeof ICON])
     },
   )
 
-  it.each(ENDINGS)('celebrates %s with the burst only when this seat won', async (...args) => {
-    const [, ending, headline, , kind] = args
-    await renderInRouter(shown(endedGame(ending)))
-    const section = screen.getByRole('region', { name: headline })
-    const pieces = section.querySelectorAll('[data-slot="win-piece"]')
-    expect(pieces).toHaveLength(kind === 'won' ? WIN_PIECES : 0)
-    expect(section.querySelector('[data-slot="win-badge"]') !== null).toBe(kind === 'won')
-    // The burst is decoration: nothing in it is read out.
-    for (const piece of pieces) expect(piece.closest('[aria-hidden="true"]')).not.toBeNull()
+  it.each(ENDINGS)(
+    'celebrates %s: the burst for the winner, a banner naming the winner for every other seat',
+    async (...args) => {
+      const [, ending, headline] = args
+      await renderInRouter(shown(endedGame(ending)))
+      const section = screen.getByRole('region', { name: headline })
+      const winner = winnerOf(ending)
+      const mine = winner === (ending.me ?? 0)
+      const pieces = section.querySelectorAll('[data-slot="win-piece"]')
+      expect(pieces).toHaveLength(mine ? WIN_PIECES : 0)
+      expect(section.querySelector('[data-slot="win-badge"]') !== null).toBe(mine)
+      const banner = section.querySelector('[data-slot="win-banner"]')
+      if (winner === null || mine) expect(banner).toBeNull()
+      else expect(banner).toHaveTextContent(`Seat ${winner + 1} won`)
+      // The celebration is decoration: nothing in it is read out and nothing in it takes a click.
+      for (const piece of pieces) expect(piece.closest('[aria-hidden="true"]')).not.toBeNull()
+      if (banner !== null) {
+        expect(banner).toHaveAttribute('aria-hidden', 'true')
+        expect(banner).toHaveClass('pointer-events-none')
+      }
+    },
+  )
+
+  it('keeps every moving part of the celebration still under reduced motion', () => {
+    const still = winCss.slice(winCss.indexOf('@media (prefers-reduced-motion: reduce)'))
+    const moving = [...winCss.matchAll(/\[data-slot='([\w-]+)'\]\s*\{[^}]*animation:/g)].map((m) => m[1])
+    expect(moving).toEqual(expect.arrayContaining(['win-badge', 'win-banner', 'win-piece']))
+    for (const slot of moving) expect(still).toContain(`[data-slot='${slot}']`)
+    expect(still).toMatch(/animation:\s*none/)
   })
 
   it('flies every piece of the burst its own way', () => {
