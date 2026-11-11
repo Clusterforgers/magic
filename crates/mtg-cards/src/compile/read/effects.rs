@@ -485,6 +485,8 @@ pub(super) fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         },
         "proliferate" => Effect::Proliferate { who },
         "venture" => w11d_venture(r, who)?,
+        "open" => super::un33_attractions::un33_open(r, who)?,
+        "roll" if r.word_at(0) == Some("to") => super::un33_attractions::un33_roll(r, who)?,
         "unlock" => super::dk1c5_rooms::dk1c5_unlock(r, who)?,
         "time" if r.words("travel") => Effect::TimeTravel { who },
         "learn" => Effect::Learn { who },
@@ -796,6 +798,10 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             Effect::BecomeMonarch { who }
         }
         "venture" | "ventures" => w11d_venture(r, who)?,
+        "open" | "opens" => super::un33_attractions::un33_open(r, who)?,
+        "roll" | "rolls" if r.word_at(0) == Some("to") => {
+            super::un33_attractions::un33_roll(r, who)?
+        }
         "shuffle" | "shuffles" => {
             r.need(if who == Ref::You {
                 "your library"

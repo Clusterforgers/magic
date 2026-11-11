@@ -697,6 +697,11 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         }
         r.need("a coin flip")?;
         Some(TriggerPattern::CoinFlipWon { who: by })
+    } else if (verb == if third { "opens" } else { "open" }
+        || verb == if third { "rolls" } else { "roll" })
+        && let Some(found) = r.attempt(|r| super::un33_attractions::un33_event(r, verb, by.clone()))
+    {
+        Some(found)
     } else if verb == if third { "rolls" } else { "roll" } {
         let highest = if r.words("one or more dice") {
             false
@@ -1608,6 +1613,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         )),
         TriggerPattern::Ventured { .. } | TriggerPattern::CompletedDungeon { .. } => {
             w11d_dungeon_text(pattern)
+        }
+        TriggerPattern::OpenedAttraction { .. } | TriggerPattern::RolledToVisit { .. } => {
+            super::un33_attractions::un33_event_text(pattern)
         }
         TriggerPattern::DoorUnlocked { .. } => super::dk1c5_rooms::dk1c5_door_text(pattern),
         TriggerPattern::ZoneChange {

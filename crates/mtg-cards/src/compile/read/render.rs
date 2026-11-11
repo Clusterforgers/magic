@@ -973,6 +973,17 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             effects,
         } => chapter_texts(*number, targets, effects),
         Ability::Triggered {
+            when: TriggerPattern::Visit {},
+            intervening_if: None,
+            limit: None,
+            from: ZoneKind::Battlefield,
+            targets,
+            effects,
+        } => alternatives(targets, effects)
+            .iter()
+            .map(|sentences| format!("{}{}", super::un33_attractions::VISIT, spell(sentences)))
+            .collect(),
+        Ability::Triggered {
             when: TriggerPattern::TappedForMana { .. },
             ..
         } if crate::mana_trigger::mana_trigger(ability).is_some() => mana_trigger_texts(ability),
@@ -1710,6 +1721,8 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Surveil { who: Ref::You, .. }
                 | Effect::Proliferate { who: Ref::You }
                 | Effect::Venture { who: Ref::You, .. }
+                | Effect::OpenAttraction { who: Ref::You, .. }
+                | Effect::RollToVisit { who: Ref::You }
                 | Effect::Incubate { who: Ref::You, .. }
                 | Effect::Conjure { who: Ref::You, .. }
                 | Effect::Seek { who: Ref::You, .. }
@@ -3126,6 +3139,9 @@ impl Writer<'_> {
                 super::w6b_emblem::w6b_text(&subject, *who == Ref::You, abilities)?
             }
             Effect::UnlockDoor { who } => super::dk1c5_rooms::dk1c5_unlock_text(who)?,
+            Effect::OpenAttraction { .. } | Effect::RollToVisit { .. } => {
+                super::un33_attractions::un33_effect_text(effect)?
+            }
             Effect::Either { first, second } => self.dk1c5_either_text(first, second)?,
             Effect::Venture { who, undercity } => {
                 let into = if *undercity {

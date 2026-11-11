@@ -213,6 +213,7 @@ mod tokens;
 mod transform;
 mod triggers;
 mod turns;
+mod un33_attractions;
 mod untap_rules;
 mod vote;
 mod vp20_atoms;
@@ -294,6 +295,7 @@ pub use static_pairs::texts as static_pair_texts;
 pub use stations::block as station_block;
 pub use target_phrases::target_phrases;
 pub use tokens::{same_text, same_written_text};
+pub use un33_attractions::{is_visit_line, un33_visit_block as visit_block};
 
 use super::{ClauseKind, classify};
 use crate::ability::Ability;
