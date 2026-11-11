@@ -1,0 +1,44 @@
+{
+  "oracle_id": "4bdffa67-e6b3-4588-b76e-c11db6f043ca",
+  "name": "Magosi, the Waterveil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magosi, the Waterveil",
+      "oracle_fingerprint": "58c23f7cd5b648aa9c7e372a2fd71252",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "eon" } } },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "SkipTurn" } },
+                  "duration": "UntilTurnSkipped"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "eon" } } },
+              { "ReturnToHand": { "filter": ["This"] } }
+            ],
+            "effects": [{ "ExtraTurn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

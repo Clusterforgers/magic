@@ -1,7 +1,7 @@
 {
   "oracle_id": "36b19ec0-d581-4213-bfae-1d7808a2f60d",
   "name": "Together Forever",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Together Forever",
@@ -20,9 +20,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 102, "end": 224 }
+          "Activated": {
+            "cost": "{1}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "HasAnyCounter"] } }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+                }
+              }
+            ]
           }
         }
       ]

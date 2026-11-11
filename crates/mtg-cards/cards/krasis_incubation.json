@@ -1,7 +1,7 @@
 {
   "oracle_id": "66e2e816-5197-4151-a6c0-352c34c2eec7",
   "name": "Krasis Incubation",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Krasis Incubation",
@@ -25,9 +25,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 107, "end": 201 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}{G}" }, { "ReturnToHand": { "filter": ["This"] } }],
+            "effects": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1", "count": 2 } }]
           }
         }
       ]

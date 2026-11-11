@@ -1,0 +1,33 @@
+{
+  "oracle_id": "cebc1e6d-ab14-4e54-9906-e8a7cf4c2043",
+  "name": "Planeswalker's Mirth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planeswalker's Mirth",
+      "oracle_fingerprint": "8ed0a41a4a383ac5f05c1d3f6d03aba6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{W}",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": { "Bound": "revealed" }, "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

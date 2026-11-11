@@ -1,0 +1,34 @@
+{
+  "oracle_id": "bb300e38-32d7-4152-9a82-88d43af99f19",
+  "name": "Chronatog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chronatog",
+      "oracle_fingerprint": "068a88f3ac93454a22fe4ca5b298258a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "SkipTurn" } },
+                  "duration": "UntilTurnSkipped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

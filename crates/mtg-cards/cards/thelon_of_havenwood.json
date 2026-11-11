@@ -1,7 +1,7 @@
 {
   "oracle_id": "c673b7b0-c1e7-4bcd-8fe0-66d83f22ecb9",
   "name": "Thelon of Havenwood",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Thelon of Havenwood",
@@ -21,9 +21,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 62, "end": 162 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}{G}" },
+              { "ExileFromGraveyard": { "filter": [{ "Subtype": "Fungus" }], "any_player": true } }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Fungus" }] },
+                  "counter": { "Other": "spore" }
+                }
+              }
+            ]
           }
         }
       ]

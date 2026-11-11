@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1990753c-06a7-4e1f-bc0e-905a9ba6e293",
+  "name": "Planeswalker's Favor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planeswalker's Favor",
+      "oracle_fingerprint": "c3b9399c03edc16711ec5c049b075496",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{3}{G}",
+            "targets": [{ "what": "Opponent" }, { "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Bound": "revealed" }, "stat": "ManaValue" } },
+                        "toughness": {
+                          "Stat": { "of": { "Bound": "revealed" }, "stat": "ManaValue" }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
