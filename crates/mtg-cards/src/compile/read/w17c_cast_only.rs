@@ -6,8 +6,16 @@ use crate::ability::Ability;
 use crate::value::Condition;
 
 /// The moments a spell may be cast in, each with its wording after "only".
-fn w17c_moments() -> [(Condition, &'static str); 2] {
+fn w17c_moments() -> [(Condition, &'static str); 4] {
     [
+        (
+            Condition::AfterBlockers,
+            "during combat after blockers are declared",
+        ),
+        (
+            Condition::Step(crate::trigger::Step::DeclareBlockers),
+            "during the declare blockers step",
+        ),
         (
             Condition::All(vec![
                 Condition::InCombat,

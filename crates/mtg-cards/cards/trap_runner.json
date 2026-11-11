@@ -1,0 +1,23 @@
+{
+  "oracle_id": "730fbd6a-096c-4d25-9372-c05f90088f83",
+  "name": "Trap Runner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trap Runner",
+      "oracle_fingerprint": "1dec594b3ac9ad7097ca28b4eea892cc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": "AfterBlockers",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Unblocked", "Attacking"] } }
+            ],
+            "effects": [{ "BecomeBlocked": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

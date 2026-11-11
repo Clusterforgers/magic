@@ -536,6 +536,7 @@ mod restriction_fuzz;
 mod reveal_until;
 mod reveal_until_fuzz;
 mod riot;
+mod rmt1_become_blocked;
 mod rmt1_smoke;
 mod rmt1_total_power;
 mod rules_fuzz;

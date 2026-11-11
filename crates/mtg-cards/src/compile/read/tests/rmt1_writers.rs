@@ -226,6 +226,42 @@ macro_rules! rmt1_card {
     "{\"TotalPowerAtMost\":10}",
     "{\"TotalPowerAtMost\":9}"
 )]
+#[case::choking_vines_0(
+    rmt1_card!("choking_vines"),
+    "X target attacking creatures become blocked. ~ deals 1 damage to each of those creatures.",
+    "\"amount\":1",
+    "\"amount\":2"
+)]
+#[case::fog_patch_0(
+    rmt1_card!("fog_patch"),
+    "Attacking creatures become blocked.",
+    "\"Attacking\"",
+    "\"Blocking\""
+)]
+#[case::fog_patch_1(
+    rmt1_card!("fog_patch"),
+    "Cast this spell only during the declare blockers step.",
+    "\"DeclareBlockers\"",
+    "\"DeclareAttackers\""
+)]
+#[case::trap_runner_0(
+    rmt1_card!("trap_runner"),
+    "{T}: Target unblocked attacking creature becomes blocked. Activate only during combat after blockers are declared.",
+    "\"AfterBlockers\"",
+    "\"BeforeAttackers\""
+)]
+#[case::curtain_of_light_0(
+    rmt1_card!("curtain_of_light"),
+    "Cast this spell only during combat after blockers are declared.",
+    "\"AfterBlockers\"",
+    "\"InCombat\""
+)]
+#[case::dazzling_beauty_0(
+    rmt1_card!("dazzling_beauty"),
+    "Target unblocked attacking creature becomes blocked.\nDraw a card at the beginning of the next turn's upkeep.",
+    "\"Unblocked\",",
+    ""
+)]
 fn rmt1_wholes_read_back_and_near_misses_do_not(
     #[case] file: &str,
     #[case] clause: &str,

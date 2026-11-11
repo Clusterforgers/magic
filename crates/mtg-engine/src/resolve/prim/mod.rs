@@ -112,6 +112,7 @@ mod remove_from_combat;
 mod repeat_each;
 mod reveal;
 mod reveal_until;
+mod rmt1_become_blocked;
 mod roll_dice;
 mod rule;
 mod sacrifice;
@@ -282,6 +283,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
+        Effect::BecomeBlocked { .. } => rmt1_become_blocked::run(cx, effect),
         Effect::Shield { .. } => shield::run(cx, effect),
         Effect::DelayedTrigger { .. } => delayed_trigger::run(cx, effect),
         Effect::Reflexive { .. } => reflexive::run(cx, effect),
@@ -353,6 +355,7 @@ mod tests {
         {"ExchangeControl":{"what":["This"],"duration":"Forever"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}},
+        {"BecomeBlocked":{"what":"This"}},
         {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
         {"Reflexive":{"effects":[]}},
@@ -512,6 +515,7 @@ mod tests {
         "Effect.Rule",
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",
+        "Effect.BecomeBlocked",
         "Effect.Shield",
         "Effect.DelayedTrigger",
         "Effect.Reflexive",

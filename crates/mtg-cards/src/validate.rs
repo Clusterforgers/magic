@@ -1296,6 +1296,7 @@ impl<'a> Walker<'a> {
             Condition::IsNight => self.uses("Condition", "IsNight"),
             Condition::Step(_) => self.uses("Condition", "Step"),
             Condition::BeforeAttackers => self.uses("Condition", "BeforeAttackers"),
+            Condition::AfterBlockers => self.uses("Condition", "AfterBlockers"),
             Condition::InCombat => self.uses("Condition", "InCombat"),
             Condition::FirstCombat => self.uses("Condition", "FirstCombat"),
             Condition::NeitherDayNorNight => self.uses("Condition", "NeitherDayNorNight"),
@@ -3862,6 +3863,7 @@ impl Walker<'_> {
             }
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::RemoveFromCombat { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::BecomeBlocked { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Shield {
                 when,
                 by,

@@ -2844,6 +2844,29 @@ impl Writer<'_> {
         Some(format!("remove {} from combat", self.object(what)?))
     }
 
+    /// "target unblocked attacking creature becomes blocked", "attacking creatures become blocked": the verb agrees
+    /// with its subject.
+    fn rmt1_become_blocked(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::BecomeBlocked { what } = effect else {
+            return None;
+        };
+        let one = *what == Ref::This || self.single(what);
+        let verb = if one {
+            "becomes blocked"
+        } else {
+            "become blocked"
+        };
+        let subject = self.object(what)?;
+        // "Attacking creatures become blocked.": a group is named without "all".
+        let subject = match what {
+            Ref::Each(_) => subject
+                .strip_prefix("all ")
+                .map_or(subject.clone(), str::to_owned),
+            _ => subject,
+        };
+        Some(format!("{subject} {verb}"))
+    }
+
     /// {1} paid X times is "{X}" (r5b).
     fn r5b_x_payment(&mut self, effect: &Effect) -> Option<String> {
         let Effect::Pay {
@@ -2879,6 +2902,7 @@ impl Writer<'_> {
             .or_else(|| self.library_exile(effect))
             .or_else(|| self.exiled(effect))
             .or_else(|| self.left_combat(effect))
+            .or_else(|| self.rmt1_become_blocked(effect))
             .or_else(|| self.reanimated(effect))
             .or_else(|| mass_moves::text(effect))
             .or_else(|| all_graveyards::text(effect))

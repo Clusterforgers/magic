@@ -2148,7 +2148,7 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_prevention_and_regeneration(
 ) {
     let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
     let (mut checked, mut regenerated, mut shields_used) = (0usize, 0usize, 0usize);
-    for seed in seed..seed + PREVENTION_GAMES {
+    for seed in (0..PREVENTION_GAMES).map(|offset| seed + offset) {
         let setup = with_unique_names(prevent_fuzz_setup(players, seed).unwrap());
         let engine = run_game(setup, seed, |step: &Step| {
             // The only option the prevention decks ask for is the damage a shield takes first.

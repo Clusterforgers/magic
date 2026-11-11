@@ -1331,6 +1331,9 @@ pub enum Condition {
     Step(Step),
     /// The turn has not reached its declare attackers step: "Activate only ... before attackers are declared".
     BeforeAttackers,
+    /// The turn is in its combat phase after blockers are declared: "Activate only during combat after blockers are
+    /// declared" (the declare blockers step, the combat damage steps and the end of combat step).
+    AfterBlockers,
     /// The turn is in its combat phase: "Activate only during combat".
     InCombat,
     /// The turn is in the first combat phase it has had: "if it's the first combat phase of the turn" (CR 500.8).

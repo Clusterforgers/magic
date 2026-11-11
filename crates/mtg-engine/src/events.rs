@@ -397,6 +397,11 @@ pub enum Event {
         /// The creature.
         object: ObjectId,
     },
+    /// Attacking creatures became blocked by an effect, with no creature blocking them (CR 509.1h).
+    AttackersBlocked {
+        /// The attackers, each not blocked before.
+        attackers: Vec<ObjectId>,
+    },
     /// A permanent regenerated instead of being destroyed (CR 701.19): it was tapped, lost its damage and left combat.
     Regenerated {
         /// The permanent.
@@ -1240,6 +1245,7 @@ impl Event {
             | Event::OpeningCardsPlayed { cards, .. }
             | Event::LibraryInserted { cards, .. }
             | Event::LibraryBottomed { cards, .. } => cards.clone(),
+            Event::AttackersBlocked { attackers } => attackers.clone(),
             Event::Scried(scried) => scried.top.iter().chain(&scried.bottom).copied().collect(),
             Event::Surveilled(surveilled) => surveilled
                 .top

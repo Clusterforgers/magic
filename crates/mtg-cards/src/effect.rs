@@ -529,6 +529,12 @@ pub enum Effect {
         /// The creatures that leave combat.
         what: Ref,
     },
+    /// Attacking creatures become blocked (CR 509.1h), even those that can't be blocked: each one not yet blocked is
+    /// blocked by no creature, so it deals no combat damage unless it has trample, and "becomes blocked" triggers.
+    BecomeBlocked {
+        /// The attacking creatures.
+        what: Ref,
+    },
     /// Exiles objects.
     Exile {
         /// What is exiled.
