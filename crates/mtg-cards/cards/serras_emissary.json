@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7a56c6e1-0509-4783-9b29-cf3163977166",
+  "name": "Serra's Emissary",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Serra's Emissary",
+      "oracle_fingerprint": "c6f1770e7016c316168c4b9fb749e0c4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CardType" }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 52, "end": 124 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "oracle_id": "4760bb87-56e9-47eb-b5ec-6fa4dd19156e",
+  "name": "Goblin Test Pilot",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Goblin Test Pilot",
+      "oracle_fingerprint": "c52d6db9d01ed585b8c0be1041a9342f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 72 } }
+        }
+      ]
+    }
+  ]
+}

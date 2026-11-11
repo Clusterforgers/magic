@@ -1,0 +1,21 @@
+{
+  "oracle_id": "df6c25c9-da2b-44f5-97bc-3eef4d795ff9",
+  "name": "Fluttershy",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fluttershy",
+      "oracle_fingerprint": "5d4b97373ef0fd914954b8f88a401b4d",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 224 }
+          }
+        }
+      ]
+    }
+  ]
+}

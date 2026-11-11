@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3620ab8f-b693-4225-bb96-5ca3cb3fa465",
+  "name": "Desperate Ritual",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Desperate Ritual",
+      "oracle_fingerprint": "81b580e8a06d9f3d758c1644d97d8b22",
+      "abilities": [
+        { "Spell": { "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red"] } } }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 15, "end": 186 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a04f46b4-b0b0-4aef-907f-1df1a2e261de",
+  "name": "Chaos Dragon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Chaos Dragon",
+      "oracle_fingerprint": "219950543f1c604e8d529b54ca82d646",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 57, "end": 255 }
+          }
+        }
+      ]
+    }
+  ]
+}
