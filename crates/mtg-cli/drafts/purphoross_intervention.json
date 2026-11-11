@@ -1,0 +1,74 @@
+{
+  "oracle_id": "e190f086-ebee-447f-907f-7b37ec8824ac",
+  "name": "Purphoros's Intervention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Purphoros's Intervention",
+      "oracle_fingerprint": "8c04bf00f58bd7db6ea5aba6d59751cc",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Sized": {
+                                "size": "X",
+                                "toughness": 1,
+                                "token": {
+                                  "name": "Elemental",
+                                  "colors": ["Red"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Elemental"],
+                                  "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Haste" }]
+                                }
+                              }
+                            },
+                            "as": "token"
+                          }
+                        },
+                        {
+                          "DelayedTrigger": {
+                            "when": { "StepBegins": { "step": "End" } },
+                            "effects": [
+                              { "Sacrifice": { "filter": [{ "Is": { "Bound": "token" } }] } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "DealDamage": {
+                            "to": { "Target": 0 },
+                            "amount": { "Times": { "by": 2, "of": "X" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "485dea0d-2123-4e5c-91a1-25ba73f4f3cf",
+  "name": "Hordewing Skaab",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hordewing Skaab",
+      "oracle_fingerprint": "59825256e60b704356db969724a85deb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Zombie" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 46, "end": 250 }
+          }
+        }
+      ]
+    }
+  ]
+}

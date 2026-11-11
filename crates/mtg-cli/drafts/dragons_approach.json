@@ -1,0 +1,43 @@
+{
+  "oracle_id": "47e191f7-6314-4875-b5ee-57e5daf089c4",
+  "name": "Dragon's Approach",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon's Approach",
+      "oracle_fingerprint": "8f05e5a754673de1650151d50f9ec732",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 3 } },
+              {
+                "Pay": {
+                  "cost": [
+                    "ExileSelf",
+                    {
+                      "ExileFromGraveyard": {
+                        "filter": [{ "Named": "Dragon's Approach" }],
+                        "count": 4
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Search": {
+                        "filter": [{ "Subtype": "Dragon" }, { "Type": "Creature" }],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

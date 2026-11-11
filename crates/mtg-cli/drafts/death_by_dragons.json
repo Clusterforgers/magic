@@ -1,0 +1,41 @@
+{
+  "oracle_id": "88e912e3-0548-4a4a-94c1-c804093ca1b0",
+  "name": "Death by Dragons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death by Dragons",
+      "oracle_fingerprint": "5673dfee0ef5a9389a0d7c2c4c275b37",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "Among": { "Target": 0 } } }
+                    }
+                  },
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

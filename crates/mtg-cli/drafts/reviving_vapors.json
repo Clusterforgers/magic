@@ -1,0 +1,29 @@
+{
+  "oracle_id": "57104a79-cfb6-4330-8ea1-7726534ada56",
+  "name": "Reviving Vapors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reviving Vapors",
+      "oracle_fingerprint": "2c9b6205e0e71764edb2c9cfeb31dbf9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "card", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": { "Bound": "card" }, "stat": "ManaValue" } }
+                }
+              },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

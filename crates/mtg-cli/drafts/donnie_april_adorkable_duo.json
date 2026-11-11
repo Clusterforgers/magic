@@ -1,0 +1,57 @@
+{
+  "oracle_id": "7b33368f-0668-4233-8bbf-725c66c771cb",
+  "name": "Donnie & April, Adorkable Duo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Donnie & April, Adorkable Duo",
+      "oracle_fingerprint": "f410409d191994cd3ea1c8126b2f6f65",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "different_players": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "Draw": { "who": { "Target": 0 }, "count": 2 } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "who": { "Target": 0 },
+                            "from": {
+                              "Each": [
+                                {
+                                  "AnyOf": [
+                                    { "Type": "Artifact" },
+                                    { "Type": "Instant" },
+                                    { "Type": "Sorcery" }
+                                  ]
+                                },
+                                { "In": "Graveyard" },
+                                { "OwnedBy": { "Target": 0 } }
+                              ]
+                            },
+                            "as": "card"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

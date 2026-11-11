@@ -1,0 +1,50 @@
+{
+  "oracle_id": "47068c31-d07d-473c-aa89-6de8625f74df",
+  "name": "Soul Foundry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Foundry",
+      "oracle_fingerprint": "6963acaf5b06741ddff12ed9c21bcd5e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+                    { "Remember": { "what": { "Bound": "exiled" }, "slot": "imprinted" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": { "Remembered": { "on": "This", "slot": "imprinted" } } }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

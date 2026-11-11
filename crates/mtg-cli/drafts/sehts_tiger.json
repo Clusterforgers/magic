@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7d71a78d-fda8-424d-b343-b901a0df3acf",
+  "name": "Seht's Tiger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seht's Tiger",
+      "oracle_fingerprint": "e4cde42d9b2d233113752abcab5000a6",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "color" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "PlayersHave": {
+                      "who": "You",
+                      "keyword": { "Protection": [{ "ChosenAs": "color" }] }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

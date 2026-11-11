@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0956bc16-ff04-4e96-8059-ef62afa2405f",
+  "name": "The Eighth Doctor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Eighth Doctor",
+      "oracle_fingerprint": "16306abfbf422533b9d9a8ac6dfaebfe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 3 } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Supertype": "Legendary" },
+                      { "Subtype": "Saga" }
+                    ]
+                  },
+                  { "Not": { "Type": "Instant" } },
+                  { "Not": { "Type": "Sorcery" } }
+                ],
+                "from": "Graveyard",
+                "play": true,
+                "once": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "object": "card",
+  "id": "396abc9e-a738-430d-85cc-448ace2548f9",
+  "oracle_id": "73970475-f899-4e93-8498-286240181295",
+  "multiverse_ids": [
+    541130
+  ],
+  "mtgo_id": 94888,
+  "arena_id": 79078,
+  "tcgplayer_id": 253463,
+  "cardmarket_id": 582233,
+  "name": "Dollhouse of Horrors",
+  "lang": "en",
+  "released_at": "2021-11-19",
+  "uri": "https://api.scryfall.com/cards/396abc9e-a738-430d-85cc-448ace2548f9",
+  "scryfall_uri": "https://scryfall.com/card/vow/255/dollhouse-of-horrors?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:39:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/9/396abc9e-a738-430d-85cc-448ace2548f9.jpg?1783924786",
+    "normal": "https://cards.scryfall.io/normal/front/3/9/396abc9e-a738-430d-85cc-448ace2548f9.jpg?1783924786",
+    "large": "https://cards.scryfall.io/large/front/3/9/396abc9e-a738-430d-85cc-448ace2548f9.jpg?1783924786",
+    "png": "https://cards.scryfall.io/png/front/3/9/396abc9e-a738-430d-85cc-448ace2548f9.png?1783924786",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/9/396abc9e-a738-430d-85cc-448ace2548f9.jpg?1783924786",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/9/396abc9e-a738-430d-85cc-448ace2548f9.jpg?1783924786",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/9/396abc9e-a738-430d-85cc-448ace2548f9.webp?1783924786",
+    "grid": "https://cards.scryfall.io/grid/front/3/9/396abc9e-a738-430d-85cc-448ace2548f9.webp?1783924786",
+    "display": "https://cards.scryfall.io/display/front/3/9/396abc9e-a738-430d-85cc-448ace2548f9.webp?1783924786",
+    "art": "https://cards.scryfall.io/art/front/3/9/396abc9e-a738-430d-85cc-448ace2548f9.webp?1783924786",
+    "crop": "https://cards.scryfall.io/crop/front/3/9/396abc9e-a738-430d-85cc-448ace2548f9.webp?1783924786",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/9/396abc9e-a738-430d-85cc-448ace2548f9.jpg?1783924786"
+  },
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Artifact",
+  "oracle_text": "{1}, {T}, Exile a creature card from your graveyard: Create a token that's a copy of the exiled card, except it's a 0/0 Construct artifact in addition to its other types and it has \"This token gets +1/+1 for each Construct you control.\" It gains haste until end of turn. Activate only as a sorcery.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "540d2885-82f1-424d-ba95-c4dd15b6639d",
+      "component": "combo_piece",
+      "name": "Dollhouse of Horrors",
+      "type_line": "Artifact",
+      "uri": "https://api.scryfall.com/cards/540d2885-82f1-424d-ba95-c4dd15b6639d"
+    },
+    {
+      "object": "related_card",
+      "id": "dd2942a8-68e8-4f73-956f-f19c690fa512",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/dd2942a8-68e8-4f73-956f-f19c690fa512"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set": "vow",
+  "set_name": "Innistrad: Crimson Vow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avow&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/vow?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/396abc9e-a738-430d-85cc-448ace2548f9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A73970475-f899-4e93-8498-286240181295&unique=prints",
+  "collector_number": "255",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Muhammad Firdaus",
+  "artist_ids": [
+    "185ea3f2-0b95-4f96-ab62-f7754ba591d8"
+  ],
+  "illustration_id": "169ec9f4-f0a3-479b-bf1f-cef8ab2ae9c3",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12455,
+  "penny_rank": 14861,
+  "preview": {
+    "source": "cafe.daum.net",
+    "source_uri": "https://cafe.daum.net/magin/9Uu6/5365",
+    "previewed_at": "2021-11-01"
+  },
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": "0.31",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.31",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=541130&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDollhouse%2Bof%2BHorrors",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDollhouse%2Bof%2BHorrors",
+    "edhrec": "https://edhrec.com/route/?cc=Dollhouse+of+Horrors"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F253463%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=582233&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/94888?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

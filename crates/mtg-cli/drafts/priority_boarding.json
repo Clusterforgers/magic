@@ -1,0 +1,61 @@
+{
+  "oracle_id": "68a9565e-0000-49c9-8036-bc242d6d465e",
+  "name": "Priority Boarding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Priority Boarding",
+      "oracle_fingerprint": "96ef7f91850f0f99df34bd54cc9338f5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You" } },
+            "limit": "OncePerTurnDone",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "Stat": { "of": { "Bound": "top" }, "stat": "ManaValue" } },
+                            "op": "Lt",
+                            "right": "Triggering"
+                          }
+                        },
+                        "then": [
+                          {
+                            "May": {
+                              "effects": [
+                                { "Exile": { "what": { "Bound": "top" }, "as": "impulse" } },
+                                {
+                                  "Rule": {
+                                    "rule": {
+                                      "MayCast": {
+                                        "from": "Exile",
+                                        "only": { "Bound": "impulse" },
+                                        "play": true
+                                      }
+                                    },
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

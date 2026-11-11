@@ -1,0 +1,33 @@
+{
+  "oracle_id": "42bccda5-1754-4619-b94f-7a72f934a718",
+  "name": "Titania, Voice of Gaea",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Titania, Voice of Gaea",
+      "oracle_fingerprint": "c0b43fbd5dc5bee16d56fd5ce517464b",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Land" }, { "OwnedBy": "You" }],
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 98, "end": 338 }
+          }
+        }
+      ]
+    }
+  ]
+}

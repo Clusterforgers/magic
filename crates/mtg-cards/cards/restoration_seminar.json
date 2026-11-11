@@ -1,0 +1,43 @@
+{
+  "oracle_id": "fd0a27a9-7d7e-4a16-9dd0-0715e6c97b36",
+  "name": "Restoration Seminar",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Restoration Seminar",
+      "oracle_fingerprint": "f8915e42bd0f620c86108f1dc4fd7117",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 77, "end": 276 }
+          }
+        }
+      ]
+    }
+  ]
+}

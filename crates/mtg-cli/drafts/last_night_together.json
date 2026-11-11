@@ -1,0 +1,36 @@
+{
+  "oracle_id": "0ad48edf-49e2-4f3a-b50e-11231a616752",
+  "name": "Last Night Together",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Last Night Together",
+      "oracle_fingerprint": "ba98b9c75fdea73b4baace818d560eda",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Vigilance" },
+                    { "AddKeyword": "Indestructible" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "97489ef7-98c3-4700-bbe6-185215d41b25",
+  "name": "Aloe Alchemist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aloe Alchemist",
+      "oracle_fingerprint": "4bd1fa4539521d82b6e6c4287e145003",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 103 }
+          }
+        },
+        { "Keyword": { "Plot": "{1}{G}" } }
+      ]
+    }
+  ]
+}

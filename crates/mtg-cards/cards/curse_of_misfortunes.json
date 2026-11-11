@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b03c7c8d-8206-45cd-8ead-8f7b35c03a7a",
+  "name": "Curse of Misfortunes",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Curse of Misfortunes",
+      "oracle_fingerprint": "b87d3e6d184991801d6b4d1295eb0066",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 15, "end": 232 }
+          }
+        }
+      ]
+    }
+  ]
+}

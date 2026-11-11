@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ceaa0e02-2dec-412d-86aa-c1129fd0fb08",
+  "name": "Aurelia's Fury",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aurelia's Fury",
+      "oracle_fingerprint": "7c28950a79324d9dd0102c33450d5a1b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": "X" }, "divide": "X" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } },
+              { "Tap": { "what": { "Each": [{ "Is": { "Target": 0 } }, { "Type": "Creature" }] } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": { "Target": 0 },
+                      "action": { "Cast": { "filter": [{ "Not": { "Type": "Creature" } }] } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

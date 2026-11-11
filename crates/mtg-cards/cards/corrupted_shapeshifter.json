@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5c4cbf1c-95ee-4555-8351-ea962e17ae1f",
+  "name": "Corrupted Shapeshifter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Corrupted Shapeshifter",
+      "oracle_fingerprint": "0cc3c7bdb300bcbdc5ebb2e09a87d456",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 33, "end": 176 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "9f52160b-dcc0-4ab8-b8b2-b576b1688d57",
+  "oracle_id": "76c43ac8-a878-4239-b0e3-f0254ef63e50",
+  "multiverse_ids": [],
+  "tcgplayer_id": 659479,
+  "cardmarket_id": 857542,
+  "name": "Jin Sakai, Ghost of Tsushima",
+  "lang": "en",
+  "released_at": "2025-10-27",
+  "uri": "https://api.scryfall.com/cards/9f52160b-dcc0-4ab8-b8b2-b576b1688d57",
+  "scryfall_uri": "https://scryfall.com/card/sld/2226/jin-sakai-ghost-of-tsushima?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:12:02Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/f/9f52160b-dcc0-4ab8-b8b2-b576b1688d57.jpg?1783905122",
+    "normal": "https://cards.scryfall.io/normal/front/9/f/9f52160b-dcc0-4ab8-b8b2-b576b1688d57.jpg?1783905122",
+    "large": "https://cards.scryfall.io/large/front/9/f/9f52160b-dcc0-4ab8-b8b2-b576b1688d57.jpg?1783905122",
+    "png": "https://cards.scryfall.io/png/front/9/f/9f52160b-dcc0-4ab8-b8b2-b576b1688d57.png?1783905122",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/f/9f52160b-dcc0-4ab8-b8b2-b576b1688d57.jpg?1783905122",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/f/9f52160b-dcc0-4ab8-b8b2-b576b1688d57.jpg?1783905122",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/f/9f52160b-dcc0-4ab8-b8b2-b576b1688d57.webp?1783905122",
+    "grid": "https://cards.scryfall.io/grid/front/9/f/9f52160b-dcc0-4ab8-b8b2-b576b1688d57.webp?1783905122",
+    "display": "https://cards.scryfall.io/display/front/9/f/9f52160b-dcc0-4ab8-b8b2-b576b1688d57.webp?1783905122",
+    "art": "https://cards.scryfall.io/art/front/9/f/9f52160b-dcc0-4ab8-b8b2-b576b1688d57.webp?1783905122",
+    "crop": "https://cards.scryfall.io/crop/front/9/f/9f52160b-dcc0-4ab8-b8b2-b576b1688d57.webp?1783905122",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/f/9f52160b-dcc0-4ab8-b8b2-b576b1688d57.jpg?1783905122"
+  },
+  "mana_cost": "{1}{W}{U}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Samurai",
+  "oracle_text": "Whenever Jin Sakai deals combat damage to a player, draw a card.\nWhenever a creature you control attacks a player, if no other creatures are attacking that player, choose one —\n• Standoff — It gains double strike until end of turn.\n• Ghost — It can't be blocked this turn.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Ghost",
+    "Standoff"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set": "sld",
+  "set_name": "Secret Lair Drop",
+  "set_type": "box",
+  "set_uri": "https://api.scryfall.com/sets/4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asld&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/sld?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9f52160b-dcc0-4ab8-b8b2-b576b1688d57/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A76c43ac8-a878-4239-b0e3-f0254ef63e50&unique=prints",
+  "collector_number": "2226",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dominik Mayer",
+  "artist_ids": [
+    "c3439c4a-1fee-4e33-9b89-18dac27ac927"
+  ],
+  "illustration_id": "bb6237ab-51a3-453d-8fa8-d7437dc34bcf",
+  "border_color": "borderless",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary",
+    "inverted"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 7261,
+  "prices": {
+    "usd": "98.31",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "85.28",
+    "eur_foil": "150.05",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DJin%2BSakai%252C%2BGhost%2Bof%2BTsushima",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DJin%2BSakai%252C%2BGhost%2Bof%2BTsushima",
+    "edhrec": "https://edhrec.com/route/?cc=Jin+Sakai%2C+Ghost+of+Tsushima"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F659479%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=857542&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Jin+Sakai%2C+Ghost+of+Tsushima&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

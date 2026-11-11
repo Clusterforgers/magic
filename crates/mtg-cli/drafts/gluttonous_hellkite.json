@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3093796d-c429-4c79-a33a-31226e00b12c",
+  "name": "Gluttonous Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gluttonous Hellkite",
+      "oracle_fingerprint": "6dcf32152b2e79ec9aaf0e2660edb843",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Type": "Creature" }],
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" }
+      ]
+    }
+  ]
+}

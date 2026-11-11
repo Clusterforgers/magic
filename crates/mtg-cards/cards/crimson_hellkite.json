@@ -1,0 +1,17 @@
+{
+  "oracle_id": "37a1f340-10d5-407e-bf2b-cbbbb6cab985",
+  "name": "Crimson Hellkite",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Crimson Hellkite",
+      "oracle_fingerprint": "de537308248ec1958a0db2e844e2b9a7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 91 } }
+        }
+      ]
+    }
+  ]
+}

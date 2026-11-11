@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0127c13f-7b0f-44c3-8b35-97f306c5f239",
+  "name": "Strategic Betrayal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strategic Betrayal",
+      "oracle_fingerprint": "b1b3f6c2490b84163b9d271f7c32937f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "picked"
+                }
+              },
+              { "Exile": { "what": { "Bound": "picked" } } },
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

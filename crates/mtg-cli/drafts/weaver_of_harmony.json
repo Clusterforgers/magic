@@ -1,0 +1,43 @@
+{
+  "oracle_id": "494b31b2-27ef-4ca1-ac72-c2fcfc8a23a1",
+  "name": "Weaver of Harmony",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Weaver of Harmony",
+      "oracle_fingerprint": "9fa3015c9b1ea84f496808f90f0ca35a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Enchantment" },
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                "Other"
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "ControlledBy": "You" },
+                    { "Type": "Enchantment" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopyAbility": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

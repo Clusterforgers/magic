@@ -1,0 +1,54 @@
+{
+  "oracle_id": "d9583aab-3eff-4d88-84d5-7219ab982636",
+  "name": "Dream Tides",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Tides",
+      "oracle_fingerprint": "6dddea206eda2f62286f441243827799",
+      "abilities": [
+        { "Static": { "affected": { "Each": [{ "Type": "Creature" }] }, "mods": ["DoesntUntap"] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Tapped",
+                      { "Not": { "Color": "Green" } },
+                      { "ControlledBy": "Triggering" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Type": "Creature" },
+                        "Tapped",
+                        { "Not": { "Color": "Green" } },
+                        { "ControlledBy": "Triggering" }
+                      ]
+                    }
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{2}",
+                  "times": { "CountOf": { "of": { "Bound": "chosen" }, "filter": [] } },
+                  "paid": [{ "Untap": { "what": { "Bound": "chosen" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "008d5896-6fc9-4aaa-8c6f-a44c2feb98bb",
+  "name": "Vizier of Deferment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vizier of Deferment",
+      "oracle_fingerprint": "082f3883fb2620795d0321d6c594f54e",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        { "AnyOf": ["AttackedThisTurn", { "DidThisTurn": { "event": "Blocked" } }] }
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                          {
+                            "DelayedTrigger": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "effects": [
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "exiled" },
+                                    "to": { "Battlefield": {} }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

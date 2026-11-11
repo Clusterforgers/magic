@@ -1,0 +1,53 @@
+{
+  "oracle_id": "1bf08ba0-4235-4dea-9722-ed991a3b6044",
+  "name": "Kethis, the Hidden Hand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kethis, the Hidden Hand",
+      "oracle_fingerprint": "62755ddddd731ebbd9837ea166edf32f",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Supertype": "Legendary" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "ExileFromGraveyard": { "filter": [{ "Supertype": "Legendary" }], "count": 2 } }
+            ],
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      { "Supertype": "Legendary" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "as": "legends"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Is": { "Bound": "legends" } }],
+                      "from": "Graveyard",
+                      "play": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

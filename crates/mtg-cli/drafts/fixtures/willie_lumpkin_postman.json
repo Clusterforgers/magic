@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "2021033b-ccad-4cb0-9528-357a3c726008",
+  "oracle_id": "b08633e9-7b8f-4f69-a3b7-8d982b17574c",
+  "multiverse_ids": [],
+  "resource_id": "BE05D5CACE02EAF676BE1ABA4169B8966E7A1703DA18AB51E68E936D5C29537F",
+  "mtgo_id": 150641,
+  "tcgplayer_id": 697621,
+  "cardmarket_id": 891856,
+  "name": "Willie Lumpkin, Postman",
+  "lang": "en",
+  "released_at": "2026-06-26",
+  "uri": "https://api.scryfall.com/cards/2021033b-ccad-4cb0-9528-357a3c726008",
+  "scryfall_uri": "https://scryfall.com/card/msc/101/willie-lumpkin-postman?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:41:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/0/2021033b-ccad-4cb0-9528-357a3c726008.jpg?1783903263",
+    "normal": "https://cards.scryfall.io/normal/front/2/0/2021033b-ccad-4cb0-9528-357a3c726008.jpg?1783903263",
+    "large": "https://cards.scryfall.io/large/front/2/0/2021033b-ccad-4cb0-9528-357a3c726008.jpg?1783903263",
+    "png": "https://cards.scryfall.io/png/front/2/0/2021033b-ccad-4cb0-9528-357a3c726008.png?1783903263",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/0/2021033b-ccad-4cb0-9528-357a3c726008.jpg?1783903263",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/0/2021033b-ccad-4cb0-9528-357a3c726008.jpg?1783903263",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/0/2021033b-ccad-4cb0-9528-357a3c726008.webp?1783903263",
+    "grid": "https://cards.scryfall.io/grid/front/2/0/2021033b-ccad-4cb0-9528-357a3c726008.webp?1783903263",
+    "display": "https://cards.scryfall.io/display/front/2/0/2021033b-ccad-4cb0-9528-357a3c726008.webp?1783903263",
+    "art": "https://cards.scryfall.io/art/front/2/0/2021033b-ccad-4cb0-9528-357a3c726008.webp?1783903263",
+    "crop": "https://cards.scryfall.io/crop/front/2/0/2021033b-ccad-4cb0-9528-357a3c726008.webp?1783903263",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/0/2021033b-ccad-4cb0-9528-357a3c726008.jpg?1783903263"
+  },
+  "mana_cost": "{W}{U}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Citizen",
+  "oracle_text": "Willie Lumpkin can't be blocked.\nWhenever Willie Lumpkin deals combat damage to an opponent, you draw a card and that player may draw a card. If they do, that player can't attack you or permanents you control during their next turn.",
+  "power": "1",
+  "toughness": "3",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set": "msc",
+  "set_name": "Marvel Super Heroes Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/9d739461-c5ac-43a1-af41-3d5a585b5c8d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/msc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2021033b-ccad-4cb0-9528-357a3c726008/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab08633e9-7b8f-4f69-a3b7-8d982b17574c&unique=prints",
+  "collector_number": "101",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Neither snow nor rain nor Doombots nor Galactus stays him from his appointed rounds.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gintas Galvanauskas",
+  "artist_ids": [
+    "14072144-bba7-4730-8f99-f75bcd4b24a2"
+  ],
+  "illustration_id": "42c5cc9d-b209-492b-b2ef-db57c3f207ff",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 11917,
+  "prices": {
+    "usd": "0.37",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.42",
+    "eur_foil": null,
+    "tix": "0.37"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWillie%2BLumpkin%252C%2BPostman",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWillie%2BLumpkin%252C%2BPostman",
+    "edhrec": "https://edhrec.com/route/?cc=Willie+Lumpkin%2C+Postman"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F697621%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=891856&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/150641?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

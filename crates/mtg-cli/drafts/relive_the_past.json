@@ -1,0 +1,80 @@
+{
+  "oracle_id": "dcc51bcb-a61e-471f-8a01-7fcbc069fcba",
+  "name": "Relive the Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Relive the Past",
+      "oracle_fingerprint": "e7d6f03d0a689295ef533a6234af2177",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Type": "Land" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Enchantment" },
+                    { "Not": { "Subtype": "Aura" } },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Target": 1 }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Target": 2 }, "to": { "Battlefield": {} } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "AddSubtype": "Elemental" },
+                    { "SetPT": { "power": 5, "toughness": 5 } }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "AddSubtype": "Elemental" },
+                    { "SetPT": { "power": 5, "toughness": 5 } }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 2 },
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "AddSubtype": "Elemental" },
+                    { "SetPT": { "power": 5, "toughness": 5 } }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

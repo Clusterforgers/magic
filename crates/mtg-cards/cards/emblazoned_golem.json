@@ -1,0 +1,26 @@
+{
+  "oracle_id": "fbeafc81-1ddb-4b54-8f86-e6afd5f81db8",
+  "name": "Emblazoned Golem",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Emblazoned Golem",
+      "oracle_fingerprint": "03f6fae1f7460e196dd0fdae6b0adb1e",
+      "abilities": [
+        { "Keyword": { "Kicker": "{X}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 67, "end": 155 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 156, "end": 223 }
+          }
+        }
+      ]
+    }
+  ]
+}

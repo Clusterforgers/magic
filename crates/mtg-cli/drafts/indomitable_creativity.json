@@ -1,0 +1,66 @@
+{
+  "oracle_id": "e2161ae2-e5d2-4a56-85d4-d2214c5b3e2e",
+  "name": "Indomitable Creativity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indomitable Creativity",
+      "oracle_fingerprint": "e4fad2cfe0c412d83145c12b0d55361a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "as": "destroyed" } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "destroyed" },
+                  "as": "each_destroyed",
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "who": { "ControllerOf": { "Departed": { "Bound": "each_destroyed" } } },
+                        "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }],
+                        "as": "found",
+                        "revealed_as": "revealed"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "found" }, "as": "exiled_one" } },
+                    {
+                      "Bind": {
+                        "what": { "Bound": "exiled_one" },
+                        "as": "all_exiled",
+                        "adds": true
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "all_exiled" }, "to": { "Battlefield": {} } } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "destroyed" },
+                  "as": "each_shuffler",
+                  "effects": [
+                    {
+                      "Shuffle": {
+                        "who": { "ControllerOf": { "Departed": { "Bound": "each_shuffler" } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

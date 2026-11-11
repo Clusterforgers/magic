@@ -1,0 +1,40 @@
+{
+  "oracle_id": "bc92988c-d628-45ea-8606-516a1211cef3",
+  "name": "Prishe's Wanderings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prishe's Wanderings",
+      "oracle_fingerprint": "259acc8bb1f432517739177e826ce68f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Land" },
+                    { "AnyOf": [{ "Supertype": "Basic" }, { "Subtype": "Town" }] }
+                  ],
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} },
+              {
+                "Reflexive": {
+                  "targets": [
+                    { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+                  ],
+                  "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

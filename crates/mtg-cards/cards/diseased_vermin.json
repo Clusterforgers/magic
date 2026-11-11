@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4d18bea4-c9b2-4fc7-948f-2583589994d7",
+  "name": "Diseased Vermin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Diseased Vermin",
+      "oracle_fingerprint": "56de9bde14e551c35a0f971d071da007",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "infection" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 88, "end": 250 }
+          }
+        }
+      ]
+    }
+  ]
+}

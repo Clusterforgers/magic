@@ -1,0 +1,61 @@
+{
+  "oracle_id": "9e31ef54-b2f2-4f3f-9779-151b74470ce4",
+  "name": "Jackdaw Savior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jackdaw Savior",
+      "oracle_fingerprint": "5a92c0496eac346ddd00f2bbfa0c8675",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": { "HasKeyword": "Flying" } },
+                            { "Not": "Other" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Is": "Triggering" } },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

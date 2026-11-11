@@ -1,0 +1,63 @@
+{
+  "oracle_id": "d4df1710-7402-45a7-966f-b51ddc087fbe",
+  "name": "Awaken the Sleeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Awaken the Sleeper",
+      "oracle_fingerprint": "f00a08a76be91115f3e20c5cadb3c718",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "HasAttached": [{ "Subtype": "Equipment" }] }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Destroy": {
+                              "what": {
+                                "Each": [
+                                  { "Subtype": "Equipment" },
+                                  { "AttachedTo": { "Target": 0 } }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

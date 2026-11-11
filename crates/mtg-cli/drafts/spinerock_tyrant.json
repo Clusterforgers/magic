@@ -1,0 +1,50 @@
+{
+  "oracle_id": "e35d4c62-5211-4785-b683-a83719195d87",
+  "name": "Spinerock Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spinerock Tyrant",
+      "oracle_fingerprint": "849275aa8269b749629ace9e0c5702bc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Wither" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  "SingleTarget"
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CopySpell": {
+                        "what": "Triggering",
+                        "new_targets": true,
+                        "except": [{ "AddKeyword": "Wither" }]
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [{ "AddKeyword": "Wither" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

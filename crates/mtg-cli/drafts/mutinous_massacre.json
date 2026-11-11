@@ -1,0 +1,98 @@
+{
+  "oracle_id": "9fdd445a-c8e1-4309-9d74-374676fcac1d",
+  "name": "Mutinous Massacre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mutinous Massacre",
+      "oracle_fingerprint": "e0dd9901510ae65b53ceb469c580916f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": { "Options": ["odd", "even"] }, "as": "parity" } },
+              {
+                "If": {
+                  "condition": { "ChosenWord": { "name": "parity", "word": "odd" } },
+                  "then": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "Test": {
+                                "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                "op": "Ne",
+                                "right": {
+                                  "Times": {
+                                    "by": 2,
+                                    "of": {
+                                      "Quotient": {
+                                        "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                        "by": 2,
+                                        "up": false
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "Test": {
+                                "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                "op": "Eq",
+                                "right": {
+                                  "Times": {
+                                    "by": 2,
+                                    "of": {
+                                      "Quotient": {
+                                        "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                        "by": 2,
+                                        "up": false
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

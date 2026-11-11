@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bb4ebe30-2501-48aa-879a-2402a9eb1be7",
+  "name": "Voidpouncer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voidpouncer",
+      "oracle_fingerprint": "5197a26575dd2555431b9981dccdd2fe",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        { "Keyword": { "Kicker": "{2}{C}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 2,
+                "mods": [{ "AddKeyword": "Haste" }]
+              }
+            },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

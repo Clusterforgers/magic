@@ -1,0 +1,54 @@
+{
+  "oracle_id": "6316158c-2f66-4dc4-b78c-c6ff7c39bb77",
+  "name": "Confession Dial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Confession Dial",
+      "oracle_fingerprint": "9485ab3202af99a2f3b2ffbce0f3a523",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": { "count": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Supertype": "Legendary" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "AddKeyword": {
+                        "Escape": [
+                          "OwnManaCost",
+                          { "ExileFromGraveyard": { "filter": ["Other"], "count": 3 } }
+                        ]
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

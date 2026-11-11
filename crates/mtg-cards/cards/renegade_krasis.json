@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7b7e622c-815a-44a0-88ff-62bbe8dd5582",
+  "name": "Renegade Krasis",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Renegade Krasis",
+      "oracle_fingerprint": "4298fb7517341aaaf9195decf4602b28",
+      "abilities": [
+        { "Keyword": "Evolve" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 155, "end": 269 }
+          }
+        }
+      ]
+    }
+  ]
+}

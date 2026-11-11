@@ -1,0 +1,48 @@
+{
+  "oracle_id": "7ea8426a-3b66-4fd0-9863-2b68d379671f",
+  "name": "Soulbright Flamekin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulbright Flamekin",
+      "oracle_fingerprint": "d66df9d536db9a492ab2a5fc0c222a82",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 3 } },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "AddMana": {
+                              "mana": {
+                                "Fixed": ["Red", "Red", "Red", "Red", "Red", "Red", "Red", "Red"]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

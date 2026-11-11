@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ae18580a-1753-4dc8-b437-8a779b1a6e4d",
+  "name": "Demonic Bargain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonic Bargain",
+      "oracle_fingerprint": "67badfa5362a5e8c5eaea706d18ac4eb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 13, "as": "exiled" } },
+              { "Search": { "filter": [], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

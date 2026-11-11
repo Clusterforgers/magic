@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e835da40-f484-4d8b-98de-595cd23b51bc",
+  "name": "Tawnos, Urza's Apprentice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tawnos, Urza's Apprentice",
+      "oracle_fingerprint": "0df79b9cfa9a49b8fcf30b37452379d1",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}{R}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "ControlledBy": "You" },
+                    { "Type": "Artifact" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopyAbility": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

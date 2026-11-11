@@ -1,0 +1,73 @@
+{
+  "oracle_id": "0403bfb0-2174-4360-994d-68d8ca96fc55",
+  "name": "Nightmares and Daydreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightmares and Daydreams",
+      "oracle_fingerprint": "11175d34bf4c70fe56ff9c6781ce2d08",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Chapter": { "number": 1 } },
+                { "Chapter": { "number": 2 } },
+                { "Chapter": { "number": 3 } }
+              ]
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "by": "You"
+                    }
+                  },
+                  "once": false,
+                  "until": "UntilYourNextTurn",
+                  "effects": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "Player" }],
+                        "effects": [
+                          {
+                            "Mill": {
+                              "who": { "Target": 0 },
+                              "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Largest": { "who": "EachPlayer", "of": [{ "In": "Graveyard" }] } },
+                      "op": "Ge",
+                      "right": 20
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 3 } }],
+                  "otherwise": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

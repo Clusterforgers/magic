@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1e1d8c64-4cea-4c2c-8933-be19d13bf07c",
+  "name": "Heart of Bogardan",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Heart of Bogardan",
+      "oracle_fingerprint": "74a9837fcc226510144f7745e2172c50",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{2}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 172, "end": 447 }
+          }
+        }
+      ]
+    }
+  ]
+}

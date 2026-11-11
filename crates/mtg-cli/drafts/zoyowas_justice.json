@@ -1,0 +1,68 @@
+{
+  "oracle_id": "17e11f0c-4ac7-4060-9e0b-27cd5c151e50",
+  "name": "Zoyowa's Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zoyowa's Justice",
+      "oracle_fingerprint": "ed87a61752a047751369dac6bc89e0da",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 1 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Bind": { "what": { "OwnerOf": { "Target": 0 } }, "as": "owner" } },
+              {
+                "RememberValue": {
+                  "value": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                  "slot": "remembered_number"
+                }
+              },
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } },
+              {
+                "ExileUntil": {
+                  "who": { "Bound": "owner" },
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Remembered": { "on": "This", "slot": "remembered_number" } }
+                      }
+                    }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "who": { "Bound": "owner" },
+                  "what": { "Bound": "found" },
+                  "free": true,
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

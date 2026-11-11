@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c99e4768-192c-49bf-8f51-c204a2248326",
+  "name": "Bane of the Living",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bane of the Living",
+      "oracle_fingerprint": "8638451acfe3518b6b3bb9af72105e6a",
+      "abilities": [
+        { "Keyword": { "Morph": "{X}{B}{B}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 123, "end": 203 }
+          }
+        }
+      ]
+    }
+  ]
+}

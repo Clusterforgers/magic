@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ad16f918-5603-437b-b143-49c69ceae17d",
+  "name": "Radiant Performer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiant Performer",
+      "oracle_fingerprint": "b19b8ab47c575ee83e842cf406da003c",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "CastFrom": "Hand" }] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    "SingleTarget",
+                    {
+                      "Targeting": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" },
+                            { "Type": "Battle" }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "each_target": [] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

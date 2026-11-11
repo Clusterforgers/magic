@@ -1,0 +1,42 @@
+{
+  "oracle_id": "4b8ca7fd-3c8e-44fe-ab0a-0ddc2f2b047c",
+  "name": "Blaster Hulk",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Blaster Hulk",
+      "oracle_fingerprint": "d54ad773afec936ac6576a21fbc67a2f",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 94 } }
+        },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } },
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 8 }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          { "what": "AnyTarget", "bounds": { "min": 0, "max": 8 }, "divide": 8 }
+                        ],
+                        "effects": [
+                          { "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

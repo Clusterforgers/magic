@@ -1,0 +1,49 @@
+{
+  "oracle_id": "347a3622-4425-4ba4-821d-ef3d00beb058",
+  "name": "Press the Enemy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Press the Enemy",
+      "oracle_fingerprint": "bb3558f4911f33d30a2a4bc0aed637fa",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": ["Spell", { "ControlledBy": "Opponents" }] },
+                    { "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "CastFromZone": {
+                  "what": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                        }
+                      }
+                    ]
+                  },
+                  "free": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

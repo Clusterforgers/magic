@@ -1,0 +1,43 @@
+{
+  "oracle_id": "d27f3338-4900-49eb-9d8b-994afd524abe",
+  "name": "Urborg Scavengers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urborg Scavengers",
+      "oracle_fingerprint": "926fea0f29f666e59f75b3a792f3fbe2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "In": "Exile" }, { "ExiledWith": "This" }, { "HasKeyword": "Flying" }]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a3b39590-34b7-4fd0-877f-748e6df30e88",
+  "name": "Hateful Eidolon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hateful Eidolon",
+      "oracle_fingerprint": "427cd33ac8fdd42314dabb0557943ce1",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "HasAttached": [{ "Subtype": "Aura" }] }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Subtype": "Aura" },
+                      { "ControlledBy": "You" },
+                      { "AttachedTo": "Triggering" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

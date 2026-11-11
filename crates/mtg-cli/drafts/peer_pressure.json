@@ -1,0 +1,51 @@
+{
+  "oracle_id": "bd6b02f9-277e-4f6a-b0a4-d893a939cf73",
+  "name": "Peer Pressure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peer Pressure",
+      "oracle_fingerprint": "e1c6c799411cfc17a7d6c2c6a9dc7560",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ChooseValue": { "kind": "CreatureType", "as": "type" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "ChosenAs": "type" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": {
+                        "Largest": {
+                          "who": "Opponents",
+                          "of": [{ "Type": "Creature" }, { "ChosenAs": "type" }]
+                        }
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ChosenAs": "type" }] },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

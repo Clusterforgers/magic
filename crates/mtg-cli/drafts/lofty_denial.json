@@ -1,0 +1,56 @@
+{
+  "oracle_id": "d799a2c4-628a-45da-b9ca-0337c46e3e14",
+  "name": "Lofty Denial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lofty Denial",
+      "oracle_fingerprint": "738883f7b5712eee3eefde56ddf11d38",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Flying" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "cost": "{4}",
+                        "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "cost": "{1}",
+                        "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "oracle_id": "3aeba3c2-5517-4870-8802-29b0fa70ffae",
+  "name": "Semester's End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Semester's End",
+      "oracle_fingerprint": "c89dfb25f6b7e85e4e74bde7d96de53d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Together": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [
+                                  { "Is": { "Bound": "exiled" } },
+                                  { "In": "Exile" },
+                                  { "Type": "Creature" },
+                                  { "Not": { "Type": "Planeswalker" } }
+                                ]
+                              },
+                              "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [
+                                  { "Is": { "Bound": "exiled" } },
+                                  { "In": "Exile" },
+                                  { "Type": "Planeswalker" },
+                                  { "Not": { "Type": "Creature" } }
+                                ]
+                              },
+                              "to": { "Battlefield": { "counters": [["loyalty", 1]] } }
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [
+                                  { "Is": { "Bound": "exiled" } },
+                                  { "In": "Exile" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              },
+                              "to": {
+                                "Battlefield": { "counters": [["+1/+1", 1], ["loyalty", 1]] }
+                              }
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [
+                                  { "Is": { "Bound": "exiled" } },
+                                  { "In": "Exile" },
+                                  { "Not": { "Type": "Creature" } },
+                                  { "Not": { "Type": "Planeswalker" } }
+                                ]
+                              },
+                              "to": { "Battlefield": {} }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

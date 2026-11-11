@@ -1,0 +1,23 @@
+{
+  "oracle_id": "5a12e989-d6bc-441e-88dd-779e68a9fee3",
+  "name": "Souls of the Faultless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Souls of the Faultless",
+      "oracle_fingerprint": "076a8771dae8cfb3771602c0a49a244f",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This", "combat": true } } },
+            "effects": [
+              { "GainLife": { "amount": "Triggering" } },
+              { "LoseLife": { "who": "ActivePlayer", "amount": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

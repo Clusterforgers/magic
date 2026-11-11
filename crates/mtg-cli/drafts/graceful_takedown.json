@@ -1,0 +1,90 @@
+{
+  "oracle_id": "b580c6d8-f501-4623-843a-5bb2b638a339",
+  "name": "Graceful Takedown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graceful Takedown",
+      "oracle_fingerprint": "35daa53f48da2fd46b069c61b0986a84",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "HasAttached": [{ "Subtype": "Aura" }] }
+                  ]
+                },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasAttached": [{ "Subtype": "Aura" }] }
+                    ]
+                  }
+                }
+              },
+              {
+                "what": {
+                  "Another": {
+                    "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                    "earlier": [0]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Target": 0 },
+                        "as": "enchanted",
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "source": { "Bound": "enchanted" },
+                              "to": { "Target": 2 },
+                              "amount": {
+                                "Stat": { "of": { "Bound": "enchanted" }, "stat": "Power" }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "RepeatEach": {
+                        "over": { "Target": 1 },
+                        "as": "other",
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "source": { "Bound": "other" },
+                              "to": { "Target": 2 },
+                              "amount": { "Stat": { "of": { "Bound": "other" }, "stat": "Power" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

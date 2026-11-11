@@ -1,0 +1,72 @@
+{
+  "oracle_id": "b9490b52-6c3f-437b-b2c2-9e81c4b43b61",
+  "name": "Oath of Ghouls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of Ghouls",
+      "oracle_fingerprint": "f4285fcc190bf7e9727886d2478c09a6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "All": [
+                          { "Not": { "Among": "Triggering" } },
+                          {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  { "Type": "Creature" }
+                                ]
+                              },
+                              "op": "Lt",
+                              "right": {
+                                "Count": [
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "Triggering" },
+                                  { "Type": "Creature" }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Triggering" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "picked"
+                }
+              },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

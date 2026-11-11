@@ -1,0 +1,36 @@
+{
+  "oracle_id": "5a88f616-986d-4e97-9457-26c783489123",
+  "name": "Barbarian Bully",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barbarian Bully",
+      "oracle_fingerprint": "9d8ccab4eea71cd791b712678a94f43b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "DiscardRandom": 1 }],
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": [{ "DamageToYou": 4 }],
+                  "unpaid": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

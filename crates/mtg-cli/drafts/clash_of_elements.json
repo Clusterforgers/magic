@@ -1,0 +1,42 @@
+{
+  "oracle_id": "78304a06-4c9a-4cdf-b67f-067d88762381",
+  "name": "Clash of Elements",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clash of Elements",
+      "oracle_fingerprint": "1652e748dc431aa38d6f5b88f55d3fa4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "May": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "effects": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "DealDamage": { "to": { "OwnerOf": { "Target": 0 } }, "amount": 2 } }],
+                  "otherwise": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

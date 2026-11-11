@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "b8348ef6-f2ae-4277-ae04-7849c508f0e4",
+  "oracle_id": "d543cc69-4b8a-4c45-99e1-84143d663f25",
+  "multiverse_ids": [
+    470571
+  ],
+  "mtgo_id": 77104,
+  "tcgplayer_id": 196275,
+  "cardmarket_id": 390237,
+  "name": "Ghired's Belligerence",
+  "lang": "en",
+  "released_at": "2019-08-23",
+  "uri": "https://api.scryfall.com/cards/b8348ef6-f2ae-4277-ae04-7849c508f0e4",
+  "scryfall_uri": "https://scryfall.com/card/c19/25/ghireds-belligerence?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:53:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/8/b8348ef6-f2ae-4277-ae04-7849c508f0e4.jpg?1783932805",
+    "normal": "https://cards.scryfall.io/normal/front/b/8/b8348ef6-f2ae-4277-ae04-7849c508f0e4.jpg?1783932805",
+    "large": "https://cards.scryfall.io/large/front/b/8/b8348ef6-f2ae-4277-ae04-7849c508f0e4.jpg?1783932805",
+    "png": "https://cards.scryfall.io/png/front/b/8/b8348ef6-f2ae-4277-ae04-7849c508f0e4.png?1783932805",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/8/b8348ef6-f2ae-4277-ae04-7849c508f0e4.jpg?1783932805",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/8/b8348ef6-f2ae-4277-ae04-7849c508f0e4.jpg?1783932805",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/8/b8348ef6-f2ae-4277-ae04-7849c508f0e4.webp?1783932805",
+    "grid": "https://cards.scryfall.io/grid/front/b/8/b8348ef6-f2ae-4277-ae04-7849c508f0e4.webp?1783932805",
+    "display": "https://cards.scryfall.io/display/front/b/8/b8348ef6-f2ae-4277-ae04-7849c508f0e4.webp?1783932805",
+    "art": "https://cards.scryfall.io/art/front/b/8/b8348ef6-f2ae-4277-ae04-7849c508f0e4.webp?1783932805",
+    "crop": "https://cards.scryfall.io/crop/front/b/8/b8348ef6-f2ae-4277-ae04-7849c508f0e4.webp?1783932805",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/8/b8348ef6-f2ae-4277-ae04-7849c508f0e4.jpg?1783932805"
+  },
+  "mana_cost": "{X}{R}{R}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Ghired's Belligerence deals X damage divided as you choose among any number of target creatures. Whenever a creature dealt damage this way dies this turn, populate. (Create a token that's a copy of a creature token you control.)",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Populate"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2",
+  "set": "c19",
+  "set_name": "Commander 2019",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac19&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c19?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b8348ef6-f2ae-4277-ae04-7849c508f0e4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad543cc69-4b8a-4c45-99e1-84143d663f25&unique=prints",
+  "collector_number": "25",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Harmony is no longer an option.\"\n—Ghired, Conclave exile",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Izzy",
+  "artist_ids": [
+    "2c3d2473-ff5d-4309-8194-e0b2def2ab65"
+  ],
+  "illustration_id": "c3e3db3c-37d1-4e03-892c-676875bb9aa5",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9470,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2019-08-01"
+  },
+  "prices": {
+    "usd": "1.43",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.73",
+    "eur_foil": null,
+    "tix": "1.33"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=470571&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGhired%2527s%2BBelligerence",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGhired%2527s%2BBelligerence",
+    "edhrec": "https://edhrec.com/route/?cc=Ghired%27s+Belligerence"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F196275%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=390237&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/77104?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

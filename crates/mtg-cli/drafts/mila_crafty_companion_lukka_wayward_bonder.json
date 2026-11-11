@@ -1,0 +1,141 @@
+{
+  "oracle_id": "ee524e82-35c4-4cae-b65e-3e147eac2927",
+  "name": "Mila, Crafty Companion // Lukka, Wayward Bonder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mila, Crafty Companion",
+      "oracle_fingerprint": "e8ca2b3121b75e21a0baa491002b5528",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "Attacks": {
+                  "what": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    { "AttackingPlaneswalkerOf": "You" }
+                  ]
+                }
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+                  "counter": "loyalty"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [{ "ControlledBy": "You" }],
+                "by": [{ "ControlledBy": "Opponents" }]
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lukka, Wayward Bonder",
+      "oracle_fingerprint": "965525328553f58c2dfe98fe43da8476",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "May": { "effects": [{ "Discard": { "as": "discarded" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "discarded" },
+                            "selector": [{ "Type": "Creature" }]
+                          }
+                        },
+                        "then": [{ "Draw": { "count": 2 } }],
+                        "otherwise": [{ "Draw": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "returned" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "returned" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "returned" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                            "to": "Battlefield"
+                          }
+                        },
+                        "targets": [{ "what": "AnyTarget" }],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "source": "Triggering",
+                              "to": { "Target": 0 },
+                              "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "b1bc4498-43c0-461c-afba-ef81d743e5aa",
+  "name": "Imaginary Threats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imaginary Threats",
+      "oracle_fingerprint": "928b53f93a98820312741a54a77a2810",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttack": {
+                      "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

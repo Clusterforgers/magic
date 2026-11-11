@@ -1,0 +1,78 @@
+{
+  "oracle_id": "06e1c0fa-767c-4204-972f-d98f770d85f3",
+  "name": "Tempt with Immortality",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempt with Immortality",
+      "oracle_fingerprint": "0a4fc116f76f1c4da0351f3cc421f997",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "as": "mine"
+                }
+              },
+              { "Move": { "what": { "Bound": "mine" }, "to": { "Battlefield": {} } } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "opp" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "opp" } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "theirs"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "theirs" }, "to": { "Battlefield": {} } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "theirs" },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" }
+                                ]
+                              },
+                              "as": "extra"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "extra" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

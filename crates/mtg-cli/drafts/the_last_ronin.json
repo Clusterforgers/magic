@@ -1,0 +1,73 @@
+{
+  "oracle_id": "e1865bec-1744-40c2-9031-7d6363be5333",
+  "name": "The Last Ronin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Last Ronin",
+      "oracle_fingerprint": "7220526ba346bc6541de09ce0e350d15",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "Mill": { "count": 4 } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      }
+                    }
+                  ],
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AttacksAlone": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    { "PutCounters": { "on": "Triggering", "counter": "+1/+1", "count": 3 } },
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [
+                          { "AddKeyword": "Trample" },
+                          { "AddKeyword": "Lifelink" },
+                          { "AddKeyword": "Indestructible" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

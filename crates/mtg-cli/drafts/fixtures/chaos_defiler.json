@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "1c0f2873-5849-4cab-855a-2fbbc41dbb6c",
+  "oracle_id": "eba7ef08-f444-4d23-92b8-29d2ac08b156",
+  "multiverse_ids": [
+    580932
+  ],
+  "mtgo_id": 108692,
+  "tcgplayer_id": 286165,
+  "cardmarket_id": 675221,
+  "name": "Chaos Defiler",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/1c0f2873-5849-4cab-855a-2fbbc41dbb6c",
+  "scryfall_uri": "https://scryfall.com/card/40k/110/chaos-defiler?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:34:20Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/c/1c0f2873-5849-4cab-855a-2fbbc41dbb6c.jpg?1783920860",
+    "normal": "https://cards.scryfall.io/normal/front/1/c/1c0f2873-5849-4cab-855a-2fbbc41dbb6c.jpg?1783920860",
+    "large": "https://cards.scryfall.io/large/front/1/c/1c0f2873-5849-4cab-855a-2fbbc41dbb6c.jpg?1783920860",
+    "png": "https://cards.scryfall.io/png/front/1/c/1c0f2873-5849-4cab-855a-2fbbc41dbb6c.png?1783920860",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/c/1c0f2873-5849-4cab-855a-2fbbc41dbb6c.jpg?1783920860",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/c/1c0f2873-5849-4cab-855a-2fbbc41dbb6c.jpg?1783920860",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/c/1c0f2873-5849-4cab-855a-2fbbc41dbb6c.webp?1783920860",
+    "grid": "https://cards.scryfall.io/grid/front/1/c/1c0f2873-5849-4cab-855a-2fbbc41dbb6c.webp?1783920860",
+    "display": "https://cards.scryfall.io/display/front/1/c/1c0f2873-5849-4cab-855a-2fbbc41dbb6c.webp?1783920860",
+    "art": "https://cards.scryfall.io/art/front/1/c/1c0f2873-5849-4cab-855a-2fbbc41dbb6c.webp?1783920860",
+    "crop": "https://cards.scryfall.io/crop/front/1/c/1c0f2873-5849-4cab-855a-2fbbc41dbb6c.webp?1783920860",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/c/1c0f2873-5849-4cab-855a-2fbbc41dbb6c.jpg?1783920860"
+  },
+  "mana_cost": "{3}{B}{R}",
+  "cmc": 5.0,
+  "type_line": "Artifact Creature — Demon Construct",
+  "oracle_text": "Trample\nBattle Cannon — When this creature enters or dies, for each opponent, choose a nonland permanent that player controls. Destroy one of them chosen at random.",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Battle Cannon",
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1c0f2873-5849-4cab-855a-2fbbc41dbb6c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aeba7ef08-f444-4d23-92b8-29d2ac08b156&unique=prints",
+  "collector_number": "110",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Games Workshop",
+  "artist_ids": [
+    "9456da4e-410b-4932-8bf3-a69a2da3cdc9"
+  ],
+  "illustration_id": "913e5a4b-066b-4800-9383-89440947c3f9",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 6380,
+  "preview": {
+    "source": "LoadingReadyRun",
+    "source_uri": "https://www.youtube.com/watch?v=Dghfv1yptDI",
+    "previewed_at": "2022-09-14"
+  },
+  "prices": {
+    "usd": "6.76",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "7.77",
+    "eur_foil": null,
+    "tix": "16.59"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580932&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DChaos%2BDefiler",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DChaos%2BDefiler",
+    "edhrec": "https://edhrec.com/route/?cc=Chaos+Defiler"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286165%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=675221&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108692?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

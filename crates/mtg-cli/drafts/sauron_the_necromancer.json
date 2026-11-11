@@ -1,0 +1,67 @@
+{
+  "oracle_id": "8dcd7e2b-75a9-476a-a0a0-798613e8dad6",
+  "name": "Sauron, the Necromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sauron, the Necromancer",
+      "oracle_fingerprint": "53c152a2111b6576b672e5ce694ce6d6",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Bound": "exiled" },
+                      "except": [
+                        { "SetPT": { "power": 3, "toughness": 3 } },
+                        { "SetColors": ["Black"] },
+                        { "SetCreatureTypes": ["Wraith"] },
+                        { "AddKeyword": "Menace" }
+                      ]
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true,
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Not": {
+                            "Matches": {
+                              "subject": "This",
+                              "selector": ["RingBearer", { "ControlledBy": "You" }]
+                            }
+                          }
+                        },
+                        "then": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

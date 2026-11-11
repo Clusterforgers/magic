@@ -1,0 +1,58 @@
+{
+  "oracle_id": "6fe9fd59-9cac-4572-8f94-bc19bea44f94",
+  "name": "Ashling, Flame Dancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashling, Flame Dancer",
+      "oracle_fingerprint": "74652f17d147f28e715822ca6d309402",
+      "abilities": [
+        { "Rule": { "rule": { "KeepUnspentMana": { "who": "You", "mana": "Red" } } } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "Discard": {} },
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                        "amount": 2
+                      }
+                    },
+                    { "DealDamage": { "to": "Opponents", "amount": 2 } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 3 } },
+                  "then": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red", "Red"] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

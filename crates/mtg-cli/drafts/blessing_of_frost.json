@@ -1,0 +1,41 @@
+{
+  "oracle_id": "240d650b-97ea-40ad-8c1b-fe1ea52d861f",
+  "name": "Blessing of Frost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blessing of Frost",
+      "oracle_fingerprint": "5c1fd1312417fcb97cb35db5b287a46e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": { "ManaSpent": { "of": null, "from": { "supertypes": ["Snow"] } } }
+                },
+                "divide": { "ManaSpent": { "of": null, "from": { "supertypes": ["Snow"] } } }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } },
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

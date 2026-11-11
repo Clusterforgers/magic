@@ -1,0 +1,31 @@
+{
+  "oracle_id": "940909b2-f59e-4f87-a119-675efd60a5bc",
+  "name": "Hankyu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hankyu",
+      "oracle_fingerprint": "8d3da571b86c65052df275c34e6068e1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [
+                      { "PutCounters": { "on": "Granter", "counter": { "Other": "aim" } } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

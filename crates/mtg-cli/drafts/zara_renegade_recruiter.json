@@ -1,0 +1,54 @@
+{
+  "oracle_id": "cd2720c2-522c-4fdc-9cef-9c5ce250fe7b",
+  "name": "Zara, Renegade Recruiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zara, Renegade Recruiter",
+      "oracle_fingerprint": "0a162f8795ff629cf56860d6f34f998f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtHand": { "of": "Defending" } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "Defending" },
+                            { "Type": "Creature" }
+                          ]
+                        },
+                        "as": "creature"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "creature" },
+                        "to": { "Battlefield": { "tapped": true, "under": "You" } },
+                        "as": "entered"
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Bound": "entered" } } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Move": { "what": { "Bound": "entered" }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

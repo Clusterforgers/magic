@@ -1,0 +1,78 @@
+{
+  "oracle_id": "a7da9ec5-f82f-4a6d-9737-06a1556e2dd6",
+  "name": "Zurzoth, Chaos Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zurzoth, Chaos Rider",
+      "oracle_fingerprint": "1055b0ada31e340bad62b4b778cdf7b6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "Opponents" } }, "nth": 1 } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": { "who": "TriggeringPlayer", "test": { "Not": "YourTurn" } }
+                  }
+                },
+                "op": "Gt",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Devil",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Devil"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "targets": [{ "what": "AnyTarget" }],
+                            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "AttacksPlayer": {
+                  "what": [{ "Subtype": "Devil" }, { "ControlledBy": "You" }],
+                  "at": "Opponents"
+                }
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              { "Draw": { "who": "Attacked" } },
+              { "Discard": { "random": true } },
+              { "Discard": { "who": "Attacked", "random": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

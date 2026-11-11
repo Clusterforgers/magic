@@ -1,0 +1,49 @@
+{
+  "oracle_id": "88fb1dd1-60fb-4f51-ac4d-30b43156a474",
+  "name": "Neera, Wild Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neera, Wild Mage",
+      "oracle_fingerprint": "9bf6d8c8f33cd1f3503d5405de13f033",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Move": { "what": "Triggering", "to": { "Library": { "place": "Bottom" } } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "Not": { "Type": "Land" } }],
+                        "as": "found",
+                        "revealed_as": "revealed"
+                      }
+                    },
+                    { "CastFromZone": { "what": { "Bound": "found" }, "free": true } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed" },
+                        "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "86e13e19-45df-4d73-8600-51b7caa3e6ab",
+  "name": "Sovereigns of Lost Alara",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sovereigns of Lost Alara",
+      "oracle_fingerprint": "bf5267ebbd299f331f5e72db6ba25141",
+      "abilities": [
+        { "Keyword": "Exalted" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 101, "end": 295 }
+          }
+        }
+      ]
+    }
+  ]
+}

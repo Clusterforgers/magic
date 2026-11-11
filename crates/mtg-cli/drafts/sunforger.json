@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d1421070-a3cc-4af3-bf91-0f97372f4161",
+  "name": "Sunforger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunforger",
+      "oracle_fingerprint": "b5d32057213a35b3efaaca29d2302e6e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 4, "toughness": 0 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{R}" }, "Unattach"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Instant" },
+                    { "AnyOf": [{ "Color": "Red" }, { "Color": "White" }] },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                  ],
+                  "as": "card"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "card" }, "free": true } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

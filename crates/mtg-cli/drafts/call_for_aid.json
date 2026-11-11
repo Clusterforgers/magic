@@ -1,0 +1,47 @@
+{
+  "oracle_id": "6d650eef-1156-4e3b-8fa8-90a6ee04d9a8",
+  "name": "Call for Aid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call for Aid",
+      "oracle_fingerprint": "4c793f71027f38f2ff03defed374f2ac",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "taken"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "taken" },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Bound": "taken" } } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "taken" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": { "Bound": "taken" }, "action": "Sacrifice" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

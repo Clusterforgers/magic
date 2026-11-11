@@ -1,0 +1,47 @@
+{
+  "oracle_id": "51f091a7-9b0b-4362-8e9c-c174752f369b",
+  "name": "White Plume Adventurer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "White Plume Adventurer",
+      "oracle_fingerprint": "c2ca7f13bf6660d1608594ff2e1cdd9b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "TakeInitiative": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "Opponents" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "CompletedDungeon": "You" },
+                  "then": [
+                    {
+                      "Untap": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "creature"
+                      }
+                    },
+                    { "Untap": { "what": { "Bound": "creature" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ffe3ad06-50d8-4ca3-a1f7-aa31dc2c486e",
+  "name": "Curse of Thirst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Thirst",
+      "oracle_fingerprint": "1d7dd012feda76c6c62f000e24eaebb8",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "AttachedPlayer" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Triggering",
+                  "amount": { "Count": [{ "Subtype": "Curse" }, { "AttachedTo": "Triggering" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

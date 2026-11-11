@@ -1,0 +1,26 @@
+{
+  "oracle_id": "30c09562-0bca-4382-ae84-aca00e0eb89b",
+  "name": "Savage Summoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Savage Summoning",
+      "oracle_fingerprint": "4ea51a888fb25fb6b60357cf6c54877e",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" } } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "NextSpell": { "what": [{ "Type": "Creature" }], "benefit": "Flash" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

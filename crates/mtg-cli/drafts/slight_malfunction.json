@@ -1,0 +1,45 @@
+{
+  "oracle_id": "d1f36c19-ef39-4204-b126-8ea051bde0d2",
+  "name": "Slight Malfunction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slight Malfunction",
+      "oracle_fingerprint": "e68714276d8aafd0ffcaaf5f8ceafd33",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "effects": [
+                        { "RollDice": { "sides": 6, "results": [{ "from": 1, "effects": [] }] } },
+                        {
+                          "Reflexive": {
+                            "targets": [
+                              {
+                                "what": { "Object": [{ "Type": "Creature" }] },
+                                "bounds": { "min": 0, "max": { "DieResult": "Only" } }
+                              }
+                            ],
+                            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

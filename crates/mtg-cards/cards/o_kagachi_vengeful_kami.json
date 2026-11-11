@@ -1,0 +1,21 @@
+{
+  "oracle_id": "300715a0-4f95-4212-9e13-558434c9d1a4",
+  "name": "O-Kagachi, Vengeful Kami",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "O-Kagachi, Vengeful Kami",
+      "oracle_fingerprint": "0e226edd387214342c5d9b4dca843cc4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 16, "end": 172 }
+          }
+        }
+      ]
+    }
+  ]
+}

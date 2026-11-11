@@ -1,0 +1,53 @@
+{
+  "oracle_id": "69143645-97b6-4c7c-9fa2-844fb3b99822",
+  "name": "Trenzalore Clocktower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trenzalore Clocktower",
+      "oracle_fingerprint": "fc11db6d76759ba2a18f14eb4983cadc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Blue"] } } },
+              { "PutCounters": { "on": "This", "counter": { "Other": "time" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{U}" },
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "time" }, "count": 12 } },
+              "ExileSelf"
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Time Lord" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Hand" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "count": 7 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

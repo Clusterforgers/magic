@@ -1,0 +1,20 @@
+{
+  "oracle_id": "cf032b80-00d5-42fc-9e1a-16072b5fed55",
+  "name": "Hibernation's End",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hibernation's End",
+      "oracle_fingerprint": "a578ea4fece27bf0298842b3cb55c4c0",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 172, "end": 390 }
+          }
+        }
+      ]
+    }
+  ]
+}

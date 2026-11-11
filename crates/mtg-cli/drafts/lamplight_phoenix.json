@@ -1,0 +1,29 @@
+{
+  "oracle_id": "c6f7efad-381c-45ba-9976-159b7e78f7ed",
+  "name": "Lamplight Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lamplight Phoenix",
+      "oracle_fingerprint": "0969c7540c5cd72185a5345f73eaaca9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": ["ExileSelf", { "CollectEvidence": 4 }],
+                  "paid": [
+                    { "Move": { "what": "This", "to": { "Battlefield": { "tapped": true } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

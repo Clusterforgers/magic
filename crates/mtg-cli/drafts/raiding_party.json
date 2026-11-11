@@ -1,0 +1,85 @@
+{
+  "oracle_id": "1d9b8859-14e3-4bbe-ad92-916b25a37b31",
+  "name": "Raiding Party",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raiding Party",
+      "oracle_fingerprint": "07873aa00b35c631f099cfde6013bb5c",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "This", "action": { "BeTargeted": [{ "Color": "White" }] } }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Orc" }] } }],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Color": "White" },
+                            "Untapped",
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "Color": "White" },
+                              "Untapped",
+                              { "ControlledBy": { "Bound": "player" } }
+                            ]
+                          }
+                        },
+                        "as": "tapped"
+                      }
+                    },
+                    { "Tap": { "what": { "Bound": "tapped" } } },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "Subtype": "Plains" }] },
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Times": {
+                              "by": 2,
+                              "of": { "CountOf": { "of": { "Bound": "tapped" }, "filter": [] } }
+                            }
+                          }
+                        },
+                        "as": "picked"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "picked" }, "as": "saved", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Subtype": "Plains" }, { "Not": { "Is": { "Bound": "saved" } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

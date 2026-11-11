@@ -1,0 +1,33 @@
+{
+  "oracle_id": "bf044267-92b9-4983-964f-2bc4ecf76bce",
+  "name": "Cannibalize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cannibalize",
+      "oracle_fingerprint": "5651e9f26a2cc26575ef6b9130e9170c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Creature" }] },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Choose": { "from": { "Target": 0 }, "as": "exiled", "rest_as": "other" } },
+              { "Exile": { "what": { "Bound": "exiled" } } },
+              { "PutCounters": { "on": { "Bound": "other" }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

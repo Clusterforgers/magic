@@ -1,7 +1,7 @@
 {
   "oracle_id": "56940b6c-90ab-491b-a88a-4cd4a8adfbdb",
   "name": "Heavenly Blademaster",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Heavenly Blademaster",
@@ -10,9 +10,31 @@
         { "Keyword": "Flying" },
         { "Keyword": "DoubleStrike" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 22, "end": 116 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  },
+                  "as": "attachments"
+                }
+              },
+              { "Attach": { "what": { "Bound": "attachments" }, "to": "This" } }
+            ]
           }
         },
         {
@@ -23,13 +45,13 @@
                 "ModifyPT": {
                   "power": {
                     "Count": [
-                      { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Aura" }] },
+                      { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
                       { "AttachedTo": "This" }
                     ]
                   },
                   "toughness": {
                     "Count": [
-                      { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Aura" }] },
+                      { "AnyOf": [{ "Subtype": "Aura" }, { "Subtype": "Equipment" }] },
                       { "AttachedTo": "This" }
                     ]
                   }

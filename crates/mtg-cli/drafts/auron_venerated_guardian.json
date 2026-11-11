@@ -1,0 +1,46 @@
+{
+  "oracle_id": "5e166b42-252e-4f34-9610-dcddc04a62ff",
+  "name": "Auron, Venerated Guardian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Auron, Venerated Guardian",
+      "oracle_fingerprint": "defd9b6768ccdf4a65f040c46fd4696a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "Defending" },
+                          {
+                            "Compare": {
+                              "stat": "Power",
+                              "op": "Lt",
+                              "to": { "Stat": { "of": "This", "stat": "Power" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "effects": [
+                    { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

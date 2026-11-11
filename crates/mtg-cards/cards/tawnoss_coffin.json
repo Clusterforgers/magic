@@ -1,0 +1,20 @@
+{
+  "oracle_id": "05f20087-416f-4928-a0ab-6d0d2ca2ad05",
+  "name": "Tawnos's Coffin",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tawnos's Coffin",
+      "oracle_fingerprint": "dfdf941b1cc6277d50c533dace126f3e",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 497 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "b61718ad-7102-4ed2-b884-733bc46df715",
+  "name": "Radiant Purge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiant Purge",
+      "oracle_fingerprint": "907db636fd58091060565706f448dbfd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    {
+                      "Object": [
+                        { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                        { "Type": "Creature" }
+                      ]
+                    },
+                    {
+                      "Object": [
+                        { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } },
+                        { "Type": "Enchantment" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

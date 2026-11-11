@@ -1,0 +1,30 @@
+{
+  "oracle_id": "df2af646-3e5b-43a3-8f3e-50565889f456",
+  "name": "Urza, Lord Protector",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Urza, Lord Protector",
+      "oracle_fingerprint": "4b208f16a4d8e438c4c7ba5a4639651a",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 70, "end": 255 }
+          }
+        }
+      ]
+    }
+  ]
+}

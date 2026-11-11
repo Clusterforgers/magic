@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8e0f2e26-1e14-422a-aafe-e1da38ab10a3",
+  "name": "Tamiyo, Upriser Crowned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tamiyo, Upriser Crowned",
+      "oracle_fingerprint": "6ac65c5ed5d09c7ea01894454ff684a7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": { "source": [{ "Type": "Creature" }], "to": "You", "combat": true }
+              }
+            },
+            "if": { "Monarch": "You" },
+            "effects": [
+              { "Tap": { "what": "Triggering" } },
+              { "PutCounters": { "on": "Triggering", "counter": { "Other": "stun" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

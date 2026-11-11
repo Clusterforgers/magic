@@ -1,0 +1,40 @@
+{
+  "oracle_id": "75f2545d-cd31-4404-953f-1110f646228b",
+  "name": "Elektra, Femme Fatale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elektra, Femme Fatale",
+      "oracle_fingerprint": "0967e04a5fe985ab44e1a5b6bf835f77",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "DealDamage": { "source": "This", "to": "You", "amount": 2 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                        "effects": [
+                          { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 4 } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

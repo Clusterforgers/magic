@@ -1,0 +1,68 @@
+{
+  "oracle_id": "d4e4614d-8247-4fc5-8883-e37204939aa4",
+  "name": "Origin of Thor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Origin of Thor",
+      "oracle_fingerprint": "4d5332f05ad3f9116c8b5fca2d92f14c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Pay": { "cost": [{ "Discard": {} }], "paid": [{ "Draw": { "count": 2 } }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "by": "You" } },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": "Opponents",
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

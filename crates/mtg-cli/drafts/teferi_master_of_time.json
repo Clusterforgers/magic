@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e802fb53-7cf5-46bc-8a0b-f99cf5c20f74",
+  "name": "Teferi, Master of Time",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teferi, Master of Time",
+      "oracle_fingerprint": "48b17cce55a996aa770f691f30f84f58",
+      "abilities": [
+        { "InstantActivation": { "kind": "Loyalty" } },
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Draw": {} }, { "Discard": {} }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [{ "PhaseOut": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Loyalty": { "cost": { "Minus": 10 }, "effects": [{ "ExtraTurn": { "count": 2 } }] } }
+      ]
+    }
+  ]
+}

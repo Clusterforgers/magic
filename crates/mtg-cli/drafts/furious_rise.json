@@ -1,0 +1,48 @@
+{
+  "oracle_id": "52b3a979-3b93-4441-9237-0c8a754e5523",
+  "name": "Furious Rise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Furious Rise",
+      "oracle_fingerprint": "2aa9357b24d7adeddb49e3c365aafc96",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              { "Forget": { "slot": "furious" } },
+              { "Remember": { "what": { "Bound": "impulse" }, "slot": "furious" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Remembered": { "on": "This", "slot": "furious" } },
+                      "play": true
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2eaee808-b72a-4950-ab4f-ab8e8d12f838",
+  "name": "Profane Transfusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Profane Transfusion",
+      "oracle_fingerprint": "fb94a99af345a3fe042c582ac3ba34d5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Another": { "what": "Player", "earlier": [0] } } }
+            ],
+            "effects": [
+              { "ExchangeLife": { "who": { "Target": 0 }, "with": { "Target": 1 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": {
+                        "Difference": [{ "Life": { "Target": 0 } }, { "Life": { "Target": 1 } }]
+                      },
+                      "token": {
+                        "name": "Horror",
+                        "types": ["Artifact", "Creature"],
+                        "subtypes": ["Horror"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

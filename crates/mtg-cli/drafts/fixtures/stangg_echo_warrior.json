@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd",
+  "oracle_id": "aaf2a587-ced7-4615-b10f-164e7384b073",
+  "multiverse_ids": [
+    597918
+  ],
+  "mtgo_id": 103526,
+  "tcgplayer_id": 283148,
+  "cardmarket_id": 671759,
+  "name": "Stangg, Echo Warrior",
+  "lang": "en",
+  "released_at": "2022-09-09",
+  "uri": "https://api.scryfall.com/cards/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd",
+  "scryfall_uri": "https://scryfall.com/card/dmc/42/stangg-echo-warrior?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:44:21Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/7/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd.jpg?1783921461",
+    "normal": "https://cards.scryfall.io/normal/front/7/7/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd.jpg?1783921461",
+    "large": "https://cards.scryfall.io/large/front/7/7/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd.jpg?1783921461",
+    "png": "https://cards.scryfall.io/png/front/7/7/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd.png?1783921461",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/7/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd.jpg?1783921461",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/7/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd.jpg?1783921461",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/7/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd.webp?1783921461",
+    "grid": "https://cards.scryfall.io/grid/front/7/7/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd.webp?1783921461",
+    "display": "https://cards.scryfall.io/display/front/7/7/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd.webp?1783921461",
+    "art": "https://cards.scryfall.io/art/front/7/7/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd.webp?1783921461",
+    "crop": "https://cards.scryfall.io/crop/front/7/7/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd.webp?1783921461",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/7/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd.jpg?1783921461"
+  },
+  "mana_cost": "{2}{R}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Warrior",
+  "oracle_text": "Whenever Stangg attacks, create Stangg Twin, a legendary 3/4 red and green Human Warrior creature token. It enters tapped and attacking. For each Aura and Equipment attached to Stangg, create a token that's a copy of it attached to Stangg Twin. Sacrifice all tokens created this way at the beginning of the next end step.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "edc84f49-86e9-43a2-b98c-a59b1e0c72ed",
+      "component": "token",
+      "name": "Stangg Twin",
+      "type_line": "Token Legendary Creature — Human Warrior",
+      "uri": "https://api.scryfall.com/cards/edc84f49-86e9-43a2-b98c-a59b1e0c72ed"
+    },
+    {
+      "object": "related_card",
+      "id": "4b976756-e988-4211-95c2-0e3587118488",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/4b976756-e988-4211-95c2-0e3587118488"
+    },
+    {
+      "object": "related_card",
+      "id": "9385b40f-79a7-4d9c-b253-54587a1f28b4",
+      "component": "combo_piece",
+      "name": "Stangg, Echo Warrior",
+      "type_line": "Legendary Creature — Human Warrior",
+      "uri": "https://api.scryfall.com/cards/9385b40f-79a7-4d9c-b253-54587a1f28b4"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "78076b27-f888-4723-b27c-44074accd261",
+  "set": "dmc",
+  "set_name": "Dominaria United Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/78076b27-f888-4723-b27c-44074accd261",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7722a9a1-2ff9-4a39-b56e-c7eef2ff9dcd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aaaf2a587-ced7-4615-b10f-164e7384b073&unique=prints",
+  "collector_number": "42",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Vargas",
+  "artist_ids": [
+    "d20672ca-0555-4238-a984-fd171d36b247"
+  ],
+  "illustration_id": "329b24a6-fd31-4a3a-9e7a-4edaa5a22635",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 16112,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.31",
+    "eur_foil": "0.35",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=597918&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStangg%252C%2BEcho%2BWarrior",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStangg%252C%2BEcho%2BWarrior",
+    "edhrec": "https://edhrec.com/route/?cc=Stangg%2C+Echo+Warrior"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F283148%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=671759&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/103526?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

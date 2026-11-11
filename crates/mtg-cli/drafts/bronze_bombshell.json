@@ -1,0 +1,39 @@
+{
+  "oracle_id": "45754ecb-1da7-4d03-b98f-7c13dc2d4119",
+  "name": "Bronze Bombshell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bronze Bombshell",
+      "oracle_fingerprint": "193558bab827a5df6c5a1a5b17d102b3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Matches": {
+                    "subject": "This",
+                    "selector": [{ "Not": { "ControlledBy": { "OwnerOf": "This" } } }]
+                  }
+                }
+              }
+            },
+            "effects": [
+              { "Bind": { "what": { "ControllerOf": "This" }, "as": "player" } },
+              { "Sacrifice": { "who": { "Bound": "player" }, "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "DealDamage": { "source": "This", "to": { "Bound": "player" }, "amount": 7 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

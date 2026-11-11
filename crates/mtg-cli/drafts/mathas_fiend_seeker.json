@@ -1,0 +1,50 @@
+{
+  "oracle_id": "1e8d9d0c-185b-4149-9ec9-74a2f2fe8764",
+  "name": "Mathas, Fiend Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mathas, Fiend Seeker",
+      "oracle_fingerprint": "d53e34d3b761df6a491edb2dc7d62a66",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "bounty" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            { "Draw": { "who": "Opponents" } },
+                            { "GainLife": { "who": "Opponents", "amount": 2 } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": { "WhileHasCounter": { "Other": "bounty" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

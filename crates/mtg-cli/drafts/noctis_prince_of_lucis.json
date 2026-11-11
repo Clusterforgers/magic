@@ -1,0 +1,25 @@
+{
+  "oracle_id": "2d44bdd2-aa31-415a-be71-d9e98ef12334",
+  "name": "Noctis, Prince of Lucis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noctis, Prince of Lucis",
+      "oracle_fingerprint": "e0106fc57ddf900b4c9240443804a1f8",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Artifact" }],
+                "from": "Graveyard",
+                "additional": [{ "PayLife": 3 }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

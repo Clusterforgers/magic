@@ -1,0 +1,36 @@
+{
+  "oracle_id": "6f053f0d-c9c7-4fcd-b218-a29d1d080104",
+  "name": "Ancient Vendetta",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Vendetta",
+      "oracle_fingerprint": "89ed135814d4420b11e303aedc32d7ee",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Hand" }, { "In": "Library" }] },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "ChosenAs": "name" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 4 },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

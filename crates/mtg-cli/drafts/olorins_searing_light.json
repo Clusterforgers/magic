@@ -1,0 +1,74 @@
+{
+  "oracle_id": "e6f2ba06-2c92-48b7-a95f-ea6bf35aa0fe",
+  "name": "Olórin's Searing Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Olórin's Searing Light",
+      "oracle_fingerprint": "dda2f59e72a0922855fba6392bca628e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "opp" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "opp" } },
+                            {
+                              "GreatestAmong": {
+                                "stat": "Power",
+                                "group": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "opp" } }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        "as": "chosen"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "chosen" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 2
+                          }
+                        },
+                        "then": [
+                          {
+                            "DealDamage": {
+                              "to": { "Bound": "opp" },
+                              "amount": { "Stat": { "of": { "Bound": "chosen" }, "stat": "Power" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

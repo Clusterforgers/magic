@@ -1,0 +1,29 @@
+{
+  "oracle_id": "83e047ac-aaa9-4bd8-9ea0-49761d39139c",
+  "name": "Myth Unbound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myth Unbound",
+      "oracle_fingerprint": "a74cd7830f83f8df55df80e4d6e4395c",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Commander", { "OwnedBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "CommanderCasts": "You" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["Commander", { "OwnedBy": "You" }], "to": "Command" }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

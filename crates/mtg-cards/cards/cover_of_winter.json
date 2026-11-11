@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f85a157f-d7ec-4e61-97df-2ca851b6c666",
+  "name": "Cover of Winter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cover of Winter",
+      "oracle_fingerprint": "d7df2d25be8262541954d5ed760b5103",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{S}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 222, "end": 394 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{S}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "age" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

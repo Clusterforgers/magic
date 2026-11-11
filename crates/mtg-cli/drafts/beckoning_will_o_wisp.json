@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d39df714-bd0b-4de8-b9df-55713bab7f35",
+  "name": "Beckoning Will-o'-Wisp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beckoning Will-o'-Wisp",
+      "oracle_fingerprint": "e1a4b48a27008f0a52dc4a068feda987",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "opponent" } },
+              { "Forget": { "slot": "chosen" } },
+              { "Remember": { "what": { "Bound": "opponent" }, "slot": "chosen" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "AttackingPlayer": { "Remembered": { "on": "This", "slot": "chosen" } } }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

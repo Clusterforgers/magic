@@ -1,0 +1,48 @@
+{
+  "oracle_id": "eba7ef08-f444-4d23-92b8-29d2ac08b156",
+  "name": "Chaos Defiler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaos Defiler",
+      "oracle_fingerprint": "1cc446636c93db47d1bd325ac1b3ff6c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Not": { "Type": "Land" } },
+                            { "ControlledBy": { "Bound": "opp" } }
+                          ]
+                        },
+                        "as": "pick"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "pick" }, "as": "picks", "adds": true } }
+                  ]
+                }
+              },
+              { "ChooseAtRandom": { "from": { "Bound": "picks" }, "as": "victim" } },
+              { "Destroy": { "what": { "Bound": "victim" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

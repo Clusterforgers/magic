@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ad2a1b07-58f5-44c2-92e0-464ea2d45e7e",
+  "name": "Void Maw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Void Maw",
+      "oracle_fingerprint": "a0e36f6c3c78c35f440be130f474b7e8",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "ExiledToGraveyard": { "filter": [{ "ExiledWith": "This" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

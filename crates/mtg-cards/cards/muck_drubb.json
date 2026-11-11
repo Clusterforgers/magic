@@ -1,0 +1,21 @@
+{
+  "oracle_id": "032a5616-bbaf-4659-86c4-43edf29b9788",
+  "name": "Muck Drubb",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Muck Drubb",
+      "oracle_fingerprint": "9e7e6cd1e810753b6f21b5250409dfb8",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 120 }
+          }
+        },
+        { "Keyword": { "Madness": "{2}{B}" } }
+      ]
+    }
+  ]
+}

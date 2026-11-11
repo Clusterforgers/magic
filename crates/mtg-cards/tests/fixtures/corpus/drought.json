@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "97736696-3de3-416d-94cf-4fac792f23f0",
+  "oracle_id": "ecba74bd-850e-4cbe-9b1c-b0d4d6f27d1c",
+  "multiverse_ids": [
+    2681
+  ],
+  "tcgplayer_id": 4652,
+  "cardmarket_id": 6457,
+  "name": "Drought",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/97736696-3de3-416d-94cf-4fac792f23f0",
+  "scryfall_uri": "https://scryfall.com/card/ice/21/drought?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:58:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/7/97736696-3de3-416d-94cf-4fac792f23f0.jpg?1783947527",
+    "normal": "https://cards.scryfall.io/normal/front/9/7/97736696-3de3-416d-94cf-4fac792f23f0.jpg?1783947527",
+    "large": "https://cards.scryfall.io/large/front/9/7/97736696-3de3-416d-94cf-4fac792f23f0.jpg?1783947527",
+    "png": "https://cards.scryfall.io/png/front/9/7/97736696-3de3-416d-94cf-4fac792f23f0.png?1783947527",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/7/97736696-3de3-416d-94cf-4fac792f23f0.jpg?1783947527",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/7/97736696-3de3-416d-94cf-4fac792f23f0.jpg?1783947527",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/7/97736696-3de3-416d-94cf-4fac792f23f0.webp?1783947527",
+    "grid": "https://cards.scryfall.io/grid/front/9/7/97736696-3de3-416d-94cf-4fac792f23f0.webp?1783947527",
+    "display": "https://cards.scryfall.io/display/front/9/7/97736696-3de3-416d-94cf-4fac792f23f0.webp?1783947527",
+    "art": "https://cards.scryfall.io/art/front/9/7/97736696-3de3-416d-94cf-4fac792f23f0.webp?1783947527",
+    "crop": "https://cards.scryfall.io/crop/front/9/7/97736696-3de3-416d-94cf-4fac792f23f0.webp?1783947527",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/7/97736696-3de3-416d-94cf-4fac792f23f0.jpg?1783947527"
+  },
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your upkeep, sacrifice this enchantment unless you pay {W}{W}.\nSpells cost an additional \"Sacrifice a Swamp\" to cast for each black mana symbol in their mana costs.\nActivated abilities cost an additional \"Sacrifice a Swamp\" to activate for each black mana symbol in their activation costs.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/97736696-3de3-416d-94cf-4fac792f23f0/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aecba74bd-850e-4cbe-9b1c-b0d4d6f27d1c&unique=prints",
+  "collector_number": "21",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "NéNé Thomas",
+  "artist_ids": [
+    "c74ef1dd-0341-44c4-8f9f-5f243151cce3"
+  ],
+  "illustration_id": "ac6aeecf-f469-422b-afea-b3a11412c8bd",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 28047,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.26",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2681&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDrought",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDrought",
+    "edhrec": "https://edhrec.com/route/?cc=Drought"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4652%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6457&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Drought&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

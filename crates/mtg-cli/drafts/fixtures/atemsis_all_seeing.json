@@ -1,0 +1,146 @@
+{
+  "object": "card",
+  "id": "b8f527d1-25c0-49b9-83d5-1278ca72d009",
+  "oracle_id": "f557aa26-8b79-4116-9249-a067b21b88ef",
+  "multiverse_ids": [
+    466800
+  ],
+  "mtgo_id": 72991,
+  "arena_id": 69831,
+  "tcgplayer_id": 192524,
+  "cardmarket_id": 378294,
+  "name": "Atemsis, All-Seeing",
+  "lang": "en",
+  "released_at": "2019-07-12",
+  "uri": "https://api.scryfall.com/cards/b8f527d1-25c0-49b9-83d5-1278ca72d009",
+  "scryfall_uri": "https://scryfall.com/card/m20/46/atemsis-all-seeing?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:56:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/8/b8f527d1-25c0-49b9-83d5-1278ca72d009.jpg?1783933016",
+    "normal": "https://cards.scryfall.io/normal/front/b/8/b8f527d1-25c0-49b9-83d5-1278ca72d009.jpg?1783933016",
+    "large": "https://cards.scryfall.io/large/front/b/8/b8f527d1-25c0-49b9-83d5-1278ca72d009.jpg?1783933016",
+    "png": "https://cards.scryfall.io/png/front/b/8/b8f527d1-25c0-49b9-83d5-1278ca72d009.png?1783933016",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/8/b8f527d1-25c0-49b9-83d5-1278ca72d009.jpg?1783933016",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/8/b8f527d1-25c0-49b9-83d5-1278ca72d009.jpg?1783933016",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/8/b8f527d1-25c0-49b9-83d5-1278ca72d009.webp?1783933016",
+    "grid": "https://cards.scryfall.io/grid/front/b/8/b8f527d1-25c0-49b9-83d5-1278ca72d009.webp?1783933016",
+    "display": "https://cards.scryfall.io/display/front/b/8/b8f527d1-25c0-49b9-83d5-1278ca72d009.webp?1783933016",
+    "art": "https://cards.scryfall.io/art/front/b/8/b8f527d1-25c0-49b9-83d5-1278ca72d009.webp?1783933016",
+    "crop": "https://cards.scryfall.io/crop/front/b/8/b8f527d1-25c0-49b9-83d5-1278ca72d009.webp?1783933016",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/8/b8f527d1-25c0-49b9-83d5-1278ca72d009.jpg?1783933016"
+  },
+  "mana_cost": "{3}{U}{U}{U}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Sphinx",
+  "oracle_text": "Flying\n{2}{U}, {T}: Draw two cards, then discard a card.\nWhenever Atemsis deals damage to an opponent, you may reveal your hand. If cards with at least six different mana values are revealed this way, that player loses the game.",
+  "power": "4",
+  "toughness": "5",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4a787360-9767-4f44-80b1-2405dc5e39c7",
+  "set": "m20",
+  "set_name": "Core Set 2020",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/4a787360-9767-4f44-80b1-2405dc5e39c7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am20&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m20?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b8f527d1-25c0-49b9-83d5-1278ca72d009/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af557aa26-8b79-4116-9249-a067b21b88ef&unique=prints",
+  "collector_number": "46",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ryan Pancoast",
+  "artist_ids": [
+    "89cc9475-dda2-4d13-bf88-54b92867a25c"
+  ],
+  "illustration_id": "0aae2ae3-f057-4ff0-b2d8-cb37f87d5d91",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9267,
+  "penny_rank": 15540,
+  "preview": {
+    "source": "Jeffrey Brusi",
+    "source_uri": "https://twitter.com/LiquidSjow/status/1140636504630472704",
+    "previewed_at": "2019-06-17"
+  },
+  "prices": {
+    "usd": "0.46",
+    "usd_foil": "0.74",
+    "usd_etched": null,
+    "eur": "0.36",
+    "eur_foil": "0.72",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=466800&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAtemsis%252C%2BAll-Seeing",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAtemsis%252C%2BAll-Seeing",
+    "edhrec": "https://edhrec.com/route/?cc=Atemsis%2C+All-Seeing"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F192524%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=378294&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/72991?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

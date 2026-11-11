@@ -1,0 +1,19 @@
+{
+  "oracle_id": "1beb81a8-b4aa-4964-93d2-2b5414fc6ce3",
+  "name": "Psychogenic Probe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychogenic Probe",
+      "oracle_fingerprint": "446042220194828c18243a40ce187ec5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Caused": { "inner": { "Did": { "action": "Shuffled" } } } },
+            "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

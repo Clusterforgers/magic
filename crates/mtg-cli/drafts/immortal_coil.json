@@ -1,0 +1,52 @@
+{
+  "oracle_id": "c85fc672-12d8-4ab0-b18d-ccd590ac063c",
+  "name": "Immortal Coil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Immortal Coil",
+      "oracle_fingerprint": "cf1f5ff9be4d00f60f2758ac1454b874",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "ExileFromGraveyard": { "filter": [], "count": 2 } }],
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "You" } },
+            "by": {
+              "PreventAnd": [
+                {
+                  "Choose": {
+                    "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                    "count": { "min": "Triggering", "max": "Triggering" },
+                    "as": "cards"
+                  }
+                },
+                { "Exile": { "what": { "Bound": "cards" } } }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Compare": {
+                    "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              }
+            },
+            "effects": [{ "LoseGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

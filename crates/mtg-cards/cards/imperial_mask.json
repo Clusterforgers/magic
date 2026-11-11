@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e4c92768-00a1-450f-8fca-81b28b353bb6",
+  "name": "Imperial Mask",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Imperial Mask",
+      "oracle_fingerprint": "a2ffdcff6de53331cd34ff174adb667e",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 124 }
+          }
+        },
+        { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } }
+      ]
+    }
+  ]
+}

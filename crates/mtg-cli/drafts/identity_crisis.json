@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0abe0584-d876-4827-972b-589da53dbe96",
+  "name": "Identity Crisis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Identity Crisis",
+      "oracle_fingerprint": "9a0c5249aa729c21bb2cb24d4d3f24cc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "OwnedBy": { "Target": 0 } },
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

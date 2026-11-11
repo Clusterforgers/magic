@@ -1,0 +1,53 @@
+{
+  "oracle_id": "6ec54d84-7026-45a3-a7d7-37cd5c9a8463",
+  "name": "Sarevok's Tome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarevok's Tome",
+      "oracle_fingerprint": "8d74af91d27463c0d6626758488a2945",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "TakeInitiative": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "Instead": {
+                      "base": { "Fixed": ["Colorless"] },
+                      "when": { "Initiative": "You" },
+                      "instead": { "Fixed": ["Colorless", "Colorless"] }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "condition": { "CompletedDungeon": "You" },
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "found" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

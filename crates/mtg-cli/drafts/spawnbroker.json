@@ -1,0 +1,50 @@
+{
+  "oracle_id": "ae050bc8-f289-4484-a07f-dfe0f0a962dc",
+  "name": "Spawnbroker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spawnbroker",
+      "oracle_fingerprint": "03629b8d6945ad326210805de7a1cb5c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    {
+                      "Test": {
+                        "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                        "op": "Le",
+                        "right": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ExchangeControl": {
+                        "what": [{ "Target": 0 }, { "Target": 1 }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

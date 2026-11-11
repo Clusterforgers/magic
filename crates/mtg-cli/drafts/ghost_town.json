@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f2c861d3-b302-4e84-b647-099551007269",
+  "name": "Ghost Town",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost Town",
+      "oracle_fingerprint": "0105e9404db32c35e84c811b71b3ea9b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "condition": { "Not": { "Among": "ActivePlayer" } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8356b1fe-02f8-4bb9-bcdb-bb7454eb18ed",
+  "name": "Decorated Griffin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decorated Griffin",
+      "oracle_fingerprint": "d9e78ebf84b23fe5dbe9608eff9ee03c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "combat": true } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

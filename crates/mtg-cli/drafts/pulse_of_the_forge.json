@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f1c05ba3-7225-4d29-96aa-9d9c0b54de53",
+  "name": "Pulse of the Forge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pulse of the Forge",
+      "oracle_fingerprint": "d79e25ac6daea11b090bc96683a77d0e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": { "OrController": { "Target": 0 } } },
+                      "op": "Gt",
+                      "right": { "Life": "You" }
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

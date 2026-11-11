@@ -1,0 +1,42 @@
+{
+  "oracle_id": "9f84fc91-8647-4cc8-9b57-d23a83f85ab1",
+  "name": "Chandra's Flame Wave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra's Flame Wave",
+      "oracle_fingerprint": "fe5b45ad2842f462f4be6fa49685b232",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "amount": 2
+                }
+              },
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [{ "OwnedBy": "You" }, { "Named": "Chandra, Flame's Fury" }],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

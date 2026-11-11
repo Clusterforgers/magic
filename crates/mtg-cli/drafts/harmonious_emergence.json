@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ad8fd4e9-f6ae-4f24-b806-4509c8f4ee47",
+  "name": "Harmonious Emergence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harmonious Emergence",
+      "oracle_fingerprint": "2e5887d3a39b9bad3b02d99695dc7579",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }, { "ControlledBy": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 4, "toughness": 5 } },
+              { "SetColors": ["Green"] },
+              { "AddSubtype": "Spirit" },
+              { "AddType": "Creature" },
+              { "AddKeyword": "Vigilance" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Destroyed": { "what": [{ "Is": "Attached" }] } },
+            "by": {
+              "Instead": [
+                { "Bind": { "what": "Attached", "as": "land" } },
+                { "Sacrifice": { "filter": ["This"] } },
+                {
+                  "Continuous": {
+                    "affected": { "Bound": "land" },
+                    "mods": [{ "AddKeyword": "Indestructible" }],
+                    "duration": "UntilEndOfTurn"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

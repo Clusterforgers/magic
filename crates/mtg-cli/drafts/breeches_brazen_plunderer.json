@@ -1,0 +1,43 @@
+{
+  "oracle_id": "eb77f7dc-e9e4-44ef-8616-9f4e737e8ca5",
+  "name": "Breeches, Brazen Plunderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Breeches, Brazen Plunderer",
+      "oracle_fingerprint": "22b142b43f508848f02bba2278f55924",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Pirate" }, { "ControlledBy": "You" }],
+                  "to": "Opponents"
+                }
+              }
+            },
+            "effects": [
+              { "ExileTop": { "who": "Triggering", "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "impulse" },
+                      "play": true,
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

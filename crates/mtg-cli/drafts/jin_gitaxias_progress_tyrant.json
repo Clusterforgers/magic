@@ -13,7 +13,7 @@
               "SpellCast": {
                 "what": [
                   {
-                    "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }, { "Type": "Artifact" }]
+                    "AnyOf": [{ "Type": "Artifact" }, { "Type": "Instant" }, { "Type": "Sorcery" }]
                   }
                 ],
                 "by": "You"
@@ -29,7 +29,7 @@
               "SpellCast": {
                 "what": [
                   {
-                    "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }, { "Type": "Artifact" }]
+                    "AnyOf": [{ "Type": "Artifact" }, { "Type": "Instant" }, { "Type": "Sorcery" }]
                   }
                 ],
                 "by": "Opponents"

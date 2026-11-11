@@ -1,0 +1,15 @@
+{
+  "oracle_id": "67c50af9-bb8e-40b6-8b25-c209784b6865",
+  "name": "Worldheart Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worldheart Phoenix",
+      "oracle_fingerprint": "52d7c50020e4b517ccc929923b27919b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "AltCast": { "way": "Alternative", "cost": "{W}{U}{B}{R}{G}", "from": "Graveyard" } }
+      ]
+    }
+  ]
+}

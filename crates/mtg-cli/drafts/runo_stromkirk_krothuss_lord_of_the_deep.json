@@ -1,0 +1,102 @@
+{
+  "oracle_id": "70d7d1a7-9d39-44ec-a4ea-a70ffa453d23",
+  "name": "Runo Stromkirk // Krothuss, Lord of the Deep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runo Stromkirk",
+      "oracle_fingerprint": "55dd3cb1e9bf3efe5282f87dbd72860a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "May": {
+                  "effects": [
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "top" },
+                            "selector": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 6 } }
+                            ]
+                          }
+                        },
+                        "then": [{ "Transform": { "what": "This" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Krothuss, Lord of the Deep",
+      "oracle_fingerprint": "0f558145ac69c410ca220d4cac1790ef",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": ["Other", { "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "CopyOf": { "of": { "Target": 0 } } },
+                  "count": {
+                    "When": {
+                      "condition": {
+                        "Matches": {
+                          "subject": { "Target": 0 },
+                          "selector": [
+                            {
+                              "AnyOf": [
+                                { "Subtype": "Kraken" },
+                                { "Subtype": "Leviathan" },
+                                { "Subtype": "Octopus" },
+                                { "Subtype": "Serpent" }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      "then": 2,
+                      "otherwise": 1
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

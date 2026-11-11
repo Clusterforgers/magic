@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ee04afb0-184f-4a13-8d44-0fbe121b1eff",
+  "name": "Favorable Destiny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Favorable Destiny",
+      "oracle_fingerprint": "8ef051849d378a057eecc8669cd0bf8d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 2 } }],
+            "condition": {
+              "Matches": { "subject": "Attached", "selector": [{ "Color": "White" }] }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Shroud" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": { "ControllerOf": "Attached" } },
+                    { "Not": { "Is": "Attached" } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

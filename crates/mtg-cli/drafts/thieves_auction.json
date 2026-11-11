@@ -1,0 +1,59 @@
+{
+  "oracle_id": "230ee0b4-eb75-457f-b171-72d585cfb5aa",
+  "name": "Thieves' Auction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thieves' Auction",
+      "oracle_fingerprint": "b0d3dbc3206d1f8e0fd698593456cf40",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "Not": "Token" }] }, "as": "exiled" } },
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "player",
+                        "effects": [
+                          {
+                            "Choose": {
+                              "who": { "Bound": "player" },
+                              "from": {
+                                "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }]
+                              },
+                              "as": "pick"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "pick" },
+                              "to": {
+                                "Battlefield": { "tapped": true, "under": { "Bound": "player" } }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

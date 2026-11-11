@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "e56146bf-5db0-4bef-83bb-efa5ebec6684",
+  "oracle_id": "84050a10-e1f1-413e-aa21-5c1f47bb2a64",
+  "multiverse_ids": [
+    1781
+  ],
+  "tcgplayer_id": 3591,
+  "cardmarket_id": 7335,
+  "name": "Whippoorwill",
+  "lang": "en",
+  "released_at": "1994-08-01",
+  "uri": "https://api.scryfall.com/cards/e56146bf-5db0-4bef-83bb-efa5ebec6684",
+  "scryfall_uri": "https://scryfall.com/card/drk/91/whippoorwill?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T13:05:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/5/e56146bf-5db0-4bef-83bb-efa5ebec6684.jpg?1783947929",
+    "normal": "https://cards.scryfall.io/normal/front/e/5/e56146bf-5db0-4bef-83bb-efa5ebec6684.jpg?1783947929",
+    "large": "https://cards.scryfall.io/large/front/e/5/e56146bf-5db0-4bef-83bb-efa5ebec6684.jpg?1783947929",
+    "png": "https://cards.scryfall.io/png/front/e/5/e56146bf-5db0-4bef-83bb-efa5ebec6684.png?1783947929",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/5/e56146bf-5db0-4bef-83bb-efa5ebec6684.jpg?1783947929",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/5/e56146bf-5db0-4bef-83bb-efa5ebec6684.jpg?1783947929",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/5/e56146bf-5db0-4bef-83bb-efa5ebec6684.webp?1783947929",
+    "grid": "https://cards.scryfall.io/grid/front/e/5/e56146bf-5db0-4bef-83bb-efa5ebec6684.webp?1783947929",
+    "display": "https://cards.scryfall.io/display/front/e/5/e56146bf-5db0-4bef-83bb-efa5ebec6684.webp?1783947929",
+    "art": "https://cards.scryfall.io/art/front/e/5/e56146bf-5db0-4bef-83bb-efa5ebec6684.webp?1783947929",
+    "crop": "https://cards.scryfall.io/crop/front/e/5/e56146bf-5db0-4bef-83bb-efa5ebec6684.webp?1783947929",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/5/e56146bf-5db0-4bef-83bb-efa5ebec6684.jpg?1783947929"
+  },
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Creature — Bird",
+  "oracle_text": "{G}{G}, {T}: Target creature can't be regenerated this turn. Damage that would be dealt to that creature this turn can't be prevented or dealt instead to another permanent or player. When the creature dies this turn, exile the creature.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a21c6836-c435-459a-81e3-22d2da174549",
+  "set": "drk",
+  "set_name": "The Dark",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/a21c6836-c435-459a-81e3-22d2da174549",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adrk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/drk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e56146bf-5db0-4bef-83bb-efa5ebec6684/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A84050a10-e1f1-413e-aa21-5c1f47bb2a64&unique=prints",
+  "collector_number": "91",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "If the Whippoorwill remains silent, the soul has not reached its reward.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Douglas Shuler",
+  "artist_ids": [
+    "a9ddb513-51c7-455c-ab8f-5b90aae9f75b"
+  ],
+  "illustration_id": "f471a7cc-15ef-493a-9153-953fdf042b77",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 27493,
+  "prices": {
+    "usd": "1.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.08",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=1781&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWhippoorwill",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWhippoorwill",
+    "edhrec": "https://edhrec.com/route/?cc=Whippoorwill"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F3591%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=7335&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Whippoorwill&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "oracle_id": "16cadebf-c484-41f8-9e38-5c2c528f5b54",
+  "name": "Helm of Obedience",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Helm of Obedience",
+      "oracle_fingerprint": "f95f32f0b3f5b6f4cf91559208f520eb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap", { "XAtLeast": 1 }],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Not": {
+                      "CountOf": {
+                        "subject": { "Bound": "milled" },
+                        "selector": [{ "Type": "Creature" }],
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  },
+                  "effects": [{ "Mill": { "who": { "Target": 0 }, "as": "milled" } }],
+                  "most": 1000,
+                  "times": "X",
+                  "at_least_once": true
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [{ "Type": "Creature" }, { "In": "Graveyard" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    { "Sacrifice": { "filter": ["This"] } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Is": { "Bound": "milled" } },
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

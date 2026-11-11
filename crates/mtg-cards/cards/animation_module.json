@@ -1,0 +1,64 @@
+{
+  "oracle_id": "af42079b-a3c0-448c-9bb2-b915252e87a9",
+  "name": "Animation Module",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Animation Module",
+      "oracle_fingerprint": "ab80c21e12ac6528f5f7d9e5251a8c5f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "CountersPut": {
+                  "what": [{ "ControlledBy": "You" }],
+                  "counter": "+1/+1",
+                  "each": true
+                }
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Servo",
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Servo"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Either": [{ "Object": [] }, "Player"] } }],
+            "effects": [
+              {
+                "PutCountersOf": {
+                  "on": { "Target": 0 },
+                  "of": { "Target": 0 },
+                  "each": 1,
+                  "one_kind": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

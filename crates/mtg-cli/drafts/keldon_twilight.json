@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c886a076-dbe2-4d80-8dab-537b84d0837a",
+  "name": "Keldon Twilight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keldon Twilight",
+      "oracle_fingerprint": "69d66f03df809e49d705e2ad921ad9b0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesAttacked" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Triggering",
+                  "filter": [{ "Type": "Creature" }, { "Not": "EnteredThisTurn" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

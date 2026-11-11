@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4f04603f-8f91-405b-b6ac-d2b66f05e32f",
+  "name": "Cursed Rack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cursed Rack",
+      "oracle_fingerprint": "6f4b5331cff2be556f4c215da08b48f6",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "Opponent" }
+          }
+        },
+        { "Rule": { "rule": { "MaxHandSize": { "who": "Chosen", "size": 4 } } } }
+      ]
+    }
+  ]
+}

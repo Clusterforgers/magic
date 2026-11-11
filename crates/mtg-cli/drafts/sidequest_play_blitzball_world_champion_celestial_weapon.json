@@ -1,0 +1,68 @@
+{
+  "oracle_id": "9c0255ff-6579-4ce4-810d-01df9922ab33",
+  "name": "Sidequest: Play Blitzball // World Champion, Celestial Weapon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sidequest: Play Blitzball",
+      "oracle_fingerprint": "6247bf9fd32d43b115908c5830b15793",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "CombatDamageTaken" } },
+                "op": "Ge",
+                "right": 6
+              }
+            },
+            "effects": [
+              { "Transform": { "what": "This" } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "creature"
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Bound": "creature" } } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "World Champion, Celestial Weapon",
+      "oracle_fingerprint": "b59f7b8adadd7d186a7273344f412698",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 0 } },
+              { "AddKeyword": "DoubleStrike" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1c2c2329-fdae-4894-a43f-41fd91cfd2a8",
+  "name": "Scab-Clan Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scab-Clan Giant",
+      "oracle_fingerprint": "00b5a3b89faf4118eeb1b86ed7bec0b1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "AtRandom": {
+                    "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

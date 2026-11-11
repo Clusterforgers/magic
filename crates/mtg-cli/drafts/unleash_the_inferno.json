@@ -1,0 +1,58 @@
+{
+  "oracle_id": "d305d2dd-578c-4964-a7c2-26490bb2ef2e",
+  "name": "Unleash the Inferno",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unleash the Inferno",
+      "oracle_fingerprint": "e0aa58c8969865924156d0a46fb28ea2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 7, "excess": { "as": "excess" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "excess" }, "op": "Gt", "right": 0 }
+                  },
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                                { "ControlledBy": "Opponents" },
+                                {
+                                  "Compare": {
+                                    "stat": "ManaValue",
+                                    "op": "Le",
+                                    "to": { "Bound": "excess" }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

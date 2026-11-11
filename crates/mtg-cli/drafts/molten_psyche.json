@@ -1,0 +1,77 @@
+{
+  "oracle_id": "6f98c1eb-0f52-4d21-a266-e8d52f98c1b3",
+  "name": "Molten Psyche",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molten Psyche",
+      "oracle_fingerprint": "b4ffdb06fb3f66eb70b15b91b33c9605",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Let": {
+                        "as": "n",
+                        "amount": {
+                          "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }]
+                        }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    },
+                    { "Draw": { "who": { "Bound": "player" }, "count": { "Bound": "n" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "Together": {
+                        "effects": [
+                          {
+                            "RepeatEach": {
+                              "over": "Opponents",
+                              "as": "each",
+                              "effects": [
+                                {
+                                  "DealDamage": {
+                                    "to": { "Bound": "each" },
+                                    "amount": {
+                                      "Tallied": { "who": { "Bound": "each" }, "what": "Drawn" }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

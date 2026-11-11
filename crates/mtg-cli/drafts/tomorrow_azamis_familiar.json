@@ -1,0 +1,31 @@
+{
+  "oracle_id": "51d517c9-2812-44ce-ab4d-e5422b5ecf6c",
+  "name": "Tomorrow, Azami's Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tomorrow, Azami's Familiar",
+      "oracle_fingerprint": "82f37c8582c471ffeddf0f384261ac3c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [
+                { "LookAtTop": { "count": 3, "as": "top" } },
+                { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+                { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+                {
+                  "Move": {
+                    "what": { "Bound": "rest" },
+                    "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

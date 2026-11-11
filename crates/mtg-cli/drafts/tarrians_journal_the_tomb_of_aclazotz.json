@@ -1,0 +1,55 @@
+{
+  "oracle_id": "a75b02ba-b0c8-47e3-a05c-e9ba221a7578",
+  "name": "Tarrian's Journal // The Tomb of Aclazotz",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tarrian's Journal",
+      "oracle_fingerprint": "5ad8f42a81ff0c6ed39be39e2da63422",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ],
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "The Tomb of Aclazotz",
+      "oracle_fingerprint": "f82a9089fdb1eb84f25d5586b19ac60a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 51, "end": 291 }
+          }
+        }
+      ]
+    }
+  ]
+}

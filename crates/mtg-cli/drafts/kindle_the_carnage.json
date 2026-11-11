@@ -1,0 +1,80 @@
+{
+  "oracle_id": "6562f141-7f57-4218-b873-f2fc0211e124",
+  "name": "Kindle the Carnage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kindle the Carnage",
+      "oracle_fingerprint": "4ed4d5ed29746c7d66ade5340ba580e3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [
+                    { "Discard": { "random": true, "as": "discarded" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Is": { "Bound": "discarded" } },
+                                {
+                                  "AnyOf": [
+                                    { "In": "Battlefield" },
+                                    { "In": "Hand" },
+                                    { "In": "Library" },
+                                    { "In": "Graveyard" },
+                                    { "In": "Exile" },
+                                    { "In": "Stack" }
+                                  ]
+                                }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "DealDamage": {
+                              "to": { "Each": [{ "Type": "Creature" }] },
+                              "amount": {
+                                "Total": {
+                                  "of": [
+                                    { "Is": { "Bound": "discarded" } },
+                                    {
+                                      "AnyOf": [
+                                        { "In": "Battlefield" },
+                                        { "In": "Hand" },
+                                        { "In": "Library" },
+                                        { "In": "Graveyard" },
+                                        { "In": "Exile" },
+                                        { "In": "Stack" }
+                                      ]
+                                    }
+                                  ],
+                                  "stat": "ManaValue"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true,
+                  "ask": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

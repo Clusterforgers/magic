@@ -1,0 +1,20 @@
+{
+  "oracle_id": "820ba630-c543-491c-8c77-ada69b01c79d",
+  "name": "Lost in Thought",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lost in Thought",
+      "oracle_fingerprint": "719c68754278e478bfa942afc488ef93",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 221 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d361bdd4-afb8-493d-9091-ebe22f215834",
+  "name": "Ghazbán Ogre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghazbán Ogre",
+      "oracle_fingerprint": "4817c453ec590abcfe736d9a098c0999",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Compare": { "left": { "Players": "MostLife" }, "op": "Eq", "right": 1 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": "MostLife" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

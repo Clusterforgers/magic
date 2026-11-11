@@ -1,0 +1,80 @@
+{
+  "oracle_id": "2c3e6377-d09c-46b6-8a83-ada4a2930b14",
+  "name": "Will of the Jeskai",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Will of the Jeskai",
+      "oracle_fingerprint": "119d09e4958082e29ecc6bcd67e41310",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "all_if": {
+                    "Compare": {
+                      "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "RepeatEach": {
+                            "over": "EachPlayer",
+                            "as": "p",
+                            "effects": [
+                              {
+                                "May": {
+                                  "who": { "Bound": "p" },
+                                  "effects": [
+                                    {
+                                      "Discard": {
+                                        "who": { "Bound": "p" },
+                                        "count": {
+                                          "Count": [
+                                            { "In": "Hand" },
+                                            { "OwnedBy": { "Bound": "p" } }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    { "Draw": { "who": { "Bound": "p" }, "count": 5 } }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [
+                                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                                { "In": "Graveyard" },
+                                { "OwnedBy": "You" }
+                              ]
+                            },
+                            "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

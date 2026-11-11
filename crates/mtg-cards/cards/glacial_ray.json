@@ -1,0 +1,25 @@
+{
+  "oracle_id": "e65a8ab8-84a7-4fe2-b009-ceb87bec6b4e",
+  "name": "Glacial Ray",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Glacial Ray",
+      "oracle_fingerprint": "08586b63f2724ba5192389ebb2bb6316",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 42, "end": 213 }
+          }
+        }
+      ]
+    }
+  ]
+}

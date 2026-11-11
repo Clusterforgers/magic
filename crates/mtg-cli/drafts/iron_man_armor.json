@@ -1,0 +1,80 @@
+{
+  "oracle_id": "958d81c2-ca09-4275-890e-3bb595317325",
+  "name": "Iron Man Armor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iron Man Armor",
+      "oracle_fingerprint": "fe2144d278752b8dcb7e17ee4e10a57d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Attach": { "what": "This", "to": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "Matches": { "subject": "This", "selector": [{ "Type": "Creature" }] }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 0, "toughness": 0 } },
+                          { "AddType": "Artifact" },
+                          { "AddType": "Creature" },
+                          { "AddSubtype": "Construct" },
+                          { "AddSubtype": "Hero" },
+                          { "AddKeyword": "Flying" },
+                          {
+                            "GrantAbility": {
+                              "Static": {
+                                "affected": "This",
+                                "mods": [
+                                  {
+                                    "ModifyPT": {
+                                      "power": {
+                                        "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                      },
+                                      "toughness": {
+                                        "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }]
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

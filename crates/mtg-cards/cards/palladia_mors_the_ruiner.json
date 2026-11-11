@@ -1,0 +1,22 @@
+{
+  "oracle_id": "4c2b10ba-1930-4da8-9570-c89b2e239e3e",
+  "name": "Palladia-Mors, the Ruiner",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Palladia-Mors, the Ruiner",
+      "oracle_fingerprint": "1e3cbf29a92af50c6d5e80c6110a20ac",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 27, "end": 92 }
+          }
+        }
+      ]
+    }
+  ]
+}

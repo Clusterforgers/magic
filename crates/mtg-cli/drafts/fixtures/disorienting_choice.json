@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "a756a35d-a630-41a2-8b3d-6f1bafd7409a",
+  "oracle_id": "7aa34ef4-5e11-491b-8dbe-6ef80e0ad26c",
+  "multiverse_ids": [
+    675627
+  ],
+  "mtgo_id": 131385,
+  "tcgplayer_id": 577817,
+  "cardmarket_id": 787233,
+  "name": "Disorienting Choice",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/a756a35d-a630-41a2-8b3d-6f1bafd7409a",
+  "scryfall_uri": "https://scryfall.com/card/dsc/32/disorienting-choice?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:27:36Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/7/a756a35d-a630-41a2-8b3d-6f1bafd7409a.jpg?1783909656",
+    "normal": "https://cards.scryfall.io/normal/front/a/7/a756a35d-a630-41a2-8b3d-6f1bafd7409a.jpg?1783909656",
+    "large": "https://cards.scryfall.io/large/front/a/7/a756a35d-a630-41a2-8b3d-6f1bafd7409a.jpg?1783909656",
+    "png": "https://cards.scryfall.io/png/front/a/7/a756a35d-a630-41a2-8b3d-6f1bafd7409a.png?1783909656",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/7/a756a35d-a630-41a2-8b3d-6f1bafd7409a.jpg?1783909656",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/7/a756a35d-a630-41a2-8b3d-6f1bafd7409a.jpg?1783909656",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/7/a756a35d-a630-41a2-8b3d-6f1bafd7409a.webp?1783909656",
+    "grid": "https://cards.scryfall.io/grid/front/a/7/a756a35d-a630-41a2-8b3d-6f1bafd7409a.webp?1783909656",
+    "display": "https://cards.scryfall.io/display/front/a/7/a756a35d-a630-41a2-8b3d-6f1bafd7409a.webp?1783909656",
+    "art": "https://cards.scryfall.io/art/front/a/7/a756a35d-a630-41a2-8b3d-6f1bafd7409a.webp?1783909656",
+    "crop": "https://cards.scryfall.io/crop/front/a/7/a756a35d-a630-41a2-8b3d-6f1bafd7409a.webp?1783909656",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/7/a756a35d-a630-41a2-8b3d-6f1bafd7409a.jpg?1783909656"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "For each opponent, choose up to one target artifact or enchantment that player controls. For each permanent chosen this way, its controller may exile it. Then if one or more of the chosen permanents are still on the battlefield, you search your library for up to that many land cards, put them onto the battlefield tapped, then shuffle.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a756a35d-a630-41a2-8b3d-6f1bafd7409a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7aa34ef4-5e11-491b-8dbe-6ef80e0ad26c&unique=prints",
+  "collector_number": "32",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mirko Failoni",
+  "artist_ids": [
+    "e150bcca-fe5c-4fa7-b80b-ea37bc285bd4"
+  ],
+  "illustration_id": "be12d4df-6abe-4c93-bb98-c586f3a5af76",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6186,
+  "preview": {
+    "source": "Infrecuentes",
+    "source_uri": "https://www.youtube.com/watch?v=n1tWgZ8r_Qw",
+    "previewed_at": "2024-09-07"
+  },
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.34",
+    "eur_foil": null,
+    "tix": "0.53"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=675627&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDisorienting%2BChoice",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDisorienting%2BChoice",
+    "edhrec": "https://edhrec.com/route/?cc=Disorienting+Choice"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F577817%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=787233&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/131385?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

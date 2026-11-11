@@ -1,0 +1,35 @@
+{
+  "oracle_id": "aa7d3e99-fc14-4f62-bf00-c0428c11e4f2",
+  "name": "Amy Pond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Amy Pond",
+      "oracle_fingerprint": "563ad241efc058e0f5afd5051987b63b",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Rory Williams" } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": ["Suspended", { "OwnedBy": "You" }, { "In": "Exile" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": { "Bound": "card" },
+                  "counter": { "Other": "time" },
+                  "count": "Triggering"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "a36d3ea7-0f18-4865-b47b-755673db065e",
+  "oracle_id": "131096a3-2d53-4ec2-96d3-fcb58e698a13",
+  "multiverse_ids": [
+    452963
+  ],
+  "mtgo_id": 69799,
+  "arena_id": 68674,
+  "tcgplayer_id": 176436,
+  "cardmarket_id": 364051,
+  "name": "Vraska, Golgari Queen",
+  "lang": "en",
+  "released_at": "2018-10-05",
+  "uri": "https://api.scryfall.com/cards/a36d3ea7-0f18-4865-b47b-755673db065e",
+  "scryfall_uri": "https://scryfall.com/card/grn/213/vraska-golgari-queen?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:15:18Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/3/a36d3ea7-0f18-4865-b47b-755673db065e.jpg?1783934118",
+    "normal": "https://cards.scryfall.io/normal/front/a/3/a36d3ea7-0f18-4865-b47b-755673db065e.jpg?1783934118",
+    "large": "https://cards.scryfall.io/large/front/a/3/a36d3ea7-0f18-4865-b47b-755673db065e.jpg?1783934118",
+    "png": "https://cards.scryfall.io/png/front/a/3/a36d3ea7-0f18-4865-b47b-755673db065e.png?1783934118",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/3/a36d3ea7-0f18-4865-b47b-755673db065e.jpg?1783934118",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/3/a36d3ea7-0f18-4865-b47b-755673db065e.jpg?1783934118",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/3/a36d3ea7-0f18-4865-b47b-755673db065e.webp?1783934118",
+    "grid": "https://cards.scryfall.io/grid/front/a/3/a36d3ea7-0f18-4865-b47b-755673db065e.webp?1783934118",
+    "display": "https://cards.scryfall.io/display/front/a/3/a36d3ea7-0f18-4865-b47b-755673db065e.webp?1783934118",
+    "art": "https://cards.scryfall.io/art/front/a/3/a36d3ea7-0f18-4865-b47b-755673db065e.webp?1783934118",
+    "crop": "https://cards.scryfall.io/crop/front/a/3/a36d3ea7-0f18-4865-b47b-755673db065e.webp?1783934118",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/3/a36d3ea7-0f18-4865-b47b-755673db065e.jpg?1783934118"
+  },
+  "mana_cost": "{2}{B}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Planeswalker — Vraska",
+  "oracle_text": "+2: You may sacrifice another permanent. If you do, you gain 1 life and draw a card.\n−3: Destroy target nonland permanent with mana value 3 or less.\n−9: You get an emblem with \"Whenever a creature you control deals combat damage to a player, that player loses the game.\"",
+  "loyalty": "4",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a36d3ea7-0f18-4865-b47b-755673db065e",
+      "component": "combo_piece",
+      "name": "Vraska, Golgari Queen",
+      "type_line": "Legendary Planeswalker — Vraska",
+      "uri": "https://api.scryfall.com/cards/a36d3ea7-0f18-4865-b47b-755673db065e"
+    },
+    {
+      "object": "related_card",
+      "id": "d81478ee-1ddf-44f5-98a0-df6d4eecad7e",
+      "component": "combo_piece",
+      "name": "Vraska, Golgari Queen Emblem",
+      "type_line": "Emblem — Vraska",
+      "uri": "https://api.scryfall.com/cards/d81478ee-1ddf-44f5-98a0-df6d4eecad7e"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "597c6d4a-8212-4903-a6af-12c4ae9e13f0",
+  "set": "grn",
+  "set_name": "Guilds of Ravnica",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/597c6d4a-8212-4903-a6af-12c4ae9e13f0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Agrn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/grn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a36d3ea7-0f18-4865-b47b-755673db065e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A131096a3-2d53-4ec2-96d3-fcb58e698a13&unique=prints",
+  "collector_number": "213",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Magali Villeneuve",
+  "artist_ids": [
+    "9e6a55ae-be4d-4c23-a2a5-135737ffd879"
+  ],
+  "illustration_id": "13d984a6-8f68-442e-8ab5-333d13339f78",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 4240,
+  "penny_rank": 1109,
+  "prices": {
+    "usd": "5.34",
+    "usd_foil": "6.54",
+    "usd_etched": null,
+    "eur": "2.75",
+    "eur_foil": "4.61",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=452963&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVraska%252C%2BGolgari%2BQueen",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVraska%252C%2BGolgari%2BQueen",
+    "edhrec": "https://edhrec.com/route/?cc=Vraska%2C+Golgari+Queen"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F176436%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=364051&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/69799?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

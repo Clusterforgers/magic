@@ -1,0 +1,38 @@
+{
+  "oracle_id": "a9b35457-0f1c-495c-a508-6f6693835051",
+  "name": "Thornbow Archer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thornbow Archer",
+      "oracle_fingerprint": "3fdf114bb2cbe62486cef05309aaad8d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "CountOf": {
+                          "subject": { "Each": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] },
+                          "selector": [],
+                          "op": "Eq",
+                          "right": 0
+                        }
+                      }
+                    }
+                  },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

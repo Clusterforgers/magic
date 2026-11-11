@@ -1,0 +1,55 @@
+{
+  "oracle_id": "b4b0a4b7-b36f-4c96-b07b-a86c1efd333e",
+  "name": "The Kenriths' Royal Funeral",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Kenriths' Royal Funeral",
+      "oracle_fingerprint": "14310f983f1333069d7aaac345ae0513",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Supertype": "Legendary" },
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Let": {
+                  "as": "x",
+                  "amount": {
+                    "Greatest": {
+                      "of": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              },
+              { "Draw": { "count": { "Bound": "x" } } },
+              { "LoseLife": { "amount": { "Bound": "x" } } }
+            ]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Supertype": "Legendary" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Count": [{ "ExiledWith": "This" }, { "In": "Exile" }] }
+          }
+        }
+      ]
+    }
+  ]
+}

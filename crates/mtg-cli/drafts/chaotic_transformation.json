@@ -1,0 +1,68 @@
+{
+  "oracle_id": "a754458d-55b5-44c2-98de-8bf26b82c1b1",
+  "name": "Chaotic Transformation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaotic Transformation",
+      "oracle_fingerprint": "3440aca2c15026c69cd11f021427f689",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] }, "bounds": { "min": 0, "max": 1 } },
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } },
+              {
+                "what": { "Object": [{ "Type": "Enchantment" }] },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": { "Object": [{ "Type": "Planeswalker" }] },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              { "what": { "Object": [{ "Type": "Land" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          { "Is": { "Target": 1 } },
+                          { "Is": { "Target": 2 } },
+                          { "Is": { "Target": 3 } },
+                          { "Is": { "Target": 4 } }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "exiled" },
+                  "as": "it",
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "who": { "ControllerOf": { "Bound": "it" } },
+                        "filter": [{ "SharesType": { "Bound": "it" } }],
+                        "as": "found",
+                        "revealed_as": "revealed"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": { "who": { "ControllerOf": { "Bound": "it" } } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

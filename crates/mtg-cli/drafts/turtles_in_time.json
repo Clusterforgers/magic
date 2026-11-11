@@ -1,0 +1,48 @@
+{
+  "oracle_id": "803971e6-67f3-4fda-aeb6-69ef8ea4b54e",
+  "name": "Turtles in Time",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Turtles in Time",
+      "oracle_fingerprint": "bef2f4f21edad4b137d14ef4c4a78750",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Move": { "what": { "Each": [{ "Type": "Creature" }] }, "to": "Hand" } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [
+                                  { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                                  { "OwnedBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "to": { "Library": { "place": "Shuffled" } }
+                            }
+                          },
+                          { "Draw": { "who": { "Bound": "player" }, "count": 7 } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

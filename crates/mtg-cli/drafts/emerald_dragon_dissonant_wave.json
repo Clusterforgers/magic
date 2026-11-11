@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c5632f18-7904-4a29-82be-6a6ef8e85e18",
+  "name": "Emerald Dragon // Dissonant Wave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emerald Dragon",
+      "oracle_fingerprint": "68f25b893fe3f52340b9b67e08f5ce90",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Trample" }]
+    },
+    {
+      "name": "Dissonant Wave",
+      "oracle_fingerprint": "e08eaf7ee31fdd821e1ec2d6f8658ed5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "Not": { "Type": "Creature" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8aa1bbc9-b047-4d68-93f4-728e40dafc5e",
+  "name": "Kitesail Freebooter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kitesail Freebooter",
+      "oracle_fingerprint": "75c9e3ea77745ff629e7e4702a174357",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

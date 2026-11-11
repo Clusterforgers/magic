@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d8fd7a34-8418-4e98-b79b-119c4348c667",
+  "name": "Incinerate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Incinerate",
+      "oracle_fingerprint": "5883e1f06a39de8a3fef814e22fd432a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "Rule": {
+                  "rule": {
+                    "CantBeRegenerated": {
+                      "Each": [{ "Type": "Creature" }, { "DamagedBy": "This" }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

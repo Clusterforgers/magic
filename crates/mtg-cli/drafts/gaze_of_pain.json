@@ -1,0 +1,61 @@
+{
+  "oracle_id": "b3a479d4-3e36-496b-abf8-b83231628d76",
+  "name": "Gaze of Pain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaze of Pain",
+      "oracle_fingerprint": "aa87d9d2b69119789713efed402facbd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Unblocked": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Reflexive": {
+                              "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                              "effects": [
+                                {
+                                  "DealDamage": {
+                                    "source": "Triggering",
+                                    "to": { "Target": 0 },
+                                    "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                                  }
+                                },
+                                {
+                                  "Rule": {
+                                    "rule": {
+                                      "Combat": {
+                                        "who": "Triggering",
+                                        "quirk": "AssignsNoCombatDamage"
+                                      }
+                                    },
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

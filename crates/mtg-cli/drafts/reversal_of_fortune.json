@@ -1,0 +1,43 @@
+{
+  "oracle_id": "938ba053-35f6-4424-a978-bf915709572c",
+  "name": "Reversal of Fortune",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reversal of Fortune",
+      "oracle_fingerprint": "a6c0fafddbebadc943a6f683242acd16",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Target": 0 } }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "CopyCard": { "what": { "Bound": "card" }, "as": "copy" } },
+                    { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

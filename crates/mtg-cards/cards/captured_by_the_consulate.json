@@ -1,0 +1,21 @@
+{
+  "oracle_id": "da164485-c985-42fa-819e-42f0d33237c5",
+  "name": "Captured by the Consulate",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Captured by the Consulate",
+      "oracle_fingerprint": "f7855aa8be9569328ed64393c52261ad",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack"] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 68, "end": 179 }
+          }
+        }
+      ]
+    }
+  ]
+}

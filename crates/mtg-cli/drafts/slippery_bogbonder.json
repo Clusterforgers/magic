@@ -1,0 +1,51 @@
+{
+  "oracle_id": "2f946c13-cfab-415f-9df7-6d621761b2fc",
+  "name": "Slippery Bogbonder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slippery Bogbonder",
+      "oracle_fingerprint": "64f2ea5e59a490fc1e0007c29aa884de",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Hexproof" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "hexproof" } } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "Is": { "Target": 0 } } }
+                    ]
+                  },
+                  "as": "source",
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "MoveCounters": {
+                              "from": { "Bound": "source" },
+                              "to": { "Target": 0 },
+                              "count": { "AnyCounters": { "Bound": "source" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

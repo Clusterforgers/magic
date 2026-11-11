@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b229f314-a5e5-41a3-a8c6-217a3c5a61c3",
+  "name": "Sidar Jabari of Zhalfir",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sidar Jabari of Zhalfir",
+      "oracle_fingerprint": "33c0dc0b4a91daadb196d31efdac38b0",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 152 }
+          }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Subtype": "Knight" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

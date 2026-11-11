@@ -1,0 +1,44 @@
+{
+  "oracle_id": "ec62aed5-b59b-4ba0-b265-a9c2a798ffb3",
+  "name": "Gaze of the Gorgon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaze of the Gorgon",
+      "oracle_fingerprint": "002307e9b0cc29fa2c36b60b6721fe4a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Regenerate": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            {
+                              "AnyOf": [
+                                { "Blocks": { "Target": 0 } },
+                                { "BlockedBy": { "Target": 0 } }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

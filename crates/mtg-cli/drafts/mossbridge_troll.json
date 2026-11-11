@@ -1,0 +1,39 @@
+{
+  "oracle_id": "87aa466e-7985-40ff-bef6-dcae35fe0106",
+  "name": "Mossbridge Troll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mossbridge Troll",
+      "oracle_fingerprint": "5989b70a6c9d1f3e06866f6d54576092",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Destroyed": { "what": ["This"] } },
+            "by": {
+              "Instead": [
+                { "Tap": { "what": "This" } },
+                { "RemoveDamage": { "what": "This" } },
+                { "RemoveFromCombat": { "what": "This" } }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPower": { "filter": [{ "Type": "Creature" }, "Other"], "power": 10 } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 20, "toughness": 20 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

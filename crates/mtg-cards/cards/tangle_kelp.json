@@ -1,0 +1,26 @@
+{
+  "oracle_id": "06ba313f-50b4-4e84-a8e0-b6dda47225f2",
+  "name": "Tangle Kelp",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tangle Kelp",
+      "oracle_fingerprint": "7ad98b9c8fc45b13c24a9fd043fe2ddd",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 64, "end": 181 }
+          }
+        }
+      ]
+    }
+  ]
+}

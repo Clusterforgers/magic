@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2ccbf0ee-c856-4f67-8579-811fe8571a2e",
+  "name": "Wish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wish",
+      "oracle_fingerprint": "4acb94816d5506f153761f3dd65d3b45",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "OwnedBy": "You" }],
+                      "from": "Outside",
+                      "play": true,
+                      "once": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

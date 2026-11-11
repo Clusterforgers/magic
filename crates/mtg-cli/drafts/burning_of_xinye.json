@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3a3cec13-4766-40d2-88e0-41bcdd5249e9",
+  "name": "Burning of Xinye",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burning of Xinye",
+      "oracle_fingerprint": "d3d15c736f92917932500f913d0aa7b6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "count": { "min": 4, "max": 4 },
+                  "as": "mine"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "mine" } } },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }] },
+                  "count": { "min": 4, "max": 4 },
+                  "as": "theirs"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "theirs" } } },
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

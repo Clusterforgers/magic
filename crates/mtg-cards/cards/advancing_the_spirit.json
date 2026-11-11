@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c9949a5a-13d4-41ca-80fe-902b0ae71204",
+  "name": "Advancing the Spirit",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Advancing the Spirit",
+      "oracle_fingerprint": "5c63dddb39d7b5f9e54c05ffd864f057",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 43, "end": 162 }
+          }
+        }
+      ]
+    }
+  ]
+}

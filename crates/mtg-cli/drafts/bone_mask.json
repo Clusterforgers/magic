@@ -1,0 +1,39 @@
+{
+  "oracle_id": "ddfc7dac-f921-4529-935c-6c588890c522",
+  "name": "Bone Mask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bone Mask",
+      "oracle_fingerprint": "d217b44f6d636b80373580493c023f22",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": {
+                    "InsteadNext": [{ "ExileTop": { "count": "Triggering", "as": "exiled" } }]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

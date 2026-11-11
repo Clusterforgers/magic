@@ -1,0 +1,49 @@
+{
+  "source": "forge",
+  "oracle_matches": true,
+  "lines": [
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters and whenever you solve a Case, look at the top six cards of your library. You may reveal an enchantment card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+      "abilities": [],
+      "gap": "trigger:CaseSolved"
+    },
+    {
+      "face": 0,
+      "tag": "T",
+      "text": "When CARDNAME enters and whenever you solve a Case, look at the top six cards of your library. You may reveal an enchantment card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.",
+      "abilities": [],
+      "gap": "trigger:CaseSolved"
+    },
+    {
+      "face": 0,
+      "tag": "S",
+      "text": "You may spend mana as though it were mana of any color to cast Case spells.",
+      "abilities": [
+        0
+      ],
+      "gap": null
+    }
+  ],
+  "proof": {
+    "marks": [
+      {
+        "face": 0,
+        "span": {
+          "start": 0,
+          "end": 239
+        },
+        "mark": "ByHand"
+      },
+      {
+        "face": 0,
+        "span": {
+          "start": 240,
+          "end": 315
+        },
+        "mark": "Auto"
+      }
+    ]
+  }
+}

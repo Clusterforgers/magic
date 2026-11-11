@@ -1,0 +1,29 @@
+{
+  "oracle_id": "192b5dd7-f420-4d5b-86d6-66e86fa67f41",
+  "name": "Jack-o'-Lantern",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jack-o'-Lantern",
+      "oracle_fingerprint": "1626e09eef037378642e89482871e05b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "ExileSelf"],
+            "from": "Graveyard",
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

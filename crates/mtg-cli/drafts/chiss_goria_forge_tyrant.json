@@ -1,0 +1,36 @@
+{
+  "oracle_id": "3f4d1ae1-d5c6-4afb-94c8-8e0ae4891501",
+  "name": "Chiss-Goria, Forge Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chiss-Goria, Forge Tyrant",
+      "oracle_fingerprint": "9319a350a0f66b58da1a7f38b8d1b575",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Artifact" }] } },
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "count": 5, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Is": { "Bound": "exiled" } }, { "Type": "Artifact" }],
+                      "from": "Exile",
+                      "once": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

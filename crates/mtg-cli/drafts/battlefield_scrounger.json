@@ -1,0 +1,37 @@
+{
+  "oracle_id": "92ac7531-10bb-47a2-9dd0-378d547b4ed6",
+  "name": "Battlefield Scrounger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battlefield Scrounger",
+      "oracle_fingerprint": "3b5a1db60e46bf4f5913884497171731",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "ToLibrary": { "from": "Graveyard", "filter": [], "count": 3, "bottom": true } }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

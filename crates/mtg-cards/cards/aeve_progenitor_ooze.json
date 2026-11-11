@@ -1,0 +1,31 @@
+{
+  "oracle_id": "44600a74-9584-488b-a342-2fccd8fa7599",
+  "name": "Aeve, Progenitor Ooze",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aeve, Progenitor Ooze",
+      "oracle_fingerprint": "6c3aafd781c120228d91fa603bcdd768",
+      "abilities": [
+        { "Keyword": "Storm" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 105, "end": 142 }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Count": [{ "Subtype": "Ooze" }, "Other", { "ControlledBy": "You" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

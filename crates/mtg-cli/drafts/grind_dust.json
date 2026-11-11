@@ -1,0 +1,44 @@
+{
+  "oracle_id": "ab5b697b-ab62-4ee7-a10e-cc937fef3095",
+  "name": "Grind // Dust",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grind",
+      "oracle_fingerprint": "eb25fdbb4d8714c3b1659a6746b902cb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dust",
+      "oracle_fingerprint": "a6b15169b144a911ad9194dd656bde52",
+      "abilities": [
+        { "Keyword": "Aftermath" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "CounterCount": { "kind": "-1/-1", "op": "Ge", "to": 1 } }
+                  ]
+                },
+                "bounds": { "min": 0, "max": { "Count": [{ "Type": "Creature" }] } }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "e3b22777-4d5b-4f6c-a339-24d204bd007e",
+  "name": "Healing Grace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Healing Grace",
+      "oracle_fingerprint": "844191329ed21f6c3613b3bf02c5e673",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "Choose": { "from": { "Each": [] }, "as": "source" } },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Target": 0 }, "source": [{ "Is": { "Bound": "source" } }] }
+                  },
+                  "by": { "PreventUpTo": 3 },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

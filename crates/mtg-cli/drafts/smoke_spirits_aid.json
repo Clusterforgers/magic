@@ -1,0 +1,67 @@
+{
+  "oracle_id": "8fef58ff-4743-4065-9df0-c5edf9aa2502",
+  "name": "Smoke Spirits' Aid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smoke Spirits' Aid",
+      "oracle_fingerprint": "160ca80f4cb070ca4ad50ff3838d1af0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": "X" } }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Smoke Blessing",
+                            "colors": ["Red"],
+                            "types": ["Enchantment"],
+                            "subtypes": ["Aura"],
+                            "abilities": [
+                              { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                              {
+                                "Triggered": {
+                                  "when": {
+                                    "ZoneChange": {
+                                      "what": [{ "Is": "Attached" }],
+                                      "from": "Battlefield",
+                                      "to": "Graveyard"
+                                    }
+                                  },
+                                  "effects": [
+                                    {
+                                      "DealDamage": {
+                                        "to": { "ControllerOf": "Triggering" },
+                                        "amount": 1
+                                      }
+                                    },
+                                    { "CreateToken": { "token": { "Named": "treasure" } } }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "as": "blessing"
+                      }
+                    },
+                    { "Attach": { "what": { "Bound": "blessing" }, "to": { "Bound": "creature" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

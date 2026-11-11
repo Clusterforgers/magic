@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d8857977-c8a5-4703-9aaa-331b17c7a713",
+  "name": "Magus of the Unseen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus of the Unseen",
+      "oracle_fingerprint": "d509d42f6a6c0a8bac1bf8cac478bf6f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Did": { "action": "ChangedController", "what": [{ "Is": { "Target": 0 } }] }
+                  },
+                  "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

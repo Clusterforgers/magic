@@ -1,0 +1,60 @@
+{
+  "oracle_id": "03d1a4e9-3ebc-491f-8741-5d933b500abf",
+  "name": "Parker Luck",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parker Luck",
+      "oracle_fingerprint": "c8563374dc4941baa79ddd81d5a4ad49",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Another": { "what": "Player", "earlier": [0] } } }
+            ],
+            "effects": [
+              {
+                "RevealUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [],
+                  "as": "first",
+                  "revealed_as": "first_seen"
+                }
+              },
+              {
+                "RevealUntil": {
+                  "who": { "Target": 1 },
+                  "filter": [],
+                  "as": "second",
+                  "revealed_as": "second_seen"
+                }
+              },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Bound": "second" }, "stat": "ManaValue" } }
+                      }
+                    },
+                    {
+                      "LoseLife": {
+                        "who": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Bound": "first" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "first" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "second" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

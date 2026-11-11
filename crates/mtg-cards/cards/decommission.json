@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d001321d-b272-4f94-a333-7cfe8482da20",
+  "name": "Decommission",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decommission",
+      "oracle_fingerprint": "dd4bfaabb6f87070e958df2cbd103fb4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "PermanentsLeftUnder" } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

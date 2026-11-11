@@ -1,0 +1,43 @@
+{
+  "oracle_id": "0179bc62-823e-46b9-b536-342904fedafc",
+  "name": "Memory Vessel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Memory Vessel",
+      "oracle_fingerprint": "a27baec35f818e794342fb7336c7ae48",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "ExileSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    { "ExileTop": { "who": { "Bound": "player" }, "count": 7, "as": "vessel" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "who": { "Bound": "player" },
+                            "from": "Exile",
+                            "only": { "Bound": "vessel" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

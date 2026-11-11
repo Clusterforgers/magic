@@ -1,0 +1,37 @@
+{
+  "oracle_id": "50ab0194-c7dc-4f11-abc0-1a82393cc42e",
+  "name": "Pawpatch Recruit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pawpatch Recruit",
+      "oracle_fingerprint": "398fbdb98b3ec2a231d6033eb8aeb1e4",
+      "abilities": [
+        { "Keyword": { "Offspring": "{2}" } },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "by": [{ "ControlledBy": "Opponents" }]
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "Is": "Triggering" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "8f5495d7-ac44-47cd-aa39-48a35034b390",
+  "name": "Fear of Abduction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fear of Abduction",
+      "oracle_fingerprint": "043094735a8a99ded495d7dcfbc38caa",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExilePermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

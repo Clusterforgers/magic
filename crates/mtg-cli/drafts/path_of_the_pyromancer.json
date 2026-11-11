@@ -1,0 +1,52 @@
+{
+  "oracle_id": "b908fad9-25a6-441b-bba8-0d7fc12ee2dc",
+  "name": "Path of the Pyromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path of the Pyromancer",
+      "oracle_fingerprint": "8dc7cad0e14ed9b37a3d7b48378e0337",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "discarded"
+                }
+              },
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "CountOf": { "of": { "Bound": "discarded" }, "filter": [] } }
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [{ "CountOf": { "of": { "Bound": "discarded" }, "filter": [] } }, 1]
+                  }
+                }
+              },
+              { "Vote": { "options": { "Named": ["planeswalk", "chaos"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Players": { "Bound": "planeswalk" } },
+                      "op": "Gt",
+                      "right": { "Players": { "Bound": "chaos" } }
+                    }
+                  },
+                  "then": [{ "Planechase": { "act": "Planeswalk" } }],
+                  "otherwise": [{ "Planechase": { "act": "ChaosEnsues" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c996bc53-184d-4dc3-8244-e8d9528516a0",
+  "name": "Gandalf, Wandering Wizard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gandalf, Wandering Wizard",
+      "oracle_fingerprint": "2da408fa63676395f867b25cd8f56c6f",
+      "abilities": [
+        { "Keyword": { "Ward": "{3}" } },
+        {
+          "Activated": {
+            "cost": "{6}",
+            "effects": [
+              { "Move": { "what": "This", "to": { "Library": { "place": "Shuffled" } } } },
+              { "Draw": { "who": { "OwnerOf": "This" }, "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

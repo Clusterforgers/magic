@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cd5bc95d-4915-4c5a-9b57-2730adf69797",
+  "name": "Molten Hydra",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Molten Hydra",
+      "oracle_fingerprint": "2e231af671c192981199416b7f07bbd3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}{R}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 49, "end": 185 }
+          }
+        }
+      ]
+    }
+  ]
+}

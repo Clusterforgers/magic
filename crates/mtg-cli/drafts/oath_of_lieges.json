@@ -1,0 +1,55 @@
+{
+  "oracle_id": "87038354-6762-4069-be34-7d40ae308a8d",
+  "name": "Oath of Lieges",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of Lieges",
+      "oracle_fingerprint": "dd37c3dd48cb66a036349f8215595a09",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "targets": [{ "what": { "ChosenBy": { "who": "ActivePlayer", "what": "Player" } } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }] },
+                      "op": "Gt",
+                      "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "ActivePlayer" }] }
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "who": "ActivePlayer",
+                        "effects": [
+                          {
+                            "Search": {
+                              "who": "ActivePlayer",
+                              "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                              "as": "land"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "land" },
+                              "to": { "Battlefield": { "under": "ActivePlayer" } }
+                            }
+                          },
+                          { "Shuffle": { "who": "ActivePlayer" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

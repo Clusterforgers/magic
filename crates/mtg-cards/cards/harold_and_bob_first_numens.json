@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d0ecea04-9768-4b09-8718-dd59135251e3",
+  "name": "Harold and Bob, First Numens",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Harold and Bob, First Numens",
+      "oracle_fingerprint": "7d7065f1c7ba50100718ac0b3c64db50",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 286 }
+          }
+        }
+      ]
+    }
+  ]
+}

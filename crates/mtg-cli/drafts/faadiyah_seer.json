@@ -1,0 +1,35 @@
+{
+  "oracle_id": "8ba2f559-f9bd-48ef-9fef-6dffe768f4ed",
+  "name": "Fa'adiyah Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fa'adiyah Seer",
+      "oracle_fingerprint": "1353a59b084d960a85a734db0ef8d0e9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Draw": { "as": "drawn" } },
+              { "Reveal": { "what": { "Bound": "drawn" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "Matches": {
+                        "subject": { "Bound": "drawn" },
+                        "selector": [{ "Type": "Land" }]
+                      }
+                    }
+                  },
+                  "then": [{ "Discard": { "filter": [{ "Is": { "Bound": "drawn" } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

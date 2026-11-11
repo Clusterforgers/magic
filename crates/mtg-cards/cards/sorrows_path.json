@@ -1,0 +1,33 @@
+{
+  "oracle_id": "5419eae0-3c12-4748-9cf8-d927752e527e",
+  "name": "Sorrow's Path",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sorrow's Path",
+      "oracle_fingerprint": "f91409adcb5b3281292d99ea9b7d5744",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 247 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [
+              { "DealDamage": { "to": "You", "amount": 2 } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "amount": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

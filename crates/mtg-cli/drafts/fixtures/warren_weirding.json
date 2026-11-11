@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "524aa84d-7838-4664-b30c-3c242b46fc6b",
+  "oracle_id": "d9c1c4d5-cc60-4762-9fc1-c768a1f61539",
+  "multiverse_ids": [
+    370488
+  ],
+  "mtgo_id": 48752,
+  "mtgo_foil_id": 48753,
+  "tcgplayer_id": 68369,
+  "cardmarket_id": 262062,
+  "name": "Warren Weirding",
+  "lang": "en",
+  "released_at": "2013-06-07",
+  "uri": "https://api.scryfall.com/cards/524aa84d-7838-4664-b30c-3c242b46fc6b",
+  "scryfall_uri": "https://scryfall.com/card/mma/104/warren-weirding?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:53:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/2/524aa84d-7838-4664-b30c-3c242b46fc6b.jpg?1783939984",
+    "normal": "https://cards.scryfall.io/normal/front/5/2/524aa84d-7838-4664-b30c-3c242b46fc6b.jpg?1783939984",
+    "large": "https://cards.scryfall.io/large/front/5/2/524aa84d-7838-4664-b30c-3c242b46fc6b.jpg?1783939984",
+    "png": "https://cards.scryfall.io/png/front/5/2/524aa84d-7838-4664-b30c-3c242b46fc6b.png?1783939984",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/2/524aa84d-7838-4664-b30c-3c242b46fc6b.jpg?1783939984",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/2/524aa84d-7838-4664-b30c-3c242b46fc6b.jpg?1783939984",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/2/524aa84d-7838-4664-b30c-3c242b46fc6b.webp?1783939984",
+    "grid": "https://cards.scryfall.io/grid/front/5/2/524aa84d-7838-4664-b30c-3c242b46fc6b.webp?1783939984",
+    "display": "https://cards.scryfall.io/display/front/5/2/524aa84d-7838-4664-b30c-3c242b46fc6b.webp?1783939984",
+    "art": "https://cards.scryfall.io/art/front/5/2/524aa84d-7838-4664-b30c-3c242b46fc6b.webp?1783939984",
+    "crop": "https://cards.scryfall.io/crop/front/5/2/524aa84d-7838-4664-b30c-3c242b46fc6b.webp?1783939984",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/2/524aa84d-7838-4664-b30c-3c242b46fc6b.jpg?1783939984"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Kindred Sorcery — Goblin",
+  "oracle_text": "Target player sacrifices a creature of their choice. If a Goblin is sacrificed this way, that player creates two 1/1 black Goblin Rogue creature tokens, and those tokens gain haste until end of turn.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "33bd708d-dc84-44d3-a563-536ade028bd0",
+      "component": "token",
+      "name": "Goblin Rogue",
+      "type_line": "Token Creature — Goblin Rogue",
+      "uri": "https://api.scryfall.com/cards/33bd708d-dc84-44d3-a563-536ade028bd0"
+    },
+    {
+      "object": "related_card",
+      "id": "524aa84d-7838-4664-b30c-3c242b46fc6b",
+      "component": "combo_piece",
+      "name": "Warren Weirding",
+      "type_line": "Kindred Sorcery — Goblin",
+      "uri": "https://api.scryfall.com/cards/524aa84d-7838-4664-b30c-3c242b46fc6b"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "0b7020f2-336d-4706-9ce6-f6710b9ebd5c",
+  "set": "mma",
+  "set_name": "Modern Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/0b7020f2-336d-4706-9ce6-f6710b9ebd5c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amma&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mma?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/524aa84d-7838-4664-b30c-3c242b46fc6b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad9c1c4d5-cc60-4762-9fc1-c768a1f61539&unique=prints",
+  "collector_number": "104",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"And that's when it was discovered that boggarts have just half a brain.\"\n—*The Book of Other Folk*",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Matt Cavotta",
+  "artist_ids": [
+    "2e6a0611-9411-4ba4-98e3-c0e18cbf9f83"
+  ],
+  "illustration_id": "4e7f209c-9726-4e62-956d-fe8013a8671a",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20653,
+  "penny_rank": 4967,
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": "0.37",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=370488&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWarren%2BWeirding",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWarren%2BWeirding",
+    "edhrec": "https://edhrec.com/route/?cc=Warren+Weirding"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F68369%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=262062&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/48752?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

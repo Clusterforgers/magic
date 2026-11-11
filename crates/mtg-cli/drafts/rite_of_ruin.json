@@ -1,0 +1,127 @@
+{
+  "oracle_id": "d0dd0586-d89e-40e9-863d-9c390bee117a",
+  "name": "Rite of Ruin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rite of Ruin",
+      "oracle_fingerprint": "fe85288883037f6d5a7048e87adad01d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "OneOf": {
+                  "options": [
+                    [
+                      { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Artifact" }] } },
+                      {
+                        "Sacrifice": {
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Creature" }],
+                          "count": 2
+                        }
+                      },
+                      {
+                        "Sacrifice": {
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Land" }],
+                          "count": 3
+                        }
+                      }
+                    ],
+                    [
+                      { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Artifact" }] } },
+                      {
+                        "Sacrifice": {
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Land" }],
+                          "count": 2
+                        }
+                      },
+                      {
+                        "Sacrifice": {
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Creature" }],
+                          "count": 3
+                        }
+                      }
+                    ],
+                    [
+                      { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }] } },
+                      {
+                        "Sacrifice": {
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Artifact" }],
+                          "count": 2
+                        }
+                      },
+                      {
+                        "Sacrifice": {
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Land" }],
+                          "count": 3
+                        }
+                      }
+                    ],
+                    [
+                      { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }] } },
+                      {
+                        "Sacrifice": {
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Land" }],
+                          "count": 2
+                        }
+                      },
+                      {
+                        "Sacrifice": {
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Artifact" }],
+                          "count": 3
+                        }
+                      }
+                    ],
+                    [
+                      { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Land" }] } },
+                      {
+                        "Sacrifice": {
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Artifact" }],
+                          "count": 2
+                        }
+                      },
+                      {
+                        "Sacrifice": {
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Creature" }],
+                          "count": 3
+                        }
+                      }
+                    ],
+                    [
+                      { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Land" }] } },
+                      {
+                        "Sacrifice": {
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Creature" }],
+                          "count": 2
+                        }
+                      },
+                      {
+                        "Sacrifice": {
+                          "who": "EachPlayer",
+                          "filter": [{ "Type": "Artifact" }],
+                          "count": 3
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

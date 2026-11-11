@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e0165326-f1a6-4fc0-94c1-4b33f24d36f5",
+  "name": "Brine Hag",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brine Hag",
+      "oracle_fingerprint": "5d94de0808b0059bb41d69832c3b420a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "DidThisTurn": { "event": "Damaged", "to": "This" } }
+                    ]
+                  },
+                  "mods": [{ "SetPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

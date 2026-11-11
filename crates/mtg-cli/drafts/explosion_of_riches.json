@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ffd469b4-413d-49f5-a873-e3f654240b31",
+  "name": "Explosion of Riches",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Explosion of Riches",
+      "oracle_fingerprint": "fd9ac922dfa243e6bb5c02f49e5e13bb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": {} },
+              { "ChooseAtRandom": { "from": "Opponents", "as": "victim0" } },
+              { "DealDamage": { "source": "This", "to": { "Bound": "victim0" }, "amount": 5 } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [{ "Draw": { "who": { "Bound": "player" } } }]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          { "ChooseAtRandom": { "from": "Opponents", "as": "victim" } },
+                          {
+                            "DealDamage": {
+                              "source": "This",
+                              "to": { "Bound": "victim" },
+                              "amount": 5
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

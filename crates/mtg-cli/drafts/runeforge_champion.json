@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2705a288-3b9d-4452-a320-28b86331aa09",
+  "name": "Runeforge Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runeforge Champion",
+      "oracle_fingerprint": "349483f2e1030b3043531a825b54003b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "also": ["Graveyard"],
+                        "filter": [{ "OwnedBy": "You" }, { "Subtype": "Rune" }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    {
+                      "If": {
+                        "condition": { "Searched": { "zone": "Library" } },
+                        "then": [{ "Shuffle": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "MayCast": { "what": [{ "Subtype": "Rune" }], "rather": "{1}" } } } }
+      ]
+    }
+  ]
+}

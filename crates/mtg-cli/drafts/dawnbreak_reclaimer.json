@@ -1,0 +1,56 @@
+{
+  "oracle_id": "6fa7229d-18b6-43d8-aa57-a56cdb815767",
+  "name": "Dawnbreak Reclaimer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawnbreak Reclaimer",
+      "oracle_fingerprint": "c4b01e5ccfd2c6b0412006771ce4e56e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Opponents" }
+                    ]
+                  },
+                  "as": "theirs"
+                }
+              },
+              {
+                "Choose": {
+                  "who": { "OwnerOf": { "Bound": "theirs" } },
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "as": "yours"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Together": {
+                        "effects": [
+                          { "Move": { "what": { "Bound": "theirs" }, "to": { "Battlefield": {} } } },
+                          { "Move": { "what": { "Bound": "yours" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

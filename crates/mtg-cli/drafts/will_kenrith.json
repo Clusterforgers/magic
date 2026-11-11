@@ -1,0 +1,89 @@
+{
+  "oracle_id": "20dbfc9a-172e-4065-bfde-d40de3131787",
+  "name": "Will Kenrith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Will Kenrith",
+      "oracle_fingerprint": "3f8dc53174d1cc7702b97f4452db26fe",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 0, "toughness": 3 } }, "LoseAbilities"],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "Rule": {
+                  "rule": {
+                    "SpellCost": {
+                      "applies_to": [
+                        "Spell",
+                        {
+                          "AnyOf": [
+                            { "Type": "Instant" },
+                            { "Type": "Sorcery" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        },
+                        { "ControlledBy": { "Target": 0 } }
+                      ],
+                      "change": "Reduce",
+                      "mana": "{2}"
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "who": { "Target": 0 },
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "SpellCast": {
+                            "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                            "by": "You"
+                          }
+                        },
+                        "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "PartnerWith": "Rowan Kenrith" } },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

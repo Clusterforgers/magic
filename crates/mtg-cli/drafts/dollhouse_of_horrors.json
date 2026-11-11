@@ -1,0 +1,72 @@
+{
+  "oracle_id": "73970475-f899-4e93-8498-286240181295",
+  "name": "Dollhouse of Horrors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dollhouse of Horrors",
+      "oracle_fingerprint": "356fa3d98de7526fd8ceccdd3ac31b52",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": "Paid",
+                      "except": [
+                        { "SetPT": { "power": 0, "toughness": 0 } },
+                        { "AddSubtype": "Construct" },
+                        { "AddType": "Artifact" },
+                        {
+                          "GrantAbility": {
+                            "Static": {
+                              "affected": "This",
+                              "mods": [
+                                {
+                                  "ModifyPT": {
+                                    "power": {
+                                      "Count": [
+                                        { "Subtype": "Construct" },
+                                        { "ControlledBy": "You" }
+                                      ]
+                                    },
+                                    "toughness": {
+                                      "Count": [
+                                        { "Subtype": "Construct" },
+                                        { "ControlledBy": "You" }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

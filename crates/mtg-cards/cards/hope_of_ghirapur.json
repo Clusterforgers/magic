@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1a20e805-c80b-4710-917b-706d29ec395e",
+  "name": "Hope of Ghirapur",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hope of Ghirapur",
+      "oracle_fingerprint": "c2526d95dac4d8eea7eaeb2e9e223ed3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 159 }
+          }
+        }
+      ]
+    }
+  ]
+}

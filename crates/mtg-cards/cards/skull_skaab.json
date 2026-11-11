@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c73839bf-7500-4fd4-aa2b-e2e2e157784d",
+  "name": "Skull Skaab",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Skull Skaab",
+      "oracle_fingerprint": "a2ced154a9ecc3e8ea87110f805172b7",
+      "abilities": [
+        { "Keyword": "Exploit" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 67, "end": 170 }
+          }
+        }
+      ]
+    }
+  ]
+}

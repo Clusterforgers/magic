@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1f35f5e3-ddd1-4293-96f8-1181bbda77eb",
+  "name": "Essence Sliver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Essence Sliver",
+      "oracle_fingerprint": "415072826116e930a3c5e9b09bc534e3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "Subtype": "Sliver" }] } },
+            "effects": [
+              { "GainLife": { "who": { "ControllerOf": "Triggering" }, "amount": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

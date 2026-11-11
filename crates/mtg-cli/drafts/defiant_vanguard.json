@@ -1,0 +1,68 @@
+{
+  "oracle_id": "680766e2-637b-40bc-a15f-0b4dc55bd619",
+  "name": "Defiant Vanguard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defiant Vanguard",
+      "oracle_fingerprint": "494fd3b058cfc41a845193d1045d6484",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Together": {
+                        "effects": [
+                          { "Destroy": { "what": "This" } },
+                          {
+                            "Destroy": {
+                              "what": { "Each": [{ "Type": "Creature" }, { "BlockedBy": "This" }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Subtype": "Rebel" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                  ],
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

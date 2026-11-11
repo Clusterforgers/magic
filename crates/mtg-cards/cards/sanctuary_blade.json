@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ab0dd461-25bc-4374-bed8-72fc2d51b5e1",
+  "name": "Sanctuary Blade",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sanctuary Blade",
+      "oracle_fingerprint": "5cb61894838e5cccd68c3e98e367e962",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 65 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 141 }
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

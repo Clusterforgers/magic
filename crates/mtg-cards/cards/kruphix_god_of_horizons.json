@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b2cefcd6-4b81-479c-86ff-1695b836972c",
+  "name": "Kruphix, God of Horizons",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kruphix, God of Horizons",
+      "oracle_fingerprint": "5ff630c618b6c36316ac5c2dc45e9afe",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["Green", "Blue"] }, "op": "Lt", "right": 7 }
+            }
+          }
+        },
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 135, "end": 203 }
+          }
+        }
+      ]
+    }
+  ]
+}

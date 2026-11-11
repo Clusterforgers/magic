@@ -1,0 +1,14 @@
+{
+  "oracle_id": "add46292-470e-47fa-a261-4884d02e65fe",
+  "name": "Horizon Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Horizon Stone",
+      "oracle_fingerprint": "f2177dbbd79a5a34ebc93f9c23d1496a",
+      "abilities": [
+        { "Rule": { "rule": { "UnspentManaBecomes": { "who": "You", "into": "Colorless" } } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "c5f360dc-fe4e-4796-b5c1-468cbd0f6d24",
+  "name": "Public Enemy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Public Enemy",
+      "oracle_fingerprint": "66f2fccef9363478315aaacc73437047",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Rule": {
+            "rule": {
+              "MustAttackPlayers": {
+                "who": { "Each": [{ "Type": "Creature" }] },
+                "players": { "ControllerOf": "Attached" }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

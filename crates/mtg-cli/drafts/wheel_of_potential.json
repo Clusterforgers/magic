@@ -1,0 +1,86 @@
+{
+  "oracle_id": "95a7db5d-26f6-4192-9dc7-4342f7e0e9c5",
+  "name": "Wheel of Potential",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wheel of Potential",
+      "oracle_fingerprint": "f97bff506f894be7adcfdc4d310cb2a1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 3 } },
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [0, { "Counters": { "on": "You", "counter": { "Other": "energy" } } }]
+                  },
+                  "as": "paid"
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": "You",
+                  "counter": { "Other": "energy" },
+                  "count": { "ChosenAs": "paid" }
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "Exile": {
+                              "what": {
+                                "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }]
+                              },
+                              "as": "exiled"
+                            }
+                          },
+                          {
+                            "Draw": {
+                              "who": { "Bound": "player" },
+                              "count": { "ChosenAs": "paid" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "ChosenAs": "paid" }, "op": "Ge", "right": 7 }
+                  },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "what": [{ "OwnedBy": "You" }],
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfYourNextTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "636cc915-9d1b-4ffe-9e74-795b78663911",
+  "name": "Superior Spider-Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Superior Spider-Man",
+      "oracle_fingerprint": "0b168c344dc2b069f73c1dc61971e587",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, { "In": "Graveyard" }],
+                "except": [
+                  { "SetName": "Superior Spider-Man" },
+                  { "SetPT": { "power": 4, "toughness": 4 } },
+                  { "AddSubtype": "Spider" },
+                  { "AddSubtype": "Human" },
+                  { "AddSubtype": "Hero" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

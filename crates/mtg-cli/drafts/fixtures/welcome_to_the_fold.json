@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "2d07fbe1-e66a-4893-86ee-7752ad77b120",
+  "oracle_id": "b8647f54-f50b-4bc6-bd44-fda25ef189fa",
+  "multiverse_ids": [
+    409842
+  ],
+  "mtgo_id": 60336,
+  "mtgo_foil_id": 60337,
+  "tcgplayer_id": 115916,
+  "cardmarket_id": 288998,
+  "name": "Welcome to the Fold",
+  "lang": "en",
+  "released_at": "2016-04-08",
+  "uri": "https://api.scryfall.com/cards/2d07fbe1-e66a-4893-86ee-7752ad77b120",
+  "scryfall_uri": "https://scryfall.com/card/soi/96/welcome-to-the-fold?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:16:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/d/2d07fbe1-e66a-4893-86ee-7752ad77b120.jpg?1783937783",
+    "normal": "https://cards.scryfall.io/normal/front/2/d/2d07fbe1-e66a-4893-86ee-7752ad77b120.jpg?1783937783",
+    "large": "https://cards.scryfall.io/large/front/2/d/2d07fbe1-e66a-4893-86ee-7752ad77b120.jpg?1783937783",
+    "png": "https://cards.scryfall.io/png/front/2/d/2d07fbe1-e66a-4893-86ee-7752ad77b120.png?1783937783",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/d/2d07fbe1-e66a-4893-86ee-7752ad77b120.jpg?1783937783",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/d/2d07fbe1-e66a-4893-86ee-7752ad77b120.jpg?1783937783",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/d/2d07fbe1-e66a-4893-86ee-7752ad77b120.webp?1783937783",
+    "grid": "https://cards.scryfall.io/grid/front/2/d/2d07fbe1-e66a-4893-86ee-7752ad77b120.webp?1783937783",
+    "display": "https://cards.scryfall.io/display/front/2/d/2d07fbe1-e66a-4893-86ee-7752ad77b120.webp?1783937783",
+    "art": "https://cards.scryfall.io/art/front/2/d/2d07fbe1-e66a-4893-86ee-7752ad77b120.webp?1783937783",
+    "crop": "https://cards.scryfall.io/crop/front/2/d/2d07fbe1-e66a-4893-86ee-7752ad77b120.webp?1783937783",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/d/2d07fbe1-e66a-4893-86ee-7752ad77b120.jpg?1783937783"
+  },
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Madness {X}{U}{U} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)\nGain control of target creature if its toughness is 2 or less. If this spell's madness cost was paid, instead gain control of that creature if its toughness is X or less.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Madness"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set": "soi",
+  "set_name": "Shadows over Innistrad",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/5e914d7e-c1e9-446c-a33d-d093c02b2743",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoi&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/soi?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/2d07fbe1-e66a-4893-86ee-7752ad77b120/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab8647f54-f50b-4bc6-bd44-fda25ef189fa&unique=prints",
+  "collector_number": "96",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "David Palumbo",
+  "artist_ids": [
+    "04ce1c75-e30c-4b7a-8cb0-b53e4ecc2f39"
+  ],
+  "illustration_id": "1dd332fc-9c65-4a4a-ac6b-ab5983882f34",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21070,
+  "penny_rank": 8679,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.41",
+    "usd_etched": null,
+    "eur": "0.17",
+    "eur_foil": "0.37",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=409842&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWelcome%2Bto%2Bthe%2BFold",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWelcome%2Bto%2Bthe%2BFold",
+    "edhrec": "https://edhrec.com/route/?cc=Welcome+to+the+Fold"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F115916%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=288998&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/60336?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

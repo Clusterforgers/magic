@@ -1,0 +1,70 @@
+{
+  "oracle_id": "618a2272-62e0-4d0e-834d-7b81719eba12",
+  "name": "Dyadrine, Synthesis Amalgam",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dyadrine, Synthesis Amalgam",
+      "oracle_fingerprint": "b0bfb81e53e985854b3d5e97126b88b2",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": { "counter": "+1/+1", "count": { "ManaSpent": { "of": null } } }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "EachPlayer" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "HasCounter": "+1/+1" }
+                          ]
+                        },
+                        "count": { "min": 2, "max": 2 },
+                        "as": "pair"
+                      }
+                    },
+                    { "RemoveCounters": { "from": { "Bound": "pair" }, "counter": "+1/+1" } },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          { "Draw": {} },
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Robot",
+                                  "types": ["Artifact", "Creature"],
+                                  "subtypes": ["Robot"],
+                                  "power": 2,
+                                  "toughness": 2
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

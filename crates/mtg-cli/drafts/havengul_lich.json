@@ -1,0 +1,44 @@
+{
+  "oracle_id": "1fb02bad-0d1f-437f-a269-f51cc19b280f",
+  "name": "Havengul Lich",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Havengul Lich",
+      "oracle_fingerprint": "21959ccd104f86abbd8af1ff74f1e2ab",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Graveyard", "only": { "Target": 0 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": { "what": [{ "SameCard": { "Target": 0 } }], "by": "You" }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "GainAbilitiesOf": "Triggering" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

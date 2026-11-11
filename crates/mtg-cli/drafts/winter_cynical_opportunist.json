@@ -1,0 +1,88 @@
+{
+  "oracle_id": "e70a01dd-4dbe-4811-ac93-1c6d0142e06e",
+  "name": "Winter, Cynical Opportunist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter, Cynical Opportunist",
+      "oracle_fingerprint": "6fa6508abf61561bd8cd1d64979000f9",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Mill": { "count": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "count": {
+                          "min": 0,
+                          "max": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] }
+                        },
+                        "as": "chosen"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "CardTypes": [{ "In": "Graveyard" }, { "Is": { "Bound": "chosen" } }]
+                            },
+                            "op": "Ge",
+                            "right": 4
+                          }
+                        },
+                        "then": [
+                          { "Exile": { "what": { "Bound": "chosen" }, "as": "exiled" } },
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "In": "Exile" },
+                                  { "Is": { "Bound": "exiled" } },
+                                  {
+                                    "AnyOf": [
+                                      { "Type": "Artifact" },
+                                      { "Type": "Creature" },
+                                      { "Type": "Enchantment" },
+                                      { "Type": "Land" },
+                                      { "Type": "Planeswalker" },
+                                      { "Type": "Battle" }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "as": "put"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "put" },
+                              "to": {
+                                "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "6d21fb27-e821-4ce1-8f34-fc5d6c69d779",
+  "oracle_id": "55eb3c21-6834-4c62-8ab9-54b901531fed",
+  "multiverse_ids": [
+    531915
+  ],
+  "tcgplayer_id": 243774,
+  "cardmarket_id": 572188,
+  "name": "Revivify",
+  "lang": "en",
+  "released_at": "2021-07-23",
+  "uri": "https://api.scryfall.com/cards/6d21fb27-e821-4ce1-8f34-fc5d6c69d779",
+  "scryfall_uri": "https://scryfall.com/card/afc/10/revivify?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:04:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/d/6d21fb27-e821-4ce1-8f34-fc5d6c69d779.jpg?1783926256",
+    "normal": "https://cards.scryfall.io/normal/front/6/d/6d21fb27-e821-4ce1-8f34-fc5d6c69d779.jpg?1783926256",
+    "large": "https://cards.scryfall.io/large/front/6/d/6d21fb27-e821-4ce1-8f34-fc5d6c69d779.jpg?1783926256",
+    "png": "https://cards.scryfall.io/png/front/6/d/6d21fb27-e821-4ce1-8f34-fc5d6c69d779.png?1783926256",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/d/6d21fb27-e821-4ce1-8f34-fc5d6c69d779.jpg?1783926256",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/d/6d21fb27-e821-4ce1-8f34-fc5d6c69d779.jpg?1783926256",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/d/6d21fb27-e821-4ce1-8f34-fc5d6c69d779.webp?1783926256",
+    "grid": "https://cards.scryfall.io/grid/front/6/d/6d21fb27-e821-4ce1-8f34-fc5d6c69d779.webp?1783926256",
+    "display": "https://cards.scryfall.io/display/front/6/d/6d21fb27-e821-4ce1-8f34-fc5d6c69d779.webp?1783926256",
+    "art": "https://cards.scryfall.io/art/front/6/d/6d21fb27-e821-4ce1-8f34-fc5d6c69d779.webp?1783926256",
+    "crop": "https://cards.scryfall.io/crop/front/6/d/6d21fb27-e821-4ce1-8f34-fc5d6c69d779.webp?1783926256",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/d/6d21fb27-e821-4ce1-8f34-fc5d6c69d779.jpg?1783926256"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Roll a d20 and add the number of creature cards in your graveyard that were put there from the battlefield this turn.\n1—14 | Return all creature cards in your graveyard that were put there from the battlefield this turn to your hand.\n15+ | Return those cards from your graveyard to the battlefield.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "db1b46f9-893c-4623-9465-985ff6e4472c",
+  "set": "afc",
+  "set_name": "Forgotten Realms Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/db1b46f9-893c-4623-9465-985ff6e4472c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aafc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/afc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6d21fb27-e821-4ce1-8f34-fc5d6c69d779/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A55eb3c21-6834-4c62-8ab9-54b901531fed&unique=prints",
+  "collector_number": "10",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Caio Monteiro",
+  "artist_ids": [
+    "d5053eb6-af72-47a0-b6e8-023cc3b9aefb"
+  ],
+  "illustration_id": "1fcad58a-0de4-4da6-b5e5-2bbc492c32a2",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8367,
+  "preview": {
+    "source": "MTG Muddstah",
+    "source_uri": "https://www.youtube.com/watch?v=JuG8gigPnlM",
+    "previewed_at": "2021-07-10"
+  },
+  "prices": {
+    "usd": "1.99",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.88",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=531915&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRevivify",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRevivify",
+    "edhrec": "https://edhrec.com/route/?cc=Revivify"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F243774%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=572188&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Revivify&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

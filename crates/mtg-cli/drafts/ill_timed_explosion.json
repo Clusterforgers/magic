@@ -1,0 +1,44 @@
+{
+  "oracle_id": "6e3b3a3f-e32f-4c72-a9fb-dd1e877876b6",
+  "name": "Ill-Timed Explosion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ill-Timed Explosion",
+      "oracle_fingerprint": "8c4fa187088b1afc9825706e5dea4bf1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "May": {
+                  "effects": [
+                    { "Discard": { "count": 2, "as": "discarded" } },
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "to": { "Each": [{ "Type": "Creature" }] },
+                              "amount": {
+                                "Greatest": {
+                                  "of": [{ "Is": { "Bound": "discarded" } }],
+                                  "stat": "ManaValue"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

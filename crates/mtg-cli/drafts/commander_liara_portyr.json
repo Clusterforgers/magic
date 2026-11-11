@@ -1,0 +1,27 @@
+{
+  "oracle_id": "fcc7ed01-ff64-4ffe-9b83-daa4132fd92d",
+  "name": "Commander Liara Portyr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commander Liara Portyr",
+      "oracle_fingerprint": "3f841c57e835825cd15e6e401b13aff8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "effects": [
+              { "ExileTop": { "count": { "Players": "Attacked" }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Exile", "only": { "Bound": "exiled" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

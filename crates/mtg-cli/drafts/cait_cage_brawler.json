@@ -1,0 +1,43 @@
+{
+  "oracle_id": "f24319a1-0662-44be-9027-11e7bc020e1d",
+  "name": "Cait, Cage Brawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cait, Cage Brawler",
+      "oracle_fingerprint": "581361db67ff92a5807c6675333317b4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Indestructible" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Draw": {} },
+              { "Draw": { "who": "Defending" } },
+              { "Discard": { "as": "mine" } },
+              { "Discard": { "who": "Defending", "as": "theirs" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Bound": "mine" }, "stat": "ManaValue" } },
+                      "op": "Ge",
+                      "right": { "Stat": { "of": { "Bound": "theirs" }, "stat": "ManaValue" } }
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

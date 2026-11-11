@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f65cba6a-3ef4-4841-b2c1-578b2a2c3300",
+  "name": "Scout's Warning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scout's Warning",
+      "oracle_fingerprint": "61d232d39079a70a43e3e8d20b7eec61",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "NextSpell": { "what": [{ "Type": "Creature" }], "benefit": "Flash" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

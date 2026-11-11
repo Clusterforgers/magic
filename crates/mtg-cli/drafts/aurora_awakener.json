@@ -1,0 +1,132 @@
+{
+  "oracle_id": "cf9d13e2-bdcc-4c66-95ad-654ef795dbd3",
+  "name": "Aurora Awakener",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aurora Awakener",
+      "oracle_fingerprint": "864952bbe5a95a6ce00d41b66471f922",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    }
+                  ],
+                  "count": {
+                    "Sum": [
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "Count": [{ "ControlledBy": "You" }, { "Color": "White" }] },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "Count": [{ "ControlledBy": "You" }, { "Color": "Blue" }] },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "Count": [{ "ControlledBy": "You" }, { "Color": "Black" }] },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "Count": [{ "ControlledBy": "You" }, { "Color": "Red" }] },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": { "Count": [{ "ControlledBy": "You" }, { "Color": "Green" }] },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      }
+                    ]
+                  },
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Bound": "found" },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "Is": { "Bound": "found" } }, { "In": "Library" }] }
+                  },
+                  "as": "kept",
+                  "rest_as": "unkept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "unkept" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

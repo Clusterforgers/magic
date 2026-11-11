@@ -1,0 +1,52 @@
+{
+  "oracle_id": "f95021cf-14c4-4792-8746-432bf9e7c1a9",
+  "name": "Crown of Gondor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crown of Gondor",
+      "oracle_fingerprint": "dc25b5aee42966b3fbaa682f5b4862ab",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Supertype": "Legendary" },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "if": { "Not": { "Monarch": "EachPlayer" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Keyword": {
+            "Equip": [
+              { "Mana": "{4}" },
+              {
+                "Changed": { "change": "Reduce", "mana": "{3}", "condition": { "Monarch": "You" } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

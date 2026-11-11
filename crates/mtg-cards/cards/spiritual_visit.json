@@ -1,0 +1,38 @@
+{
+  "oracle_id": "40759025-91e1-4755-a8cf-0b68c8e9220f",
+  "name": "Spiritual Visit",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spiritual Visit",
+      "oracle_fingerprint": "e16a847479f6f8339a476be8caedabd4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 46, "end": 214 }
+          }
+        }
+      ]
+    }
+  ]
+}

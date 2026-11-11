@@ -1,0 +1,20 @@
+{
+  "oracle_id": "bf7c16db-01c9-41ed-bda6-c5326198ce77",
+  "name": "Razor Pendulum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Razor Pendulum",
+      "oracle_fingerprint": "0dc62fb3b822bba84c7a715552573a81",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": { "Compare": { "left": { "Life": "ActivePlayer" }, "op": "Le", "right": 5 } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

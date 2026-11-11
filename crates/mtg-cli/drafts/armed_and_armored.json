@@ -1,0 +1,43 @@
+{
+  "oracle_id": "3d5b6151-d985-423b-8ade-f00958bbd3f6",
+  "name": "Armed and Armored",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armed and Armored",
+      "oracle_fingerprint": "8957fc767c1e60c3be59cefcc13e0e73",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Dwarf" }, { "ControlledBy": "You" }] },
+                  "as": "dwarf"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] }
+                  },
+                  "as": "equipment"
+                }
+              },
+              { "Attach": { "what": { "Bound": "equipment" }, "to": { "Bound": "dwarf" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

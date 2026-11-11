@@ -1,0 +1,21 @@
+{
+  "oracle_id": "9b7d037f-3269-4e3b-9744-a977acb69c67",
+  "name": "Incinerator of the Guilty",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Incinerator of the Guilty",
+      "oracle_fingerprint": "3d2f7fd0027d0c38e2f9c6f825d1198f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 16, "end": 290 }
+          }
+        }
+      ]
+    }
+  ]
+}

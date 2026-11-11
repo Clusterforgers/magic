@@ -1,0 +1,70 @@
+{
+  "oracle_id": "a7ebe748-c3de-402f-8a6e-236a6413c0f8",
+  "name": "Lobotomy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lobotomy",
+      "oracle_fingerprint": "48ef53fd31c379bd8c8d3d20530b0a40",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      {
+                        "AnyOf": [
+                          { "Not": { "Supertype": "Basic" } },
+                          { "Not": { "Type": "Land" } }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "OwnedBy": { "Target": 0 } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Hand" }] },
+                      { "SharesName": { "Bound": "chosen" } }
+                    ]
+                  }
+                }
+              },
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "filter": [{ "SharesName": { "Bound": "chosen" } }],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "OwnedBy": { "Target": 0 } },
+                        { "In": "Library" },
+                        { "SharesName": { "Bound": "chosen" } }
+                      ]
+                    }
+                  },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

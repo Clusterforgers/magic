@@ -1,0 +1,57 @@
+{
+  "oracle_id": "b15c8f43-685d-4901-9cad-47bc6dc6346f",
+  "name": "Jiang Yanggu",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jiang Yanggu",
+      "oracle_fingerprint": "be5785cd922a543f30d0a4f4e997ec16",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 50, "end": 152 }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 5 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Trample" },
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "toughness": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

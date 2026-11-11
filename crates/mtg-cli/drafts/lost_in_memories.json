@@ -1,0 +1,52 @@
+{
+  "oracle_id": "69ac3757-66f8-47d4-af7b-dda66c96c254",
+  "name": "Lost in Memories",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lost in Memories",
+      "oracle_fingerprint": "c644ed2dcb8dd410a3d3f1565bf7b33a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "targets": [
+                      {
+                        "what": {
+                          "Object": [
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" }
+                          ]
+                        }
+                      }
+                    ],
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

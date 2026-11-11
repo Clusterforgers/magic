@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b608288e-1755-4738-b828-9df6998bae8d",
+  "name": "Illusion Spinners",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Illusion Spinners",
+      "oracle_fingerprint": "07fe92fc738c6915714c6ef67188b7fd",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 71 } }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Untapped"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

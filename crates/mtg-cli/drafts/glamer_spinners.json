@@ -1,0 +1,40 @@
+{
+  "oracle_id": "b881abd7-1fe7-4404-b9ba-fb64869126fc",
+  "name": "Glamer Spinners",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glamer Spinners",
+      "oracle_fingerprint": "a4e869038c4fd9ddf030bb0868885695",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Not": { "Is": { "Target": 0 } } },
+                      { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                    ]
+                  },
+                  "as": "new_host"
+                }
+              },
+              {
+                "Attach": {
+                  "what": { "Each": [{ "Subtype": "Aura" }, { "AttachedTo": { "Target": 0 } }] },
+                  "to": { "Bound": "new_host" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

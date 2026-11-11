@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0e7b02fd-f2a3-493c-939b-ff9bca337774",
+  "name": "Brine Elemental",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Brine Elemental",
+      "oracle_fingerprint": "ddefb161a57389c3ecfc9a58e215da88",
+      "abilities": [
+        { "Keyword": { "Morph": "{5}{U}{U}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 123, "end": 203 }
+          }
+        }
+      ]
+    }
+  ]
+}

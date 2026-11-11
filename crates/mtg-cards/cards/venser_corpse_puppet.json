@@ -1,0 +1,21 @@
+{
+  "oracle_id": "17c934a7-3480-4309-a217-ca2550538ae7",
+  "name": "Venser, Corpse Puppet",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Venser, Corpse Puppet",
+      "oracle_fingerprint": "a02ece19a92ac86b1c61ad54309679b2",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Toxic": 1 } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 18, "end": 296 }
+          }
+        }
+      ]
+    }
+  ]
+}

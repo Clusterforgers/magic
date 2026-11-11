@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c20a96f7-aa5a-4c15-b8b1-806685c99b27",
+  "name": "Bolt Bend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bolt Bend",
+      "oracle_fingerprint": "d3ac9a20f119efbd9d8a5686ecb159cd",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{3}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    "SingleTarget"
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

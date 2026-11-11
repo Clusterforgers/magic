@@ -1,0 +1,56 @@
+{
+  "oracle_id": "f1b7488c-c675-42e9-818a-24a50347ec2c",
+  "name": "Peter Parker // Amazing Spider-Man",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Peter Parker",
+      "oracle_fingerprint": "dab1065ea14cb76c2597cf4bdf9dc66f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spider",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spider"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}{U}{G}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Amazing Spider-Man",
+      "oracle_fingerprint": "ad221ded02d99578b5bcfded0c72222e",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Reach" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 219 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "45a87131-ae8a-4e6d-9ac0-e52b4795691b",
+  "name": "Splinter, Aging Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Splinter, Aging Champion",
+      "oracle_fingerprint": "52d61c4fd22fc1e687cb69ea161b114e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Tapped"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "targets": [{ "what": { "Another": { "what": "Player", "earlier": [] } } }],
+            "effects": [{ "Draw": {} }, { "Draw": { "who": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

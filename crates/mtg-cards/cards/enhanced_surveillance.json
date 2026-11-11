@@ -1,0 +1,29 @@
+{
+  "oracle_id": "bfb5104b-01e3-4d37-ac93-1dc342121531",
+  "name": "Enhanced Surveillance",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Enhanced Surveillance",
+      "oracle_fingerprint": "d2b72069638c73fecb2de864d93adb4e",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 62 } }
+        },
+        {
+          "Activated": {
+            "cost": ["ExileSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

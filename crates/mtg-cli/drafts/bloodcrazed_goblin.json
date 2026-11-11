@@ -1,0 +1,26 @@
+{
+  "oracle_id": "a10e5b31-c9c1-45ca-85cc-4a50ed8c4946",
+  "name": "Bloodcrazed Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodcrazed Goblin",
+      "oracle_fingerprint": "db06c3dd5693b04bd4bc848fe1e376aa",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack"],
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Opponents", "what": "DamageTaken" } },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

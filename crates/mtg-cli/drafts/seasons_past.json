@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c46738a4-e0d4-41dc-a20d-4800f00cea62",
+  "name": "Seasons Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seasons Past",
+      "oracle_fingerprint": "af98ba6f5d68be34b2ba91fb343c3950",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "zone": "Graveyard",
+                  "filter": [],
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] }
+                  },
+                  "distinct": true,
+                  "as": "cards"
+                }
+              },
+              { "Move": { "what": { "Bound": "cards" }, "to": "Hand" } },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

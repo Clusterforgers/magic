@@ -1,0 +1,62 @@
+{
+  "oracle_id": "3a58d68c-7683-4543-a929-8ef12641a564",
+  "name": "Decaying Soil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Decaying Soil",
+      "oracle_fingerprint": "7af660528a970ff391aed16bac1a9a83",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "ZoneChange": {
+                        "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "OwnedBy": "You" }],
+                        "from": "Battlefield",
+                        "to": "Graveyard"
+                      }
+                    },
+                    "effects": [
+                      {
+                        "Pay": {
+                          "cost": "{1}",
+                          "paid": [{ "Move": { "what": "Triggering", "to": "Hand" } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

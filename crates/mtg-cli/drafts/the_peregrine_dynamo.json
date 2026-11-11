@@ -1,0 +1,33 @@
+{
+  "oracle_id": "da21f1a7-65d0-46d0-8ad1-f84a387ba753",
+  "name": "The Peregrine Dynamo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Peregrine Dynamo",
+      "oracle_fingerprint": "342c25c85962e05643a3ba352a589b31",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "ControlledBy": "You" },
+                    "Other",
+                    { "Supertype": "Legendary" },
+                    { "Not": "Commander" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopyAbility": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

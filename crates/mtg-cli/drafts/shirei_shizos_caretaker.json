@@ -1,0 +1,53 @@
+{
+  "oracle_id": "7b5c3d28-6d8b-488b-b088-567b24faadc7",
+  "name": "Shirei, Shizo's Caretaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shirei, Shizo's Caretaker",
+      "oracle_fingerprint": "f4de81557952049c7ef93db06fa959c1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 1 } },
+                  { "OwnedBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "If": {
+                              "condition": {
+                                "Compare": { "left": { "Count": ["This"] }, "op": "Ge", "right": 1 }
+                              },
+                              "then": [
+                                { "Move": { "what": "Triggering", "to": { "Battlefield": {} } } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

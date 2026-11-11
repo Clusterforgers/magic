@@ -1,0 +1,38 @@
+{
+  "oracle_id": "49554441-bb48-4829-b8d6-55e687a6c2e2",
+  "name": "Declaration in Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Declaration in Stone",
+      "oracle_fingerprint": "de937e85a101329eae44bfccfdac7671",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": { "ControllerOf": { "Target": 0 } } },
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesName": { "Target": 0 } }] }
+                    ]
+                  }
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": { "Named": "clue" },
+                  "count": { "Exiled": [{ "Type": "Creature" }, { "Not": "Token" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

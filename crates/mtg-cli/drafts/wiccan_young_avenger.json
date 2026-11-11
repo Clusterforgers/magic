@@ -1,0 +1,29 @@
+{
+  "oracle_id": "a317d5f4-a998-4f72-b080-5345bc7cc668",
+  "name": "Wiccan, Young Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wiccan, Young Avenger",
+      "oracle_fingerprint": "05e3cd8d35438ab01f7cae3ad85d7413",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilYourNextEndStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

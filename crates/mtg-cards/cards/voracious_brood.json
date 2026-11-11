@@ -1,0 +1,41 @@
+{
+  "oracle_id": "aeee8308-76aa-4ed5-b7b2-04fb9e29c676",
+  "name": "Voracious Brood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voracious Brood",
+      "oracle_fingerprint": "b7d5f3521fe488b1bdc915f590a4a6b7",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Count": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "OwnedBy": "You" }],
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

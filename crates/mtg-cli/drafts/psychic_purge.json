@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6af596d2-f075-4f55-b088-a5237fcdaa51",
+  "name": "Psychic Purge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Psychic Purge",
+      "oracle_fingerprint": "ddf3a40987506676a6c14c3b451e1eaf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": { "Discarded": { "what": ["This"], "by": "You" } },
+                "by": "Opponents"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "LoseLife": { "who": { "ControllerOf": "Dealer" }, "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

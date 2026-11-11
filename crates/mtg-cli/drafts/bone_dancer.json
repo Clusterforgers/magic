@@ -1,0 +1,45 @@
+{
+  "oracle_id": "13b5c9ef-d0e3-453d-ae5e-8de4f310cc38",
+  "name": "Bone Dancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bone Dancer",
+      "oracle_fingerprint": "85b5b64d969c13d846637e363a057dbc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "Defending" },
+                            { "Type": "Creature" },
+                            "TopCreatureOfGraveyard"
+                          ]
+                        },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

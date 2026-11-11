@@ -1,0 +1,55 @@
+{
+  "oracle_id": "4548d471-e78a-473e-84d4-cd2af64c9d28",
+  "name": "Strength-Testing Hammer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strength-Testing Hammer",
+      "oracle_fingerprint": "b9f287baff4c87f9008ae7063e4872ac",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "HasAttached": ["This"] }] } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "Triggering",
+                            "mods": [
+                              { "ModifyPT": { "power": { "DieResult": "Only" }, "toughness": 0 } }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "Triggering",
+                      "selector": [
+                        { "GreatestAmong": { "stat": "Power", "group": [{ "Type": "Creature" }] } }
+                      ]
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

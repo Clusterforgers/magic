@@ -1,0 +1,46 @@
+{
+  "oracle_id": "57b37690-0fb6-4e78-9210-4a529a6ade7c",
+  "name": "Bring the Ending",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bring the Ending",
+      "oracle_fingerprint": "e69feb95a9d674b6f3bb07380e8b4f98",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Counters": {
+                          "on": { "ControllerOf": { "Target": 0 } },
+                          "counter": "poison"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }],
+                  "otherwise": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "cost": "{2}",
+                        "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

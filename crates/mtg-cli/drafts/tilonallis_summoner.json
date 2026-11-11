@@ -1,0 +1,59 @@
+{
+  "oracle_id": "830d3450-18e7-4bac-b330-3906ef5e4514",
+  "name": "Tilonalli's Summoner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tilonalli's Summoner",
+      "oracle_fingerprint": "090190a8569866abb1bd2b286d6805ea",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}{R}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elemental",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elemental"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": "X",
+                        "tapped": true,
+                        "attacking": true,
+                        "as": "tokens"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "If": {
+                              "condition": { "Not": { "CitysBlessing": "You" } },
+                              "then": [{ "Exile": { "what": { "Bound": "tokens" } } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

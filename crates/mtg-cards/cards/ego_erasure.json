@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a7a47969-b29a-4f99-9500-29c59af43c48",
+  "name": "Ego Erasure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ego Erasure",
+      "oracle_fingerprint": "5db0547c84862f925395a5e4de1867e0",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": -2, "toughness": 0 } },
+                    { "SetCreatureTypes": [] }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

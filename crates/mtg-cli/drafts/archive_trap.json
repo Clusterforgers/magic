@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d412b175-2365-4b2c-a8f5-3e4e9d06280d",
+  "name": "Archive Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archive Trap",
+      "oracle_fingerprint": "a9c22ab8729692e86254596c8fd1420c",
+      "abilities": [
+        { "FreeCast": { "condition": { "Searched": { "who": "Opponents", "zone": "Library" } } } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 13 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

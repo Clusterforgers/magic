@@ -1,0 +1,20 @@
+{
+  "oracle_id": "97d61346-bd53-4eb8-a920-6ae0382eb20d",
+  "name": "Thief of Blood",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thief of Blood",
+      "oracle_fingerprint": "f214c2fb10357c5925c3f6819cf21153",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 155 }
+          }
+        }
+      ]
+    }
+  ]
+}

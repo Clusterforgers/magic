@@ -1,0 +1,26 @@
+{
+  "oracle_id": "afeba4d7-b659-4fb1-84dd-27704fbb2621",
+  "name": "Master Biomancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master Biomancer",
+      "oracle_fingerprint": "29ed4ccad606a34b2ff1f1207e949b89",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] }
+            },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": { "Stat": { "of": "This", "stat": "Power" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

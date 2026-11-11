@@ -1,0 +1,72 @@
+{
+  "oracle_id": "7849426d-895d-4dfe-a94d-b8df634618a5",
+  "name": "Apple of Eden, Isu Relic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Apple of Eden, Isu Relic",
+      "oracle_fingerprint": "ea17e7077d8276cc114c78a12f0aaee9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 4 }, "SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtHand": { "of": { "Target": 0 } } },
+              {
+                "ExileHidden": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Is": { "Bound": "exiled" } }],
+                      "from": "Exile",
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      {
+                        "Did": {
+                          "action": "PlayedLand",
+                          "who": "You",
+                          "what": [{ "SameCard": { "Bound": "exiled" } }]
+                        }
+                      },
+                      {
+                        "SpellCast": {
+                          "what": [{ "SameCard": { "Bound": "exiled" } }],
+                          "by": "You"
+                        }
+                      }
+                    ]
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": { "who": { "OwnerOf": "Triggering" } } }]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Move": { "what": { "Bound": "exiled" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

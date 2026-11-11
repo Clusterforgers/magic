@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d2a61132-d881-4c80-92f1-a151d835832a",
+  "name": "Soldevi Sentry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soldevi Sentry",
+      "oracle_fingerprint": "43090cdebb029cc696d0f5d312713516",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Regenerate": { "what": "This" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "Did": { "action": "Regenerated", "what": ["This"] } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Target": 0 },
+                        "effects": [{ "Draw": { "who": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

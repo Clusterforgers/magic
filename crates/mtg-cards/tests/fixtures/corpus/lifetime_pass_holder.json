@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "fede7f75-0dff-4f3e-816d-e52b43e8b33b",
+  "oracle_id": "7bf6f13a-3c90-4bda-bc84-e026828bf4d1",
+  "multiverse_ids": [
+    580654
+  ],
+  "tcgplayer_id": 286837,
+  "cardmarket_id": 676023,
+  "name": "\"Lifetime\" Pass Holder",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/fede7f75-0dff-4f3e-816d-e52b43e8b33b",
+  "scryfall_uri": "https://scryfall.com/card/unf/79/lifetime-pass-holder?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:29:38Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/e/fede7f75-0dff-4f3e-816d-e52b43e8b33b.jpg?1783920578",
+    "normal": "https://cards.scryfall.io/normal/front/f/e/fede7f75-0dff-4f3e-816d-e52b43e8b33b.jpg?1783920578",
+    "large": "https://cards.scryfall.io/large/front/f/e/fede7f75-0dff-4f3e-816d-e52b43e8b33b.jpg?1783920578",
+    "png": "https://cards.scryfall.io/png/front/f/e/fede7f75-0dff-4f3e-816d-e52b43e8b33b.png?1783920578",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/e/fede7f75-0dff-4f3e-816d-e52b43e8b33b.jpg?1783920578",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/e/fede7f75-0dff-4f3e-816d-e52b43e8b33b.jpg?1783920578",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/e/fede7f75-0dff-4f3e-816d-e52b43e8b33b.webp?1783920578",
+    "grid": "https://cards.scryfall.io/grid/front/f/e/fede7f75-0dff-4f3e-816d-e52b43e8b33b.webp?1783920578",
+    "display": "https://cards.scryfall.io/display/front/f/e/fede7f75-0dff-4f3e-816d-e52b43e8b33b.webp?1783920578",
+    "art": "https://cards.scryfall.io/art/front/f/e/fede7f75-0dff-4f3e-816d-e52b43e8b33b.webp?1783920578",
+    "crop": "https://cards.scryfall.io/crop/front/f/e/fede7f75-0dff-4f3e-816d-e52b43e8b33b.webp?1783920578",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/e/fede7f75-0dff-4f3e-816d-e52b43e8b33b.jpg?1783920578"
+  },
+  "mana_cost": "{B}",
+  "cmc": 1.0,
+  "type_line": "Creature — Zombie Guest",
+  "oracle_text": "This creature enters tapped.\nWhen this creature dies, open an Attraction.\nWhenever you roll to visit your Attractions, if you roll a 6, you may return this card from your graveyard to the battlefield.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Roll to Visit Your Attractions",
+    "Open an Attraction"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "banned",
+    "pauper": "not_legal",
+    "vintage": "banned",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "banned",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "banned",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/fede7f75-0dff-4f3e-816d-e52b43e8b33b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7bf6f13a-3c90-4bda-bc84-e026828bf4d1&unique=prints",
+  "collector_number": "79",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jeff Miracola",
+  "artist_ids": [
+    "9b465bde-3656-4495-ace4-af4ce29999ed"
+  ],
+  "illustration_id": "30555f2c-9864-42fc-a8b1-3af6c94311ab",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 12305,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1596322656",
+    "previewed_at": "2022-09-20"
+  },
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": "0.44",
+    "usd_etched": null,
+    "eur": "0.49",
+    "eur_foil": "0.54",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580654&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3D%2522Lifetime%2522%2BPass%2BHolder",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3D%2522Lifetime%2522%2BPass%2BHolder",
+    "edhrec": "https://edhrec.com/route/?cc=%22Lifetime%22+Pass+Holder"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F286837%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=676023&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=%22Lifetime%22+Pass+Holder&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

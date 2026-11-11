@@ -1,0 +1,23 @@
+{
+  "oracle_id": "3bf3e503-0628-4550-84a9-7c1dd0a97457",
+  "name": "Baaallerina",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Baaallerina",
+      "oracle_fingerprint": "66cd329043877af99251574faa95e907",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 92 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 93, "end": 182 }
+          }
+        }
+      ]
+    }
+  ]
+}

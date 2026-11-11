@@ -1,0 +1,15 @@
+{
+  "oracle_id": "caab67eb-65e7-4755-b116-6977e97f0844",
+  "name": "Leyline of Mutation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Leyline of Mutation",
+      "oracle_fingerprint": "dffdd92e75fa4e325dbd7fb8ed39c477",
+      "abilities": [
+        "OpeningHand",
+        { "Rule": { "rule": { "MayCast": { "rather": "{W}{U}{B}{R}{G}" } } } }
+      ]
+    }
+  ]
+}

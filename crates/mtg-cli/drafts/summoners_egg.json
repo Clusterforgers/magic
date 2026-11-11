@@ -1,0 +1,60 @@
+{
+  "oracle_id": "2209ebd4-1131-4b8e-b0f5-aa9506dc0057",
+  "name": "Summoner's Egg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Summoner's Egg",
+      "oracle_fingerprint": "1ad8d9de4a7e705db8e239555a7f5986",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "as": "card"
+                      }
+                    },
+                    { "ExileHidden": { "what": { "Bound": "card" } } },
+                    { "Remember": { "what": { "Bound": "card" }, "slot": "imprinted" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Reveal": { "what": { "Remembered": { "on": "This", "slot": "imprinted" } } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Remembered": { "on": "This", "slot": "imprinted" } },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Remembered": { "on": "This", "slot": "imprinted" } },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

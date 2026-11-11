@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8b2b00ab-f1c5-4057-9957-d7daac95a847",
+  "name": "Atris, Oracle of Half-Truths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Atris, Oracle of Half-Truths",
+      "oracle_fingerprint": "67d1b84c978b21b763d0fe37f054466a",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "SeparatePiles": {
+                  "who": { "Target": 0 },
+                  "what": { "Bound": "top" },
+                  "chooser": "You",
+                  "as": "pile",
+                  "rest_as": "other"
+                }
+              },
+              { "Move": { "what": { "Bound": "pile" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "other" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

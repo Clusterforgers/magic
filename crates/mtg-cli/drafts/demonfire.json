@@ -1,0 +1,50 @@
+{
+  "oracle_id": "314a5c76-1a68-433b-a383-1834400254a8",
+  "name": "Demonfire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonfire",
+      "oracle_fingerprint": "d17405850a2aca7c378a297fe954446d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": { "to": { "Target": 0 }, "amount": "X", "unpreventable": true }
+                    }
+                  ],
+                  "otherwise": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "DamagedBy": "This" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

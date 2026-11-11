@@ -1,0 +1,22 @@
+{
+  "oracle_id": "69d994f2-b8f6-425f-9655-977c2144d40c",
+  "name": "Trinisphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trinisphere",
+      "oracle_fingerprint": "61c7edf815409873168a5037d6320819",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [],
+            "change": "Increase",
+            "mana": "{0}",
+            "condition": { "Matches": { "subject": "This", "selector": ["Untapped"] } },
+            "least": 3
+          }
+        }
+      ]
+    }
+  ]
+}

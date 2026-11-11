@@ -1,0 +1,22 @@
+{
+  "oracle_id": "603e518c-8f12-432c-ae03-790db5be77bf",
+  "name": "Cosmos Charger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cosmos Charger",
+      "oracle_fingerprint": "851a127d670e21d1ce7a89e5ef5232b8",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 13, "end": 98 }
+          }
+        },
+        { "Keyword": { "Foretell": "{2}{U}" } }
+      ]
+    }
+  ]
+}

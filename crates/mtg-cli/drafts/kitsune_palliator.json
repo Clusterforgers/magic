@@ -1,0 +1,50 @@
+{
+  "oracle_id": "ed854708-5a65-4293-bebc-d7c639407ba5",
+  "name": "Kitsune Palliator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kitsune Palliator",
+      "oracle_fingerprint": "0e4ab4e8e96e4ad4ca7f432120edf17d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }] },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "to": { "Bound": "creature" } } },
+                        "by": { "PreventUpTo": 1 },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "to": { "Bound": "player" } } },
+                        "by": { "PreventUpTo": 1 },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

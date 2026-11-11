@@ -1,0 +1,35 @@
+{
+  "oracle_id": "94b15f1d-827b-45e9-a684-5d0c52ea0a09",
+  "name": "Hide in Plain Sight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hide in Plain Sight",
+      "oracle_fingerprint": "1a8c4f0065a260fb888b775055c46f8a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "top" },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "cloaked",
+                  "rest_as": "rest"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              { "Cloak": { "count": 2, "as": "cloak" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

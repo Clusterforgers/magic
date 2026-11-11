@@ -1,0 +1,38 @@
+{
+  "oracle_id": "c5e817f9-a003-45b5-8e16-1746e6096166",
+  "name": "Karn's Sylex",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Karn's Sylex",
+      "oracle_fingerprint": "43b93ee7c75ed7262a3baab56984dd19",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 28, "end": 118 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap", "ExileSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

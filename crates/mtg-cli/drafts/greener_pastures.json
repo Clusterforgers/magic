@@ -1,0 +1,52 @@
+{
+  "oracle_id": "f9e1346a-af72-4644-b384-8f7b0a35ec31",
+  "name": "Greener Pastures",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greener Pastures",
+      "oracle_fingerprint": "a3b18223a74ab7e7c430c3d8d2b3c788",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "Triggering" }] },
+                "op": "Gt",
+                "right": {
+                  "Largest": {
+                    "who": {
+                      "PlayersWhere": {
+                        "who": "EachPlayer",
+                        "test": { "Not": { "Among": "Triggering" } }
+                      }
+                    },
+                    "of": [{ "Type": "Land" }]
+                  }
+                }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "Triggering",
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

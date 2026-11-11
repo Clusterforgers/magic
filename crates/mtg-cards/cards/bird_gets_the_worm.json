@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2ce375c8-7c37-40b3-95cf-e0aa958bb317",
+  "name": "_____ Bird Gets the Worm",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "_____ Bird Gets the Worm",
+      "oracle_fingerprint": "ba0a15ac3bdd75111f740a67f7c6bf61",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 179 }
+          }
+        }
+      ]
+    }
+  ]
+}

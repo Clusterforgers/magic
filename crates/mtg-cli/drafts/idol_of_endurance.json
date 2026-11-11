@@ -1,0 +1,53 @@
+{
+  "oracle_id": "6b946317-8a66-41b7-b902-308784d69b90",
+  "name": "Idol of Endurance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Idol of Endurance",
+      "oracle_fingerprint": "0d60b9b130e213749a2a9b40454bdcf4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "In": "Graveyard" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                    ]
+                  },
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Type": "Creature" }, { "ExiledWith": "This" }],
+                      "from": "Exile",
+                      "free": true,
+                      "once": true
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

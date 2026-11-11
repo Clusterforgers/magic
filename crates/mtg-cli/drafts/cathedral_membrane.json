@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0297eeb2-47ec-4f9a-b1ad-4e7286994f00",
+  "name": "Cathedral Membrane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cathedral Membrane",
+      "oracle_fingerprint": "9bc2064291f77e06c9dbc6de1137e688",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": "InCombat",
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "BlockedBy": "This" }] },
+                  "amount": 6
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "5966c464-5f63-4c71-9317-e2ca79da5aba",
+  "name": "Archmage Ascension",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archmage Ascension",
+      "oracle_fingerprint": "ae9c14d7eaff337615208316611d4dd3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [
+                {
+                  "Either": {
+                    "first": [
+                      { "Search": { "filter": [], "as": "card" } },
+                      { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                      { "Shuffle": {} }
+                    ],
+                    "second": [{ "Draw": {} }]
+                  }
+                }
+              ]
+            },
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                "op": "Ge",
+                "right": 6
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

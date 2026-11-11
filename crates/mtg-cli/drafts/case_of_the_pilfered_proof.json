@@ -1,0 +1,58 @@
+{
+  "oracle_id": "68d3084b-0f4b-44a6-8954-6ebaf1db9269",
+  "name": "Case of the Pilfered Proof",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Case of the Pilfered Proof",
+      "oracle_fingerprint": "2c77c7ed2a78214fffe0c4cd050ecd5c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Detective" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                },
+                {
+                  "TurnedFaceUp": {
+                    "what": [{ "Subtype": "Detective" }, { "ControlledBy": "You" }]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                { "Not": { "Matches": { "subject": "This", "selector": ["Solved"] } } },
+                {
+                  "Compare": {
+                    "left": { "Count": [{ "Subtype": "Detective" }, { "ControlledBy": "You" }] },
+                    "op": "Ge",
+                    "right": 3
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Solve": { "what": "This" } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "TokenCreation": {} },
+            "by": { "Plus": [{ "CreateToken": { "token": { "Named": "clue" } } }] },
+            "condition": { "Matches": { "subject": "This", "selector": ["Solved"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

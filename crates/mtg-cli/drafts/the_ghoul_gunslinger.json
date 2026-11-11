@@ -1,0 +1,41 @@
+{
+  "oracle_id": "ddfa5c7d-bc47-43e0-9607-b3baa8e6a17d",
+  "name": "The Ghoul, Gunslinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Ghoul, Gunslinger",
+      "oracle_fingerprint": "5d4a58d281c3c629c6505312e22c770e",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": ["This", { "Subtype": "Zombie" }, { "Subtype": "Mutant" }] },
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "rad" }, "count": 2 }
+              },
+              {
+                "If": {
+                  "condition": { "Among": { "Target": 0 } },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

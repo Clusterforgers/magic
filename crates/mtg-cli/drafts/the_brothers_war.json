@@ -1,0 +1,81 @@
+{
+  "oracle_id": "43040c34-acad-4d62-893d-fd606fa9d8fe",
+  "name": "The Brothers' War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Brothers' War",
+      "oracle_fingerprint": "a1af7d832e33a7ed510ba981bb978e5b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "powerstone" }, "count": 2, "tapped": true } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Another": { "what": "Player", "earlier": [0] } } }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttackPlayers": {
+                      "who": {
+                        "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                      },
+                      "players": { "Target": 1 }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttackPlayers": {
+                      "who": {
+                        "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 1 } }]
+                      },
+                      "players": { "Target": 0 }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              { "what": "AnyTarget" },
+              { "what": { "Another": { "what": "AnyTarget", "earlier": [0] } } }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": { "Target": 1 },
+                  "amount": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

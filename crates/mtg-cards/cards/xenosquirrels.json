@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d5c54df9-437e-46e1-94cf-91d9f1d343b6",
+  "name": "Xenosquirrels",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Xenosquirrels",
+      "oracle_fingerprint": "5f353b2785642a632f72da7870c838fa",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 52, "end": 173 }
+          }
+        }
+      ]
+    }
+  ]
+}

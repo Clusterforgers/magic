@@ -1,0 +1,26 @@
+{
+  "oracle_id": "70bfb805-2009-44c8-b5bd-2ca281637566",
+  "name": "Obscuring Aether",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Obscuring Aether",
+      "oracle_fingerprint": "95459ca1980dc6bc1673228ab81a0da0",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "FaceDown", { "Type": "Creature" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 58, "end": 127 }
+          }
+        }
+      ]
+    }
+  ]
+}

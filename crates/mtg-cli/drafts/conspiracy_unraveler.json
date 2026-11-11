@@ -1,0 +1,15 @@
+{
+  "oracle_id": "e4541d02-2860-46ef-b630-1d6307b60766",
+  "name": "Conspiracy Unraveler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conspiracy Unraveler",
+      "oracle_fingerprint": "046eb770e29960edad8bd80e45b3b043",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "MayCast": { "rather": [{ "CollectEvidence": 10 }] } } } }
+      ]
+    }
+  ]
+}

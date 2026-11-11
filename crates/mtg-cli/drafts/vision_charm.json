@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c56d2c5b-c3e3-4236-bc38-286e250aa4f7",
+  "name": "Vision Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vision Charm",
+      "oracle_fingerprint": "3544eada5af140b03d39de09c17f95b4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 4 } }]
+                    },
+                    {
+                      "effects": [
+                        { "ChooseValue": { "kind": "LandType", "as": "first" } },
+                        {
+                          "ChooseValue": {
+                            "kind": {
+                              "Options": ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+                            },
+                            "as": "second"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "Type": "Land" }, { "ChosenAs": "first" }] },
+                            "mods": [{ "SetLandTypesChosen": "second" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "PhaseOut": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

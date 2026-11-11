@@ -1,0 +1,30 @@
+{
+  "oracle_id": "4ade4e30-4008-4931-b88e-605776a96b58",
+  "name": "Rivals' Duel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rivals' Duel",
+      "oracle_fingerprint": "4bea40bb492f8c72eb35f313741d07a7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Is": { "Target": 0 } } },
+                    { "Not": { "SharesSubtype": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

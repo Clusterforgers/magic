@@ -1,0 +1,24 @@
+{
+  "oracle_id": "a5852994-d816-4e62-8a03-254223714544",
+  "name": "Final Parting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Final Parting",
+      "oracle_fingerprint": "525f8dd03d410c051be8c40a1b061827",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "count": { "min": 2, "max": 2 }, "as": "card" } },
+              { "Choose": { "from": { "Bound": "card" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

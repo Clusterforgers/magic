@@ -1,0 +1,38 @@
+{
+  "oracle_id": "9abd2286-23e9-49cd-be53-39423890f35c",
+  "name": "Capricious Efreet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Capricious Efreet",
+      "oracle_fingerprint": "32bd7810a16664ebfea3dd4db1aea4bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "Not": { "ControlledBy": "You" } }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "Each": [{ "AnyOf": [{ "Is": { "Target": 0 } }, { "Is": { "Target": 1 } }] }]
+                  },
+                  "as": "victim"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "victim" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

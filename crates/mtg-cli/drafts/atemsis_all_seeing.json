@@ -1,0 +1,51 @@
+{
+  "oracle_id": "f557aa26-8b79-4116-9249-a067b21b88ef",
+  "name": "Atemsis, All-Seeing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Atemsis, All-Seeing",
+      "oracle_fingerprint": "32e4bcd82098b6def0b769be8f4421ab",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "effects": [{ "Draw": { "count": 2 } }, { "Discard": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Reveal": { "what": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }] } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Distinct": {
+                                "of": [{ "OwnedBy": "You" }, { "In": "Hand" }],
+                                "stat": "ManaValue"
+                              }
+                            },
+                            "op": "Ge",
+                            "right": 6
+                          }
+                        },
+                        "then": [{ "LoseGame": { "who": "TriggeringPlayer" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

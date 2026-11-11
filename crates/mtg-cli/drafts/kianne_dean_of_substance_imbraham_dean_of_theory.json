@@ -1,0 +1,106 @@
+{
+  "oracle_id": "9eab65ee-e8be-4fa6-9634-fb03582bd745",
+  "name": "Kianne, Dean of Substance // Imbraham, Dean of Theory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kianne, Dean of Substance",
+      "oracle_fingerprint": "e01b4bf9f4cfa2472a5ffe284020d194",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "ExileTop": { "as": "top" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Bound": "top" }, "selector": [{ "Type": "Land" }] }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "top" }, "to": "Hand" } }],
+                  "otherwise": [
+                    { "PutCounters": { "on": { "Bound": "top" }, "counter": { "Other": "study" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}{G}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fractal",
+                      "colors": ["Green", "Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fractal"],
+                      "power": 0,
+                      "toughness": 0
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "token" },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Distinct": {
+                      "of": [
+                        { "In": "Exile" },
+                        { "OwnedBy": "You" },
+                        { "Not": { "Type": "Land" } },
+                        { "HasCounter": { "Other": "study" } }
+                      ],
+                      "stat": "ManaValue"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Imbraham, Dean of Theory",
+      "oracle_fingerprint": "15a399e7f903d7a7ac4e59423b8fc88e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}{U}{U}" }, "Tap"],
+            "effects": [
+              { "ExileTop": { "count": "X", "as": "cards" } },
+              { "PutCounters": { "on": { "Bound": "cards" }, "counter": { "Other": "study" } } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Exile" },
+                            { "OwnedBy": "You" },
+                            { "HasCounter": { "Other": "study" } }
+                          ]
+                        },
+                        "as": "pick"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "pick" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

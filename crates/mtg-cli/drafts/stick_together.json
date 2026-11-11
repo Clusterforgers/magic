@@ -1,0 +1,105 @@
+{
+  "oracle_id": "4abda0ad-0a2b-4bd9-81c7-56329e62311d",
+  "name": "Stick Together",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stick Together",
+      "oracle_fingerprint": "9afc513e85c17f1868a517b58af169a3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } },
+                            { "Subtype": "Cleric" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "cleric"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } },
+                            { "Subtype": "Rogue" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "rogue"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } },
+                            { "Subtype": "Warrior" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "warrior"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } },
+                            { "Subtype": "Wizard" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "wizard"
+                      }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [
+                          { "Type": "Creature" },
+                          { "Not": { "Is": { "Bound": "cleric" } } },
+                          { "Not": { "Is": { "Bound": "rogue" } } },
+                          { "Not": { "Is": { "Bound": "warrior" } } },
+                          { "Not": { "Is": { "Bound": "wizard" } } }
+                        ],
+                        "count": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } },
+                            { "Not": { "Is": { "Bound": "cleric" } } },
+                            { "Not": { "Is": { "Bound": "rogue" } } },
+                            { "Not": { "Is": { "Bound": "warrior" } } },
+                            { "Not": { "Is": { "Bound": "wizard" } } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "oracle_id": "42e07167-b490-46ad-9b5c-b483a4bb64e3",
+  "name": "Remorseless Punishment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Remorseless Punishment",
+      "oracle_fingerprint": "9e544851327486ca0964bf081287f2f4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "Target": 0 },
+                        "options": [
+                          [
+                            {
+                              "Pay": {
+                                "who": { "Target": 0 },
+                                "cost": [{ "Discard": { "count": 2 } }],
+                                "unpaid": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 5 } }]
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Pay": {
+                                "who": { "Target": 0 },
+                                "cost": [
+                                  {
+                                    "Sacrifice": {
+                                      "filter": [
+                                        {
+                                          "AnyOf": [
+                                            { "Type": "Creature" },
+                                            { "Type": "Planeswalker" }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ],
+                                "unpaid": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 5 } }]
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

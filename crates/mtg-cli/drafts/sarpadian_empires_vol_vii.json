@@ -1,0 +1,139 @@
+{
+  "oracle_id": "f71d55f5-f220-4cb0-9468-b8d339ab8535",
+  "name": "Sarpadian Empires, Vol. VII",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarpadian Empires, Vol. VII",
+      "oracle_fingerprint": "f654bec8dd6ccd547480e29abfba50d4",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "ChooseWord": [
+                "white Citizen",
+                "blue Camarid",
+                "black Thrull",
+                "red Goblin",
+                "green Saproling"
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "EnteredAs": "white Citizen" },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Citizen",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Citizen"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "EnteredAs": "blue Camarid" },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Camarid",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Camarid"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "EnteredAs": "black Thrull" },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Thrull",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Thrull"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "EnteredAs": "red Goblin" },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Goblin",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Goblin"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "EnteredAs": "green Saproling" },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Saproling",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Saproling"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

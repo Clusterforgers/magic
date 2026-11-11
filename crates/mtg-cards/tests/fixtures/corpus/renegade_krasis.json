@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "23b68921-0c34-4d92-83c3-21542f62c7f6",
+  "oracle_id": "7b7e622c-815a-44a0-88ff-62bbe8dd5582",
+  "multiverse_ids": [
+    369033
+  ],
+  "mtgo_id": 48306,
+  "mtgo_foil_id": 48307,
+  "tcgplayer_id": 67905,
+  "cardmarket_id": 261426,
+  "name": "Renegade Krasis",
+  "lang": "en",
+  "released_at": "2013-05-03",
+  "uri": "https://api.scryfall.com/cards/23b68921-0c34-4d92-83c3-21542f62c7f6",
+  "scryfall_uri": "https://scryfall.com/card/dgm/47/renegade-krasis?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:53:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/3/23b68921-0c34-4d92-83c3-21542f62c7f6.jpg?1783940034",
+    "normal": "https://cards.scryfall.io/normal/front/2/3/23b68921-0c34-4d92-83c3-21542f62c7f6.jpg?1783940034",
+    "large": "https://cards.scryfall.io/large/front/2/3/23b68921-0c34-4d92-83c3-21542f62c7f6.jpg?1783940034",
+    "png": "https://cards.scryfall.io/png/front/2/3/23b68921-0c34-4d92-83c3-21542f62c7f6.png?1783940034",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/3/23b68921-0c34-4d92-83c3-21542f62c7f6.jpg?1783940034",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/3/23b68921-0c34-4d92-83c3-21542f62c7f6.jpg?1783940034",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/3/23b68921-0c34-4d92-83c3-21542f62c7f6.webp?1783940034",
+    "grid": "https://cards.scryfall.io/grid/front/2/3/23b68921-0c34-4d92-83c3-21542f62c7f6.webp?1783940034",
+    "display": "https://cards.scryfall.io/display/front/2/3/23b68921-0c34-4d92-83c3-21542f62c7f6.webp?1783940034",
+    "art": "https://cards.scryfall.io/art/front/2/3/23b68921-0c34-4d92-83c3-21542f62c7f6.webp?1783940034",
+    "crop": "https://cards.scryfall.io/crop/front/2/3/23b68921-0c34-4d92-83c3-21542f62c7f6.webp?1783940034",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/3/23b68921-0c34-4d92-83c3-21542f62c7f6.jpg?1783940034"
+  },
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Beast Mutant",
+  "oracle_text": "Evolve (Whenever a creature you control enters, if that creature has greater power or toughness than this creature, put a +1/+1 counter on this creature.)\nWhenever this creature evolves, put a +1/+1 counter on each other creature you control with a +1/+1 counter on it.",
+  "power": "3",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Evolve"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c8bd8520-cd98-45cd-b533-8d40c2087426",
+  "set": "dgm",
+  "set_name": "Dragon's Maze",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/c8bd8520-cd98-45cd-b533-8d40c2087426",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adgm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dgm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/23b68921-0c34-4d92-83c3-21542f62c7f6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7b7e622c-815a-44a0-88ff-62bbe8dd5582&unique=prints",
+  "collector_number": "47",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "simic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Howard Lyon",
+  "artist_ids": [
+    "6dd06426-59fe-4b9c-aad5-6da8446a5c3d"
+  ],
+  "illustration_id": "8264310c-4746-4d27-baeb-88c575884b2e",
+  "border_color": "black",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 15043,
+  "penny_rank": 9614,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": "0.85",
+    "usd_etched": null,
+    "eur": "0.51",
+    "eur_foil": "0.77",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=369033&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRenegade%2BKrasis",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRenegade%2BKrasis",
+    "edhrec": "https://edhrec.com/route/?cc=Renegade+Krasis"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F67905%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=261426&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/48306?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

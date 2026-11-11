@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4e18d20f-f153-4607-9201-3e22591474db",
+  "name": "Quantum Reduction",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Quantum Reduction",
+      "oracle_fingerprint": "207969cfc5a22b3705fb1c6b5c4aeebc",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "teamwork", "amount": 2 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 131, "end": 206 }
+          }
+        },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": -5, "toughness": 0 } }, "LoseAbilities"]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "6a4ee425-b3b8-487d-866c-9e2d73682466",
+  "name": "Stardew Valley",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stardew Valley",
+      "oracle_fingerprint": "3714c84f74fcf4a5865aa4500181bcf0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "TapPermanents": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [{ "CreateToken": { "token": { "Named": "food" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              { "Draw": {} },
+              { "Choose": { "from": "Opponents", "as": "player" } },
+              {
+                "May": {
+                  "who": { "Bound": "player" },
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetController": { "Bound": "player" } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

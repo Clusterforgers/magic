@@ -1,0 +1,132 @@
+{
+  "oracle_id": "cd16634e-b894-4cff-9d5b-408932863c1f",
+  "name": "Noxious Vapors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Noxious Vapors",
+      "oracle_fingerprint": "e7d43204c3f2a59004b7b334606f062b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Reveal": {
+                        "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] }
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "player" } },
+                            { "Color": "White" }
+                          ]
+                        },
+                        "as": "w"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "player" } },
+                            { "Color": "Blue" },
+                            { "Not": { "Is": { "Bound": "w" } } }
+                          ]
+                        },
+                        "as": "u"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "player" } },
+                            { "Color": "Black" },
+                            { "Not": { "Is": { "Bound": "w" } } },
+                            { "Not": { "Is": { "Bound": "u" } } }
+                          ]
+                        },
+                        "as": "b"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "player" } },
+                            { "Color": "Red" },
+                            { "Not": { "Is": { "Bound": "w" } } },
+                            { "Not": { "Is": { "Bound": "u" } } },
+                            { "Not": { "Is": { "Bound": "b" } } }
+                          ]
+                        },
+                        "as": "r"
+                      }
+                    },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "player" } },
+                            { "Color": "Green" },
+                            { "Not": { "Is": { "Bound": "w" } } },
+                            { "Not": { "Is": { "Bound": "u" } } },
+                            { "Not": { "Is": { "Bound": "b" } } },
+                            { "Not": { "Is": { "Bound": "r" } } }
+                          ]
+                        },
+                        "as": "g"
+                      }
+                    },
+                    {
+                      "Discard": {
+                        "who": { "Bound": "player" },
+                        "count": {
+                          "Count": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "player" } },
+                            { "Not": { "Type": "Land" } },
+                            { "Not": { "Is": { "Bound": "w" } } },
+                            { "Not": { "Is": { "Bound": "u" } } },
+                            { "Not": { "Is": { "Bound": "b" } } },
+                            { "Not": { "Is": { "Bound": "r" } } },
+                            { "Not": { "Is": { "Bound": "g" } } }
+                          ]
+                        },
+                        "filter": [
+                          { "Not": { "Type": "Land" } },
+                          { "Not": { "Is": { "Bound": "w" } } },
+                          { "Not": { "Is": { "Bound": "u" } } },
+                          { "Not": { "Is": { "Bound": "b" } } },
+                          { "Not": { "Is": { "Bound": "r" } } },
+                          { "Not": { "Is": { "Bound": "g" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

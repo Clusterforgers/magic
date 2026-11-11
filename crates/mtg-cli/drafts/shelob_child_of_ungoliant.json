@@ -1,0 +1,59 @@
+{
+  "oracle_id": "8372115d-c963-4a41-8759-72f7f6a8935a",
+  "name": "Shelob, Child of Ungoliant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shelob, Child of Ungoliant",
+      "oracle_fingerprint": "bf6f7825a3d21f8c71b8b01c3e829633",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Spider" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Deathtouch" }, { "AddKeyword": { "Ward": "{2}" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "DamagedBy": { "Each": [{ "Subtype": "Spider" }, { "ControlledBy": "You" }] } }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": "Triggering",
+                      "except": [
+                        { "SetTypes": ["Artifact"] },
+                        { "AddSubtype": "Food" },
+                        {
+                          "GrantAbility": {
+                            "Activated": {
+                              "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+                              "effects": [{ "GainLife": { "amount": 3 } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

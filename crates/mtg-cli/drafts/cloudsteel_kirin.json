@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a34a71eb-26a4-4e37-8d3c-a0352bea491b",
+  "name": "Cloudsteel Kirin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloudsteel Kirin",
+      "oracle_fingerprint": "3a92e979721b262263a97f1a04a13ff4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddKeyword": "Flying" },
+              {
+                "GrantAbility": {
+                  "Rule": {
+                    "rule": { "CantLoseGame": { "who": "You", "opponents_cant_win": true } }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Reconfigure": "{5}" } }
+      ]
+    }
+  ]
+}

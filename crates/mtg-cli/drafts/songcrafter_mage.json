@@ -1,0 +1,39 @@
+{
+  "oracle_id": "13f0863f-ae54-4bea-8f01-7f3891797577",
+  "name": "Songcrafter Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Songcrafter Mage",
+      "oracle_fingerprint": "5d1c9a94af49902c1005ba456a7e7b14",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Harmonize": ["OwnManaCost"] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

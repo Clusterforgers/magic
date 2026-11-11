@@ -1,0 +1,27 @@
+{
+  "oracle_id": "764f6412-c4ff-4eec-9a9d-870661f97f8b",
+  "name": "Fblthp, Lost on the Range",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fblthp, Lost on the Range",
+      "oracle_fingerprint": "9045f8501037beb17b7d8f20dce1d51c",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 64, "end": 143 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 144, "end": 200 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "47630b28-c0bc-4911-8d76-33c6fcabf2d7",
+  "name": "Endless Whispers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endless Whispers",
+      "oracle_fingerprint": "94ae18b00d97fedfe475a7ac5c32eeb7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" }
+                    },
+                    "targets": [{ "what": "Opponent" }],
+                    "effects": [
+                      {
+                        "Bind": {
+                          "what": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                          "as": "card"
+                        }
+                      },
+                      {
+                        "DelayedTrigger": {
+                          "when": { "StepBegins": { "step": "End" } },
+                          "effects": [
+                            {
+                              "Move": {
+                                "what": { "Bound": "card" },
+                                "to": { "Battlefield": { "under": { "Target": 0 } } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "de384867-8bb4-4edf-b542-970538718fdd",
+  "name": "Jurin, Leading the Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jurin, Leading the Charge",
+      "oracle_fingerprint": "297c51eee6b7cc14da56c76a4c1e7b3e",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "MustBeBlocked": "AtLeastOne" } } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" },
+                            { "AttackingPlayer": { "Bound": "player" } }
+                          ]
+                        },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "toughness": 0
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "d8328d27-e27f-4c84-8ab5-cabb80a34f54",
+  "name": "Desperate Gambit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desperate Gambit",
+      "oracle_fingerprint": "6004eb090037c985037917e142793872",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "FlipCoin": {
+                  "lose": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "source": [{ "Is": { "Bound": "source" } }] } },
+                        "by": "PreventNext",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

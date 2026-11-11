@@ -1,0 +1,53 @@
+{
+  "oracle_id": "d6158860-ada8-4e39-8156-23dee2f68f79",
+  "name": "Ugin's Mastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ugin's Mastery",
+      "oracle_fingerprint": "76b458b6c442a68e472d2ac5d1789d97",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }, "Colorless"], "by": "You" } },
+            "effects": [{ "Manifest": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "GroupAttacks": { "what": [{ "ControlledBy": "You" }] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Total": {
+                    "of": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 6
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": ["FaceDown", { "Type": "Creature" }, { "ControlledBy": "You" }]
+                        },
+                        "as": "facedown"
+                      }
+                    },
+                    { "TurnFaceUp": { "what": { "Bound": "facedown" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

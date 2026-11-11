@@ -1,0 +1,41 @@
+{
+  "oracle_id": "30e5d70e-6547-483a-a4ab-4c2eed296543",
+  "name": "Raving Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raving Dead",
+      "oracle_fingerprint": "85e0915b62b0a49df5109fd463b0fe7a",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "ChooseAtRandom": { "from": "Opponents", "as": "opp" } },
+              {
+                "Rule": {
+                  "rule": { "MustAttackPlayers": { "who": "This", "players": { "Bound": "opp" } } },
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Triggering",
+                  "amount": { "Half": { "of": { "Life": "Triggering" }, "up": false } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

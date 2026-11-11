@@ -1,0 +1,62 @@
+{
+  "oracle_id": "fdac480b-03b5-4ece-b42a-e6928b609419",
+  "name": "Lullmage's Domination",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lullmage's Domination",
+      "oracle_fingerprint": "c427493e1ef0016d25b313c7c0cdf989",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "This",
+              {
+                "Targeting": [
+                  { "Type": "Creature" },
+                  {
+                    "Test": {
+                      "left": {
+                        "Count": [
+                          { "In": "Graveyard" },
+                          { "OwnedBy": { "ControllerOf": "Candidate" } }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 8
+                    }
+                  }
+                ]
+              }
+            ],
+            "change": "Reduce",
+            "mana": "{3}"
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

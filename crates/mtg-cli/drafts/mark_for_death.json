@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ad2e4ab0-d990-472d-8788-3f85215da51c",
+  "name": "Mark for Death",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mark for Death",
+      "oracle_fingerprint": "d1f13bb1151f8f7f15cd6c9da93bc87c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": { "ControllerOf": { "Target": 0 } } },
+                      { "Not": { "Is": { "Target": 0 } } }
+                    ]
+                  },
+                  "mods": ["CantBlock"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

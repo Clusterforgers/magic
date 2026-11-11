@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ce5e52c9-4cb1-42aa-8403-bcd143d68704",
+  "name": "Quarum Trench Gnomes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quarum Trench Gnomes",
+      "oracle_fingerprint": "01e66286e9511c50afaa0b144a547474",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Subtype": "Plains" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "ManaProduced": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "who": "EachPlayer",
+                      "change": { "Convert": { "from": "White", "to": "Colorless" } }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

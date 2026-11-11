@@ -1,0 +1,25 @@
+{
+  "oracle_id": "c7476beb-7923-4994-8476-bc69187ecb72",
+  "name": "Hammerheim",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Hammerheim",
+      "oracle_fingerprint": "4409c8eb311b316bb8b6d580efb4d13a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 14, "end": 82 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "1009f979-b1fa-4427-bf9e-2a533a4ca19b",
+  "name": "_____ _____ Rocketship",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "_____ _____ Rocketship",
+      "oracle_fingerprint": "a3f3ab45c518d8e791e7ce7c3d12a446",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 75 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 76, "end": 229 }
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

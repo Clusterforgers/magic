@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8695c3c1-fb4b-4429-ae33-ec186f68796b",
+  "name": "Instill Energy",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Instill Energy",
+      "oracle_fingerprint": "d08df957355c2dd4d002e2bd1d4e9fbd",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 70 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "condition": "YourTurn",
+            "limit": "OncePerTurn",
+            "effects": [{ "Untap": { "what": "Attached" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

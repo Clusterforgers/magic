@@ -1,0 +1,25 @@
+{
+  "oracle_id": "af4f192a-9565-4377-b359-835fe4396e85",
+  "name": "Fractured Powerstone",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fractured Powerstone",
+      "oracle_fingerprint": "5a753993eca7086bb9ef2f29bf6be37c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 14, "end": 67 }
+          }
+        }
+      ]
+    }
+  ]
+}

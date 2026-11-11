@@ -1,0 +1,36 @@
+{
+  "oracle_id": "16da72a3-d980-4dd8-99f2-8191cce00978",
+  "name": "Mythos of Nethroi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mythos of Nethroi",
+      "oracle_fingerprint": "6fa984928ad5c1905b874b3df163acb5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      {
+                        "Matches": {
+                          "subject": { "Target": 0 },
+                          "selector": [{ "Type": "Creature" }]
+                        }
+                      },
+                      { "All": [{ "ManaSpent": "Green" }, { "ManaSpent": "White" }] }
+                    ]
+                  },
+                  "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

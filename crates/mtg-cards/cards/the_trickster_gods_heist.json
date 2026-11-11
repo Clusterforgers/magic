@@ -1,0 +1,46 @@
+{
+  "oracle_id": "78f99c66-cb50-49e3-ab2d-e7755818ffd7",
+  "name": "The Trickster-God's Heist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Trickster-God's Heist",
+      "oracle_fingerprint": "78d6127a643266a4271566e898a21b6a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ExchangeControl": { "what": [{ "Target": 0 }], "duration": "Forever" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 143, "end": 243 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 3 } },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

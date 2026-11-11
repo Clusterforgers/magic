@@ -1,0 +1,29 @@
+{
+  "oracle_id": "92d28545-4403-4c24-8547-efab4dde6a53",
+  "name": "Skyseer's Chariot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyseer's Chariot",
+      "oracle_fingerprint": "1b11ed718f47e4334a065b6667fc84e3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "NonlandCardName" }
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["ChosenName"],
+            "change": "Increase",
+            "mana": "{2}",
+            "activating": "Every"
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

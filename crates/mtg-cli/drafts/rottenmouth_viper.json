@@ -1,0 +1,85 @@
+{
+  "oracle_id": "2c75623c-59f4-4449-ab43-9d1225185ad9",
+  "name": "Rottenmouth Viper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rottenmouth Viper",
+      "oracle_fingerprint": "3152192c2b5c0cf761f2672a84ce4d6b",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }], "count": "X" } }],
+            "required": true
+          }
+        },
+        {
+          "CostModifier": { "applies_to": ["This"], "change": "Reduce", "mana": "{1}", "per": "X" }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "blight" } } },
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": "Opponents",
+                        "as": "each",
+                        "effects": [
+                          {
+                            "OneOf": {
+                              "who": { "Bound": "each" },
+                              "options": [
+                                [
+                                  {
+                                    "Pay": {
+                                      "who": { "Bound": "each" },
+                                      "cost": [
+                                        {
+                                          "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }] }
+                                        }
+                                      ],
+                                      "unpaid": [
+                                        { "LoseLife": { "who": { "Bound": "each" }, "amount": 4 } }
+                                      ]
+                                    }
+                                  }
+                                ],
+                                [
+                                  {
+                                    "Pay": {
+                                      "who": { "Bound": "each" },
+                                      "cost": [{ "Discard": {} }],
+                                      "unpaid": [
+                                        { "LoseLife": { "who": { "Bound": "each" }, "amount": 4 } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "times": { "Counters": { "on": "This", "counter": { "Other": "blight" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

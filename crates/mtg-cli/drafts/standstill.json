@@ -1,0 +1,39 @@
+{
+  "oracle_id": "fea4cb32-0329-4199-9abe-bff0cc45882a",
+  "name": "Standstill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Standstill",
+      "oracle_fingerprint": "a5ed6367cbc83f81b1437dbab45431ba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Draw": {
+                        "who": {
+                          "PlayersWhere": {
+                            "who": "EachPlayer",
+                            "test": { "Not": { "Among": { "ControllerOf": "Triggering" } } }
+                          }
+                        },
+                        "count": 3
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "oracle_id": "d82c77a1-2b81-415d-9f18-47e059c15e01",
+  "name": "Doors of Durin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doors of Durin",
+      "oracle_fingerprint": "5c5826ae38ad78f6ee8de2c1fd977e3a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "effects": [
+              { "Scry": { "count": 2 } },
+              {
+                "May": {
+                  "effects": [
+                    { "LookAtTop": { "as": "top" } },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "top" },
+                            "selector": [{ "Type": "Creature" }]
+                          }
+                        },
+                        "then": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "top" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          },
+                          {
+                            "JoinAttack": {
+                              "what": {
+                                "Arrived": { "of": { "Bound": "top" }, "zone": "Battlefield" }
+                              }
+                            }
+                          },
+                          {
+                            "If": {
+                              "condition": {
+                                "Compare": {
+                                  "left": {
+                                    "Count": [{ "Subtype": "Dwarf" }, { "ControlledBy": "You" }]
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              "then": [
+                                {
+                                  "Continuous": {
+                                    "affected": {
+                                      "Arrived": { "of": { "Bound": "top" }, "zone": "Battlefield" }
+                                    },
+                                    "mods": [{ "AddKeyword": "Trample" }],
+                                    "duration": "UntilYourNextTurn"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "If": {
+                              "condition": {
+                                "Compare": {
+                                  "left": {
+                                    "Count": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }]
+                                  },
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              "then": [
+                                {
+                                  "Continuous": {
+                                    "affected": {
+                                      "Arrived": { "of": { "Bound": "top" }, "zone": "Battlefield" }
+                                    },
+                                    "mods": [{ "AddKeyword": "Hexproof" }],
+                                    "duration": "UntilYourNextTurn"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

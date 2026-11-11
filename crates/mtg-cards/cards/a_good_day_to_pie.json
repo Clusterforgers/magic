@@ -1,0 +1,27 @@
+{
+  "oracle_id": "92de7cf0-ac3e-46ae-86b2-7d8ebb0276e4",
+  "name": "A Good Day to Pie",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "A Good Day to Pie",
+      "oracle_fingerprint": "3f03252d5c6f6d95fac7b4f197ecc124",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 32, "end": 137 }
+          }
+        }
+      ]
+    }
+  ]
+}

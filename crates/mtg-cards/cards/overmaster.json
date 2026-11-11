@@ -1,0 +1,31 @@
+{
+  "oracle_id": "acc842a4-26e8-435a-b717-c1043b581ff8",
+  "name": "Overmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overmaster",
+      "oracle_fingerprint": "865d29eaf290302dee420da55817ae0b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "benefit": "Uncounterable"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

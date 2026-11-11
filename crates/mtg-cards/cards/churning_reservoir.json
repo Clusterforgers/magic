@@ -1,0 +1,37 @@
+{
+  "oracle_id": "9d1c5987-3572-4bf9-b01c-eb6e98a7da77",
+  "name": "Churning Reservoir",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Churning Reservoir",
+      "oracle_fingerprint": "e3c14649e62d60a60e73a93c7bd6b9ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "Not": "Token" },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "oil" } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 113, "end": 335 }
+          }
+        }
+      ]
+    }
+  ]
+}

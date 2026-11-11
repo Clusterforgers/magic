@@ -1,0 +1,49 @@
+{
+  "oracle_id": "d9dfdbbb-75b3-43d3-8ed6-371cb98a0124",
+  "name": "Makeshift Mannequin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Makeshift Mannequin",
+      "oracle_fingerprint": "65105a9550cb1062f96e4503888d481a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": { "Battlefield": { "counters": [[{ "Other": "mannequin" }, 1]] } },
+                  "as": "creature"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "creature" },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "BecomesTarget": { "what": ["This"] } },
+                          "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": { "WhileHasCounter": { "Other": "mannequin" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

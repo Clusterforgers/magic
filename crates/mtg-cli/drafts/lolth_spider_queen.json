@@ -1,0 +1,100 @@
+{
+  "oracle_id": "7a8edf45-206e-4d0e-bd69-06f1ca70d17c",
+  "name": "Lolth, Spider Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lolth, Spider Queen",
+      "oracle_fingerprint": "433249015b0dfb01ea454beb05cd684e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "loyalty" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spider",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spider"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Reach" }, { "Keyword": "Menace" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "Batch": {
+                            "DealsDamage": {
+                              "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                              "to": "Opponents",
+                              "combat": true
+                            }
+                          }
+                        },
+                        "if": {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "TriggeringPlayer", "what": "LifeLost" } },
+                            "op": "Lt",
+                            "right": 8
+                          }
+                        },
+                        "effects": [
+                          {
+                            "LoseLife": {
+                              "who": "TriggeringPlayer",
+                              "amount": {
+                                "Difference": [
+                                  8,
+                                  { "Tallied": { "who": "TriggeringPlayer", "what": "LifeLost" } }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

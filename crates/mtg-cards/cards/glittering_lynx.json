@@ -1,0 +1,20 @@
+{
+  "oracle_id": "890ffe31-642f-46e3-9f09-c744351653b5",
+  "name": "Glittering Lynx",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Glittering Lynx",
+      "oracle_fingerprint": "98920bfa89d13e50e62a4f37974c6ed1",
+      "abilities": [
+        { "Replacement": { "when": { "Damage": { "to": "This" } }, "by": "Prevent" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 57, "end": 197 }
+          }
+        }
+      ]
+    }
+  ]
+}

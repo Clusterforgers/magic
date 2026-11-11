@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0bb20c36-689f-4a7c-80b5-a12bda821847",
+  "name": "Fabrication Foundry",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fabrication Foundry",
+      "oracle_fingerprint": "831f3956ef7f8c96d4e67e6031a471f8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["White"] },
+                  "only": [
+                    { "Spell": { "types": ["Artifact"] } },
+                    { "Ability": { "types": ["Artifact"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 107, "end": 312 }
+          }
+        }
+      ]
+    }
+  ]
+}

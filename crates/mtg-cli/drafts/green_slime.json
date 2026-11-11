@@ -1,0 +1,31 @@
+{
+  "oracle_id": "0ec5a688-a884-410c-adee-ab784789d6e8",
+  "name": "Green Slime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Green Slime",
+      "oracle_fingerprint": "e22154ec5a27701a9668d1ba16353def",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Foretell": "{G}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e83e1f99-1f9b-49fc-bdc7-5f6335e401e4",
+  "name": "Blessed Breath",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Blessed Breath",
+      "oracle_fingerprint": "246b6a6785c341d18399db9416706f7e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["AddProtectionFromChosenColor"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 94, "end": 262 }
+          }
+        }
+      ]
+    }
+  ]
+}

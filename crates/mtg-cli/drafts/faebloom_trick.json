@@ -1,0 +1,47 @@
+{
+  "oracle_id": "903d114b-1899-4e67-bee3-af0673850388",
+  "name": "Faebloom Trick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faebloom Trick",
+      "oracle_fingerprint": "5e3ab36048c7aafb1766fd1a87ba1d56",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Faerie",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Faerie"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                      }
+                    }
+                  ],
+                  "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

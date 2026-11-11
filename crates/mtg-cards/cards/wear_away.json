@@ -1,0 +1,31 @@
+{
+  "oracle_id": "be7cd599-12b6-43b6-a22a-8a8f7dd1ecd2",
+  "name": "Wear Away",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wear Away",
+      "oracle_fingerprint": "453cd9987ba8482f9e8869d4ec761add",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 40, "end": 211 }
+          }
+        }
+      ]
+    }
+  ]
+}

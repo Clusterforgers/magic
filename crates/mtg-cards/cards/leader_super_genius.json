@@ -1,0 +1,25 @@
+{
+  "oracle_id": "bec686dd-a9ea-4db5-bc20-8e40420b9a9b",
+  "name": "Leader, Super-Genius",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Leader, Super-Genius",
+      "oracle_fingerprint": "61707f542da52d96d27a2737afc69847",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 94 } }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Connive": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

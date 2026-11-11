@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d5fc017a-7517-4737-ad5b-cc45f1e139ea",
+  "name": "Spire Phantasm",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spire Phantasm",
+      "oracle_fingerprint": "3c86107fbaa4f76e235af3e8f91adf4a",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 161 }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 169, "end": 266 }
+          }
+        }
+      ]
+    }
+  ]
+}

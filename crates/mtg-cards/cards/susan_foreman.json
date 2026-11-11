@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0f21f3b1-aee9-4272-ad02-067aa5f6a7c8",
+  "name": "Susan Foreman",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Susan Foreman",
+      "oracle_fingerprint": "b3b7f8001ae998e483e3e72ed14eab4c",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 160 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

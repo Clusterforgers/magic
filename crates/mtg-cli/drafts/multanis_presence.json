@@ -1,0 +1,19 @@
+{
+  "oracle_id": "adad1be7-8d3d-4857-a3b0-be33db4c5746",
+  "name": "Multani's Presence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Multani's Presence",
+      "oracle_fingerprint": "988e28edb4987bb21178e7faf7490903",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Countered", "what": [{ "WasCast": { "by": "You" } }] } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b2354092-7a4c-4e69-9c0a-0a2e146dc00c",
+  "name": "Watcher of Hours",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Watcher of Hours",
+      "oracle_fingerprint": "c8d69c830a48f27856641791a2167677",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{3}" } },
+        {
+          "Triggered": {
+            "when": { "CountersRemoved": { "what": ["This"], "counter": { "Other": "time" } } },
+            "from": "Exile",
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 6, "cost": "{1}{U}" } } }
+      ]
+    }
+  ]
+}

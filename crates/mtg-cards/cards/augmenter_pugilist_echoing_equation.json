@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9110339d-72ba-4132-801f-cd2fd738b71d",
+  "name": "Augmenter Pugilist // Echoing Equation",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Augmenter Pugilist",
+      "oracle_fingerprint": "6542fa938e5ce6039e8342c81aeb9f57",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 5, "toughness": 5 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Echoing Equation",
+      "oracle_fingerprint": "b5d962d237bda2ea67c7bd507c7faa00",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 148 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "oracle_id": "82e03151-3990-451c-99cc-c7d386872df2",
+  "name": "Timothar, Baron of Bats",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timothar, Baron of Bats",
+      "oracle_fingerprint": "5487e457eb792a5e3ce6c9b325fe1045",
+      "abilities": [
+        { "Keyword": { "Ward": [{ "Discard": {} }] } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  "Other",
+                  { "Subtype": "Vampire" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    { "Exile": { "what": "Triggering", "as": "exiled" } },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Bat",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Bat"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        },
+                        "as": "bat"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": {
+                          "DealsDamage": {
+                            "source": [{ "Is": { "Bound": "bat" } }],
+                            "to": "EachPlayer",
+                            "combat": true
+                          }
+                        },
+                        "until": "Forever",
+                        "effects": [
+                          { "Sacrifice": { "filter": [{ "Is": { "Bound": "bat" } }] } },
+                          {
+                            "Move": {
+                              "what": { "Bound": "exiled" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

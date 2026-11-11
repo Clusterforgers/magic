@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e4f73802-b639-47ab-a6c6-f761afa4e00e",
+  "name": "Winter's Night",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter's Night",
+      "oracle_fingerprint": "0a0bb1ec278313a8f38f89d4424785a1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Supertype": "Snow" }, { "Type": "Land" }] } },
+            "effects": [
+              { "AddMana": { "who": "Triggering", "mana": "OfTapped" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

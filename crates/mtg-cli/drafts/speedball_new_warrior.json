@@ -1,0 +1,28 @@
+{
+  "oracle_id": "53d3ef8f-8e0f-4119-8cdc-a0bf076b4e91",
+  "name": "Speedball, New Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Speedball, New Warrior",
+      "oracle_fingerprint": "b01cd1542a50f5fde84449772dc23b58",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": ["This"] }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "ChangeTargets": { "what": "Triggering", "to": "Choose" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "oracle_id": "9155f78e-0ccc-4e08-ae79-ef5b2db1183f",
+  "name": "Basalt Golem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basalt Golem",
+      "oracle_fingerprint": "85e7b3efa87fe12544cc283f910a5e1c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } },
+            "effects": [
+              { "Bind": { "what": "Dealer", "as": "blocker" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Bound": "blocker" } },
+                        "filter": [{ "Is": { "Bound": "blocker" } }]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "CreateToken": {
+                              "who": { "ControllerOf": { "Bound": "blocker" } },
+                              "token": {
+                                "Custom": {
+                                  "name": "Wall",
+                                  "types": ["Artifact", "Creature"],
+                                  "subtypes": ["Wall"],
+                                  "power": 0,
+                                  "toughness": 2,
+                                  "abilities": [{ "Keyword": "Defender" }]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

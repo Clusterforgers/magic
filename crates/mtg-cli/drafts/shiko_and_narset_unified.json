@@ -1,0 +1,41 @@
+{
+  "oracle_id": "40ed32a6-ad56-48c7-aecf-b4238c34c212",
+  "name": "Shiko and Narset, Unified",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shiko and Narset, Unified",
+      "oracle_fingerprint": "96e5c96ec141ec8f706d590517ea608c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 2 } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "Triggering",
+                      "selector": [
+                        {
+                          "AnyOf": [
+                            { "Targeting": [{ "In": "Battlefield" }] },
+                            { "TargetsPlayer": "EachPlayer" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "then": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }],
+                  "otherwise": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

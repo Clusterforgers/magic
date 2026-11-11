@@ -36,6 +36,7 @@
             "cost": { "Minus": 3 },
             "effects": [
               { "LookAtTop": { "count": 4, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
               {
                 "Choose": {
                   "from": {
@@ -45,32 +46,29 @@
                       { "Supertype": "Legendary" }
                     ]
                   },
-                  "count": { "min": 0, "max": null },
-                  "as": "kept2"
+                  "count": { "min": 0, "max": 4 },
+                  "as": "picked"
                 }
               },
-              { "Reveal": { "what": { "Bound": "top" } } },
-              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand", "as": "revealed4" } },
-              { "Move": { "what": { "Bound": "top" }, "to": "Graveyard", "as": "revealed5" } },
+              { "Move": { "what": { "Bound": "picked" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Is": { "Bound": "picked" } } }
+                    ]
+                  },
+                  "to": "Graveyard",
+                  "as": "graved"
+                }
+              },
               {
                 "CreateToken": {
                   "token": { "Named": "treasure" },
                   "count": {
-                    "Count": [
-                      {
-                        "Is": {
-                          "Each": [
-                            {
-                              "AnyOf": [
-                                { "Is": { "Bound": "revealed4" } },
-                                { "Is": { "Bound": "revealed5" } }
-                              ]
-                            }
-                          ]
-                        }
-                      },
-                      { "In": "Graveyard" }
-                    ]
+                    "CountOf": { "of": { "Bound": "graved" }, "filter": [{ "In": "Graveyard" }] }
                   }
                 }
               }
@@ -81,17 +79,18 @@
           "Loyalty": {
             "cost": { "Minus": 11 },
             "effects": [
+              { "Bind": { "what": { "Each": [{ "Not": { "Type": "Land" } }] }, "as": "perms" } },
               {
                 "Continuous": {
-                  "affected": { "Each": [{ "Not": { "Type": "Land" } }] },
+                  "affected": { "Bound": "perms" },
                   "mods": [{ "SetController": "You" }],
                   "duration": "UntilEndOfTurn"
                 }
               },
-              { "Untap": { "what": { "Each": [{ "Not": { "Type": "Land" } }] } } },
+              { "Untap": { "what": { "Bound": "perms" } } },
               {
                 "Continuous": {
-                  "affected": { "Each": [{ "Not": { "Type": "Land" } }] },
+                  "affected": { "Bound": "perms" },
                   "mods": [{ "AddKeyword": "Haste" }],
                   "duration": "UntilEndOfTurn"
                 }

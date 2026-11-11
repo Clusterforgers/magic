@@ -1,0 +1,36 @@
+{
+  "oracle_id": "76695b15-d0ba-41eb-85f1-52ba5d14b8ba",
+  "name": "Rainbow Vale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rainbow Vale",
+      "oracle_fingerprint": "612d17b56c45877775c1c5ec5c7948df",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Choose": { "from": "Opponents", "as": "opponent" } },
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "SetController": { "Bound": "opponent" } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

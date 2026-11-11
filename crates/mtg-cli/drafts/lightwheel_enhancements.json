@@ -1,0 +1,32 @@
+{
+  "oracle_id": "17fae94e-558f-449a-b30c-e3c37a068b79",
+  "name": "Lightwheel Enhancements",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightwheel Enhancements",
+      "oracle_fingerprint": "39566c1022ce8b86035c048958f1d024",
+      "abilities": [
+        {
+          "Keyword": {
+            "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+          }
+        },
+        { "Keyword": "StartYourEngines" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "from": "Graveyard" } },
+            "condition": { "MaxSpeed": "You" },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

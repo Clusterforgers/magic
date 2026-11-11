@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "1ea286fe-0768-4e46-a8dd-a3522db844e1",
+  "oracle_id": "efa3e524-1591-4036-81ec-74199cee25aa",
+  "multiverse_ids": [
+    509458
+  ],
+  "mtgo_id": 86549,
+  "tcgplayer_id": 233810,
+  "cardmarket_id": 542976,
+  "name": "Timebender",
+  "lang": "en",
+  "released_at": "2021-03-19",
+  "uri": "https://api.scryfall.com/cards/1ea286fe-0768-4e46-a8dd-a3522db844e1",
+  "scryfall_uri": "https://scryfall.com/card/tsr/93/timebender?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:30:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/e/1ea286fe-0768-4e46-a8dd-a3522db844e1.jpg?1783927834",
+    "normal": "https://cards.scryfall.io/normal/front/1/e/1ea286fe-0768-4e46-a8dd-a3522db844e1.jpg?1783927834",
+    "large": "https://cards.scryfall.io/large/front/1/e/1ea286fe-0768-4e46-a8dd-a3522db844e1.jpg?1783927834",
+    "png": "https://cards.scryfall.io/png/front/1/e/1ea286fe-0768-4e46-a8dd-a3522db844e1.png?1783927834",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/e/1ea286fe-0768-4e46-a8dd-a3522db844e1.jpg?1783927834",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/e/1ea286fe-0768-4e46-a8dd-a3522db844e1.jpg?1783927834",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/e/1ea286fe-0768-4e46-a8dd-a3522db844e1.webp?1783927834",
+    "grid": "https://cards.scryfall.io/grid/front/1/e/1ea286fe-0768-4e46-a8dd-a3522db844e1.webp?1783927834",
+    "display": "https://cards.scryfall.io/display/front/1/e/1ea286fe-0768-4e46-a8dd-a3522db844e1.webp?1783927834",
+    "art": "https://cards.scryfall.io/art/front/1/e/1ea286fe-0768-4e46-a8dd-a3522db844e1.webp?1783927834",
+    "crop": "https://cards.scryfall.io/crop/front/1/e/1ea286fe-0768-4e46-a8dd-a3522db844e1.webp?1783927834",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/e/1ea286fe-0768-4e46-a8dd-a3522db844e1.jpg?1783927834"
+  },
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Morph {U}\nWhen this creature is turned face up, choose one —\n• Remove two time counters from target permanent or suspended card.\n• Put two time counters on target permanent with a time counter on it or suspended card.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Morph"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "5430da88-b72e-4d64-bd3c-b21062cac1c2",
+      "component": "combo_piece",
+      "name": "Morph",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/5430da88-b72e-4d64-bd3c-b21062cac1c2"
+    },
+    {
+      "object": "related_card",
+      "id": "1ea286fe-0768-4e46-a8dd-a3522db844e1",
+      "component": "combo_piece",
+      "name": "Timebender",
+      "type_line": "Creature — Human Wizard",
+      "uri": "https://api.scryfall.com/cards/1ea286fe-0768-4e46-a8dd-a3522db844e1"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "11e90d1b-0502-43e6-b056-e24836523c13",
+  "set": "tsr",
+  "set_name": "Time Spiral Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/11e90d1b-0502-43e6-b056-e24836523c13",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atsr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tsr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1ea286fe-0768-4e46-a8dd-a3522db844e1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aefa3e524-1591-4036-81ec-74199cee25aa&unique=prints",
+  "collector_number": "93",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Zoltan Boros & Gabor Szikszai",
+  "artist_ids": [
+    "1885e6cb-c827-4896-994e-3d0a027d602f",
+    "44c3877f-8771-43dc-9e40-f4c765f59d2e"
+  ],
+  "illustration_id": "e50b14a7-befe-449e-a422-41b94a0962c2",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16146,
+  "penny_rank": 16484,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=i2ElqOwi3ps",
+    "previewed_at": "2021-03-01"
+  },
+  "prices": {
+    "usd": "0.12",
+    "usd_foil": "0.53",
+    "usd_etched": null,
+    "eur": "0.06",
+    "eur_foil": "0.30",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=509458&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTimebender",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTimebender",
+    "edhrec": "https://edhrec.com/route/?cc=Timebender"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F233810%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=542976&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/86549?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

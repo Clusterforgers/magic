@@ -1,0 +1,83 @@
+{
+  "oracle_id": "1692602a-0c44-485c-aadc-c9c70ed70ea8",
+  "name": "Storm Herald",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm Herald",
+      "oracle_fingerprint": "317f110a4c93bdcc9a33fcd1f188d5c5",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Subtype": "Aura" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Subtype": "Aura" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                    }
+                  },
+                  "as": "auras"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "auras" },
+                  "as": "aura",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "host"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "aura" },
+                        "to": { "BattlefieldAttached": { "to": { "Bound": "host" } } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [
+                    {
+                      "Exile": {
+                        "what": { "Arrived": { "of": { "Bound": "auras" }, "zone": "Battlefield" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Arrived": { "of": { "Bound": "auras" }, "zone": "Battlefield" } },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Replacement": {
+                          "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                          "by": { "MoveTo": "Exile" }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0fcfc145-9371-40a8-9194-84e5fd700a8d",
+  "name": "Ragemonger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ragemonger",
+      "oracle_fingerprint": "9ff82ca577f690661b3a737cc548ad12",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Minotaur" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{B}{R}"
+          }
+        }
+      ]
+    }
+  ]
+}

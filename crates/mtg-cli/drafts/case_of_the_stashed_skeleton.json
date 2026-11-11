@@ -1,0 +1,68 @@
+{
+  "oracle_id": "64219e17-1302-4a43-85d2-8a6214448890",
+  "name": "Case of the Stashed Skeleton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Case of the Stashed Skeleton",
+      "oracle_fingerprint": "ebc6af9d49e847b3b46f938b344fd1c4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Skeleton",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Skeleton"],
+                      "power": 2,
+                      "toughness": 1
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              { "Suspect": { "what": { "Bound": "token" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                { "Not": { "Matches": { "subject": "This", "selector": ["Solved"] } } },
+                {
+                  "Compare": {
+                    "left": {
+                      "Count": [{ "Subtype": "Skeleton" }, "Suspected", { "ControlledBy": "You" }]
+                    },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Solve": { "what": "This" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "SacrificeSelf"],
+            "timing": "Sorcery",
+            "condition": { "Matches": { "subject": "This", "selector": ["Solved"] } },
+            "effects": [
+              { "Search": { "filter": [], "as": "card" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

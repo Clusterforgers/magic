@@ -1,0 +1,73 @@
+{
+  "oracle_id": "a3a56b02-7290-4352-a862-f2de608f2a86",
+  "name": "Concealing Curtains // Revealing Eye",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Concealing Curtains",
+      "oracle_fingerprint": "a607be23fef045b36501e91a75f39931",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": "{2}{B}",
+            "timing": "Sorcery",
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Revealing Eye",
+      "oracle_fingerprint": "dfd7d46d98a6be6cffe6d2ecfbcbc744",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Transformed", "what": ["This"] } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "card" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Discard": {
+                        "who": { "Target": 0 },
+                        "filter": [{ "Is": { "Bound": "card" } }]
+                      }
+                    },
+                    { "Draw": { "who": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "oracle_id": "43b5e462-d860-473d-828f-6c513fc7768a",
+  "name": "Admiral Beckett Brass",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Admiral Beckett Brass",
+      "oracle_fingerprint": "f5b422781279a6140605a6a53aa2080d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Pirate" }, { "ControlledBy": "You" }, "Other"] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    {
+                      "ControlledBy": {
+                        "PlayersWhere": {
+                          "who": "EachPlayer",
+                          "test": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Subtype": "Pirate" },
+                                  {
+                                    "DidThisTurn": {
+                                      "event": "Damaged",
+                                      "to": "You",
+                                      "combat": true
+                                    }
+                                  }
+                                ]
+                              },
+                              "op": "Ge",
+                              "right": 3
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

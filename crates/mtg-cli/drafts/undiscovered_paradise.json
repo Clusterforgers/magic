@@ -1,0 +1,27 @@
+{
+  "oracle_id": "76c33d54-ce55-400e-bec5-79d33a5a20fb",
+  "name": "Undiscovered Paradise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undiscovered Paradise",
+      "oracle_fingerprint": "199404aa6277ef45482fe0e4c2b5f632",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": 1 } } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Untap", "whose": "You" } },
+                  "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

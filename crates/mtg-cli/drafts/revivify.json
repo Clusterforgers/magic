@@ -1,0 +1,71 @@
+{
+  "oracle_id": "55eb3c21-6834-4c62-8ab9-54b901531fed",
+  "name": "Revivify",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Revivify",
+      "oracle_fingerprint": "cfe60f8dae0dbf96210a04194cf58deb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "plus": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "ArrivedFrom": "Battlefield" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 14,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                { "ArrivedFrom": "Battlefield" },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "to": "Hand"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 15,
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "OwnedBy": "You" },
+                                { "ArrivedFrom": "Battlefield" },
+                                { "In": "Graveyard" }
+                              ]
+                            },
+                            "to": { "Battlefield": {} }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

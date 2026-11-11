@@ -1,0 +1,40 @@
+{
+  "oracle_id": "29c6935e-ef64-4298-af74-9b18eed93136",
+  "name": "Monomania",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monomania",
+      "oracle_fingerprint": "9b3e5806193ebc5835f1704b2b561f8f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "kept"
+                }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Not": { "Is": { "Bound": "kept" } } }
+                    ]
+                  },
+                  "filter": [{ "Not": { "Is": { "Bound": "kept" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

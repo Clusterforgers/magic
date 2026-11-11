@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1d1d78af-7982-419d-b9be-2bf4c149d97d",
+  "name": "Illusionist's Bracers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illusionist's Bracers",
+      "oracle_fingerprint": "038de499e0a862298fd619fd9e81b4d7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Activated", "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "CopyAbility": { "what": "Triggering", "new_targets": true } }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "7c317ee7-ed92-4e3e-92bb-502099caccf8",
+  "oracle_id": "d238a5c1-f992-4f89-851a-de75b59f6793",
+  "multiverse_ids": [
+    4835
+  ],
+  "mtgo_id": 9863,
+  "mtgo_foil_id": 9864,
+  "tcgplayer_id": 5650,
+  "cardmarket_id": 8928,
+  "name": "No Quarter",
+  "lang": "en",
+  "released_at": "1997-10-14",
+  "uri": "https://api.scryfall.com/cards/7c317ee7-ed92-4e3e-92bb-502099caccf8",
+  "scryfall_uri": "https://scryfall.com/card/tmp/193/no-quarter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:43:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/c/7c317ee7-ed92-4e3e-92bb-502099caccf8.jpg?1783946626",
+    "normal": "https://cards.scryfall.io/normal/front/7/c/7c317ee7-ed92-4e3e-92bb-502099caccf8.jpg?1783946626",
+    "large": "https://cards.scryfall.io/large/front/7/c/7c317ee7-ed92-4e3e-92bb-502099caccf8.jpg?1783946626",
+    "png": "https://cards.scryfall.io/png/front/7/c/7c317ee7-ed92-4e3e-92bb-502099caccf8.png?1783946626",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/c/7c317ee7-ed92-4e3e-92bb-502099caccf8.jpg?1783946626",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/c/7c317ee7-ed92-4e3e-92bb-502099caccf8.jpg?1783946626",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/c/7c317ee7-ed92-4e3e-92bb-502099caccf8.webp?1783946626",
+    "grid": "https://cards.scryfall.io/grid/front/7/c/7c317ee7-ed92-4e3e-92bb-502099caccf8.webp?1783946626",
+    "display": "https://cards.scryfall.io/display/front/7/c/7c317ee7-ed92-4e3e-92bb-502099caccf8.webp?1783946626",
+    "art": "https://cards.scryfall.io/art/front/7/c/7c317ee7-ed92-4e3e-92bb-502099caccf8.webp?1783946626",
+    "crop": "https://cards.scryfall.io/crop/front/7/c/7c317ee7-ed92-4e3e-92bb-502099caccf8.webp?1783946626",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/c/7c317ee7-ed92-4e3e-92bb-502099caccf8.jpg?1783946626"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a creature becomes blocked by a creature with lesser power, destroy the blocking creature.\nWhenever a creature blocks a creature with lesser power, destroy the attacking creature.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "10df3a67-178e-4363-8668-34f0e6edf2a7",
+  "set": "tmp",
+  "set_name": "Tempest",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/10df3a67-178e-4363-8668-34f0e6edf2a7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atmp&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tmp?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7c317ee7-ed92-4e3e-92bb-502099caccf8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad238a5c1-f992-4f89-851a-de75b59f6793&unique=prints",
+  "collector_number": "193",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "As Gerrard and Greven neared each other, the moggs caught between them realized they should flee.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Doug Chaffee",
+  "artist_ids": [
+    "dd587b27-dca3-4219-aa55-b285a7a77030"
+  ],
+  "illustration_id": "5679d537-f5d0-4b75-9167-5efc551f0454",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 25703,
+  "prices": {
+    "usd": "0.53",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.39",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=4835&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DNo%2BQuarter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DNo%2BQuarter",
+    "edhrec": "https://edhrec.com/route/?cc=No+Quarter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F5650%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=8928&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/9863?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

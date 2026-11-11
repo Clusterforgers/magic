@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4ae7f959-9f44-4769-8bd3-49ca18928aba",
+  "name": "Rubblebelt Braggart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rubblebelt Braggart",
+      "oracle_fingerprint": "716681895af265cdf1fb77e0b373ac89",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": { "Not": { "Matches": { "subject": "This", "selector": ["Suspected"] } } },
+            "effects": [{ "May": { "effects": [{ "Suspect": { "what": "This" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

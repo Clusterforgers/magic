@@ -1,0 +1,147 @@
+{
+  "object": "card",
+  "id": "0d52b0fd-60a4-4e90-bc4a-3200493779d3",
+  "oracle_id": "8e0f2e26-1e14-422a-aafe-e1da38ab10a3",
+  "multiverse_ids": [],
+  "resource_id": "AA66AAD7A972B2E7D54EB70CCB1F2F31505E937AB34AFCF6FE0956EFEA8949BE",
+  "mtgo_id": 156418,
+  "tcgplayer_id": 717806,
+  "cardmarket_id": 909804,
+  "name": "Tamiyo, Upriser Crowned",
+  "lang": "en",
+  "released_at": "2026-10-02",
+  "uri": "https://api.scryfall.com/cards/0d52b0fd-60a4-4e90-bc4a-3200493779d3",
+  "scryfall_uri": "https://scryfall.com/card/frc/11/tamiyo-upriser-crowned?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-09-17T11:25:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/d/0d52b0fd-60a4-4e90-bc4a-3200493779d3.jpg?1789644358",
+    "normal": "https://cards.scryfall.io/normal/front/0/d/0d52b0fd-60a4-4e90-bc4a-3200493779d3.jpg?1789644358",
+    "large": "https://cards.scryfall.io/large/front/0/d/0d52b0fd-60a4-4e90-bc4a-3200493779d3.jpg?1789644358",
+    "png": "https://cards.scryfall.io/png/front/0/d/0d52b0fd-60a4-4e90-bc4a-3200493779d3.png?1789644358",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/d/0d52b0fd-60a4-4e90-bc4a-3200493779d3.jpg?1789644358",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/d/0d52b0fd-60a4-4e90-bc4a-3200493779d3.jpg?1789644358",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/d/0d52b0fd-60a4-4e90-bc4a-3200493779d3.webp?1789644358",
+    "grid": "https://cards.scryfall.io/grid/front/0/d/0d52b0fd-60a4-4e90-bc4a-3200493779d3.webp?1789644358",
+    "display": "https://cards.scryfall.io/display/front/0/d/0d52b0fd-60a4-4e90-bc4a-3200493779d3.webp?1789644358",
+    "art": "https://cards.scryfall.io/art/front/0/d/0d52b0fd-60a4-4e90-bc4a-3200493779d3.webp?1789644358",
+    "crop": "https://cards.scryfall.io/crop/front/0/d/0d52b0fd-60a4-4e90-bc4a-3200493779d3.webp?1789644358",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/d/0d52b0fd-60a4-4e90-bc4a-3200493779d3.jpg?1789644358"
+  },
+  "mana_cost": "{4}{R}{W}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Moonfolk Warrior",
+  "oracle_text": "Flying, double strike, haste\nWhen Tamiyo enters, you become the monarch.\nWhenever one or more creatures deal combat damage to you while you're the monarch, tap those creatures and put a stun counter on each of them.",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Haste",
+    "Double strike"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cfd10490-7397-4143-bda7-d388b877636f",
+  "set": "frc",
+  "set_name": "Reality Fracture Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/cfd10490-7397-4143-bda7-d388b877636f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/frc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0d52b0fd-60a4-4e90-bc4a-3200493779d3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8e0f2e26-1e14-422a-aafe-e1da38ab10a3&unique=prints",
+  "collector_number": "11",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "echoverse",
+  "flavor_text": "She seized the throne to protect her family first, Kamigawa second.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Johannes Voss",
+  "artist_ids": [
+    "3593dd7e-c547-4a32-81cd-7da725f60118"
+  ],
+  "illustration_id": "170b6b00-50e2-4f49-90b8-20b78074ad04",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 15253,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://youtu.be/mvTyHbTbfBo",
+    "previewed_at": "2026-09-16"
+  },
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": null,
+    "tix": "0.73"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTamiyo%252C%2BUpriser%2BCrowned",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTamiyo%252C%2BUpriser%2BCrowned",
+    "edhrec": "https://edhrec.com/route/?cc=Tamiyo%2C+Upriser+Crowned"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F717806%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=909804&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/156418?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "4c68282b-776f-463a-9652-f611538c53ee",
+  "name": "Balancing Act",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balancing Act",
+      "oracle_fingerprint": "b7371592c0d24a648e2cf00ed0806ec1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Let": { "as": "fewest", "amount": { "LowestHand": "EachPlayer" } } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "count": { "min": { "Bound": "fewest" }, "max": { "Bound": "fewest" } },
+                        "as": "kept",
+                        "rest_as": "rest"
+                      }
+                    },
+                    {
+                      "Discard": {
+                        "who": { "Bound": "player" },
+                        "count": { "Count": [{ "Is": { "Bound": "rest" } }] },
+                        "filter": [{ "Is": { "Bound": "rest" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

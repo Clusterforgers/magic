@@ -1,0 +1,26 @@
+{
+  "oracle_id": "13daa21c-278d-45bd-9a6e-a77d6a558453",
+  "name": "Fated Firepower",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fated Firepower",
+      "oracle_fingerprint": "f16ffd3f00269eb7bda92121d282ae6c",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "fire" }, "count": "X" } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 58, "end": 268 }
+          }
+        }
+      ]
+    }
+  ]
+}

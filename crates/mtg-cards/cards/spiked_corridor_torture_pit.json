@@ -1,0 +1,62 @@
+{
+  "oracle_id": "e49b902f-a556-4dab-8928-93caf0a3f609",
+  "name": "Spiked Corridor // Torture Pit",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spiked Corridor",
+      "oracle_fingerprint": "0d590d6b0d4d7b696cbadb97b466a6b8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DoorUnlocked": { "who": "You", "door": 0 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Devil",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Devil"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": ["This"],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "targets": [{ "what": "AnyTarget" }],
+                            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Torture Pit",
+      "oracle_fingerprint": "7424b44f0a7b7aed9c9424401f6d8823",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 109 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "957413ae-e756-4afe-886a-b57bf59d5f8d",
+  "name": "Feather, Radiant Arbiter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Feather, Radiant Arbiter",
+      "oracle_fingerprint": "9f81d8348d2a0888d99346fcbb117a00",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 324 }
+          }
+        }
+      ]
+    }
+  ]
+}

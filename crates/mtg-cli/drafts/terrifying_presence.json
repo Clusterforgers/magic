@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ca8f6e19-6ef3-4d77-8312-867767ffeda6",
+  "name": "Terrifying Presence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Terrifying Presence",
+      "oracle_fingerprint": "05930c2fc965d7c8f20b8f274e4504bd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [{ "Type": "Creature" }, { "Not": { "Is": { "Target": 0 } } }],
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

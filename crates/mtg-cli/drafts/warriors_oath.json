@@ -1,0 +1,34 @@
+{
+  "oracle_id": "574044cf-2e2f-4b5c-b4d1-cf05ba814ab2",
+  "name": "Warrior's Oath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warrior's Oath",
+      "oracle_fingerprint": "4ff2666e8799fe2ff0d0c5fe40a6fc24",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExtraTurn": {} },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "this_turn": true,
+                        "effects": [{ "LoseGame": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

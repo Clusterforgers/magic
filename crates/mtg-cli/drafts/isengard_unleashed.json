@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2b947703-751a-4d95-b5de-e2d6b1fcb502",
+  "name": "Isengard Unleashed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Isengard Unleashed",
+      "oracle_fingerprint": "570680c26cd69ec83f96bc3331f50d11",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Rule": { "rule": { "DamageCantBePrevented": {} }, "duration": "UntilEndOfTurn" } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "Opponents", "source": [{ "ControlledBy": "You" }] } },
+                  "by": { "Multiply": 3 },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "to": { "Each": [{ "ControlledBy": "Opponents" }] },
+                      "source": [{ "ControlledBy": "You" }]
+                    }
+                  },
+                  "by": { "Multiply": 3 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{R}{R}{R}" } }
+      ]
+    }
+  ]
+}

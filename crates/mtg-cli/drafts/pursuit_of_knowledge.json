@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7f5124a4-9ffd-475a-8b77-3ff59a9871a1",
+  "name": "Pursuit of Knowledge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pursuit of Knowledge",
+      "oracle_fingerprint": "33ed19ebeae399b43153bf87ddae28ae",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [
+                {
+                  "May": {
+                    "effects": [
+                      { "PutCounters": { "on": "This", "counter": { "Other": "study" } } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "RemoveCounters": { "counter": { "Other": "study" }, "count": 3 } },
+              "SacrificeSelf"
+            ],
+            "effects": [{ "Draw": { "count": 7 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

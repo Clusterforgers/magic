@@ -1,0 +1,106 @@
+{
+  "oracle_id": "497d7ab8-07f1-4c8a-a45a-52b9a4d9400f",
+  "name": "Basri Ket",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basri Ket",
+      "oracle_fingerprint": "eb8c9406d21f825b2f6952eb8fc6c876",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "GroupAttacks": { "what": [{ "Type": "Creature" }, { "Not": "Token" }] }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Soldier",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Soldier"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": "Triggering",
+                        "tapped": true,
+                        "attacking": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 6 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Soldier",
+                                  "colors": ["White"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Soldier"],
+                                  "power": 1,
+                                  "toughness": 1
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "PutCounters": {
+                              "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                              "counter": "+1/+1"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

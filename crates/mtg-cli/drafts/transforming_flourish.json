@@ -1,0 +1,55 @@
+{
+  "oracle_id": "9fb7e7ca-ad2f-4677-859c-7a9adf8fb5fd",
+  "name": "Transforming Flourish",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Transforming Flourish",
+      "oracle_fingerprint": "67f7367c8a763e228ba492e0e89c3ea6",
+      "abilities": [
+        { "Keyword": "Demonstrate" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Destroyed": [] }, "op": "Gt", "right": 0 }
+                  },
+                  "then": [
+                    {
+                      "ExileUntil": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Not": { "Type": "Land" } }],
+                        "as": "found",
+                        "exiled_as": "exiled"
+                      }
+                    },
+                    {
+                      "CastFromZone": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "what": { "Bound": "found" },
+                        "free": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

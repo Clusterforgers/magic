@@ -1,0 +1,35 @@
+{
+  "oracle_id": "05775dea-d7f0-4e0b-af4d-ba8d320dc4c0",
+  "name": "Carom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carom",
+      "oracle_fingerprint": "1a797f1ba4d93d43af6d8370b4d87c31",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": {
+                  "Another": { "what": { "Object": [{ "Type": "Creature" }] }, "earlier": [0] }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "RedirectUpTo": { "most": 1, "to": { "Target": 1 } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

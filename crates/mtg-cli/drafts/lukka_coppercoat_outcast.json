@@ -1,0 +1,102 @@
+{
+  "oracle_id": "1ca97394-4e8c-4698-bea1-554f9b10927b",
+  "name": "Lukka, Coppercoat Outcast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lukka, Coppercoat Outcast",
+      "oracle_fingerprint": "e572136fc0caf52622c5be98673e2511",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "ExileTop": { "count": 3, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Is": { "Bound": "exiled" } }, { "Type": "Creature" }],
+                      "from": "Exile",
+                      "when": {
+                        "CountOf": {
+                          "subject": {
+                            "Each": [
+                              { "Type": "Planeswalker" },
+                              { "Subtype": "Lukka" },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "selector": [],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "RevealUntil": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Gt",
+                        "to": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "c",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "c" },
+                        "to": "Opponents",
+                        "amount": { "Stat": { "of": { "Bound": "c" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

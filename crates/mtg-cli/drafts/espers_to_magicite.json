@@ -1,0 +1,53 @@
+{
+  "oracle_id": "06f7ec6d-d70e-44d8-bf43-ae667d244ab4",
+  "name": "Espers to Magicite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Espers to Magicite",
+      "oracle_fingerprint": "e0a5a141284c805333f489558f57e377",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "Opponents" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [
+                          { "In": "Exile" },
+                          { "Is": { "Bound": "exiled" } },
+                          { "Type": "Creature" }
+                        ]
+                      },
+                      "bounds": { "min": 0, "max": 1 }
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": { "Target": 0 },
+                            "except": [{ "SetTypes": ["Artifact"] }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "db9c0d94-9fa5-4f07-be48-23e19d2f3d68",
+  "name": "Invasion Plans",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Invasion Plans",
+      "oracle_fingerprint": "6aba5a2855cfa70d0af4d3119e2fbb5e",
+      "abilities": [
+        { "Rule": { "rule": { "MustBlock": { "Each": [{ "Type": "Creature" }] } } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 41, "end": 107 }
+          }
+        }
+      ]
+    }
+  ]
+}

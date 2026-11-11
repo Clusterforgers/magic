@@ -1,0 +1,55 @@
+{
+  "oracle_id": "871fbbd6-76a0-4f79-b89f-afee6ebe5a59",
+  "name": "Tawnos, Solemn Survivor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tawnos, Solemn Survivor",
+      "oracle_fingerprint": "c12a017c3af848aa93b527a4af109ce2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Artifact" }, "Token", { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } },
+              { "Mill": { "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{W}{U}{B}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Artifact" }, "Token"], "count": 2 } },
+              {
+                "ExileFromGraveyard": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Arrived": { "of": "Paid", "zone": "Exile" } },
+                      "except": [{ "AddType": "Artifact" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "oracle_id": "f6dae324-cc79-4093-8cce-667015c1de6d",
+  "name": "Boreas Charger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boreas Charger",
+      "oracle_fingerprint": "d4e50136fd9d4ab74a80d349155df28a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                          "op": "Gt",
+                          "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "Asker" }] }
+                        }
+                      }
+                    }
+                  },
+                  "as": "opp"
+                }
+              },
+              {
+                "Let": {
+                  "as": "diff",
+                  "amount": {
+                    "Difference": [
+                      { "Count": [{ "Type": "Land" }, { "ControlledBy": { "Bound": "opp" } }] },
+                      { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                    ]
+                  }
+                }
+              },
+              {
+                "Search": {
+                  "filter": [{ "Subtype": "Plains" }],
+                  "count": { "min": 0, "max": { "Bound": "diff" } },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Choose": { "from": { "Bound": "found" }, "as": "kept", "rest_as": "rest" } },
+              {
+                "Move": { "what": { "Bound": "kept" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

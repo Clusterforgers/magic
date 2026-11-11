@@ -1,0 +1,67 @@
+{
+  "oracle_id": "8da29533-f389-4bc2-ab9b-b469f893a362",
+  "name": "Cactus Preserve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cactus Preserve",
+      "oracle_fingerprint": "34ba845c183962fa9200071f0f2e3267",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "ProducedBy": {
+                      "among": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "count": 1,
+                      "colorless": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddType": "Creature" },
+                    {
+                      "SetPT": {
+                        "power": {
+                          "Greatest": {
+                            "of": ["Commander", { "OwnedBy": "You" }],
+                            "stat": "ManaValue"
+                          }
+                        },
+                        "toughness": {
+                          "Greatest": {
+                            "of": ["Commander", { "OwnedBy": "You" }],
+                            "stat": "ManaValue"
+                          }
+                        }
+                      }
+                    },
+                    { "SetColors": ["Green"] },
+                    { "SetCreatureTypes": ["Plant"] },
+                    { "AddKeyword": "Reach" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

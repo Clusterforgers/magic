@@ -1,0 +1,56 @@
+{
+  "oracle_id": "9b832f87-0bd5-47bd-ab9c-718bd9a6c441",
+  "name": "Puca's Covenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Puca's Covenant",
+      "oracle_fingerprint": "dcb9de1f798b2a85b2559e3c936d30cf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "limit": "OncePerTurnDone",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    },
+                    { "Not": { "SameCard": "Triggering" } },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "AnyCounters": "Triggering" }
+                      }
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

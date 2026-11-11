@@ -1,0 +1,45 @@
+{
+  "oracle_id": "4a7c7ecc-df72-4da0-af35-dd0af58ec02c",
+  "name": "Mister Hyde, Monster Within",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mister Hyde, Monster Within",
+      "oracle_fingerprint": "89795ac3de46f2d2bb035257d77ab954",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] },
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": "You" },
+                                "HasAnyCounter"
+                              ]
+                            },
+                            "as": "creature"
+                          }
+                        },
+                        { "RemoveCounters": { "from": { "Bound": "creature" } } },
+                        { "If": { "condition": "Performed", "then": [{ "Draw": {} }] } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

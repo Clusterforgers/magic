@@ -1,0 +1,22 @@
+{
+  "oracle_id": "a9596b05-e0bb-4e70-82fe-5db60f87bf3d",
+  "name": "Vine Gecko",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vine Gecko",
+      "oracle_fingerprint": "fca48425c925a9f53e759be9d17fe500",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 65 } }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Kicked"], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

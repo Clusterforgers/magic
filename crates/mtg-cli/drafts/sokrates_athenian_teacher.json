@@ -1,0 +1,59 @@
+{
+  "oracle_id": "f4a9d567-513b-487e-afed-c6e6513a7862",
+  "name": "Sokrates, Athenian Teacher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sokrates, Athenian Teacher",
+      "oracle_fingerprint": "5cc1d26ba1c0f733888e67f0c30c6e17",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Matches": { "subject": "This", "selector": ["Untapped"] } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Replacement": {
+                          "when": {
+                            "Damage": { "to": "EachPlayer", "source": ["This"], "combat": true }
+                          },
+                          "by": {
+                            "PreventAnd": [
+                              {
+                                "Draw": { "count": { "Half": { "of": "Triggering", "up": false } } }
+                              },
+                              {
+                                "Draw": {
+                                  "who": "Triggering",
+                                  "count": { "Half": { "of": "Triggering", "up": false } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "17475cf0-661d-4361-827b-1e4d638089f1",
+  "name": "Marisi, Breaker of the Coil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marisi, Breaker of the Coil",
+      "oracle_fingerprint": "735e6c14c0dea17b06dc66e4d123f26c",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Cant": { "who": "Opponents", "action": { "Cast": {} } } },
+            "condition": "InCombat"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "Goad": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

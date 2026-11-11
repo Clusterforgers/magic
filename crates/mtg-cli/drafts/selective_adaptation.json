@@ -1,0 +1,335 @@
+{
+  "oracle_id": "b68df6d7-d69e-446f-9b1b-7a6ca56efbec",
+  "name": "Selective Adaptation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selective Adaptation",
+      "oracle_fingerprint": "47c43931dd9aec6024567ebf3ac65dbb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 7, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "HasKeyword": "Flying" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "p1"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "HasKeyword": "FirstStrike" },
+                      { "Not": { "AnyOf": [{ "Is": { "Bound": "p1" } }] } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "p2"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "HasKeyword": "DoubleStrike" },
+                      {
+                        "Not": {
+                          "AnyOf": [{ "Is": { "Bound": "p1" } }, { "Is": { "Bound": "p2" } }]
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "p3"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "HasKeyword": "Deathtouch" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Is": { "Bound": "p1" } },
+                            { "Is": { "Bound": "p2" } },
+                            { "Is": { "Bound": "p3" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "p4"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "HasKeyword": "Haste" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Is": { "Bound": "p1" } },
+                            { "Is": { "Bound": "p2" } },
+                            { "Is": { "Bound": "p3" } },
+                            { "Is": { "Bound": "p4" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "p5"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "HasKeyword": "Hexproof" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Is": { "Bound": "p1" } },
+                            { "Is": { "Bound": "p2" } },
+                            { "Is": { "Bound": "p3" } },
+                            { "Is": { "Bound": "p4" } },
+                            { "Is": { "Bound": "p5" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "p6"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "HasKeyword": "Indestructible" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Is": { "Bound": "p1" } },
+                            { "Is": { "Bound": "p2" } },
+                            { "Is": { "Bound": "p3" } },
+                            { "Is": { "Bound": "p4" } },
+                            { "Is": { "Bound": "p5" } },
+                            { "Is": { "Bound": "p6" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "p7"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "HasKeyword": "Lifelink" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Is": { "Bound": "p1" } },
+                            { "Is": { "Bound": "p2" } },
+                            { "Is": { "Bound": "p3" } },
+                            { "Is": { "Bound": "p4" } },
+                            { "Is": { "Bound": "p5" } },
+                            { "Is": { "Bound": "p6" } },
+                            { "Is": { "Bound": "p7" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "p8"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "HasKeyword": "Menace" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Is": { "Bound": "p1" } },
+                            { "Is": { "Bound": "p2" } },
+                            { "Is": { "Bound": "p3" } },
+                            { "Is": { "Bound": "p4" } },
+                            { "Is": { "Bound": "p5" } },
+                            { "Is": { "Bound": "p6" } },
+                            { "Is": { "Bound": "p7" } },
+                            { "Is": { "Bound": "p8" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "p9"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "HasKeyword": "Reach" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Is": { "Bound": "p1" } },
+                            { "Is": { "Bound": "p2" } },
+                            { "Is": { "Bound": "p3" } },
+                            { "Is": { "Bound": "p4" } },
+                            { "Is": { "Bound": "p5" } },
+                            { "Is": { "Bound": "p6" } },
+                            { "Is": { "Bound": "p7" } },
+                            { "Is": { "Bound": "p8" } },
+                            { "Is": { "Bound": "p9" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "p10"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "HasKeyword": "Trample" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Is": { "Bound": "p1" } },
+                            { "Is": { "Bound": "p2" } },
+                            { "Is": { "Bound": "p3" } },
+                            { "Is": { "Bound": "p4" } },
+                            { "Is": { "Bound": "p5" } },
+                            { "Is": { "Bound": "p6" } },
+                            { "Is": { "Bound": "p7" } },
+                            { "Is": { "Bound": "p8" } },
+                            { "Is": { "Bound": "p9" } },
+                            { "Is": { "Bound": "p10" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "p11"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "HasKeyword": "Vigilance" },
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Is": { "Bound": "p1" } },
+                            { "Is": { "Bound": "p2" } },
+                            { "Is": { "Bound": "p3" } },
+                            { "Is": { "Bound": "p4" } },
+                            { "Is": { "Bound": "p5" } },
+                            { "Is": { "Bound": "p6" } },
+                            { "Is": { "Bound": "p7" } },
+                            { "Is": { "Bound": "p8" } },
+                            { "Is": { "Bound": "p9" } },
+                            { "Is": { "Bound": "p10" } },
+                            { "Is": { "Bound": "p11" } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "p12"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      {
+                        "AnyOf": [
+                          { "Is": { "Bound": "p1" } },
+                          { "Is": { "Bound": "p2" } },
+                          { "Is": { "Bound": "p3" } },
+                          { "Is": { "Bound": "p4" } },
+                          { "Is": { "Bound": "p5" } },
+                          { "Is": { "Bound": "p6" } },
+                          { "Is": { "Bound": "p7" } },
+                          { "Is": { "Bound": "p8" } },
+                          { "Is": { "Bound": "p9" } },
+                          { "Is": { "Bound": "p10" } },
+                          { "Is": { "Bound": "p11" } },
+                          { "Is": { "Bound": "p12" } }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "onto_battlefield",
+                  "rest_as": "to_hand"
+                }
+              },
+              { "Move": { "what": { "Bound": "onto_battlefield" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "to_hand" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": "Graveyard"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

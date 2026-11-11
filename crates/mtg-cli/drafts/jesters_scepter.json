@@ -1,0 +1,45 @@
+{
+  "oracle_id": "396b943c-b45d-4e5b-a9c1-f70bc603ee9f",
+  "name": "Jester's Scepter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jester's Scepter",
+      "oracle_fingerprint": "8227c4766053de587f901dc709b1d1d2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "count": 5, "as": "exiled", "sealed": true } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "ExiledToGraveyard": { "filter": [{ "ExiledWith": "This" }] } }
+            ],
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "SharesName": "Paid" }]
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

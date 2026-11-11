@@ -1,0 +1,38 @@
+{
+  "oracle_id": "917dc5a0-071d-4658-ab58-29ac841260f7",
+  "name": "Grave Endeavor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grave Endeavor",
+      "oracle_fingerprint": "03d2ef7030a7340897dbe09425ebe4c5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "RollDice": { "sides": 10, "dice": 2, "choose": true, "results": [] } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+              {
+                "PutCounters": {
+                  "on": { "Arrived": { "of": { "Bound": "card" }, "zone": "Battlefield" } },
+                  "counter": "+1/+1",
+                  "count": { "DieResult": "Chosen" }
+                }
+              },
+              { "LoseLife": { "who": "Opponents", "amount": { "DieResult": "Other" } } },
+              { "GainLife": { "amount": { "DieResult": "Other" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

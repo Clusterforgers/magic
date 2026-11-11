@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9a39ca64-e1a9-42ef-8efd-6aa3edde3d93",
+  "name": "Molt Tender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molt Tender",
+      "oracle_fingerprint": "4b0d66e39b4c7ff9e39edec0f762e123",
+      "abilities": [
+        { "Activated": { "cost": ["Tap"], "effects": [{ "Mill": {} }] } },
+        {
+          "Activated": {
+            "cost": ["Tap", { "ExileFromGraveyard": { "filter": [] } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

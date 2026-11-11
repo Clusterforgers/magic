@@ -1,0 +1,48 @@
+{
+  "oracle_id": "4b1603f3-a246-449b-a109-99adb49e5ea4",
+  "name": "Eastfarthing Farmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eastfarthing Farmer",
+      "oracle_fingerprint": "b01929c39786e02390eb4fe239be3e1c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "food" } } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+                  ],
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Count": [{ "Subtype": "Food" }, { "ControlledBy": "You" }]
+                              },
+                              "toughness": {
+                                "Count": [{ "Subtype": "Food" }, { "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

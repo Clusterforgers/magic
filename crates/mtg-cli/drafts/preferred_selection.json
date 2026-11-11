@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1d05d2d6-3ea1-4d8a-9f1c-6fc3f5e38ea9",
+  "name": "Preferred Selection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Preferred Selection",
+      "oracle_fingerprint": "2f5d5479d236392f5ac63cb393ba51a5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              {
+                "Pay": {
+                  "cost": ["SacrificeSelf", { "Mana": "{2}{G}{G}" }],
+                  "paid": [
+                    { "Choose": { "from": { "Bound": "top" }, "as": "kept" } },
+                    { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } }
+                  ],
+                  "unpaid": [
+                    { "Choose": { "from": { "Bound": "top" }, "as": "bottomed" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "bottomed" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

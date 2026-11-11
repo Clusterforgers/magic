@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "1833662b-ccf3-4c16-9767-666d6407aa65",
+  "oracle_id": "2f9263d7-916f-4535-95d2-888ab73cf339",
+  "multiverse_ids": [
+    555441
+  ],
+  "mtgo_id": 98699,
+  "arena_id": 80391,
+  "tcgplayer_id": 268536,
+  "cardmarket_id": 651766,
+  "name": "Luxior, Giada's Gift",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/1833662b-ccf3-4c16-9767-666d6407aa65",
+  "scryfall_uri": "https://scryfall.com/card/snc/240/luxior-giadas-gift?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:11:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.jpg?1783923061",
+    "normal": "https://cards.scryfall.io/normal/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.jpg?1783923061",
+    "large": "https://cards.scryfall.io/large/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.jpg?1783923061",
+    "png": "https://cards.scryfall.io/png/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.png?1783923061",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.jpg?1783923061",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.jpg?1783923061",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.webp?1783923061",
+    "grid": "https://cards.scryfall.io/grid/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.webp?1783923061",
+    "display": "https://cards.scryfall.io/display/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.webp?1783923061",
+    "art": "https://cards.scryfall.io/art/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.webp?1783923061",
+    "crop": "https://cards.scryfall.io/crop/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.webp?1783923061",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/8/1833662b-ccf3-4c16-9767-666d6407aa65.jpg?1783923061"
+  },
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Legendary Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +1/+1 for each counter on it.\nEquipped permanent isn't a planeswalker and is a creature in addition to its other types. (Loyalty abilities can still be activated.)\nEquip planeswalker {1}\nEquip {3}",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Equip"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "df837242-8c15-42e4-b049-c933a02dc501",
+  "set": "snc",
+  "set_name": "Streets of New Capenna",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/df837242-8c15-42e4-b049-c933a02dc501",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asnc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/snc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1833662b-ccf3-4c16-9767-666d6407aa65/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2f9263d7-916f-4535-95d2-888ab73cf339&unique=prints",
+  "collector_number": "240",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Volkan Baǵa",
+  "artist_ids": [
+    "93bec3c0-0260-4d31-8064-5d01efb4153f"
+  ],
+  "illustration_id": "425bfbe1-e9c7-4624-a3d6-1cf8191b962e",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": true,
+  "edhrec_rank": 4405,
+  "penny_rank": 7426,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/magic-the-gathering-streets-of-new-capenna-ign-card-reveal-luxior-giadas-gift",
+    "previewed_at": "2022-04-11"
+  },
+  "prices": {
+    "usd": "4.38",
+    "usd_foil": "5.52",
+    "usd_etched": null,
+    "eur": "3.36",
+    "eur_foil": "4.01",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=555441&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLuxior%252C%2BGiada%2527s%2BGift",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLuxior%252C%2BGiada%2527s%2BGift",
+    "edhrec": "https://edhrec.com/route/?cc=Luxior%2C+Giada%27s+Gift"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F268536%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=651766&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/98699?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

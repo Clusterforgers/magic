@@ -1,0 +1,34 @@
+{
+  "oracle_id": "61a23402-3244-4b5e-9134-98e1f82eda65",
+  "name": "Abstruse Appropriation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abstruse Appropriation",
+      "oracle_fingerprint": "032a7cd973a4aaae69a7517a3ac8a93d",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Is": { "Bound": "exiled" } }],
+                      "from": "Exile",
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "9db7cb7f-1309-4f1d-9c9d-423c91c0896c",
+  "name": "Vizkopa Confessor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vizkopa Confessor",
+      "oracle_fingerprint": "6b89d10df73ac08924ba8e9f9343a6e9",
+      "abilities": [
+        { "Keyword": "Extort" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "Number": [0, { "Life": "You" }] }, "as": "life" } },
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": { "ChosenAs": "life" } }],
+                  "paid": [
+                    {
+                      "Choose": {
+                        "who": { "Target": 0 },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                        "count": { "min": { "ChosenAs": "life" }, "max": { "ChosenAs": "life" } },
+                        "as": "revealed"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed" } } },
+                    { "Choose": { "from": { "Bound": "revealed" }, "as": "exiled" } },
+                    { "Exile": { "what": { "Bound": "exiled" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

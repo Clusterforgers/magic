@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c1c62704-1f20-48cf-8588-47e7fca85f7b",
+  "name": "Paragon of Modernity",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Paragon of Modernity",
+      "oracle_fingerprint": "8ae84b95cd8cde751dc1308be6d9481c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 159 }
+          }
+        }
+      ]
+    }
+  ]
+}

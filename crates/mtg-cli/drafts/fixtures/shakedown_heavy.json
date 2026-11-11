@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "ce418184-a672-46bc-a17d-c559614defb5",
+  "oracle_id": "77b24f10-93af-44b9-af78-3a2f5ab32251",
+  "multiverse_ids": [
+    555296
+  ],
+  "mtgo_id": 98409,
+  "arena_id": 80246,
+  "tcgplayer_id": 268541,
+  "cardmarket_id": 651705,
+  "name": "Shakedown Heavy",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/ce418184-a672-46bc-a17d-c559614defb5",
+  "scryfall_uri": "https://scryfall.com/card/snc/95/shakedown-heavy?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:12:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/e/ce418184-a672-46bc-a17d-c559614defb5.jpg?1783923123",
+    "normal": "https://cards.scryfall.io/normal/front/c/e/ce418184-a672-46bc-a17d-c559614defb5.jpg?1783923123",
+    "large": "https://cards.scryfall.io/large/front/c/e/ce418184-a672-46bc-a17d-c559614defb5.jpg?1783923123",
+    "png": "https://cards.scryfall.io/png/front/c/e/ce418184-a672-46bc-a17d-c559614defb5.png?1783923123",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/e/ce418184-a672-46bc-a17d-c559614defb5.jpg?1783923123",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/e/ce418184-a672-46bc-a17d-c559614defb5.jpg?1783923123",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/e/ce418184-a672-46bc-a17d-c559614defb5.webp?1783923123",
+    "grid": "https://cards.scryfall.io/grid/front/c/e/ce418184-a672-46bc-a17d-c559614defb5.webp?1783923123",
+    "display": "https://cards.scryfall.io/display/front/c/e/ce418184-a672-46bc-a17d-c559614defb5.webp?1783923123",
+    "art": "https://cards.scryfall.io/art/front/c/e/ce418184-a672-46bc-a17d-c559614defb5.webp?1783923123",
+    "crop": "https://cards.scryfall.io/crop/front/c/e/ce418184-a672-46bc-a17d-c559614defb5.webp?1783923123",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/e/ce418184-a672-46bc-a17d-c559614defb5.jpg?1783923123"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Ogre Warrior",
+  "oracle_text": "Menace\nWhenever this creature attacks, defending player may have you draw a card. If they do, untap this creature and remove it from combat.",
+  "power": "6",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "df837242-8c15-42e4-b049-c933a02dc501",
+  "set": "snc",
+  "set_name": "Streets of New Capenna",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/df837242-8c15-42e4-b049-c933a02dc501",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asnc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/snc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ce418184-a672-46bc-a17d-c559614defb5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A77b24f10-93af-44b9-af78-3a2f5ab32251&unique=prints",
+  "collector_number": "95",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Look, we both get what we want. I get your Halo. You get to keep your kneecaps.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Randy Vargas",
+  "artist_ids": [
+    "d20672ca-0555-4238-a984-fd171d36b247"
+  ],
+  "illustration_id": "b16c38a1-8ddd-4002-a702-566aba9426ca",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6813,
+  "penny_rank": 4863,
+  "preview": {
+    "source": "Malternativ",
+    "source_uri": "https://twitter.com/malternativ/status/1513458321348612098",
+    "previewed_at": "2022-04-11"
+  },
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": "0.39",
+    "usd_etched": null,
+    "eur": "0.39",
+    "eur_foil": "0.38",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=555296&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DShakedown%2BHeavy",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DShakedown%2BHeavy",
+    "edhrec": "https://edhrec.com/route/?cc=Shakedown+Heavy"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F268541%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=651705&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/98409?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

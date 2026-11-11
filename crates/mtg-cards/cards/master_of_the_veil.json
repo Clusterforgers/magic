@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ee9104d5-3583-4549-8dd0-5b69274f4b4f",
+  "name": "Master of the Veil",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Master of the Veil",
+      "oracle_fingerprint": "b30cb2351bb89962d2aa2f8801839ccc",
+      "abilities": [
+        { "Keyword": { "Morph": "{2}{U}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 120, "end": 218 }
+          }
+        }
+      ]
+    }
+  ]
+}

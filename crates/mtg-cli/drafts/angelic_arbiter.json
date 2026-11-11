@@ -1,0 +1,55 @@
+{
+  "oracle_id": "34dd789c-4d80-4ccc-a4f7-2e5388a9689d",
+  "name": "Angelic Arbiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angelic Arbiter",
+      "oracle_fingerprint": "a610022588dde3ec10cadb9d49266740",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                        "op": "Eq",
+                        "right": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": {
+                  "PlayersWhere": {
+                    "who": "Opponents",
+                    "test": {
+                      "Compare": {
+                        "left": { "Tallied": { "who": "You", "what": "Attackers" } },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                },
+                "action": { "Cast": {} }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

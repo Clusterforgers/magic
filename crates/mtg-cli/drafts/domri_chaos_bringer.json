@@ -1,0 +1,90 @@
+{
+  "oracle_id": "2a5408ed-8b47-4896-97e4-aa102a4b85c9",
+  "name": "Domri, Chaos Bringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Domri, Chaos Bringer",
+      "oracle_fingerprint": "b3eb4940799c8ffd4cf67bc9fce503b5",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "OneOf": ["Red", "Green"] },
+                  "only": [{ "Enters": { "spell": { "types": ["Creature"] }, "keyword": "Riot" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Beast",
+                                  "colors": ["Red", "Green"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Beast"],
+                                  "power": 4,
+                                  "toughness": 4,
+                                  "abilities": [{ "Keyword": "Trample" }]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

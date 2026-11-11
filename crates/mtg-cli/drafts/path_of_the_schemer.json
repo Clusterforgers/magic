@@ -1,0 +1,54 @@
+{
+  "oracle_id": "9cdb1cf6-2bf1-401b-83ae-6f3f7512e5a6",
+  "name": "Path of the Schemer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Path of the Schemer",
+      "oracle_fingerprint": "febaab1a4b75a9da0fc1b7563c4e0565",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "who": "EachPlayer", "count": 2 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Graveyard" }, { "Type": "Creature" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "card" },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "it"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "it" },
+                  "mods": [{ "AddType": "Artifact" }],
+                  "duration": "Forever"
+                }
+              },
+              { "Vote": { "options": { "Named": ["planeswalk", "chaos"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Players": { "Bound": "planeswalk" } },
+                      "op": "Gt",
+                      "right": { "Players": { "Bound": "chaos" } }
+                    }
+                  },
+                  "then": [{ "Planechase": { "act": "Planeswalk" } }],
+                  "otherwise": [{ "Planechase": { "act": "ChaosEnsues" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

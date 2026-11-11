@@ -1,0 +1,54 @@
+{
+  "oracle_id": "c4efdbab-711d-4269-9b24-b05d36f7e5c7",
+  "name": "Oath of Nissa",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Oath of Nissa",
+      "oracle_fingerprint": "34537c60a163d1ad2921a83a104ade63",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Creature" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 226, "end": 309 }
+          }
+        }
+      ]
+    }
+  ]
+}

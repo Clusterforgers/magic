@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e77e97d7-58ff-4454-ba49-66182e550f12",
+  "name": "Gorbag of Minas Morgul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gorbag of Minas Morgul",
+      "oracle_fingerprint": "f1bd54188dbccc9dae225c37316b6040",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Orc" }] },
+                  { "ControlledBy": "You" }
+                ],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Sacrifice": { "filter": [{ "Is": "Dealer" }] } }] } },
+              {
+                "Reflexive": {
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "options": [
+                          [{ "Draw": {} }],
+                          [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

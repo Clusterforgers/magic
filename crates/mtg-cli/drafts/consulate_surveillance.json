@@ -1,0 +1,41 @@
+{
+  "oracle_id": "06d62e22-df9c-488e-8d2d-793eaf4cd75c",
+  "name": "Consulate Surveillance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consulate Surveillance",
+      "oracle_fingerprint": "02a1681ad2f879daf89dfd6997a9e552",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 4 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayEnergy": 2 }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }] }] },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

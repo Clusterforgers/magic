@@ -1,0 +1,31 @@
+{
+  "oracle_id": "57ff1665-0a7b-4d98-bd8f-cc07cf04f701",
+  "name": "Ian Malcolm, Chaotician",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ian Malcolm, Chaotician",
+      "oracle_fingerprint": "a8f1b210a6e385efaf17d143022d4263",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": {} }, "nth": 2 } },
+            "effects": [{ "ExileTop": { "who": "Triggering", "as": "card" } }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "who": "ActivePlayer",
+                "what": [{ "ExiledWith": "This" }, { "Not": { "OwnedBy": "ActivePlayer" } }],
+                "from": "Exile",
+                "spend_as": "AnyType"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

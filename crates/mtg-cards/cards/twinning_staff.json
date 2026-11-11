@@ -1,0 +1,36 @@
+{
+  "oracle_id": "3ca8113b-f5b8-41a7-aae6-ebb32554dfe3",
+  "name": "Twinning Staff",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Twinning Staff",
+      "oracle_fingerprint": "5a488291e1525146ca85207d56389e1b",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 153 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{7}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

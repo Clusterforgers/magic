@@ -1,0 +1,94 @@
+{
+  "oracle_id": "d0375311-b0ea-4870-bc2c-4894da088dc3",
+  "name": "Ellywick Tumblestrum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ellywick Tumblestrum",
+      "oracle_fingerprint": "0446602e163f4973fdd1566a8fe82967",
+      "abilities": [
+        { "Loyalty": { "cost": { "Plus": 1 }, "effects": [{ "Venture": {} }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "kept" },
+                      "selector": [{ "Supertype": "Legendary" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "GainLife": { "amount": 3 } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [
+                          { "AddKeyword": "Trample" },
+                          { "AddKeyword": "Haste" },
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Times": {
+                                  "by": 2,
+                                  "of": { "Tallied": { "who": "You", "what": "DungeonsCompleted" } }
+                                }
+                              },
+                              "toughness": {
+                                "Times": {
+                                  "by": 2,
+                                  "of": { "Tallied": { "who": "You", "what": "DungeonsCompleted" } }
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

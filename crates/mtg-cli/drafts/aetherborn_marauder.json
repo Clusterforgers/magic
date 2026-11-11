@@ -1,0 +1,63 @@
+{
+  "oracle_id": "ff6427f6-d2b1-4e33-984d-c06bd15d7c2c",
+  "name": "Aetherborn Marauder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aetherborn Marauder",
+      "oracle_fingerprint": "c334fdd6b9ca4cfd9d5f169967352bf1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": ["Other", { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": ["Other", { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+                    }
+                  },
+                  "as": "sources"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "sources" },
+                  "as": "p",
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "kind": {
+                          "Number": [
+                            0,
+                            { "Counters": { "on": { "Bound": "p" }, "counter": "+1/+1" } }
+                          ]
+                        },
+                        "as": "n"
+                      }
+                    },
+                    {
+                      "MoveCounters": {
+                        "from": { "Bound": "p" },
+                        "to": "This",
+                        "counter": "+1/+1",
+                        "count": { "ChosenAs": "n" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "d2ac346a-fc46-4023-aa60-4d55170697dc",
+  "oracle_id": "378a6203-0d47-4165-bdc2-43dfdfb4d15d",
+  "multiverse_ids": [
+    646794
+  ],
+  "mtgo_id": 121952,
+  "arena_id": 89152,
+  "tcgplayer_id": 534202,
+  "cardmarket_id": 752001,
+  "name": "Urgent Necropsy",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/d2ac346a-fc46-4023-aa60-4d55170697dc",
+  "scryfall_uri": "https://scryfall.com/card/mkm/240/urgent-necropsy?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:20:33Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/2/d2ac346a-fc46-4023-aa60-4d55170697dc.jpg?1783912833",
+    "normal": "https://cards.scryfall.io/normal/front/d/2/d2ac346a-fc46-4023-aa60-4d55170697dc.jpg?1783912833",
+    "large": "https://cards.scryfall.io/large/front/d/2/d2ac346a-fc46-4023-aa60-4d55170697dc.jpg?1783912833",
+    "png": "https://cards.scryfall.io/png/front/d/2/d2ac346a-fc46-4023-aa60-4d55170697dc.png?1783912833",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/2/d2ac346a-fc46-4023-aa60-4d55170697dc.jpg?1783912833",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/2/d2ac346a-fc46-4023-aa60-4d55170697dc.jpg?1783912833",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/2/d2ac346a-fc46-4023-aa60-4d55170697dc.webp?1783912833",
+    "grid": "https://cards.scryfall.io/grid/front/d/2/d2ac346a-fc46-4023-aa60-4d55170697dc.webp?1783912833",
+    "display": "https://cards.scryfall.io/display/front/d/2/d2ac346a-fc46-4023-aa60-4d55170697dc.webp?1783912833",
+    "art": "https://cards.scryfall.io/art/front/d/2/d2ac346a-fc46-4023-aa60-4d55170697dc.webp?1783912833",
+    "crop": "https://cards.scryfall.io/crop/front/d/2/d2ac346a-fc46-4023-aa60-4d55170697dc.webp?1783912833",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/2/d2ac346a-fc46-4023-aa60-4d55170697dc.jpg?1783912833"
+  },
+  "mana_cost": "{2}{B}{G}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "As an additional cost to cast this spell, collect evidence X, where X is the total mana value of the permanents this spell targets.\nDestroy up to one target artifact, up to one target creature, up to one target enchantment, and up to one target planeswalker.",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set": "mkm",
+  "set_name": "Murders at Karlov Manor",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/2b17794b-15c3-4796-ad6f-0887a0eceeca",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d2ac346a-fc46-4023-aa60-4d55170697dc/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A378a6203-0d47-4165-bdc2-43dfdfb4d15d&unique=prints",
+  "collector_number": "240",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"The Golgari can read the dead like a newspaper.\"\n—Taboro of the Foundway Associates",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Uriah Voth",
+  "artist_ids": [
+    "14cf4c0c-1a83-4366-ba61-6d0a26ee5a69"
+  ],
+  "illustration_id": "65e4b4bf-26d8-41dd-ad62-856f4ae7a176",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18738,
+  "preview": {
+    "source": "Playing With Power MTG",
+    "source_uri": "https://twitter.com/PWPMtG/status/1749167481451594019",
+    "previewed_at": "2024-01-21"
+  },
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.30",
+    "eur_foil": "0.43",
+    "tix": "0.09"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=646794&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DUrgent%2BNecropsy",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DUrgent%2BNecropsy",
+    "edhrec": "https://edhrec.com/route/?cc=Urgent+Necropsy"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F534202%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=752001&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/121952?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

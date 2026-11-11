@@ -1,0 +1,49 @@
+{
+  "oracle_id": "be5138fd-3e92-42b9-93c5-311e66bd443f",
+  "name": "Perennation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perennation",
+      "oracle_fingerprint": "57c2b44a8a34b0393ce5822f74769956",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": {
+                    "Battlefield": {
+                      "counters": [[{ "Other": "hexproof" }, 1], [{ "Other": "indestructible" }, 1]]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

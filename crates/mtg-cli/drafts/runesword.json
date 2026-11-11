@@ -1,0 +1,61 @@
+{
+  "oracle_id": "964c2003-cef0-4ac7-9f66-4e20893c8e50",
+  "name": "Runesword",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Runesword",
+      "oracle_fingerprint": "87ae5d705b6c4fbf03742a6fd6748151",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": { "what": [{ "Is": { "Target": 0 } }], "from": "Battlefield" }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "CantBeRegenerated": {
+                      "Each": [{ "Type": "Creature" }, { "DamagedBy": { "Target": 0 } }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "DamagedBy": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

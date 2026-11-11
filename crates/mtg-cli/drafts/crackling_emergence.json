@@ -1,0 +1,43 @@
+{
+  "oracle_id": "c984787c-f883-42c9-ae5d-9277c84dba01",
+  "name": "Crackling Emergence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crackling Emergence",
+      "oracle_fingerprint": "fa4b23c3544fec7ddd430f973ea59b6e",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }, { "ControlledBy": "You" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "AddType": "Creature" },
+              { "SetPT": { "power": 3, "toughness": 3 } },
+              { "SetColors": ["Red"] },
+              { "AddSubtype": "Spirit" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Destroyed": { "what": [{ "Is": "Attached" }] } },
+            "by": {
+              "Instead": [
+                { "Sacrifice": { "filter": ["This"] } },
+                {
+                  "Continuous": {
+                    "affected": "Attached",
+                    "mods": [{ "AddKeyword": "Indestructible" }],
+                    "duration": "UntilEndOfTurn"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

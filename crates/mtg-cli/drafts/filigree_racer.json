@@ -1,0 +1,71 @@
+{
+  "oracle_id": "5d93b4a9-0d51-45bd-a0e7-90737d019822",
+  "name": "Filigree Racer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Filigree Racer",
+      "oracle_fingerprint": "f86e1a9bba8316a49eb7ffc616a0b286",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 4 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayEnergy": 2 }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Either": [
+                                {
+                                  "Object": [
+                                    { "Type": "Instant" },
+                                    { "In": "Graveyard" },
+                                    { "OwnedBy": "You" }
+                                  ]
+                                },
+                                {
+                                  "Object": [
+                                    { "Type": "Sorcery" },
+                                    { "In": "Graveyard" },
+                                    { "OwnedBy": "You" }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "AddKeyword": "JumpStart" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

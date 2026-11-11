@@ -1,0 +1,52 @@
+{
+  "oracle_id": "da3b12d1-8867-4063-b50d-3b2f5ce0549f",
+  "name": "Dancing Sword",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dancing Sword",
+      "oracle_fingerprint": "d6f7b37930108351275c9c33a50ce2dc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetPT": { "power": 2, "toughness": 1 } },
+                          { "SetTypes": ["Artifact", "Creature"] },
+                          { "SetCreatureTypes": ["Construct"] },
+                          { "AddKeyword": "Flying" },
+                          { "AddKeyword": { "Ward": "{1}" } }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

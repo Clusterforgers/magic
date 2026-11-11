@@ -1,0 +1,28 @@
+{
+  "oracle_id": "232c297d-71b6-429f-99df-39a11dbcea40",
+  "name": "Reality Acid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reality Acid",
+      "oracle_fingerprint": "9c1ac284f1b1fd63ecb11156d78d072b",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        { "Keyword": { "Vanishing": 3 } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "ControllerOf": "Attached" },
+                  "filter": [{ "Is": "Attached" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

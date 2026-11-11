@@ -1,0 +1,20 @@
+{
+  "oracle_id": "60b2f991-47ef-4da3-ba61-0692695ea098",
+  "name": "Revoke Privileges",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Revoke Privileges",
+      "oracle_fingerprint": "74039916e8df74876a8fd234495a4c39",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 74 }
+          }
+        }
+      ]
+    }
+  ]
+}

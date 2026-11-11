@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d5e48041-5f21-48e6-bd0c-000f02dfbe8a",
+  "name": "Cunning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cunning",
+      "oracle_fingerprint": "cd8faf35c20f855dff31405de937bb56",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Attacks": { "what": [{ "Is": "Attached" }] } },
+                { "Blocks": { "what": [{ "Is": "Attached" }] } }
+              ]
+            },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Cleanup" } },
+                  "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

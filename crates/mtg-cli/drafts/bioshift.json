@@ -1,0 +1,47 @@
+{
+  "oracle_id": "3da604fc-68e9-4749-98f9-6fbcebcab9b6",
+  "name": "Bioshift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bioshift",
+      "oracle_fingerprint": "bef1c89d2d626c78001821e64c811424",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Is": { "Target": 0 } } },
+                    { "ControlledBy": { "ControllerOf": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [0, { "Counters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                  },
+                  "as": "n"
+                }
+              },
+              {
+                "MoveCounters": {
+                  "from": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "counter": "+1/+1",
+                  "count": { "ChosenAs": "n" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+  "object": "card",
+  "id": "009c8a91-8c73-4e3f-9955-45344ae07832",
+  "oracle_id": "7af3876e-5297-46e6-936e-6c8344f4b6ac",
+  "multiverse_ids": [
+    685875
+  ],
+  "mtgo_id": 135478,
+  "tcgplayer_id": 609729,
+  "cardmarket_id": 805716,
+  "name": "Biolume Egg // Biolume Serpent",
+  "lang": "en",
+  "released_at": "2025-01-24",
+  "uri": "https://api.scryfall.com/cards/009c8a91-8c73-4e3f-9955-45344ae07832",
+  "scryfall_uri": "https://scryfall.com/card/inr/54/biolume-egg-biolume-serpent?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:02:52Z",
+  "cmc": 3.0,
+  "type_line": "Creature — Serpent Egg // Creature — Serpent",
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Transform",
+    "Defender",
+    "Scry"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Biolume Egg",
+      "mana_cost": "{2}{U}",
+      "type_line": "Creature — Serpent Egg",
+      "oracle_text": "Defender\nWhen this creature enters, scry 2.\nWhen you sacrifice this creature, return it to the battlefield transformed under its owner's control at the beginning of the next end step.",
+      "colors": [
+        "U"
+      ],
+      "power": "0",
+      "toughness": "4",
+      "flavor_text": "Serpents leave their eggs in the cold and inky depths...",
+      "artist": "Filip Burburan",
+      "artist_id": "66082c3b-a623-4d34-be51-2475214b85d3",
+      "illustration_id": "d5fef22b-c9a3-42cd-877c-0ce27b006ad4",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.jpg?1783908172",
+        "normal": "https://cards.scryfall.io/normal/front/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.jpg?1783908172",
+        "large": "https://cards.scryfall.io/large/front/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.jpg?1783908172",
+        "png": "https://cards.scryfall.io/png/front/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.png?1783908172",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.jpg?1783908172",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.jpg?1783908172",
+        "thumb": "https://cards.scryfall.io/thumb/front/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.webp?1783908172",
+        "grid": "https://cards.scryfall.io/grid/front/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.webp?1783908172",
+        "display": "https://cards.scryfall.io/display/front/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.webp?1783908172",
+        "art": "https://cards.scryfall.io/art/front/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.webp?1783908172",
+        "crop": "https://cards.scryfall.io/crop/front/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.webp?1783908172",
+        "jpeg": "https://cards.scryfall.io/normal/front/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.jpg?1783908172"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Biolume Serpent",
+      "mana_cost": "",
+      "type_line": "Creature — Serpent",
+      "oracle_text": "Sacrifice two Islands: This creature can't be blocked this turn.",
+      "colors": [
+        "U"
+      ],
+      "color_indicator": [
+        "U"
+      ],
+      "power": "4",
+      "toughness": "4",
+      "flavor_text": "...knowing their hatchlings are more fearsome than anything else that might come along.",
+      "artist": "Filip Burburan",
+      "artist_id": "66082c3b-a623-4d34-be51-2475214b85d3",
+      "illustration_id": "28fea69b-46e7-4e96-84ac-790530bb8ed9",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.jpg?1783908172",
+        "normal": "https://cards.scryfall.io/normal/back/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.jpg?1783908172",
+        "large": "https://cards.scryfall.io/large/back/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.jpg?1783908172",
+        "png": "https://cards.scryfall.io/png/back/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.png?1783908172",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.jpg?1783908172",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.jpg?1783908172",
+        "thumb": "https://cards.scryfall.io/thumb/back/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.webp?1783908172",
+        "grid": "https://cards.scryfall.io/grid/back/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.webp?1783908172",
+        "display": "https://cards.scryfall.io/display/back/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.webp?1783908172",
+        "art": "https://cards.scryfall.io/art/back/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.webp?1783908172",
+        "crop": "https://cards.scryfall.io/crop/back/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.webp?1783908172",
+        "jpeg": "https://cards.scryfall.io/normal/back/0/0/009c8a91-8c73-4e3f-9955-45344ae07832.jpg?1783908172"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set": "inr",
+  "set_name": "Innistrad Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/b9618c8c-9f31-4b42-9798-2991893c27bf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/009c8a91-8c73-4e3f-9955-45344ae07832/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7af3876e-5297-46e6-936e-6c8344f4b6ac&unique=prints",
+  "collector_number": "54",
+  "digital": false,
+  "rarity": "uncommon",
+  "artist": "Filip Burburan",
+  "artist_ids": [
+    "66082c3b-a623-4d34-be51-2475214b85d3"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22061,
+  "penny_rank": 12047,
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": "0.25",
+    "usd_etched": null,
+    "eur": "0.11",
+    "eur_foil": "0.02",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=685875&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBiolume%2BEgg%2B%252F%252F%2BBiolume%2BSerpent",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBiolume%2BEgg%2B%252F%252F%2BBiolume%2BSerpent",
+    "edhrec": "https://edhrec.com/route/?cc=Biolume+Egg"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F609729%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=805716&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/135478?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

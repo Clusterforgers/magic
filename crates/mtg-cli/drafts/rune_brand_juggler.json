@@ -1,0 +1,43 @@
+{
+  "oracle_id": "8c105948-4b8f-4615-b66a-2bbdb3f3d6dd",
+  "name": "Rune-Brand Juggler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rune-Brand Juggler",
+      "oracle_fingerprint": "01667f7ce0c65e99dcf3d178c888d763",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Suspect": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}{B}{R}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Suspected"] } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -5, "toughness": -5 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

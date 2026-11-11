@@ -1,0 +1,56 @@
+{
+  "oracle_id": "087d2e42-c69f-4cd2-b2e3-e0b64ac2893b",
+  "name": "Momentum Breaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Momentum Breaker",
+      "oracle_fingerprint": "76dd8b722627b67f82909597ccf6052d",
+      "abilities": [
+        { "Keyword": "StartYourEngines" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] },
+                              { "ControlledBy": "You" }
+                            ]
+                          },
+                          "op": "Eq",
+                          "right": 0
+                        }
+                      }
+                    }
+                  },
+                  "as": "cant"
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+                }
+              },
+              { "Discard": { "who": { "Bound": "cant" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+            "effects": [{ "GainLife": { "amount": { "Speed": "You" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e0321049-a3ed-4378-b607-7fb190b6f0fd",
+  "name": "The Capitoline Triad",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Capitoline Triad",
+      "oracle_fingerprint": "0c5861530b41ba8ec384a35c446fdf11",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Count": [
+                {
+                  "AnyOf": [
+                    { "Type": "Artifact" },
+                    { "Supertype": "Legendary" },
+                    { "Subtype": "Saga" }
+                  ]
+                },
+                { "In": "Graveyard" },
+                { "OwnedBy": "You" }
+              ]
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 150, "end": 323 }
+          }
+        }
+      ]
+    }
+  ]
+}

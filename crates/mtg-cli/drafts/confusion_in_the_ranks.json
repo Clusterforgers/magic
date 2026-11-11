@@ -1,0 +1,54 @@
+{
+  "oracle_id": "e477abb9-9b99-48a8-8c09-07b120b72540",
+  "name": "Confusion in the Ranks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Confusion in the Ranks",
+      "oracle_fingerprint": "29e7fd92b903c0f1afaaaceae14d34ee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": { "ControllerOf": "Triggering" },
+                    "what": {
+                      "Object": [
+                        { "Not": { "ControlledBy": { "ControllerOf": "Triggering" } } },
+                        { "SharesType": "Triggering" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "ExchangeControl": {
+                  "what": ["Triggering", { "Target": 0 }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

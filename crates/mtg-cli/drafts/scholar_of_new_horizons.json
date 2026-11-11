@@ -1,0 +1,55 @@
+{
+  "oracle_id": "3c7ea603-c985-4107-806b-a467b5fcca36",
+  "name": "Scholar of New Horizons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scholar of New Horizons",
+      "oracle_fingerprint": "447863cac81f4d2c82fb264cbb066e1e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCountersAmong": { "from": [] } }],
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Plains" }], "reveal": true, "as": "land" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Largest": { "who": "Opponents", "of": [{ "Type": "Land" }] } },
+                      "op": "Gt",
+                      "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Either": {
+                        "first": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "land" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ],
+                        "second": [{ "Move": { "what": { "Bound": "land" }, "to": "Hand" } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "land" }, "to": "Hand" } }]
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

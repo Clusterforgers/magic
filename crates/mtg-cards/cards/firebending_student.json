@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1ad3be51-f68b-46d6-b58e-400b50e384f1",
+  "name": "Firebending Student",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Firebending Student",
+      "oracle_fingerprint": "40011afbc596cd1b5ba769146fa23011",
+      "abilities": [
+        { "Keyword": "Prowess" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 93, "end": 223 }
+          }
+        }
+      ]
+    }
+  ]
+}

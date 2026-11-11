@@ -1,0 +1,57 @@
+{
+  "oracle_id": "6b2d92f5-b0a1-4f30-9140-da490bf01bda",
+  "name": "Lily Bowen, Raging Grandma",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lily Bowen, Raging Grandma",
+      "oracle_fingerprint": "39767b6e1d70a49e7163d101fb107c22",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "This", "stat": "Power" } },
+                      "op": "Le",
+                      "right": 16
+                    }
+                  },
+                  "then": [{ "MultiplyCounters": { "on": "This", "counter": "+1/+1" } }],
+                  "otherwise": [
+                    {
+                      "Let": {
+                        "as": "removed",
+                        "amount": {
+                          "Difference": [{ "Counters": { "on": "This", "counter": "+1/+1" } }, 1]
+                        }
+                      }
+                    },
+                    {
+                      "RemoveCounters": {
+                        "from": "This",
+                        "counter": "+1/+1",
+                        "count": { "Bound": "removed" }
+                      }
+                    },
+                    { "GainLife": { "amount": { "Bound": "removed" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

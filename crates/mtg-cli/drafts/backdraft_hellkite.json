@@ -1,0 +1,34 @@
+{
+  "oracle_id": "fcf9057a-4975-4a7d-85f5-3fdc80942fcd",
+  "name": "Backdraft Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Backdraft Hellkite",
+      "oracle_fingerprint": "7ed5756c858f6ec8408cc6fc05eaf682",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

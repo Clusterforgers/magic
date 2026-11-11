@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d113af33-d75d-44e4-a8dc-31f8984edc42",
+  "name": "The Balrog, Durin's Bane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Balrog, Durin's Bane",
+      "oracle_fingerprint": "f974b745a9121a1f060265d3634bd476",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "Tally": { "event": "Sacrificed", "who": "EachPlayer", "filter": [] } }
+          }
+        },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Not": { "Supertype": "Legendary" } }] }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "88c3fc46-f2f5-440c-80a6-fed5b42cd340",
+  "name": "Sadistic Shell Game",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sadistic Shell Game",
+      "oracle_fingerprint": "fed2995a9ed149263bf4ecc667975b20",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                        },
+                        "as": "pick"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "pick" }, "as": "chosen", "adds": true } }
+                  ]
+                }
+              },
+              { "Destroy": { "what": { "Bound": "chosen" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

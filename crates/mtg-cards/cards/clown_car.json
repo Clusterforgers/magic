@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e0a6947f-3d52-45e0-8fd7-0bc07cc8c784",
+  "name": "Clown Car",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Clown Car",
+      "oracle_fingerprint": "edefb91546897e4bda69631d12cfe940",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 184 }
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

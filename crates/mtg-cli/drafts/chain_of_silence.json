@@ -1,0 +1,61 @@
+{
+  "oracle_id": "d7b476ed-fc50-4804-8375-488a9e2ab184",
+  "name": "Chain of Silence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chain of Silence",
+      "oracle_fingerprint": "d57a6253b99ba50db2fa7ae9b38f8930",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }] } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Type": "Land" }]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "May": {
+                              "who": { "ControllerOf": { "Target": 0 } },
+                              "effects": [
+                                {
+                                  "CopySpell": {
+                                    "what": "This",
+                                    "who": { "ControllerOf": { "Target": 0 } },
+                                    "new_targets": true
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

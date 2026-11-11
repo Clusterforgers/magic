@@ -1,0 +1,50 @@
+{
+  "oracle_id": "c68f09d8-a1eb-449b-8bf5-4251d7a14337",
+  "name": "Synth Eradicator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Synth Eradicator",
+      "oracle_fingerprint": "d296e7a4e0dfbfacacb467809ae16841",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Either": {
+                  "first": [
+                    { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+                  ],
+                  "second": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "impulse" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 3 }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

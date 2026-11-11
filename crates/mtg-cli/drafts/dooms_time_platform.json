@@ -1,0 +1,39 @@
+{
+  "oracle_id": "78019626-1154-483f-b862-73982f9ddc7f",
+  "name": "Doom's Time Platform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doom's Time Platform",
+      "oracle_fingerprint": "806a672cec976d91d5d5a7cd9783cf1c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "exiled" },
+                  "counter": { "Other": "time" },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ca79d130-6387-47b0-bde8-f45dd93f9221",
+  "name": "Restore Balance",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Restore Balance",
+      "oracle_fingerprint": "5cbff04e961e70e81d17f96c436c2089",
+      "abilities": [
+        { "Keyword": { "Suspend": { "time": 6, "cost": "{W}" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 14, "end": 229 }
+          }
+        }
+      ]
+    }
+  ]
+}

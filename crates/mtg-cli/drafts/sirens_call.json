@@ -1,0 +1,51 @@
+{
+  "oracle_id": "269fc857-a052-4f0a-9759-467ccf42bebb",
+  "name": "Siren's Call",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siren's Call",
+      "oracle_fingerprint": "2557431801c1baef8f439f667f42a3a9",
+      "abilities": [
+        { "CastOnly": { "condition": { "All": [{ "Not": "YourTurn" }, "BeforeAttackers"] } } },
+        {
+          "Spell": {
+            "effects": [
+              { "Bind": { "what": "ActivePlayer", "as": "player" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttack": {
+                      "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Bound": "player" } }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Not": { "Subtype": "Wall" } },
+                            { "ControlledBy": { "Bound": "player" } },
+                            { "Not": "AttackedThisTurn" },
+                            { "Not": "EnteredThisTurn" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "oracle_id": "6bbf1410-800d-4d05-93d2-ba3c1656728e",
+  "name": "Veteran Soldier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Veteran Soldier",
+      "oracle_fingerprint": "92ccb4d3440e2d5c7504a02019778411",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Commander", { "OwnedBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "AttacksPlayer": { "what": ["This"], "at": "EachPlayer" } },
+                    "if": {
+                      "Compare": {
+                        "left": { "HighestLife": "Opponents" },
+                        "op": "Le",
+                        "right": { "Life": "Against" }
+                      }
+                    },
+                    "effects": [
+                      {
+                        "RepeatEach": {
+                          "over": "Opponents",
+                          "as": "opp",
+                          "effects": [
+                            {
+                              "CreateToken": {
+                                "token": {
+                                  "Custom": {
+                                    "name": "Soldier",
+                                    "colors": ["White"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Soldier"],
+                                    "power": 1,
+                                    "toughness": 1
+                                  }
+                                },
+                                "tapped": true,
+                                "attacking": true,
+                                "against": { "Bound": "opp" }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

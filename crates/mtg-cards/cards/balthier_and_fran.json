@@ -1,0 +1,30 @@
+{
+  "oracle_id": "570cb560-c246-4652-b230-ab34f966c78a",
+  "name": "Balthier and Fran",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Balthier and Fran",
+      "oracle_fingerprint": "b2435b3c7d8112dba492a084ed7dbe44",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] },
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "AddKeyword": "Reach" },
+              { "AddKeyword": "Vigilance" }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 67, "end": 265 }
+          }
+        }
+      ]
+    }
+  ]
+}

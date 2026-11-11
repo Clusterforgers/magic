@@ -1,0 +1,20 @@
+{
+  "oracle_id": "fe2afa18-54d0-4595-af27-256398793a42",
+  "name": "Ugin's Nexus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ugin's Nexus",
+      "oracle_fingerprint": "439e6e236c30378883edbe8d913fe76e",
+      "abilities": [
+        { "Rule": { "rule": { "SkipExtraTurns": "EachPlayer" } } },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "by": { "Instead": [{ "Exile": { "what": "This" } }, { "ExtraTurn": {} }] }
+          }
+        }
+      ]
+    }
+  ]
+}

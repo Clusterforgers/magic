@@ -1,0 +1,23 @@
+{
+  "oracle_id": "de97ec82-d09d-440e-8c7d-a3f0fb552418",
+  "name": "Structural Collapse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Structural Collapse",
+      "oracle_fingerprint": "4b2f6252a74586065295d51ad923cfe7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Artifact" }] } },
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Land" }] } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

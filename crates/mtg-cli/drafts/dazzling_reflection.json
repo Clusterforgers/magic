@@ -1,0 +1,28 @@
+{
+  "oracle_id": "44db1ff5-7082-4da4-8f4f-4a2d2e3d7666",
+  "name": "Dazzling Reflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dazzling Reflection",
+      "oracle_fingerprint": "a0982f36c2bdfa66b04aa221aad70316",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "GainLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } } } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Target": 0 } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

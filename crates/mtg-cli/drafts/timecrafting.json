@@ -1,0 +1,67 @@
+{
+  "oracle_id": "57939644-6f9a-4653-920b-f2d28559a9ca",
+  "name": "Timecrafting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timecrafting",
+      "oracle_fingerprint": "e30e83b297071e0ddd956a57e997042b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Either": [
+                              { "Object": [] },
+                              { "Object": ["Suspended", { "In": "Exile" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "RemoveCounters": {
+                            "from": { "Target": 0 },
+                            "counter": { "Other": "time" },
+                            "count": "X"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Either": [
+                              { "Object": [{ "HasCounter": { "Other": "time" } }] },
+                              { "Object": ["Suspended", { "In": "Exile" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Target": 0 },
+                            "counter": { "Other": "time" },
+                            "count": "X"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

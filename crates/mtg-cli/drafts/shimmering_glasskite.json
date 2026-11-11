@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0a661f7a-5d56-4d73-bab7-22bfc5cef22e",
+  "name": "Shimmering Glasskite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shimmering Glasskite",
+      "oracle_fingerprint": "3563cb8a58726bbb3ef34a9a87d6373c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "BecomesTarget": { "what": ["This"] } }, "nth": 1 } },
+            "effects": [{ "Counter": { "what": "Dealer" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

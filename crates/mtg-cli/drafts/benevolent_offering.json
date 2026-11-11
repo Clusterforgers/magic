@@ -1,0 +1,77 @@
+{
+  "oracle_id": "3db8466c-864f-48ba-b617-f2c863dfdcbd",
+  "name": "Benevolent Offering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benevolent Offering",
+      "oracle_fingerprint": "3a2a7793e0e9d002c1d1e9609ff3ff45",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "opponent" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 3
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": { "Bound": "opponent" },
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 3
+                }
+              },
+              { "Choose": { "from": "Opponents", "as": "gainer" } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                    }
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "who": { "Bound": "gainer" },
+                  "amount": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Bound": "gainer" } }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

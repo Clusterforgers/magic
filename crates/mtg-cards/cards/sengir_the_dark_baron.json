@@ -1,0 +1,33 @@
+{
+  "oracle_id": "f49f84f9-616e-495b-8d87-4de7941f230e",
+  "name": "Sengir, the Dark Baron",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sengir, the Dark Baron",
+      "oracle_fingerprint": "dc33e2ab9c852c45fb321e582032a220",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 73, "end": 179 }
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

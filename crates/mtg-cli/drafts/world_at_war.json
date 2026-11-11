@@ -1,0 +1,65 @@
+{
+  "oracle_id": "02a8a5cc-62ce-4ae5-aa7d-760124af7d7b",
+  "name": "World at War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "World at War",
+      "oracle_fingerprint": "43a4754bc3b22c33fc76366f779e6de4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Step": "Main2" },
+                  "then": [
+                    { "AddPhase": { "phases": ["Combat", "Main"] } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "BeginCombat" } },
+                        "this_turn": true,
+                        "effects": [
+                          {
+                            "Untap": {
+                              "what": { "Each": [{ "Type": "Creature" }, "AttackedThisTurn"] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "Main2" } },
+                        "this_turn": true,
+                        "effects": [
+                          { "AddPhase": { "phases": ["Combat", "Main"] } },
+                          {
+                            "DelayedTrigger": {
+                              "when": { "StepBegins": { "step": "BeginCombat" } },
+                              "this_turn": true,
+                              "effects": [
+                                {
+                                  "Untap": {
+                                    "what": { "Each": [{ "Type": "Creature" }, "AttackedThisTurn"] }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Rebound" }
+      ]
+    }
+  ]
+}

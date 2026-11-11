@@ -1,0 +1,48 @@
+{
+  "oracle_id": "d18dfca7-2947-4308-a9ef-501e1b4843f4",
+  "name": "Mirage Phalanx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirage Phalanx",
+      "oracle_fingerprint": "03c76b652640942dacc1f0a01c4da709",
+      "abilities": [
+        { "Keyword": "Soulbond" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "AnyOf": ["This", { "PairedWith": "This" }] }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "CopyOf": {
+                              "of": "This",
+                              "except": [{ "AddKeyword": "Haste" }, { "RemoveKeyword": "Soulbond" }]
+                            }
+                          },
+                          "as": "copy"
+                        }
+                      },
+                      {
+                        "DelayedTrigger": {
+                          "when": { "StepBegins": { "step": "EndCombat" } },
+                          "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "This", "selector": ["Paired"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

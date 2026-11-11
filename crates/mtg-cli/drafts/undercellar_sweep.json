@@ -1,0 +1,44 @@
+{
+  "oracle_id": "2a747cdb-afbe-451d-8b1b-9458401a5419",
+  "name": "Undercellar Sweep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undercellar Sweep",
+      "oracle_fingerprint": "ea51df2f55fa89b990df59642297730e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "TakeInitiative": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "if": { "Any": [{ "Initiative": "You" }, { "Initiative": "Attacked" }] },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2,
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

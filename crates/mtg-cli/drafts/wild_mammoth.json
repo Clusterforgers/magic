@@ -1,0 +1,68 @@
+{
+  "oracle_id": "29ef65bf-1066-44a5-a2eb-e3670b076647",
+  "name": "Wild Mammoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Mammoth",
+      "oracle_fingerprint": "183fd46d4eb1f0cff47ae329e6693e24",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Gt",
+                          "right": {
+                            "Largest": { "who": "Opponents", "of": [{ "Type": "Creature" }] }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "SetController": {
+                        "PlayersWhere": {
+                          "who": "EachPlayer",
+                          "test": {
+                            "Compare": {
+                              "left": {
+                                "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              },
+                              "op": "Gt",
+                              "right": {
+                                "Largest": { "who": "Opponents", "of": [{ "Type": "Creature" }] }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

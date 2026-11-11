@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c3b3e070-28f6-4852-816e-caffe358b6fe",
+  "name": "Obsidian Fireheart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obsidian Fireheart",
+      "oracle_fingerprint": "003694bc83bd1354fe04a29693d2f22a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{R}{R}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Land" }, { "Not": { "HasCounter": { "Other": "blaze" } } }]
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "blaze" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                          "effects": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": { "WhileHasCounter": { "Other": "blaze" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

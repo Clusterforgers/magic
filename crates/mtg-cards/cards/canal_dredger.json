@@ -1,0 +1,31 @@
+{
+  "oracle_id": "bb6bda0d-ddb8-47fa-be07-bbcd73a52830",
+  "name": "Canal Dredger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Canal Dredger",
+      "oracle_fingerprint": "8443d055c0c620f1260b65ee1710db27",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 24 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 25, "end": 132 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "6728b9d0-d3ab-4ba3-af13-63cb83e0ed99",
+  "name": "Purphoros, Bronze-Blooded",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Purphoros, Bronze-Blooded",
+      "oracle_fingerprint": "ec2c44eb0f1849085bc42ad3c969bcb1",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": { "Compare": { "left": { "Devotion": ["Red"] }, "op": "Lt", "right": 5 } }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{R}",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "Type": "Creature" },
+                            { "AnyOf": [{ "Color": "Red" }, { "Type": "Artifact" }] }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "card" } }] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

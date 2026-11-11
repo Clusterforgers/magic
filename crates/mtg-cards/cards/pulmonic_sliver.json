@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f578465d-f3a5-48da-bcab-cffbbdd88be8",
+  "name": "Pulmonic Sliver",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pulmonic Sliver",
+      "oracle_fingerprint": "5a43b3dcbe27aba22aef6f1933f5e320",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Sliver" }] },
+            "mods": [{ "AddKeyword": "Flying" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 34, "end": 155 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "oracle_id": "667ece0e-a474-4e11-8ac4-6c8fc354457c",
+  "name": "Demonlord Belzenlok",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Demonlord Belzenlok",
+      "oracle_fingerprint": "1dd943fa070d7a354689c2c623d18843",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "found" },
+                      "selector": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }]
+                    }
+                  },
+                  "effects": [
+                    {
+                      "ExileUntil": {
+                        "filter": [{ "Not": { "Type": "Land" } }],
+                        "as": "found",
+                        "exiled_as": "exiled"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Bind": { "what": { "Bound": "found" }, "as": "put", "adds": true } }
+                  ],
+                  "most": 100,
+                  "at_least_once": true
+                }
+              },
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": "You",
+                  "amount": { "CountOf": { "of": { "Bound": "put" }, "filter": [] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

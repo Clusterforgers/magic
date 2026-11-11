@@ -1,0 +1,23 @@
+{
+  "oracle_id": "89eb4c39-35ae-405b-8af4-779880cb11c9",
+  "name": "The Masamune",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Masamune",
+      "oracle_fingerprint": "b188a28a079d321b634fd4cd35301325",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 91 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 92, "end": 254 }
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "518684d9-467a-4936-a3d9-17d23db4622c",
+  "name": "Insist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Insist",
+      "oracle_fingerprint": "1a5a85b9c2e806eb560332411ed695ef",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": { "what": [{ "Type": "Creature" }], "benefit": "Uncounterable" }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

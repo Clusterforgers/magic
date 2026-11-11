@@ -1,0 +1,31 @@
+{
+  "oracle_id": "4baa8f05-1ef8-4770-8c66-ef5f0f02a717",
+  "name": "Silver Wyvern",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silver Wyvern",
+      "oracle_fingerprint": "bcc3acf7cbd33d5065c16d0a301f80d4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{U}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    "SingleTarget",
+                    { "Targeting": ["This"] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

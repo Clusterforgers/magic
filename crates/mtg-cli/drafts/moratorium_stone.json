@@ -1,0 +1,52 @@
+{
+  "oracle_id": "bb0d89e7-4ae6-4ac2-a0e6-51ab08226069",
+  "name": "Moratorium Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moratorium Stone",
+      "oracle_fingerprint": "b3e2f87fff9698ff835c8e7344c9bde1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}{B}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }, { "Not": { "Type": "Land" } }] } }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "Exile": {
+                        "what": {
+                          "Each": [
+                            { "In": "Graveyard" },
+                            {
+                              "AnyOf": [
+                                { "Is": { "Target": 0 } },
+                                { "SharesName": { "Target": 0 } }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    { "Exile": { "what": { "Each": [{ "SharesName": { "Target": 0 } }] } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

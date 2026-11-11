@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "cc4bb871-cde9-43a9-8089-5987fa0dd4ef",
+  "oracle_id": "5168be9b-ffca-41c5-a944-92a1a2e30779",
+  "multiverse_ids": [
+    665063
+  ],
+  "mtgo_id": 126669,
+  "tcgplayer_id": 553404,
+  "cardmarket_id": 772931,
+  "name": "Mutated Cultist",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/cc4bb871-cde9-43a9-8089-5987fa0dd4ef",
+  "scryfall_uri": "https://scryfall.com/card/m3c/53/mutated-cultist?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:57:02Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/c/cc4bb871-cde9-43a9-8089-5987fa0dd4ef.jpg?1783911422",
+    "normal": "https://cards.scryfall.io/normal/front/c/c/cc4bb871-cde9-43a9-8089-5987fa0dd4ef.jpg?1783911422",
+    "large": "https://cards.scryfall.io/large/front/c/c/cc4bb871-cde9-43a9-8089-5987fa0dd4ef.jpg?1783911422",
+    "png": "https://cards.scryfall.io/png/front/c/c/cc4bb871-cde9-43a9-8089-5987fa0dd4ef.png?1783911422",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/c/cc4bb871-cde9-43a9-8089-5987fa0dd4ef.jpg?1783911422",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/c/cc4bb871-cde9-43a9-8089-5987fa0dd4ef.jpg?1783911422",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/c/cc4bb871-cde9-43a9-8089-5987fa0dd4ef.webp?1783911422",
+    "grid": "https://cards.scryfall.io/grid/front/c/c/cc4bb871-cde9-43a9-8089-5987fa0dd4ef.webp?1783911422",
+    "display": "https://cards.scryfall.io/display/front/c/c/cc4bb871-cde9-43a9-8089-5987fa0dd4ef.webp?1783911422",
+    "art": "https://cards.scryfall.io/art/front/c/c/cc4bb871-cde9-43a9-8089-5987fa0dd4ef.webp?1783911422",
+    "crop": "https://cards.scryfall.io/crop/front/c/c/cc4bb871-cde9-43a9-8089-5987fa0dd4ef.webp?1783911422",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/c/cc4bb871-cde9-43a9-8089-5987fa0dd4ef.jpg?1783911422"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Eldrazi Horror",
+  "oracle_text": "Devoid (This card has no color.)\nWhen you cast this spell, remove all counters from up to one target permanent or opponent. The next spell you cast this turn costs {1} less to cast for each counter removed this way.\nDeathtouch",
+  "power": "1",
+  "toughness": "3",
+  "colors": [],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Devoid",
+    "Deathtouch"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f5e00721-cf99-43ba-bf16-b22d56d12c73",
+  "set": "m3c",
+  "set_name": "Modern Horizons 3 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f5e00721-cf99-43ba-bf16-b22d56d12c73",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Am3c&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/m3c?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cc4bb871-cde9-43a9-8089-5987fa0dd4ef/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5168be9b-ffca-41c5-a944-92a1a2e30779&unique=prints",
+  "collector_number": "53",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "It tirelessly gurgles Emrakul's blessings from inhuman mouths.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dave Kendall",
+  "artist_ids": [
+    "8a5540a8-18c9-4fa9-802c-59d6866114d5"
+  ],
+  "illustration_id": "71972366-b7db-4d2c-9645-20e122dc2c1b",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "devoid"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "ripplefoil"
+  ],
+  "edhrec_rank": 8873,
+  "prices": {
+    "usd": "0.91",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.76",
+    "eur_foil": "0.02",
+    "tix": "4.25"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=665063&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMutated%2BCultist",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMutated%2BCultist",
+    "edhrec": "https://edhrec.com/route/?cc=Mutated+Cultist"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F553404%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=772931&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/126669?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

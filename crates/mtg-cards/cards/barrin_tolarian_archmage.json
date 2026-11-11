@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f98f7cb7-90ca-41e7-9f1d-8054931ecf0e",
+  "name": "Barrin, Tolarian Archmage",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Barrin, Tolarian Archmage",
+      "oracle_fingerprint": "9de1149d7cbc51e370b1dc6aca253d47",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    "Other"
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 96, "end": 213 }
+          }
+        }
+      ]
+    }
+  ]
+}

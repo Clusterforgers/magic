@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "c9e8ad32-a701-4b77-bb7e-0e440e4072da",
+  "oracle_id": "230ee0b4-eb75-457f-b171-72d585cfb5aa",
+  "multiverse_ids": [
+    45395
+  ],
+  "mtgo_id": 19173,
+  "mtgo_foil_id": 19174,
+  "tcgplayer_id": 11187,
+  "cardmarket_id": 863,
+  "name": "Thieves' Auction",
+  "lang": "en",
+  "released_at": "2003-07-28",
+  "uri": "https://api.scryfall.com/cards/c9e8ad32-a701-4b77-bb7e-0e440e4072da",
+  "scryfall_uri": "https://scryfall.com/card/8ed/227/thieves-auction?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:11:35Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/9/c9e8ad32-a701-4b77-bb7e-0e440e4072da.jpg?1783944695",
+    "normal": "https://cards.scryfall.io/normal/front/c/9/c9e8ad32-a701-4b77-bb7e-0e440e4072da.jpg?1783944695",
+    "large": "https://cards.scryfall.io/large/front/c/9/c9e8ad32-a701-4b77-bb7e-0e440e4072da.jpg?1783944695",
+    "png": "https://cards.scryfall.io/png/front/c/9/c9e8ad32-a701-4b77-bb7e-0e440e4072da.png?1783944695",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/9/c9e8ad32-a701-4b77-bb7e-0e440e4072da.jpg?1783944695",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/9/c9e8ad32-a701-4b77-bb7e-0e440e4072da.jpg?1783944695",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/9/c9e8ad32-a701-4b77-bb7e-0e440e4072da.webp?1783944695",
+    "grid": "https://cards.scryfall.io/grid/front/c/9/c9e8ad32-a701-4b77-bb7e-0e440e4072da.webp?1783944695",
+    "display": "https://cards.scryfall.io/display/front/c/9/c9e8ad32-a701-4b77-bb7e-0e440e4072da.webp?1783944695",
+    "art": "https://cards.scryfall.io/art/front/c/9/c9e8ad32-a701-4b77-bb7e-0e440e4072da.webp?1783944695",
+    "crop": "https://cards.scryfall.io/crop/front/c/9/c9e8ad32-a701-4b77-bb7e-0e440e4072da.webp?1783944695",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/9/c9e8ad32-a701-4b77-bb7e-0e440e4072da.jpg?1783944695"
+  },
+  "mana_cost": "{4}{R}{R}{R}",
+  "cmc": 7.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile all nontoken permanents. Starting with you, each player chooses one of the exiled cards and puts it onto the battlefield tapped under their control. Repeat this process until all cards exiled this way have been chosen.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cae8d29d-5979-4d8f-884d-7f3183bcc886",
+  "set": "8ed",
+  "set_name": "Eighth Edition",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/cae8d29d-5979-4d8f-884d-7f3183bcc886",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A8ed&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/8ed?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c9e8ad32-a701-4b77-bb7e-0e440e4072da/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A230ee0b4-eb75-457f-b171-72d585cfb5aa&unique=prints",
+  "collector_number": "227",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kevin Murphy",
+  "artist_ids": [
+    "ad209f86-cbfe-40ab-9c6d-0eb15b905239"
+  ],
+  "illustration_id": "54172bbb-8849-4033-ac69-b56446e9adec",
+  "border_color": "white",
+  "frame": "2003",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9842,
+  "penny_rank": 16457,
+  "prices": {
+    "usd": "4.20",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.48",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=45395&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThieves%2527%2BAuction",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThieves%2527%2BAuction",
+    "edhrec": "https://edhrec.com/route/?cc=Thieves%27+Auction"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F11187%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=863&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/19173?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

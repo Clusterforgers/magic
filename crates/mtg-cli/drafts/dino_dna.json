@@ -1,0 +1,52 @@
+{
+  "oracle_id": "26e988da-52cf-4382-8646-a27c5ad1b92d",
+  "name": "Dino DNA",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dino DNA",
+      "oracle_fingerprint": "a4ac0d3f2ed7eae88d35b358626abf49",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{6}",
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Exile" }, { "ExiledWith": "This" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "SetPT": { "power": 6, "toughness": 6 } },
+                        { "SetColors": ["Green"] },
+                        { "SetTypes": ["Creature"] },
+                        { "SetCreatureTypes": ["Dinosaur"] },
+                        { "AddKeyword": "Trample" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

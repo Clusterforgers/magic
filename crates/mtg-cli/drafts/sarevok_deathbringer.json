@@ -1,0 +1,34 @@
+{
+  "oracle_id": "4e215ede-e4ac-482a-a2e1-cacb20affa70",
+  "name": "Sarevok, Deathbringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarevok, Deathbringer",
+      "oracle_fingerprint": "395ea0692022be7f53cbe5f92abc05e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "EachPlayer", "what": "PermanentsLeftUnder" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Triggering",
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "ChooseABackground" }
+      ]
+    }
+  ]
+}

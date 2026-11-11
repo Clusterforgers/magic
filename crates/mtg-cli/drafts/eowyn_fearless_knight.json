@@ -1,0 +1,52 @@
+{
+  "oracle_id": "dcc349e9-399d-4f33-8131-d1801272466a",
+  "name": "Éowyn, Fearless Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Éowyn, Fearless Knight",
+      "oracle_fingerprint": "05ce15784a987627cd30d1a71d703d6f",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Gt",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Supertype": "Legendary" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": { "Protection": [{ "SharesColor": { "Target": 0 } }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

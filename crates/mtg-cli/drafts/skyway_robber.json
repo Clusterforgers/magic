@@ -1,0 +1,59 @@
+{
+  "oracle_id": "58aac732-3f03-4551-a684-6cb0e3b31c09",
+  "name": "Skyway Robber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skyway Robber",
+      "oracle_fingerprint": "6a7b0b9a850f63a41fc871ea5a003b12",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{3}{U}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 5 } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true }
+                    },
+                    "effects": [
+                      {
+                        "CastFromZone": {
+                          "what": {
+                            "Each": [
+                              { "In": "Exile" },
+                              { "ExiledWith": "This" },
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Instant" },
+                                  { "Type": "Sorcery" }
+                                ]
+                              }
+                            ]
+                          },
+                          "free": true
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "CastWith": "Escape" }
+          }
+        }
+      ]
+    }
+  ]
+}

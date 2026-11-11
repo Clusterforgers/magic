@@ -1,0 +1,20 @@
+{
+  "oracle_id": "bc89face-92b1-47d3-8cdb-360b7334d3b8",
+  "name": "War-Trained Slasher",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "War-Trained Slasher",
+      "oracle_fingerprint": "09400e370e799bb7eca7bf18a25bb0ae",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 73, "end": 149 }
+          }
+        }
+      ]
+    }
+  ]
+}

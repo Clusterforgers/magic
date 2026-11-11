@@ -1,0 +1,29 @@
+{
+  "oracle_id": "2dd1450e-902e-480a-9c42-1c47549d2eeb",
+  "name": "Gift of Doom",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gift of Doom",
+      "oracle_fingerprint": "680f4972d684131bcfd26762561b4a91",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Deathtouch" }, { "AddKeyword": "Indestructible" }]
+          }
+        },
+        {
+          "Keyword": { "Morph": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }] }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 212, "end": 276 }
+          }
+        }
+      ]
+    }
+  ]
+}

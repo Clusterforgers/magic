@@ -1,0 +1,42 @@
+{
+  "oracle_id": "50ddbea3-7ef4-4f6a-83c9-0c3ea1dfa3c9",
+  "name": "Saving Grace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saving Grace",
+      "oracle_fingerprint": "76bc95799ae851011de2046674c58bcb",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": { "Redirect": { "to": "Attached" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Each": [{ "ControlledBy": "You" }] } } },
+                  "by": { "Redirect": { "to": "Attached" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

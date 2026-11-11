@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e0aa6ce0-ca31-433b-ac6c-32b8675cdb71",
+  "name": "Spellskite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spellskite",
+      "oracle_fingerprint": "81d3eb049d9c056a50b37d5a3bdc2059",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U/P}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "ChangeTargets": { "what": { "Target": 0 }, "to": "One", "onto": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

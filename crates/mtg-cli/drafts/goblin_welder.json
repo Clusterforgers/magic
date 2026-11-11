@@ -1,0 +1,45 @@
+{
+  "oracle_id": "9fc28e1f-f4ea-4bf8-9442-a36dba3b3b29",
+  "name": "Goblin Welder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Welder",
+      "oracle_fingerprint": "744d1b1f7d79949d0cec064dbf012ee6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": { "ControllerOf": { "Target": 0 } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "filter": [{ "Is": { "Target": 0 } }]
+                      }
+                    },
+                    { "Move": { "what": { "Target": 1 }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

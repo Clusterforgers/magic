@@ -1,0 +1,28 @@
+{
+  "oracle_id": "09b9e6fd-7a61-4ed4-a121-61b64fbf03f4",
+  "name": "Shimian Night Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shimian Night Stalker",
+      "oracle_fingerprint": "4734fd7acb814b2063b9c7e0ef6bcded",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Target": 0 } }] } },
+                  "by": { "Redirect": { "to": "This" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

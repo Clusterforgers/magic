@@ -1,0 +1,72 @@
+{
+  "oracle_id": "cb68d1e4-36aa-4a00-b671-8959e7d526d4",
+  "name": "Lunar Convocation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lunar Convocation",
+      "oracle_fingerprint": "dd330ea3f8a70972bbb0ca5fe917b46c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGained" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Tallied": { "who": "You", "what": "LifeGained" } },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bat",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, { "PayLife": 2 }],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

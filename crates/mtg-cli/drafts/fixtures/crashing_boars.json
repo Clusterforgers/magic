@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "e264adbc-1c52-4207-b2e6-0dd76a58f2d6",
+  "oracle_id": "a4c59feb-e76a-4e08-b296-21c3e61cfc64",
+  "multiverse_ids": [
+    397512
+  ],
+  "mtgo_id": 56936,
+  "mtgo_foil_id": 56937,
+  "name": "Crashing Boars",
+  "lang": "en",
+  "released_at": "2015-05-06",
+  "uri": "https://api.scryfall.com/cards/e264adbc-1c52-4207-b2e6-0dd76a58f2d6",
+  "scryfall_uri": "https://scryfall.com/card/tpr/168/crashing-boars?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:27:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/2/e264adbc-1c52-4207-b2e6-0dd76a58f2d6.jpg?1783938462",
+    "normal": "https://cards.scryfall.io/normal/front/e/2/e264adbc-1c52-4207-b2e6-0dd76a58f2d6.jpg?1783938462",
+    "large": "https://cards.scryfall.io/large/front/e/2/e264adbc-1c52-4207-b2e6-0dd76a58f2d6.jpg?1783938462",
+    "png": "https://cards.scryfall.io/png/front/e/2/e264adbc-1c52-4207-b2e6-0dd76a58f2d6.png?1783938462",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/2/e264adbc-1c52-4207-b2e6-0dd76a58f2d6.jpg?1783938462",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/2/e264adbc-1c52-4207-b2e6-0dd76a58f2d6.jpg?1783938462",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/2/e264adbc-1c52-4207-b2e6-0dd76a58f2d6.webp?1783938462",
+    "grid": "https://cards.scryfall.io/grid/front/e/2/e264adbc-1c52-4207-b2e6-0dd76a58f2d6.webp?1783938462",
+    "display": "https://cards.scryfall.io/display/front/e/2/e264adbc-1c52-4207-b2e6-0dd76a58f2d6.webp?1783938462",
+    "art": "https://cards.scryfall.io/art/front/e/2/e264adbc-1c52-4207-b2e6-0dd76a58f2d6.webp?1783938462",
+    "crop": "https://cards.scryfall.io/crop/front/e/2/e264adbc-1c52-4207-b2e6-0dd76a58f2d6.webp?1783938462",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/2/e264adbc-1c52-4207-b2e6-0dd76a58f2d6.jpg?1783938462"
+  },
+  "mana_cost": "{3}{G}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Boar",
+  "oracle_text": "Whenever this creature attacks, defending player chooses an untapped creature they control. That creature blocks this creature this turn if able.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "41b3e002-ab58-46a0-8024-056ee843e267",
+  "set": "tpr",
+  "set_name": "Tempest Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/41b3e002-ab58-46a0-8024-056ee843e267",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atpr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tpr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e264adbc-1c52-4207-b2e6-0dd76a58f2d6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa4c59feb-e76a-4e08-b296-21c3e61cfc64&unique=prints",
+  "collector_number": "168",
+  "digital": true,
+  "rarity": "uncommon",
+  "flavor_text": "Bores ruin a party. Boars are party to ruin.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ron Spencer",
+  "artist_ids": [
+    "dab52c11-0564-4207-a4a1-c1735c946a65"
+  ],
+  "illustration_id": "842f9107-bfee-440a-9472-4cc4a08fbe14",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 30077,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.06"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=397512&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCrashing%2BBoars",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCrashing%2BBoars",
+    "edhrec": "https://edhrec.com/route/?cc=Crashing+Boars"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DCrashing%2BBoars%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Crashing+Boars&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/56936?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

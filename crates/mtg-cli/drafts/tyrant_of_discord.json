@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ce1bf2c4-93d5-41e3-a450-6b95fad7dd21",
+  "name": "Tyrant of Discord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tyrant of Discord",
+      "oracle_fingerprint": "99056892da7e48ec3348dea735e6381a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "sacrificed" },
+                      "selector": [{ "Not": { "Type": "Land" } }]
+                    }
+                  },
+                  "effects": [
+                    {
+                      "ChooseAtRandom": {
+                        "from": { "Each": [{ "ControlledBy": { "Target": 0 } }] },
+                        "as": "chosen"
+                      }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": { "Target": 0 },
+                        "filter": [{ "Is": { "Bound": "chosen" } }],
+                        "as": "sacrificed"
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

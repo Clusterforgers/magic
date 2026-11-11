@@ -1,0 +1,36 @@
+{
+  "oracle_id": "4489f362-9b7e-4dc0-a459-a990a487454e",
+  "name": "Absorb Identity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Absorb Identity",
+      "oracle_fingerprint": "a8bafe65612e02002adda7a4faddd996",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": {
+                          "Each": [{ "Subtype": "Shapeshifter" }, { "ControlledBy": "You" }]
+                        },
+                        "of": { "Target": 0 },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

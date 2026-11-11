@@ -1,0 +1,64 @@
+{
+  "oracle_id": "370974e7-d242-4f24-a031-cba71c935306",
+  "name": "Ardent Dustspeaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ardent Dustspeaker",
+      "oracle_fingerprint": "e4e961a282db933ea11f4b2a95b5656f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "ExileTop": { "count": 2, "as": "impulse" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Bound": "impulse" },
+                            "play": true
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

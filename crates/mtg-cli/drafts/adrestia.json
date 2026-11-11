@@ -1,0 +1,37 @@
+{
+  "oracle_id": "94779ca4-c202-4163-9c77-1036921a34bc",
+  "name": "Adrestia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adrestia",
+      "oracle_fingerprint": "e0ae29c83d478a41c3b9531c440090e4",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Assassin" }, { "Crewed": "This" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddSubtype": "Assassin" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

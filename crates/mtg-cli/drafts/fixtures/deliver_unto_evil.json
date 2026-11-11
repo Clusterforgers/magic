@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "67aa7104-7acc-4827-b763-ac053c99baab",
+  "oracle_id": "9e73f938-0aa4-4639-a97a-f7e68f645623",
+  "multiverse_ids": [
+    461012
+  ],
+  "mtgo_id": 71776,
+  "arena_id": 69536,
+  "tcgplayer_id": 188631,
+  "cardmarket_id": 372238,
+  "name": "Deliver Unto Evil",
+  "lang": "en",
+  "released_at": "2019-05-03",
+  "uri": "https://api.scryfall.com/cards/67aa7104-7acc-4827-b763-ac053c99baab",
+  "scryfall_uri": "https://scryfall.com/card/war/85/deliver-unto-evil?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:04:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/7/67aa7104-7acc-4827-b763-ac053c99baab.jpg?1783933447",
+    "normal": "https://cards.scryfall.io/normal/front/6/7/67aa7104-7acc-4827-b763-ac053c99baab.jpg?1783933447",
+    "large": "https://cards.scryfall.io/large/front/6/7/67aa7104-7acc-4827-b763-ac053c99baab.jpg?1783933447",
+    "png": "https://cards.scryfall.io/png/front/6/7/67aa7104-7acc-4827-b763-ac053c99baab.png?1783933447",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/7/67aa7104-7acc-4827-b763-ac053c99baab.jpg?1783933447",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/7/67aa7104-7acc-4827-b763-ac053c99baab.jpg?1783933447",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/7/67aa7104-7acc-4827-b763-ac053c99baab.webp?1783933447",
+    "grid": "https://cards.scryfall.io/grid/front/6/7/67aa7104-7acc-4827-b763-ac053c99baab.webp?1783933447",
+    "display": "https://cards.scryfall.io/display/front/6/7/67aa7104-7acc-4827-b763-ac053c99baab.webp?1783933447",
+    "art": "https://cards.scryfall.io/art/front/6/7/67aa7104-7acc-4827-b763-ac053c99baab.webp?1783933447",
+    "crop": "https://cards.scryfall.io/crop/front/6/7/67aa7104-7acc-4827-b763-ac053c99baab.webp?1783933447",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/7/67aa7104-7acc-4827-b763-ac053c99baab.jpg?1783933447"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose up to four target cards in your graveyard. If you control a Bolas planeswalker, return those cards to your hand. Otherwise, an opponent chooses two of them. Leave the chosen cards in your graveyard and put the rest into your hand.\nExile Deliver Unto Evil.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "ee044f0b-e101-4ead-8d0e-aa510aad4277",
+  "set": "war",
+  "set_name": "War of the Spark",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/ee044f0b-e101-4ead-8d0e-aa510aad4277",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awar&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/war?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/67aa7104-7acc-4827-b763-ac053c99baab/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A9e73f938-0aa4-4639-a97a-f7e68f645623&unique=prints",
+  "collector_number": "85",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Seb McKinnon",
+  "artist_ids": [
+    "ad4caca0-8d89-44ce-a1a6-d5ca905bd6fb"
+  ],
+  "illustration_id": "2090be9d-1146-49b6-ac79-db26513f7b66",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": true,
+  "edhrec_rank": 13855,
+  "penny_rank": 12421,
+  "preview": {
+    "source": "IGN",
+    "source_uri": "https://www.ign.com/articles/2019/04/15/magic-the-gathering-nicol-bolas-and-more-cards-revealed-for-war-of-the-spark",
+    "previewed_at": "2019-04-15"
+  },
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "0.41",
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": "0.96",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=461012&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDeliver%2BUnto%2BEvil",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDeliver%2BUnto%2BEvil",
+    "edhrec": "https://edhrec.com/route/?cc=Deliver+Unto+Evil"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F188631%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=372238&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/71776?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

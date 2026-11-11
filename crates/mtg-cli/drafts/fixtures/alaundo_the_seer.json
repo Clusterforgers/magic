@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "b22c33bb-47fe-4334-9105-00f4b87811bd",
+  "oracle_id": "1e048c15-50d6-4313-880a-e04348952a51",
+  "multiverse_ids": [
+    563147
+  ],
+  "tcgplayer_id": 272744,
+  "cardmarket_id": 659227,
+  "name": "Alaundo the Seer",
+  "lang": "en",
+  "released_at": "2022-06-10",
+  "uri": "https://api.scryfall.com/cards/b22c33bb-47fe-4334-9105-00f4b87811bd",
+  "scryfall_uri": "https://scryfall.com/card/clb/264/alaundo-the-seer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:04:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/2/b22c33bb-47fe-4334-9105-00f4b87811bd.jpg?1783922697",
+    "normal": "https://cards.scryfall.io/normal/front/b/2/b22c33bb-47fe-4334-9105-00f4b87811bd.jpg?1783922697",
+    "large": "https://cards.scryfall.io/large/front/b/2/b22c33bb-47fe-4334-9105-00f4b87811bd.jpg?1783922697",
+    "png": "https://cards.scryfall.io/png/front/b/2/b22c33bb-47fe-4334-9105-00f4b87811bd.png?1783922697",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/2/b22c33bb-47fe-4334-9105-00f4b87811bd.jpg?1783922697",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/2/b22c33bb-47fe-4334-9105-00f4b87811bd.jpg?1783922697",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/2/b22c33bb-47fe-4334-9105-00f4b87811bd.webp?1783922697",
+    "grid": "https://cards.scryfall.io/grid/front/b/2/b22c33bb-47fe-4334-9105-00f4b87811bd.webp?1783922697",
+    "display": "https://cards.scryfall.io/display/front/b/2/b22c33bb-47fe-4334-9105-00f4b87811bd.webp?1783922697",
+    "art": "https://cards.scryfall.io/art/front/b/2/b22c33bb-47fe-4334-9105-00f4b87811bd.webp?1783922697",
+    "crop": "https://cards.scryfall.io/crop/front/b/2/b22c33bb-47fe-4334-9105-00f4b87811bd.webp?1783922697",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/2/b22c33bb-47fe-4334-9105-00f4b87811bd.jpg?1783922697"
+  },
+  "mana_cost": "{2}{G}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Shaman",
+  "oracle_text": "{T}: Draw a card, then exile a card from your hand and put a number of time counters on it equal to its mana value. It gains \"When the last time counter is removed from this card, if it's exiled, you may cast it without paying its mana cost. If you cast a creature spell this way, it gains haste until end of turn.\" Then remove a time counter from each other card you own in exile.",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set": "clb",
+  "set_name": "Commander Legends: Battle for Baldur's Gate",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b22c33bb-47fe-4334-9105-00f4b87811bd/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1e048c15-50d6-4313-880a-e04348952a51&unique=prints",
+  "collector_number": "264",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Aurore Folny",
+  "artist_ids": [
+    "02f6cdda-7a80-4184-853d-20b28d580868"
+  ],
+  "illustration_id": "c245c775-6b93-4890-ae1d-acfd9a2acb48",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13359,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "",
+    "previewed_at": "2022-05-19"
+  },
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": "0.23",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.22",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563147&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAlaundo%2Bthe%2BSeer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAlaundo%2Bthe%2BSeer",
+    "edhrec": "https://edhrec.com/route/?cc=Alaundo+the+Seer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272744%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=659227&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Alaundo+the+Seer&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

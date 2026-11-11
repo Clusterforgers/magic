@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ed0402d7-02cb-4763-a661-82280d6c9af8",
+  "name": "Infectious Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infectious Rage",
+      "oracle_fingerprint": "cde07ee73bef26dd4f4f2e68a377a43c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": -1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "ChooseAtRandom": { "from": { "Each": [{ "Type": "Creature" }] }, "as": "creature" }
+              },
+              {
+                "Move": {
+                  "what": "This",
+                  "to": { "BattlefieldAttached": { "to": { "Bound": "creature" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

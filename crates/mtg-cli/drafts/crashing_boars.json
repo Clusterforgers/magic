@@ -1,0 +1,37 @@
+{
+  "oracle_id": "a4c59feb-e76a-4e08-b296-21c3e61cfc64",
+  "name": "Crashing Boars",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crashing Boars",
+      "oracle_fingerprint": "8f2bf656ebed88237452fe7c27fb4cb1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Defending",
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, "Untapped", { "ControlledBy": "Defending" }]
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MustBlockAttacker": { "who": { "Bound": "chosen" }, "attacker": "This" }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

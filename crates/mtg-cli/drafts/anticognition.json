@@ -1,0 +1,50 @@
+{
+  "oracle_id": "4728e320-d29b-4019-8ab5-e45319c77c40",
+  "name": "Anticognition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anticognition",
+      "oracle_fingerprint": "5cd6364f669191551164964c9f1445e0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Largest": { "who": "Opponents", "of": [{ "In": "Graveyard" }] } },
+                      "op": "Ge",
+                      "right": 8
+                    }
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }, { "Scry": { "count": 2 } }],
+                  "otherwise": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "cost": "{2}",
+                        "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d78518ee-df79-48d1-b9d5-4f968b441899",
+  "name": "Coin of Mastery",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Coin of Mastery",
+      "oracle_fingerprint": "7c4a8fa1d2186c23f474ea5fb5401a26",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 127 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

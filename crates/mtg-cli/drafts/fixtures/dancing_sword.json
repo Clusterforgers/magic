@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "9c3d7824-1297-408c-a11f-0622cab9c4c3",
+  "oracle_id": "da3b12d1-8867-4063-b50d-3b2f5ce0549f",
+  "multiverse_ids": [
+    527295
+  ],
+  "mtgo_id": 91518,
+  "arena_id": 77113,
+  "tcgplayer_id": 243286,
+  "cardmarket_id": 571402,
+  "name": "Dancing Sword",
+  "lang": "en",
+  "released_at": "2021-07-23",
+  "uri": "https://api.scryfall.com/cards/9c3d7824-1297-408c-a11f-0622cab9c4c3",
+  "scryfall_uri": "https://scryfall.com/card/afr/8/dancing-sword?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:08:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/c/9c3d7824-1297-408c-a11f-0622cab9c4c3.jpg?1783926537",
+    "normal": "https://cards.scryfall.io/normal/front/9/c/9c3d7824-1297-408c-a11f-0622cab9c4c3.jpg?1783926537",
+    "large": "https://cards.scryfall.io/large/front/9/c/9c3d7824-1297-408c-a11f-0622cab9c4c3.jpg?1783926537",
+    "png": "https://cards.scryfall.io/png/front/9/c/9c3d7824-1297-408c-a11f-0622cab9c4c3.png?1783926537",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/c/9c3d7824-1297-408c-a11f-0622cab9c4c3.jpg?1783926537",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/c/9c3d7824-1297-408c-a11f-0622cab9c4c3.jpg?1783926537",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/c/9c3d7824-1297-408c-a11f-0622cab9c4c3.webp?1783926537",
+    "grid": "https://cards.scryfall.io/grid/front/9/c/9c3d7824-1297-408c-a11f-0622cab9c4c3.webp?1783926537",
+    "display": "https://cards.scryfall.io/display/front/9/c/9c3d7824-1297-408c-a11f-0622cab9c4c3.webp?1783926537",
+    "art": "https://cards.scryfall.io/art/front/9/c/9c3d7824-1297-408c-a11f-0622cab9c4c3.webp?1783926537",
+    "crop": "https://cards.scryfall.io/crop/front/9/c/9c3d7824-1297-408c-a11f-0622cab9c4c3.webp?1783926537",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/c/9c3d7824-1297-408c-a11f-0622cab9c4c3.jpg?1783926537"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Equipment",
+  "oracle_text": "Equipped creature gets +2/+1.\nWhen equipped creature dies, you may have this Equipment become a 2/1 Construct artifact creature with flying and ward {1}. If you do, it isn't an Equipment.\nEquip {1}",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Equip"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e1ef87ba-ba92-4573-817f-543b996d2851",
+  "set": "afr",
+  "set_name": "Adventures in the Forgotten Realms",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e1ef87ba-ba92-4573-817f-543b996d2851",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aafr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/afr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9c3d7824-1297-408c-a11f-0622cab9c4c3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ada3b12d1-8867-4063-b50d-3b2f5ce0549f&unique=prints",
+  "collector_number": "8",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Wisnu Tan",
+  "artist_ids": [
+    "f2d36cdd-a4e9-43ba-b2ad-9d514f6706d4"
+  ],
+  "illustration_id": "9a5bb2a0-eb3e-450c-bdad-77817f43e482",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21527,
+  "penny_rank": 10472,
+  "preview": {
+    "source": "TokyoMTG",
+    "source_uri": "https://www.youtube.com/watch?v=J28HtoW1nhQ",
+    "previewed_at": "2021-07-02"
+  },
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": "0.44",
+    "usd_etched": null,
+    "eur": "0.18",
+    "eur_foil": "0.30",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=527295&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDancing%2BSword",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDancing%2BSword",
+    "edhrec": "https://edhrec.com/route/?cc=Dancing+Sword"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F243286%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=571402&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/91518?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "oracle_id": "1726f9cd-6f18-4509-b95b-bca82ba795a4",
+  "name": "Champion of the Weird",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champion of the Weird",
+      "oracle_fingerprint": "ca54e5b4c9f6b36a683f641167dc1c9b",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Behold": { "filter": [{ "Subtype": "Goblin" }], "exile": true } }],
+            "required": true
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 1 }, { "Blight": 2 }],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "blighted"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "blighted" }, "counter": "-1/-1", "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

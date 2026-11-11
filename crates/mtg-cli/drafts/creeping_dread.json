@@ -1,0 +1,52 @@
+{
+  "oracle_id": "3bb16720-18dc-44b7-adb0-c9b7adda9ebe",
+  "name": "Creeping Dread",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Creeping Dread",
+      "oracle_fingerprint": "1f3906da27f47126d49a534184fbd2aa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Discard": { "as": "mine" } },
+                    { "Discard": { "who": "Opponents", "as": "theirs" } }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "theirs" },
+                            "selector": [
+                              { "OwnedBy": { "Bound": "p" } },
+                              { "SharesType": { "Bound": "mine" } }
+                            ],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "LoseLife": { "who": { "Bound": "p" }, "amount": 3 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

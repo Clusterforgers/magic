@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c358b9e2-524c-434b-b3fa-74d2aa6d1df7",
+  "name": "Nether Shadow",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nether Shadow",
+      "oracle_fingerprint": "605af5fa9a04415aa5c2a8a8e3633856",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 160 }
+          }
+        }
+      ]
+    }
+  ]
+}

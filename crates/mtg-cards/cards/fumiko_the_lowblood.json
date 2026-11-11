@@ -1,0 +1,26 @@
+{
+  "oracle_id": "cba58942-b98c-45aa-8651-7dc666e31c93",
+  "name": "Fumiko the Lowblood",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Fumiko the Lowblood",
+      "oracle_fingerprint": "a4c8591890860d3d0c89ccc5e06756f6",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 152 }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MustAttack": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

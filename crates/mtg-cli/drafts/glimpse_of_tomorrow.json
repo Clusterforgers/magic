@@ -1,0 +1,69 @@
+{
+  "oracle_id": "12778951-7b11-400b-98ed-06434d7ecc11",
+  "name": "Glimpse of Tomorrow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glimpse of Tomorrow",
+      "oracle_fingerprint": "41be8d2a68e17a0c1940adf1d367e5f4",
+      "abilities": [
+        { "Keyword": { "Suspend": { "time": 3, "cost": "{R}{R}" } } },
+        {
+          "Spell": {
+            "effects": [
+              { "Let": { "as": "n", "amount": { "Count": [{ "OwnedBy": "You" }] } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "OwnedBy": "You" }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "LookAtTop": { "count": { "Bound": "n" }, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" },
+                          { "Type": "Battle" }
+                        ]
+                      },
+                      { "Not": { "Subtype": "Aura" } }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Subtype": "Aura" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

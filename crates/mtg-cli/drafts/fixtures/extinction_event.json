@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "8725a869-462b-4381-880a-b4bcc63a655b",
+  "oracle_id": "0a11a3a8-ee5f-4caf-bf84-c8248e07c825",
+  "multiverse_ids": [
+    479608
+  ],
+  "mtgo_id": 80185,
+  "arena_id": 71155,
+  "tcgplayer_id": 212261,
+  "cardmarket_id": 452953,
+  "name": "Extinction Event",
+  "lang": "en",
+  "released_at": "2020-04-24",
+  "uri": "https://api.scryfall.com/cards/8725a869-462b-4381-880a-b4bcc63a655b",
+  "scryfall_uri": "https://scryfall.com/card/iko/88/extinction-event?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:24:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/7/8725a869-462b-4381-880a-b4bcc63a655b.jpg?1783931062",
+    "normal": "https://cards.scryfall.io/normal/front/8/7/8725a869-462b-4381-880a-b4bcc63a655b.jpg?1783931062",
+    "large": "https://cards.scryfall.io/large/front/8/7/8725a869-462b-4381-880a-b4bcc63a655b.jpg?1783931062",
+    "png": "https://cards.scryfall.io/png/front/8/7/8725a869-462b-4381-880a-b4bcc63a655b.png?1783931062",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/7/8725a869-462b-4381-880a-b4bcc63a655b.jpg?1783931062",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/7/8725a869-462b-4381-880a-b4bcc63a655b.jpg?1783931062",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/7/8725a869-462b-4381-880a-b4bcc63a655b.webp?1783931062",
+    "grid": "https://cards.scryfall.io/grid/front/8/7/8725a869-462b-4381-880a-b4bcc63a655b.webp?1783931062",
+    "display": "https://cards.scryfall.io/display/front/8/7/8725a869-462b-4381-880a-b4bcc63a655b.webp?1783931062",
+    "art": "https://cards.scryfall.io/art/front/8/7/8725a869-462b-4381-880a-b4bcc63a655b.webp?1783931062",
+    "crop": "https://cards.scryfall.io/crop/front/8/7/8725a869-462b-4381-880a-b4bcc63a655b.webp?1783931062",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/7/8725a869-462b-4381-880a-b4bcc63a655b.jpg?1783931062"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose odd or even. Exile each creature with mana value of the chosen quality. (Zero is even.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "19feda43-15ab-427e-a0e4-148a4bf2b03a",
+  "set": "iko",
+  "set_name": "Ikoria: Lair of Behemoths",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/19feda43-15ab-427e-a0e4-148a4bf2b03a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aiko&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/iko?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8725a869-462b-4381-880a-b4bcc63a655b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0a11a3a8-ee5f-4caf-bf84-c8248e07c825&unique=prints",
+  "collector_number": "88",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Nature is more merciless than any hunter I've ever known.\"\n—Zai, nightsquad captain",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Filip Burburan",
+  "artist_ids": [
+    "66082c3b-a623-4d34-be51-2475214b85d3"
+  ],
+  "illustration_id": "ddb040a4-a75c-481b-914b-042c1cd32ec2",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9507,
+  "penny_rank": 2972,
+  "preview": {
+    "source": "Hand of Uncut",
+    "source_uri": "https://www.youtube.com/watch?v=yGJ1lOouA9M",
+    "previewed_at": "2020-04-03"
+  },
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": "0.44",
+    "usd_etched": null,
+    "eur": "0.62",
+    "eur_foil": "1.00",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=479608&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DExtinction%2BEvent",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DExtinction%2BEvent",
+    "edhrec": "https://edhrec.com/route/?cc=Extinction+Event"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212261%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=452953&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/80185?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

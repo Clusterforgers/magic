@@ -1,0 +1,59 @@
+{
+  "oracle_id": "240410a0-3288-4336-b1ad-34936e64ccf2",
+  "name": "Vision Quest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vision Quest",
+      "oracle_fingerprint": "f6a4bb0fec0d82b337beff6cb11ee5b2",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [
+                    { "Type": "Artifact" },
+                    { "Type": "Creature" },
+                    { "OwnedBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": {} },
+                  "as": "entered"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "entered" }, "counter": "+1/+1", "count": "X" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 4 } },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "entered" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

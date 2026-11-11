@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c48cf135-b280-4e9f-a9d9-225104870741",
+  "name": "Gwenom, Remorseless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gwenom, Remorseless",
+      "oracle_fingerprint": "d3cd491aeb96542efe7ab9f41ed4483f",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Rule": { "rule": { "LookAtTopAnyTime": "You" }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

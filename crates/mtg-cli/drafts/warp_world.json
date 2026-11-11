@@ -1,0 +1,84 @@
+{
+  "oracle_id": "50a228a2-c8b6-4416-b0ab-417926a9b9b6",
+  "name": "Warp World",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warp World",
+      "oracle_fingerprint": "9a8973319e3e96c7f3233f5108c7cb5c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Bind": { "what": { "Each": [{ "In": "Battlefield" }] }, "as": "perms" } },
+              {
+                "Move": {
+                  "what": { "Bound": "perms" },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "LookAtTop": {
+                        "who": { "Bound": "player" },
+                        "count": {
+                          "CountOf": {
+                            "of": { "Bound": "perms" },
+                            "filter": [{ "OwnedBy": { "Bound": "player" } }]
+                          }
+                        },
+                        "as": "top"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    { "Bind": { "what": { "Bound": "top" }, "as": "revealed", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "revealed" } },
+                      { "In": "Library" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Land" }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "revealed" } },
+                      { "In": "Library" },
+                      { "Type": "Enchantment" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "revealed" } }, { "In": "Library" }] },
+                  "to": { "Library": { "place": "Bottom" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

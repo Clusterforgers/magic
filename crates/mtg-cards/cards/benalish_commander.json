@@ -1,0 +1,55 @@
+{
+  "oracle_id": "3a1e85fe-7064-4df7-bc3b-24131cd15d06",
+  "name": "Benalish Commander",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Benalish Commander",
+      "oracle_fingerprint": "73fe25bb2c0d2d295a433c0f93d1fb51",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Soldier" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Soldier" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 95, "end": 129 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "CountersRemoved": { "what": ["This"], "counter": { "Other": "time" } } },
+            "from": "Exile",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

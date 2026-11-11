@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e6e4ad3c-079d-429b-9f29-b9e42a1a236f",
+  "name": "Slickshot Lockpicker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slickshot Lockpicker",
+      "oracle_fingerprint": "645d0cdb370c0a180d4b51ca59d958a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Plot": "{2}{U}" } }
+      ]
+    }
+  ]
+}

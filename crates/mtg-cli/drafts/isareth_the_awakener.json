@@ -1,0 +1,64 @@
+{
+  "oracle_id": "7af0e2da-9163-42d9-bf69-439cc61cd28d",
+  "name": "Isareth the Awakener",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Isareth the Awakener",
+      "oracle_fingerprint": "a44a13ecd61b1b10eee178f39255781f",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                                { "OwnedBy": "You" },
+                                { "In": "Graveyard" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": { "Battlefield": { "counters": [[{ "Other": "corpse" }, 1]] } }
+                            }
+                          },
+                          {
+                            "Shield": {
+                              "when": {
+                                "ZoneChange": {
+                                  "what": [{ "Is": { "Target": 0 } }],
+                                  "from": "Battlefield"
+                                }
+                              },
+                              "by": { "MoveTo": "Exile" },
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

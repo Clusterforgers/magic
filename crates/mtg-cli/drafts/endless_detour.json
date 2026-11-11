@@ -1,0 +1,50 @@
+{
+  "oracle_id": "d65728cf-e9ce-46d8-a890-e1295b18cfbe",
+  "name": "Endless Detour",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endless Detour",
+      "oracle_fingerprint": "9677f21aaa0c635b1c03e41da793d8b2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": ["Spell", { "In": "Stack" }] },
+                    { "Object": [{ "Not": { "Type": "Land" } }] },
+                    { "Object": [{ "In": "Graveyard" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "OneOf": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "options": [
+                    [
+                      {
+                        "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } }
+                      }
+                    ],
+                    [
+                      {
+                        "Move": {
+                          "what": { "Target": 0 },
+                          "to": { "Library": { "place": "Bottom" } }
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

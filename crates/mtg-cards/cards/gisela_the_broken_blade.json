@@ -1,0 +1,22 @@
+{
+  "oracle_id": "f3e23d5e-bd88-4e7c-a3fb-db2a8cb05b22",
+  "name": "Gisela, the Broken Blade",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gisela, the Broken Blade",
+      "oracle_fingerprint": "555dbfc1b843e2f10bb994f93c33bcdf",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 31, "end": 208 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "oracle_id": "cf0dcb27-f02e-4065-81dc-75fbbb09ea3f",
+  "name": "Oath of Druids",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oath of Druids",
+      "oracle_fingerprint": "dcb2f1b2cc687e7dc522435545b82247",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Players": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "All": [
+                          { "Not": { "Among": "TriggeringPlayer" } },
+                          {
+                            "Compare": {
+                              "left": {
+                                "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              },
+                              "op": "Gt",
+                              "right": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "TriggeringPlayer" }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "op": "Gt",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "who": "TriggeringPlayer",
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "who": "TriggeringPlayer",
+                        "filter": [{ "Type": "Creature" }],
+                        "as": "found",
+                        "revealed_as": "revealed"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Move": { "what": { "Bound": "revealed" }, "to": "Graveyard" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

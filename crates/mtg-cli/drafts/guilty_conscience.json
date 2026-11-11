@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a1439ace-5880-4fb8-a321-ec8063e7ed0e",
+  "name": "Guilty Conscience",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guilty Conscience",
+      "oracle_fingerprint": "de40c5182949e1899563c07519ec8e91",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "Is": "Attached" }] } },
+            "effects": [{ "DealDamage": { "to": "Dealer", "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7e465cfe-d2ee-4420-87f4-945728f58f87",
+  "name": "Vengeful Pharaoh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Pharaoh",
+      "oracle_fingerprint": "0bcecb7c880cef9befb379de3bd6850e",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "DealsDamage": { "source": [], "to": "You", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": [],
+                    "to": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "from": "Graveyard",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "Move": { "what": "This", "to": { "Library": { "place": "Top" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

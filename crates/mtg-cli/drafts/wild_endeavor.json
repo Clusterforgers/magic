@@ -1,0 +1,49 @@
+{
+  "oracle_id": "2c4ee0df-e720-475b-aa04-e6394f3d708f",
+  "name": "Wild Endeavor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Endeavor",
+      "oracle_fingerprint": "5502d401d09c554975bde11298c828e6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "RollDice": { "sides": 4, "dice": 2, "choose": true, "results": [] } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "count": { "DieResult": "Chosen" }
+                }
+              },
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": { "DieResult": "Other" }, "max": { "DieResult": "Other" } },
+                  "as": "lands"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "lands" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

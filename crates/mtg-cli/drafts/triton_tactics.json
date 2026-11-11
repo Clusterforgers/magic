@@ -1,0 +1,54 @@
+{
+  "oracle_id": "55b72176-e428-4d2a-a701-237e8c8de22e",
+  "name": "Triton Tactics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triton Tactics",
+      "oracle_fingerprint": "4719392dc2e048f02b77c025efa3405f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              { "Bind": { "what": { "Target": 0 }, "as": "those" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Tap": {
+                        "what": {
+                          "Each": [{ "Type": "Creature" }, { "BlockedBy": { "Bound": "those" } }]
+                        },
+                        "as": "tapped"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "tapped" },
+                        "mods": ["DoesntUntap"],
+                        "duration": "NextUntapStep"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

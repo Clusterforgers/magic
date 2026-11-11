@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "73c0d236-f283-454f-909f-296dafc4f7da",
+  "oracle_id": "d8857977-c8a5-4703-9aaa-331b17c7a713",
+  "multiverse_ids": [
+    184732
+  ],
+  "mtgo_id": 30500,
+  "mtgo_foil_id": 30501,
+  "name": "Magus of the Unseen",
+  "lang": "en",
+  "released_at": "2008-09-22",
+  "uri": "https://api.scryfall.com/cards/73c0d236-f283-454f-909f-296dafc4f7da",
+  "scryfall_uri": "https://scryfall.com/card/me2/53/magus-of-the-unseen?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:37:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/3/73c0d236-f283-454f-909f-296dafc4f7da.jpg?1783942632",
+    "normal": "https://cards.scryfall.io/normal/front/7/3/73c0d236-f283-454f-909f-296dafc4f7da.jpg?1783942632",
+    "large": "https://cards.scryfall.io/large/front/7/3/73c0d236-f283-454f-909f-296dafc4f7da.jpg?1783942632",
+    "png": "https://cards.scryfall.io/png/front/7/3/73c0d236-f283-454f-909f-296dafc4f7da.png?1783942632",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/3/73c0d236-f283-454f-909f-296dafc4f7da.jpg?1783942632",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/3/73c0d236-f283-454f-909f-296dafc4f7da.jpg?1783942632",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/3/73c0d236-f283-454f-909f-296dafc4f7da.webp?1783942632",
+    "grid": "https://cards.scryfall.io/grid/front/7/3/73c0d236-f283-454f-909f-296dafc4f7da.webp?1783942632",
+    "display": "https://cards.scryfall.io/display/front/7/3/73c0d236-f283-454f-909f-296dafc4f7da.webp?1783942632",
+    "art": "https://cards.scryfall.io/art/front/7/3/73c0d236-f283-454f-909f-296dafc4f7da.webp?1783942632",
+    "crop": "https://cards.scryfall.io/crop/front/7/3/73c0d236-f283-454f-909f-296dafc4f7da.webp?1783942632",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/3/73c0d236-f283-454f-909f-296dafc4f7da.jpg?1783942632"
+  },
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "{1}{U}, {T}: Untap target artifact an opponent controls and gain control of it until end of turn. It gains haste until end of turn. When you lose control of the artifact, tap it.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set": "me2",
+  "set_name": "Masters Edition II",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/73c0d236-f283-454f-909f-296dafc4f7da/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad8857977-c8a5-4703-9aaa-331b17c7a713&unique=prints",
+  "collector_number": "53",
+  "digital": true,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kaja Foglio",
+  "artist_ids": [
+    "e8b85539-756a-4eac-ac66-a2258d7cf547"
+  ],
+  "illustration_id": "ffac0731-2482-497b-92da-ace607a8985b",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 22795,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.08"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=184732&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMagus%2Bof%2Bthe%2BUnseen",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMagus%2Bof%2Bthe%2BUnseen",
+    "edhrec": "https://edhrec.com/route/?cc=Magus+of+the+Unseen"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DMagus%2Bof%2Bthe%2BUnseen%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Magus+of+the+Unseen&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30500?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

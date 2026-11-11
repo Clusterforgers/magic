@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ca49d6ad-97b1-4fd4-b1cf-fecd9cafee6d",
+  "name": "Portent Tracker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Portent Tracker",
+      "oracle_fingerprint": "890c7c93eb1e87b3295afba3eda1c103",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 24, "end": 180 }
+          }
+        }
+      ]
+    }
+  ]
+}

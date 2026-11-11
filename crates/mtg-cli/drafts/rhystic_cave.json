@@ -1,0 +1,29 @@
+{
+  "oracle_id": "609fbc2c-514a-4feb-aaad-b9e6dcfd335c",
+  "name": "Rhystic Cave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhystic Cave",
+      "oracle_fingerprint": "a1ef91bc59006b76fcdd366d797405ad",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "AsInstant",
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "chosen" } },
+              {
+                "Pay": {
+                  "who": "EachPlayer",
+                  "cost": "{1}",
+                  "unpaid": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

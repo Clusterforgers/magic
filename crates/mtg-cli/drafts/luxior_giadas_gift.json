@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2f9263d7-916f-4535-95d2-888ab73cf339",
+  "name": "Luxior, Giada's Gift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Luxior, Giada's Gift",
+      "oracle_fingerprint": "dd34b9fc5313c4fe4fc797a46e900499",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "AnyCounters": "Attached" },
+                  "toughness": { "AnyCounters": "Attached" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "RemoveType": "Planeswalker" }, { "AddType": "Creature" }]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Type": "Planeswalker" }], "cost": "{1}" } } },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

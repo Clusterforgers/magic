@@ -1,0 +1,44 @@
+{
+  "oracle_id": "4216f9ce-bdd9-4213-8c3f-e2ef4cd848f9",
+  "name": "Wormfang Crab",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wormfang Crab",
+      "oracle_fingerprint": "97e00aefd2c75c1a7bb3b859364a40b8",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "opponent" } },
+              {
+                "Choose": {
+                  "who": { "Bound": "opponent" },
+                  "from": { "Each": ["Other", { "ControlledBy": "You" }] },
+                  "as": "chosen"
+                }
+              },
+              { "Exile": { "what": { "Bound": "chosen" }, "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "wormfang" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Remembered": { "on": "This", "slot": "wormfang" } },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

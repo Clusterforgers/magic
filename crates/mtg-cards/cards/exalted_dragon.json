@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c901805e-c196-4b9d-8d5a-e17367fb37bc",
+  "name": "Exalted Dragon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Exalted Dragon",
+      "oracle_fingerprint": "9f1a77b502b613bd21fe8b777bca489a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 109 }
+          }
+        }
+      ]
+    }
+  ]
+}

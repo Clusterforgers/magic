@@ -1,0 +1,32 @@
+{
+  "oracle_id": "2c0fceb6-d92d-4f4a-85a2-0af5be5bba81",
+  "name": "Lightning Storm",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lightning Storm",
+      "oracle_fingerprint": "251d76ef7f8812a52bbff2e709d034b0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Sum": [3, { "Counters": { "on": "This", "counter": "charge" } }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 114, "end": 296 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "oracle_id": "8ea414c1-88cf-46d4-9a54-6dee9847c537",
+  "name": "Surge to Victory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surge to Victory",
+      "oracle_fingerprint": "9034eaca2ae851f0e4ad2fe700c100de",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Bound": "exiled" }, "stat": "ManaValue" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    { "CopyCard": { "what": { "Bound": "exiled" }, "as": "copy" } },
+                    { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

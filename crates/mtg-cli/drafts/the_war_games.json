@@ -1,0 +1,102 @@
+{
+  "oracle_id": "d7cfe3a3-e8e6-446d-a855-46c845f657fa",
+  "name": "The War Games",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The War Games",
+      "oracle_fingerprint": "3329c82554705a6fd966df5462f58f7e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "EachPlayer",
+                  "token": {
+                    "Custom": {
+                      "name": "Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 3,
+                  "tapped": true,
+                  "as": "tokens"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "tokens" },
+                  "mods": ["Goaded"],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "Subtype": "Warrior" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "Subtype": "Warrior" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Not": "Token" },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "as": "chosen"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "chosen" } } },
+                    {
+                      "Reflexive": {
+                        "effects": [{ "Exile": { "what": { "Each": [{ "Subtype": "Warrior" }] } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

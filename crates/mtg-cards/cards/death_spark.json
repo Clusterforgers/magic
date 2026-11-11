@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4b23a89c-89ba-41ad-b894-ec02221689eb",
+  "name": "Death Spark",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Death Spark",
+      "oracle_fingerprint": "295f6a6e4d7bd4b06b5657f030420bad",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 42, "end": 207 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "oracle_id": "8dfa789d-ae1c-4f18-a55c-f49a363a5e33",
+  "name": "Chandra, Legacy of Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra, Legacy of Fire",
+      "oracle_fingerprint": "b78adada7ac18e8aa6be67ad11ccc318",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Opponents",
+                  "amount": { "Count": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Count": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "ControlledBy": "You" }, { "HasCounter": "loyalty" }] },
+                  "count": {
+                    "min": 0,
+                    "max": { "Count": [{ "ControlledBy": "You" }, { "HasCounter": "loyalty" }] }
+                  },
+                  "as": "chosen"
+                }
+              },
+              { "RemoveCounters": { "from": { "Bound": "chosen" }, "counter": "loyalty" } },
+              {
+                "ExileTop": {
+                  "count": { "CountOf": { "of": { "Bound": "chosen" }, "filter": [] } },
+                  "as": "impulse"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d2eeb1eb-38c0-4b76-ad96-a53b6bdc00e1",
+  "name": "Quenchable Fire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quenchable Fire",
+      "oracle_fingerprint": "d420fa08391bde2d87b04ccef2786742",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "until": { "UntilPaid": "{U}" },
+                  "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

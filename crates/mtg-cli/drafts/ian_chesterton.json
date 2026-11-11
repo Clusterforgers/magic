@@ -1,0 +1,22 @@
+{
+  "oracle_id": "32c9ce8c-a19d-49e4-bc6d-c7182fa00b51",
+  "name": "Ian Chesterton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ian Chesterton",
+      "oracle_fingerprint": "251f39ff5802f741ae0a964a8ebb73ab",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Subtype": "Saga" }, { "ControlledBy": "You" }, { "In": "Stack" }]
+            },
+            "mods": [{ "AddKeyword": { "Replicate": ["OwnManaCost"] } }]
+          }
+        },
+        { "Keyword": "DoctorsCompanion" }
+      ]
+    }
+  ]
+}

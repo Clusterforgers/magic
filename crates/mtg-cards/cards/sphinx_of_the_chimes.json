@@ -1,0 +1,17 @@
+{
+  "oracle_id": "690df8d2-9538-4c51-b730-cee09ad0ef1c",
+  "name": "Sphinx of the Chimes",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sphinx of the Chimes",
+      "oracle_fingerprint": "e7d03561271af94f3ea601bd29d47586",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 69 } }
+        }
+      ]
+    }
+  ]
+}

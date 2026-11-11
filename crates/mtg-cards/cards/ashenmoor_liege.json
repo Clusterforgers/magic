@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f779754a-3de9-4621-b190-cf32949da0e8",
+  "name": "Ashenmoor Liege",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ashenmoor Liege",
+      "oracle_fingerprint": "7ccf9d8a5920ad4b46f458ce0c6edc60",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Color": "Black" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Color": "Red" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": { "what": ["This"], "by": [{ "ControlledBy": "Opponents" }] }
+            },
+            "effects": [{ "LoseLife": { "who": "TriggeringPlayer", "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

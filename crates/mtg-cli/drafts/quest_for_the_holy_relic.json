@@ -1,0 +1,47 @@
+{
+  "oracle_id": "0fa5803b-3604-46c7-9774-bf70e4a2b925",
+  "name": "Quest for the Holy Relic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quest for the Holy Relic",
+      "oracle_fingerprint": "bb9989e97649100f5c8bef06315f2aa1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "quest" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "RemoveCounters": { "counter": { "Other": "quest" }, "count": 5 } },
+              "SacrificeSelf"
+            ],
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Equipment" }], "as": "found" } },
+              {
+                "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} }, "as": "relic" }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "creature"
+                }
+              },
+              { "Attach": { "what": { "Bound": "relic" }, "to": { "Bound": "creature" } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

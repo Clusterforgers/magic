@@ -1,0 +1,62 @@
+{
+  "oracle_id": "48deff27-b421-430b-a484-55b4a593010a",
+  "name": "Black Panther, Wakandan King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Panther, Wakandan King",
+      "oracle_fingerprint": "5f69ff42f8f67a19aba57b9e618db217",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "Let": {
+                  "as": "n",
+                  "amount": { "Counters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                }
+              },
+              {
+                "MoveCounters": {
+                  "from": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "counter": "+1/+1",
+                  "count": { "Bound": "n" }
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": { "Bound": "n" }, "op": "Ge", "right": 1 } },
+                  "then": [{ "GainLife": { "amount": { "Bound": "n" } } }, { "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

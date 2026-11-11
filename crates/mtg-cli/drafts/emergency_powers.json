@@ -1,0 +1,62 @@
+{
+  "oracle_id": "9127ac59-4c7b-4652-b1e5-d82af47f2717",
+  "name": "Emergency Powers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emergency Powers",
+      "oracle_fingerprint": "857876a8b193e136c48ada58b4748527",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } },
+              { "Exile": { "what": "This" } },
+              {
+                "If": {
+                  "condition": {
+                    "AsCast": {
+                      "All": ["YourTurn", { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Compare": { "stat": "ManaValue", "op": "Le", "to": 7 } },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Battle" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" }
+                              ]
+                            },
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7351fca5-8672-4ba3-a015-bd4b6b289efc",
+  "name": "Maximum Carnage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maximum Carnage",
+      "oracle_fingerprint": "723aa89514f3bb8b42d14885fa8774ac",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": ["Goaded"],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

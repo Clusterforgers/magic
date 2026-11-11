@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f2edb543-de33-4eed-892c-98038eec96e2",
+  "name": "Knight of Valor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knight of Valor",
+      "oracle_fingerprint": "15648e55bc5bfec92706d823d8886925",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "flanking", "amount": 0 } } },
+        {
+          "Activated": {
+            "cost": "{1}{W}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": { "HasKeyword": { "Macro": { "name": "flanking", "amount": 0 } } } },
+                      { "Blocks": "This" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "oracle_id": "7b23bceb-1b82-4c9c-b7c1-8e8ef4643fb0",
+  "name": "Legion's Initiative",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legion's Initiative",
+      "oracle_fingerprint": "21fce1e10e0c4cbc74144debe4f48c17",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Color": "Red" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Color": "White" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{R}" }, "ExileSelf"],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "BeginCombat" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": {} },
+                        "as": "returned"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "returned" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

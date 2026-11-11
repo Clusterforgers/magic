@@ -1,0 +1,36 @@
+{
+  "oracle_id": "49b86b51-e1ef-4e27-84d2-66166481e0a5",
+  "name": "Sentinel Tower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sentinel Tower",
+      "oracle_fingerprint": "bd5011fe15564fcebaa362d4a64b6664",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }] }
+            },
+            "if": "YourTurn",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Tally": {
+                      "event": "SpellCast",
+                      "who": "EachPlayer",
+                      "filter": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

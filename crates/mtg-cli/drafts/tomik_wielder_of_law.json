@@ -1,0 +1,35 @@
+{
+  "oracle_id": "2ef0961a-0543-4371-8c2a-333881b735e5",
+  "name": "Tomik, Wielder of Law",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tomik, Wielder of Law",
+      "oracle_fingerprint": "0de2523992736a910710c1b0e2a093d1",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Type": "Planeswalker" }] } },
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "Opponents", "at": "EachPlayer" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "AttackingPlayerOrPlaneswalker": "You" },
+                    { "ControlledBy": "TriggeringPlayer" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "TriggeringPlayer", "amount": 3 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "0727ce6a-aae2-4ddc-9e6c-b18011c5bd37",
+  "name": "Ian the Reckless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ian the Reckless",
+      "oracle_fingerprint": "ae4d74ec0f53ddbbdfc84239c9e17952",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": { "Matches": { "subject": "This", "selector": ["Modified"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Together": {
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "source": "This",
+                              "to": "You",
+                              "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                            }
+                          },
+                          {
+                            "DealDamage": {
+                              "source": "This",
+                              "to": { "Target": 0 },
+                              "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

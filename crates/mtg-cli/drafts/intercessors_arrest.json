@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d75357f4-d439-48ff-8fd7-52a02f07cc81",
+  "name": "Intercessor's Arrest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intercessor's Arrest",
+      "oracle_fingerprint": "33beff068e085be633a3cf2143c08cbc",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": { "Each": [{ "Is": "Attached" }] }, "action": { "Activate": [] } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

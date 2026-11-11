@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ce068b46-9301-42fb-9db1-9c0da5275d89",
+  "name": "Silumgar Scavenger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Silumgar Scavenger",
+      "oracle_fingerprint": "4e9937c35d27b99a8bed09ccf5fa2b66",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Exploit" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 74, "end": 219 }
+          }
+        }
+      ]
+    }
+  ]
+}

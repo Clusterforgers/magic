@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1d8c8c71-d569-450d-adc1-1a1b9aea0123",
+  "name": "Robaran Mercenaries",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Robaran Mercenaries",
+      "oracle_fingerprint": "e0dd58e57a92dfd2b2ba20628156f9f8",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "Supertype": "Legendary" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

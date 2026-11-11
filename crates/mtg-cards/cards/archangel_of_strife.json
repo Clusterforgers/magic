@@ -1,0 +1,29 @@
+{
+  "oracle_id": "19e302f8-6ddb-4a43-98bc-ee71a456ac5a",
+  "name": "Archangel of Strife",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Archangel of Strife",
+      "oracle_fingerprint": "6545628862874adf11eb58b213e74d2b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 65 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 122 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 123, "end": 181 }
+          }
+        }
+      ]
+    }
+  ]
+}

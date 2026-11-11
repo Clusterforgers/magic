@@ -1,0 +1,52 @@
+{
+  "oracle_id": "d6bf5e22-8d33-43a9-8824-435068e0a87a",
+  "name": "Reincarnation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reincarnation",
+      "oracle_fingerprint": "b589d0fa65c4228b681c4f5244e69102",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "OwnerOf": "Triggering" } }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Battlefield": { "under": { "OwnerOf": "Triggering" } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

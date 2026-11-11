@@ -1,0 +1,45 @@
+{
+  "oracle_id": "634a61a1-47a4-4a23-b138-fb487e6a7cba",
+  "name": "Bonder's Ornament",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bonder's Ornament",
+      "oracle_fingerprint": "e1ef62cdc5536be332f10ebc1bbc679d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              {
+                "Draw": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "CountOf": {
+                          "subject": {
+                            "Each": [{ "Named": "Bonder's Ornament" }, { "ControlledBy": "You" }]
+                          },
+                          "selector": [{ "Named": "Bonder's Ornament" }, { "ControlledBy": "You" }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

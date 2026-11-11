@@ -1,0 +1,78 @@
+{
+  "oracle_id": "0dfe6ec6-a0df-41c8-90dd-1ddf0417700a",
+  "name": "Rush of Dread",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rush of Dread",
+      "oracle_fingerprint": "18572ada7b78108e2ac2a7f184b5ecde",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 3 },
+                  "mode_costs": ["{1}", "{2}", "{2}"],
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Sacrifice": {
+                            "who": { "Target": 0 },
+                            "filter": [{ "Type": "Creature" }],
+                            "count": {
+                              "Half": {
+                                "of": {
+                                  "Count": [
+                                    { "Type": "Creature" },
+                                    { "ControlledBy": { "Target": 0 } }
+                                  ]
+                                },
+                                "up": true
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Discard": {
+                            "who": { "Target": 0 },
+                            "count": {
+                              "Half": {
+                                "of": {
+                                  "Count": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }]
+                                },
+                                "up": true
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "LoseLife": {
+                            "who": { "Target": 0 },
+                            "amount": { "Half": { "of": { "Life": { "Target": 0 } }, "up": true } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

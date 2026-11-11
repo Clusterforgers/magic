@@ -1,0 +1,31 @@
+{
+  "oracle_id": "b9212658-8406-489f-80d6-7af42df8956c",
+  "name": "Brazen Cannonade",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Brazen Cannonade",
+      "oracle_fingerprint": "4a07bc16059b2e173bbcaad34be134d3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 99, "end": 288 }
+          }
+        }
+      ]
+    }
+  ]
+}

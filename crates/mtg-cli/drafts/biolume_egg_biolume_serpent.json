@@ -1,0 +1,66 @@
+{
+  "oracle_id": "7af3876e-5297-46e6-936e-6c8344f4b6ac",
+  "name": "Biolume Egg // Biolume Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Biolume Egg",
+      "oracle_fingerprint": "b96f98c149f3a242d3644e13ee17d82c",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": ["This"], "by": "You" } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Arrived": { "of": "This", "zone": "Graveyard" } },
+                  "as": "egg"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "egg" },
+                        "to": { "Battlefield": { "transformed": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Biolume Serpent",
+      "oracle_fingerprint": "cfb9c328aa50671ea7a6436ca55afe2b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Island" }], "count": 2 } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

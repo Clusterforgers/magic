@@ -1,0 +1,43 @@
+{
+  "oracle_id": "930b48b8-dbd1-4109-9eaa-7d7e9a04fa5b",
+  "name": "Godhunter Octopus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Godhunter Octopus",
+      "oracle_fingerprint": "ec7df2b5bc4d755fc5cc986013c23c2d",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "Attack": {
+                    "unless": {
+                      "Compare": {
+                        "left": {
+                          "Count": [
+                            {
+                              "AnyOf": [
+                                { "Type": "Enchantment" },
+                                { "HasAttached": [{ "Subtype": "Aura" }] }
+                              ]
+                            },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "op": "Ge",
+                        "right": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

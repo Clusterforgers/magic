@@ -1,0 +1,12 @@
+{
+  "oracle_id": "420ff0f4-6056-4b40-9a28-fd4c23d6b81c",
+  "name": "Upwelling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Upwelling",
+      "oracle_fingerprint": "ade6c75c68006db92b7d58f686acd239",
+      "abilities": [{ "Rule": { "rule": { "KeepUnspentMana": { "who": "EachPlayer" } } } }]
+    }
+  ]
+}

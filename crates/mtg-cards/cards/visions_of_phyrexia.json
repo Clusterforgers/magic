@@ -1,0 +1,35 @@
+{
+  "oracle_id": "634b46a6-ec8b-41f0-8eb6-1e9144035847",
+  "name": "Visions of Phyrexia",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Visions of Phyrexia",
+      "oracle_fingerprint": "fa4f55e12af3178df9ed44abbcfac824",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 103, "end": 313 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d4cbf16d-6da8-4018-8398-8e263ef6c69e",
+  "name": "Haze Frog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haze Frog",
+      "oracle_fingerprint": "aa02a3200e73fc43087691a9e814244c",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "source": [{ "Type": "Creature" }, "Other"], "combat": true }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

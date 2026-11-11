@@ -1,0 +1,49 @@
+{
+  "oracle_id": "8c308ebf-df5e-4f47-9b97-5c31944fe91c",
+  "name": "Dreams of Steel and Oil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreams of Steel and Oil",
+      "oracle_fingerprint": "42f0f03ac7098ba21c7b0e8d86cf50cf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "fromhand"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "fromgrave"
+                }
+              },
+              { "Exile": { "what": { "Bound": "fromhand" } } },
+              { "Exile": { "what": { "Bound": "fromgrave" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

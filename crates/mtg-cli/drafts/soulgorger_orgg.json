@@ -1,0 +1,31 @@
+{
+  "oracle_id": "cbbcd3a3-6ddd-4511-a352-3055d0102e7c",
+  "name": "Soulgorger Orgg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulgorger Orgg",
+      "oracle_fingerprint": "09b6b205db77ba53fca35b14f7fd8209",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LoseLife": { "amount": { "Sum": [{ "Life": "You" }, -1] } } },
+              { "RememberValue": { "value": "LifeLostThisWay", "slot": "lost" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              { "GainLife": { "amount": { "Remembered": { "on": "This", "slot": "lost" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

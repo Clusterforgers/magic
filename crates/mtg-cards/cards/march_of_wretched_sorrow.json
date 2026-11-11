@@ -1,0 +1,34 @@
+{
+  "oracle_id": "6e638332-fba1-4e91-9237-fdff23826640",
+  "name": "March of Wretched Sorrow",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "March of Wretched Sorrow",
+      "oracle_fingerprint": "c4bb97a9d77d8f804cfb26e5aaf9d787",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 162 }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              { "GainLife": { "amount": "X" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

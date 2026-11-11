@@ -1,0 +1,56 @@
+{
+  "oracle_id": "3e924a35-0e08-4050-b33a-a143d2ab5aea",
+  "name": "Starscream, Power Hungry // Starscream, Seeker Leader",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Starscream, Power Hungry",
+      "oracle_fingerprint": "056f01acbf48f94c20e1b19fbf561aaf",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 77 } }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "if": { "Monarch": "You" },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 164, "end": 241 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Starscream, Seeker Leader",
+      "oracle_fingerprint": "bc1963d2ee42679b676aef49b6e438c3",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 65 } }
+        },
+        { "Keyword": "Flying" },
+        { "Keyword": "Menace" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": { "Not": { "Monarch": "EachPlayer" } },
+            "effects": [{ "BecomeMonarch": { "who": "Triggering" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 198, "end": 250 }
+          }
+        }
+      ]
+    }
+  ]
+}

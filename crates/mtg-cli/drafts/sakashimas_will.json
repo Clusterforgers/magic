@@ -1,0 +1,76 @@
+{
+  "oracle_id": "2c3c3bec-00f0-4de2-b929-73f1c9276ec4",
+  "name": "Sakashima's Will",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sakashima's Will",
+      "oracle_fingerprint": "25204081e36820157b9c9630af46dbf7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "all_if": {
+                    "Compare": {
+                      "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "who": { "Target": 0 },
+                            "from": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            "as": "stolen"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Bound": "stolen" },
+                            "mods": [{ "SetController": "You" }],
+                            "duration": "Forever"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "as": "model"
+                          }
+                        },
+                        {
+                          "BecomeCopy": {
+                            "what": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": "You" },
+                                { "Not": { "Is": { "Bound": "model" } } }
+                              ]
+                            },
+                            "of": { "Bound": "model" },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

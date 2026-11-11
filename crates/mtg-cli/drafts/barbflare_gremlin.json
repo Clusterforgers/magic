@@ -1,0 +1,25 @@
+{
+  "oracle_id": "bd7accec-ca8a-49c7-9ae4-fe97d99b4a34",
+  "name": "Barbflare Gremlin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barbflare Gremlin",
+      "oracle_fingerprint": "40a231208941059de6272fd00d24c443",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }] } },
+            "if": { "Matches": { "subject": "This", "selector": ["Tapped"] } },
+            "effects": [
+              { "AddMana": { "who": "TriggeringPlayer", "mana": "OfTapped" } },
+              { "DealDamage": { "source": "Triggering", "to": "TriggeringPlayer", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

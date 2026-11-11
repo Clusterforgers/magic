@@ -1,0 +1,63 @@
+{
+  "oracle_id": "fb1bd39c-c870-4f63-9e4f-32c94ac46555",
+  "name": "Conundrum Sphinx",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conundrum Sphinx",
+      "oracle_fingerprint": "b374a5a07bbdc089e693964ecc1f802e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "who": { "Bound": "player" },
+                        "kind": { "CardName": [] },
+                        "as": "name"
+                      }
+                    },
+                    {
+                      "RevealUntil": {
+                        "who": { "Bound": "player" },
+                        "filter": [],
+                        "as": "card",
+                        "revealed_as": "seen"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "card" },
+                            "selector": [{ "ChosenAs": "name" }]
+                          }
+                        },
+                        "then": [{ "Move": { "what": { "Bound": "card" }, "to": "Hand" } }],
+                        "otherwise": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "card" },
+                              "to": { "Library": { "place": "Bottom" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "457470db-e664-4ca3-84ec-6cec2d4ae906",
+  "name": "Azra Oddsmaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azra Oddsmaker",
+      "oracle_fingerprint": "ce49fa002d8163bd1cb9cbbbe13b2a77",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "Discard": {} }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "Choose": { "from": { "Each": [{ "Type": "Creature" }] }, "as": "chosen" } },
+                    {
+                      "DelayedTrigger": {
+                        "when": {
+                          "DealsDamage": {
+                            "source": [{ "Is": { "Bound": "chosen" } }],
+                            "to": "EachPlayer",
+                            "combat": true
+                          }
+                        },
+                        "once": false,
+                        "this_turn": true,
+                        "effects": [{ "Draw": { "count": 2 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

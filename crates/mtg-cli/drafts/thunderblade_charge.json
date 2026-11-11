@@ -1,0 +1,41 @@
+{
+  "oracle_id": "b4f31434-b7c4-489b-9385-70ee0cc3125e",
+  "name": "Thunderblade Charge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunderblade Charge",
+      "oracle_fingerprint": "7337f53e9bf12189ebbef447b5c9d6dc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{R}{R}{R}",
+                  "paid": [{ "CastFromZone": { "what": "This", "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

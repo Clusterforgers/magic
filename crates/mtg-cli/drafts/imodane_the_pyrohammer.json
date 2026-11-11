@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d70d4686-2c35-4149-aed1-7e3b9e022702",
+  "name": "Imodane, the Pyrohammer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imodane, the Pyrohammer",
+      "oracle_fingerprint": "dacc69a6d6df6ecf8b5c08e19bc80928",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [
+                  { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                  "Spell",
+                  { "ControlledBy": "You" },
+                  "SingleTarget",
+                  { "Targeting": [{ "Type": "Creature" }] }
+                ],
+                "to": { "Each": [{ "Type": "Creature" }, { "TargetedBy": "Dealer" }] }
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

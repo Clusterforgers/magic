@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e11839d5-99fe-4cc8-802e-be669ad274ee",
+  "name": "Cheering Crowd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cheering Crowd",
+      "oracle_fingerprint": "0dbd65f8657162c52d48e785b48a86ef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1" } },
+            "effects": [
+              {
+                "May": {
+                  "who": "TriggeringPlayer",
+                  "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "AddMana": {
+                        "who": "TriggeringPlayer",
+                        "mana": { "Fixed": ["Colorless"] },
+                        "times": { "AnyCounters": "This" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

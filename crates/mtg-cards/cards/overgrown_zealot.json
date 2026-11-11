@@ -1,0 +1,25 @@
+{
+  "oracle_id": "5146b291-1170-481f-a4b9-709dd5c4b09c",
+  "name": "Overgrown Zealot",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Overgrown Zealot",
+      "oracle_fingerprint": "6570cad8b311590bc10eb54cba339f00",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 32, "end": 116 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ef742509-4474-42d0-8bca-71ec2be3d4f1",
+  "name": "Lifted by Clouds",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Lifted by Clouds",
+      "oracle_fingerprint": "1c49ac8ef64ba60dc725c58686806fa9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 48, "end": 219 }
+          }
+        }
+      ]
+    }
+  ]
+}

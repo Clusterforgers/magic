@@ -1,0 +1,60 @@
+{
+  "oracle_id": "72a570a2-0a22-4680-ac88-a1724faf17de",
+  "name": "Eumidian Wastewaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eumidian Wastewaker",
+      "oracle_fingerprint": "b0b51412a36490e24b6e5520e8651a2b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "OneOf": {
+                  "options": [
+                    [{ "Discard": { "as": "d1" } }],
+                    [{ "Sacrifice": { "filter": [], "as": "s1" } }]
+                  ]
+                }
+              },
+              {
+                "OneOf": {
+                  "who": "Defending",
+                  "options": [
+                    [{ "Discard": { "who": "Defending", "as": "d2" } }],
+                    [{ "Sacrifice": { "who": "Defending", "filter": [], "as": "s2" } }]
+                  ]
+                }
+              },
+              {
+                "Draw": {
+                  "count": {
+                    "Sum": [
+                      { "CountOf": { "of": { "Bound": "d1" }, "filter": [{ "Type": "Land" }] } },
+                      {
+                        "CountOf": {
+                          "of": { "Bound": "s1" },
+                          "filter": [{ "Type": "Land" }, { "Not": "Token" }]
+                        }
+                      },
+                      { "CountOf": { "of": { "Bound": "d2" }, "filter": [{ "Type": "Land" }] } },
+                      {
+                        "CountOf": {
+                          "of": { "Bound": "s2" },
+                          "filter": [{ "Type": "Land" }, { "Not": "Token" }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Encore": "{6}{B}{B}" } }
+      ]
+    }
+  ]
+}

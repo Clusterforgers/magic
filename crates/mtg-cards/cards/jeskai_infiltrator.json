@@ -1,0 +1,32 @@
+{
+  "oracle_id": "39b359c1-48b8-43a7-b972-54764eadd2c7",
+  "name": "Jeskai Infiltrator",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Jeskai Infiltrator",
+      "oracle_fingerprint": "9ad75a248f80b444d0ba598fa0f85fe2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Eq",
+                "right": 0
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 74, "end": 381 }
+          }
+        }
+      ]
+    }
+  ]
+}

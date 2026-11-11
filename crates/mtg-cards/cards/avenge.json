@@ -1,0 +1,24 @@
+{
+  "oracle_id": "65a64759-3a93-4542-84fc-3af5ccb741f4",
+  "name": "Avenge",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Avenge",
+      "oracle_fingerprint": "43e8fd7de5498af5c088a051a71a3ddc",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 82 } }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } },
+              { "GainLife": { "amount": { "Destroyed": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

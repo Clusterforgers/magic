@@ -1,0 +1,32 @@
+{
+  "oracle_id": "14d5ed90-0aa7-48f0-9017-83912b9e89d1",
+  "name": "Geistwave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geistwave",
+      "oracle_fingerprint": "41ed3d2ed57fdbe5dc2d37c97cd56759",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Departed": { "Target": 0 } },
+                      "selector": [{ "ControlledBy": "You" }]
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

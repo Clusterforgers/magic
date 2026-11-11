@@ -1,0 +1,161 @@
+{
+  "object": "card",
+  "id": "ad2e18d4-986c-4a44-8f26-1b8689339cfb",
+  "oracle_id": "98c389ed-b960-42e2-9c76-a062f77c9a78",
+  "multiverse_ids": [
+    535041
+  ],
+  "resource_id": "1B49B2B2B137FCE263F06B5ED6290629153B20023330B9B52F5B4035FB95F564",
+  "mtgo_id": 93496,
+  "arena_id": 78612,
+  "tcgplayer_id": 248179,
+  "cardmarket_id": 574967,
+  "name": "Teferi, Who Slows the Sunset",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/ad2e18d4-986c-4a44-8f26-1b8689339cfb",
+  "scryfall_uri": "https://scryfall.com/card/mid/245/teferi-who-slows-the-sunset?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:52:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/d/ad2e18d4-986c-4a44-8f26-1b8689339cfb.jpg?1783925552",
+    "normal": "https://cards.scryfall.io/normal/front/a/d/ad2e18d4-986c-4a44-8f26-1b8689339cfb.jpg?1783925552",
+    "large": "https://cards.scryfall.io/large/front/a/d/ad2e18d4-986c-4a44-8f26-1b8689339cfb.jpg?1783925552",
+    "png": "https://cards.scryfall.io/png/front/a/d/ad2e18d4-986c-4a44-8f26-1b8689339cfb.png?1783925552",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/d/ad2e18d4-986c-4a44-8f26-1b8689339cfb.jpg?1783925552",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/d/ad2e18d4-986c-4a44-8f26-1b8689339cfb.jpg?1783925552",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/d/ad2e18d4-986c-4a44-8f26-1b8689339cfb.webp?1783925552",
+    "grid": "https://cards.scryfall.io/grid/front/a/d/ad2e18d4-986c-4a44-8f26-1b8689339cfb.webp?1783925552",
+    "display": "https://cards.scryfall.io/display/front/a/d/ad2e18d4-986c-4a44-8f26-1b8689339cfb.webp?1783925552",
+    "art": "https://cards.scryfall.io/art/front/a/d/ad2e18d4-986c-4a44-8f26-1b8689339cfb.webp?1783925552",
+    "crop": "https://cards.scryfall.io/crop/front/a/d/ad2e18d4-986c-4a44-8f26-1b8689339cfb.webp?1783925552",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/d/ad2e18d4-986c-4a44-8f26-1b8689339cfb.jpg?1783925552"
+  },
+  "mana_cost": "{2}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Planeswalker — Teferi",
+  "oracle_text": "+1: Choose up to one target artifact, up to one target creature, and up to one target land. Untap the chosen permanents you control. Tap the chosen permanents you don't control. You gain 2 life.\n−2: Look at the top three cards of your library. Put one of them into your hand and the rest on the bottom of your library in any order.\n−7: You get an emblem with \"Untap all permanents you control during each opponent's untap step\" and \"You draw a card during each opponent's draw step.\"",
+  "loyalty": "4",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a970bebc-08e1-4125-a4c5-8883dfd5a5ca",
+      "component": "combo_piece",
+      "name": "Teferi, Who Slows the Sunset Emblem",
+      "type_line": "Emblem",
+      "uri": "https://api.scryfall.com/cards/a970bebc-08e1-4125-a4c5-8883dfd5a5ca"
+    },
+    {
+      "object": "related_card",
+      "id": "b94bc06c-6351-43d3-a58d-b28dc6d4705c",
+      "component": "combo_piece",
+      "name": "Teferi, Who Slows the Sunset",
+      "type_line": "Legendary Planeswalker — Teferi",
+      "uri": "https://api.scryfall.com/cards/b94bc06c-6351-43d3-a58d-b28dc6d4705c"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set": "mid",
+  "set_name": "Innistrad: Midnight Hunt",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amid&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mid?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ad2e18d4-986c-4a44-8f26-1b8689339cfb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A98c389ed-b960-42e2-9c76-a062f77c9a78&unique=prints",
+  "collector_number": "245",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Heonhwa",
+  "artist_ids": [
+    "ce415f9e-8a20-4d64-bcba-2b1b7e94012e"
+  ],
+  "illustration_id": "b6dfd0aa-eba4-4ffa-8a22-b92fb65a1c14",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 4420,
+  "penny_rank": 4496,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-preview/teferi-who-slows-sunset-2021-09-08",
+    "previewed_at": "2021-09-08"
+  },
+  "prices": {
+    "usd": "4.84",
+    "usd_foil": "4.97",
+    "usd_etched": null,
+    "eur": "3.94",
+    "eur_foil": "4.54",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=535041&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTeferi%252C%2BWho%2BSlows%2Bthe%2BSunset",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTeferi%252C%2BWho%2BSlows%2Bthe%2BSunset",
+    "edhrec": "https://edhrec.com/route/?cc=Teferi%2C+Who+Slows+the+Sunset"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F248179%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=574967&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/93496?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

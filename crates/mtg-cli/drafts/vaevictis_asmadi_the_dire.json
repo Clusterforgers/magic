@@ -1,0 +1,75 @@
+{
+  "oracle_id": "c42ce2e9-4dfe-468a-8f41-49e187cb91d4",
+  "name": "Vaevictis Asmadi, the Dire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vaevictis Asmadi, the Dire",
+      "oracle_fingerprint": "f209ab26b5e387a13f9e6f2b491292f7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "PerPlayer": { "players": "EachPlayer", "what": [] } } }],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [{ "Is": { "Target": 0 } }],
+                        "as": "sacrificed"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          { "LookAtTop": { "who": { "Bound": "player" }, "as": "top" } },
+                          { "Reveal": { "what": { "Bound": "top" } } },
+                          {
+                            "If": {
+                              "condition": {
+                                "Matches": {
+                                  "subject": { "Bound": "top" },
+                                  "selector": [
+                                    {
+                                      "AnyOf": [
+                                        { "Type": "Artifact" },
+                                        { "Type": "Creature" },
+                                        { "Type": "Enchantment" },
+                                        { "Type": "Land" },
+                                        { "Type": "Planeswalker" },
+                                        { "Type": "Battle" }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              "then": [
+                                {
+                                  "Move": {
+                                    "what": { "Bound": "top" },
+                                    "to": { "Battlefield": { "under": { "Bound": "player" } } }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

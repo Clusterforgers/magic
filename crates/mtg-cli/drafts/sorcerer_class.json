@@ -1,0 +1,81 @@
+{
+  "oracle_id": "19ba0f2d-4de3-49a0-be7d-da0aa220cd8a",
+  "name": "Sorcerer Class",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sorcerer Class",
+      "oracle_fingerprint": "3407e8470cd770bb042b05ac344a8202",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }, { "Discard": { "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{U}{R}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [
+                      {
+                        "AddMana": {
+                          "mana": { "OneOf": ["Blue", "Red"] },
+                          "only": [
+                            { "Spell": { "types": ["Instant", "Sorcery"] } },
+                            { "Ability": { "subtypes": ["Class"] } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 2 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{U}{R}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "Triggering",
+                  "to": "Opponents",
+                  "amount": { "Tallied": { "who": "You", "what": "InstantsAndSorceriesCast" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

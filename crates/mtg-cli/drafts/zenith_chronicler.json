@@ -1,0 +1,39 @@
+{
+  "oracle_id": "9fed6494-3bdd-4bc6-901f-da5fb623b152",
+  "name": "Zenith Chronicler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zenith Chronicler",
+      "oracle_fingerprint": "720a17fb5821d4c34a0abc272af7d52c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": {
+                  "SpellCast": {
+                    "what": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }]
+                  }
+                },
+                "nth": 1
+              }
+            },
+            "effects": [
+              {
+                "Draw": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "Among": "TriggeringPlayer" } }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

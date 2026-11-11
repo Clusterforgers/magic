@@ -1,0 +1,27 @@
+{
+  "oracle_id": "27af77e5-6680-43d3-9202-40be9b5d14a0",
+  "name": "The Wretched",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Wretched",
+      "oracle_fingerprint": "392c624f19c0ef08fb0ea512135228d8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "Blocks": "This" }] },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

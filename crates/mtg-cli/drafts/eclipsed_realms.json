@@ -1,0 +1,52 @@
+{
+  "oracle_id": "5715ed43-395c-4877-99a7-8e28e7bf9dce",
+  "name": "Eclipsed Realms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eclipsed Realms",
+      "oracle_fingerprint": "357b5479990493e3ec644f5664483452",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "ChooseWord": [
+                "Elemental",
+                "Elf",
+                "Faerie",
+                "Giant",
+                "Goblin",
+                "Kithkin",
+                "Merfolk",
+                "Treefolk"
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [
+                    { "Spell": { "chosen_type": true } },
+                    { "Ability": { "chosen_type": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

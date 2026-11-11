@@ -1,0 +1,77 @@
+{
+  "oracle_id": "dfc45c58-821c-42f3-ab48-05b912748bdf",
+  "name": "Elemental Expressionist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elemental Expressionist",
+      "oracle_fingerprint": "df59ee3775932d7f671138b2cad185e8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                {
+                  "SpellCopied": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Replacement": {
+                          "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                          "by": { "MoveTo": "Exile" }
+                        }
+                      }
+                    },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "ZoneChange": { "what": ["This"], "to": "Exile" } },
+                          "effects": [
+                            {
+                              "CreateToken": {
+                                "token": {
+                                  "Custom": {
+                                    "name": "Elemental",
+                                    "colors": ["Blue", "Red"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Elemental"],
+                                    "power": 4,
+                                    "toughness": 4
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

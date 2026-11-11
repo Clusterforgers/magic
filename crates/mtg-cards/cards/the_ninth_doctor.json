@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c99f59c0-5cce-41a4-908f-d34e2c697419",
+  "name": "The Ninth Doctor",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Ninth Doctor",
+      "oracle_fingerprint": "d3b1203f53a23a8804f6b00b62398ba5",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 141 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "oracle_id": "25c0bbc8-b0c3-4166-967f-e8b096487a6c",
+  "name": "Davros, Dalek Creator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Davros, Dalek Creator",
+      "oracle_fingerprint": "9d5a2c56cd4fe50fd99045cee0c32c44",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "Opponents", "what": "LifeLostMost" } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Dalek",
+                            "colors": ["Black"],
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Dalek"],
+                            "power": 3,
+                            "toughness": 3,
+                            "abilities": [{ "Keyword": "Menace" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                          "op": "Ge",
+                          "right": 3
+                        }
+                      }
+                    }
+                  },
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "VillainousChoice": {
+                        "who": { "Bound": "opp" },
+                        "first": [{ "Draw": {} }],
+                        "second": [{ "Discard": { "who": { "Bound": "opp" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

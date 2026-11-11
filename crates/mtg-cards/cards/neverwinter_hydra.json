@@ -1,0 +1,21 @@
+{
+  "oracle_id": "e71e7a68-d96e-4ebb-8d4f-9c45ff8b8b66",
+  "name": "Neverwinter Hydra",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Neverwinter Hydra",
+      "oracle_fingerprint": "2ac429e93a7c5d2ac30b0caa91953959",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 120 }
+          }
+        },
+        { "Keyword": "Trample" },
+        { "Keyword": { "Ward": "{4}" } }
+      ]
+    }
+  ]
+}

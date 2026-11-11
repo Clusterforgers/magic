@@ -1,0 +1,52 @@
+{
+  "oracle_id": "a374f99e-6443-486c-8026-8eba4c7e6ad7",
+  "name": "Grenzo, Dungeon Warden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grenzo, Dungeon Warden",
+      "oracle_fingerprint": "80f61c5e5d6718d9682ad9916370a69e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "BottomOfLibrary"] },
+                  "to": "Graveyard",
+                  "as": "milled"
+                }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "Is": { "Bound": "milled" } },
+                      { "Type": "Creature" },
+                      {
+                        "Compare": {
+                          "stat": "Power",
+                          "op": "Le",
+                          "to": { "Stat": { "of": "This", "stat": "Power" } }
+                        }
+                      }
+                    ]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

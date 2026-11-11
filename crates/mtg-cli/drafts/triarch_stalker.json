@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1b3ae9c3-1940-4fb8-a47c-2d9e1790f4a3",
+  "name": "Triarch Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triarch Stalker",
+      "oracle_fingerprint": "94e627803b510b42083b5c2966d49bbc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "opponent" } },
+              { "Forget": { "slot": "chosen_player" } },
+              { "Remember": { "what": { "Bound": "opponent" }, "slot": "chosen_player" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "AttackingPlayer": { "Remembered": { "on": "This", "slot": "chosen_player" } } }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Menace" }]
+          }
+        }
+      ]
+    }
+  ]
+}

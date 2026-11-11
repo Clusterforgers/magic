@@ -1,0 +1,48 @@
+{
+  "oracle_id": "754e5238-00a2-45fa-9b20-40980b73f1cc",
+  "name": "Exuberant Fuseling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exuberant Fuseling",
+      "oracle_fingerprint": "f137ca8dce178171de42c16e2e087947",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "oil" } } },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                      { "ControlledBy": "You" },
+                      "Other"
+                    ],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "oil" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

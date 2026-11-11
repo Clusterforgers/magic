@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3c414ace-fd04-4fac-9379-24f5910f20e4",
+  "name": "Eater of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eater of the Dead",
+      "oracle_fingerprint": "744d3049083fdd8706d7064f766bc35f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{0}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Matches": { "subject": "This", "selector": ["Tapped"] } },
+                  "then": [
+                    { "Exile": { "what": { "Target": 0 } } },
+                    { "Untap": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

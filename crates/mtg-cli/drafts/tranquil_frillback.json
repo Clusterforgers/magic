@@ -1,0 +1,53 @@
+{
+  "oracle_id": "e87a4461-f3d1-443f-ad4c-dba91a993809",
+  "name": "Tranquil Frillback",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tranquil Frillback",
+      "oracle_fingerprint": "4e94d8dda6fb7a3413d4b00a2e55fedb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 3 },
+                  "mode_costs": ["{G}", "{G}", "{G}"],
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Exile": {
+                            "what": {
+                              "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }]
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "GainLife": { "amount": 4 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

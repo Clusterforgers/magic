@@ -1,0 +1,36 @@
+{
+  "oracle_id": "898ee071-dd37-4a02-895d-a41b568d7eef",
+  "name": "Unlawful Entry",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Unlawful Entry",
+      "oracle_fingerprint": "459acd97cf3554e9928eb4539b1025e3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 63, "end": 168 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "70718e4a-c3c2-4fcd-96f8-98cd7fee257c",
+  "name": "Sibylline Soothsayer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sibylline Soothsayer",
+      "oracle_fingerprint": "afbb50499fc3a18f7a2afce2dd660942",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } }
+                  ],
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "exiled" } },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "exiled" },
+                  "counter": { "Other": "time" },
+                  "count": 3
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "revealed" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

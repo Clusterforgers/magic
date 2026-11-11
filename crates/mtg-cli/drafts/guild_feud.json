@@ -1,0 +1,101 @@
+{
+  "oracle_id": "fc5d0e18-2d10-47df-9742-2ea6c6d44431",
+  "name": "Guild Feud",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guild Feud",
+      "oracle_fingerprint": "1af9d1470baf7535e3f732d77120311a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 3, "as": "their_top" } },
+              { "Reveal": { "what": { "Bound": "their_top" } } },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "their_top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "their_pick"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "their_pick" },
+                  "to": { "Battlefield": { "under": { "Target": 0 } } }
+                }
+              },
+              { "Move": { "what": { "Bound": "their_top" }, "to": "Graveyard" } },
+              { "LookAtTop": { "count": 3, "as": "my_top" } },
+              { "Reveal": { "what": { "Bound": "my_top" } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "my_top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "my_pick"
+                }
+              },
+              { "Move": { "what": { "Bound": "my_pick" }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Bound": "my_top" }, "to": "Graveyard" } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "CountOf": {
+                          "subject": {
+                            "Arrived": { "of": { "Bound": "their_pick" }, "zone": "Battlefield" }
+                          },
+                          "selector": [{ "Type": "Creature" }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "CountOf": {
+                          "subject": {
+                            "Arrived": { "of": { "Bound": "my_pick" }, "zone": "Battlefield" }
+                          },
+                          "selector": [{ "Type": "Creature" }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    {
+                      "Fight": {
+                        "what": {
+                          "Arrived": { "of": { "Bound": "their_pick" }, "zone": "Battlefield" }
+                        },
+                        "with": {
+                          "Arrived": { "of": { "Bound": "my_pick" }, "zone": "Battlefield" }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

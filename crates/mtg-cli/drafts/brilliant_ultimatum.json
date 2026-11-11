@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a9d58cad-c1c2-4bd2-80f2-da9ce60801df",
+  "name": "Brilliant Ultimatum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brilliant Ultimatum",
+      "oracle_fingerprint": "46e36e1e5f324422c7f6950beb300218",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 5, "as": "exiled" } },
+              { "Choose": { "from": "Opponents", "as": "separator" } },
+              {
+                "SeparatePiles": {
+                  "who": { "Bound": "separator" },
+                  "what": { "Bound": "exiled" },
+                  "chooser": "You",
+                  "as": "pile",
+                  "rest_as": "other"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "pile" }, "free": true, "play": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

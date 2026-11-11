@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2cfd5c18-47d0-4549-aacc-2428db21df2f",
+  "name": "Soul Partition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Partition",
+      "oracle_fingerprint": "825c879bbd9fa6016447e1ec8d3680cc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "who": { "OwnerOf": { "Bound": "exiled" } },
+                      "what": [{ "Is": { "Bound": "exiled" } }],
+                      "from": "Exile",
+                      "play": true
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

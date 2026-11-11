@@ -1,0 +1,35 @@
+{
+  "oracle_id": "62320290-ac8e-4f92-bb06-3368f66ae0a9",
+  "name": "Keys to the House",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Keys to the House",
+      "oracle_fingerprint": "9731e441ef70088c7a2f290996dac8cc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 126, "end": 238 }
+          }
+        }
+      ]
+    }
+  ]
+}

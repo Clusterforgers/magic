@@ -1,0 +1,26 @@
+{
+  "oracle_id": "16950554-0e39-4705-aab4-7a8734771844",
+  "name": "Shape of the Wiitigo",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Shape of the Wiitigo",
+      "oracle_fingerprint": "5524685458d1f242aa57c48068219823",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "PutCounters": { "on": "Attached", "counter": "+1/+1", "count": 6 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 86, "end": 253 }
+          }
+        }
+      ]
+    }
+  ]
+}

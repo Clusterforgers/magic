@@ -1,0 +1,37 @@
+{
+  "oracle_id": "121bd1af-da21-4937-a911-377c5b430796",
+  "name": "Intimidation Tactics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intimidation Tactics",
+      "oracle_fingerprint": "dac470e34d34b8382e36288db53d9b33",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" } } }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{3}" } }
+      ]
+    }
+  ]
+}
