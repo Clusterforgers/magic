@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_yields FROM user_prefs WHERE user_id = $1",
+  "query": "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_yields, hand_sort FROM user_prefs WHERE user_id = $1",
   "describe": {
     "columns": [
       {
@@ -68,6 +68,17 @@
             "name": "auto_yields"
           }
         }
+      },
+      {
+        "ordinal": 6,
+        "name": "hand_sort",
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "user_prefs",
+            "name": "hand_sort"
+          }
+        }
       }
     ],
     "parameters": {
@@ -81,8 +92,9 @@
       false,
       false,
       false,
-      false
+      false,
+      true
     ]
   },
-  "hash": "fdc1898c5ee5d110225c425a78c7745883c2c430d9aef5f6d5afe595d7a0d47e"
+  "hash": "3a962771408ef3d4b9384ab62e0d88227eec3cf0cce7ca60466d291285b76643"
 }

@@ -585,6 +585,7 @@ impl PlayerView {
             ring_level: state.ring_level(seat),
             ring_bearer: state.ring_bearer(seat),
             enchanted_by: state.attachments_of_player(seat),
+            effects: mtg_engine::rules::player_effects(state, seat),
             mulligans: player.mulligans(),
             mulligan: player.mulligan_status(),
             hand: zone_view(state, viewer, Zone::Hand(seat)),

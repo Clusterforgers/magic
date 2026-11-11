@@ -42,23 +42,32 @@ function Entry({
     <li
       data-hand={card.oracle_id}
       data-support={support}
-      className={cn('flex gap-3 rounded-lg border-l-4 py-1 pr-1 pl-2', supportEdge(support))}
+      className={cn('flex gap-3 rounded-lg border border-l-4 p-2', supportEdge(support))}
     >
-      <CardPicture oracleId={card.oracle_id} name={card.name} size="small" alt="" quiet className="w-16" />
+      <CardPicture
+        oracleId={card.oracle_id}
+        name={card.name}
+        size="small"
+        alt=""
+        quiet
+        className="w-12 sm:w-16"
+      />
       <div className="grid min-w-0 flex-1 content-start gap-1">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <button
-            type="button"
-            aria-haspopup="dialog"
-            title={card.name}
-            data-slot="card-name"
-            onClick={(event) => onPreview(card, event.currentTarget)}
-            className="min-h-6 max-w-full min-w-0 truncate rounded-sm text-left text-sm font-medium underline-offset-4 hover:underline"
-          >
-            {card.name}
-            {count > 1 ? <span className="font-normal text-muted-foreground"> ×{count}</span> : null}
-          </button>
-          <SupportMark support={support} />
+        <div className="flex items-start gap-2">
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1">
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              title={card.name}
+              data-slot="card-name"
+              onClick={(event) => onPreview(card, event.currentTarget)}
+              className="min-h-6 max-w-full min-w-0 truncate rounded-sm text-left text-sm font-medium underline-offset-4 hover:underline"
+            >
+              {card.name}
+              {count > 1 ? <span className="font-normal text-muted-foreground"> ×{count}</span> : null}
+            </button>
+            <SupportMark support={support} />
+          </div>
           {fixMarks === undefined ? null : (
             <FixMarkButton compact oracleId={card.oracle_id} name={card.name} api={fixMarks} />
           )}
@@ -98,7 +107,7 @@ export function HandList({ cards, cardsApi, onPreview, fixMarks }: HandListProps
   const blocked = cards.filter((entry) => entry.support === 'unplayable')
   const copies = (list: readonly HandCard[]): number => list.reduce((sum, entry) => sum + entry.count, 0)
   return (
-    <section aria-label={BY_HAND_TITLE} data-slot="hand-list" className="grid gap-2">
+    <section aria-label={BY_HAND_TITLE} data-slot="hand-list" className="@container grid gap-2">
       {cards.length === 0 ? (
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
           <ShieldCheckIcon aria-hidden="true" className="size-4 text-support-verified" />
@@ -107,7 +116,7 @@ export function HandList({ cards, cardsApi, onPreview, fixMarks }: HandListProps
       ) : (
         <>
           {hand.length === 0 ? null : (
-            <ul aria-label={`Cards ${BY_HAND}`} className="grid gap-2">
+            <ul aria-label={`Cards ${BY_HAND}`} className="grid gap-2 @3xl:grid-cols-2">
               {hand.map((entry) => (
                 <Entry
                   key={entry.card.oracle_id}

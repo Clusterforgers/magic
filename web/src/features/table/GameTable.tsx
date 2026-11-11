@@ -17,6 +17,7 @@ import { HandDock } from './HandDock'
 import { MomentsContext } from './moment/store'
 import { TableMoments } from './moment/TableMoments'
 import { useTableMoments } from './moment/useTableMoments'
+import { LexiconDialog } from './lexicon/LexiconDialog'
 import { ManualMenuProvider } from './manual/ManualMenu'
 import { handGrowMost, openingGrowMost, planTable, POD_COLUMN_PX, sidePanelRows, ZONE_GAP_PX } from './layout'
 import type { TableMode } from './layout'
@@ -35,6 +36,7 @@ import { useTheirHead } from './useTheirHead'
 import { sheetReserve } from './boardSplit'
 import { TableOptionsContext } from './tableOptions'
 import { TopBar } from './TopBar'
+import { TableTour } from './tour/TableTour'
 import { useViewport } from './useViewport'
 
 /**
@@ -143,6 +145,7 @@ const Table = memo(function Table() {
                           overlay={<CombatOverlay />}
                         />
                         <SideSheet />
+                        <TableTour />
                       </SideProvider>
                     )}
                     <FxTravel />
@@ -152,6 +155,7 @@ const Table = memo(function Table() {
               </StopControlsProvider>
               <CardPreview />
               <TableMoments />
+              <LexiconDialog />
             </ManualMenuProvider>
           </MarksContext>
         </PreviewContext>

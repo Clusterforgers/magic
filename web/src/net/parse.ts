@@ -12,6 +12,7 @@ import type {
   AutoYield,
   CombatForecast,
   CreatureForecast,
+  DecidingView,
   Decision,
   ErrorCode,
   EventView,
@@ -51,6 +52,7 @@ export interface FrameError {
 export type ParsedFrame = { ok: true; message: ServerMessage } | { ok: false; error: FrameError }
 
 const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
+  Deciding: true,
   Welcome: true,
   Lobby: true,
   Decision: true,
@@ -402,6 +404,11 @@ function isDecision(value: unknown): value is Decision {
   )
 }
 
+/** A seat and the name of its decision; a name this page does not know yet reads as a plain decision. */
+function isDeciding(value: unknown): value is DecidingView {
+  return isRecord(value) && isCount(value.seat) && isText(value.kind)
+}
+
 // A string is the name of the offending field, so the caller can say what was wrong.
 type Built = ServerMessage | string
 
@@ -572,6 +579,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
         connected: v.connected,
         ...(v.deadline_ms === undefined ? {} : { deadline_ms: v.deadline_ms }),
       }
+    case 'Deciding':
+      if (!isListOf(v.seats, isDeciding)) return '"seats" must be a list of seats (seat, kind)'
+      return { type, seats: v.seats }
     default: {
       // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
       const unhandled: never = type

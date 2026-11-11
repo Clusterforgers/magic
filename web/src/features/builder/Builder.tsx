@@ -44,7 +44,7 @@ import { useLiveCheck } from './useLiveCheck'
 import { useUnsavedGuard } from './useUnsavedGuard'
 import { ZONE_THE, ZONE_TO } from './zones'
 
-type Shown = 'search' | 'deck' | 'stats'
+type Shown = 'search' | 'deck'
 
 // Under the M breakpoint one pane is on screen and this switch changes which; both stay mounted, so the search keeps
 // its text, page and place when the deck is looked at.
@@ -58,7 +58,7 @@ function ViewSwitch({
   count: number
 }) {
   return (
-    <div role="group" aria-label="Show" className="grid grid-cols-3 gap-2 lg:hidden">
+    <div role="group" aria-label="Show" className="grid grid-cols-2 gap-2 lg:hidden">
       <Button
         type="button"
         variant={shown === 'search' ? 'default' : 'outline'}
@@ -74,14 +74,6 @@ function ViewSwitch({
         onClick={() => onChange('deck')}
       >
         Deck <span className="tabular-nums">{count}</span>
-      </Button>
-      <Button
-        type="button"
-        variant={shown === 'stats' ? 'default' : 'outline'}
-        aria-pressed={shown === 'stats'}
-        onClick={() => onChange('stats')}
-      >
-        Stats
       </Button>
     </div>
   )
@@ -297,9 +289,8 @@ export function Builder({ view, api, cards, fixMarks }: BuilderProps) {
           actions={actions}
           judging={judging}
           onFind={find}
-          part={shown === 'stats' ? 'stats' : 'deck'}
           fixMarks={fixMarks}
-          onShowHand={() => setShown('stats')}
+          onShowHand={() => setShown('deck')}
           className={cn(shown === 'search' ? 'hidden' : 'flex', 'lg:flex')}
         />
       </div>

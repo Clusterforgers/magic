@@ -2,6 +2,7 @@
 import type { AutoChoices } from "./AutoChoices";
 import type { AutoYield } from "./AutoYield";
 import type { CombatForecast } from "./CombatForecast";
+import type { DecidingView } from "./DecidingView";
 import type { Decision } from "./Decision";
 import type { DecisionId } from "./DecisionId";
 import type { ErrorCode } from "./ErrorCode";
@@ -190,4 +191,8 @@ connected: boolean,
  * Milliseconds before the game answers for a seat that is away, counted from when this is sent; absent while it
  * is connected or has no decision on a clock.
  */
-deadline_ms?: number, };
+deadline_ms?: number, } | { "type": "Deciding", 
+/**
+ * The seats asked now, in the order the server asks them, each with the kind of its decision.
+ */
+seats: Array<DecidingView>, };

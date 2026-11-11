@@ -70,13 +70,19 @@ export function SupportBar({ counts }: { counts: Counts }) {
   )
 }
 
-/** The spells of a deck by mana value as small bars with their counts; lands are not part of it. */
-export function ManaCurve({ curve }: { curve: readonly number[] }) {
+/**
+ * The spells of a deck by mana value as bars with their counts over the bucket labels; lands are not part of it. A
+ * bucket without spells shows no count, so the axis alone reads. `tall` draws it for a panel of its own.
+ */
+export function ManaCurve({ curve, tall = false }: { curve: readonly number[]; tall?: boolean }) {
   const peak = Math.max(1, ...curve)
   return (
     <figure data-slot="mana-curve" className="grid min-w-0 gap-1">
       <figcaption className="text-xs font-medium">Mana curve</figcaption>
-      <ol aria-label="Spells by mana value" className="grid h-24 grid-cols-8 items-end gap-1">
+      <ol
+        aria-label="Spells by mana value"
+        className={cn('grid grid-cols-8 items-end gap-1', tall ? 'h-32' : 'h-24')}
+      >
         {curve.map((count, bucket) => (
           <li
             key={curveLabel(bucket)}
@@ -85,12 +91,15 @@ export function ManaCurve({ curve }: { curve: readonly number[] }) {
             className="flex h-full min-w-0 flex-col items-center justify-end gap-1"
           >
             <span aria-hidden="true" className="text-xs text-muted-foreground tabular-nums">
-              {count}
+              {count === 0 ? null : count}
             </span>
             <span
               aria-hidden="true"
               className="w-full rounded-t-sm bg-primary"
-              style={{ height: `${Math.round((count / peak) * 62)}%`, minHeight: count > 0 ? 2 : 0 }}
+              style={{
+                height: `${Math.round((count / peak) * (tall ? 74 : 62))}%`,
+                minHeight: count > 0 ? 2 : 0,
+              }}
             />
             <span aria-hidden="true" className="w-full border-t pt-1 text-center text-xs tabular-nums">
               {curveLabel(bucket)}

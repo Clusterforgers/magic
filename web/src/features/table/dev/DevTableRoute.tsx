@@ -18,6 +18,9 @@ import { roomDetail, roomsApi } from './roomsScene'
 import { parseStopSpec } from './stopSpec'
 import { menuCandidates, useOpenDevMenu } from '../manual/devMenu'
 import { useOpenDevPanel } from '../manual/panel/devPanel'
+import { showLexicon } from '../lexicon/lexiconStore'
+import { tourStore } from '../tour/tourStore'
+import { TOUR } from '../tour/tourSteps'
 
 /** The oracle ids of the fixture's cards from the server (`?cards=real`), read once; none until they arrive. */
 function useRealIds(
@@ -42,6 +45,18 @@ function useRealIds(
     }
   }, [on, seats, hand, states])
   return on ? ids : undefined
+}
+
+/** Opens the tour at a step (`?tour=`) and the lexicon at a search (`?lexicon=`) once the table is up. */
+function useDevHelp(tour: string | undefined, lexicon: string | undefined): void {
+  useEffect(() => {
+    if (tour === undefined) return
+    const step = TOUR.findIndex((each) => each.id === tour)
+    tourStore.setState({ step: Math.max(0, step) })
+  }, [tour])
+  useEffect(() => {
+    if (lexicon !== undefined) showLexicon(lexicon === '1' ? '' : lexicon)
+  }, [lexicon])
 }
 
 /**
@@ -84,6 +99,8 @@ export function DevTableRoute() {
     moments,
     menu,
     panel,
+    tour,
+    lexicon,
   } = useSearch({
     from: '/dev/table',
   })
@@ -153,9 +170,12 @@ export function DevTableRoute() {
       focus,
       effects: fx === undefined && newturn !== true && moments !== true ? undefined : true,
       effectsSlow: slow,
+      // A screenshot of the dev table shows the tour only when it asks for it.
+      tour: false,
     }),
     [mode, focus, fx, newturn, moments, slow],
   )
+  useDevHelp(tour, lexicon)
   return (
     <GameContext value={game}>
       <TableOptionsContext value={options}>

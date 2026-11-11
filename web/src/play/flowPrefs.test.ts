@@ -15,6 +15,7 @@ import {
   saveEndTurnByHand,
   welcomeRequests,
 } from './flowPrefs'
+import { DEFAULT_HAND_SORT } from './handSort'
 import { STOP_STEPS } from './stops'
 
 const SIDES: StopSide[] = ['Own', 'Opponent']
@@ -74,7 +75,13 @@ describe('default stops', () => {
 
 describe('welcome requests', () => {
   const stops = [pinned('Own', 'Main1'), pinned('Opponent', 'End')]
-  const prefs = { defaultStops: stops, endTurnByHand: false, autoChoices: OFF, autoYields: [] }
+  const prefs = {
+    defaultStops: stops,
+    endTurnByHand: false,
+    autoChoices: OFF,
+    autoYields: [],
+    handSort: DEFAULT_HAND_SORT,
+  }
   const setStops = stops.map(({ side, step }) => ({ type: 'SetStop', side, step, on: true, keep: true }))
 
   it.each([
@@ -112,7 +119,13 @@ describe('welcome requests', () => {
     [true, true, []],
     [false, false, []],
   ])('with end turn by hand saved %s and held %s sends %j', (saved, held, expected) => {
-    const none = { defaultStops: [], endTurnByHand: saved, autoChoices: OFF, autoYields: [] }
+    const none = {
+      defaultStops: [],
+      endTurnByHand: saved,
+      autoChoices: OFF,
+      autoYields: [],
+      handSort: DEFAULT_HAND_SORT,
+    }
     expect(welcomeRequests({ game: 'g1', stops: [], endTurnByHand: held, autoChoices: OFF }, none)).toEqual(
       expected,
     )
@@ -130,7 +143,13 @@ describe('welcome requests', () => {
     ],
     [{ ...OFF, smart_stops: true }, OFF, [{ type: 'AutoChoices', choices: { ...OFF, smart_stops: true } }]],
   ])('with auto choices saved %j and held %j sends %j', (saved, held, expected) => {
-    const prefs = { defaultStops: [], endTurnByHand: false, autoChoices: saved, autoYields: [] }
+    const prefs = {
+      defaultStops: [],
+      endTurnByHand: false,
+      autoChoices: saved,
+      autoYields: [],
+      handSort: DEFAULT_HAND_SORT,
+    }
     expect(
       welcomeRequests({ game: 'g1', stops: [], endTurnByHand: false, autoChoices: held }, prefs),
     ).toEqual(expected)
@@ -145,6 +164,7 @@ describe('kept yields', () => {
     endTurnByHand: false,
     autoChoices: OFF,
     autoYields,
+    handSort: DEFAULT_HAND_SORT,
   })
   const welcome = (held: { name: string; text: string }[]) => ({
     game: 'g1',

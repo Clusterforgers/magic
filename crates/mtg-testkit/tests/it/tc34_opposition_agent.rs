@@ -99,7 +99,7 @@ fn the_agents_controller_searches_as_usual(
 ) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(table(seats, 0))?;
     assert_eq!(search(&mut driver, 0)?, 0);
-    assert!(names(driver.state(), Zone::Exile).is_empty());
+    assert_eq!(names(driver.state(), Zone::Exile).len(), 0);
     assert!(
         names(driver.state(), Zone::Hand(pid(0)))
             .iter()

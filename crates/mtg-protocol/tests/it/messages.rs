@@ -41,9 +41,9 @@ use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Answer, Decision, Engine, Event};
 use mtg_protocol::{
-    AutoChoices, AutoYield, ClientMessage, DecisionId, ErrorCode, EventBatch, EventView,
-    FullControlMode, HiddenEvent, LobbySeat, PROTOCOL_VERSION, ServerMessage, StateView, Stop,
-    StopSide, YieldUntil, project_events,
+    AutoChoices, AutoYield, ClientMessage, DecidingView, DecisionId, DecisionName, ErrorCode,
+    EventBatch, EventView, FullControlMode, HiddenEvent, LobbySeat, PROTOCOL_VERSION,
+    ServerMessage, StateView, Stop, StopSide, YieldUntil, project_events,
 };
 use mtg_testkit::fuzz_setup;
 use proptest::prelude::*;
@@ -53,7 +53,7 @@ use serde::de::DeserializeOwned;
 use serde_json::json;
 
 const CLIENT_VARIANTS: usize = 19;
-const SERVER_VARIANTS: usize = 17;
+const SERVER_VARIANTS: usize = 18;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -133,6 +133,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::EndTurnByHand { .. } => 14,
         ServerMessage::AutoChoices { .. } => 15,
         ServerMessage::AutoYields { .. } => 16,
+        ServerMessage::Deciding { .. } => 17,
     }
 }
 
@@ -784,6 +785,19 @@ fn server_samples() -> Vec<ServerMessage> {
             deadline_ms,
         },
     ));
+    out.push(ServerMessage::Deciding { seats: Vec::new() });
+    out.push(ServerMessage::Deciding {
+        seats: vec![
+            DecidingView {
+                seat: PlayerId(0),
+                kind: DecisionName::Mulligan,
+            },
+            DecidingView {
+                seat: PlayerId(1),
+                kind: DecisionName::ChooseTargets,
+            },
+        ],
+    });
     for code in [
         ErrorCode::UnsupportedVersion,
         ErrorCode::BadMessage,

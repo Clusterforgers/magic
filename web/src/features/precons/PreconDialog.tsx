@@ -134,7 +134,11 @@ function Board({
                     {card.card === null ? (
                       <span className="font-medium">{card.name}</span>
                     ) : (
-                      <HoverPicture oracleId={card.card.oracle_id} name={card.name}>
+                      <HoverPicture
+                        oracleId={card.card.oracle_id}
+                        name={card.name}
+                        info={{ typeLine: card.card.type_line, count: card.count }}
+                      >
                         <span className="font-medium">{card.name}</span>
                       </HoverPicture>
                     )}

@@ -4,7 +4,8 @@
  * `localStorage`. A session applies them at `Welcome` (`welcomeRequests`).
  */
 import { useSyncExternalStore } from 'react'
-import type { AutoChoices, AutoYield, ClientMessage, Stop } from '@/protocol/generated'
+import type { AutoChoices, AutoYield, ClientMessage, HandSort, Stop } from '@/protocol/generated'
+import { DEFAULT_HAND_SORT, legacyHandSort, readHandSort, sameHandSort } from './handSort'
 import { canHoldStop } from './stops'
 
 /** The `localStorage` key of the default stops. */
@@ -15,6 +16,10 @@ export const END_TURN_KEY = 'mtg.endTurnByHand'
 export const AUTO_CHOICES_KEY = 'mtg.autoChoices'
 /** The `localStorage` key of the abilities always yielded to. */
 export const AUTO_YIELDS_KEY = 'mtg.autoYields'
+/** The `localStorage` key of the hand sort. */
+export const HAND_SORT_KEY = 'mtg.handSort'
+/** The `localStorage` key an older page kept the hand sort under ("types", "mana" or "drawn"). */
+export const LEGACY_HAND_SORT_KEY = 'magic.handSort'
 /** The `localStorage` key of the games the default stops were given to. */
 export const APPLIED_KEY = 'mtg.defaultStopsApplied'
 /** How many games `APPLIED_KEY` remembers. */
@@ -30,6 +35,8 @@ export interface FlowPrefs {
   autoChoices: AutoChoices
   /** The abilities the seat always yields to, in every game. */
   autoYields: readonly AutoYield[]
+  /** How the hand dock orders a hand the viewer did not drag, in every game. */
+  handSort: HandSort
 }
 
 const listeners = new Set<() => void>()
@@ -114,6 +121,15 @@ function readYields(): AutoYield[] {
   })
 }
 
+/** The stored hand sort, else the one an older page kept, else "as drawn". */
+function readSort(): HandSort {
+  return (
+    readHandSort(parseJson(readItem(HAND_SORT_KEY))) ??
+    legacyHandSort(readItem(LEGACY_HAND_SORT_KEY)) ??
+    DEFAULT_HAND_SORT
+  )
+}
+
 /** The preferences now: the stored ones, `DEFAULT_STOPS` and everything else off by default. */
 export function flowPrefs(): FlowPrefs {
   current ??= readLocal()
@@ -132,6 +148,7 @@ function readLocal(): FlowPrefs {
     endTurnByHand: readItem(END_TURN_KEY) === 'on',
     autoChoices: readAuto(),
     autoYields: readYields(),
+    handSort: readSort(),
   }
 }
 
@@ -142,6 +159,10 @@ function store(next: FlowPrefs): void {
     writeItem(END_TURN_KEY, next.endTurnByHand ? 'on' : null)
     writeItem(AUTO_CHOICES_KEY, hasAuto(next.autoChoices) ? JSON.stringify(next.autoChoices) : null)
     writeItem(AUTO_YIELDS_KEY, next.autoYields.length === 0 ? null : JSON.stringify(next.autoYields))
+    writeItem(
+      HAND_SORT_KEY,
+      sameHandSort(next.handSort, DEFAULT_HAND_SORT) ? null : JSON.stringify(next.handSort),
+    )
   } else account(next)
   change(next)
 }
@@ -157,7 +178,8 @@ function isDefault(prefs: FlowPrefs): boolean {
     sameStops(prefs.defaultStops, DEFAULT_STOPS) &&
     !prefs.endTurnByHand &&
     !hasAuto(prefs.autoChoices) &&
-    prefs.autoYields.length === 0
+    prefs.autoYields.length === 0 &&
+    sameHandSort(prefs.handSort, DEFAULT_HAND_SORT)
   )
 }
 
@@ -218,6 +240,12 @@ export function saveAutoYields(yields: readonly AutoYield[]): void {
 
 function sameYield(a: AutoYield, b: AutoYield | undefined): boolean {
   return b !== undefined && a.name === b.name && a.text === b.text
+}
+
+/** Stores how the hand dock orders a hand the viewer did not drag. */
+export function saveHandSort(sort: HandSort): void {
+  if (sameHandSort(flowPrefs().handSort, sort)) return
+  store({ ...flowPrefs(), handSort: sort })
 }
 
 /** Forgets the cached preferences, so the next read goes to storage again (tests). */

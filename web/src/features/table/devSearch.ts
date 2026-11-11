@@ -93,6 +93,10 @@ export interface DevSearch {
   menu?: DevMenu
   /** Opens a row of the Commands panel once the table has loaded: `1` the life row, a command by its id (`draw`, `token`), `top` for the arrange list after a look at the top 3, or `card`: the first creature of the seat in the Card group, as "In the panel" picks it. */
   panel?: DevPanel
+  /** Opens the table tour at the step of this id (`tour/tourSteps.ts`), `1` at its start; the tour never starts by itself here. */
+  tour?: string
+  /** Opens the rules lexicon, at this search; `1` with none. */
+  lexicon?: string
 }
 
 /** The cards `?menu=` opens the manual menu on. */
@@ -148,6 +152,8 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
         : undefined,
     menu: menuOf(search.menu),
     panel: panelOf(search.panel),
+    tour: search.tour === 1 ? '1' : typeof search.tour === 'string' ? search.tour : undefined,
+    lexicon: search.lexicon === 1 ? '1' : typeof search.lexicon === 'string' ? search.lexicon : undefined,
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
     states: search.states === true || search.states === 1 || search.states === '1' ? true : undefined,
     moments: search.moments === true || search.moments === 1 || search.moments === '1' ? true : undefined,

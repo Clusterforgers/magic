@@ -484,6 +484,7 @@ pub fn text(cost: &Cost) -> Option<String> {
     (!parts.is_empty()).then(|| parts.join(", "))
 }
 
+#[allow(clippy::too_many_lines)]
 fn item_text(item: &CostItem) -> Option<String> {
     Some(match item {
         CostItem::Mana(mana) => mana.to_string(),

@@ -156,7 +156,7 @@ mod tests {
         game.turn.number = 7;
         turn_began(&mut game, 7, C);
         assert_eq!(game.player_controller(B), B);
-        assert!(game.player_controls().is_empty());
+        assert_eq!(game.player_controls().len(), 0);
     }
 
     #[test]

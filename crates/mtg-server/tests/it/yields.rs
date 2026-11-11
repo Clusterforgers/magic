@@ -200,6 +200,7 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::AutoYields { .. } => "auto yields".into(),
         ServerMessage::Bank { .. } => "bank".into(),
         ServerMessage::Presence { .. } => "presence".into(),
+        ServerMessage::Deciding { .. } => "deciding".into(),
     }
 }
 

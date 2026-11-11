@@ -1,4 +1,4 @@
-// Goal: the game over screen says the result in words and in a picture for every ending (a win, a loss, a draw, a concession, a result with no board to read), fits the window under the header with only the list of seats scrolling, and offers the ways on: a new game, the Play page and, for an account, My games.
+// Goal: the game over screen says the result in words and in a picture for every ending (a win, a loss, a draw, a concession, a result with no board to read), celebrates only a win with a burst that is decoration, fits the window under the header with only the list of seats scrolling, and offers the ways on: a new game, the Play page and, for an account, My games.
 import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { useIsFitWindow } from '@/components/appChrome'
@@ -14,6 +14,7 @@ import { lateJoin } from '@/test-utils/transcripts'
 import { GameContext } from './gameContext'
 import type { GameContextValue } from './gameContext'
 import { GameOver } from './GameOver'
+import { pieceFlight, WIN_PIECES } from './WinBurst'
 
 interface Ending {
   result: GameResult
@@ -109,6 +110,23 @@ describe('the result', () => {
       expect(icon).toHaveClass(ICON[kind as keyof typeof ICON])
     },
   )
+
+  it.each(ENDINGS)('celebrates %s with the burst only when this seat won', async (...args) => {
+    const [, ending, headline, , kind] = args
+    await renderInRouter(shown(endedGame(ending)))
+    const section = screen.getByRole('region', { name: headline })
+    const pieces = section.querySelectorAll('[data-slot="win-piece"]')
+    expect(pieces).toHaveLength(kind === 'won' ? WIN_PIECES : 0)
+    expect(section.querySelector('[data-slot="win-badge"]') !== null).toBe(kind === 'won')
+    // The burst is decoration: nothing in it is read out.
+    for (const piece of pieces) expect(piece.closest('[aria-hidden="true"]')).not.toBeNull()
+  })
+
+  it('flies every piece of the burst its own way', () => {
+    const flights = Array.from({ length: WIN_PIECES }, (_, n) => pieceFlight(n))
+    expect(new Set(flights.map((flight) => `${flight.dx},${flight.dy}`)).size).toBe(WIN_PIECES)
+    expect(flights.every((flight) => Math.hypot(flight.dx, flight.dy) > 20)).toBe(true)
+  })
 
   it('says in words how a seat that conceded lost, beside the winner, whoever the page plays', async () => {
     await renderInRouter(shown(endedGame({ result: { Winner: 0 }, lost: { 1: 'Conceded' } })))

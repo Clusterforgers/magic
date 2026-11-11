@@ -2,24 +2,34 @@ import { ACTIONS } from './actions'
 import { CASTING } from './casting'
 import { COMBAT } from './combat'
 import { PERMANENTS } from './permanents'
+import { MARKED_RULES, RULES } from './rules'
+import type { RuleTopic } from './rules'
 import type { Entry } from './types'
 import { ABILITY_WORDS, SET_MECHANICS } from './words'
 
-/** What kind of rules term a glossary entry is. */
-export type GlossaryKind = 'keyword' | 'action' | 'ability word'
+export type { RuleTopic } from './rules'
 
-/** One term of the glossary: its title, every spelling that points at it and its reminder text. */
+/** What kind of rules term a glossary entry is. */
+export type GlossaryKind = 'keyword' | 'action' | 'ability word' | 'rule'
+
+/** Every kind, in the lexicon's order. */
+export const KINDS: readonly GlossaryKind[] = ['keyword', 'action', 'ability word', 'rule']
+
+/** One term of the lexicon: its title, every spelling that points at it, its reminder text and, for a rule, its topic. */
 export interface Term {
   title: string
   names: readonly string[]
   text: string
   kind: GlossaryKind
+  topic?: RuleTopic
 }
 
-const make = (entries: readonly Entry[], kind: GlossaryKind): Term[] =>
+const make = (entries: readonly Entry[], kind: GlossaryKind, topic?: RuleTopic): Term[] =>
   entries.map(([names, text]) => {
     const list = names.split('|')
-    return { title: list[0] ?? names, names: list, text, kind }
+    const term: Term = { title: list[0] ?? names, names: list, text, kind }
+    if (topic !== undefined) term.topic = topic
+    return term
   })
 
 /** Every term, sorted by title. */
@@ -27,6 +37,9 @@ export const TERMS: readonly Term[] = [
   ...make([...COMBAT, ...PERMANENTS, ...CASTING, ...SET_MECHANICS], 'keyword'),
   ...make(ACTIONS, 'action'),
   ...make(ABILITY_WORDS, 'ability word'),
+  ...(Object.entries(RULES) as Array<[RuleTopic, readonly Entry[]]>).flatMap(([topic, entries]) =>
+    make(entries, 'rule', topic),
+  ),
 ].sort((a, b) => a.title.localeCompare(b.title))
 
 const key = (name: string): string =>
@@ -49,12 +62,14 @@ export function termFor(name: string): Term | undefined {
 export function searchTerms(query: string): readonly Term[] {
   const q = key(query)
   if (q === '') return TERMS
+  // In the text only from the start of a word, so "layer" does not find every "player".
+  const wordStart = new RegExp(`(?<![a-z0-9])${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`)
   const rank = (term: Term): number => {
     const names = term.names.map(key)
     if (names.includes(q)) return 0
     if (names.some((name) => name.startsWith(q))) return 1
     if (names.some((name) => name.includes(q))) return 2
-    return key(term.text).includes(q) ? 3 : 4
+    return wordStart.test(key(term.text)) ? 3 : 4
   }
   return TERMS.filter((term) => rank(term) < 4).sort((a, b) => rank(a) - rank(b))
 }
@@ -138,8 +153,12 @@ const PLAIN = new Set(
   ].map(key),
 )
 
-const ESCAPED = [...BY_NAME.keys()]
+// A rules term is marked only where `MARKED_RULES` names it: most are everyday words in a card's text.
+const MARKED = TERMS.filter((term) => term.kind !== 'rule' || MARKED_RULES.has(term.title))
+  .flatMap((term) => term.names.map(key))
   .filter((name) => !PLAIN.has(name))
+
+const ESCAPED = [...new Set(MARKED)]
   .sort((a, b) => b.length - a.length)
   .map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '[\\s-]'))
 

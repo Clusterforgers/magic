@@ -30,6 +30,7 @@ import { RevealedChip } from './RevealedChip'
 import { RingChip } from './RingChip'
 import { SpeedChip } from './SpeedChip'
 import { PlayerCounterChips } from './PlayerCounterChips'
+import { PlayerEffectChips } from './PlayerEffectChips'
 import { CompanionChip } from './CompanionChip'
 import { ZoneButton } from './ZoneButton'
 
@@ -208,6 +209,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
             <RingChip owner={owner} player={player} density="line" />
             <SpeedChip owner={owner} player={player} density="line" />
             <PlayerCounterChips owner={owner} player={player} density="line" />
+            <PlayerEffectChips owner={owner} player={player} density="line" />
             <CompanionChip owner={owner} player={player} />
             {counts.attractions > 0 ? (
               <CountChip zone="attractions" count={counts.attractions} density="line" />
@@ -253,6 +255,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       <RingChip owner={owner} player={player} density="line" />
       <SpeedChip owner={owner} player={player} density="line" />
       <PlayerCounterChips owner={owner} player={player} density="line" />
+      <PlayerEffectChips owner={owner} player={player} density="line" />
       <CompanionChip owner={owner} player={player} />
       {counts.attractions > 0 ? (
         <CountChip zone="attractions" count={counts.attractions} density="line" />

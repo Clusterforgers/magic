@@ -309,7 +309,8 @@ describe('the preview', () => {
     const attacker = must(fixture.view.combat.attackers[0]).object
     await user.hover(must(container.querySelector<HTMLElement>(`button[data-object-id="${attacker}"]`)))
     const preview = screen.getByTestId('card-preview')
-    expect(preview.querySelector('[data-slot="preview-keywords"]')).toHaveTextContent(
+    expect(preview.querySelector('[data-slot="preview-keywords"]')).toHaveTextContent('Flying, First strike')
+    expect(preview.querySelector('[data-slot="preview-facts"]')).toHaveTextContent(
       'Keywords: Flying, First strike',
     )
   })

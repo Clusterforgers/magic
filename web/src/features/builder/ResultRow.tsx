@@ -55,7 +55,11 @@ export function ResultRow({ card, draft, identity = null, onAdd, onPreview, fixM
         className="relative grid min-h-11 min-w-0 flex-1 grid-cols-[minmax(0,1fr)] rounded-lg px-2 py-1 transition-colors duration-fast ease-out hover:bg-accent data-full:opacity-50"
       >
         <span className="flex min-w-0 items-center justify-between gap-2">
-          <HoverPicture oracleId={card.oracle_id} name={card.name}>
+          <HoverPicture
+            oracleId={card.oracle_id}
+            name={card.name}
+            info={{ typeLine: card.type_line, support: card.support }}
+          >
             <button
               type="button"
               aria-haspopup="dialog"

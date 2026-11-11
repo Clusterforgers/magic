@@ -22,7 +22,7 @@ interface CheckBarProps {
   toRead: number
   /** The saved deck the cards are read for; null (every card) while the deck is not saved. */
   readTarget?: ReadTarget | null
-  /** The saved deck, whose not-validated list "Cards to check" opens; none while the deck is not saved. */
+  /** The saved deck, whose review "Review cards" opens; none while the deck is not saved. */
   deckId?: string
   /** The counts are those of the saved deck while the draft's cards differ: no check of the draft has come back. */
   asSaved: boolean
@@ -79,12 +79,12 @@ export function CheckBar({
         )}
         {deckId !== undefined && (hasUnvalidated(counts) || toRead > 0) ? (
           <Link
-            to="/decks/$deckId/unvalidated"
-            params={{ deckId }}
+            to="/review"
+            search={{ deck: deckId }}
             data-slot="check-unvalidated"
             className="text-sm text-muted-foreground underline-offset-4 hover:underline"
           >
-            Cards to check
+            Review cards
           </Link>
         ) : null}
         <p

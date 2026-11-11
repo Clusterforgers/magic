@@ -152,7 +152,8 @@ impl WsClient {
         .await;
     }
 
-    /// Waits for the next text or close; pings and pongs are skipped.
+    /// Waits for the next text or close; pings, pongs and `Deciding` (who the game waits for, which no test here reads)
+    /// are skipped.
     pub async fn next(&mut self) -> Frame {
         loop {
             let Some(socket) = self.socket.as_mut().filter(|_| !self.ended) else {
@@ -166,6 +167,7 @@ impl WsClient {
                     let text = text.as_str().to_owned();
                     self.texts.push(text.clone());
                     return match serde_json::from_str(&text) {
+                        Ok(ServerMessage::Deciding { .. }) => continue,
                         Ok(message) => Frame::Message(message),
                         Err(_) => Frame::Text(text),
                     };

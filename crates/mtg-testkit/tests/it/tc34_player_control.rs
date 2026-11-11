@@ -103,7 +103,7 @@ fn the_controller_answers_the_controlled_turn_and_no_other(
     driver.idle_until(3, Step::Main1)?;
     assert_ne!(driver.state().turn().active(), pid(1));
     assert_eq!(driver.state().player_controller(pid(1)), pid(1));
-    assert!(driver.state().player_controls().is_empty());
+    assert_eq!(driver.state().player_controls().len(), 0);
     let active = driver.state().turn().active();
     assert_eq!(driver.decision()?.player, active);
     replays(&driver);

@@ -1,10 +1,11 @@
-// Goal: the real route tree serves Play at /, the create page at /new and the game page at /game/$gameId, reading the seat and token from the address fragment, opening one socket per seat link and starting over when the link changes.
+// Goal: the real route tree serves Play at /, the create page at /new and the game page at /game/$gameId, reading the seat and token from the address fragment, opening one socket per seat link and starting over when the link changes; a link has the router fetch its page while the pointer rests on it.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
-import { act, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { StrictMode } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { startServer, tokenOf } from '@/test-utils/fakeServer'
 import { routeTree } from './routeTree.gen'
+import { ROUTER_OPTIONS } from './routerOptions'
 
 /** The part of a browser WebSocket the client uses, recording every socket the page opens. */
 class RecordingSocket {
@@ -159,5 +160,23 @@ describe('/game/$gameId', () => {
     expect(RecordingSocket.opened).toHaveLength(1)
     expect(RecordingSocket.opened[0]?.closed).toEqual({ code: 1000, reason: 'client closing' })
     expect(await screen.findByRole('form', { name: 'Create a game' })).toBeInTheDocument()
+  })
+})
+
+describe('a link to another page', () => {
+  it('has the router fetch that page while the pointer rests on it, before any click', async () => {
+    const router = createRouter({
+      routeTree,
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+      ...ROUTER_OPTIONS,
+    })
+    const preload = vi.spyOn(router, 'preloadRoute')
+    render(<RouterProvider router={router} />)
+    await router.load()
+    const [create] = await screen.findAllByRole('link', { name: 'Create game' })
+    fireEvent.mouseEnter(create as HTMLElement)
+    await waitFor(() => expect(preload).toHaveBeenCalled())
+    expect(preload.mock.calls[0]?.[0]).toMatchObject({ to: '/new' })
+    expect(router.state.location.pathname).toBe('/')
   })
 })

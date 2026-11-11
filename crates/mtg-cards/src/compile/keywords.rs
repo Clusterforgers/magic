@@ -405,6 +405,7 @@ fn hexproof_quality(word: &str) -> Option<Selector> {
 
 /// The keyword an item names, when the DSL declares it and its parameter reads; `None` leaves the
 /// item to the table.
+#[allow(clippy::too_many_lines)]
 pub fn read(item: &str) -> Option<Keyword> {
     let found = find(item)?;
     let rest = found.rest;

@@ -123,8 +123,8 @@ fn the_restart_keeps_what_karn_exiled(#[values(2, 3, 4)] seats: usize) -> Result
     // The kept card is on the battlefield under Karn's controller; nothing else is.
     assert_eq!(names(state, Zone::Battlefield), vec!["Grizzly Bears"]);
     assert_eq!(controller_of(state, bears), Some(pid(0)));
-    assert!(names(state, Zone::Exile).is_empty());
-    assert!(state.stack().is_empty());
+    assert_eq!(names(state, Zone::Exile).len(), 0);
+    assert_eq!(state.stack().len(), 0);
     for seat in 0..seats {
         let player = state.player(pid(seat)).unwrap();
         assert_eq!(player.life(), 20);
@@ -174,7 +174,7 @@ fn a_restart_keeps_nothing_karn_did_not_exile() -> Result<(), ScriptError> {
         state.stage(),
         state.turn().number()
     );
-    assert!(names(state, Zone::Exile).is_empty());
+    assert_eq!(names(state, Zone::Exile).len(), 0);
     assert_eq!(state.zone(Zone::Hand(pid(1))).len(), 7);
     Ok(())
 }

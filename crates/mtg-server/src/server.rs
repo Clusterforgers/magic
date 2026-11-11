@@ -18,6 +18,7 @@ use axum::serve::ListenerExt;
 use sqlx::PgPool;
 use tokio::net::TcpListener;
 use tokio::sync::{mpsc, watch};
+use tower_http::compression::CompressionLayer;
 use tower_http::cors::{AllowOrigin, CorsLayer};
 use tower_http::set_header::SetResponseHeaderLayer;
 
@@ -388,5 +389,7 @@ pub(crate) fn router(state: AppState) -> Router {
             X_CONTENT_TYPE_OPTIONS,
             HeaderValue::from_static("nosniff"),
         ))
+        // JSON shrinks to a tenth in gzip; pictures, upgrades and tiny bodies pass as they are (the default predicate).
+        .layer(CompressionLayer::new())
         .with_state(state)
 }

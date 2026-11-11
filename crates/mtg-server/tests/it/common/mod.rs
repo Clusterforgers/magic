@@ -200,20 +200,36 @@ impl Client {
         Client { seat, inbox }
     }
 
-    /// Everything queued for this client right now.
+    /// Everything queued for this client right now but `Deciding`, which `drain_all` keeps.
     pub fn drain(&mut self) -> Vec<ServerMessage> {
+        let mut messages = Vec::new();
+        while let Ok(message) = self.inbox.try_recv() {
+            if !matches!(message, ServerMessage::Deciding { .. }) {
+                messages.push(message);
+            }
+        }
+        messages
+    }
+
+    /// Waits for the next message but `Deciding`, which `drain_all` keeps.
+    pub async fn next(&mut self) -> ServerMessage {
+        loop {
+            let message = timed(self.inbox.recv())
+                .await
+                .expect("the server closed this client's queue");
+            if !matches!(message, ServerMessage::Deciding { .. }) {
+                return message;
+            }
+        }
+    }
+
+    /// Every message queued right now, `Deciding` included.
+    pub fn drain_all(&mut self) -> Vec<ServerMessage> {
         let mut messages = Vec::new();
         while let Ok(message) = self.inbox.try_recv() {
             messages.push(message);
         }
         messages
-    }
-
-    /// Waits for the next message.
-    pub async fn next(&mut self) -> ServerMessage {
-        timed(self.inbox.recv())
-            .await
-            .expect("the server closed this client's queue")
     }
 
     /// Waits for the first message `pick` accepts, skipping the others.

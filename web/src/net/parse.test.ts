@@ -96,6 +96,7 @@ const samples: Record<string, Record<string, unknown>> = {
   },
   Bank: { type: 'Bank', seat: 1, bank: 2 },
   Presence: { type: 'Presence', seat: 1, connected: false },
+  Deciding: { type: 'Deciding', seats: [{ seat: 1, kind: 'ChooseTargets' }] },
 }
 
 describe('parseFrame on real traffic', () => {
@@ -346,6 +347,9 @@ describe('parseFrame checks the fields of each message', () => {
     ['Presence', 'connected as text', ['connected'], 'yes'],
     ['Presence', 'deadline_ms as text', ['deadline_ms'], '9000'],
     ['Presence', 'deadline_ms as negative', ['deadline_ms'], -5],
+    ['Deciding', 'seats as text', ['seats'], 'Bob'],
+    ['Deciding', 'seat as text', ['seats', '0', 'seat'], '1'],
+    ['Deciding', 'kind as a number', ['seats', '0', 'kind'], 3],
     ['Decision', 'decision as text', ['decision'], 'Priority'],
     ['Decision', 'player as text', ['decision', 'player'], 'me'],
     ['Decision', 'kind as text', ['decision', 'kind'], 'Priority'],

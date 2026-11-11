@@ -1,4 +1,4 @@
-import { BookOpen, Play, X } from 'lucide-react'
+import { BookOpen, Crosshair, Play, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { ReadDialog } from '@/features/reads/ReadDialog'
@@ -10,8 +10,17 @@ import { SupportMark } from '@/features/decks/SupportMark'
 import { BY_HAND_TITLE } from '@/lib/byHand'
 import { READ_IT, UNVERIFIED_MEANING } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
-import { abilityText, costText, keywordLine, powerToughness, statusWords, typeLine } from './cardModel'
-import { KeywordText } from './Keyword'
+import {
+  abilityText,
+  costPips,
+  costText,
+  keywordLine,
+  powerToughness,
+  statusWords,
+  typeLine,
+} from './cardModel'
+import { ManaPips } from './ManaPips'
+import { AbilityLine, RulesText } from './RulesText'
 import { reminderTerms } from './reminders'
 import { ManaPreviewLine } from './ManaStrip'
 import { PreviewCard } from './PreviewCard'
@@ -75,9 +84,21 @@ function NowTag() {
       data-slot="preview-now"
       className="ml-1.5 inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 align-middle text-xs font-medium text-foreground"
     >
-      <Play aria-hidden="true" className="size-3 fill-current" />
+      <Play aria-hidden="true" className="size-3 fill-current text-primary" />
       Can activate now
     </span>
+  )
+}
+
+/** The small heading over a group of the preview's lines; the list under it carries the same name for a screen reader. */
+function PreviewHeading({ children }: { children: string }) {
+  return (
+    <p
+      aria-hidden="true"
+      className="mt-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+    >
+      {children}
+    </p>
   )
 }
 
@@ -176,13 +197,17 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
             <p className="font-medium">{summary.heading}</p>
             {summary.rules.map((line, index) => (
               <p key={index} data-slot="preview-stack-rules" className="select-text">
-                <KeywordText text={line} />
+                <RulesText text={line} />
               </p>
             ))}
             {summary.targets.length === 0 ? null : (
               <ul aria-label="Targets" data-slot="preview-stack-targets" className="grid gap-0.5">
                 {summary.targets.map((line, index) => (
-                  <li key={index}>→ {line}</li>
+                  <li key={index}>
+                    <Crosshair aria-hidden="true" className="mr-1 inline size-3 align-[-1px] text-primary" />
+                    <span className="sr-only">→ </span>
+                    {line}
+                  </li>
                 ))}
               </ul>
             )}
@@ -196,25 +221,71 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
             {reason}.
           </p>
         )}
-        {object.mana_cost === null ? null : <p>Mana cost {costText(object.mana_cost)}</p>}
-        <p>{typeLine(object)}</p>
-        {pt === null ? null : <p>Power/toughness {pt}</p>}
-        {keywords === null ? null : <p data-slot="preview-keywords">Keywords: {keywords}</p>}
-        {object.lights === undefined || object.lights.length === 0 ? null : (
-          <p data-slot="preview-lights">Lit up: {object.lights.join(', ')}</p>
-        )}
+        {/* What the card is: cost, type and size, each fact named in bold. */}
+        <dl
+          data-slot="preview-facts"
+          className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-2 gap-y-0.5"
+        >
+          {object.mana_cost === null ? null : (
+            <>
+              <dt className="font-semibold">
+                Mana cost<span className="sr-only">: </span>
+              </dt>
+              <dd>
+                <span className="sr-only">{costText(object.mana_cost)}</span>
+                <ManaPips
+                  pips={costPips(object.mana_cost)}
+                  sizeClass="size-4 text-xs"
+                  label="Mana cost"
+                  className="[&]:inline-flex"
+                />
+              </dd>
+            </>
+          )}
+          <dt className="font-semibold">
+            Type<span className="sr-only">: </span>
+          </dt>
+          <dd>{typeLine(object)}</dd>
+          {pt === null ? null : (
+            <>
+              <dt className="font-semibold">
+                Power/toughness<span className="sr-only">: </span>
+              </dt>
+              <dd className="tabular-nums">{pt}</dd>
+            </>
+          )}
+          {keywords === null ? null : (
+            <>
+              <dt className="font-semibold">
+                Keywords<span className="sr-only">: </span>
+              </dt>
+              <dd data-slot="preview-keywords">{keywords}</dd>
+            </>
+          )}
+          {object.lights === undefined || object.lights.length === 0 ? null : (
+            <>
+              <dt className="font-semibold">
+                Lit up<span className="sr-only">: </span>
+              </dt>
+              <dd data-slot="preview-lights">{object.lights.join(', ')}</dd>
+            </>
+          )}
+        </dl>
         {object.abilities.length === 0 ? (
           activated.length === 0 && manual.length === 0 ? (
             <p className="text-muted-foreground">No abilities.</p>
           ) : null
         ) : (
-          <ul aria-label="Abilities" className="grid gap-0.5">
-            {object.abilities.map((ability, index) => (
-              <li key={index}>
-                <KeywordText text={abilityText(ability)} />
-              </li>
-            ))}
-          </ul>
+          <>
+            <PreviewHeading>Abilities</PreviewHeading>
+            <ul aria-label="Abilities" className="grid gap-1">
+              {object.abilities.map((ability, index) => (
+                <li key={index}>
+                  <RulesText text={abilityText(ability)} />
+                </li>
+              ))}
+            </ul>
+          </>
         )}
         <ManaPreviewLine object={object} />
         {manual.length === 0 ? null : (
@@ -223,21 +294,29 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
             <ul aria-label={BY_HAND_TITLE} className="grid gap-0.5">
               {manual.map((clause, index) => (
                 <li key={index}>
-                  <KeywordText text={clause.text} />
+                  <RulesText text={clause.text} />
                 </li>
               ))}
             </ul>
           </div>
         )}
         {activated.length === 0 ? null : (
-          <ul aria-label="Activated abilities" data-slot="preview-activated" className="grid gap-0.5">
-            {activated.map((line) => (
-              <li key={line.key} data-now={line.now || undefined}>
-                <KeywordText text={line.text} />
-                {line.now ? <NowTag /> : null}
-              </li>
-            ))}
-          </ul>
+          <>
+            <PreviewHeading>Activated abilities</PreviewHeading>
+            {/* The ones offered now come first in the eye: an edge, and the words "Can activate now" after them. */}
+            <ul aria-label="Activated abilities" data-slot="preview-activated" className="grid gap-1">
+              {activated.map((line) => (
+                <li
+                  key={line.key}
+                  data-now={line.now || undefined}
+                  className={cn('border-s-2 ps-2', line.now ? 'border-primary' : 'border-transparent')}
+                >
+                  <AbilityLine text={line.text} keyword={line.keyword} />
+                  {line.now ? <NowTag /> : null}
+                </li>
+              ))}
+            </ul>
+          </>
         )}
         {reminders.length === 0 ? null : (
           <ul

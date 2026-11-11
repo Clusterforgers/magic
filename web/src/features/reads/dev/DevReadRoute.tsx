@@ -4,10 +4,17 @@ import { PageShell } from '@/components/PageShell'
 import { Button } from '@/components/ui/button'
 import { AuthContext } from '@/features/auth/context'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
+
+import { devCheckCards, devCheckDecks } from './checkFixture'
+import { cardLine, preconItem, preconView, reason } from '@/features/precons/fakePrecons'
+import { CardsApiContext } from '@/features/table/cardsContext'
+import { cardsApi } from '@/net/cards'
+
+import type { PreconsApi } from '@/net/precons'
 import { ReadsApiContext } from '../apiContext'
 import { ReadDialog } from '../ReadDialog'
 import { ReadPage } from '../ReadPage'
-import { READ_CARDS, READS_FIXTURE_MARKER, fixtureReadsApi } from './fixture'
+import { READ_CARDS, READS_FIXTURE_MARKER, fixtureReadBulkApi, fixtureReadsApi } from './fixture'
 import type { ReadFixtureOptions } from './fixture'
 import type { DevReadView } from './readSearch'
 
@@ -51,6 +58,26 @@ function DialogScene() {
 export function DevReadRoute() {
   const { view } = useSearch({ from: '/dev/read' })
   const api = useMemo(() => fixtureReadsApi(optionsOf(view)), [view])
+  const world = useMemo(() => {
+    // Nothing to check either in the done view; the deck of the others holds two cards played by hand.
+    const decks = devCheckDecks(view === 'done')
+    const precons: Pick<PreconsApi, 'get'> = {
+      get: async (code) =>
+        preconView(preconItem({ code, name: 'Adaptive Enchantment' }), [
+          cardLine('Mana Drain', 'partial', {
+            reasons: [reason('The delayed mana is not implemented', 30, 120)],
+          }),
+          cardLine('Rhystic Study', 'manual'),
+          cardLine('Sol Ring', 'verified'),
+        ]),
+    }
+    return {
+      checks: { decks, precons },
+      byHand: decks,
+      cards: devCheckCards(cardsApi),
+      bulk: fixtureReadBulkApi(),
+    }
+  }, [view])
   const auth = useMemo(
     () =>
       createAuthStore({
@@ -61,28 +88,33 @@ export function DevReadRoute() {
   )
   return (
     <AuthContext value={auth}>
-      <ReadsApiContext value={api}>
-        <p className="sr-only" data-fixture={READS_FIXTURE_MARKER}>
-          Development review screen
-        </p>
-        {view === 'dialog' ? (
-          <DialogScene />
-        ) : (
-          <ReadPage
-            key={view}
-            api={api}
-            target={
-              view === 'mine'
-                ? { mine: true }
-                : view === 'all'
-                  ? null
-                  : view === 'precon'
-                    ? { precon: 'c18-adaptive-enchantment' }
-                    : { deck: 'deck-izzet' }
-            }
-          />
-        )}
-      </ReadsApiContext>
+      <CardsApiContext value={world.cards}>
+        <ReadsApiContext value={api}>
+          <p className="sr-only" data-fixture={READS_FIXTURE_MARKER}>
+            Development review screen
+          </p>
+          {view === 'dialog' ? (
+            <DialogScene />
+          ) : (
+            <ReadPage
+              key={view}
+              api={api}
+              checks={world.checks}
+              decks={world.byHand}
+              bulk={world.bulk}
+              target={
+                view === 'mine'
+                  ? { mine: true }
+                  : view === 'all'
+                    ? null
+                    : view === 'precon'
+                      ? { precon: 'c18-adaptive-enchantment' }
+                      : { deck: 'deck-izzet' }
+              }
+            />
+          )}
+        </ReadsApiContext>
+      </CardsApiContext>
     </AuthContext>
   )
 }

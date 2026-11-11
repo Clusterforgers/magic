@@ -42,7 +42,7 @@ flate2 = "1"
 ts-rs = { version = "12", features = ["no-serde-warnings"] }
 tempfile = "3"
 axum = { version = "0.8", features = ["ws"] }
-tower-http = { version = "0.7", features = ["cors", "set-header"] }
+tower-http = { version = "0.7", features = ["compression-gzip", "cors", "set-header"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 sha2 = "0.11"

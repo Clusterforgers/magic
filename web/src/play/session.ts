@@ -296,6 +296,7 @@ export function createSession(deps: SessionDeps): Session {
           result: message.result,
           phase: 'over',
           pending: null,
+          deciding: [],
           preview: null,
           yielding: null,
           castWhenAsked: null,
@@ -313,6 +314,9 @@ export function createSession(deps: SessionDeps): Session {
           state.view === null ? {} : { view: withPresence(state.view, message.seat, message.connected) },
         )
         awayClocks.presence(message.seat, message.connected, message.deadline_ms)
+        return
+      case 'Deciding':
+        setState({ deciding: message.seats })
         return
       default: {
         // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.

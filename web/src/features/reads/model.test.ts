@@ -92,10 +92,10 @@ describe('the address', () => {
   })
 
   it.each([
-    [null, 'all', 'Read every card', false],
-    [{ mine: true } as const, 'mine', 'Cards in your decks', true],
-    [{ deck: 'd1' }, 'deck:d1', 'Read the cards of Izzet', true],
-    [{ precon: 'c18' }, 'precon:c18', 'Read the cards of Izzet', false],
+    [null, 'all', 'Review every card', false],
+    [{ mine: true } as const, 'mine', 'Review cards', true],
+    [{ deck: 'd1' }, 'deck:d1', 'Review Izzet', true],
+    [{ precon: 'c18' }, 'precon:c18', 'Review Izzet', false],
   ])('keeps %j as %s under the heading %s', (target, key, heading, inDecks) => {
     expect(queueKey(target)).toBe(key)
     expect(queueWords(target, 'Izzet').heading).toBe(heading)

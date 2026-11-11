@@ -66,7 +66,7 @@ fn commander_section(deck: &Deck, variant: &Variant) -> Section {
 pub fn expected(deck: &Deck, variant: &Variant, shape: Shape) -> Cards {
     let boards = &deck.truth.boards;
     let flat = variant.commanders == Marking::None;
-    let plan: [(&str, &[Row], Section); 5] = [
+    let plan: [(&str, &[Row], Section); 6] = [
         (
             "commanders",
             &boards.commanders,
@@ -76,6 +76,7 @@ pub fn expected(deck: &Deck, variant: &Variant, shape: Shape) -> Cards {
         ("mainboard", &boards.mainboard, Section::Main),
         ("sideboard", &boards.sideboard, Section::Sideboard),
         ("maybeboard", &boards.maybeboard, Section::Maybeboard),
+        ("stickers", &boards.stickers, Section::Stickers),
     ];
     let mut cards = Cards::new();
     for (board, rows, section) in plan {
@@ -84,7 +85,11 @@ pub fn expected(deck: &Deck, variant: &Variant, shape: Shape) -> Cards {
         }
         for row in rows {
             let key = Key {
-                section: if flat { Section::Main } else { section },
+                section: if flat && section != Section::Stickers {
+                    Section::Main
+                } else {
+                    section
+                },
                 name: canonical(&row.name),
                 set: shape.printings.then(|| row.set.to_lowercase()),
                 number: shape.printings.then(|| row.cn.clone()),
@@ -120,24 +125,9 @@ pub fn import(deck: &Deck, variant: &Variant, shape: Shape, text: &str) -> Parse
     }
 }
 
-/// The sections a variant must report as left out: Moxfield stickers when the text carries them.
-pub fn expected_ignored(deck: &Deck, variant: &Variant) -> Vec<IgnoredSection> {
-    let carried = variant.boards.iter().any(|b| b == "stickers");
-    let count: u64 = deck
-        .truth
-        .boards
-        .stickers
-        .iter()
-        .map(|row| u64::from(row.qty))
-        .sum();
-    if carried && count > 0 {
-        vec![IgnoredSection {
-            name: "STICKERS".to_owned(),
-            count,
-        }]
-    } else {
-        Vec::new()
-    }
+/// The sections a variant must report as left out: none, since sticker sheets are read into their own section.
+pub fn expected_ignored(_deck: &Deck, _variant: &Variant) -> Vec<IgnoredSection> {
+    Vec::new()
 }
 
 /// The digital names the deck's lossless MTGO export uses; Arena exports hold a subset of those cards.
