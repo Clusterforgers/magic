@@ -187,6 +187,9 @@ fn w7c_then_incubate(texts: &[String]) -> Vec<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 #[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
+    if let Some(texts) = super::wf25_writers::wf25_whole(ability) {
+        return texts;
+    }
     if let Some(texts) = super::w20b_reflexive::w20b_variants(ability, variants) {
         return texts;
     }
@@ -636,6 +639,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
+    super::wf25_writers::wf25_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -2119,7 +2123,7 @@ impl Writer<'_> {
         self.targets.first().is_some_and(|spec| match &spec.what {
             Targetable::Together {
                 what,
-                rule: TargetSet::TotalManaValueAtMost(_),
+                rule: TargetSet::TotalManaValueAtMost(_) | TargetSet::SameController,
             } => wanted(what),
             what => wanted(what),
         })

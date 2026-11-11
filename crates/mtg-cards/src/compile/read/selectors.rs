@@ -1958,6 +1958,9 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
     if is_total(spec) {
         return total_text(spec);
     }
+    if let Some(text) = super::wf25_writers::wf25_single_graveyard(spec, spec_text) {
+        return Some(text);
+    }
     let Targetable::Object(selector) = &spec.what else {
         return None;
     };
