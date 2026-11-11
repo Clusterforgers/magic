@@ -118,14 +118,22 @@ function Board({
               )}
             >
               {card.card === null ? null : (
-                <CardPicture
+                <HoverPicture
+                  pin
                   oracleId={card.card.oracle_id}
                   name={card.name}
-                  size="small"
-                  alt=""
-                  quiet
-                  className="w-12"
-                />
+                  info={{ typeLine: card.card.type_line, count: card.count }}
+                  className="shrink-0"
+                >
+                  <CardPicture
+                    oracleId={card.card.oracle_id}
+                    name={card.name}
+                    size="small"
+                    alt=""
+                    quiet
+                    className="w-12"
+                  />
+                </HoverPicture>
               )}
               <div className="grid min-w-0 flex-1 gap-1">
                 <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">

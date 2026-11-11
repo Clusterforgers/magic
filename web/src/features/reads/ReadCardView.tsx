@@ -6,7 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { CardPicture } from '@/features/cards/CardPicture'
+import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { describeDeckError } from '@/features/decks/errors'
 import { cn } from '@/lib/utils'
 import type { ReadsApi } from '@/net/reads'
@@ -299,14 +299,16 @@ export function ReadCardView({
       className="grid gap-4 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:items-start md:gap-6"
     >
       <div data-slot="review-picture" className="mx-auto w-32 md:sticky md:top-4 md:w-full">
-        <CardPicture
-          oracleId={card.oracle_id}
-          name={card.name}
-          size="normal"
-          alt=""
-          eager
-          className="w-full"
-        />
+        <HoverPicture pin oracleId={card.oracle_id} name={card.name} className="w-full">
+          <CardPicture
+            oracleId={card.oracle_id}
+            name={card.name}
+            size="normal"
+            alt=""
+            eager
+            className="w-full"
+          />
+        </HoverPicture>
       </div>
       <div className="grid min-w-0 gap-4">{body}</div>
     </article>

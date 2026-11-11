@@ -4,9 +4,11 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { CardPicture, HoverPicture } from './CardPicture'
 import type { HoverInfo } from './CardPicture'
 import { hoverFit, HOVER_PADDING_PX } from './hoverFit'
+import { hoverPreview } from './hoverPreview'
 import { resetImageChoice, setImageChoice } from './imageSetting'
 
 afterEach(() => {
+  act(() => hoverPreview.dismiss())
   resetImageChoice()
   window.localStorage.clear()
 })
@@ -33,25 +35,25 @@ describe('HoverPicture', () => {
     ['mouse', true],
     ['touch', false],
   ])('a %s hover shows the picture: %s', (pointerType, shown) => {
-    const { container } = render(
+    render(
       <HoverPicture oracleId="bolt" name="Lightning Bolt">
         <button type="button">Lightning Bolt</button>
       </HoverPicture>,
     )
     act(() => fireEvent.pointerEnter(screen.getByRole('button'), { pointerType }))
-    expect(container.querySelector('[data-slot="hover-picture"]') !== null).toBe(shown)
+    expect(document.querySelector('[data-slot="hover-picture"]') !== null).toBe(shown)
     act(() => fireEvent.pointerLeave(screen.getByRole('button'), { pointerType }))
-    expect(container.querySelector('[data-slot="hover-picture"]')).toBeNull()
+    expect(document.querySelector('[data-slot="hover-picture"]')).toBeNull()
   })
 
   it('docks the panel at the width the window allows, as the table preview does', () => {
-    const { container } = render(
+    render(
       <HoverPicture oracleId="bolt" name="Lightning Bolt">
         <button type="button">Lightning Bolt</button>
       </HoverPicture>,
     )
     act(() => fireEvent.pointerEnter(screen.getByRole('button'), { pointerType: 'mouse' }))
-    const shown = container.querySelector<HTMLElement>('[data-slot="hover-picture"]')
+    const shown = document.querySelector<HTMLElement>('[data-slot="hover-picture"]')
     const fit = hoverFit({ left: 0, right: 0, top: 0, bottom: 0 }, { width: innerWidth, height: innerHeight })
     expect(shown?.style.width).toBe(`${fit.width + HOVER_PADDING_PX}px`)
     expect(shown).toHaveAttribute('data-dock', fit.dock)
@@ -66,13 +68,13 @@ describe('HoverPicture', () => {
       [],
     ],
   ])('says under the picture what it knows of %s', (_, info, shown, absent) => {
-    const { container } = render(
+    render(
       <HoverPicture oracleId="bolt" name="Lightning Bolt" info={info}>
         <button type="button">Lightning Bolt</button>
       </HoverPicture>,
     )
     act(() => fireEvent.pointerEnter(screen.getByRole('button'), { pointerType: 'mouse' }))
-    const panel = container.querySelector<HTMLElement>('[data-slot="hover-picture"]') as HTMLElement
+    const panel = document.querySelector<HTMLElement>('[data-slot="hover-picture"]') as HTMLElement
     for (const text of shown) expect(panel).toHaveTextContent(text)
     for (const text of absent) expect(panel).not.toHaveTextContent(text)
     expect(panel.textContent?.split('No rules yet').length ?? 0).toBeLessThanOrEqual(2)

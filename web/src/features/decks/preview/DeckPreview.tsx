@@ -3,7 +3,7 @@ import { useId, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { IdentityPips } from '@/features/builder/IdentityPips'
-import { CardPicture } from '@/features/cards/CardPicture'
+import { CardPicture, HoverPicture } from '@/features/cards/CardPicture'
 import { cardsText, formatLabel } from '@/features/decks/format'
 import { notLegalText, STILL_PLAYS } from '@/features/decks/legality'
 import { ToRead } from '@/features/decks/ToRead'
@@ -126,13 +126,20 @@ export function DeckPreview({ deck, legality, notValidated, actions, body, class
           >
             {commanders.map((card) => (
               <li key={card.oracleId} data-commander={card.oracleId}>
-                <CardPicture
+                <HoverPicture
+                  pin
                   oracleId={card.oracleId}
                   name={card.name}
-                  size="normal"
-                  alt={card.name}
-                  className={commanders.length > 1 ? 'w-32' : 'w-40'}
-                />
+                  info={{ typeLine: card.typeLine, support: card.support, reasons: card.reasons }}
+                >
+                  <CardPicture
+                    oracleId={card.oracleId}
+                    name={card.name}
+                    size="normal"
+                    alt=""
+                    className={commanders.length > 1 ? 'w-32' : 'w-40'}
+                  />
+                </HoverPicture>
               </li>
             ))}
           </ul>
