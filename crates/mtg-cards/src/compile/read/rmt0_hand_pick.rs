@@ -11,8 +11,8 @@ use crate::value::Amount;
 /// The cards in the hand of `who`.
 fn hand_of(who: &Ref) -> Ref {
     Ref::Each(Selector(vec![
-        Pred::In(ZoneKind::Hand),
         Pred::OwnedBy(who.clone()),
+        Pred::In(ZoneKind::Hand),
     ]))
 }
 

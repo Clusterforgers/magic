@@ -17,7 +17,7 @@
                   "effects": [
                     {
                       "Reveal": {
-                        "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] }
+                        "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
                       }
                     },
                     {
@@ -38,7 +38,7 @@
             "targets": [{ "what": "Player" }],
             "effects": [
               {
-                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+                "Reveal": { "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] } }
               },
               {
                 "Discard": {

@@ -14,12 +14,7 @@
             "span": { "start": 31, "end": 153 }
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 154, "end": 178 }
-          }
-        }
+        { "Keyword": { "Protection": [{ "Type": "Instant" }] } }
       ]
     }
   ]

@@ -260,6 +260,7 @@ Celestial Archon
 Celestial Colonnade
 Celestial Crusader
 Cemetery Tampering
+Cerebral Confiscation
 Ceremonial Groundbreaker
 Chains of Custody
 Challenger Troll
@@ -388,6 +389,7 @@ Damocles Base, Sword of Kang
 Dampen Thought
 Damping Field
 Danny Pink
+Dark Inquiry
 Darkblast
 Darksteel Juggernaut
 Darksteel Mutation
@@ -407,6 +409,7 @@ Deathcap Cultivator
 Deathleaper, Terror Weapon
 Debris Field Crusher
 Debtors' Transport
+Deceit
 Decorum Dissertation
 Decree of Justice
 Decree of Pain
@@ -428,6 +431,7 @@ Deputized Protester
 Desert
 Desperate Ravings
 Desperate Ritual
+Despise
 Determined Iteration
 Devastation Tide
 Devoted Druid
@@ -448,6 +452,8 @@ Dismantling Wave
 Disrupt Decorum
 Dissension in the Ranks
 Distorting Wake
+Distress
+Divest
 Divine Visitation
 Diviner Spirit
 Djinn of Infinite Deceits
@@ -461,6 +467,7 @@ Doom Blade
 Doom Whisperer
 Door of Destinies
 Doublecast
+Down, Down to Goblin-town
 Dowsing Dagger // Lost Vale
 Draconic Lore
 Drag to the Bottom
@@ -479,6 +486,7 @@ Dreamtail Heron
 Dreg Mangler
 Dregscape Zombie
 Drift of Phantasms
+Drill Bit
 Drogskol Reinforcements
 Dromoka Captain
 Dromoka's Command
@@ -499,6 +507,7 @@ Dueling Grounds
 Dungeon Geists
 Dungeon Map
 Dunland Crebain
+Duress
 Durkwood Baloth
 Dusk Charger
 Dusk Mangler
@@ -527,6 +536,7 @@ Electrodominance
 Elegant Edgecrafters
 Elenda and Azor
 Eliminate the Competition
+Elspeth's Nightmare
 Elven Ambush
 Elvish Aberration
 Elvish Rejuvenator
@@ -535,6 +545,7 @@ Empowered Autogenerator
 Empyrial Plate
 Empyrial Storm
 Emrakul, the Promised End
+Encroach
 Enigma Thief
 Enraged Revolutionary
 Enthusiastic Study
@@ -664,6 +675,7 @@ Galvanizing Sawship
 Game-Trail Changeling
 Garruk Wildspeaker
 Garruk, Primal Hunter
+Gastal Raider
 Gatebreaker Ram
 Gatta and Luzzu
 Gavony Dawnguard
@@ -698,6 +710,7 @@ Gilt-Leaf Palace
 Ginger, Queen of Sweets
 Girder Goons
 Gisa and Geralf
+Gix's Caress
 Gixian Infiltrator
 Glacial Ray
 Glamerdye
@@ -748,6 +761,7 @@ Greater Mossdog
 Green Goblin, Back for More
 Gremlin Mine
 Grenzo's Cutthroat
+Grief
 Griffin Aerie
 Grim Flayer
 Grim Haruspex
@@ -780,6 +794,7 @@ Harabaz Druid
 Harmonic Sliver
 Harmonious Archon
 Harrow
+Harsh Scrutiny
 Haruspex
 Harvest Season
 Hate Mirage
@@ -857,6 +872,7 @@ Inferno Project
 Infesting Radroach
 Infiltration Lens
 Inkwell Leviathan
+Inquisition of Kozilek
 Insatiable Hemophage
 Inspired Skypainter // Maestro's Gift
 Inspired Sphinx
@@ -966,6 +982,7 @@ Lat-Nam Adept
 Latchkey Faerie
 Laughing Mad
 Lavacore Elemental
+Lay Bare the Heart
 Lazotep Reaver
 Leafkin Druid
 Legion Loyalty
@@ -1210,6 +1227,7 @@ Orochi Hatchery
 Orzhov Enforcer
 Orzhov Locket
 Orzhov Racketeers
+Ostracize
 Otherworldly Gaze
 Oubliette
 Out of Time
@@ -1257,6 +1275,8 @@ Photon, Mighty Marvel
 Phyrexian Prowler
 Phyrexian Rebirth
 Phyrexian Soulgorger
+Pilfer
+Pilfering Imp
 Pili-Pala
 Pillar of Origins
 Pillar of the Paruns
@@ -1271,6 +1291,7 @@ Planar Outburst
 Plaxcaster Frogling
 Plaxmanta
 Poet's Quill
+Poison the Waters
 Pollen Lullaby
 Polymorphist's Jest
 Pongify
@@ -1496,6 +1517,7 @@ Sharding Sphinx
 Shardmage's Rescue
 Shark Typhoon
 Sharktocrab
+Shattered Dreams
 Sheer Drop
 Sheltered by Ghosts
 Shenanigans
@@ -1736,6 +1758,7 @@ Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
 The Celestus
+The Cruelty of Gix
 The Dalek Emperor
 The Gaffer
 The Locust God
@@ -1748,6 +1771,7 @@ The Seriema
 The Spear of Bashenga
 The Squadron Sinister
 The Thing, Ben Grimm
+The Torment of Gollum
 The War Doctor
 The Warring Triad
 The Wise Mothman
@@ -1759,9 +1783,11 @@ Thopter Fabricator
 Thorin Oakenshield
 Thorn-Thrash Viashino
 Thornvault Forager
+Thought Erasure
 Thought Monitor
 Thought Reflection
 Thoughtcast
+Thoughtseize
 Thrashing Mossdog
 Thrill of Possibility
 Thriving Bluff
@@ -1798,6 +1824,7 @@ Tithe Drinker
 Tithebearer Giant
 Tivash, Gloom Summoner
 Tivit, Seller of Secrets
+Toll of the Invasion
 Tomb Tyrant
 Topiary Lecturer
 Torrential Gearhulk
@@ -1851,6 +1878,7 @@ Underworld Rage-Hound
 Unite the Coalition
 Universal Automaton
 Universal Surveillance
+Unmask
 Unstable Molecule Suit
 Up the Beanstalk
 Urabrask the Hidden
@@ -1890,6 +1918,7 @@ Vigean Hydropon
 Village Pillagers
 Village Rites
 Viridian Corrupter
+Visage of Dread // Dread Osseosaur
 Vish Kal, Blood Arbiter
 Visionary Augmenter
 Vital Surge
