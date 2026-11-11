@@ -513,10 +513,7 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   AnnouncementRewound: [{ AnnouncementRewound: { player: 1 } }, 'Bo could not finish a play'],
   HandDealt: [{ HandDealt: { player: 1, count: 7 } }, 'Bo is dealt 7 cards'],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
-  AttractionDeckShuffled: [
-    { AttractionDeckShuffled: { player: 1 } },
-    'Bo shuffles their Attraction deck',
-  ],
+  AttractionDeckShuffled: [{ AttractionDeckShuffled: { player: 1 } }, 'Bo shuffles their Attraction deck'],
   LibraryRefilled: [
     { LibraryRefilled: { player: 1, count: 5 } },
     'Bo shuffles their graveyard into their library',

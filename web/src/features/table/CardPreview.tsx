@@ -201,7 +201,7 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
         {pt === null ? null : <p>Power/toughness {pt}</p>}
         {keywords === null ? null : <p data-slot="preview-keywords">Keywords: {keywords}</p>}
         {object.lights === undefined || object.lights.length === 0 ? null : (
-          <p data-slot="preview-lights">Lit up: {object.lights.join(", ")}</p>
+          <p data-slot="preview-lights">Lit up: {object.lights.join(', ')}</p>
         )}
         {object.abilities.length === 0 ? (
           activated.length === 0 && manual.length === 0 ? (

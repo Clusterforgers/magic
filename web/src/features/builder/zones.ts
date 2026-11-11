@@ -56,4 +56,3 @@ export function zonesFor(format: string, typeLine = ''): readonly DeckZone[] {
       (zone !== 'stickers' || typeLine.startsWith('Stickers')),
   )
 }
-
