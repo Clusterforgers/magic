@@ -292,6 +292,7 @@ Colossus Hammer
 Combat Celebrant
 Command Tower
 Commander's Insignia
+Commander's Plate
 Commence the Endgame
 Conclave Sledge-Captain
 Conclave Tribunal

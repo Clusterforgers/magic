@@ -264,6 +264,9 @@ pub enum Pred {
     Color(Color),
     /// Is colorless.
     Colorless,
+    /// Has a color outside the color identity of the commanders the player reading it (`You`) owns, every color when
+    /// they own none ("protection from each color that's not in your commander's color identity").
+    OutsideCommanderIdentity,
     /// Is a token.
     Token,
     /// Is a player's commander (CR 903.3): a card designated as one when the game began, whoever controls it now.

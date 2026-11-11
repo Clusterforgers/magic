@@ -1,7 +1,7 @@
 {
   "oracle_id": "12436f2f-eaed-4b46-8570-81316ce15962",
   "name": "Torture Chamber",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Torture Chamber",
@@ -27,9 +27,26 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 183, "end": 327 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              {
+                "RemoveCounters": {
+                  "counter": { "Other": "pain" },
+                  "count": { "Counters": { "on": "This", "counter": { "Other": "pain" } } }
+                }
+              }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "RemovedThisWay": { "Other": "pain" } }
+                }
+              }
+            ]
           }
         }
       ]

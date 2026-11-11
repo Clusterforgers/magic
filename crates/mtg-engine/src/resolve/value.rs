@@ -1678,6 +1678,10 @@ impl<'a> Scope<'a> {
             }
             Pred::Color(color) => seen.chars.colors.contains(*color),
             Pred::Colorless => seen.chars.colors.is_empty(),
+            Pred::OutsideCommanderIdentity => !seen
+                .chars
+                .colors
+                .is_subset_of(crate::commanders::dk25_identity(state, self.controller)),
             Pred::Token => seen.kind == ObjectKind::Token,
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,

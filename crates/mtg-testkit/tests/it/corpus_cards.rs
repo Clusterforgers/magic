@@ -30,7 +30,6 @@ use Support::{Partial, Verified};
 /// the abilities of its file the engine runs; a basic land type adds the mana ability of that land type. A Manual card
 /// carries none (the table resolves it).
 const NOT_VERIFIED: &[(&str, Support, usize)] = &[
-    ("Auspicious Starrix", Partial, 1),
     ("Aven Mindcensor", Partial, 2),
     ("Bebop, Skull & Crossbones", Partial, 2),
     ("Blazing Shoal", Partial, 1),

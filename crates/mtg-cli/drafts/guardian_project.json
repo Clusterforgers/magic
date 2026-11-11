@@ -1,0 +1,81 @@
+{
+  "oracle_id": "4f9e07ae-6341-4b46-9f77-f17ab659d266",
+  "name": "Guardian Project",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian Project",
+      "oracle_fingerprint": "45dd5871a87edcf1c61388267f1570fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "You" },
+                  {
+                    "Not": {
+                      "SharesName": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] }
+                    }
+                  },
+                  {
+                    "Not": {
+                      "SharesName": {
+                        "Each": [
+                          { "In": "Battlefield" },
+                          { "ControlledBy": "You" },
+                          { "Not": { "Is": "Candidate" } }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": "Triggering",
+                          "filter": [
+                            {
+                              "Not": {
+                                "SharesName": {
+                                  "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }]
+                                }
+                              }
+                            },
+                            {
+                              "Not": {
+                                "SharesName": {
+                                  "Each": [
+                                    { "In": "Battlefield" },
+                                    { "ControlledBy": "You" },
+                                    { "Not": { "Is": "Candidate" } }
+                                  ]
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ use mtg_cards::effect::Effect;
 use super::wrong_effect;
 use crate::choose::{ChoiceOption, CoinSide, OptionChooser, Optioned, pick_options};
 use crate::events::Event;
-use crate::resolve::{Cx, Next, ResolveError, Run};
+use crate::resolve::{CLEAR, Cx, Next, ResolveError, Run};
 use crate::rng::GameRng;
 
 /// The sides a player calls between, in the order they are offered: an answer that takes the first calls heads.
@@ -62,6 +62,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         (call, side(state.seed(), state.rng_index()))
     };
     let won = call == side;
+    // A won flip until a loss runs its `win` list again: the names the last pass bound are freed for this one.
+    let bound = if won && *until {
+        let held = cx.resolving.bindings();
+        mtg_cards::effect::bound_names(win)
+            .into_iter()
+            .filter(|name| held.contains_key(name))
+            .map(|name| (format!("{CLEAR}{name}"), Vec::new()))
+            .collect()
+    } else {
+        Vec::new()
+    };
     Ok(Run::Done {
         events: vec![Event::CoinFlipped {
             player,
@@ -69,7 +80,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             call,
             side,
         }],
-        bound: Vec::new(),
+        bound,
         snapshots: Vec::new(),
         next: if won && *until && win.is_empty() {
             Next::Again
@@ -251,6 +262,47 @@ mod tests {
                 (false, _) => Next::Enter(1),
             };
             assert_eq!(next, expected, "seed {seed}");
+        }
+    }
+
+    /// Mirror March: a name the `win` list bound on the last pass is freed by the next won flip, never by a loss or by a
+    /// flip that is not repeated.
+    #[rstest]
+    #[case::until_a_loss(r#"{"FlipCoin":{"until":true,"win":[{"CreateToken":{"as":"copy","token":{"CopyOf":{"of":"This"}}}}]}}"#, true)]
+    #[case::a_single_flip(
+        r#"{"FlipCoin":{"win":[{"CreateToken":{"as":"copy","token":{"CopyOf":{"of":"This"}}}}]}}"#,
+        false
+    )]
+    fn dk25_a_repeated_win_list_frees_the_names_it_bound(
+        #[case] json: &str,
+        #[case] repeats: bool,
+        #[values(CoinSide::Heads, CoinSide::Tails)] call: CoinSide,
+    ) {
+        let index = SIDES.iter().position(|side| *side == call).unwrap();
+        for seed in 0..16 {
+            let game = game(seed);
+            let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
+            let mut resolving = Resolving {
+                journal: vec![(ME, Choice::Option(index))],
+                ..Resolving::begin(source.id())
+            };
+            resolving.bindings.insert("copy".into(), Vec::new());
+            let cx = Cx {
+                scope: Scope::announcing(&game, ME, source.reference()),
+                resolving: &resolving,
+            };
+            let Run::Done { events, bound, .. } =
+                run(&cx, &serde_json::from_str(json).unwrap()).unwrap()
+            else {
+                panic!("a called flip asks nothing more");
+            };
+            let [Event::CoinFlipped { won, .. }] = events.as_slice() else {
+                panic!("one flip is logged: {events:?}");
+            };
+            let cleared = bound
+                .iter()
+                .any(|(name, _)| name == &format!("{CLEAR}copy"));
+            assert_eq!(cleared, *won && repeats, "seed {seed}");
         }
     }
 

@@ -324,7 +324,9 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::ChosenSubtype => Traits::SUBTYPES.or(Traits::TYPES),
         Pred::ChosenAs(_) => Traits::COLORS.or(Traits::TYPES).or(Traits::SUBTYPES),
         Pred::SharesSubtype(who) => Traits::SUBTYPES.or(reads_of_ref(who)),
-        Pred::Color(_) | Pred::Colorless | Pred::ChosenColor => Traits::COLORS,
+        Pred::Color(_) | Pred::Colorless | Pred::ChosenColor | Pred::OutsideCommanderIdentity => {
+            Traits::COLORS
+        }
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
         Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) => Traits::KEYWORDS,
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),

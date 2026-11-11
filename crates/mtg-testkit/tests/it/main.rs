@@ -724,6 +724,7 @@ mod copy_left_spell;
 mod dk1f_cards;
 mod dk1f_pippin;
 mod dk1f_suppression_ray;
+mod dk25_live_deck_cards;
 mod e10a_earlier_targets;
 mod e14c_choices;
 mod e15a_speed;
