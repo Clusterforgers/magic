@@ -462,15 +462,12 @@ async fn clocks_can_be_switched_off() {
 }
 
 #[tokio::test(start_paused = true)]
-async fn the_opening_decisions_run_on_the_think_clock_unless_it_is_switched_off() {
-    let off = Pace {
-        think: None,
-        active: None,
-        extension: None,
-        grace: std::time::Duration::ZERO,
+async fn the_opening_decisions_have_no_clock_even_with_every_clock_on() {
+    let every = Pace {
+        active: Some(Duration::from_secs(30)),
         ..DEFAULT
     };
-    let (handle, _) = spawn(table_setup(3, 5), off);
+    let (handle, _) = spawn(table_setup(3, 5), every);
     let mut clients = Vec::new();
     for n in 0..3 {
         clients.push(Client::join(&handle, n).await);

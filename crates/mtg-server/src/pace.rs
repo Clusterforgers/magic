@@ -111,6 +111,10 @@ impl Class {
 }
 
 impl Pace {
+    /// The clock of every decision of the opening, whatever its kind, seat and settings: none. Keep or mulligan,
+    /// bottoming and the scry of a seat that kept after a mulligan wait for the seat.
+    pub(crate) const OPENING_CLOCK: Option<Duration> = None;
+
     /// No auto-pass and no clocks: every decision waits for its player, as in a game played straight on an engine.
     pub const MANUAL: Pace = Pace {
         auto_pass: false,
@@ -132,16 +136,10 @@ impl Pace {
         }
     }
 
-    /// The clock of every decision of the opening, whatever its kind and seat: keep or mulligan, bottoming and the scry
-    /// of a seat that kept after a mulligan.
-    pub(crate) fn opening_clock(&self) -> Option<Duration> {
-        self.think
-    }
-
     /// The clock `decision` runs on, if any.
     ///
-    /// The opening decisions (keep or mulligan, bottoming) are asked before any turn exists and run on `think` for
-    /// every seat. After that the active player's decisions run on `active`, whatever their kind, and every other seat
+    /// The opening decisions (keep or mulligan, bottoming) are asked before any turn exists and have no clock for any
+    /// seat ([`OPENING_CLOCK`](Pace::OPENING_CLOCK)). After that the active player's decisions run on `active`, whatever their kind, and every other seat
     /// is hurried by the class of the kind ([`Class::of`]): a priority decision, the targets of a spell or ability, the
     /// order of its triggers or of the replacement effects that apply to an event and the questions of effects (yes or
     /// no, an option, modes, a number, optional costs, a division, cards, an order of cards) run on `response`,
@@ -151,7 +149,7 @@ impl Pace {
     /// options or the hand, so it shows nothing about them.
     pub(crate) fn clock_for(&self, decision: &Decision, active: PlayerId) -> Option<Duration> {
         match Class::of(&decision.kind) {
-            Class::Opening => self.think,
+            Class::Opening => Self::OPENING_CLOCK,
             _ if decision.player == active => self.active,
             Class::Response => self.response,
             Class::Blocks => self.blocks,
@@ -669,8 +667,6 @@ mod tests {
     /// The kinds the think clock runs, for the seat that is not the active player.
     fn think_kinds() -> Vec<DecisionKind> {
         vec![
-            mulligan(),
-            bottoming(7, 1),
             payment(true, true),
             payment(false, true),
             attackers(&[]),
@@ -679,7 +675,7 @@ mod tests {
         ]
     }
 
-    /// The kinds that are asked before any turn exists, whose clock does not look at the active player.
+    /// The kinds that are asked before any turn exists, which never have a clock.
     fn opening_kinds() -> Vec<DecisionKind> {
         vec![mulligan(), bottoming(7, 1)]
     }
@@ -923,10 +919,10 @@ mod tests {
     #[case::putting_one_card_in_order(OTHER, ordering(1), Some(10))]
     #[case::the_active_player_choosing_cards(ACTIVE, cards(3, 1, 1), None)]
     #[case::the_active_player_putting_cards_in_order(ACTIVE, ordering(3), None)]
-    #[case::keeping_or_mulliganing(OTHER, mulligan(), Some(60))]
-    #[case::the_first_player_keeping_or_mulliganing(ACTIVE, mulligan(), Some(60))]
-    #[case::bottoming_after_a_keep(OTHER, bottoming(7, 1), Some(60))]
-    #[case::the_first_player_bottoming(ACTIVE, bottoming(7, 1), Some(60))]
+    #[case::keeping_or_mulliganing(OTHER, mulligan(), None)]
+    #[case::the_first_player_keeping_or_mulliganing(ACTIVE, mulligan(), None)]
+    #[case::bottoming_after_a_keep(OTHER, bottoming(7, 1), None)]
+    #[case::the_first_player_bottoming(ACTIVE, bottoming(7, 1), None)]
     #[case::paying_for_a_spell(OTHER, payment(true, true), Some(60))]
     #[case::paying_for_a_cost_that_cannot_be_taken_back(OTHER, payment(false, true), Some(60))]
     #[case::the_active_player_paying(ACTIVE, payment(true, true), None)]
@@ -945,26 +941,24 @@ mod tests {
         assert_eq!(got, seconds.map(Duration::from_secs));
     }
 
-    #[test]
-    fn the_opening_clock_is_the_think_clock_whatever_the_decision() {
-        assert_eq!(pace().opening_clock(), Some(Duration::from_mins(1)));
-        let none = Pace {
-            think: None,
+    /// Every setting set to a clock, so a clock in the opening would show.
+    fn every_clock() -> Pace {
+        Pace {
+            active: Some(Duration::from_secs(30)),
             ..pace()
-        };
-        assert_eq!(none.opening_clock(), None);
+        }
     }
 
-    #[test]
-    fn the_opening_decisions_run_on_the_think_clock_for_every_seat() {
+    #[rstest]
+    #[case::the_defaults(pace())]
+    #[case::every_clock(every_clock())]
+    #[case::manual(Pace::MANUAL)]
+    fn the_opening_has_no_clock_whatever_the_settings(#[case] settings: Pace) {
+        assert_eq!(Pace::OPENING_CLOCK, None);
         for kind in opening_kinds() {
             for player in [ACTIVE, OTHER, PlayerId(2), PlayerId(3)] {
                 let d = decision(player, kind.clone());
-                assert_eq!(
-                    pace().clock_for(&d, ACTIVE),
-                    Some(Duration::from_mins(1)),
-                    "{d:?}"
-                );
+                assert_eq!(settings.clock_for(&d, ACTIVE), None, "{d:?}");
             }
         }
     }
@@ -981,12 +975,7 @@ mod tests {
                 Some(Duration::from_mins(1)),
                 "{other:?}"
             );
-            let opening = opening_kinds().contains(&kind);
-            assert_eq!(
-                pace().clock_for(&active, ACTIVE).is_some(),
-                opening,
-                "{active:?}"
-            );
+            assert_eq!(pace().clock_for(&active, ACTIVE), None, "{active:?}");
         }
     }
 
@@ -1470,7 +1459,7 @@ mod tests {
         for (kind, class) in every_kind() {
             let got = settings.clock_for(&decision(ACTIVE, kind.clone()), ACTIVE);
             let expected = match class {
-                Class::Opening => settings.think,
+                Class::Opening => None,
                 _ => settings.active,
             };
             assert_eq!(got, expected, "{}", kind.name());
@@ -1485,7 +1474,8 @@ mod tests {
         };
         for (kind, class) in every_kind() {
             let expected = match class {
-                Class::Opening | Class::Think => settings.think,
+                Class::Opening => None,
+                Class::Think => settings.think,
                 Class::Response => settings.response,
                 Class::Blocks => settings.blocks,
             };
@@ -1536,10 +1526,15 @@ mod tests {
             active: Some(Duration::from_secs(30)),
             ..pace()
         };
-        for (kind, _) in every_kind() {
+        for (kind, class) in every_kind() {
             for player in [ACTIVE, OTHER, PlayerId(2), PlayerId(3)] {
                 let d = decision(player, kind.clone());
-                let length = settings.clock_for(&d, ACTIVE).expect("a clock");
+                let clock = settings.clock_for(&d, ACTIVE);
+                if class == Class::Opening {
+                    assert_eq!(clock, None, "the opening has no clock to show");
+                    continue;
+                }
+                let length = clock.expect("a clock");
                 assert_eq!(
                     settings.shown_after(length),
                     Duration::from_secs(3),

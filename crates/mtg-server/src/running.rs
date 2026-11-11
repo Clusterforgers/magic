@@ -135,7 +135,7 @@ pub(crate) enum Halt {
 pub(crate) struct Running {
     pub(crate) engine: Engine,
     pending: Option<Pending>,
-    /// The other seats' opening decisions, asked together with the engine's own, each with its own id and clock.
+    /// The other seats' opening decisions, asked together with the engine's own, each with its own id.
     side: Vec<Pending>,
     last_id: u64,
     pace: Pace,
@@ -387,7 +387,7 @@ impl Running {
         }
         let state = self.engine.state();
         let clock = if state.stage() == Stage::Mulligan {
-            self.pace.opening_clock()
+            Pace::OPENING_CLOCK
         } else {
             self.pace.clock_for(&decision, state.turn().active())
         };
