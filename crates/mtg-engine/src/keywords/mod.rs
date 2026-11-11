@@ -126,6 +126,7 @@ mod replicate;
 mod retrace;
 mod riot;
 mod ripple;
+pub(crate) mod rmt0_cleave;
 mod saddle;
 mod scavenge;
 mod shadow;
@@ -540,6 +541,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Scavenge(_) => &scavenge::Scavenge,
         Keyword::Transmute(_) => &transmute::Transmute,
         Keyword::Awaken { .. } => &awaken::Awaken,
+        Keyword::Cleave { .. } => &rmt0_cleave::Cleave,
         Keyword::Gravestorm => &gravestorm::Gravestorm,
         Keyword::Sunburst => &sunburst::Sunburst,
         Keyword::Afterlife(_) => &afterlife::Afterlife,
@@ -951,6 +953,11 @@ mod tests {
                 count: 3,
                 cost: cost(),
             },
+            Keyword::Cleave {
+                cost: cost(),
+                targets: Vec::new(),
+                effects: Vec::new(),
+            },
             Keyword::Prototype {
                 cost: cost(),
                 power: 2,
@@ -1127,6 +1134,7 @@ mod tests {
         "Keyword.Scavenge",
         "Keyword.Transmute",
         "Keyword.Awaken",
+        "Keyword.Cleave",
         "Keyword.Assist",
         "Keyword.Craft",
         "Keyword.Prototype",

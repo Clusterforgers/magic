@@ -954,6 +954,7 @@ impl<'a> Walker<'a> {
             }
             Amount::Count(selector) => self.selector(selector),
             Amount::Stat { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
+            Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::Life(who) => self.reference(who, Kind::Player),
             Amount::CommanderCasts(who) => self.player_amount("CommanderCasts", who),
             Amount::Counters { on, .. } | Amount::AnyCounters(on) => {
@@ -1144,6 +1145,7 @@ impl<'a> Walker<'a> {
             | Amount::EvenShare(_)
             | Amount::TargetCount(_)
             | Amount::Devotion(_)
+            | Amount::ManaSymbols { .. }
             | Amount::Greatest { .. }
             | Amount::Total { .. }
             | Amount::Distinct { .. }
@@ -1939,6 +1941,18 @@ impl<'a> Walker<'a> {
                 self.at("cost", |w| w.cost(cost));
                 // Only mana is paid for these: a part that takes objects, life or counters is not.
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
+            }
+            // Only mana is paid for the cost; the cleaved spell is walked as the spell it is when cast that way.
+            Keyword::Cleave {
+                cost,
+                targets,
+                effects,
+            } => {
+                self.at("cost", |w| w.cost(cost));
+                self.parts_that_need_an_announcement("Keyword", "Cost", cost);
+                let saved = std::mem::replace(&mut self.x_now, self.nested == 0);
+                self.body(targets, effects, false);
+                self.x_now = saved;
             }
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
             Keyword::Backup { count, abilities } => self.backup(*count, abilities),

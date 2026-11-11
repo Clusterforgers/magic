@@ -1,0 +1,25 @@
+{
+  "oracle_id": "2015f455-988e-444c-93df-23fab179ef87",
+  "name": "Water Whip",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Water Whip",
+      "oracle_fingerprint": "40d8efc7cb9c0200a64bf816c2e3694c",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Waterbend": 5 }], "required": true } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Draw": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

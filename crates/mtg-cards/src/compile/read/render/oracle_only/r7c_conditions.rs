@@ -32,6 +32,10 @@ pub(super) fn r7c_condition_texts(condition: &Condition) -> Vec<String> {
             "this spell was bargained".to_owned(),
             "this spell was cast using teamwork".to_owned(),
             "this spell's additional cost was paid".to_owned(),
+            // The enters trigger of a permanent spell names the spell by its pronoun.
+            "its additional cost was paid".to_owned(),
+            "her additional cost was paid".to_owned(),
+            "his additional cost was paid".to_owned(),
         ],
         Condition::Compare {
             left: Amount::Promised,

@@ -410,6 +410,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             reads_of_amount(of).or(reads_of_amount(by))
         }
         Amount::Devotion(_) => Traits::CONTROL,
+        Amount::ManaSymbols { of, .. } => reads_of_ref(of),
         Amount::Greatest { of, stat }
         | Amount::Total { of, stat }
         | Amount::Distinct { of, stat }

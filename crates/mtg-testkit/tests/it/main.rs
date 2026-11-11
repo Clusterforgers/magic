@@ -773,6 +773,8 @@ mod r4i_or_controller;
 mod r5e_done_once;
 mod ri23_asking_instead;
 mod ring;
+mod rmt0_chroma;
+mod rmt0_cleave;
 mod tapped_for_mana;
 mod target_reductions;
 mod together_batch;

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5f1386d5-b802-46b2-9803-275621ebda80",
+  "name": "Inspired Idea",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspired Idea",
+      "oracle_fingerprint": "e82a0f72245fc4d656ae03dc7780a9dd",
+      "abilities": [
+        {
+          "Keyword": { "Cleave": { "cost": "{3}{U}{U}", "effects": [{ "Draw": { "count": 3 } }] } }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Rule": {
+                  "rule": { "HandSizeChange": { "who": "You", "by": -3 } },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

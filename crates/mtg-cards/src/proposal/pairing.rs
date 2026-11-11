@@ -302,6 +302,7 @@ impl<'a> Pairer<'a> {
         self.static_pairs();
         self.either_way_pairs();
         self.haunt_pairs();
+        self.rmt0_cleave();
         self.exact();
         self.blocks();
         self.leftovers();
@@ -588,6 +589,37 @@ impl<'a> Pairer<'a> {
                 self.slot_of[at] = Some(slot);
                 self.places[at] = self.places[at - 1];
             }
+        }
+    }
+
+    /// Cleave: the keyword stands for its line, and the spell for its text with the words its cleaved spell leaves out in
+    /// square brackets.
+    fn rmt0_cleave(&mut self) {
+        let abilities = self.abilities;
+        let Some((at, (line, cleaved))) = abilities
+            .iter()
+            .enumerate()
+            .find_map(|(at, ability)| super::rmt0_cleave::cleave(ability).map(|found| (at, found)))
+        else {
+            return;
+        };
+        if !self.taken[at]
+            && let Some(slot) = self.find_text(&[ClauseKind::Keyword], &[line], false)
+        {
+            self.settle(at, slot, ClauseState::Reads { ability: at });
+        }
+        let Some(spell) = abilities
+            .iter()
+            .position(|ability| matches!(ability, Ability::Spell { .. }))
+        else {
+            return;
+        };
+        if self.taken[spell] {
+            return;
+        }
+        let written = super::rmt0_cleave::bracketed_variants(&abilities[spell], &cleaved);
+        for slot in self.c11f_spell_slots(&written, false) {
+            self.settle(spell, slot, ClauseState::Reads { ability: spell });
         }
     }
 

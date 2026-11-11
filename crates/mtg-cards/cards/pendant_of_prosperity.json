@@ -1,0 +1,22 @@
+{
+  "oracle_id": "d958321b-789d-4f9a-bdbe-f907166a0216",
+  "name": "Pendant of Prosperity",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Pendant of Prosperity",
+      "oracle_fingerprint": "b53c15118f024423a5723f3b809d4c3f",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "UnderChosenOpponent" }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 70, "end": 269 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "378567f8-7aef-42b6-853e-8591641052e8",
+  "name": "Winged Portent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winged Portent",
+      "oracle_fingerprint": "7cec201ce1efbf49ad75039a4c32ab26",
+      "abilities": [
+        {
+          "Keyword": {
+            "Cleave": {
+              "cost": "{4}{U}{G}",
+              "effects": [
+                {
+                  "Draw": {
+                    "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasKeyword": "Flying" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

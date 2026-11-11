@@ -1,0 +1,28 @@
+{
+  "oracle_id": "bce5b327-7da1-4136-b76f-069e2fef5d2a",
+  "name": "Multani, Maro-Sorcerer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Multani, Maro-Sorcerer",
+      "oracle_fingerprint": "e6492a31b8f2f3fc60adfabd6f8ca241",
+      "abilities": [
+        { "Keyword": "Shroud" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "In": "Hand" }] },
+                  "toughness": { "Count": [{ "In": "Hand" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

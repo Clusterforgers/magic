@@ -456,7 +456,7 @@ impl Pending {
         } else {
             state
         };
-        let held = rules_of(state, &self.what);
+        let held = rules_of(state, &self.what, self.choices.way);
         let ctx = Ctx {
             state,
             player: self.player,
@@ -652,12 +652,14 @@ fn source_of(what: &What) -> ObjectId {
 }
 
 /// The rules of the spell or ability being announced.
-fn rules_of(state: &GameState, what: &What) -> Option<Arc<Ability>> {
+/// A spell cast for its cleave cost is the cleaved spell its keyword carries (CR 702.148).
+fn rules_of(state: &GameState, what: &What, way: Option<CastWay>) -> Option<Arc<Ability>> {
     let object = state.object(source_of(what));
     match what {
-        What::Spell(spell) => object
-            .and_then(|_| spell_ability(state, *spell))
-            .map(|(_, rules)| rules),
+        What::Spell(spell) => object.and_then(|card| {
+            spell_ability(state, *spell)
+                .map(|(_, rules)| crate::keywords::rmt0_cleave::cleaved(card, way, rules))
+        }),
         What::Ability(address) => object.and_then(|_| ability_reader::ability(state, *address)),
         What::Trigger(waiting) => Some(Arc::clone(&waiting.rules)),
         What::Attack(..) | What::Block(_) => None,
@@ -721,7 +723,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         }
         _ => state,
     };
-    let held = rules_of(state, what);
+    let held = rules_of(state, what, choices.way);
     let needs: &Needs = needs
         .get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref(), granted.clone()));
     let ctx = Ctx {

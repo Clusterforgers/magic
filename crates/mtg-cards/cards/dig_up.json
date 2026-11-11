@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ae96fe7e-8d89-4f44-9cc4-3c9b124fdc4b",
+  "name": "Dig Up",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dig Up",
+      "oracle_fingerprint": "7d976ceacb39e9caa0770241f0610688",
+      "abilities": [
+        {
+          "Keyword": {
+            "Cleave": {
+              "cost": "{1}{B}{B}{G}",
+              "effects": [
+                { "Search": { "filter": [], "as": "card" } },
+                { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                { "Shuffle": {} }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "reveal": true,
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

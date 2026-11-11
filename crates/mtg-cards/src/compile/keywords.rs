@@ -422,6 +422,12 @@ pub fn read(item: &str) -> Option<Keyword> {
         "disguise" => spell_cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
+        // The cleaved spell comes from the spell line (`rmt0_cleave::give_cleave`).
+        "cleave" => cost(rest).map(|cost| Keyword::Cleave {
+            cost,
+            targets: Vec::new(),
+            effects: Vec::new(),
+        }),
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
         "squad" => spell_cost(rest).map(Keyword::Squad),
@@ -1994,6 +2000,7 @@ mod tests {
             "Epic",
             "Craft with one or more creatures {2}{B}{B}",
             "Plainscycling {2}",
+            "Cleave {1}{U}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
         let mut seen = Vec::new();

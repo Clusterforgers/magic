@@ -197,6 +197,7 @@ mod regen_this_way;
 mod repeat_modes;
 mod return_damager;
 mod return_this_card;
+mod rmt0_hand_size;
 mod sacrifice_it;
 mod sacrifice_search;
 mod sacrifice_unless;
@@ -377,6 +378,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     discarded_was::add(ability, texts);
     life_over_starting::add(ability, texts);
     no_max_hand::add(ability, texts);
+    rmt0_hand_size::add(ability, texts);
     paid_return::add(ability, texts);
     per_spell_cast::add(ability, texts);
     pump_and_unblockable::add(ability, texts);

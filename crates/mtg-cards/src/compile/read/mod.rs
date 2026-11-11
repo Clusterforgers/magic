@@ -188,6 +188,7 @@ mod replacements;
 mod restrictions;
 mod reveal;
 mod reveal_until;
+mod rmt0_chroma;
 mod selectors;
 mod shortened;
 mod soulbond;

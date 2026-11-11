@@ -631,6 +631,7 @@ fn keyword_way(
             in_hand && state.freerunning_open(player),
         ),
         Keyword::Awaken { cost, .. } => (CastWay::Awaken, "Awaken", cost, in_hand),
+        Keyword::Cleave { cost, .. } => (CastWay::Cleave, "Cleave", cost, in_hand),
         Keyword::Prototype { cost, .. } => (CastWay::Prototype, "Prototype", cost, in_hand),
         Keyword::Morph(_) | Keyword::Megamorph(_) | Keyword::Disguise(_) if in_hand => {
             return Some(face_down_way(instant));
@@ -1160,9 +1161,14 @@ pub(crate) fn announceable_in(
         return merged::announceable(state, player, id);
     }
     way == Some(CastWay::Overload)
-        || (spell_ability(state, id)
-            .is_none_or(|(_, rules)| announceable(state, player, id, &rules))
-            && attach::announceable(state, player, id))
+        || (spell_ability(state, id).is_none_or(|(_, rules)| {
+            // A spell cast for its cleave cost announces the targets of the cleaved spell (CR 702.148).
+            let rules = match state.object(id) {
+                Some(card) => crate::keywords::rmt0_cleave::cleaved(card, way, rules),
+                None => rules,
+            };
+            announceable(state, player, id, &rules)
+        }) && attach::announceable(state, player, id))
 }
 
 /// Whether `player` can cast `id` now in some way: at a time the way allows, with targets to announce and mana to pay

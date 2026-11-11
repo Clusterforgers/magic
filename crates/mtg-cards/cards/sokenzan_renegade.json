@@ -1,0 +1,20 @@
+{
+  "oracle_id": "63f414ed-01f4-428a-b65f-5c640679d5ef",
+  "name": "Sokenzan Renegade",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sokenzan Renegade",
+      "oracle_fingerprint": "e86037f97012003a6177a87c07dc2bf0",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "bushido", "amount": 1 } } },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 95, "end": 260 }
+          }
+        }
+      ]
+    }
+  ]
+}

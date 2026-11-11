@@ -1,0 +1,37 @@
+{
+  "oracle_id": "51afd09d-7eee-41c9-bc42-f3f61a176479",
+  "name": "Umbra Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Umbra Stalker",
+      "oracle_fingerprint": "091f6c0b4d8956c2b8a0bcfe78360fb6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "ManaSymbols": {
+                      "color": "Black",
+                      "of": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] }
+                    }
+                  },
+                  "toughness": {
+                    "ManaSymbols": {
+                      "color": "Black",
+                      "of": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] }
+                    }
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

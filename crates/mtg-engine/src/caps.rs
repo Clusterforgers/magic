@@ -755,6 +755,7 @@ const RUNS: &[&str] = &[
     "Keyword.Scavenge",
     "Keyword.Transmute",
     "Keyword.Awaken",
+    "Keyword.Cleave",
     "Keyword.Assist",
     "Keyword.Craft",
     "Keyword.Prototype",

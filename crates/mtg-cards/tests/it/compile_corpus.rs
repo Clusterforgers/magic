@@ -14,6 +14,7 @@ use mtg_cards::compile::{
     escalate_reads, forecast_lines, own_names, reinforce_line, same_written_text,
     static_pair_texts, written_variants,
 };
+use mtg_cards::keyword::Keyword;
 use mtg_cards::load::Library;
 use mtg_cards::support::PrintedCard;
 
@@ -482,6 +483,13 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
                 continue;
             }
             pair_apart = true;
+        }
+        // The spell of a cleave card is printed with brackets, which the read back pairs (`rmt0_cards`).
+        let cleaves = listed.iter().any(|&(other, rule)| {
+            other == face && matches!(rule, Ability::Keyword(Keyword::Cleave { .. }))
+        });
+        if cleaves && matches!(ability, Ability::Spell { .. }) {
+            continue;
         }
         let written = attached_as_named(ability, written_variants(ability));
         if written.is_empty() {

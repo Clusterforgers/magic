@@ -13,6 +13,7 @@ mod linked;
 mod manual;
 mod normalize;
 mod read;
+mod rmt0_cleave;
 mod tables;
 
 use std::collections::BTreeSet;
@@ -174,6 +175,7 @@ fn read_face(
         });
     }
     let has_spell_lines = read_spell_lines(&mut pending, x_free, &own);
+    rmt0_cleave::give_cleave(&mut pending, x_free, &own);
     if spell && !has_spell_lines {
         // The modes of an instant or sorcery are its whole spell ability when no other line is.
         let mut modals = pending

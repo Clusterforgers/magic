@@ -1,0 +1,22 @@
+{
+  "oracle_id": "12d91743-1ccb-4f2b-b2a9-1c2b34f7c8eb",
+  "name": "Benevolent River Spirit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benevolent River Spirit",
+      "oracle_fingerprint": "69fb496f4c8fd6b54c9ed55afafc4634",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Waterbend": 5 }], "required": true } },
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

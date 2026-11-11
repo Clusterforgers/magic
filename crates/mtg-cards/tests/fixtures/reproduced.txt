@@ -159,6 +159,7 @@ Blazing Sunsteel
 Blight Mamba
 Blight Pile
 Blightwidow
+Blood Feud
 Blood Moon
 Blood Seeker
 Blood for the Blood God!
@@ -188,6 +189,7 @@ Bosh, Iron Golem
 Bounty of Skemfar
 Brain Freeze
 Brainstorm
+Bramble Elemental
 Branchblight Stalker
 Brave the Sands
 Breath of Life
@@ -313,6 +315,7 @@ Crack in Time
 Cram Session
 Crash
 Crawlspace
+Creeping Bloodsucker
 Creeping Tar Pit
 Crib Swap
 Crocanura
@@ -350,6 +353,7 @@ Cybermen Squadron
 Cyclonic Rift
 Cytoshape
 Dalek Squadron
+Damocles Base, Sword of Kang
 Danny Pink
 Darkblast
 Darksteel Juggernaut
@@ -403,6 +407,7 @@ Disembowel
 Dismantling Blow
 Dismantling Wave
 Disrupt Decorum
+Dissension in the Ranks
 Distorting Wake
 Divine Visitation
 Diviner Spirit
@@ -417,6 +422,7 @@ Door of Destinies
 Doublecast
 Draconic Lore
 Drag to the Bottom
+Dragon Grip
 Dragonlord Dromoka
 Dragonlord Ojutai
 Dragonspeaker Shaman
@@ -492,6 +498,7 @@ Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
 Eris, Roar of the Storm
+Essence Bottle
 Etched Oracle
 Eternal Dragon
 Eternal Witness
@@ -651,6 +658,7 @@ Golden-Scale Aeronaut
 Goldlust Triad
 Goldwarden's Helm
 Goliath Truck
+Gonti's Machinations
 Goreclaw, Terror of Qal Sisma
 Gorger Wurm
 Gorma, the Gullet
@@ -1004,6 +1012,7 @@ Mother of Runes
 Muddle the Mixture
 Mukotai Ambusher
 Mulldrifter
+Multani, Maro-Sorcerer
 Murderous Cut
 Murmuring Bosk
 Muscle Sliver
@@ -1220,6 +1229,7 @@ Remorseful Cleric
 Renewed Faith
 Replication Technique
 Rescue Skiff
+Reset
 Reshape
 Resplendent Angel
 Retaliation
@@ -1421,6 +1431,7 @@ Spinerock Knoll
 Spire Golem
 Spire Winder
 Spirit of the Hearth
+Spiteful Visions
 Spoils of Adventure
 Spore Burst
 Spreading Insurrection

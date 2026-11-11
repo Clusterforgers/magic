@@ -1,0 +1,33 @@
+{
+  "oracle_id": "6157ade6-9037-4339-869b-493fdee71dcf",
+  "name": "Draco",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Draco",
+      "oracle_fingerprint": "28e6c518432a1b0db5d7f4448faa586f",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "per": {
+              "Distinct": {
+                "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "stat": "BasicLandTypes"
+              }
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 100, "end": 264 }
+          }
+        }
+      ]
+    }
+  ]
+}

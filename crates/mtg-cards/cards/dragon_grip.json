@@ -1,0 +1,42 @@
+{
+  "oracle_id": "1e83a750-bf86-468e-8342-2c4eb7700dfd",
+  "name": "Dragon Grip",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon Grip",
+      "oracle_fingerprint": "c2fccae0155d834d777b4a4ab7e63cbb",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": ["This"], "flash": true } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Hand"
+          }
+        },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 0 } },
+              { "AddKeyword": "FirstStrike" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

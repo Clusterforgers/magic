@@ -5,7 +5,8 @@ use serde::{Deserialize, Serialize};
 use crate::ability::Ability;
 use crate::companion::DeckCondition;
 use crate::cost::Cost;
-use crate::refs::Selector;
+use crate::effect::Effect;
+use crate::refs::{Selector, TargetSpec};
 
 /// A keyword ability with its parameters (CR 702).
 ///
@@ -320,6 +321,16 @@ pub enum Keyword {
         /// The alternative cost.
         cost: Cost,
     },
+    /// Cleave with its cost (CR 702.148): the spell may be cast from a hand for the cost, and then it is `targets` and `effects`, its text without the words in square brackets.
+    Cleave {
+        /// The alternative cost.
+        cost: Cost,
+        /// The targets of the cleaved spell.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        targets: Vec<TargetSpec>,
+        /// What the cleaved spell does.
+        effects: Vec<Effect>,
+    },
     /// Craft with its cost (CR 702.167): at sorcery speed, for the cost, which exiles this permanent and the materials, return this card from exile transformed.
     Craft(Cost),
     /// Assist (CR 702.132): as the spell is cast its caster may choose another player, who may pay any amount of the generic mana of its total cost.
@@ -552,6 +563,7 @@ impl Keyword {
         "Scavenge",
         "Transmute",
         "Awaken",
+        "Cleave",
         "Prototype",
         "Assist",
         "Craft",
@@ -740,6 +752,7 @@ impl Keyword {
             Keyword::Scavenge(_) => "Scavenge",
             Keyword::Transmute(_) => "Transmute",
             Keyword::Awaken { .. } => "Awaken",
+            Keyword::Cleave { .. } => "Cleave",
             Keyword::Prototype { .. } => "Prototype",
             Keyword::Assist => "Assist",
             Keyword::Craft(_) => "Craft",
@@ -990,6 +1003,11 @@ mod tests {
             Keyword::Awaken {
                 count: 3,
                 cost: Cost::default(),
+            },
+            Keyword::Cleave {
+                cost: Cost::default(),
+                targets: Vec::new(),
+                effects: Vec::new(),
             },
             Keyword::Prototype {
                 cost: Cost::default(),

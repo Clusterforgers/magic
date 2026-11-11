@@ -266,7 +266,10 @@ pub(crate) fn spell_ability(state: &GameState, id: ObjectId) -> Option<(AbilityR
         .find(|(_, rules)| matches!(**rules, Ability::Spell { .. }))?;
     // Awaken adds a target and effects to the spell ability of its card.
     let rules = match state.object(id) {
-        Some(card) => awaken::awakened(card, rules),
+        Some(card) => awaken::awakened(
+            card,
+            crate::keywords::rmt0_cleave::cleaved(card, card.cast_way(), rules),
+        ),
         None => rules,
     };
     Some((address, rules))
