@@ -99,6 +99,10 @@ pub(super) fn wf24_last_resort_shape(ability: &Ability) -> bool {
     let Ok(value) = serde_json::to_value(ability) else {
         return false;
     };
+    // A clause of several chapters pairs with its first chapter only (roadmap sa23a), so a chapter stays unwritten.
+    if value.pointer("/Triggered/when/Chapter").is_some() {
+        return false;
+    }
     let Some(effects) = value
         .as_object()
         .and_then(|map| map.values().next())

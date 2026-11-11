@@ -237,6 +237,11 @@ const LOSES_ALL: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"
     "At the beginning of the upkeep of enchanted creature's controller, put a -1/-1 counter on that creature.",
     true
 )]
+#[case::upkeep_of_an_enchantment(
+    r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":{"ControllerOf":"Attached"}}},"effects":[{"DealDamage":{"to":"Triggering","amount":1}}]}}"#,
+    "At the beginning of the upkeep of enchanted enchantment's controller, this Aura deals 1 damage to that player.",
+    true
+)]
 #[case::upkeep_other_counter(
     &UPKEEP_ENCHANTED.replace("-1/-1", "+1/+1"),
     "At the beginning of the upkeep of enchanted creature's controller, put a -1/-1 counter on that creature.",

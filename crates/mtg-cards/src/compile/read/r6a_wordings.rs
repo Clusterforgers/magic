@@ -368,12 +368,13 @@ const KINDS: &[&str] = &[
 
 /// The names of the permanent the card is attached to: an Aura names it by what it enchants, an Equipment "equipped
 /// creature"; the writers give the first two.
-const ATTACHED: [&str; 5] = [
+const ATTACHED: [&str; 6] = [
     "enchanted creature",
     "equipped creature",
     "enchanted permanent",
     "enchanted land",
     "enchanted artifact",
+    "enchanted enchantment",
 ];
 
 /// The permanent the card is attached to under its other names, and "a player taps it for mana" as "it is tapped for
