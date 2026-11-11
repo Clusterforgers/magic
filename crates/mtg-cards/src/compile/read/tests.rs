@@ -1216,6 +1216,10 @@ mod r9w;
 // r11w
 mod r11w;
 // e10c
+mod dk27_animate;
+mod dk27_bid;
+mod dk27_numbers;
+mod dk27_readers;
 mod e10c_writers;
 mod e17a_writers;
 mod e18a_writers;

@@ -1452,6 +1452,51 @@ pub enum Effect {
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
     },
+    /// Each player `who` names chooses a whole number from `min` up, the controller first and the others in turn order;
+    /// secret numbers are chosen face down and revealed together ("each player secretly chooses a number 0 or greater").
+    /// The highest number is remembered under `bind` (`Amount::ChosenAs`), the players who chose it are bound to
+    /// `highest` and those who chose the lowest to `lowest`.
+    ChooseNumbers {
+        /// Who chooses.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The least number allowed.
+        #[serde(default = "Amount::zero", skip_serializing_if = "Amount::is_zero")]
+        min: Amount,
+        /// The numbers are chosen face down and revealed together.
+        #[serde(default, skip_serializing_if = "is_false")]
+        secret: bool,
+        /// The name the highest number is remembered under.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name the players who chose the highest number are bound to.
+        highest: String,
+        /// The name the players who chose the lowest number are bound to.
+        lowest: String,
+    },
+    /// The players `who` names bid life: the controller opens with a bid (`start`, or any number from 0), then in turn
+    /// order each other player may top the high bid, and the bidding ends when the high bid stands. The high bid is
+    /// remembered under `bind` (`Amount::ChosenAs`) and the high bidder is bound to `winner`; bidding loses no life by
+    /// itself.
+    BidLife {
+        /// Who may bid.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The controller's opening bid ("a bid of 0"); any number they choose when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        start: Option<Amount>,
+        /// The name the high bid is remembered under.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name the high bidder is bound to.
+        winner: String,
+    },
     /// The player faces a villainous choice (CR 701.56): they choose one of the two lists and it is done.
     VillainousChoice {
         /// The one player who chooses.

@@ -28,6 +28,7 @@ mod companion_view;
 mod copy_view;
 mod counter_view;
 mod crew_hidden;
+mod dk27_secret_numbers;
 mod e10b_sealed_view;
 mod e15a_speed_view;
 mod effect_view;

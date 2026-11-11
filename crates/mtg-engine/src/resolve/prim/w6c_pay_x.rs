@@ -74,6 +74,7 @@ pub(super) fn announced<'a>(
                 can_cancel: false,
                 cost: None,
                 per_x: 0,
+                secret: false,
             }),
         })),
         Some((_, other)) => Err(ResolveError::Invalid(format!(

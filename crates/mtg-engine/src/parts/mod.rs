@@ -19,7 +19,7 @@ mod exile;
 mod exile_hand;
 mod exile_top;
 mod exiled;
-mod forage;
+pub(crate) mod forage;
 mod life;
 pub(crate) mod mill;
 mod random;

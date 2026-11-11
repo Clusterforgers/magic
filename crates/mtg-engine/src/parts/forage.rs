@@ -61,6 +61,17 @@ pub(super) fn alone(state: &GameState, candidates: &[ObjectId]) -> bool {
     (foods == 1 && cards == 0) || (foods == 0 && cards == CARDS)
 }
 
+/// What a mana ability's forage takes when the mana planner pays it: a Food sacrificed while the payer has one (`true`,
+/// one of the Foods), else three cards of their graveyard exiled (`false`, the cards); `None` when they can do neither.
+pub(crate) fn dk27_planned(payer: &Payer<'_>) -> Option<(bool, usize, Vec<ObjectId>)> {
+    let foods = foods(payer);
+    if !foods.is_empty() {
+        return Some((true, 1, foods));
+    }
+    let graveyard = cards(payer);
+    (graveyard.len() >= CARDS).then_some((false, CARDS, graveyard))
+}
+
 /// What the question asks.
 pub(super) fn text() -> String {
     "Forage: sacrifice a Food or exile three cards from your graveyard.".to_owned()

@@ -523,6 +523,8 @@ const RUNS: &[&str] = &[
     "Effect.Modal.OnceEver",
     "Effect.Modal.AllIf",
     "Effect.Vote",
+    "Effect.ChooseNumbers",
+    "Effect.BidLife",
     "Effect.Let",
     "Effect.Bind",
     "Effect.Modal.Who",
@@ -555,6 +557,7 @@ const RUNS: &[&str] = &[
     "Keyword.BattleCry",
     "Keyword.Ward",
     "Keyword.Enchant",
+    "Keyword.Enchant.Graveyard",
     "Keyword.EnchantPlayer",
     "Keyword.Equip",
     "Keyword.Reconfigure",
@@ -1155,6 +1158,7 @@ mod tests {
     #[case::attaching("Effect.Attach", true)]
     #[case::enchanting("Keyword.Enchant", true)]
     #[case::enchanting_cards_elsewhere("Keyword.Enchant.Elsewhere", false)]
+    #[case::enchanting_cards_in_a_graveyard("Keyword.Enchant.Graveyard", true)]
     #[case::winning_the_game("Effect.WinGame", true)]
     #[case::creating_tokens("Effect.CreateToken", true)]
     #[case::creating_copies("Effect.CreateToken.Copy", true)]

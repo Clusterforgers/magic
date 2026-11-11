@@ -707,6 +707,11 @@ mod dk26_gemstone_caverns;
 mod dk26_stack_cards;
 mod dk26_sylvan_library;
 mod dk26_unattached;
+mod dk27_animate_dead;
+mod dk27_bid_life;
+mod dk27_counted_less;
+mod dk27_forage_mana;
+mod dk27_secret_numbers;
 // dk1b
 mod dk1b_attach;
 mod enchanted_dies;

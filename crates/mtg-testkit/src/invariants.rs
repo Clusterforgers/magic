@@ -72,6 +72,24 @@ pub enum Violation {
     Counters(String),
 }
 
+/// The restriction an enchant keyword sets for a host, without "in a graveyard" for a host on the battlefield; `None`
+/// for another keyword.
+fn keyword_selector_here(
+    keyword: &Keyword,
+    on_battlefield: bool,
+) -> Option<mtg_cards::refs::Selector> {
+    let Keyword::Enchant(selector) = keyword else {
+        return None;
+    };
+    let mut selector = selector.clone();
+    if on_battlefield {
+        selector.0.retain(|pred| {
+            *pred != mtg_cards::refs::Pred::In(mtg_cards::refs::ZoneKind::Graveyard)
+        });
+    }
+    Some(selector)
+}
+
 fn zone_error(message: impl Into<String>) -> Violation {
     Violation::Zones(message.into())
 }
@@ -317,8 +335,11 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
             let controller = controller_of(state, id).unwrap_or(object.controller());
             let scope = Scope::announcing(state, controller, object.reference());
             for keyword in keywords_of(state, id) {
-                if let Keyword::Enchant(selector) = keyword
-                    && !scope.selects(selector, host.reference()).unwrap_or(false)
+                // An Aura that enchants a card in a graveyard and returned it is judged on the battlefield by the rest of
+                // its restriction (`docs/engine.md`, attachments).
+                let judged = keyword_selector_here(keyword, host.zone() == Zone::Battlefield);
+                if let Some(selector) = judged
+                    && !scope.selects(&selector, host.reference()).unwrap_or(false)
                 {
                     return Err(bad("is attached to what it may not enchant"));
                 }
