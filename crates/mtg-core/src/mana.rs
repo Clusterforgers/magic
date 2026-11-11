@@ -430,6 +430,20 @@ impl ManaCost {
         }))
     }
 
+    /// The cost with its first `{color}` symbol made Phyrexian: what a spell costs when its caster may pay 2 life to have it
+    /// cost one mana of that color less ("you may pay 2 life. Those spells cost {G} less to cast if you paid life this way").
+    #[must_use]
+    pub fn with_one_phyrexian(&self, color: Color) -> ManaCost {
+        let mut done = false;
+        ManaCost::from_symbols(self.0.iter().map(|s| match s {
+            ManaSymbol::Colored(own) if *own == color && !done => {
+                done = true;
+                ManaSymbol::Phyrexian(color)
+            }
+            other => *other,
+        }))
+    }
+
     /// The cost with each colored and hybrid symbol replaced by `{1}` and `{C}` kept: what the mana must cover when mana
     /// may be spent as though it were mana of any color, which gives a colored symbol no more than a color (CR 609.4b).
     #[must_use]

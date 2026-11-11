@@ -11,6 +11,8 @@ use super::{Ctx, Next, What, Work, total};
 use crate::choose::{Choices, CostsOptions, OptionalCost};
 use crate::decision::DecisionKind;
 use crate::keywords::splice::{Spliceable, spliceable};
+use crate::parts::Part;
+use crate::price::Price;
 use crate::state::GameState;
 
 /// The cards `what` may have spliced onto it: none for anything but a spell.
@@ -38,6 +40,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             let mut trial = work.choices.clone();
             trial.set_spliced(vec![card.card]);
             total::of(ctx, &trial).is_some_and(|total| total::affordable(ctx, &total))
+                && claimable(ctx, &trial)
         })
         .map(|(index, card)| OptionalCost {
             index,
@@ -53,6 +56,25 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         optional: offered,
         can_cancel: ctx.can_cancel(),
     })))
+}
+
+/// Whether the player has what the parts of the cost take with the cards `trial` splices (CR 601.2h).
+fn claimable(ctx: &Ctx<'_>, trial: &Choices) -> bool {
+    let parts = ctx.needs.cost_parts(trial);
+    parts.is_empty()
+        || Price::casting(parts)
+            .claimed(ctx.state, ctx.player, ctx.source)
+            .is_some()
+}
+
+/// The parts the costs of the spliced cards pay besides their mana, in the order the cards were chosen.
+pub(super) fn parts_paid(splice: &[Spliceable], choices: &Choices) -> Vec<Part> {
+    choices
+        .spliced()
+        .iter()
+        .filter_map(|card| splice.iter().find(|s| s.card == *card))
+        .flat_map(|card| card.parts.iter().cloned())
+        .collect()
 }
 
 /// The cards an answer names, by position among those that may be spliced.

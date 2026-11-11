@@ -1,7 +1,7 @@
 {
   "oracle_id": "590137df-af61-4e93-b6f1-3a2e438b8037",
   "name": "Defiler of Instinct",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Defiler of Instinct",
@@ -9,9 +9,26 @@
       "abilities": [
         { "Keyword": "FirstStrike" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 13, "end": 203 }
+          "Rule": {
+            "rule": {
+              "PayLifeForOneSymbol": {
+                "who": "You",
+                "color": "Red",
+                "spells": [
+                  { "Color": "Red" },
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  }
+                ]
+              }
+            }
           }
         },
         {

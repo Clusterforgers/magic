@@ -110,6 +110,12 @@ impl Writer<'_> {
         if let [Pred::Is(named)] = source.0.as_slice() {
             return self.g8e_object(named);
         }
+        // A source of one color, or none, in any zone: "colorless sources", "black sources".
+        match source.0.as_slice() {
+            [Pred::Colorless] => return Some("colorless sources".to_owned()),
+            [Pred::Color(color)] => return Some(format!("{} sources", color_name(*color))),
+            _ => {}
+        }
         let source = on_battlefield(source);
         colors_apart(&source).or_else(|| phrase_text(&source, Form::All))
     }

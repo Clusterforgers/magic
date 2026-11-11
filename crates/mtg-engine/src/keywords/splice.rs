@@ -19,6 +19,7 @@ use mtg_core::mana::ManaCost;
 use super::KeywordRules;
 use crate::ability_reader;
 use crate::characteristics::characteristics;
+use crate::parts::Part;
 use crate::price::Price;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -38,6 +39,8 @@ pub(crate) struct Spliceable {
     pub(crate) label: String,
     /// The mana of the splice cost, added to the total cost.
     pub(crate) mana: ManaCost,
+    /// The other parts of the splice cost (a sacrifice, a return to hand, tapped creatures), paid with the cost.
+    pub(crate) parts: Vec<Part>,
 }
 
 /// Whether a spell with the characteristics of `spell` is of the kind `onto` names.
@@ -53,18 +56,27 @@ fn is_onto(state: &GameState, spell: ObjectId, onto: SpliceOnto) -> bool {
     })
 }
 
-/// The splice cost a card prints for spells like `spell`, when the engine pays it: mana alone (CR 702.47a).
-fn splice_cost(state: &GameState, card: ObjectId, spell: ObjectId) -> Option<ManaCost> {
+/// The splice cost a card prints for spells like `spell`, when the engine pays it (CR 702.47a): its mana and the parts
+/// a spell's cost pays, never one that taps, untaps or moves the card, counts an X or takes counters.
+fn splice_cost(
+    state: &GameState,
+    card: ObjectId,
+    spell: ObjectId,
+) -> Option<(ManaCost, Vec<Part>)> {
     let object = state.object(card)?;
     ability_reader::printed_rules(object.card()).find_map(|rule| match &**rule {
         Ability::Keyword(Keyword::Splice { onto, cost }) if is_onto(state, spell, *onto) => {
             let price = Price::announced(cost).ok()?;
-            let mana_only = !price.tap
+            let payable = !price.tap
                 && !price.untap
+                && !price.moves_source()
                 && price.x == 0
-                && price.parts.is_empty()
-                && price.changes.is_empty();
-            mana_only.then(|| price.mana.unwrap_or_default())
+                && price.changes.is_empty()
+                && price
+                    .parts
+                    .iter()
+                    .all(|part| !part.is_counted() && !matches!(part, Part::Counters { .. }));
+            payable.then(|| (price.mana.unwrap_or_default(), price.parts))
         }
         _ => None,
     })
@@ -85,13 +97,19 @@ pub(crate) fn spliceable(state: &GameState, player: PlayerId, spell: ObjectId) -
         .iter()
         .filter(|card| **card != spell)
         .filter_map(|card| {
-            let mana = splice_cost(state, *card, spell)?;
+            let (mana, parts) = splice_cost(state, *card, spell)?;
             spell_of(state, *card)?;
             let name = &state.object(*card)?.card().name;
+            let mut words: Vec<String> = Vec::new();
+            if !mana.symbols().is_empty() || parts.is_empty() {
+                words.push(mana.to_string());
+            }
+            words.extend(parts.iter().map(Part::text));
             Some(Spliceable {
                 card: *card,
-                label: format!("Splice {name} {mana}"),
+                label: format!("Splice {name} {}", words.join(", ")),
                 mana,
+                parts,
             })
         })
         .collect()
@@ -113,7 +131,7 @@ pub(crate) fn with_spliced(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a card of the hand is offered for splicing exactly onto spells of the kind it names, never onto itself and only for a mana cost; and the spliced spell has the card's targets and effects after its own.
+    //! Goal: a card of the hand is offered for splicing exactly onto spells of the kind it names, never onto itself and only for a cost whose parts a spell pays (mana, life, objects picked); and the spliced spell has the card's targets and effects after its own.
     use mtg_cards::CardDefinition;
     use mtg_cards::cost::Cost;
     use rstest::rstest;
@@ -211,19 +229,27 @@ mod tests {
         assert_eq!(spliceable(&game, ME, card), Vec::new());
     }
 
-    #[test]
-    fn a_cost_that_is_not_mana_is_not_offered() {
-        let life: Cost = serde_json::from_str(r#"[{"PayLife":2}]"#).unwrap();
+    #[rstest]
+    #[case::life(r#"[{"PayLife":2}]"#, Some(1))]
+    #[case::mana_and_life(r#"[{"Mana":"{1}"},{"PayLife":2}]"#, Some(1))]
+    #[case::tapping_the_card(r#"["Tap"]"#, None)]
+    #[case::exiling_the_card(r#"["ExileSelf"]"#, None)]
+    fn a_cost_is_offered_when_a_spell_pays_its_parts(
+        #[case] cost: &str,
+        #[case] parts: Option<usize>,
+    ) {
+        let cost: Cost = serde_json::from_str(cost).unwrap();
         let (game, cast, _) = hand(
             spell("Cast", CardType::Instant, true, None),
             spell(
                 "Splicer",
                 CardType::Instant,
                 true,
-                Some((SpliceOnto::Arcane, life)),
+                Some((SpliceOnto::Arcane, cost)),
             ),
         );
-        assert_eq!(spliceable(&game, ME, cast), Vec::new());
+        let found = spliceable(&game, ME, cast);
+        assert_eq!(found.first().map(|card| card.parts.len()), parts);
     }
 
     #[test]

@@ -863,6 +863,17 @@ pub enum GameRule {
         /// The color of the symbols.
         color: Color,
     },
+    /// The players may pay 2 life as they cast a spell the selector picks to have it cost one mana symbol of the color
+    /// less, and only that color: "As an additional cost to cast green permanent spells, you may pay 2 life. Those spells
+    /// cost {G} less to cast if you paid life this way. This effect reduces only the amount of green mana you pay."
+    PayLifeForOneSymbol {
+        /// The players.
+        who: Ref,
+        /// The color of the symbol.
+        color: Color,
+        /// The spells, judged as they are cast.
+        spells: Selector,
+    },
     /// The players draw no more than `most` cards each turn; the draws past it don't happen: "Each opponent can't draw more
     /// than one card each turn."
     DrawLimit {

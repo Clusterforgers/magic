@@ -1,0 +1,35 @@
+{
+  "oracle_id": "5d36e5ee-1e23-48fe-ad13-081cc153342b",
+  "name": "Crash Landing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crash Landing",
+      "oracle_fingerprint": "c9ccddc401f25fed259f605567bdfb39",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "RemoveKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

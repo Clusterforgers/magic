@@ -4833,6 +4833,7 @@ impl Walker<'_> {
             | GameRule::SpendManaAs {
                 spells: Some(_), ..
             }
+            | GameRule::PayLifeForOneSymbol { .. }
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
             | GameRule::UntapDuring { .. }
@@ -4882,7 +4883,8 @@ impl Walker<'_> {
                 who,
                 spells: Some(spells),
                 ..
-            } => self.at(tag, |w| {
+            }
+            | GameRule::PayLifeForOneSymbol { who, spells, .. } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("spells", |w| w.selector(spells));
             }),

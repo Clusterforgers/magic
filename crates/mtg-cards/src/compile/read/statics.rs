@@ -1816,6 +1816,7 @@ fn rule_texts(rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) ->
             | GameRule::DrawLimit { .. }
             | GameRule::AbilitiesAsThoughHaste(_)
             | GameRule::PayLifeForMana { .. }
+            | GameRule::PayLifeForOneSymbol { .. }
             | GameRule::OpponentsCantMakeSacrifice(_),
             ZoneKind::Battlefield,
         ) => super::ep24_rules::ep24_rule_texts(rule),
