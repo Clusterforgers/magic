@@ -111,7 +111,11 @@ fn ep29_an_extra_die_for_you() {
     "DB$ ReplaceEffect | VarName$ Ignore | VarValue$ ReplaceCount$Ignore/Plus.2"
 )]
 fn ep29_other_dice_replacements_stay_gaps(#[case] line: &str, #[case] ignore: &str) {
-    assert!(!gaps(&wyll(line, ignore)).is_empty());
+    let found = gaps(&wyll(line, ignore));
+    assert!(
+        found.iter().any(|gap| gap.contains("RollDice")),
+        "{found:?}"
+    );
 }
 
 #[rstest]

@@ -108,6 +108,7 @@ mod tests {
     use crate::fixtures::{creature, setup};
     use crate::resolve::{Resolving, Scope};
     use crate::state::GameState;
+    use crate::zones::Zone;
 
     const ME: PlayerId = PlayerId(0);
 

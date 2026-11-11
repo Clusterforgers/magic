@@ -1,20 +1,12 @@
 {
   "oracle_id": "b6003419-1a2a-46f3-b32c-47b825324f78",
   "name": "Pixie Guide",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Pixie Guide",
       "oracle_fingerprint": "2f67926b6f49ab4d6660228a3b70e621",
-      "abilities": [
-        { "Keyword": "Flying" },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 128 }
-          }
-        }
-      ]
+      "abilities": [{ "Keyword": "Flying" }, { "Rule": { "rule": { "ExtraDie": "You" } } }]
     }
   ]
 }

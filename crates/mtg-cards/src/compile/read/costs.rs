@@ -406,7 +406,7 @@ pub fn text(cost: &Cost) -> Option<String> {
     let mut parts: Vec<String> = Vec::new();
     let mut after_sacrifice = false;
     for item in &cost.0 {
-        let part = item_text(item)?;
+        let part = ep29_remove_all_item(item).or_else(|| item_text(item))?;
         let single = matches!(item, CostItem::Sacrifice { filter, count }
             if *count == Amount::one() && !filter.0.contains(&Pred::Other));
         // "Sacrifice a Swamp and a Forest": a run of single sacrifices is one clause.
@@ -502,9 +502,6 @@ fn item_text(item: &CostItem) -> Option<String> {
             count,
             from: None,
         } => {
-            if let Some(said) = ep29_remove_all_text(counter.as_ref(), count) {
-                return Some(said);
-            }
             format!("Remove {} from ~", w2f_text(counter.as_ref(), count)?)
         }
         CostItem::RemoveCounters {
@@ -753,6 +750,19 @@ fn ep29_remove_all(r: &mut Reader<'_>) -> Option<CostItem> {
         counter: Some(counter),
         from: None,
     })
+}
+
+/// The words of a cost part that removes every counter of a kind from the source; `None` for another part.
+fn ep29_remove_all_item(item: &CostItem) -> Option<String> {
+    let CostItem::RemoveCounters {
+        counter,
+        count,
+        from: None,
+    } = item
+    else {
+        return None;
+    };
+    ep29_remove_all_text(counter.as_ref(), count)
 }
 
 /// The words of [`ep29_remove_all`]; `None` for another count.

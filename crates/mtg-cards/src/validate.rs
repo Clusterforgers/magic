@@ -1029,14 +1029,7 @@ impl<'a> Walker<'a> {
                 self.hand_or_life_lost(amount);
             }
             Amount::Kicks | Amount::Promised | Amount::Devoured => self.paid_amount(amount),
-            Amount::RemovedThisWay(counter) => {
-                self.uses("Amount", "RemovedThisWay");
-                if !self.ep29_removes.contains(counter) {
-                    self.problem(
-                        "`RemovedThisWay` needs an activated ability whose cost removes counters of that kind from its source",
-                    );
-                }
-            }
+            Amount::RemovedThisWay(counter) => self.ep29_removed(counter),
             Amount::Bound(name) => {
                 if !self.scope.numbers.contains(name) {
                     self.problem(format!("`{name}` is not a number kept by an earlier `Let`"));
@@ -1049,7 +1042,18 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The counters the cost of the ability removed from its source ("for each charge counter removed this way").
+    fn ep29_removed(&mut self, counter: &crate::value::CounterKind) {
+        self.uses("Amount", "RemovedThisWay");
+        if !self.ep29_removes.contains(counter) {
+            self.problem(
+                "`RemovedThisWay` needs an activated ability whose cost removes counters of that kind from its source",
+            );
+        }
+    }
+
     /// The amounts of the general kinds: a logged tally, the commanders' colors, the turn and the targets of the trigger.
+    #[allow(clippy::too_many_lines)]
     fn general_amount(&mut self, amount: &Amount) {
         match amount {
             Amount::Tally { who, filter, .. } => {
@@ -4228,7 +4232,7 @@ impl Walker<'_> {
                 _ => None,
             })
             .collect();
-        let removed = std::mem::replace(&mut self.ep29_removes, removes);
+        let outer = std::mem::replace(&mut self.ep29_removes, removes);
         // The X a part of the cost counts is the one the ability announces.
         self.x_free = cost.has_x();
         self.x_now = self.x_free;
@@ -4249,7 +4253,7 @@ impl Walker<'_> {
         self.x_now = cost.has_x();
         self.body(targets, effects, false);
         self.pays_objects = paid;
-        self.ep29_removes = removed;
+        self.ep29_removes = outer;
     }
 
     /// A loyalty ability: a `-X` cost is asked as the ability is announced, and the effects read it.

@@ -113,6 +113,7 @@ Banishing Light
 Banishing Stroke
 Banshee of the Dread Choir
 Baral's Expertise
+Barbarian Class
 Barbed Batterfist
 Bard's Bow
 Barter in Blood
@@ -987,6 +988,7 @@ Mobilizer Mech
 Moldgraf Millipede
 Molecule Man
 Molt Tender
+Molten Hydra
 Molten Slagheap
 Mona Lisa, Science Geek
 Monastery Swiftspear
@@ -1119,6 +1121,7 @@ Pillar of the Paruns
 Pinion Feast
 Piper of the Swarm
 Pit Fight
+Pixie Guide
 Plague Drone
 Plague Myr
 Plague Stinger
@@ -1676,6 +1679,7 @@ Vibranium Strike Gauntlets
 Village Pillagers
 Village Rites
 Viridian Corrupter
+Vish Kal, Blood Arbiter
 Visionary Augmenter
 Vitality Hunter
 Vivid Crag
@@ -1752,6 +1756,7 @@ Wretched Confluence
 Wrexial, the Risen Deep
 Writ of Return
 Wurmwall Sweeper
+Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
 Yisan, the Wanderer Bard
 Young Wolf
