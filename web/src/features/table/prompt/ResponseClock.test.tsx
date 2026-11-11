@@ -1,4 +1,4 @@
-// Goal: the prompt of a decision on a clock shows the seconds left as text that counts down with the session's clock, a bar that drains over the time left (not drawn, with only the number, under a preference for less motion), says its sentence once to a screen reader, turns urgent in the last seconds and goes with the prompt at zero; a decision without a clock, or another decision's clock, shows nothing; the Commands panel shows the same countdown (with no spoken start of its own) while the seat has a clock.
+// Goal: the prompt of a decision on a clock shows the seconds left as text that counts down with the session's clock, a bar that drains over the time left (not drawn, with only the number, under a preference for less motion), says its sentence once to a screen reader, turns urgent in the last seconds and goes with the prompt at zero; a decision without a clock (the opening's keep or mulligan and bottoming among them), or another decision's clock, shows nothing; the Commands panel shows the same countdown (with no spoken start of its own) while the seat has a clock.
 import { act, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { DecisionKind, ServerMessage } from '@/protocol/generated'
@@ -202,6 +202,22 @@ describe('when there is nothing to show', () => {
     expect(container.querySelector('[data-decision="Priority"]')).not.toBeNull()
     expect(clock()).toBeNull()
   })
+
+  it.each(['Mulligan', 'BottomCards'] as const)(
+    'draws no clock, bar or seconds for the opening prompt %s, which the server sends without one',
+    (kind) => {
+      const { send, wait, container } = mount()
+      send(decision(5, KINDS[kind]))
+      expect(container.querySelector(`[data-decision="${kind}"]`)).not.toBeNull()
+      wait(3_600_000)
+      expect(container.querySelector(`[data-decision="${kind}"]`)).not.toBeNull()
+      expect(container.querySelector('[data-slot="response-clock"]')).toBeNull()
+      expect(container.querySelector('[data-slot="response-clock-bar"]')).toBeNull()
+      expect(container.querySelector('[data-slot="commands-clock"]')).toBeNull()
+      expect(container.querySelector('[role="timer"]')).toBeNull()
+      expect(container).not.toHaveTextContent(/\d+ s\b/)
+    },
+  )
 
   it('draws nothing for a decision that is another one than the clock counts', () => {
     const { h, send, clock } = mount()

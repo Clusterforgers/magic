@@ -1,4 +1,4 @@
-//! Goal: the opening sends every seat its own keep-or-mulligan prompt at once, each on its own think clock; answers arrive in any order without touching another seat's prompt, a seat whose clock runs out keeps its hand, and no prompt shows another seat's hand.
+//! Goal: the opening sends every seat its own keep-or-mulligan prompt at once and with no clock whatever the settings; answers arrive in any order without touching another seat's prompt, a seat that does not answer is waited for (also while away) until it answers or concedes, and no prompt shows another seat's hand.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -13,14 +13,12 @@ use mtg_protocol::{ClientMessage, DecisionId, ServerMessage};
 use mtg_server::{Dwell, EventStore, GameConfig, GameHandle, Pace, spawn_game_with};
 use rstest::rstest;
 
-const THINK: Duration = Duration::from_secs(60);
-
 const PACE: Pace = Pace {
     auto_pass: true,
     response: Some(Duration::from_secs(10)),
     blocks: Some(Duration::from_secs(45)),
-    think: Some(THINK),
-    active: None,
+    think: Some(Duration::from_mins(1)),
+    active: Some(Duration::from_secs(30)),
     extension: None,
     grace: Duration::ZERO,
     dwell: Dwell::OFF,
@@ -96,7 +94,7 @@ fn answered(log: &[Event]) -> Vec<(PlayerId, bool)> {
 
 #[rstest]
 #[tokio::test(start_paused = true)]
-async fn every_seat_gets_its_own_prompt_at_once_on_its_own_clock(
+async fn every_seat_gets_its_own_prompt_at_once_without_a_clock(
     #[values(2, 3, 4, 6)] seats: usize,
 ) {
     let (_handle, _, mut clients) = start(seats).await;
@@ -110,7 +108,7 @@ async fn every_seat_gets_its_own_prompt_at_once_on_its_own_clock(
             client.seat
         );
         assert_eq!(mine[0].1.player, client.seat);
-        assert_eq!(mine[0].2, Some(60_000), "each seat has the think clock");
+        assert_eq!(mine[0].2, None, "the opening has no clock");
         hands.push(hand(&mine[0]));
     }
     for (at, mine) in hands.iter().enumerate() {
@@ -161,32 +159,73 @@ async fn answers_in_any_order_leave_the_other_prompts_as_they_are() {
     assert!(again[0].0 > asked[3].0);
 }
 
-#[tokio::test(start_paused = true)]
-async fn a_seat_whose_clock_runs_out_keeps_its_hand() {
-    let (handle, store, mut clients) = start(4).await;
-    let asked: Vec<Prompt> = clients.iter_mut().map(|c| prompts(c).remove(0)).collect();
-    answer(&handle, &clients[1], asked[1].0, MulliganChoice::Mulligan).await;
-    tokio::time::advance(THINK).await;
+/// Lets the actor run for an hour of paused time.
+async fn an_hour_passes(handle: &GameHandle) {
+    tokio::time::advance(Duration::from_hours(1)).await;
     for _ in 0..20 {
         tokio::task::yield_now().await;
         handle.status().await.unwrap();
     }
+}
+
+#[tokio::test(start_paused = true)]
+async fn a_seat_that_does_not_answer_is_waited_for() {
+    let (handle, store, mut clients) = start(4).await;
+    let asked: Vec<Prompt> = clients.iter_mut().map(|c| prompts(c).remove(0)).collect();
+    answer(&handle, &clients[1], asked[1].0, MulliganChoice::Mulligan).await;
+    let before = handle.status().await.unwrap();
+    an_hour_passes(&handle).await;
     let log = store.inner().load(game_id(1)).await.unwrap();
-    let mut kept: Vec<PlayerId> = answered(&log)
-        .into_iter()
-        .filter_map(|(seat, kept)| kept.then_some(seat))
-        .collect();
-    kept.sort_unstable();
     assert_eq!(
-        kept,
-        vec![PlayerId(0), PlayerId(2), PlayerId(3)],
-        "the seats that did not answer keep"
+        answered(&log),
+        vec![(PlayerId(1), false)],
+        "nobody is answered for"
     );
+    assert_eq!(handle.status().await.unwrap(), before);
+    for client in &mut clients {
+        assert!(prompts(client).is_empty(), "no prompt is sent again");
+    }
+    for seat in [0, 2, 3] {
+        answer(&handle, &clients[seat], asked[seat].0, MulliganChoice::Keep).await;
+    }
     let again = prompts(&mut clients[1]);
-    assert!(
-        again
-            .iter()
-            .any(|p| matches!(p.1.kind, DecisionKind::Mulligan(_))),
-        "the mulligan seat is asked again"
+    assert_eq!(
+        again.len(),
+        1,
+        "the mulligan seat is asked about its new hand"
     );
+    assert_eq!(again[0].2, None, "still without a clock");
+}
+
+#[tokio::test(start_paused = true)]
+async fn a_seat_that_leaves_in_the_opening_holds_the_table_until_it_comes_back_and_concedes() {
+    let (handle, store, mut clients) = start(3).await;
+    let asked: Vec<Prompt> = clients.iter_mut().map(|c| prompts(c).remove(0)).collect();
+    handle.leave(PlayerId(2)).await;
+    for seat in 0..2 {
+        answer(&handle, &clients[seat], asked[seat].0, MulliganChoice::Keep).await;
+    }
+    an_hour_passes(&handle).await;
+    let status = handle.status().await.unwrap();
+    assert_eq!(status.waiting_on, Some(PlayerId(2)), "the table waits");
+    assert_eq!(status.result, None);
+
+    let mut back = Client::join(&handle, 2).await;
+    handle.status().await.unwrap();
+    let mine = prompts(&mut back);
+    assert_eq!(mine.len(), 1, "the seat is asked again when it comes back");
+    assert_eq!(mine[0].0, asked[2].0, "under the same id");
+    assert_eq!(mine[0].2, None);
+    back.say(&handle, ClientMessage::Concede).await;
+    let status = handle.status().await.unwrap();
+    assert_eq!(status.result, None, "two players are left");
+    assert_ne!(status.waiting_on, Some(PlayerId(2)));
+    let log = store.inner().load(game_id(1)).await.unwrap();
+    assert!(log.iter().any(|e| matches!(
+        e,
+        Event::PlayerLost {
+            player: PlayerId(2),
+            ..
+        }
+    )));
 }

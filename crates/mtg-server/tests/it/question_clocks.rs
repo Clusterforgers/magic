@@ -1,4 +1,4 @@
-//! Goal: through the actor, on tokio's paused time, every question a seat is asked that the clocks cover (yes or no, an option, modes, a number, a division, a payment, the targets of a spell, keeping a hand and bottoming) behaves the same: the clock starts when the question is sent and carries its length, an answer in time wins and no clock answers again, at the deadline the table plays the one documented fallback exactly once through the normal path (logged, saved like the seat's own answer, a late answer stale), a reconnect is told the time that is left and the deadline does not move, and every other seat is sent the messages it would have been sent had the player answered with the fallback itself.
+//! Goal: through the actor, on tokio's paused time, the questions of the opening (keeping a hand and bottoming) have no clock and are never answered for, and every question a seat is asked that the clocks cover (yes or no, an option, modes, a number, a division, a payment, the targets of a spell) behaves the same: the clock starts when the question is sent and carries its length, an answer in time wins and no clock answers again, at the deadline the table plays the one documented fallback exactly once through the normal path (logged, saved like the seat's own answer, a late answer stale), a reconnect is told the time that is left and the deadline does not move, and every other seat is sent the messages it would have been sent had the player answered with the fallback itself.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -49,7 +49,8 @@ struct Case {
     caster: usize,
     /// The seat the question is put to; the first seat asked for a question of the opening.
     asked: Option<usize>,
-    /// The clock the question is sent with, in milliseconds.
+    /// The clock the question is sent with, in milliseconds; for a question of the opening, which has none, how long a
+    /// test waits to see that nothing answers it.
     clock: u64,
     setup: fn() -> GameSetup,
     /// What the table answers at the deadline, written out by hand (the expected answer, not the code under test).
@@ -520,6 +521,42 @@ async fn play(case: &Case, prompt: Option<fn(&Decision) -> Answer>) -> Played {
 }
 
 #[rstest]
+#[case::keep_or_mulligan(keep_or_mulligan())]
+#[case::bottoming(bottoming())]
+#[tokio::test(start_paused = true)]
+async fn a_question_of_the_opening_has_no_clock_and_is_never_answered_for(#[case] case: Case) {
+    let mut table = Table::start(&case).await;
+    let asked = table.reach(&case).await;
+    assert_eq!(asked.left, None, "{}", case.name);
+    let status = table.handle.status().await.unwrap();
+    table.wait(60 * case.clock).await;
+    assert_eq!(table.answered_for(asked.seat, case.name), 0);
+    assert_eq!(table.handle.status().await.unwrap(), status);
+
+    let mut back = Client::join(&table.handle, asked.seat).await;
+    let (id, left) = back
+        .until(|message| match message {
+            ServerMessage::Decision {
+                id, deadline_ms, ..
+            } => Some((*id, *deadline_ms)),
+            _ => None,
+        })
+        .await;
+    assert_eq!((id, left), (asked.id, None), "a reconnect hears no clock");
+    let answer = (case.on_time)(&asked.decision);
+    table.clients[asked.seat] = back;
+    table.reply(asked.seat, asked.id, answer).await;
+    table.quiet().await;
+    assert!(
+        !table.clients[asked.seat]
+            .drain()
+            .iter()
+            .any(|message| matches!(message, ServerMessage::Error { .. })),
+        "the answer after an hour is accepted"
+    );
+}
+
+#[rstest]
 #[case::yes_no(yes_no())]
 #[case::choose_option(choose_option())]
 #[case::choose_mode(choose_mode())]
@@ -527,8 +564,6 @@ async fn play(case: &Case, prompt: Option<fn(&Decision) -> Answer>) -> Played {
 #[case::divide_amount(divide_amount())]
 #[case::pay_mana(pay_mana())]
 #[case::spell_targets(spell_targets())]
-#[case::keep_or_mulligan(keep_or_mulligan())]
-#[case::bottoming(bottoming())]
 #[tokio::test(start_paused = true)]
 async fn the_clock_starts_when_the_question_is_sent_and_runs_the_length_of_its_kind(
     #[case] case: Case,
@@ -554,8 +589,6 @@ async fn the_clock_starts_when_the_question_is_sent_and_runs_the_length_of_its_k
 #[case::divide_amount(divide_amount())]
 #[case::pay_mana(pay_mana())]
 #[case::spell_targets(spell_targets())]
-#[case::keep_or_mulligan(keep_or_mulligan())]
-#[case::bottoming(bottoming())]
 #[tokio::test(start_paused = true)]
 async fn an_answer_in_time_wins_and_the_clock_never_answers_again(#[case] case: Case) {
     let mut table = Table::start(&case).await;
@@ -588,8 +621,6 @@ async fn an_answer_in_time_wins_and_the_clock_never_answers_again(#[case] case: 
 #[case::divide_amount(divide_amount())]
 #[case::pay_mana(pay_mana())]
 #[case::spell_targets(spell_targets())]
-#[case::keep_or_mulligan(keep_or_mulligan())]
-#[case::bottoming(bottoming())]
 #[tokio::test(start_paused = true)]
 async fn at_the_deadline_the_table_plays_the_fallback_once_and_a_late_answer_is_stale(
     #[case] case: Case,
@@ -625,8 +656,6 @@ async fn at_the_deadline_the_table_plays_the_fallback_once_and_a_late_answer_is_
 #[case::divide_amount(divide_amount())]
 #[case::pay_mana(pay_mana())]
 #[case::spell_targets(spell_targets())]
-#[case::keep_or_mulligan(keep_or_mulligan())]
-#[case::bottoming(bottoming())]
 #[tokio::test(start_paused = true)]
 async fn a_reconnect_is_told_the_time_that_is_left_and_the_deadline_stays(#[case] case: Case) {
     let mut table = Table::start(&case).await;
@@ -675,8 +704,6 @@ async fn a_reconnect_is_told_the_time_that_is_left_and_the_deadline_stays(#[case
 #[case::divide_amount(divide_amount())]
 #[case::pay_mana(pay_mana())]
 #[case::spell_targets(spell_targets())]
-#[case::keep_or_mulligan(keep_or_mulligan())]
-#[case::bottoming(bottoming())]
 #[tokio::test(start_paused = true)]
 async fn the_other_seats_are_sent_the_same_messages_whether_the_player_answered_or_timed_out(
     #[case] case: Case,

@@ -3,7 +3,9 @@
 
 use crate::common;
 
-use common::{Client, game_id, roomy, seat, start_table, table_setup, timed};
+use common::{
+    Client, game_id, passive_until_priority, roomy, seat, start_table, table_setup, timed,
+};
 use mtg_core::ids::PlayerId;
 use mtg_protocol::{ClientMessage, ServerMessage};
 use mtg_server::{GameHandle, MemoryStore, spawn_game_with};
@@ -169,12 +171,12 @@ async fn a_batch_after_a_drop_carries_the_flag(#[values(2, 3)] players: usize) {
     assert!(tables.iter().all(|flags| *flags == expected), "{tables:?}");
 }
 
-const THINK: std::time::Duration = std::time::Duration::from_secs(60);
+const ACTIVE: std::time::Duration = std::time::Duration::from_mins(1);
 
-/// The opening decisions run on a one-minute think clock.
-fn think_clock() -> mtg_server::GameConfig {
+/// Every decision of the active player's turn runs on a one-minute clock; the opening has none.
+fn active_clock() -> mtg_server::GameConfig {
     let pace = mtg_server::Pace {
-        think: Some(THINK),
+        active: Some(ACTIVE),
         ..roomy().pace
     };
     mtg_server::GameConfig { pace, ..roomy() }
@@ -197,15 +199,36 @@ fn away_times(messages: &[ServerMessage]) -> Vec<(PlayerId, bool, Option<u64>)> 
 
 #[rstest]
 #[tokio::test]
-async fn a_seat_away_on_a_clock_comes_with_the_time_before_the_game_answers_for_it(
+async fn a_seat_away_in_the_opening_comes_without_a_time(
     #[values(2, 3)] players: usize,
     #[values(0, 1)] victim: usize,
 ) {
     let setup = table_setup(players, 3);
-    let handle = spawn_game_with(game_id(1), setup, MemoryStore::new(), think_clock()).unwrap();
-    // Every seat is asked about its opening hand on the think clock.
+    let handle = spawn_game_with(game_id(1), setup, MemoryStore::new(), active_clock()).unwrap();
     let (mut clients, _) = start_table(&handle, players).await;
     handle.status().await.unwrap();
+    let witness = (victim + 1) % players;
+    clients[witness].drain();
+    handle.leave(seat(victim)).await;
+    handle.status().await.unwrap();
+    let heard = away_times(&clients[witness].drain());
+    assert_eq!(
+        heard,
+        [(seat(victim), false, None)],
+        "the opening has no clock"
+    );
+}
+
+#[rstest]
+#[tokio::test]
+async fn a_seat_away_on_a_clock_comes_with_the_time_before_the_game_answers_for_it(
+    #[values(2, 3)] players: usize,
+) {
+    let setup = table_setup(players, 3);
+    let handle = spawn_game_with(game_id(1), setup, MemoryStore::new(), active_clock()).unwrap();
+    let (mut clients, _) = start_table(&handle, players).await;
+    // Past the opening, the active player is asked on its clock.
+    let (victim, _, _) = passive_until_priority(&handle, &mut clients).await;
     let witness = (victim + 1) % players;
     clients[witness].drain();
     handle.leave(seat(victim)).await;
