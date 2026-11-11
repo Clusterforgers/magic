@@ -636,7 +636,7 @@ pub enum GameRule {
     FlipTwoCoins(Ref),
     /// The players play with the top card of their library revealed to every seat.
     RevealTop(Ref),
-    /// The players play with their hands revealed to every seat: "Players play with their hands revealed."
+    /// The players play with their hands revealed.
     RevealHand(Ref),
     /// Players may cast cards the ordinary rules do not let them cast: from another zone, without paying their mana
     /// costs, or as though they had flash (CR 601.3).
@@ -742,8 +742,7 @@ pub enum GameRule {
         /// Their opponents can't win the game either.
         #[serde(default, skip_serializing_if = "crate::effect::is_false")]
         opponents_cant_win: bool,
-        /// Only the loss for having 0 or less life (CR 704.5a) does not happen: "You don't lose the game for having 0 or
-        /// less life."; they still lose any other way.
+        /// Only the loss for 0 or less life (CR 704.5a).
         #[serde(default, skip_serializing_if = "crate::effect::is_false")]
         life_only: bool,
     },

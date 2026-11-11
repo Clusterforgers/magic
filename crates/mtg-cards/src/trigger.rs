@@ -783,10 +783,9 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
-    /// A player would lose the game (CR 104.3), for any reason: "If you would lose the game, instead ..."; only
-    /// `Instead` replaces it.
+    /// A player would lose the game; only `Instead`.
     LoseGame {
-        /// Who would lose it.
+        /// Who.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
@@ -860,13 +859,11 @@ pub enum ReplaceBy {
     /// The number or amount in the event is increased.
     Add(u32),
     /// The number in the event is halved, rounded down ("they put half that many of each of those kinds of counters
-    /// on that permanent or player instead, rounded down", "it deals half that damage, rounded down, ... instead").
+    /// on that permanent or player instead, rounded down").
     Half,
-    /// The damage is decreased by this much, a replacement and not a prevention (CR 614.1a): "it deals that much damage
-    /// minus 1 to that creature instead"; damage brought to 0 is not dealt.
+    /// Damage minus this much (not a prevention).
     Subtract(u32),
-    /// Damage greater than this is this much instead, a replacement and not a prevention (CR 614.1a): "If a source would
-    /// deal 4 or more damage to a permanent or player, that source deals 3 damage to that permanent or player instead."
+    /// Damage over this much is this much (not a prevention).
     Cap(u32),
     /// The event does not happen (prevention, CR 615).
     Prevent,
