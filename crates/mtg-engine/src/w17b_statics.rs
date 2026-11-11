@@ -20,6 +20,7 @@ use crate::zones::Zone;
 pub(crate) struct W17bRules {
     graveyards: bool,
     cant_lose: BTreeSet<PlayerId>,
+    life_spared: BTreeSet<PlayerId>,
     winless: BTreeSet<PlayerId>,
     cant_cast: Vec<(PlayerId, Option<PlayerId>)>,
     toughness: BTreeSet<PlayerId>,
@@ -29,6 +30,7 @@ pub(crate) struct W17bRules {
 pub(crate) const W17B_NONE: W17bRules = W17bRules {
     graveyards: false,
     cant_lose: BTreeSet::new(),
+    life_spared: BTreeSet::new(),
     winless: BTreeSet::new(),
     cant_cast: Vec::new(),
     toughness: BTreeSet::new(),
@@ -39,8 +41,16 @@ impl W17bRules {
     pub(crate) fn w17b_put(&mut self, rule: &Rule) {
         match rule {
             Rule::GraveyardCardsUntargetable => self.graveyards = true,
-            Rule::CantLoseGame { who, winless } => {
-                self.cant_lose.extend(who);
+            Rule::CantLoseGame {
+                who,
+                winless,
+                life_only,
+            } => {
+                if *life_only {
+                    self.life_spared.extend(who);
+                } else {
+                    self.cant_lose.extend(who);
+                }
                 self.winless.extend(winless);
             }
             Rule::CantCastSpells { who, turn } => {
@@ -61,6 +71,7 @@ pub(crate) fn w17b_lower(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::CantLoseGame {
             who,
             opponents_cant_win,
+            life_only,
         } => {
             let who = scope.players(who)?;
             let winless = if *opponents_cant_win {
@@ -72,7 +83,11 @@ pub(crate) fn w17b_lower(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             } else {
                 Vec::new()
             };
-            Rule::CantLoseGame { who, winless }
+            Rule::CantLoseGame {
+                who,
+                winless,
+                life_only: *life_only,
+            }
         }
         GameRule::CantCastSpells { who, your_turn } => Rule::CantCastSpells {
             who: scope.players(who)?,
@@ -86,7 +101,7 @@ pub(crate) fn w17b_lower(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
 /// Whether one of these rules names no player, so putting it in force changes nothing.
 pub(crate) fn w17b_names_nothing(rule: &Rule) -> bool {
     match rule {
-        Rule::CantLoseGame { who, winless } => who.is_empty() && winless.is_empty(),
+        Rule::CantLoseGame { who, winless, .. } => who.is_empty() && winless.is_empty(),
         Rule::CantCastSpells { who, .. } | Rule::ToughnessAssignsDamage(who) => who.is_empty(),
         _ => false,
     }
@@ -108,6 +123,11 @@ pub(crate) fn w17b_shielded_in_graveyard(state: &GameState, object: ObjectId) ->
 /// Whether `player` can't lose the game now (CR 104.3): a loss the rules or an effect would give them does not happen.
 pub fn w17b_cant_lose(state: &GameState, player: PlayerId) -> bool {
     state.rules().w17b.cant_lose.contains(&player)
+}
+
+/// Whether `player` doesn't lose the game for having 0 or less life now (CR 704.5a); they still lose any other way.
+pub fn w17b_life_spared(state: &GameState, player: PlayerId) -> bool {
+    state.rules().w17b.life_spared.contains(&player)
 }
 
 /// Whether `player` can't win the game now: an effect that would have them win does nothing.

@@ -228,6 +228,11 @@ Rules that change how the game is played rather than the objects in it (`Effect:
 - Declarations that do only what the rules require: `AttackOptions::required_attack` and `BlockOptions::required_blocks`, which the bots, the server's clock fallback and the testkit's passive seats use.
 - The top card of a library whose owner plays with it revealed (`GameState::revealed_top`) is shown to every seat; `Rule::LookAtTop` makes it known to its owner alone.
 - A life total that can't change (`GameRule::LifeTotalCantChange`, CR 119.7) stops gain, loss, lifelink and mana burn.
+- A card's `MayCast` rule from its owner's hand (`from: Hand`, the card itself, `flash`) is gathered with the rules of the hand: "you may cast this spell as though it had flash if ..." holds while its condition does.
+- `CantLoseGame.life_only` spares only the state-based loss for 0 or less life (CR 704.5a); poison, an empty library and effects still end the game.
+- `GameRule::RevealHand` shows every card of the named hands to every seat (`is_shown_to`, `sight::revealed_hand`), a card drawn later included.
+- `ReplaceWhen::LoseGame` sees each `PlayerLost` event (`Unit::Loss`); only `Instead` replaces it, and the state-based actions check the new state again.
+- `ReplaceBy::Subtract` and `Cap` lessen damage as a replacement, not a prevention (CR 614.1a), and `Half` halves it rounded down; damage brought to 0 is not dealt.
 - `GameRule::FlipTwoCoins` (Krark's Thumb, CR 705.3): the flipper calls once, each such rule doubles the coins of the flip, and when they differ the flipper keeps a won or a lost one (`ChooseOption`), and only the kept flip is logged as `CoinFlipped`.
 - A spell's own cost modifier reads the X it announces ("costs {1} less for each permanent sacrificed this way"); another object's modifier reads no X.
 - `GameRule::ManaProduced` (`mana_replace.rs`) changes the mana of a tap (CR 106.6): `ManaChange` sets the type, sets one mana of a type, multiplies, or converts one type. It rewrites the options `mana_ability::options` offers after the triggered mana abilities fold in, so the payment planner and the activation agree; it never uses the stack.

@@ -1048,6 +1048,10 @@ describe('events with more than one shape', () => {
     ],
     [ruleEffect('GraveyardCardsUntargetable', 'Forever'), "Cards in graveyards can't be targeted"],
     [ruleEffect({ CantLoseGame: { who: [0], winless: [1] } }, 'Forever'), "Ana can't lose the game"],
+    [
+      ruleEffect({ CantLoseGame: { who: [0], winless: [], life_only: true } }, 'Forever'),
+      "Ana can't lose the game for having 0 or less life",
+    ],
     [ruleEffect({ CantCastSpells: { who: [1, 2], turn: 0 } }, 'Forever'), "Bo and Cy can't cast spells"],
     [
       ruleEffect({ ToughnessAssignsDamage: [0] }, 'Forever'),
@@ -1060,6 +1064,10 @@ describe('events with more than one shape', () => {
     [
       ruleEffect({ RevealTop: [2] }, 'UntilEndOfTurn'),
       'Cy play with the top card of their library revealed until end of turn',
+    ],
+    [
+      ruleEffect({ RevealHand: [1, 2] }, 'UntilEndOfTurn'),
+      'Bo and Cy play with their hands revealed until end of turn',
     ],
     [
       ruleEffect(

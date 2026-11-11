@@ -560,6 +560,7 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
         reference().prop_map(GameRule::CantDraw),
         reference().prop_map(GameRule::CantSearch),
         reference().prop_map(GameRule::RevealTop),
+        reference().prop_map(GameRule::RevealHand),
         reference().prop_map(GameRule::LookAtTopAnyTime),
         reference().prop_map(GameRule::NoMaxHandSize),
         (reference(), amount())
@@ -1350,6 +1351,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                         effect: false,
                     }),
                 reference().prop_map(|who| ReplaceWhen::LifeGain { who }),
+                reference().prop_map(|who| ReplaceWhen::LoseGame { who }),
                 reference().prop_map(|who| ReplaceWhen::Mill { who }),
                 (reference(), 0..3u32).prop_map(|(who, except_draw_step)| ReplaceWhen::Draw {
                     who,
@@ -1372,6 +1374,8 @@ fn ability() -> impl Strategy<Value = Ability> {
             prop_oneof![
                 (1u32..4).prop_map(ReplaceBy::Multiply),
                 (1u32..4).prop_map(ReplaceBy::Add),
+                (1u32..4).prop_map(ReplaceBy::Subtract),
+                (1u32..4).prop_map(ReplaceBy::Cap),
                 Just(ReplaceBy::Prevent),
                 (1u32..6).prop_map(ReplaceBy::PreventUpTo),
                 effects().prop_map(ReplaceBy::Instead),

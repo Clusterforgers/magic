@@ -39,7 +39,9 @@ impl Pass<'_> {
                 self.reference(*source),
             ),
             Unit::Counters { on, .. } => (Some(*on), None),
-            Unit::Life { player } | Unit::Draw { player } => (Some(Target::Player(*player)), None),
+            Unit::Life { player } | Unit::Draw { player } | Unit::Loss { player } => {
+                (Some(Target::Player(*player)), None)
+            }
             Unit::Move { object: id, .. } | Unit::Enter { object: id, .. } => (object(*id), None),
             Unit::Other => (None, None),
         };

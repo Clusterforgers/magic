@@ -4519,6 +4519,7 @@ impl Walker<'_> {
                 who, spells: None, ..
             }
             | GameRule::RevealTop(who)
+            | GameRule::RevealHand(who)
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
             | GameRule::NoMaxHandSize(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
@@ -4665,6 +4666,18 @@ impl Walker<'_> {
 
     /// The players a rule about losing, casting or combat damage names.
     fn w17b_rule(&mut self, tag: &str, rule: &GameRule) {
+        if let GameRule::CantLoseGame {
+            opponents_cant_win: true,
+            life_only: true,
+            ..
+        } = rule
+        {
+            self.at(tag, |w| {
+                w.problem(
+                    "a rule that spares only the loss for life lets the opponents win as usual",
+                );
+            });
+        }
         if let GameRule::CantLoseGame { who, .. }
         | GameRule::CantCastSpells { who, .. }
         | GameRule::ToughnessAssignsDamage(who) = rule
@@ -4684,7 +4697,8 @@ impl Walker<'_> {
     }
 
     /// A rule works from the battlefield, "this spell can't be countered" from the stack (CR 113.6b), and a card's
-    /// permission to cast itself from its graveyard or from exile from there (CR 113.6).
+    /// permission to cast itself from its graveyard or from exile from there (CR 113.6), and its permission to cast itself
+    /// from its owner's hand as though it had flash from the hand.
     fn rule_zone(&mut self, rule: &GameRule, from: ZoneKind) {
         let spell = matches!(rule, GameRule::CantBeCountered(Ref::This));
         let c8_eg_itself = matches!(
@@ -4692,10 +4706,16 @@ impl Walker<'_> {
             GameRule::MayCast(permission)
                 if permission.what.0 == [Pred::This] && permission.from == Some(from)
         );
+        let ep27_flash = matches!(
+            rule,
+            GameRule::MayCast(permission)
+                if permission.what.0 == [Pred::This] && permission.from.is_none() && permission.flash
+        );
         match from {
             ZoneKind::Battlefield => {}
             ZoneKind::Stack if spell => {}
             ZoneKind::Graveyard | ZoneKind::Exile if c8_eg_itself => {}
+            ZoneKind::Hand if ep27_flash => {}
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
                 w.problem("a card can be a commander in every zone: write the rule without `from`");
             }),
@@ -4745,10 +4765,18 @@ impl Walker<'_> {
                 }
             }
             ReplaceWhen::LifeGain { who }
+            | ReplaceWhen::LoseGame { who }
             | ReplaceWhen::Mill { who }
             | ReplaceWhen::Draw { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
+        }
+    }
+
+    /// A loss of the game is replaced only by steps that happen instead.
+    fn ep27_lose_game(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
+        if matches!(when, ReplaceWhen::LoseGame { .. }) && !matches!(by, ReplaceBy::Instead(_)) {
+            self.problem("a loss of the game is replaced only by steps that happen instead");
         }
     }
 
@@ -4838,16 +4866,26 @@ impl Walker<'_> {
         }
     }
 
-    /// Only the counters of an event are halved.
+    /// Only the counters or the damage of an event are halved, and only damage is lessened or capped.
     fn ep24_half(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
-        if *by == ReplaceBy::Half && !matches!(when, ReplaceWhen::CountersPut { .. }) {
-            self.problem("only the counters of an event are halved");
+        let damage = matches!(when, ReplaceWhen::Damage { .. });
+        if *by == ReplaceBy::Half && !damage && !matches!(when, ReplaceWhen::CountersPut { .. }) {
+            self.problem("only the counters or the damage of an event are halved");
+        }
+        match by {
+            ReplaceBy::Subtract(_) | ReplaceBy::Cap(_) if !damage => {
+                self.problem("only damage is lessened or capped");
+            }
+            ReplaceBy::Subtract(0) => self.problem("subtracting nothing changes nothing"),
+            ReplaceBy::Cap(0) => self.problem("capping damage at 0 is `Prevent`"),
+            _ => {}
         }
     }
 
     /// The engine changes only the count of a mill (`ReplaceWhen.Mill.Other`) and halves only counters.
     fn e19_mill(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.ep24_half(when, by);
+        self.ep27_lose_game(when, by);
         if matches!(when, ReplaceWhen::Mill { .. })
             && !matches!(by, ReplaceBy::Multiply(_) | ReplaceBy::Add(_))
         {
@@ -5842,6 +5880,7 @@ mod tests {
     #[case::a_static_ability_from_the_graveyard(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Haste"}],"condition":{"Compare":{"left":{"Count":[{"Subtype":"Mountain"},{"ControlledBy":"You"}]},"op":"Ge","right":1}},"from":"Graveyard"}}"#, &["Ability.Static", "Ability.From", "Keyword.Haste", "Mod.AddKeyword"])]
     #[case::trigger_from_the_graveyard(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"limit":"OncePerTurn","from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Ability.Limit", "Ability.From", "Effect.Draw", "Trigger.StepBegins"])]
     #[case::a_cast_permission_with_added_costs(r#"{"Rule":{"rule":{"MayCast":{"what":["This"],"from":"Graveyard","additional":[{"PayLife":3},{"Discard":{}}]}},"from":"Graveyard"}}"#, &["Ability.From", "Ability.Rule", "Cost.Discard", "Cost.PayLife", "Rule.MayCast"])]
+    #[case::ep27_cast_itself_with_flash_from_a_hand(r#"{"Rule":{"rule":{"MayCast":{"what":["This"],"flash":true}},"condition":"YourTurn","from":"Hand"}}"#, &["Ability.From", "Ability.Rule", "Rule.MayCast"])]
     #[case::affinity_given_to_spells(r#"{"Static":{"affected":{"Each":["Spell",{"Type":"Enchantment"}]},"mods":[{"AddKeyword":{"Affinity":[{"Subtype":"Aura"}]}}]}}"#, &["Ability.Static", "Ability.Static.SpellKeywords", "Keyword.Affinity", "Mod.AddKeyword"])]
     #[case::a_discard_of_your_choice(r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Discard"])]
     #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
@@ -6232,6 +6271,26 @@ mod tests {
         r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"State":{"condition":"YourTurn"}},"effects":[{"Draw":{}}]}}]}}"#,
         "a state is the whole pattern of a triggered ability"
     )]
+    #[case::ep27_a_loss_prevented(
+        r#"{"Replacement":{"when":{"LoseGame":{}},"by":"Prevent"}}"#,
+        "a loss of the game is replaced only by steps that happen instead"
+    )]
+    #[case::ep27_tokens_lessened(
+        r#"{"Replacement":{"when":{"TokenCreation":{"controller":"You"}},"by":{"Subtract":1}}}"#,
+        "only damage is lessened or capped"
+    )]
+    #[case::ep27_damage_capped_at_nothing(
+        r#"{"Replacement":{"when":{"Damage":{}},"by":{"Cap":0}}}"#,
+        "capping damage at 0 is `Prevent`"
+    )]
+    #[case::ep27_draws_halved(
+        r#"{"Replacement":{"when":{"Draw":{"who":"You"}},"by":"Half"}}"#,
+        "only the counters or the damage of an event are halved"
+    )]
+    #[case::ep27_life_only_and_opponents_cant_win(
+        r#"{"Rule":{"rule":{"CantLoseGame":{"who":"You","opponents_cant_win":true,"life_only":true}}}}"#,
+        "a rule that spares only the loss for life lets the opponents win as usual"
+    )]
     #[case::a_state_in_the_cause_of_a_rule(
         r#"{"Rule":{"rule":{"TriggerAgain":{"cause":{"State":{"condition":"YourTurn"}}}}}}"#,
         "a state is the whole pattern of a triggered ability"
@@ -6250,6 +6309,14 @@ mod tests {
     )]
     #[case::from_a_hand(
         r#"{"Rule":{"rule":{"CantDraw":"You"},"from":"Hand"}}"#,
+        "abilities[0].Rule.from: a rule works from the battlefield"
+    )]
+    #[case::a_permission_from_a_hand_without_flash(
+        r#"{"Rule":{"rule":{"MayCast":{"what":["This"]}},"from":"Hand"}}"#,
+        "abilities[0].Rule.from: a rule works from the battlefield"
+    )]
+    #[case::a_flash_permission_from_a_hand_for_other_cards(
+        r#"{"Rule":{"rule":{"MayCast":{"what":[{"Type":"Creature"}],"flash":true}},"from":"Hand"}}"#,
         "abilities[0].Rule.from: a rule works from the battlefield"
     )]
     #[case::from_the_stack_for_another_rule(

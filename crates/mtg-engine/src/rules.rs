@@ -181,6 +181,8 @@ pub enum Rule {
     },
     /// The players play with the top card of their library revealed.
     RevealTop(Vec<PlayerId>),
+    /// The players play with their hands revealed to every seat.
+    RevealHand(Vec<PlayerId>),
     /// The players have no maximum hand size (CR 402.2).
     NoMaxHandSize(Vec<PlayerId>),
     /// The players' maximum hand size is this many cards (CR 402.2).
@@ -351,6 +353,9 @@ pub enum Rule {
         who: Vec<PlayerId>,
         /// The players who can't win.
         winless: Vec<PlayerId>,
+        /// Only the loss for having 0 or less life does not happen (CR 704.5a).
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        life_only: bool,
     },
     /// The players can't cast spells, only during this player's turns when one is named.
     CantCastSpells {
@@ -593,6 +598,7 @@ pub(crate) struct RulesInForce {
     /// The players who may spend mana as though it were of any color or type, with the spells it is for.
     spend_mana_as: Vec<(PlayerId, mtg_cards::modify::SpendAs, Option<Selector>)>,
     reveal_top: BTreeSet<PlayerId>,
+    reveal_hand: BTreeSet<PlayerId>,
     no_hand_limit: BTreeSet<PlayerId>,
     skip_draw: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
@@ -973,6 +979,7 @@ impl RulesInForce {
                     .extend(players.iter().map(|p| (*p, *into)));
             }
             Rule::RevealTop(players) => self.reveal_top.extend(players),
+            Rule::RevealHand(players) => self.reveal_hand.extend(players),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::MaxHandSize(_)
             | Rule::HandSizeChange(_)
@@ -1281,6 +1288,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             Rule::UnspentManaBecomes(scope.players(who)?, *into)
         }
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
+        GameRule::RevealHand(who) => Rule::RevealHand(scope.players(who)?),
         GameRule::MayCast(permission) => Rule::MayCast {
             who: scope.players(&permission.who)?,
             what: permission.what.clone(),
@@ -1443,6 +1451,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::OpponentsCantMakeSacrifice(players)
         | Rule::SpendManaAs { players, .. }
         | Rule::RevealTop(players)
+        | Rule::RevealHand(players)
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
         | Rule::NoLegendRule(players)
@@ -1517,11 +1526,14 @@ fn gather(state: &GameState) -> RulesInForce {
         return found;
     }
     // A rule that a permanent has works from the battlefield, one a spell has for itself from the stack, and a card's
-    // permission to cast itself from its owner's graveyard or from exile (CR 601.2a, 113.6) from there.
-    let graveyards = state
-        .players()
-        .iter()
-        .map(|player| (Zone::Graveyard(player.id()), ZoneKind::Graveyard));
+    // permission to cast itself from its owner's graveyard, from exile or from a hand ("you may cast this spell as though
+    // it had flash if ...", CR 601.2a, 113.6) from there.
+    let graveyards = state.players().iter().flat_map(|player| {
+        [
+            (Zone::Graveyard(player.id()), ZoneKind::Graveyard),
+            (Zone::Hand(player.id()), ZoneKind::Hand),
+        ]
+    });
     for (zone, from) in [
         (Zone::Battlefield, ZoneKind::Battlefield),
         (Zone::Stack, ZoneKind::Stack),
@@ -1595,6 +1607,7 @@ static NONE: RulesInForce = RulesInForce {
     spared_sacrifice: BTreeSet::new(),
     spend_mana_as: Vec::new(),
     reveal_top: BTreeSet::new(),
+    reveal_hand: BTreeSet::new(),
     no_hand_limit: BTreeSet::new(),
     skip_draw: BTreeSet::new(),
     look_top: BTreeSet::new(),
@@ -1670,6 +1683,11 @@ impl GameState {
             return None;
         }
         self.zone(Zone::Library(player)).last().copied()
+    }
+
+    /// Whether a rule has `player` play with their hand revealed to every seat.
+    pub fn hand_revealed(&self, player: PlayerId) -> bool {
+        self.rules().reveal_hand.contains(&player)
     }
 }
 

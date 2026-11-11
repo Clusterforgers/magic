@@ -82,8 +82,8 @@ revealed_top?: ObjectId,
  */
 known_top?: Array<ObjectId>, 
 /**
- * The cards of the hand that the seat showed to every seat by hand and that are still there; left out while there
- * are none.
+ * The cards of the hand that the seat showed to every seat by hand and that are still there, or the whole hand while
+ * a rule has it played revealed; left out while there are none.
  */
 revealed_hand?: Array<ObjectId>, 
 /**

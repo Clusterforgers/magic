@@ -294,12 +294,16 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if ('CantDraw' in rule) what = `${seats(rule.CantDraw)} can't draw cards`
   else if ('CantSearch' in rule) what = `${seats(rule.CantSearch)} can't search libraries`
   else if ('VoteAgain' in rule) what = `${seats(rule.VoteAgain)} may vote an additional time`
-  else if ('CantLoseGame' in rule) what = `${seats(rule.CantLoseGame.who)} can't lose the game`
+  else if ('CantLoseGame' in rule)
+    what = rule.CantLoseGame.life_only
+      ? `${seats(rule.CantLoseGame.who)} can't lose the game for having 0 or less life`
+      : `${seats(rule.CantLoseGame.who)} can't lose the game`
   else if ('CantCastSpells' in rule) what = `${seats(rule.CantCastSpells.who)} can't cast spells`
   else if ('ToughnessAssignsDamage' in rule)
     what = `Creatures of ${seats(rule.ToughnessAssignsDamage)} deal combat damage by toughness`
   else if ('RevealTop' in rule)
     what = `${seats(rule.RevealTop)} play with the top card of their library revealed`
+  else if ('RevealHand' in rule) what = `${seats(rule.RevealHand)} play with their hands revealed`
   else if ('MayCast' in rule) {
     const { who, only, play } = rule.MayCast
     what = `${seats(who)} may ${play ? 'play' : 'cast'} ${only === null ? 'cards they could not' : named(only)}`

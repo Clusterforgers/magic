@@ -748,6 +748,7 @@ Idyllic Beachfront
 Igneous Inspiration
 Ill-Tempered Cyclops
 Illicit Shipment
+Illusion Spinners
 Illustrious Wanderglyph
 Ilysian Caryatid
 Immoral Bargain
@@ -1697,6 +1698,7 @@ Vulshok Splitter
 Wakanda Forever!
 Walking Ballista
 Wanderbrine Preacher
+Wandering Eye
 Wandertale Mentor
 Wanderwine Hub
 Waning Wurm

@@ -783,6 +783,12 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player would lose the game; only `Instead`.
+    LoseGame {
+        /// Who.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// A player would mill one or more cards (CR 701.17): all the cards one effect mills from a player's library are
     /// one event, so `Multiply` and `Add` change how many are milled ("they mill twice that many cards instead").
     Mill {
@@ -855,6 +861,10 @@ pub enum ReplaceBy {
     /// The number in the event is halved, rounded down ("they put half that many of each of those kinds of counters
     /// on that permanent or player instead, rounded down").
     Half,
+    /// Damage minus this much (not a prevention).
+    Subtract(u32),
+    /// Damage over this much is this much (not a prevention).
+    Cap(u32),
     /// The event does not happen (prevention, CR 615).
     Prevent,
     /// The next damage event it covers does not happen, and the shield ends ("the next time a source of your choice would

@@ -514,6 +514,8 @@ enum Unit {
     Life { player: PlayerId },
     /// A player would draw a card.
     Draw { player: PlayerId },
+    /// A player would lose the game.
+    Loss { player: PlayerId },
     /// An object would move to another zone than the battlefield.
     Move {
         object: ObjectId,
@@ -611,6 +613,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         ReplaceWhen::TokenCreation { .. }
         | ReplaceWhen::Mill { .. }
         | ReplaceWhen::LifeGain { .. }
+        | ReplaceWhen::LoseGame { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
 }
@@ -624,6 +627,18 @@ fn counters_scaled(changed: CountersChanged, now: u32) -> Vec<Item> {
         delta: i32::try_from(now).unwrap_or(i32::MAX),
         ..changed
     }))]
+}
+
+/// Whether `by` changes the number in the event (`Pass::scale`).
+const fn scales(by: &ReplaceBy) -> bool {
+    matches!(
+        by,
+        ReplaceBy::Multiply(_)
+            | ReplaceBy::Add(_)
+            | ReplaceBy::Half
+            | ReplaceBy::Subtract(_)
+            | ReplaceBy::Cap(_)
+    )
 }
 
 /// Whether the engine can apply `by` to this kind of event.
@@ -646,7 +661,8 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
                 ..
             }
         ),
-        ReplaceBy::Half => matches!(unit, Unit::Counters { .. }),
+        ReplaceBy::Half => matches!(unit, Unit::Counters { .. } | Unit::Damage { .. }),
+        ReplaceBy::Subtract(_) | ReplaceBy::Cap(_) => matches!(unit, Unit::Damage { .. }),
         ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
         | ReplaceBy::Prevent
@@ -849,6 +865,7 @@ impl Pass<'_> {
                 }
             }
             Event::LifeGained { player, .. } => Unit::Life { player: *player },
+            Event::PlayerLost { player, .. } => Unit::Loss { player: *player },
             Event::CardDrawn { player, .. } | Event::DrewFromEmptyLibrary { player } => {
                 Unit::Draw { player: *player }
             }
@@ -1003,6 +1020,7 @@ impl Pass<'_> {
                     }
             }
             (ReplaceWhen::LifeGain { who }, Unit::Life { player })
+            | (ReplaceWhen::LoseGame { who }, Unit::Loss { player })
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
             }
@@ -1607,7 +1625,7 @@ impl Pass<'_> {
         };
         match unit {
             Unit::Tokens { controller } | Unit::Enter { controller, .. } => *controller,
-            Unit::Life { player } | Unit::Draw { player } => *player,
+            Unit::Life { player } | Unit::Draw { player } | Unit::Loss { player } => *player,
             Unit::Damage { target, .. } => match target {
                 DamageTarget::Player(player) => *player,
                 DamageTarget::Object(object) => controller_of(*object),
@@ -2000,7 +2018,7 @@ impl Pass<'_> {
                 self.end_once_shield(candidate);
                 self.r6f_redirect_up_to(at, candidate, u32::MAX, applied);
             }
-            (ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Half, _) => {
+            (by, _) if scales(by) => {
                 self.scale(at, by, &applied);
             }
             (
@@ -2300,6 +2318,8 @@ impl Pass<'_> {
             ReplaceBy::Multiply(times) => amount.saturating_mul(*times),
             ReplaceBy::Add(extra) => amount.saturating_add(*extra),
             ReplaceBy::Half => amount / 2,
+            ReplaceBy::Subtract(less) => amount.saturating_sub(*less),
+            ReplaceBy::Cap(most) => amount.min(*most),
             _ => amount,
         };
         let item = self.slots[at].item.clone();
@@ -2346,15 +2366,20 @@ impl Pass<'_> {
             }) => {
                 let now = more(amount);
                 self.follow_lifelink(at, source, amount, now);
-                vec![Item::One(Event::DamageDealt {
-                    source,
-                    target,
-                    amount: now,
-                    deathtouch,
-                    form,
-                    toxic,
-                    unpreventable,
-                })]
+                // Damage brought to 0 by a replacement is not dealt (CR 120.8).
+                if now == 0 {
+                    Vec::new()
+                } else {
+                    vec![Item::One(Event::DamageDealt {
+                        source,
+                        target,
+                        amount: now,
+                        deathtouch,
+                        form,
+                        toxic,
+                        unpreventable,
+                    })]
+                }
             }
             Item::One(Event::CountersChanged(changed)) => {
                 let now = more(changed.delta.unsigned_abs());
