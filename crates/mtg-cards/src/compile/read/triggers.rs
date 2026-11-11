@@ -248,6 +248,9 @@ fn single_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if let Some(found) = r.attempt(counter_event) {
         return Some(found);
     }
+    if let Some(found) = r.attempt(super::r289_counters::r289_nth_counter) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(together) {
         return Some(found);
     }
@@ -383,6 +386,7 @@ fn counters_batch(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         what,
         counter: counter.clone(),
         each,
+        reaching: None,
     };
     // The counters of any kind put on the object in a turn are counted.
     if counter.is_none() {
@@ -416,6 +420,7 @@ fn counter_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             what,
             counter,
             each: false,
+            reaching: None,
         }
     } else {
         TriggerPattern::CountersRemoved { what, counter }
@@ -1713,6 +1718,9 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             player_attack_text(pattern)
         }
         TriggerPattern::TappedForMana { .. } => tapped_for_mana_text(pattern),
+        TriggerPattern::CountersPut {
+            reaching: Some(_), ..
+        } => super::r289_counters::r289_nth_counter_text(pattern),
         TriggerPattern::CountersPut { what, counter, .. } => {
             counter_text(what, counter.as_ref(), "put on")
         }
@@ -1913,6 +1921,7 @@ fn batch_text(inner: &TriggerPattern) -> Option<String> {
             what,
             counter,
             each,
+            reaching: None,
         } => {
             let kind = match counter {
                 Some(counter) => format!("{} ", counters::kind_text(counter)?),

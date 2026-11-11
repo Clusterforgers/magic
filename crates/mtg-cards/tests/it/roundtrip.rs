@@ -690,15 +690,20 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
         selector().prop_map(|what| TriggerPattern::Unblocked { what }),
         (selector(), 1u32..5)
             .prop_map(|(what, at_least)| TriggerPattern::GroupAttacks { what, at_least }),
-        (selector(), proptest::option::of(counter()), any::<bool>()).prop_map(
-            |(what, counter, each)| {
+        (
+            selector(),
+            proptest::option::of(counter()),
+            any::<bool>(),
+            proptest::option::of(1u32..10)
+        )
+            .prop_map(|(what, counter, each, reaching)| {
                 TriggerPattern::CountersPut {
                     what,
                     counter,
                     each,
+                    reaching,
                 }
-            }
-        ),
+            }),
         selector().prop_map(|what| TriggerPattern::Untapped { what }),
         (selector(), proptest::option::of(counter()))
             .prop_map(|(what, counter)| TriggerPattern::CountersRemoved { what, counter }),

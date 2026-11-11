@@ -1974,12 +1974,20 @@ fn matching_permanents(
                 on,
                 counter: kind,
                 delta,
+                before,
                 ..
             },
         ) => {
             let putting = matches!(pattern, TriggerPattern::CountersPut { .. });
+            let reached = match pattern {
+                TriggerPattern::CountersPut {
+                    reaching: Some(number),
+                    ..
+                } => *before < *number && *number <= before.saturating_add(delta.unsigned_abs()),
+                _ => true,
+            };
             let on = object(*on)?;
-            ((*delta > 0) == putting && of_kind(counter, kind) && picks(what, on)?)
+            ((*delta > 0) == putting && reached && of_kind(counter, kind) && picks(what, on)?)
                 .then(|| counted(state, vec![Target::Object(on)], happened.amount()))
         }
         // A chapter ability triggers when lore counters take the Saga from below its number to its number or more
@@ -2418,9 +2426,16 @@ fn object_triggers(
                 when,
                 TriggerPattern::ZoneChange { what, from: None, to: Some(ZoneKind::Graveyard) } if *what == Selector::this()
             );
-        if *from != zone && !from_anywhere {
+        // "or the creature it haunts dies" also works from exile (CR 702.55c).
+        let haunted = if zone == ZoneKind::Exile && *from != zone {
+            crate::r289_haunt::r289_haunt_part(&rules)
+        } else {
+            None
+        };
+        if *from != zone && !from_anywhere && haunted.is_none() {
             continue;
         }
+        let when = haunted.as_ref().unwrap_or(when);
         let scope = Scope::announcing(state, controller, source).with_caused(used.caused);
         for cause in causes(when, happened, &scope) {
             // CR 603.4: an "if" in the trigger is checked as the event happens.

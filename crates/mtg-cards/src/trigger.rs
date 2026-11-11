@@ -345,6 +345,10 @@ pub enum TriggerPattern {
         /// put on a creature you control", CR 603.2c); without it the batch is one event ("on one or more creatures").
         #[serde(default, skip_serializing_if = "is_false")]
         each: bool,
+        /// Only the put that takes the permanent from below this many counters of the kind to this many or more ("when
+        /// the third plan counter is put on this enchantment"); every put when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        reaching: Option<u32>,
     },
     /// Counters are put on a player ("whenever you get one or more {E}"); `Triggering` is that player.
     PlayerCountersPut {

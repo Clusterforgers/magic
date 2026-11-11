@@ -164,6 +164,7 @@ mod prepare;
 mod prevention;
 mod pronouns;
 mod r11w_tallies;
+mod r289_counters;
 mod r289_rolls;
 mod r5a_order;
 mod r5a_wordings;

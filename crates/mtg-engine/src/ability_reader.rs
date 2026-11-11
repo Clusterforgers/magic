@@ -125,7 +125,9 @@ pub(crate) fn works_anywhere(ability: &Ability) -> bool {
 /// (`GameState::possible`).
 pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
     let elsewhere = |rules: &Ability| {
-        works_from(rules).is_some_and(|from| !from.is_battlefield()) || works_anywhere(rules)
+        works_from(rules).is_some_and(|from| !from.is_battlefield())
+            || works_anywhere(rules)
+            || crate::r289_haunt::r289_haunt_part(rules).is_some()
     };
     definition.rules.iter().any(|rules| match &**rules {
         Ability::Keyword(keyword) => keywords::rules(keyword)
@@ -190,7 +192,11 @@ pub(crate) fn working_here(
     let zone = zone_kind(object.zone());
     // A permanent that is phased out is treated as though it does not exist (CR 702.26b): none of its abilities work.
     let phased_out = object.zone() == Zone::PhasedOut;
-    printed(object).filter(move |(_, rules)| !phased_out && works_from(rules) == Some(zone))
+    printed(object).filter(move |(_, rules)| {
+        !phased_out
+            && (works_from(rules) == Some(zone)
+                || (zone == ZoneKind::Exile && crate::r289_haunt::r289_haunt_part(rules).is_some()))
+    })
 }
 
 /// Whether a card with this definition prints a static ability or a keyword that adds one (`GameState::statics_possible`).

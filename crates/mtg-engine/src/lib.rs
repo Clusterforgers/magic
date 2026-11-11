@@ -145,6 +145,7 @@ mod rmt4_untap_limit;
 #[cfg(test)]
 mod rmt6_pieces_tests;
 mod rmt6_storied;
+mod r289_haunt;
 mod rmt8_turns;
 pub mod rng;
 #[cfg(test)]
