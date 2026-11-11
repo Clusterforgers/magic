@@ -42,6 +42,7 @@ mod reminder_cards;
 mod rmt1_cards;
 mod rmt2_readback;
 mod rmt3_writers;
+mod rmt5_wholes;
 mod roundtrip;
 mod transform_cards;
 mod vocabulary;

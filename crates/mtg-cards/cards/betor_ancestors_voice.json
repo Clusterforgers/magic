@@ -40,7 +40,7 @@
                 "PutCounters": {
                   "on": { "Target": 0 },
                   "counter": "+1/+1",
-                  "count": { "Tallied": { "who": "You", "what": "LifeGained" } }
+                  "count": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
                 }
               },
               { "Move": { "what": { "Target": 1 }, "to": { "Battlefield": {} } } }

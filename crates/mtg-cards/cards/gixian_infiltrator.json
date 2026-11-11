@@ -1,0 +1,19 @@
+{
+  "oracle_id": "2497926c-b253-4400-b540-776ee2cd807c",
+  "name": "Gixian Infiltrator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gixian Infiltrator",
+      "oracle_fingerprint": "ba1e7d8ac8bfc7fd99feb1cdc227c570",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": ["Other"], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

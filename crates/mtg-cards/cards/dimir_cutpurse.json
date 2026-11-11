@@ -1,0 +1,19 @@
+{
+  "oracle_id": "56c1a548-c80c-432b-bf92-d4ef6117b298",
+  "name": "Dimir Cutpurse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimir Cutpurse",
+      "oracle_fingerprint": "03064104755b0f738e86c23cbc1b2109",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Discard": { "who": "Triggering" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

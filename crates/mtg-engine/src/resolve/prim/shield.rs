@@ -17,7 +17,7 @@ use crate::rules::{DamageShield, Rule, RuleEffect};
 /// A shield of damage prevention begins for the recipients its `to` names now, whatever their number (none named,
 /// none protected: nothing begins), and lasts for its duration. It prevents all the damage or, as `PreventUpTo`, that
 /// much in all; `PreventCounted` counts that much as it begins. A shield over deaths, or over leaving the battlefield,
-/// covers the permanents its selector names now. Any other shield refuses by the name of its effect (`ShieldShape`).
+/// covers the permanents its selector names now; a shield over the next draw or loss of the game is judged at that event. Any other shield refuses by the name of its effect (`ShieldShape`).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Shield { when, by, duration } = effect else {
         return Err(wrong_effect("Shield"));
@@ -40,7 +40,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         _ => None,
     };
     // A class of events (every creature that dies this turn, every card put into a graveyard) is judged as each happens.
-    if shape == ShieldShape::Class {
+    if matches!(shape, ShieldShape::Class | ShieldShape::Next) {
         let rule = Rule::Replaces {
             when: when.clone(),
             by: by.clone(),

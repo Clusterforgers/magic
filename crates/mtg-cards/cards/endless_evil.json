@@ -1,0 +1,44 @@
+{
+  "oracle_id": "05157e8e-4c8c-455e-a5a1-de8271951c51",
+  "name": "Endless Evil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endless Evil",
+      "oracle_fingerprint": "586a9e2b778f3c808137d4ef81a63f16",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": "Attached",
+                      "except": [{ "SetPT": { "power": 1, "toughness": 1 } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": { "Matches": { "subject": "Triggering", "selector": [{ "Subtype": "Horror" }] } },
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

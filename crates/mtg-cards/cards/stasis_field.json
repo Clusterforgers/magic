@@ -1,0 +1,24 @@
+{
+  "oracle_id": "83633ea1-a8d5-4351-9047-625d6905386d",
+  "name": "Stasis Field",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stasis Field",
+      "oracle_fingerprint": "bc68ba4381bd26023f55d1e31411c1b9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetPT": { "power": 0, "toughness": 2 } },
+              "LoseAbilities",
+              { "AddKeyword": "Defender" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

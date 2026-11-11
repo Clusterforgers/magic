@@ -1,0 +1,84 @@
+{
+  "oracle_id": "6b5d1b0a-544c-41e6-bc32-c2b0c9bb4576",
+  "name": "Composer of Spring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Composer of Spring",
+      "oracle_fingerprint": "0e19c85917fd5d7c3bbd039fb0d01443",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 6
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "In": "Hand" },
+                                  { "OwnedBy": "You" },
+                                  { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] }
+                                ]
+                              },
+                              "as": "card"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "card" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
+                              },
+                              "as": "card"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "card" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

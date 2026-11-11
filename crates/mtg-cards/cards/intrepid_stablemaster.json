@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a825bdea-3ea2-46b2-93b9-21586643aab0",
+  "name": "Intrepid Stablemaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intrepid Stablemaster",
+      "oracle_fingerprint": "93e40e3f8f5faa44b3da14c2a62035ef",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 2 },
+                  "only": [{ "Spell": { "subtypes": ["Mount", "Vehicle"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

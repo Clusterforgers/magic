@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a17e414c-8de0-47fd-bcbc-540c7fec7642",
+  "name": "Codie, Ravenous Codex",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Codie, Ravenous Codex",
+      "oracle_fingerprint": "277645b15d164db3d219376306ef3095",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["Prepared"], "by": "You" } },
+            "effects": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 86, "end": 209 }
+          }
+        }
+      ]
+    }
+  ]
+}

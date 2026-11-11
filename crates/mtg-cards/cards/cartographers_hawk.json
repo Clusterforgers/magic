@@ -1,0 +1,66 @@
+{
+  "oracle_id": "ac8cf699-f67b-44da-bb79-eb95cfc0026d",
+  "name": "Cartographer's Hawk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cartographer's Hawk",
+      "oracle_fingerprint": "dc8d6f48fa32afb6cf4eca04fa75c524",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": {
+                  "PlayersWhere": {
+                    "who": "EachPlayer",
+                    "test": {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Gt",
+                        "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "Asker" }] }
+                      }
+                    }
+                  }
+                },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Move": { "what": "This", "to": "Hand", "as": "returned" } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "Is": { "Bound": "returned" } }, { "In": "Hand" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Search": { "filter": [{ "Subtype": "Plains" }], "as": "found" } },
+                          {
+                            "Move": {
+                              "what": { "Bound": "found" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          },
+                          { "Shuffle": {} }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

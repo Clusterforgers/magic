@@ -1,0 +1,22 @@
+{
+  "oracle_id": "f5276e83-ca3f-4755-9239-e44d91a446fd",
+  "name": "Seer's Vision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seer's Vision",
+      "oracle_fingerprint": "b2462fcca1940f0a62d2d12fde1239c9",
+      "abilities": [
+        { "Rule": { "rule": { "RevealHand": "Opponents" } } },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "by": "You" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

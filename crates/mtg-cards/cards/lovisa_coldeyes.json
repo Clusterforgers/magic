@@ -1,0 +1,30 @@
+{
+  "oracle_id": "720879dc-7593-41c0-ab3d-936069f26930",
+  "name": "Lovisa Coldeyes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lovisa Coldeyes",
+      "oracle_fingerprint": "fa050c94288f17a1132aa36f02c19031",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                {
+                  "AnyOf": [
+                    { "Subtype": "Barbarian" },
+                    { "Subtype": "Warrior" },
+                    { "Subtype": "Berserker" }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }, { "AddKeyword": "Haste" }]
+          }
+        }
+      ]
+    }
+  ]
+}

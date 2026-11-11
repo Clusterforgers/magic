@@ -4926,9 +4926,11 @@ impl Walker<'_> {
         }
     }
 
-    /// A loss of the game is replaced only by steps that happen instead.
+    /// A loss of the game is replaced only by steps that happen instead (every time, or the next time).
     fn ep27_lose_game(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
-        if matches!(when, ReplaceWhen::LoseGame { .. }) && !matches!(by, ReplaceBy::Instead(_)) {
+        if matches!(when, ReplaceWhen::LoseGame { .. })
+            && !matches!(by, ReplaceBy::Instead(_) | ReplaceBy::InsteadNext(_))
+        {
             self.problem("a loss of the game is replaced only by steps that happen instead");
         }
     }
@@ -5335,6 +5337,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::ToLibrary { .. }
                 | CostItem::Craft { .. }
                 | CostItem::Forage
+                | CostItem::ExileTop(_)
         ),
     })
 }

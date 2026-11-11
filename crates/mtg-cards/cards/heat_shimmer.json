@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5c80d39e-f3af-4d24-bca0-19f0bd0f5082",
+  "name": "Heat Shimmer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heat Shimmer",
+      "oracle_fingerprint": "b0750b5c127bfe35231241275c2622cc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "AddKeyword": "Haste" },
+                        {
+                          "GrantAbility": {
+                            "Triggered": {
+                              "when": { "StepBegins": { "step": "End" } },
+                              "effects": [{ "Exile": { "what": "This" } }]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

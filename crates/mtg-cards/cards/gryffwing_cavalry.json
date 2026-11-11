@@ -1,0 +1,47 @@
+{
+  "oracle_id": "8e5e6f1d-4945-4074-a33e-c0e8b6b24a47",
+  "name": "Gryffwing Cavalry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gryffwing Cavalry",
+      "oracle_fingerprint": "7697d72177d8d4d009076bbf9abc9bf2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Macro": { "name": "training", "amount": 0 } } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    "Attacking",
+                    { "Not": { "HasKeyword": "Flying" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{W}",
+                  "paid": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Flying" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

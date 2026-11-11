@@ -1,0 +1,37 @@
+{
+  "oracle_id": "cb666ea8-55e3-4e27-ae6d-806677dfc17a",
+  "name": "Airtight Alibi",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Airtight Alibi",
+      "oracle_fingerprint": "b2954057a24230768053c424f8e50edd",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Untap": { "what": "Attached" } },
+              {
+                "Continuous": {
+                  "affected": "Attached",
+                  "mods": [{ "AddKeyword": "Hexproof" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Unsuspect": { "what": "Attached" } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 154, "end": 211 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "698f3526-489e-47a1-ac10-70cca73dea10",
+  "name": "Bleak Coven Vampires",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bleak Coven Vampires",
+      "oracle_fingerprint": "0ff7a848d236ae0689d733d2bfa6bb6e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 4 } },
+              { "GainLife": { "amount": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

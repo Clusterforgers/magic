@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d03dbb60-e32b-4b74-ae8a-73d428d344cd",
+  "name": "Seasoned Hallowblade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seasoned Hallowblade",
+      "oracle_fingerprint": "a6f37712cb64f6fad7aa67e161339e6d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [
+              { "Tap": { "what": "This" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

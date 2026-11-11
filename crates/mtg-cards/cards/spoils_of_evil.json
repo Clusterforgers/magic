@@ -1,0 +1,43 @@
+{
+  "oracle_id": "a40c52ee-4b45-4b14-8fbc-6529b42bfc9d",
+  "name": "Spoils of Evil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spoils of Evil",
+      "oracle_fingerprint": "065af59619c8397060187795f2501658",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "times": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

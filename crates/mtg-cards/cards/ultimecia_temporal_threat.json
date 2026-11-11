@@ -1,0 +1,37 @@
+{
+  "oracle_id": "5a8e7e35-e9ea-4808-8aa7-7580a23b9d9d",
+  "name": "Ultimecia, Temporal Threat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultimecia, Temporal Threat",
+      "oracle_fingerprint": "b91fa013230f07d105fd9fbd674526a8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Tap": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

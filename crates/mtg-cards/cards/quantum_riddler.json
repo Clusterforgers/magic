@@ -1,0 +1,32 @@
+{
+  "oracle_id": "58582fac-4c42-4a1c-9ab1-4a892b500da4",
+  "name": "Quantum Riddler",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Quantum Riddler",
+      "oracle_fingerprint": "77bf6b353f596b0f4754a10741b54860",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 47, "end": 174 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this keyword by hand",
+            "span": { "start": 175, "end": 186 }
+          }
+        }
+      ]
+    }
+  ]
+}

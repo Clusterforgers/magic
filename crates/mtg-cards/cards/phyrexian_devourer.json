@@ -1,0 +1,42 @@
+{
+  "oracle_id": "28b1ed69-784c-4642-86c7-104792d5afc2",
+  "name": "Phyrexian Devourer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Devourer",
+      "oracle_fingerprint": "62141a7bb32e5648f35d1b596f8ea133",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Matches": {
+                    "subject": "This",
+                    "selector": [{ "Compare": { "stat": "Power", "op": "Ge", "to": 7 } }]
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "ExileTop": 1 }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5a7f09d3-e4a8-4987-a731-a68fc748277d",
+  "name": "Raphael, Tag Team Tough",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Raphael, Tag Team Tough",
+      "oracle_fingerprint": "d548a9869dade882078a8d99ec508084",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 73, "end": 244 }
+          }
+        }
+      ]
+    }
+  ]
+}

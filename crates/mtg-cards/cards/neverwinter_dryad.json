@@ -1,0 +1,30 @@
+{
+  "oracle_id": "a6e654fb-3567-4b92-ae9b-d064bba7112a",
+  "name": "Neverwinter Dryad",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Neverwinter Dryad",
+      "oracle_fingerprint": "1fecb82b5c007bec5e3a8596cfcdd7fb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Subtype": "Forest" }],
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

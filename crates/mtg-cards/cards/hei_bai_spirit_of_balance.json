@@ -1,0 +1,49 @@
+{
+  "oracle_id": "8f709660-bb26-409f-9650-e5228ac8db7e",
+  "name": "Hei Bai, Spirit of Balance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hei Bai, Spirit of Balance",
+      "oracle_fingerprint": "35d233b70260cd34670c7b7ef22e91e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [
+                          { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                          "Other"
+                        ]
+                      }
+                    }
+                  ],
+                  "paid": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCountersOf": { "on": { "Target": 0 }, "of": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

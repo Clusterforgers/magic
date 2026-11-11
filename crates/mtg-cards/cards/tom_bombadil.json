@@ -1,0 +1,37 @@
+{
+  "oracle_id": "89a2d5bc-df06-47e8-8b4a-6d1f0a63c78d",
+  "name": "Tom Bombadil",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tom Bombadil",
+      "oracle_fingerprint": "ddd370763abbfa0444ae0094d5fa09cf",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Counters": {
+                    "on": { "Each": [{ "Subtype": "Saga" }, { "ControlledBy": "You" }] },
+                    "counter": { "Other": "lore" }
+                  }
+                },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 119, "end": 397 }
+          }
+        }
+      ]
+    }
+  ]
+}

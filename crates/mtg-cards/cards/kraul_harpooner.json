@@ -1,0 +1,54 @@
+{
+  "oracle_id": "332b6ed7-90de-46c0-85ad-1ad708b2c1e1",
+  "name": "Kraul Harpooner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kraul Harpooner",
+      "oracle_fingerprint": "175b60e0a20c1b3dee172b94ce665a22",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "ControlledBy": "You" } },
+                    { "HasKeyword": "Flying" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Count": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "May": { "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

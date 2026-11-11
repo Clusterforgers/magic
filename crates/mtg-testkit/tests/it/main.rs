@@ -797,6 +797,7 @@ mod rmt4_poisonous;
 mod rmt4_untap_limits;
 mod rmt4_was_cast;
 mod rmt4_while_controlled;
+mod rmt5_engine;
 mod tapped_for_mana;
 mod target_reductions;
 mod together_batch;

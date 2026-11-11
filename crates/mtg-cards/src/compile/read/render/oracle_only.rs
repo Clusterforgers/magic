@@ -361,6 +361,9 @@ mod r5b_flow;
 mod r7c_conditions;
 mod r7c_searches;
 
+// rmt5
+mod rmt5_wholes;
+
 use crate::ability::Ability;
 
 /// Adds to `texts` the oracle wordings of the ability that the renderers do not write.
@@ -495,6 +498,8 @@ fn add_latest(ability: &Ability, texts: &mut Vec<String>) {
     fix20_each_then::add(texts);
     f25_wordings::add(ability, texts);
     f26_wordings::add(ability, texts);
+    // rmt5
+    rmt5_wholes::rmt5_add_wholes(ability, texts);
 }
 
 /// Adds the wordings of continuous effects and static grants the stored local-model proposals hit (t17b): durations of

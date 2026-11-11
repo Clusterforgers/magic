@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a68e57f3-f138-4c26-b8d5-55d1adec44a8",
+  "name": "Transmutation Font",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Transmutation Font",
+      "oracle_fingerprint": "20cae9db2118c1d1659b17dec1754f09",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "OneOf": {
+                  "options": [
+                    [{ "CreateToken": { "token": { "Named": "blood" } } }],
+                    [{ "CreateToken": { "token": { "Named": "clue" } } }],
+                    [{ "CreateToken": { "token": { "Named": "food" } } }]
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this activated ability by hand",
+            "span": { "start": 73, "end": 249 }
+          }
+        }
+      ]
+    }
+  ]
+}

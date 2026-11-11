@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "5b8c1303-6829-4c82-96de-a67bc0d72e42",
+  "oracle_id": "cdf34da6-d952-43ca-855d-fcd9d49efae6",
+  "multiverse_ids": [
+    580898
+  ],
+  "mtgo_id": 108624,
+  "tcgplayer_id": 285890,
+  "cardmarket_id": 674730,
+  "name": "Exocrine",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/5b8c1303-6829-4c82-96de-a67bc0d72e42",
+  "scryfall_uri": "https://scryfall.com/card/40k/76/exocrine?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:34:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/b/5b8c1303-6829-4c82-96de-a67bc0d72e42.jpg?1783920890",
+    "normal": "https://cards.scryfall.io/normal/front/5/b/5b8c1303-6829-4c82-96de-a67bc0d72e42.jpg?1783920890",
+    "large": "https://cards.scryfall.io/large/front/5/b/5b8c1303-6829-4c82-96de-a67bc0d72e42.jpg?1783920890",
+    "png": "https://cards.scryfall.io/png/front/5/b/5b8c1303-6829-4c82-96de-a67bc0d72e42.png?1783920890",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/b/5b8c1303-6829-4c82-96de-a67bc0d72e42.jpg?1783920890",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/b/5b8c1303-6829-4c82-96de-a67bc0d72e42.jpg?1783920890",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/b/5b8c1303-6829-4c82-96de-a67bc0d72e42.webp?1783920890",
+    "grid": "https://cards.scryfall.io/grid/front/5/b/5b8c1303-6829-4c82-96de-a67bc0d72e42.webp?1783920890",
+    "display": "https://cards.scryfall.io/display/front/5/b/5b8c1303-6829-4c82-96de-a67bc0d72e42.webp?1783920890",
+    "art": "https://cards.scryfall.io/art/front/5/b/5b8c1303-6829-4c82-96de-a67bc0d72e42.webp?1783920890",
+    "crop": "https://cards.scryfall.io/crop/front/5/b/5b8c1303-6829-4c82-96de-a67bc0d72e42.webp?1783920890",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/b/5b8c1303-6829-4c82-96de-a67bc0d72e42.jpg?1783920890"
+  },
+  "mana_cost": "{X}{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Creature — Tyranid",
+  "oracle_text": "Ravenous (This creature enters with X +1/+1 counters on it. If X is 5 or more, draw a card when it enters.)\nBio-plasmic Barrage — When this creature enters, it deals X damage to each player and each other creature.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Ravenous",
+    "Bio-plasmic Barrage"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set": "40k",
+  "set_name": "Warhammer 40,000 Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/f35f5dd8-5b95-4f52-bbe7-1c62909a8d08",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A40k&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/40k?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5b8c1303-6829-4c82-96de-a67bc0d72e42/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acdf34da6-d952-43ca-855d-fcd9d49efae6&unique=prints",
+  "collector_number": "76",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Cory Trego-Erdner",
+  "artist_ids": [
+    "26281be0-0128-4b80-8b93-0d82cc965e8f"
+  ],
+  "illustration_id": "5ab02731-4009-4514-b113-1a1fde738639",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 7350,
+  "preview": {
+    "source": "MTG Muddstah",
+    "source_uri": "https://www.youtube.com/watch?v=wTvU04n4dVo",
+    "previewed_at": "2022-09-13"
+  },
+  "prices": {
+    "usd": "1.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.20",
+    "eur_foil": null,
+    "tix": "0.32"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580898&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DExocrine",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DExocrine",
+    "edhrec": "https://edhrec.com/route/?cc=Exocrine"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F285890%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=674730&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/108624?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
