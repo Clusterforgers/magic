@@ -225,15 +225,14 @@ fn copy_target_ability(
     if !yours && kinds.iter().any(|(_, yours)| *yours) {
         return unmapped("key:CopySpellAbility.TargetType-mixed-controllers");
     }
-    let mut selector = match kinds {
-        [(kind, _)] => vec![json!({ "Ability": kind })],
-        _ => {
-            let any: Vec<Value> = kinds
-                .iter()
-                .map(|(kind, _)| json!({ "Ability": kind }))
-                .collect();
-            vec![json!({ "AnyOf": any })]
-        }
+    let mut any: Vec<Value> = kinds
+        .iter()
+        .map(|(kind, _)| json!({ "Ability": kind }))
+        .collect();
+    let mut selector = if any.len() == 1 {
+        any.split_off(0)
+    } else {
+        vec![json!({ "AnyOf": any })]
     };
     if yours {
         selector.push(json!({"ControlledBy": "You"}));

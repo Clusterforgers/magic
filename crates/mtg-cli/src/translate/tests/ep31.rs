@@ -10,7 +10,7 @@ fn resonator(target_type: &str, valid: &str) -> String {
     )
 }
 
-fn copied(selector: Value) -> Value {
+fn copied(selector: &Value) -> Value {
     json!({"Activated": {
         "cost": [{"Mana": "{2}"}, "Tap"],
         "targets": [{"what": {"Object": selector}}],
@@ -37,7 +37,7 @@ fn ep31_copy_target_ability(
 ) {
     let script = resonator(target_type, valid);
     assert_eq!(gaps(&script), Vec::<String>::new());
-    assert_eq!(abilities(&script), vec![copied(selector)]);
+    assert_eq!(abilities(&script), vec![copied(&selector)]);
 }
 
 #[rstest]
