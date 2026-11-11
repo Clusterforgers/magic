@@ -413,13 +413,15 @@ impl GameState {
     }
 
     /// The permanent `id` is attached to (it is an Aura or Equipment), if that host is still the very object it was
-    /// attached to and on the battlefield: a host that left is a new object (CR 400.7).
+    /// attached to and on the battlefield (or the card in a graveyard it was attached to there): a host that left is a
+    /// new object (CR 400.7).
     pub fn host_of(&self, id: ObjectId) -> Option<ObjectId> {
         let object = self.object(id).filter(|o| o.zone() == Zone::Battlefield)?;
         let attached = object.permanent()?.attached_to()?;
         let host = self.object(attached.id)?;
-        (host.zone() == Zone::Battlefield && host.counter() == attached.counter)
-            .then_some(attached.id)
+        // A card in a graveyard hosts only an Aura that enchants one there (`attach::dk27_enchants_graveyard`).
+        let here = host.zone() == Zone::Battlefield || matches!(host.zone(), Zone::Graveyard(_));
+        (here && host.counter() == attached.counter).then_some(attached.id)
     }
 
     /// The player `id` is attached to (an Aura that enchants a player), while that player is still in the game: a

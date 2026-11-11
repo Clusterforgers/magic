@@ -77,7 +77,9 @@ mod defining;
 mod dk1a_attached;
 mod dk1c5_rooms;
 mod dk1d_by_paying;
+mod dk27_animate;
 mod dk27_batches;
+mod dk27_bid;
 mod dk27_numbers;
 mod dk27_pairs;
 mod draws;
@@ -452,6 +454,11 @@ const MEANINGFUL_WORDS: [&str; 5] = [
 
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    if kind == ClauseKind::Triggered
+        && let Some(found) = dk27_animate::dk27_animate_read(text)
+    {
+        return Some(found);
+    }
     if let Some(granted) = text.strip_prefix("Max speed \u{2014} ") {
         let inner = classify::classify(granted, false);
         if kind != ClauseKind::Static {

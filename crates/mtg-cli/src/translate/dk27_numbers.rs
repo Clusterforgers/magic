@@ -1,6 +1,7 @@
 //! `ChooseNumber` of every player with `Highest$` and `NotLowest$` (Wheel of Misfortune): each player chooses a number,
 //! secretly with `Secretly$ True`; the players who chose the highest are dealt that much damage, and the players who did
-//! not choose the lowest discard their hand and draw. Any other shape stays a gap.
+//! not choose the lowest discard their hand and draw; and `BidLife` opened with any number (Pain's Reward). Any other
+//! shape stays a gap.
 
 use serde_json::{Value, json};
 
@@ -45,6 +46,46 @@ fn not_lowest_steps(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     Ok(vec![
         json!({"Discard": {"who": not_lowest(), "count": hands}}),
         json!({"Draw": {"who": not_lowest(), "count": count}}),
+    ])
+}
+
+/// `BidLife` of every player opened with any number (`StartBidding$ Any`, Pain's Reward): the high bidder loses life
+/// equal to the high bid (`LifeAmount$ X` with `X` the chosen number) and draws a fixed number of cards. A bid for a
+/// target or against one player stays a gap.
+pub fn dk27_bid_life(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
+    only(p, "BidLife", &["StartBidding", "BidSubAbility"])?;
+    if p.get("StartBidding") != Some("Any") {
+        return unmapped("key:BidLife.StartBidding");
+    }
+    let Some(then) = p.get("BidSubAbility") else {
+        return unmapped("key:BidLife.no-BidSubAbility");
+    };
+    let lose = ctx.sub(then)?;
+    only(
+        &lose,
+        "LoseLife",
+        &["DB", "Defined", "LifeAmount", "SubAbility"],
+    )?;
+    let lost = (lose.get("DB"), lose.get("Defined"), lose.get("LifeAmount"));
+    let chosen = ctx.svar("X").map(str::trim) == Some("Count$ChosenNumber");
+    if lost != (Some("LoseLife"), Some("Remembered"), Some("X")) || !chosen {
+        return unmapped("key:BidLife.BidSubAbility");
+    }
+    let Some(then) = lose.get("SubAbility") else {
+        return unmapped("key:BidLife.BidSubAbility");
+    };
+    let draw = ctx.sub(then)?;
+    only(&draw, "Draw", &["DB", "Defined", "NumCards"])?;
+    let count = draw.get("NumCards").and_then(|n| n.parse::<u32>().ok());
+    let (Some("Draw"), Some("Remembered"), Some(count)) =
+        (draw.get("DB"), draw.get("Defined"), count)
+    else {
+        return unmapped("key:BidLife.BidSubAbility");
+    };
+    Ok(vec![
+        json!({"BidLife": {"as": "bid", "winner": "bidder"}}),
+        json!({"LoseLife": {"who": {"Bound": "bidder"}, "amount": {"ChosenAs": "bid"}}}),
+        json!({"Draw": {"who": {"Bound": "bidder"}, "count": count}}),
     ])
 }
 

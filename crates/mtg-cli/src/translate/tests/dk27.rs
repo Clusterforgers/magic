@@ -1,6 +1,6 @@
 //! Goal: Wheel of Misfortune's `ChooseNumber` of every player with `Highest$` and `NotLowest$` translates as the secret
 //! numbers and the three effects that read them, exactly as the compiler reads the Oracle text, and a near miss of the
-//! script stays a gap.
+//! script stays a gap; Pain's Reward's `BidLife` translates as the bidding and the loss and draw of the high bidder.
 use rstest::rstest;
 use serde_json::json;
 
@@ -38,5 +38,33 @@ fn dk27_wheel_of_misfortune_translates_as_the_secret_numbers() {
 fn dk27_a_near_miss_of_the_wheel_stays_a_gap(#[case] from: &str, #[case] to: &str) {
     let script = WHEEL.replacen(from, to, 1);
     assert_ne!(script, WHEEL, "{from}");
+    assert!(!gaps(&script).is_empty(), "{script}");
+}
+
+const PAINS_REWARD: &str = "Name:Pain's Reward\nManaCost:2 B\nTypes:Sorcery\nA:SP$ BidLife | StartBidding$ Any | AILogic$ Min | AIBidMax$ 10 | BidSubAbility$ DBLoseLife | SpellDescription$ Each player may bid life.\nSVar:DBLoseLife:DB$ LoseLife | Defined$ Remembered | LifeAmount$ X | SubAbility$ DBDraw\nSVar:DBDraw:DB$ Draw | Defined$ Remembered | NumCards$ 4\nSVar:X:Count$ChosenNumber\n";
+
+#[test]
+fn dk27_pains_reward_translates_as_the_bidding() {
+    assert_eq!(gaps(PAINS_REWARD), Vec::<String>::new());
+    let bidder = json!({"Bound": "bidder"});
+    assert_eq!(
+        abilities(PAINS_REWARD)[0],
+        json!({"Spell": {"effects": [
+            {"BidLife": {"as": "bid", "winner": "bidder"}},
+            {"LoseLife": {"who": bidder, "amount": {"ChosenAs": "bid"}}},
+            {"Draw": {"who": bidder, "count": 4}},
+        ]}})
+    );
+}
+
+#[rstest]
+#[case::a_fixed_opening("StartBidding$ Any", "StartBidding$ 0")]
+#[case::for_a_target("StartBidding$ Any |", "StartBidding$ Any | ValidTgts$ Creature |")]
+#[case::another_amount("SVar:X:Count$ChosenNumber", "SVar:X:Count$YourLifeTotal")]
+#[case::gain_instead("DB$ LoseLife", "DB$ GainLife")]
+#[case::the_controller_draws("DB$ Draw | Defined$ Remembered", "DB$ Draw | Defined$ You")]
+fn dk27_a_near_miss_of_the_bidding_stays_a_gap(#[case] from: &str, #[case] to: &str) {
+    let script = PAINS_REWARD.replacen(from, to, 1);
+    assert_ne!(script, PAINS_REWARD, "{from}");
     assert!(!gaps(&script).is_empty(), "{script}");
 }

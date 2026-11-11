@@ -1881,13 +1881,18 @@ impl<'a> Walker<'a> {
     /// What an enchant ability may enchant.
     fn enchant(&mut self, selector: &Selector) {
         self.selector(selector);
-        // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.
-        if selector
-            .0
-            .iter()
-            .any(|pred| matches!(pred, Pred::In(zone) if !zone.is_battlefield()))
-        {
-            self.uses("Keyword", "Enchant.Elsewhere");
+        // An Aura is attached to a permanent or, enchanting a card in a graveyard, to a card there (Animate Dead); one
+        // that enchants a card in another zone waits for the cards that do.
+        let zones = selector.0.iter().filter_map(|pred| match pred {
+            Pred::In(zone) if !zone.is_battlefield() => Some(*zone),
+            _ => None,
+        });
+        for zone in zones {
+            if zone == ZoneKind::Graveyard {
+                self.uses("Keyword", "Enchant.Graveyard");
+            } else {
+                self.uses("Keyword", "Enchant.Elsewhere");
+            }
         }
     }
 
@@ -3712,6 +3717,22 @@ impl Walker<'_> {
                 secret,
                 bind,
             } => w.vote(options, *secret, bind.as_deref()),
+            Effect::BidLife {
+                who,
+                start,
+                bind,
+                winner,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                if let Some(start) = start {
+                    w.at("start", |w| w.amount(start));
+                }
+                if bind == winner {
+                    w.problem("the high bid and the high bidder have names of their own");
+                }
+                w.at("as", |w| w.bind(bind, Kind::Value));
+                w.at("winner", |w| w.bind(winner, Kind::Player));
+            }
             Effect::ChooseNumbers {
                 who,
                 min,
@@ -6124,7 +6145,8 @@ mod tests {
     #[case::reconfigure_pays_a_mana_cost(r#"{"Keyword":{"Reconfigure":"{2}"}}"#, &["Cost.Mana", "Keyword.Reconfigure"])]
     #[case::unattaching_the_source_only_while_it_is_attached(r#"{"Activated":{"cost":"{2}","timing":"Sorcery","condition":{"Compare":{"left":{"Count":[{"Is":"Attached"},{"Type":"Creature"}]},"op":"Ge","right":1}},"effects":[{"Unattach":{"what":"This"}}]}}"#, &["Ability.Activated", "Ability.Condition", "Ability.Sorcery", "Cost.Mana", "Effect.Unattach"])]
     #[case::an_aura_that_enchants_a_creature(r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}}"#, &["Keyword.Enchant"])]
-    #[case::an_aura_that_enchants_a_card_in_a_graveyard(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Elsewhere"])]
+    #[case::an_aura_that_enchants_a_card_in_a_graveyard(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Graveyard"])]
+    #[case::an_aura_that_enchants_a_card_in_exile(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Exile"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Elsewhere"])]
     #[case::a_treasure_like_mana_ability(r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana"])]
     #[case::sol_ring(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#, &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana"])]
     #[case::mana_for_creature_spells_only(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1},"only":[{"Spell":{"types":["Creature"]}}]}}]}}"#, &["Ability.Activated", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.Restricted"])]
