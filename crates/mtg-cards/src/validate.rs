@@ -6271,6 +6271,10 @@ mod tests {
         r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"State":{"condition":"YourTurn"}},"effects":[{"Draw":{}}]}}]}}"#,
         "a state is the whole pattern of a triggered ability"
     )]
+    #[case::ep27_a_loss_prevented(
+        r#"{"Replacement":{"when":{"LoseGame":{}},"by":"Prevent"}}"#,
+        "a loss of the game is replaced only by steps that happen instead"
+    )]
     #[case::ep27_tokens_lessened(
         r#"{"Replacement":{"when":{"TokenCreation":{"controller":"You"}},"by":{"Subtract":1}}}"#,
         "only damage is lessened or capped"
