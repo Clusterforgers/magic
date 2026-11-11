@@ -1,0 +1,371 @@
+{
+  "oracle_id": "bad76170-c773-4be5-9457-20dc9f745cb4",
+  "name": "Odric, Lunarch Marshal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Odric, Lunarch Marshal",
+      "oracle_fingerprint": "b5e3f5bcc10af1c8d737fee72076f3c5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "FirstStrike" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "FirstStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Flying" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Flying" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Deathtouch" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Deathtouch" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "DoubleStrike" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "DoubleStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Haste" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Hexproof" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Hexproof" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Indestructible" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Indestructible" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Lifelink" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Menace" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Menace" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Reach" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Reach" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Skulk" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Skulk" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Trample" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Trample" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Creature" },
+                          { "ControlledBy": "You" },
+                          { "HasKeyword": "Vigilance" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Vigilance" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

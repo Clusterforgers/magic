@@ -452,8 +452,11 @@ export function describeManual(
   }
   if ('CreateToken' in action) {
     const { token, count } = action.CreateToken
+    const noun = count === 1 ? 'token' : 'tokens'
+    // The token of a card is named by the TokenCreated events after this line; the card says where it is from.
+    if ('Card' in token) return `${who} creates ${count} ${noun} ${token.Card.card} makes (by hand)`
     const name = 'Common' in token ? token.Common : token.Custom.name
-    return `${who} creates ${count} ${name} ${count === 1 ? 'token' : 'tokens'} (by hand)`
+    return `${who} creates ${count} ${name} ${noun} (by hand)`
   }
   if ('CopyToken' in action) {
     const { object, count } = action.CopyToken
@@ -763,7 +766,9 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     return line(`${targetName(on, n)} ${delta > 0 ? 'gets' : 'loses'} ${phrase}`)
   }
   if ('TokenCreated' in event) {
-    return line(`${n.seat(event.TokenCreated.controller)} creates a ${event.TokenCreated.name} token`)
+    const { controller, name, blocking } = event.TokenCreated
+    const blocks = blocking === undefined ? '' : ` blocking ${n.card(blocking)}`
+    return line(`${n.seat(controller)} creates a ${name} token${blocks}`)
   }
   if ('CardConjured' in event) {
     const { owner, name, zone } = event.CardConjured
@@ -1052,7 +1057,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const symbols = event.ManaSpent.mana.map((mana) => `{${manaLetter(mana)}}`).join('')
     return quiet(`${n.seat(event.ManaSpent.player)} spends ${symbols}`)
   }
-  if ('ManaPoolEmptied' in event) return quiet(`${n.seat(event.ManaPoolEmptied.player)}'s mana pool empties`)
+  if ('ManaPoolEmptied' in event) {
+    const { player, kept, becomes } = event.ManaPoolEmptied
+    if (becomes) return quiet(`${n.seat(player)}'s unspent mana becomes {${manaLetter(becomes)}}`)
+    const except = kept?.length ? ` except ${kept.map((mana) => `{${manaLetter(mana)}}`).join('')}` : ''
+    return quiet(`${n.seat(player)}'s mana pool empties${except}`)
+  }
   if ('ManaBurned' in event) return quiet(`${n.seat(event.ManaBurned.player)}'s unspent mana burns`)
   if ('LibraryRefilled' in event) {
     return quiet(`${n.seat(event.LibraryRefilled.player)} shuffles their graveyard into their library`)

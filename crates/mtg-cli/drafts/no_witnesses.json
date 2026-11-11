@@ -1,0 +1,39 @@
+{
+  "oracle_id": "0639bd82-084f-47d5-b158-05dfc29efa40",
+  "name": "No Witnesses",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "No Witnesses",
+      "oracle_fingerprint": "d2654be11b3e18ab0085c8af78ad4e7d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": {
+                            "Largest": { "who": "EachPlayer", "of": [{ "Type": "Creature" }] }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "token": { "Named": "clue" }
+                }
+              },
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

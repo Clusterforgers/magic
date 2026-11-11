@@ -9,9 +9,10 @@ use mtg_cards::effect::Effect;
 use mtg_cards::refs::{Pred, Selector};
 use mtg_cards::trigger::{ReplaceBy, ReplaceWhen};
 
+use super::w5d_instead::Ran;
 use super::{Candidate, Item, Origin, Pass, Slot, Unit, slots_of};
+use crate::decision::Decision;
 use crate::events::Event;
-use crate::resolve::w5d_run_instead;
 use mtg_core::ids::ObjectId;
 
 /// Whether the token's card is of the kind: each predicate is a type, subtype, supertype or colour (or the negation of
@@ -119,7 +120,8 @@ impl Pass<'_> {
 
     /// Prevents all of the damage at `at` and runs the effects in its place, reading it as `Instead` does (its
     /// recipient, its amount and its source). Their events carry the effects already applied, this one included. When
-    /// the effects would ask a question, the damage is prevented and nothing else happens.
+    /// the effects ask a question, its player answers first; when they are declined or cannot run, the damage is
+    /// prevented and nothing else happens.
     pub(super) fn w9c_prevent_and(
         &mut self,
         at: usize,
@@ -127,16 +129,12 @@ impl Pass<'_> {
         effects: &[Effect],
         unit: &Unit,
         applied: &[Origin],
-    ) {
-        let cause = self.w5d_cause(at, unit);
-        let events = w5d_run_instead(
-            self.state,
-            candidate.controller,
-            candidate.object,
-            &cause,
-            effects,
-        )
-        .unwrap_or_default();
+    ) -> Option<Decision> {
+        let events = match self.w5d_run(at, candidate, effects, unit) {
+            Ran::Events(events) => events,
+            Ran::Ask(decision) => return Some(decision),
+            Ran::Kept => Vec::new(),
+        };
         let events = self.w9c_fresh_tokens(events);
         self.prevent(at, candidate, &ReplaceBy::Prevent, applied.to_vec());
         let slots: Vec<Slot> = slots_of(events)
@@ -148,6 +146,7 @@ impl Pass<'_> {
             .collect();
         let at = at.min(self.slots.len());
         self.slots.splice(at..at, slots);
+        None
     }
 
     /// Prevents all but `kept` of the damage at `at`; damage of `kept` or less is left as it is.
@@ -308,6 +307,7 @@ mod tests {
             name: "Thing".into(),
             tapped: false,
             attacking: None,
+            blocking: None,
             definition: Arc::new(definition),
             copy_of: None,
         })

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "6623cb85-fb1e-4561-8b21-0977c25096c2",
+  "name": "Tibalt's Trickery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tibalt's Trickery",
+      "oracle_fingerprint": "e1138c1c2b7095eb740c268fb11fe4a8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Bind": { "what": { "ControllerOf": { "Target": 0 } }, "as": "them" } },
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Let": { "as": "n", "amount": { "Random": { "min": 1, "max": 3 } } } },
+              { "Mill": { "who": { "Bound": "them" }, "count": { "Bound": "n" } } },
+              {
+                "ExileUntil": {
+                  "who": { "Bound": "them" },
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Not": { "SharesName": { "Target": 0 } } }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "who": { "Bound": "them" },
+                  "what": { "Bound": "found" },
+                  "free": true
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

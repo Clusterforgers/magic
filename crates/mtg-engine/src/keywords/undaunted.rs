@@ -28,6 +28,7 @@ impl KeywordRules for Undaunted {
             condition: None,
             activating: None,
             least: 0,
+            life: 0,
         }]
     }
 }

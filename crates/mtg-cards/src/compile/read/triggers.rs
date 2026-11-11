@@ -44,6 +44,7 @@ pub fn graveyard_itself(pattern: &TriggerPattern) -> bool {
 pub fn itself_acts(pattern: &TriggerPattern) -> bool {
     match pattern {
         TriggerPattern::Attacks { what }
+        | TriggerPattern::AttacksAlone { what }
         | TriggerPattern::Exerted { what }
         | TriggerPattern::ZoneChange {
             what,
@@ -70,6 +71,7 @@ pub fn itself_acts(pattern: &TriggerPattern) -> bool {
 pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
     let (what, named_by_the_cause) = match pattern {
         TriggerPattern::Attacks { what }
+        | TriggerPattern::AttacksAlone { what }
         | TriggerPattern::BecomesBlocked { what, .. }
         | TriggerPattern::Unblocked { what }
         | TriggerPattern::Mutates { what }
@@ -266,6 +268,7 @@ fn attached_tapped_for_mana(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     Some(TriggerPattern::TappedForMana {
         what: Selector(what),
         by: Ref::EachPlayer,
+        produced: None,
     })
 }
 
@@ -715,7 +718,11 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "taps" } else { "tap" } {
         let what = subject(r)?;
         r.need("for mana")?;
-        Some(TriggerPattern::TappedForMana { what, by })
+        Some(TriggerPattern::TappedForMana {
+            what,
+            by,
+            produced: None,
+        })
     } else {
         None
     }
@@ -1397,6 +1404,7 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             )
         }
         TriggerPattern::Attacks { what } => said(what, "attacks"),
+        TriggerPattern::AttacksAlone { what } => said(what, "attacks alone"),
         TriggerPattern::AttacksPlayer { what, at } => {
             said(what, super::e16c_attacks::e16c_attacks_player(at)?)
         }
@@ -1485,7 +1493,15 @@ fn step_text(step: Step, whose: &Ref) -> Option<String> {
         };
     }
     let (_, words) = STEPS.iter().find(|(named, _)| *named == step)?;
+    // "At the beginning of the upkeep of enchanted creature's controller".
+    if *whose == Ref::ControllerOf(Box::new(Ref::Attached)) {
+        return Some(format!("the {words} of enchanted creature's controller"));
+    }
     let owner = match whose {
+        // A main phase may come more than once a turn: "each of enchanted player's postcombat main phases".
+        Ref::AttachedPlayer if matches!(step, Step::Upkeep | Step::Draw | Step::End) => {
+            "enchanted player's"
+        }
         Ref::You => "your",
         Ref::Opponents => "each opponent's",
         Ref::EachPlayer => "each",
@@ -1496,7 +1512,19 @@ fn step_text(step: Step, whose: &Ref) -> Option<String> {
 }
 
 /// A permanent tapped for mana: "Whenever you tap a land for mana", "Whenever enchanted land is tapped for mana".
-fn tapped_for_mana_text(what: &Selector, by: &Ref) -> Option<String> {
+fn tapped_for_mana_text(pattern: &TriggerPattern) -> Option<String> {
+    let TriggerPattern::TappedForMana { what, by, produced } = pattern else {
+        return None;
+    };
+    // "Whenever you tap a permanent for {C}": a tap that makes mana of one type.
+    if let Some(produced) = produced {
+        return Some(format!(
+            "Whenever {} {} for {{{}}}",
+            player_verb(by, "tap")?,
+            subject_text(what)?,
+            produced.symbol()
+        ));
+    }
     if *by == Ref::EachPlayer
         && what.0.len() > 1
         && what.0.first() == Some(&Pred::Is(Ref::Attached))
@@ -1627,7 +1655,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::PlayerAttacked { .. } | TriggerPattern::PlayerAttacks { .. } => {
             player_attack_text(pattern)
         }
-        TriggerPattern::TappedForMana { what, by } => tapped_for_mana_text(what, by),
+        TriggerPattern::TappedForMana { .. } => tapped_for_mana_text(pattern),
         TriggerPattern::CountersPut { what, counter, .. } => {
             counter_text(what, counter.as_ref(), "put on")
         }

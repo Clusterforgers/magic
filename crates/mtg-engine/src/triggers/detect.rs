@@ -132,7 +132,11 @@ enum Happened {
     /// A permanent phased in.
     PhasedIn { object: ObjectId },
     /// A player tapped a permanent for mana: once for the tap, whatever mana it made.
-    TappedForMana { object: ObjectId, player: PlayerId },
+    TappedForMana {
+        object: ObjectId,
+        player: PlayerId,
+        made: Vec<mtg_core::mana::ManaType>,
+    },
     /// Counters of a kind were put on a permanent (`delta` above 0) or removed from it (below 0), which held `before`
     /// of them until then; a put is the `nth` time this turn for the object.
     Counters {
@@ -1063,6 +1067,7 @@ fn about_players_and_permanents(
         Event::PermanentPhasedIn { object } => found.push(Happened::PhasedIn { object: *object }),
         Event::ManaAdded {
             player,
+            mana,
             source: Some(source),
             ..
         } => {
@@ -1071,7 +1076,16 @@ fn about_players_and_permanents(
                 found.push(Happened::TappedForMana {
                     object: *source,
                     player: *player,
+                    made: vec![*mana],
                 });
+            } else if let Some(Happened::TappedForMana { made, .. }) =
+                found.iter_mut().rev().find(|happened| {
+                    matches!(happened, Happened::TappedForMana { object, player: by, .. }
+                        if object == source && by == player)
+                })
+            {
+                // The rest of the mana of the same tap ("for {C}{C}").
+                made.push(*mana);
             }
         }
         Event::CountersChanged(changed) => match changed.on {
@@ -1814,16 +1828,23 @@ fn matching_permanents(
             picks(what, tapped)?.then(|| cause(state, vec![Target::Object(tapped)]))
         }
         (
-            TriggerPattern::TappedForMana { what, by: who },
+            TriggerPattern::TappedForMana {
+                what,
+                by: who,
+                produced,
+            },
             Happened::TappedForMana {
                 object: tapped,
                 player,
+                made,
             },
         ) => {
             let tapped = object(*tapped)?;
             // The event holds the permanent ("that land doesn't untap") and the player who tapped it ("that player").
-            (by(who, player) && picks(what, tapped)?)
-                .then(|| cause(state, vec![Target::Object(tapped), Target::Player(*player)]))
+            (by(who, player)
+                && produced.is_none_or(|kind| made.contains(&kind))
+                && picks(what, tapped)?)
+            .then(|| cause(state, vec![Target::Object(tapped), Target::Player(*player)]))
         }
         (
             TriggerPattern::CountersPut { what, counter, .. }
@@ -2748,6 +2769,8 @@ mod tests {
             Event::ManaPoolEmptied {
                 player: ME,
                 through: mtg_cards::spend::ManaLasts::Step,
+                kept: Vec::new(),
+                becomes: None,
             },
             died(&pre, "Bear"),
         ];

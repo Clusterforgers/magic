@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8b5cffd5-5db3-4151-9275-d91387554412",
+  "name": "Cut a Deal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cut a Deal",
+      "oracle_fingerprint": "70838237ecfa5caf544382dbd3cdde0a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "who": "Opponents", "as": "d" } },
+              { "Draw": { "count": { "Count": [{ "Is": { "Bound": "d" } }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -31,6 +31,7 @@ pub mod progress;
 pub mod propose;
 pub mod read_candidates;
 pub mod reads;
+pub mod semantic_audit;
 pub mod status;
 pub mod translate;
 pub mod w19b_pairs;
@@ -121,12 +122,13 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         }
         Command::Reads(args) => reads::reads(&connect(cli.database_url).await?, &args).await,
         Command::DraftSuspects(args) => draft_suspects::draft_suspects(&args),
+        Command::SemanticAudit(args) => semantic_audit::semantic_audit(&cache, &args),
+        Command::MutationScore(args) => semantic_audit::mutation_score(&args),
         Command::ReadCandidates(args) => {
             read_candidates::read_candidates(&connect(cli.database_url).await?, &args).await
         }
         Command::ForgeCheck(args) => {
-            let db = connect(cli.database_url).await?;
-            forge::forge_check(&db, &args).await
+            forge::forge_check(&connect(cli.database_url).await?, &args).await
         }
         Command::TranslateForge(args) => translate_command(cli.database_url, &cache, &args).await,
         Command::Coverage(args) => {
@@ -137,6 +139,7 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             Ok(w2a_promote::w2a_promote(&db, &cache, &args).await?.render())
         }
         Command::Propose(args) => propose::command(cli.database_url, &cache, &args, progress).await,
+        Command::ProposeOrder(args) => order_command(cli.database_url, &cache, &args).await,
         Command::DslReference => Ok(mtg_cards::reference::dsl_reference().trim_end().to_owned()),
         Command::DslSchema => Ok(mtg_cards::reference::w3a_card_schema().to_string()),
         Command::ExportPairs(args) => {
@@ -144,6 +147,15 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             w19b_pairs::w19b_export_pairs(&db, &args).await
         }
     }
+}
+
+/// `propose-order`: the order of a paid run.
+async fn order_command(
+    database_url: Option<String>,
+    cache: &Cache,
+    args: &args::ProposeOrderArgs,
+) -> Result<String, CliError> {
+    propose::order::command(&connect(database_url).await?, cache, args).await
 }
 
 /// `audit`: the sample as text, or written to the file `--file` names.

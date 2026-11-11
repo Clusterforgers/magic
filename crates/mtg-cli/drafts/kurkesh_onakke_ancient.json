@@ -10,7 +10,11 @@
         {
           "Triggered": {
             "when": {
-              "Did": { "action": "Activated", "who": "You", "what": [{ "Type": "Artifact" }] }
+              "Did": {
+                "action": "Activated",
+                "who": "You",
+                "what": [{ "Type": "Artifact" }, { "In": "Battlefield" }]
+              }
             },
             "effects": [
               {

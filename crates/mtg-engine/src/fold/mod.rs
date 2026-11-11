@@ -27,6 +27,7 @@ mod p12_arrived;
 #[cfg(test)]
 mod r3d_atoms;
 mod resolution;
+pub(crate) use resolution::step_done;
 #[cfg(test)]
 mod tests;
 #[cfg(test)]
@@ -507,7 +508,12 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                 }
             }
         }
-        Event::ManaPoolEmptied { player, through } => pool_mut(state, *player)?.empty(*through),
+        Event::ManaPoolEmptied {
+            player,
+            through,
+            kept,
+            becomes,
+        } => pool_mut(state, *player)?.empty_keeping(*through, kept, *becomes),
         Event::LifePaid { player, amount } => pay_life(state, *player, *amount)?,
         Event::LifeGained { player, amount } => gain_life(state, *player, *amount)?,
         Event::LifeLost { player, amount } => lose_life(state, *player, *amount)?,

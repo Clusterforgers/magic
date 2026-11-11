@@ -157,6 +157,7 @@ fn create(cx: &Cx<'_>, subtype: &Subtype, marker: String) -> Run {
         name: definition.name.clone(),
         tapped: false,
         attacking: None,
+        blocking: None,
         definition,
     });
     // A token is a new object: its zone-change counter starts at 0.

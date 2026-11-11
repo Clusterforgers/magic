@@ -47,6 +47,9 @@ mod effects_verbs5;
 pub mod effects_vote;
 pub mod effects_zone;
 mod enters_with;
+mod ep24_mana;
+mod ep24_rules;
+mod ep25_repeat;
 pub mod filter;
 mod fix26_printed;
 pub mod forget;
@@ -190,12 +193,7 @@ pub async fn translate_forge(
             ))
         });
         let written = funnel.add(&card, !today.ends_with("verified"), weight, &today);
-        let state = match (card.lines(), card.translated(), card.gaps().next()) {
-            (0, _, _) => "plain",
-            (_, 0, _) => "skipped",
-            (_, _, None) => "whole",
-            _ => "partial",
-        };
+        let state = card.state();
         let behind = allgaps::others(&world, script);
         let gaps: BTreeSet<&str> = card
             .gaps()

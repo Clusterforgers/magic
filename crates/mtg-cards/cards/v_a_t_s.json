@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d077d54c-6f1b-4795-a241-6073b0dc1dc8",
+  "name": "V.A.T.S.",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "V.A.T.S.",
+      "oracle_fingerprint": "f9c09dc4f8b6f50453e22df869f2005c",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 130, "end": 219 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -2,8 +2,9 @@
 
 use mtg_cards::effect::{Effect, NewTargets};
 
-use super::retarget::{Original, Retargeted, Way, ask};
+use super::retarget::{Original, Retargeted, Way, ask, one_to};
 use super::wrong_effect;
+use crate::choose::Target;
 use crate::events::Event;
 use crate::object::ObjectKind;
 use crate::resolve::{Cx, Next, ResolveError, Run};
@@ -18,12 +19,20 @@ use crate::zones::Zone;
 ///
 /// A step with k questions runs k + 1 times; the questions of every object are read from the journal in order.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::ChangeTargets { what, to } = effect else {
+    let Effect::ChangeTargets { what, to, onto } = effect else {
         return Err(wrong_effect("ChangeTargets"));
     };
     let way = match to {
         NewTargets::Another => Way::Another,
-        NewTargets::Choose => Way::Choose,
+        NewTargets::Choose | NewTargets::One => Way::Choose,
+    };
+    // "To ~" with nothing left to name changes nothing.
+    let onto = match (to, onto) {
+        (NewTargets::One, Some(onto)) => match cx.scope.live_objects(onto)?.first() {
+            Some(object) => Some(Target::Object(object.reference())),
+            None => return Ok(Run::events(Vec::new())),
+        },
+        _ => None,
     };
     let state = cx.state();
     let chooser = cx.controller();
@@ -55,14 +64,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             cause,
         };
         let controller = object.controller();
-        let choices = match ask(
-            cx,
-            (chooser, controller),
-            &mut answers,
-            original,
-            object.choices().clone(),
-            way,
-        )? {
+        let changed = match onto {
+            Some(onto) => one_to(cx, (chooser, controller), &mut answers, original, onto)?,
+            None => ask(
+                cx,
+                (chooser, controller),
+                &mut answers,
+                original,
+                object.choices().clone(),
+                way,
+            )?,
+        };
+        let choices = match changed {
             Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
             Retargeted::Done(choices) => choices,
         };

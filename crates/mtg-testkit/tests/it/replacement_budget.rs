@@ -32,6 +32,7 @@ fn swarm(count: i32) -> Arc<CardDefinition> {
                     tapped: false,
                     attacking: false,
                     against: None,
+                    blocking: None,
                     bind: None,
                 }],
             }),

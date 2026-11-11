@@ -152,7 +152,7 @@ fn ep22_every_zone_lists_the_zones() {
 
 #[rstest]
 #[case::another_wording(
-    "Mode$ Continuous | Affected$ Land.YouCtrl | AffectedZone$ All | AddType$ Desert | Description$ Lands you control and land cards you own that aren't on the battlefield are Deserts in addition to their other types."
+    "Mode$ Continuous | Affected$ Land.YouCtrl | AffectedZone$ All | AddType$ Desert | Description$ Lands you control are Deserts in addition to their other types."
 )]
 #[case::not_yours(&format!(
     "Mode$ Continuous | Affected$ Creature | AffectedZone$ All | AddType$ Artifact | {SAME}"

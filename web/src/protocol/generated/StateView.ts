@@ -9,6 +9,7 @@ import type { PlayerId } from "./PlayerId";
 import type { PlayerView } from "./PlayerView";
 import type { PriorityView } from "./PriorityView";
 import type { Stage } from "./Stage";
+import type { TokenOfferView } from "./TokenOfferView";
 import type { TurnView } from "./TurnView";
 import type { ZoneView } from "./ZoneView";
 
@@ -87,4 +88,9 @@ combat_forecast: CombatForecast | null,
 /**
  * The result once the game is over.
  */
-result: GameResult | null, };
+result: GameResult | null, 
+/**
+ * The tokens the viewer's own cards make, in any zone, by card name: the manual panel offers them. Left out for a
+ * spectator and while there are none.
+ */
+tokens?: Array<TokenOfferView>, };

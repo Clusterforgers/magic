@@ -24,6 +24,8 @@ pub struct FaceOut {
     pub lines: usize,
     /// One row for each script line, with the abilities it gave or the gap that stopped it.
     pub ledger: Vec<LedgerLine>,
+    /// How many of `gaps` stopped a script line of the ledger; the others hold back the whole card.
+    pub lined: usize,
 }
 
 /// The translation of a script.
@@ -58,6 +60,23 @@ impl CardOut {
     /// The abilities translated.
     pub fn translated(&self) -> usize {
         self.faces.iter().map(|face| face.abilities.len()).sum()
+    }
+
+    /// The state of the translation: `plain` (no rule line), `whole`, `partial` (some lines proven, or none and every gap
+    /// on a script line of its own, which the players or line fill finish) or `skipped` (nothing proven and a gap that
+    /// holds back the whole card).
+    pub fn state(&self) -> &'static str {
+        match (self.lines(), self.translated(), self.gaps().next()) {
+            (0, _, _) => "plain",
+            (_, _, None) => "whole",
+            (_, 0, _) if !self.gaps_lined() => "skipped",
+            _ => "partial",
+        }
+    }
+
+    /// Whether every gap stopped one script line of the ledger, none the whole card.
+    pub fn gaps_lined(&self) -> bool {
+        self.faces.iter().all(|face| face.lined == face.gaps.len())
     }
 
     /// Every gap.

@@ -1,0 +1,73 @@
+{
+  "oracle_id": "0f264e5b-264e-4e97-9a8d-8ae1d6a286ce",
+  "name": "Drown in the Loch",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drown in the Loch",
+      "oracle_fingerprint": "cb2f56ed612df923f9a9d6605225fb3f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "Spell",
+                              {
+                                "Test": {
+                                  "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                  "op": "Le",
+                                  "right": {
+                                    "Count": [
+                                      { "In": "Graveyard" },
+                                      { "OwnedBy": { "ControllerOf": "Candidate" } }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              {
+                                "Test": {
+                                  "left": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                  "op": "Le",
+                                  "right": {
+                                    "Count": [
+                                      { "In": "Graveyard" },
+                                      { "OwnedBy": { "ControllerOf": "Candidate" } }
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "5674f6ae-ed5d-441e-a534-b5dd415165fd",
+  "name": "Eerie Ultimatum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eerie Ultimatum",
+      "oracle_fingerprint": "f6c0ecda5a7159e51f86c5821292b277",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "zone": "Graveyard",
+                  "filter": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ],
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "OwnedBy": "You" },
+                        { "In": "Graveyard" },
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Battle" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Land" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "distinct": true,
+                  "as": "cards"
+                }
+              },
+              { "Move": { "what": { "Bound": "cards" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

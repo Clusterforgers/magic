@@ -777,6 +777,56 @@ pub enum GameRule {
         /// The change.
         change: ManaChange,
     },
+    /// The players don't lose unspent mana of the type (of every type when absent) as steps and phases end (CR 500.4):
+    /// "You don't lose unspent red mana as steps and phases end."
+    KeepUnspentMana {
+        /// The players.
+        who: Ref,
+        /// The type kept; every type when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        mana: Option<ManaType>,
+    },
+    /// The controller may activate abilities of the creatures the selector picks as though they had haste (CR 302.6): "You
+    /// may activate abilities of creatures you control as though those creatures had haste." They still can't attack.
+    AbilitiesAsThoughHaste(Selector),
+    /// For each mana symbol of the color in a cost, the players may pay 2 life rather than pay that mana: "For each {B} in a
+    /// cost, you may pay 2 life rather than pay that mana."
+    PayLifeForMana {
+        /// The players.
+        who: Ref,
+        /// The color of the symbols.
+        color: Color,
+    },
+    /// The players draw no more than `most` cards each turn; the draws past it don't happen: "Each opponent can't draw more
+    /// than one card each turn."
+    DrawLimit {
+        /// The players.
+        who: Ref,
+        /// The cards each may draw in a turn.
+        most: u32,
+    },
+    /// Spells and abilities the opponents of the players control can't cause them to sacrifice permanents; costs they pay
+    /// themselves still can.
+    OpponentsCantMakeSacrifice(Ref),
+    /// The players may spend mana as though it were mana of any color or of any type (CR 609.4b): "You may spend mana as
+    /// though it were mana of any color", "... to cast creature spells".
+    SpendManaAs {
+        /// The players.
+        who: Ref,
+        /// Any color or any type.
+        spend_as: SpendAs,
+        /// Only to cast the spells this selects, judged as they are cast; every spell and ability when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        spells: Option<Selector>,
+    },
+    /// Unspent mana the players would lose as a step or phase ends becomes mana of `into` instead and stays: "If you would
+    /// lose unspent mana, that mana becomes colorless instead."
+    UnspentManaBecomes {
+        /// The players.
+        who: Ref,
+        /// The type the mana becomes.
+        into: ManaType,
+    },
 }
 
 /// How a `GameRule::ManaProduced` changes the mana of a tap.

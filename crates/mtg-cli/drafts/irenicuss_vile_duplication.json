@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a3faf698-1dac-45ef-9c43-c8cead489ffc",
+  "name": "Irenicus's Vile Duplication",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Irenicus's Vile Duplication",
+      "oracle_fingerprint": "cfd5aee838b69f7a4a4d6fc772fa2be1",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [{ "AddKeyword": "Flying" }, { "RemoveSupertype": "Legendary" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

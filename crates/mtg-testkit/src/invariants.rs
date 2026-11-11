@@ -1075,8 +1075,8 @@ impl InvariantChecker {
                 self.spend_kept(*player)?;
                 self.check_pool(*player)
             }
-            Event::ManaPoolEmptied { player, through } => {
-                self.empty_pool(*player, *through)?;
+            Event::ManaPoolEmptied { player, .. } => {
+                self.empty_pool(event)?;
                 self.check_pool(*player)
             }
             Event::DamageDealt {
@@ -1486,12 +1486,38 @@ impl InvariantChecker {
         Ok(())
     }
 
-    /// The pool of `player` after the mana that lasts no longer than `through` is gone, as the history says.
-    fn empty_pool(&mut self, player: PlayerId, through: ManaLasts) -> Result<(), Violation> {
-        self.held_restricted(player)?
-            .retain(|unit| unit.lasts > through);
+    /// The pool of `player` after the mana that lasts no longer than `through` is gone, as the history says: the mana of
+    /// the `kept` types stays, and what goes becomes `becomes` when a rule says so.
+    fn empty_pool(&mut self, emptied: &Event) -> Result<(), Violation> {
+        let Event::ManaPoolEmptied {
+            player,
+            through,
+            kept,
+            becomes,
+        } = emptied
+        else {
+            return Ok(());
+        };
+        let (player, through, becomes) = (*player, *through, *becomes);
+        let before = self
+            .expected_pool
+            .get(player.index())
+            .copied()
+            .unwrap_or_default();
+        let mut converted = Vec::new();
+        self.held_restricted(player)?.retain(|unit| {
+            let stays = unit.lasts > through || kept.contains(&unit.mana);
+            if !stays && let Some(into) = becomes {
+                converted.push(Restricted {
+                    mana: into,
+                    only: unit.only.clone(),
+                    lasts: ManaLasts::Step,
+                });
+            }
+            stays
+        });
         self.held_kept(player)?
-            .retain(|(_, lasts)| *lasts > through);
+            .retain(|(mana, lasts)| *lasts > through || kept.contains(mana));
         let mut cells = [0i64; 6];
         for unit in self.held_restricted(player)?.iter() {
             cells[unit.mana.index()] += 1;
@@ -1499,6 +1525,14 @@ impl InvariantChecker {
         for (mana, _) in self.held_kept(player)?.iter() {
             cells[mana.index()] += 1;
         }
+        for mana in kept {
+            cells[mana.index()] = before[mana.index()];
+        }
+        if let Some(into) = becomes {
+            let lost = before.iter().sum::<i64>() - cells.iter().sum::<i64>();
+            cells[into.index()] += lost;
+        }
+        self.held_restricted(player)?.extend(converted);
         if let Some(held) = self.expected_pool.get_mut(player.index()) {
             *held = cells;
         }

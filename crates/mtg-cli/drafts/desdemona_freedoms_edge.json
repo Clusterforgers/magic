@@ -1,0 +1,54 @@
+{
+  "oracle_id": "fd06d110-417c-42f5-a7b2-fd032f631dd2",
+  "name": "Desdemona, Freedom's Edge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desdemona, Freedom's Edge",
+      "oracle_fingerprint": "ce7abaf87029c5abfb1038305b4ef2cf",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "AddKeyword": {
+                        "Escape": [
+                          "OwnManaCost",
+                          { "ExileFromGraveyard": { "filter": ["Other"], "count": 2 } }
+                        ]
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

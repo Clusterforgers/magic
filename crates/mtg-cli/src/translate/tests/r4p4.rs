@@ -13,7 +13,7 @@ fn trigger(line: &str) -> String {
 #[rstest]
 #[case::mine("Mode$ AbilityCast | ValidActivatingPlayer$ You | ValidSA$ SpellAbility.!ManaAbility", json!({"Did": {"action": "Activated", "who": "You"}}))]
 #[case::theirs("Mode$ AbilityCast | ValidActivatingPlayer$ Opponent | ValidSA$ Activated.!ManaAbility", json!({"Did": {"action": "Activated", "who": "Opponents"}}))]
-#[case::of_a_creature("Mode$ AbilityCast | ValidCard$ Creature.YouCtrl | ValidActivatingPlayer$ You | ValidSA$ Activated.!ManaAbility", json!({"Did": {"action": "Activated", "who": "You", "what": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}))]
+#[case::of_a_creature("Mode$ AbilityCast | ValidCard$ Creature.YouCtrl | ValidActivatingPlayer$ You | ValidSA$ Activated.!ManaAbility", json!({"Did": {"action": "Activated", "who": "You", "what": [{"Type": "Creature"}, {"ControlledBy": "You"}, {"In": "Battlefield"}]}}))]
 #[case::spell_or_ability("Mode$ SpellAbilityCast | ValidSA$ Spell,Activated.!ManaAbility | ValidActivatingPlayer$ You", json!({"AnyOf": [{"SpellCast": {"by": "You"}}, {"Did": {"action": "Activated", "who": "You"}}]}))]
 fn activations(#[case] line: &str, #[case] when: Value) {
     let expected = normal(json!({"Triggered": {"when": when, "effects": [{"Draw": {}}]}}));

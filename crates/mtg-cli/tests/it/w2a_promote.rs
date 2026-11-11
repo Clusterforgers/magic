@@ -1,7 +1,8 @@
 //! Goal: `promote` writes a card the checker accepts as `Verified` with its record copied from the cache, a dry run
 //! writes nothing and `--partial` admits a `Partial` card, and every other file is skipped with its reason: no card, a
 //! corpus file, a card the compiler makes `Verified`, an invalid or mismatching proposal, a `Partial` one, a repeated
-//! card and a card the cached Oracle Cards file lacks.
+//! card and a card the cached Oracle Cards file lacks; a `Partial` card is written declared `Partial` with the clause
+//! it leaves to the table cut out as a whole sentence.
 
 #![allow(clippy::unwrap_used)]
 
@@ -10,8 +11,11 @@ use crate::common;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use mtg_cards::load::Library;
+use mtg_cards::ability::Ability;
+use mtg_cards::card::{Card, ImplStatus};
+use mtg_cards::load::{Library, parse_json};
 use mtg_cards::proposal::Verdict;
+use mtg_cards::support::Support;
 use mtg_cli::args::PromoteArgs;
 use mtg_cli::cache::Cache;
 use mtg_cli::ingest::{IngestOptions, ingest};
@@ -21,14 +25,17 @@ use sqlx::PgPool;
 
 use common::{fixture, gzip, progress, put_scryfall};
 
-const CARDS: [&str; 4] = [
+const CARDS: [&str; 5] = [
     "aetherflux_reservoir",
+    "aven_mindcensor",
     "eureka_moment",
     "lightning_bolt",
     "trynn_champion_of_freedom",
 ];
 
 const BOLT: &str = r#"{"faces":[{"abilities":[{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":3}}]}}]}]}"#;
+const MINDCENSOR_KEYWORDS: &str =
+    r#"{"faces":[{"abilities":[{"Keyword":"Flash"},{"Keyword":"Flying"}]}]}"#;
 const INVALID: &str = r#"{"faces":[{"abilities":[{"Nonsense":{}}]}]}"#;
 const RESERVOIR_TRIGGER: &str = r#"{"faces":[{"abilities":[{"Triggered":{"when":{"SpellCast":{"by":"You"}},"effects":[{"GainLife":{"amount":{"Tallied":{"who":"You","what":"SpellsCast"}}}}]}}]}]}"#;
 
@@ -229,6 +236,57 @@ async fn a_dry_run_writes_nothing_partial_admits_partial_and_a_missing_record_is
         )]
     );
     assert_eq!(later.written, Vec::<PathBuf>::new());
+}
+
+#[sqlx::test]
+async fn a_partial_card_is_written_declared_partial_with_its_open_clause_as_a_whole_sentence(
+    pool: PgPool,
+) {
+    let dir = tempfile::tempdir().unwrap();
+    let (db, cache) = loaded(pool, dir.path()).await;
+    let out = out_dir(dir.path(), "crate");
+    let files = vec![proposal(
+        dir.path(),
+        "a",
+        "aven_mindcensor",
+        MINDCENSOR_KEYWORDS,
+    )];
+    let name = || String::from("Aven Mindcensor");
+
+    let held = promote(&db, &cache, &out, files.clone(), (false, false)).await;
+    assert_eq!(
+        outcomes(&held),
+        [(name(), Some(W2aSkip::State(Support::Partial)))]
+    );
+    assert!(fs::read_dir(out.join("cards")).unwrap().next().is_none());
+
+    let promoted = promote(&db, &cache, &out, files, (false, true)).await;
+    assert_eq!(outcomes(&promoted), [(name(), None)]);
+    let rules: Card = parse_json(
+        "aven_mindcensor.json",
+        &fs::read_to_string(out.join("cards/aven_mindcensor.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(rules.impl_status, ImplStatus::Partial);
+    let record: serde_json::Value =
+        serde_json::from_str(&corpus_fixture("aven_mindcensor")).unwrap();
+    let text = record["oracle_text"].as_str().unwrap();
+    let open: Vec<&str> = rules
+        .abilities()
+        .filter_map(|(_, ability)| match ability {
+            Ability::Manual { span, .. } => {
+                assert!(span.is_whole_clause(text), "{span:?} in {text:?}");
+                span.slice(text)
+            }
+            _ => None,
+        })
+        .collect();
+    assert_eq!(
+        open,
+        [
+            "If an opponent would search a library, that player searches the top four cards of that library instead."
+        ]
+    );
 }
 
 #[sqlx::test]

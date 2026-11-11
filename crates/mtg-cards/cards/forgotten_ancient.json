@@ -1,0 +1,27 @@
+{
+  "oracle_id": "2ef75cf3-30dc-4852-a6d1-1d6391fad022",
+  "name": "Forgotten Ancient",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Forgotten Ancient",
+      "oracle_fingerprint": "953ab1d900685a2d248a4548eb94376a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [
+              { "May": { "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }] } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 79, "end": 194 }
+          }
+        }
+      ]
+    }
+  ]
+}

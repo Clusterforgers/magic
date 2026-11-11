@@ -1,0 +1,28 @@
+{
+  "oracle_id": "a7cc0f6b-6b17-4e76-b2a6-6a6ee2519b61",
+  "name": "Bilbo's Ring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bilbo's Ring",
+      "oracle_fingerprint": "0a834304d4b0c70a15e7287b860422b6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Hexproof" }, "CantBeBlocked"],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "AttacksAlone": { "what": [{ "Is": "Attached" }] } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Subtype": "Halfling" }], "cost": "{1}" } } },
+        { "Keyword": { "Equip": "{4}" } }
+      ]
+    }
+  ]
+}

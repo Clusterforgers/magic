@@ -599,6 +599,11 @@ function effect(
 const say = (event: Event): string => describeEvent({ Public: event }, names).text
 
 describe('describeEvent', () => {
+  it('names the attacker a token enters blocking', () => {
+    const event: Event = { TokenCreated: { object: 93, controller: 1, name: 'Cat Soldier', blocking: 1 } }
+    expect(say(event)).toBe('Bo creates a Cat Soldier token blocking Grizzly Bears')
+  })
+
   it('leaves the Ring-bearer out when the player controls no creature', () => {
     expect(say({ RingTempted: { player: 1, level: 1 } })).toBe('The Ring tempts Bo (level 1)')
   })
@@ -708,6 +713,13 @@ describe('events with more than one shape', () => {
 
   it('leaves out the source of mana that has none', () => {
     expect(say({ ManaAdded: { player: 0, mana: 'Blue', source: null } })).toBe('Ana adds {U}')
+  })
+
+  it('names the unspent mana a rule keeps or changes', () => {
+    expect(say({ ManaPoolEmptied: { player: 0, kept: ['Red'] } })).toBe("Ana's mana pool empties except {R}")
+    expect(say({ ManaPoolEmptied: { player: 0, becomes: 'Colorless' } })).toBe(
+      "Ana's unspent mana becomes {C}",
+    )
   })
 
   it('says when nobody attacks or blocks', () => {

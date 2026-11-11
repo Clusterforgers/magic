@@ -21,7 +21,13 @@ const PLUS_ONE: [(&str, &str); 2] = [
 /// Adds the wordings of a replacement that adds one counter of each kind that would be put.
 pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let Ability::Replacement {
-        when: ReplaceWhen::CountersPut { on, counter: None },
+        when:
+            ReplaceWhen::CountersPut {
+                on,
+                counter: None,
+                by: None,
+                effect: false,
+            },
         by: ReplaceBy::Add(1),
         condition: None,
         ..

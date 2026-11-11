@@ -1,0 +1,47 @@
+{
+  "oracle_id": "c527eb80-ccac-40b8-8377-c31121613128",
+  "name": "Dark Deal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Deal",
+      "oracle_fingerprint": "6411af6815c68af723d648b7e8e0a344",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Discard": {
+                        "who": { "Bound": "player" },
+                        "count": {
+                          "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }]
+                        },
+                        "as": "discarded"
+                      }
+                    },
+                    {
+                      "Draw": {
+                        "who": { "Bound": "player" },
+                        "count": {
+                          "Sum": [
+                            { "Count": [{ "In": "Graveyard" }, { "Is": { "Bound": "discarded" } }] },
+                            -1
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

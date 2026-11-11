@@ -1,0 +1,55 @@
+{
+  "oracle_id": "9c58d241-4d9f-4b46-b8ee-f4587f9acfd6",
+  "name": "Plaza of Heroes",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Plaza of Heroes",
+      "oracle_fingerprint": "79f6cfcfacdd74f155b4466d92666502",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [{ "Spell": { "supertypes": ["Legendary"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 94, "end": 164 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", "ExileSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

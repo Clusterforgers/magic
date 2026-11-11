@@ -43,7 +43,7 @@ fn a_checked_repeat_is_a_do_while(#[case] keys: &str, #[case] condition: Value, 
     );
 }
 
-/// A check stated before the next pass, a compare with nothing to compare and a choice to go on stay gaps.
+/// A check stated before the next pass, and a compare with nothing to compare stay gaps.
 #[rstest]
 #[case::check_first(
     "RepeatCheckSVar$ X | RepeatSVarCompare$ LT7 | StackDescription$ If you have fewer than 7 cards in hand, repeat this process.",
@@ -56,10 +56,6 @@ fn a_checked_repeat_is_a_do_while(#[case] keys: &str, #[case] condition: Value, 
 #[case::defined_alone(
     "RepeatDefined$ Remembered | RepeatCheckSVar$ X",
     "key:Repeat.RepeatDefined"
-)]
-#[case::optional(
-    "RepeatCheckSVar$ X | RepeatOptional$ True",
-    "key:Repeat.RepeatOptional"
 )]
 #[case::max_amount(
     "RepeatCheckSVar$ X | MaxRepeat$ X",

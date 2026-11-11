@@ -1,0 +1,25 @@
+{
+  "oracle_id": "db07a3f9-c6d1-4cae-a899-12b3e8d94018",
+  "name": "Inquisitor Eisenhorn",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Inquisitor Eisenhorn",
+      "oracle_fingerprint": "bafae34ab884c0d53a041051322d1162",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 195 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" }, "count": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,6 @@
-//! The Anthropic Messages API as a [`Dialect`]: the key comes from `ANTHROPIC_API_KEY` and goes into one header only,
-//! and the system prompt is marked for caching.
+//! The Anthropic Messages API as a [`Dialect`]: the key comes from `ANTHROPIC_API_KEY` and goes into one header only, an
+//! optional `ANTHROPIC_WORKSPACE_ID` goes into every request as `anthropic-workspace-id`, and the system prompt is marked
+//! for caching.
 
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use serde_json::{Value, json};
@@ -12,6 +13,12 @@ use crate::progress::Progress;
 
 /// The environment variable that holds the API key; nothing else supplies it.
 pub const KEY_VARIABLE: &str = "ANTHROPIC_API_KEY";
+
+/// The environment variable that holds the workspace id of a key that is not scoped to one workspace; optional.
+pub const WORKSPACE_VARIABLE: &str = "ANTHROPIC_WORKSPACE_ID";
+
+/// The header that names the workspace of a request.
+const WORKSPACE_HEADER: &str = "anthropic-workspace-id";
 
 /// The API version header value.
 const API_VERSION: &str = "2023-06-01";
@@ -29,9 +36,21 @@ impl ApiKey {
     }
 }
 
+/// The workspace id from `ANTHROPIC_WORKSPACE_ID` as `lookup` sees the environment; empty counts as not set.
+pub fn workspace_from_env(lookup: impl Fn(&str) -> Option<String>) -> Option<String> {
+    lookup(WORKSPACE_VARIABLE)
+        .map(|value| value.trim().to_owned())
+        .filter(|value| !value.is_empty())
+}
+
 /// The Messages API.
-#[derive(Debug, Clone, Copy, Default)]
-pub struct Anthropic;
+#[derive(Debug, Clone, Default)]
+pub struct Anthropic {
+    /// The effort every request asks for (`--reasoning`); none leaves the model's own.
+    pub effort: Option<&'static str>,
+    /// The workspace every request names, for a key that is not scoped to one.
+    pub workspace: Option<String>,
+}
 
 impl Dialect for Anthropic {
     fn path(&self) -> &'static str {
@@ -46,11 +65,17 @@ impl Dialect for Anthropic {
             HeaderValue::from_static(API_VERSION),
         );
         headers.insert(HeaderName::from_static("x-api-key"), key.c11i_header("")?);
+        if let Some(workspace) = &self.workspace {
+            let value = HeaderValue::from_str(workspace).map_err(|_| {
+                ModelError::Client(format!("{WORKSPACE_VARIABLE} is not a valid header value"))
+            })?;
+            headers.insert(HeaderName::from_static(WORKSPACE_HEADER), value);
+        }
         Ok(headers)
     }
 
     fn body(&self, request: &Request) -> Value {
-        request_body(request)
+        request_body_with(request, self.effort)
     }
 
     fn parse(&self, _request: &Request, body: &str) -> Result<Response, ModelError> {
@@ -66,13 +91,49 @@ impl AnthropicClient {
         handle: Handle,
         progress: Progress,
     ) -> Result<Self, ModelError> {
-        HttpClient::c11i_build(Anthropic, Some(key), config, handle, progress)
+        Self::with_options(key, config, handle, progress, None, None)
+    }
+
+    /// [`AnthropicClient::new`] whose requests ask for `effort`.
+    pub fn with_effort(
+        key: ApiKey,
+        config: &AnthropicConfig,
+        handle: Handle,
+        progress: Progress,
+        effort: Option<&'static str>,
+    ) -> Result<Self, ModelError> {
+        Self::with_options(key, config, handle, progress, effort, None)
+    }
+
+    /// [`AnthropicClient::with_effort`] whose requests also name `workspace` (`anthropic-workspace-id`), as a key that is not
+    /// scoped to one workspace needs.
+    pub fn with_options(
+        key: ApiKey,
+        config: &AnthropicConfig,
+        handle: Handle,
+        progress: Progress,
+        effort: Option<&'static str>,
+        workspace: Option<String>,
+    ) -> Result<Self, ModelError> {
+        HttpClient::c11i_build(
+            Anthropic { effort, workspace },
+            Some(key),
+            config,
+            handle,
+            progress,
+        )
     }
 }
 
 /// The JSON body of a Messages API request. The system prompt is one block marked for caching, since it is the same
 /// for every card.
 pub fn request_body(request: &Request) -> Value {
+    request_body_with(request, None)
+}
+
+/// [`request_body`] with the effort the model thinks at (`output_config.effort`): thinking is billed as answer tokens, so
+/// a lower effort is the cheaper request. `None` leaves the model's own default.
+pub fn request_body_with(request: &Request, effort: Option<&str>) -> Value {
     let messages: Vec<Value> = request
         .messages
         .iter()
@@ -86,7 +147,7 @@ pub fn request_body(request: &Request) -> Value {
             })
         })
         .collect();
-    json!({
+    let mut body = json!({
         "model": request.model,
         "max_tokens": request.max_tokens,
         "system": [{
@@ -95,13 +156,22 @@ pub fn request_body(request: &Request) -> Value {
             "cache_control": {"type": "ephemeral"},
         }],
         "messages": messages,
-    })
+    });
+    if let (Some(effort), Some(fields)) = (effort, body.as_object_mut()) {
+        fields.insert("output_config".into(), json!({"effort": effort}));
+    }
+    body
 }
 
 /// Reads a successful answer: the text blocks joined, and the tokens used (cache writes and reads count as input).
 pub fn parse_response(body: &str) -> Result<Response, ModelError> {
     let value: Value =
         serde_json::from_str(body).map_err(|error| ModelError::Answer(error.to_string()))?;
+    parse_message(&value)
+}
+
+/// Reads a message object, as the Messages API and the results of a batch hold it.
+pub fn parse_message(value: &Value) -> Result<Response, ModelError> {
     let blocks = value
         .get("content")
         .and_then(Value::as_array)
@@ -111,9 +181,6 @@ pub fn parse_response(body: &str) -> Result<Response, ModelError> {
         .filter(|block| block.get("type").and_then(Value::as_str) == Some("text"))
         .filter_map(|block| block.get("text").and_then(Value::as_str))
         .collect();
-    if text.is_empty() {
-        return Err(ModelError::Answer("the answer holds no text".into()));
-    }
     let usage = value.get("usage");
     let count = |key: &str| {
         usage
@@ -121,15 +188,30 @@ pub fn parse_response(body: &str) -> Result<Response, ModelError> {
             .and_then(Value::as_u64)
             .unwrap_or(0)
     };
-    let cache_read = count("cache_read_input_tokens");
-    Ok(Response {
-        text,
-        usage: Usage {
-            input_tokens: count("input_tokens") + count("cache_creation_input_tokens") + cache_read,
-            cache_read_tokens: cache_read,
-            output_tokens: count("output_tokens"),
-        },
-    })
+    let (cache_write, cache_read) = (
+        count("cache_creation_input_tokens"),
+        count("cache_read_input_tokens"),
+    );
+    let usage = Usage {
+        input_tokens: count("input_tokens") + cache_write + cache_read,
+        cache_write_tokens: cache_write,
+        cache_read_tokens: cache_read,
+        output_tokens: count("output_tokens"),
+    };
+    if text.is_empty() {
+        let why = match value.get("stop_reason").and_then(Value::as_str) {
+            Some("max_tokens") => {
+                "the answer tokens were all spent before a word was written (thinking is billed as answer tokens; try --reasoning low)"
+            }
+            Some("refusal") => "the model declined to answer",
+            _ => "the answer has no text block",
+        };
+        return Err(ModelError::Unanswered {
+            usage,
+            why: why.to_owned(),
+        });
+    }
+    Ok(Response { text, usage })
 }
 
 #[cfg(test)]
@@ -187,19 +269,62 @@ mod tests {
             response.usage,
             Usage {
                 input_tokens: 3210,
+                cache_write_tokens: 200,
                 cache_read_tokens: 3000,
                 output_tokens: 42
             }
         );
+        assert_eq!(response.usage.uncached_tokens(), 10);
     }
 
     #[rstest]
     #[case::not_json("<html>")]
     #[case::no_content(r#"{"usage":{}}"#)]
-    #[case::no_text(r#"{"content":[{"type":"tool_use"}]}"#)]
-    #[case::empty_text(r#"{"content":[{"type":"text","text":""}]}"#)]
-    fn an_answer_without_text_is_an_error(#[case] body: &str) {
+    fn an_answer_that_is_not_a_message_is_an_error(#[case] body: &str) {
         assert!(matches!(parse_response(body), Err(ModelError::Answer(_))));
+    }
+
+    #[rstest]
+    #[case::no_text_block(r#"{"content":[{"type":"tool_use"}]}"#, "no text block")]
+    #[case::empty_text(r#"{"content":[{"type":"text","text":""}]}"#, "no text block")]
+    #[case::thinking_ate_the_tokens(
+        r#"{"stop_reason":"max_tokens","content":[{"type":"thinking","thinking":"..."}]}"#,
+        "--reasoning low"
+    )]
+    #[case::declined(r#"{"stop_reason":"refusal","content":[]}"#, "declined")]
+    fn an_answer_without_text_is_billed_all_the_same(#[case] body: &str, #[case] why: &str) {
+        let with_usage = body.replacen(
+            '{',
+            r#"{"usage":{"input_tokens":50,"output_tokens":8192},"#,
+            1,
+        );
+        let Err(ModelError::Unanswered { usage, why: said }) = parse_response(&with_usage) else {
+            panic!("an answer without text is Unanswered");
+        };
+        assert_eq!((usage.input_tokens, usage.output_tokens), (50, 8192));
+        assert!(said.contains(why), "{said}");
+    }
+
+    #[test]
+    fn the_effort_goes_into_output_config_only_when_asked() {
+        let plain = request_body_with(&request(), None);
+        assert!(plain.get("output_config").is_none());
+        let low = request_body_with(&request(), Some("low"));
+        assert_eq!(low["output_config"]["effort"], "low");
+        assert_eq!(low["system"][0]["cache_control"]["type"], "ephemeral");
+    }
+
+    #[test]
+    fn a_message_is_read_from_a_batch_result_the_same_way() {
+        let message: Value = serde_json::from_str(
+            r#"{"content":[{"type":"text","text":"{}"}],"usage":{"input_tokens":5,"cache_read_input_tokens":7,"output_tokens":1}}"#,
+        )
+        .unwrap();
+        let response = parse_message(&message).unwrap();
+        assert_eq!(
+            (response.text.as_str(), response.usage.input_tokens),
+            ("{}", 12)
+        );
     }
 
     #[test]
@@ -258,6 +383,49 @@ mod tests {
         assert!(
             ApiKey::from_env(|name| (name == "OPENAI_API_KEY").then(|| "x".to_owned())).is_err()
         );
+    }
+
+    #[rstest]
+    #[case::set(Some(" wrkspc_01ABC\n"), Some("wrkspc_01ABC"))]
+    #[case::empty(Some("  "), None)]
+    #[case::missing(None, None)]
+    fn the_workspace_comes_from_its_own_variable_and_empty_counts_as_not_set(
+        #[case] value: Option<&str>,
+        #[case] want: Option<&str>,
+    ) {
+        let found = workspace_from_env(|name| {
+            (name == WORKSPACE_VARIABLE)
+                .then(|| value.map(str::to_owned))
+                .flatten()
+        });
+        assert_eq!(found.as_deref(), want);
+        // No other variable stands in for it.
+        assert_eq!(
+            workspace_from_env(|name| (name == "ANTHROPIC_API_KEY").then(|| "x".to_owned())),
+            None
+        );
+    }
+
+    #[test]
+    fn the_workspace_is_one_more_header_next_to_the_key_and_only_when_given() {
+        let key = self::key("sk-test");
+        let plain = Anthropic::default().headers(Some(&key)).unwrap();
+        assert!(plain.get("anthropic-workspace-id").is_none());
+        let named = Anthropic {
+            effort: None,
+            workspace: Some("wrkspc_01ABC".into()),
+        }
+        .headers(Some(&key))
+        .unwrap();
+        assert_eq!(named["anthropic-workspace-id"], "wrkspc_01ABC");
+        assert_eq!(named["anthropic-version"], API_VERSION);
+        assert!(named["x-api-key"].is_sensitive());
+        let broken = Anthropic {
+            effort: None,
+            workspace: Some("bad\nvalue".into()),
+        }
+        .headers(Some(&key));
+        assert!(matches!(broken, Err(ModelError::Client(_))));
     }
 
     #[test]

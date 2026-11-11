@@ -65,16 +65,24 @@ pub(super) fn text(targets: &[TargetSpec], effects: &[Effect]) -> Option<String>
                 counter,
                 count,
             },
-        ] => Some(format!(
-            "move {} from {} onto a second {}",
-            crate::compile::read::counters::ep21_move_text(
-                counter.as_ref(),
-                count,
-                &Ref::Target(0)
-            )?,
-            spec_text(first)?,
-            spec_text(second)?
-        )),
+        ] => {
+            // A second target other than the first is "onto a second target permanent", which the reader reads
+            // without the filter (a second target is another object, CR 115.3).
+            let onto = spec_text(second)?;
+            let onto = match onto.strip_prefix("another ") {
+                Some(rest) => format!("a second {rest}"),
+                None => format!("a second {onto}"),
+            };
+            Some(format!(
+                "move {} from {} onto {onto}",
+                crate::compile::read::counters::ep21_move_text(
+                    counter.as_ref(),
+                    count,
+                    &Ref::Target(0)
+                )?,
+                spec_text(first)?,
+            ))
+        }
         _ => None,
     }
 }

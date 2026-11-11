@@ -1,0 +1,55 @@
+{
+  "oracle_id": "6288c0cb-cf32-4ae9-abf0-104ec71654fa",
+  "name": "Moraug, Fury of Akoum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moraug, Fury of Akoum",
+      "oracle_fingerprint": "7485ee09eeb3f0a1e77c52fe0cb5f0a7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Tally": { "event": "Attacked", "who": "You", "filter": [{ "Is": "Affected" }] }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": { "All": ["YourTurn", { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }] },
+            "effects": [
+              { "AddPhase": { "phases": ["Combat"] } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Untap": {
+                        "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "4b1befff-48fa-47a3-832e-bdaf43495c02",
+  "name": "Ram Through",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ram Through",
+      "oracle_fingerprint": "6457f93d1af5abed57a24bf17ff2cc0f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "HasKeyword": "Trample" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "excess": { "to": { "ControllerOf": { "Target": 1 } } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "DealDamage": {
+                        "source": { "Target": 0 },
+                        "to": { "Target": 1 },
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

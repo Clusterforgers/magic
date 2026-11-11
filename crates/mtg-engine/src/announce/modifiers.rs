@@ -202,6 +202,7 @@ fn spell_cost_rules(state: &GameState, spell: ObjectId) -> Vec<Modifier> {
                     condition: None,
                     activating: None,
                     least: 0,
+                    life: 0,
                 }),
             })
         })
@@ -245,6 +246,7 @@ fn next_spell_costs(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec
                     condition: None,
                     activating: None,
                     least: 0,
+                    life: 0,
                 }),
             })
         })
@@ -285,14 +287,78 @@ pub(crate) fn modified(
     mana: Option<ManaCost>,
     judging: Option<&[TargetSpec]>,
 ) -> Option<ManaCost> {
-    let Some(target) = state
-        .object(spell)
-        .map(crate::object::GameObject::reference)
+    let Some(Changes {
+        mut more,
+        less,
+        floor,
+        ..
+    }) = changes(state, player, spell, specs, choices, judging)
     else {
         return mana;
     };
+    // The commander tax is an increase of the cost like any other (CR 903.8).
+    let tax = crate::commanders::tax_for(state, spell);
+    if tax > 0 {
+        more = joined(
+            more,
+            &ManaCost::from_symbols(vec![ManaSymbol::Generic(tax)]),
+        );
+    }
+    let mana = if more.symbols().is_empty() {
+        mana
+    } else {
+        Some(joined(mana.unwrap_or(ManaCost::ZERO), &more))
+    };
+    match mana {
+        Some(cost) if !less.symbols().is_empty() => {
+            Some(floored(&cost, reduced(&cost, &less), floor))
+        }
+        other => other,
+    }
+}
+
+/// The life the cost modifiers that apply to the spell add to its cost ("cost an additional 3 life to cast"), read with
+/// the targets announced; nothing for an ability.
+pub(super) fn life(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
+    let What::Spell(spell) = ctx.what else {
+        return 0;
+    };
+    if !ctx.state.possible.costs {
+        return 0;
+    }
+    let specs = targets::specs(ctx, choices);
+    let judging = (choices.targets.len() < specs.len()).then_some(specs.as_slice());
+    changes(ctx.state, ctx.player, *spell, &specs, choices, judging).map_or(0, |all| all.life)
+}
+
+/// What the cost modifiers that apply to a spell change, the commander tax aside.
+struct Changes {
+    /// The mana the increases add.
+    more: ManaCost,
+    /// The mana the reductions take away.
+    less: ManaCost,
+    /// The least mana the reductions leave.
+    floor: u32,
+    /// The life the increases add.
+    life: u32,
+}
+
+/// The changes of the modifiers that apply to `spell`, which `player` casts with `choices` announced; `None` when the
+/// spell is gone.
+fn changes(
+    state: &GameState,
+    player: PlayerId,
+    spell: ObjectId,
+    specs: &[TargetSpec],
+    choices: &Choices,
+    judging: Option<&[TargetSpec]>,
+) -> Option<Changes> {
+    let target = state
+        .object(spell)
+        .map(crate::object::GameObject::reference)?;
     let announced = Choices::default();
     let (mut more, mut less, mut floor) = (ManaCost::ZERO, ManaCost::ZERO, 0u32);
+    let mut life = 0u32;
     for modifier in gathered(state, spell, player) {
         let Ability::CostModifier {
             targeting: None,
@@ -303,6 +369,7 @@ pub(crate) fn modified(
             condition,
             activating: None,
             least,
+            life: each,
         } = &*modifier.ability
         else {
             continue;
@@ -333,32 +400,22 @@ pub(crate) fn modified(
         let times = u32::try_from(scope.amount(per).unwrap_or(0).clamp(0, MOST_TIMES)).unwrap_or(0);
         let part = repeated(unit, times);
         match change {
-            CostChange::Increase => more = joined(more, &part),
+            CostChange::Increase => {
+                more = joined(more, &part);
+                life = life.saturating_add(each.saturating_mul(times));
+            }
             CostChange::Reduce => {
                 floor = floor.max(*least);
                 less = joined(less, &part);
             }
         }
     }
-    // The commander tax is an increase of the cost like any other (CR 903.8).
-    let tax = crate::commanders::tax_for(state, spell);
-    if tax > 0 {
-        more = joined(
-            more,
-            &ManaCost::from_symbols(vec![ManaSymbol::Generic(tax)]),
-        );
-    }
-    let mana = if more.symbols().is_empty() {
-        mana
-    } else {
-        Some(joined(mana.unwrap_or(ManaCost::ZERO), &more))
-    };
-    match mana {
-        Some(cost) if !less.symbols().is_empty() => {
-            Some(floored(&cost, reduced(&cost, &less), floor))
-        }
-        other => other,
-    }
+    Some(Changes {
+        more,
+        less,
+        floor,
+        life,
+    })
 }
 
 /// `cost` less `less`, as a spell's reductions take it (an activated ability's own reductions, `c11a_less`).

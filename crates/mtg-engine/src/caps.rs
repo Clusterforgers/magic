@@ -233,6 +233,7 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.CommanderIdentity",
     "Effect.AddMana.ProducedBy",
     "Effect.AddMana.EachColorAmong",
+    "Effect.AddMana.AnyColorAmong",
     "Effect.AddMana.Devotion",
     "Effect.AddMana.Enters",
     "Effect.AddMana.OfTapped",
@@ -322,6 +323,7 @@ const RUNS: &[&str] = &[
     "Effect.BecomeCopy",
     "Copy.Duration.UntilYourNextTurn",
     "Copy.Except.ThisAbility",
+    "Copy.Except.SetPT.Amount",
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Duration.WhileYouControlSource",
@@ -364,6 +366,13 @@ const RUNS: &[&str] = &[
     "Rule.VoteAgain",
     "Rule.SkipExtraTurns",
     "Rule.FlipTwoCoins",
+    "Rule.KeepUnspentMana",
+    "Rule.DrawLimit",
+    "Rule.AbilitiesAsThoughHaste",
+    "Rule.PayLifeForMana",
+    "Rule.OpponentsCantMakeSacrifice",
+    "Rule.SpendManaAs",
+    "Rule.UnspentManaBecomes",
     "Rule.RevealTop",
     "Rule.NoMaxHandSize",
     "Rule.MaxHandSize",
@@ -627,6 +636,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Enters",
     "ReplaceBy.Multiply",
     "ReplaceBy.Add",
+    "ReplaceBy.Half",
     "ReplaceBy.Prevent",
     "ReplaceBy.PreventNext",
     "ReplaceBy.PreventUpTo",
@@ -926,7 +936,10 @@ mod tests {
     #[case::choosing_as_it_enters("ReplaceBy.Choose", true)]
     #[case::paying_life_or_entering_tapped("ReplaceBy.PayLifeOrTapped", true)]
     #[case::doing_something_instead("ReplaceBy.Instead", true)]
-    #[case::asking_in_place_of_an_event("ReplaceBy.Instead.Asks", false)]
+    #[case::modes_in_place_of_an_event("ReplaceBy.Instead.Modal", false)]
+    #[case::waiting_in_place_of_an_event("ReplaceBy.Instead.Waits", false)]
+    #[case::casting_in_place_of_an_event("ReplaceBy.Instead.Casts", false)]
+    #[case::paying_in_place_of_an_event("ReplaceBy.Instead.Pays", false)]
     #[case::tapping_or_untapping("Effect.TapOrUntap", true)]
     #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", false)]
     #[case::states("Trigger.State", true)]

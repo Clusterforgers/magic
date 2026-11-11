@@ -1,0 +1,63 @@
+{
+  "oracle_id": "615b4189-e800-408b-99e0-71ae7089b937",
+  "name": "Dance with Calamity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dance with Calamity",
+      "oracle_fingerprint": "0e3b685c9d6e8d9db970bc32313fff53",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Shuffle": {} },
+              {
+                "RepeatWhile": {
+                  "condition": { "ChosenWord": { "name": "choice", "word": "exile" } },
+                  "effects": [
+                    { "ChooseValue": { "kind": { "Options": ["exile", "stop"] }, "as": "choice" } },
+                    {
+                      "If": {
+                        "condition": { "ChosenWord": { "name": "choice", "word": "exile" } },
+                        "then": [
+                          { "ExileTop": { "as": "card" } },
+                          { "Bind": { "what": { "Bound": "card" }, "as": "exiled", "adds": true } }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 100,
+                  "at_least_once": true
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Total": { "of": [{ "Is": { "Bound": "exiled" } }], "stat": "ManaValue" }
+                      },
+                      "op": "Le",
+                      "right": 13
+                    }
+                  },
+                  "then": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "exiled" },
+                        "as": "exiled_card",
+                        "effects": [
+                          { "CastFromZone": { "what": { "Bound": "exiled_card" }, "free": true } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

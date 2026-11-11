@@ -1,0 +1,20 @@
+{
+  "oracle_id": "469956a2-7cd4-4695-b8f4-c841526f160d",
+  "name": "Bloodletter of Aclazotz",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bloodletter of Aclazotz",
+      "oracle_fingerprint": "95f198f540952dd8cd76c7b076f9c410",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 125 }
+          }
+        }
+      ]
+    }
+  ]
+}

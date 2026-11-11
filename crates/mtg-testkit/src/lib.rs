@@ -88,6 +88,7 @@ pub mod monarch_cards;
 pub mod morph_cards;
 pub mod move_cards;
 pub mod multiply_cards;
+pub mod mutate;
 pub mod mutate_cards;
 pub mod nth_cards;
 pub mod offers;

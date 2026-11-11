@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5a3fdf5a-bff8-4896-b288-3f43f9a72d9b",
+  "name": "Vorinclex, Monstrous Raider",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vorinclex, Monstrous Raider",
+      "oracle_fingerprint": "64f51c0ee69bda0182f9eaa92373a9a6",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 15, "end": 170 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 171, "end": 352 }
+          }
+        }
+      ]
+    }
+  ]
+}

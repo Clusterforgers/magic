@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d870a93a-8399-4004-9b45-2b49b001f165",
+  "name": "Luck Bobblehead",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Luck Bobblehead",
+      "oracle_fingerprint": "dd27be5f0218e456fe8d66ce0e12ab96",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 32, "end": 222 }
+          }
+        }
+      ]
+    }
+  ]
+}

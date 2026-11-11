@@ -1,0 +1,52 @@
+{
+  "oracle_id": "ae9f5c80-bc96-4ab3-bb5b-e8bd470e9eab",
+  "name": "Magus Lucea Kane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magus Lucea Kane",
+      "oracle_fingerprint": "f3bb17ed33fb532566948fbc7e5a2fa7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      { "SpellCast": { "what": ["XInCost"], "by": "You" } },
+                      { "Did": { "action": "Activated", "who": "You", "what": ["XInCost"] } }
+                    ]
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": { "subject": "Triggering", "selector": ["Spell"] }
+                        },
+                        "then": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }],
+                        "otherwise": [
+                          { "CopyAbility": { "what": "Triggering", "new_targets": true } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

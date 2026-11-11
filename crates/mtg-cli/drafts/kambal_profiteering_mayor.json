@@ -1,0 +1,55 @@
+{
+  "oracle_id": "619e0686-e88c-4238-8364-75395e733533",
+  "name": "Kambal, Profiteering Mayor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kambal, Profiteering Mayor",
+      "oracle_fingerprint": "8e9db7e2cceb6927f325a2627e26a820",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": ["Token", { "ControlledBy": "Opponents" }],
+                  "to": "Battlefield"
+                }
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Triggering",
+                  "as": "token",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": { "CopyOf": { "of": { "Bound": "token" } } },
+                        "tapped": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": { "what": ["Token", { "ControlledBy": "You" }], "to": "Battlefield" }
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

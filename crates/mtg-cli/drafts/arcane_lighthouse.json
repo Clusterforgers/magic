@@ -1,0 +1,33 @@
+{
+  "oracle_id": "30ac68e6-160a-41f9-9f0f-0e0eef383150",
+  "name": "Arcane Lighthouse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcane Lighthouse",
+      "oracle_fingerprint": "96f664c75e5cdde831f29acd42c8f4d2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "mods": [{ "LockKeyword": "Hexproof" }, { "LockKeyword": "Shroud" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

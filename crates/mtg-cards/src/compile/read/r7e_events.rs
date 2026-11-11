@@ -236,6 +236,9 @@ pub(super) fn r7e_did_text(pattern: &TriggerPattern) -> Option<String> {
             player_verb(who, "activate")?
         ));
     }
+    if *action == Action::Activated {
+        return wf24_activated_text(who, what);
+    }
     if what.is_empty() {
         return Some(format!("Whenever {}", player_action(*action, who)?));
     }
@@ -260,6 +263,63 @@ pub(super) fn r7e_did_text(pattern: &TriggerPattern) -> Option<String> {
         ));
     }
     pattern_text(&as_pattern(*action, what)?)
+}
+
+/// "Whenever an opponent activates an ability of a creature or land that isn't a mana ability": the engine counts no
+/// activation of a mana ability (CR 605.3b), so the words always say so. An object type alone is a permanent (CR
+/// 109.2), so the source must be on the battlefield; "an ability" alone has a source anywhere.
+fn wf24_activated_text(who: &Ref, what: &Selector) -> Option<String> {
+    const NOT_MANA: &str = "that isn't a mana ability";
+    if what.is_empty() {
+        return Some(format!(
+            "Whenever {} an ability {NOT_MANA}",
+            player_verb(who, "activate")?
+        ));
+    }
+    let [rest @ .., Pred::In(ZoneKind::Battlefield)] = what.0.as_slice() else {
+        return None;
+    };
+    if *who == Ref::EachPlayer && rest == [Pred::Type(CardType::Creature), Pred::Is(Ref::Attached)]
+    {
+        return Some(
+            "Whenever an ability of equipped creature is activated, if it isn't a mana ability"
+                .to_owned(),
+        );
+    }
+    let of = if rest.is_empty() {
+        "a permanent".to_owned()
+    } else {
+        subject_text(&Selector(rest.to_vec()))?
+    };
+    Some(format!(
+        "Whenever {} an ability of {of} {NOT_MANA}",
+        player_verb(who, "activate")?
+    ))
+}
+
+/// The other wordings of an activation trigger: the mana ability left out by an intervening "if", and the source said
+/// to be on the battlefield.
+pub(super) fn wf24_activated_wordings(texts: &mut Vec<String>) {
+    let mut found = Vec::new();
+    for text in texts.iter() {
+        if !text.starts_with("Whenever ") || !text.contains(" that isn't a mana ability, ") {
+            continue;
+        }
+        let iffed = text.replacen(
+            " that isn't a mana ability, ",
+            ", if it isn't a mana ability, ",
+            1,
+        );
+        if text.contains(" an ability of ") && !text.contains(" an ability of a permanent ") {
+            found.push(iffed.replacen(", if it", " on the battlefield, if it", 1));
+        }
+        found.push(iffed);
+    }
+    for text in found {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
 }
 
 /// The subject and verb of an action of an object, for a list of events: "~ mutates", "~ transforms into ~".

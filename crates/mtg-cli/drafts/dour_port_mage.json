@@ -1,0 +1,67 @@
+{
+  "oracle_id": "cf58e309-00e8-438e-813e-2e1c1002db23",
+  "name": "Dour Port-Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dour Port-Mage",
+      "oracle_fingerprint": "59ec7e0988c8ed1b274230b37abd0e6f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "Batch": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                      "from": "Battlefield",
+                      "to": "Hand"
+                    }
+                  }
+                },
+                {
+                  "Batch": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                      "from": "Battlefield",
+                      "to": "Exile"
+                    }
+                  }
+                },
+                {
+                  "Batch": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                      "from": "Battlefield",
+                      "to": "Library"
+                    }
+                  }
+                },
+                {
+                  "Batch": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                      "from": "Battlefield",
+                      "to": "Command"
+                    }
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{U}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

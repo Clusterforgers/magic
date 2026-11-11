@@ -47,6 +47,7 @@ fn effect(who: Ref, token: TokenRef, count: Amount, tapped: bool, attacking: boo
         tapped,
         attacking,
         against: None,
+        blocking: None,
         bind: None,
     }
 }
@@ -560,6 +561,7 @@ pub fn text(effect: &Effect, per: bool) -> Option<String> {
         tapped,
         attacking,
         against,
+        blocking,
         bind: None,
     } = effect
     else {
@@ -590,8 +592,20 @@ pub fn text(effect: &Effect, per: bool) -> Option<String> {
             (false, true, true) => " that's attacking",
             (false, true, false) => " that are attacking",
         };
-        format!("{state}{at}")
+        // "that's blocking that creature": the attacker of the block trigger (ep23).
+        let blocks = match (blocking, single) {
+            (None, _) => "",
+            (Some(_), true) => " that's blocking that creature",
+            (Some(_), false) => " that are blocking that creature",
+        };
+        format!("{state}{at}{blocks}")
     };
+    if blocking
+        .as_ref()
+        .is_some_and(|blocking| *blocking != Ref::Triggering || *attacking || *tapped)
+    {
+        return None;
+    }
     if legendary {
         let name = name?;
         return (*count == Amount::one() && !*tapped).then(|| {

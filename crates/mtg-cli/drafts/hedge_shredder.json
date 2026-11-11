@@ -1,0 +1,36 @@
+{
+  "oracle_id": "f22665cd-4710-48df-83c1-3c9081097cb5",
+  "name": "Hedge Shredder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hedge Shredder",
+      "oracle_fingerprint": "c1cd5d3b57fe1cbeb3a155ad97198b4c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "May": { "effects": [{ "Mill": { "count": 2 } }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Land" }, { "OwnedBy": "You" }],
+                  "from": "Library",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "effects": [
+              { "Move": { "what": "Triggering", "to": { "Battlefield": { "tapped": true } } } }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

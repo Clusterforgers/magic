@@ -1,10 +1,11 @@
 //! The HTTP side every model API shares: the key that never shows, the client, and 429 and 5xx answers retried with a
 //! growing wait. A [`Dialect`] supplies the endpoint, the headers, the body and the reading of an answer.
 
+use std::future::Future;
 use std::time::Duration;
 
 use reqwest::header::{CONTENT_TYPE, HeaderMap, HeaderValue, RETRY_AFTER};
-use reqwest::{Client, StatusCode};
+use reqwest::{Client, Method, StatusCode};
 use serde_json::Value;
 use tokio::runtime::Handle;
 
@@ -98,6 +99,7 @@ pub trait Dialect: std::fmt::Debug + Send + Sync {
 pub struct HttpClient<D> {
     client: Client,
     handle: Handle,
+    base: String,
     endpoint: String,
     key: Option<ApiKey>,
     attempts: u32,
@@ -129,6 +131,7 @@ impl<D: Dialect> HttpClient<D> {
         Ok(Self {
             client,
             handle,
+            base: config.base_url.trim_end_matches('/').to_owned(),
             endpoint: format!(
                 "{}{}",
                 config.base_url.trim_end_matches('/'),
@@ -143,18 +146,25 @@ impl<D: Dialect> HttpClient<D> {
         })
     }
 
-    fn scrub(&self, text: &str) -> String {
+    /// `text` with the key taken out.
+    pub fn scrub(&self, text: &str) -> String {
         self.key
             .as_ref()
             .map_or_else(|| text.to_owned(), |key| key.scrub(text))
     }
 
-    async fn send_once(&self, request: &Request) -> Result<Response, ModelError> {
-        let body = self.dialect.body(request).to_string();
-        let response = self
-            .client
-            .post(&self.endpoint)
-            .body(body)
+    /// One HTTP exchange: the body of a successful answer as text, or the API's complaint.
+    async fn text_once(
+        &self,
+        method: &Method,
+        url: &str,
+        body: Option<String>,
+    ) -> Result<String, ModelError> {
+        let mut call = self.client.request(method.clone(), url);
+        if let Some(body) = body {
+            call = call.body(body);
+        }
+        let response = call
             .send()
             .await
             .map_err(|error| self.transport_error(error))?;
@@ -165,15 +175,26 @@ impl<D: Dialect> HttpClient<D> {
             .await
             .map_err(|error| self.transport_error(error))?;
         if status.is_success() {
-            self.dialect.parse(request, &text)
+            Ok(text)
         } else {
             Err(status_error(status, &text, retry_after))
         }
     }
 
+    async fn send_once(&self, request: &Request) -> Result<Response, ModelError> {
+        let body = self.dialect.body(request).to_string();
+        let text = self
+            .text_once(&Method::POST, &self.endpoint, Some(body))
+            .await?;
+        self.dialect.parse(request, &text)
+    }
+
     /// One try, cancelled when it outlives the timeout (and a grace for the client's own timer to fire first).
-    async fn send_bounded(&self, request: &Request) -> Result<Response, ModelError> {
-        tokio::time::timeout(self.timeout + DEADLINE_GRACE, self.send_once(request))
+    async fn bounded<T>(
+        &self,
+        attempt: impl Future<Output = Result<T, ModelError>>,
+    ) -> Result<T, ModelError> {
+        tokio::time::timeout(self.timeout + DEADLINE_GRACE, attempt)
             .await
             .unwrap_or(Err(ModelError::Timeout {
                 after: self.timeout,
@@ -196,11 +217,25 @@ impl<D: Dialect> HttpClient<D> {
         }
     }
 
-    async fn send_with_retries(&self, request: &Request) -> Result<Response, ModelError> {
+    /// Runs `once` until it answers, with a growing wait after a failure worth another try. A call that is not `safe` to
+    /// repeat (it creates something) is tried again only after an answer that says nothing was done: a timeout or a
+    /// dropped connection may have left the work done.
+    async fn with_retries<T, Fut>(
+        &self,
+        safe: bool,
+        once: impl Fn() -> Fut,
+    ) -> Result<T, ModelError>
+    where
+        Fut: Future<Output = Result<T, ModelError>>,
+    {
         let mut attempt = 1;
         loop {
-            match self.send_bounded(request).await {
-                Err(error) if attempt < self.attempts && error.is_retryable() => {
+            match self.bounded(once()).await {
+                Err(error)
+                    if attempt < self.attempts
+                        && error.is_retryable()
+                        && (safe || matches!(error, ModelError::Status { .. })) =>
+                {
                     let wait = error
                         .retry_after()
                         .unwrap_or_else(|| self.backoff.saturating_mul(1 << (attempt - 1).min(10)))
@@ -220,27 +255,56 @@ impl<D: Dialect> HttpClient<D> {
     }
 }
 
+impl<D: Dialect> HttpClient<D> {
+    /// The error with the key taken out of every message that could repeat it.
+    fn scrubbed(&self, error: ModelError) -> ModelError {
+        match error {
+            ModelError::Status {
+                status,
+                message,
+                retry_after,
+            } => ModelError::Status {
+                status,
+                message: self.scrub(&message),
+                retry_after,
+            },
+            ModelError::Transport(message) => ModelError::Transport(self.scrub(&message)),
+            ModelError::Unreachable { endpoint, detail } => ModelError::Unreachable {
+                endpoint,
+                detail: self.scrub(&detail),
+            },
+            ModelError::Answer(message) => ModelError::Answer(self.scrub(&message)),
+            ModelError::Unanswered { usage, why } => ModelError::Unanswered {
+                usage,
+                why: self.scrub(&why),
+            },
+            other => other,
+        }
+    }
+
+    /// Any other endpoint of the API (`path` after the base address, such as `/v1/messages/batches`): the body, when given,
+    /// is sent with `method`, the call is retried like a request, and the answer comes back as text. Like
+    /// [`ModelClient::complete`] it blocks, so call it from a blocking thread.
+    pub fn call(
+        &self,
+        method: &Method,
+        path: &str,
+        body: Option<&Value>,
+        safe: bool,
+    ) -> Result<String, ModelError> {
+        let url = format!("{}{path}", self.base);
+        let body = body.map(Value::to_string);
+        self.handle
+            .block_on(self.with_retries(safe, || self.text_once(method, &url, body.clone())))
+            .map_err(|error| self.scrubbed(error))
+    }
+}
+
 impl<D: Dialect> ModelClient for HttpClient<D> {
     fn complete(&self, request: &Request) -> Result<Response, ModelError> {
         self.handle
-            .block_on(self.send_with_retries(request))
-            .map_err(|error| match error {
-                ModelError::Status {
-                    status,
-                    message,
-                    retry_after,
-                } => ModelError::Status {
-                    status,
-                    message: self.scrub(&message),
-                    retry_after,
-                },
-                ModelError::Transport(message) => ModelError::Transport(self.scrub(&message)),
-                ModelError::Unreachable { endpoint, detail } => ModelError::Unreachable {
-                    endpoint,
-                    detail: self.scrub(&detail),
-                },
-                other => other,
-            })
+            .block_on(self.with_retries(true, || self.send_once(request)))
+            .map_err(|error| self.scrubbed(error))
     }
 }
 

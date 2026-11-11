@@ -433,6 +433,50 @@ impl CardDefinition {
         names
     }
 
+    /// The tokens its abilities (and those of its faces) create, each once in the order written: a predefined token by
+    /// its file, a described one as written, a sized one with a fixed size at that size. A copy of an object or a token
+    /// whose size is counted as it is made is left out, since nothing fixes what it is.
+    pub fn made_tokens(&self) -> Vec<crate::card::TokenSpec> {
+        #[derive(Deserialize, PartialEq)]
+        struct Made {
+            token: crate::effect::TokenRef,
+        }
+        let Ok(value) = serde_json::to_value(self) else {
+            return Vec::new();
+        };
+        let mut specs: Vec<crate::card::TokenSpec> = Vec::new();
+        for made in Self::tagged_inners::<Made>(&value, "CreateToken") {
+            let spec = match made.token {
+                crate::effect::TokenRef::Named(id) => crate::builtin::library()
+                    .ok()
+                    .and_then(|library| library.token(&id))
+                    .map(|file| file.token.clone()),
+                crate::effect::TokenRef::Custom(spec) => Some(*spec),
+                crate::effect::TokenRef::Sized {
+                    size: Amount::Fixed(power),
+                    toughness,
+                    token,
+                } => match toughness {
+                    None => Some(power),
+                    Some(Amount::Fixed(toughness)) => Some(toughness),
+                    Some(_) => None,
+                }
+                .map(|toughness| crate::card::TokenSpec {
+                    power: Some(power),
+                    toughness: Some(toughness),
+                    ..*token
+                }),
+                _ => None,
+            };
+            if let Some(spec) = spec
+                && !specs.contains(&spec)
+            {
+                specs.push(spec);
+            }
+        }
+        specs
+    }
+
     /// The conditions its abilities (and those of its faces) ask "as you cast this spell" (`Condition::AsCast`), each once.
     pub fn as_cast_conditions(&self) -> Vec<crate::value::Condition> {
         self.as_cast_asks().0

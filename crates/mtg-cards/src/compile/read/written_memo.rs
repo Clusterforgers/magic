@@ -70,6 +70,45 @@ pub(super) fn written(ability: &Ability, write: fn(&Ability) -> Vec<String>) -> 
     texts
 }
 
+/// Ends the last-resort pass, also when the writer panics.
+struct EndLastResort;
+
+impl Drop for EndLastResort {
+    fn drop(&mut self) {
+        LAST_RESORT.set(false);
+    }
+}
+
+thread_local! {
+    static LAST_RESORT: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+}
+
+/// Whether the outer call is the last-resort pass: the wordings that would hide another writer's (a pronoun for a
+/// target named before) are written only when no writer wrote the ability otherwise.
+pub(super) fn last_resort() -> bool {
+    LAST_RESORT.get()
+}
+
+/// The outer `write(ability)` again as the last-resort pass, when the first pass wrote nothing; a nested call or a
+/// written ability gives `texts` back.
+pub(super) fn or_last_resort(
+    ability: &Ability,
+    texts: Vec<String>,
+    write: impl FnOnce(&Ability) -> Vec<String>,
+) -> Vec<String> {
+    let outer = TABLE.with_borrow(|table| table.depth == 0);
+    if !texts.is_empty()
+        || !outer
+        || LAST_RESORT.get()
+        || !super::wf24_token_bind::wf24_last_resort_shape(ability)
+    {
+        return texts;
+    }
+    LAST_RESORT.set(true);
+    let _reset = EndLastResort;
+    write(ability)
+}
+
 /// Whether the wordings written now may join parts of their own.
 pub(super) fn may_join() -> bool {
     TABLE.with_borrow(|table| table.joins < MOST_JOINS)

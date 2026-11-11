@@ -1,0 +1,52 @@
+{
+  "oracle_id": "4cd2e1c2-5f14-4ac9-9c88-899af6ad9f80",
+  "name": "Mysterious Stranger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mysterious Stranger",
+      "oracle_fingerprint": "479ddf30fc3333c50fc8c1e7b3ce3c71",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "EachPlayer",
+                    "what": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "In": "Graveyard" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "exiled" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [
+                    { "ChooseAtRandom": { "from": { "Bound": "exiled" }, "as": "chosen" } },
+                    { "CopyCard": { "what": { "Bound": "chosen" }, "as": "copy" } },
+                    { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

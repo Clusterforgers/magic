@@ -1,4 +1,6 @@
-//! The output directory of a run: accepted proposals as `<slug>.json`, the others under `rejected/` with the checker's report.
+//! The output directory of a run: accepted proposals as `<slug>.json`, drafts (valid, with a construct that has no writer)
+//! under `drafts/`, the others under `rejected/` with the checker's report, a record of each card under `records/` and
+//! the summary TSV.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -7,6 +9,7 @@ use mtg_cards::card::Card;
 use mtg_cards::load::{canonical, slug};
 
 use super::forge_hint::HintRecord;
+use super::summary::{CardRecord, render_summary};
 use crate::error::CliError;
 
 /// The folder of the proposals of a run.
@@ -37,15 +40,77 @@ impl Store {
             .join(format!("{}.{extension}", slug(name)))
     }
 
-    /// Whether a proposal of the card is saved, accepted or not.
+    /// Where the draft of a card is: `promote --draft` takes it from there.
+    pub fn draft_path(&self, name: &str) -> PathBuf {
+        self.dir.join("drafts").join(format!("{}.json", slug(name)))
+    }
+
+    fn record_path(&self, name: &str) -> PathBuf {
+        self.dir
+            .join("records")
+            .join(format!("{}.json", slug(name)))
+    }
+
+    /// Where the summary TSV is.
+    pub fn summary_path(&self) -> PathBuf {
+        self.dir.join("summary.tsv")
+    }
+
+    /// Whether a proposal of the card is saved: accepted, a draft or rejected (a card that got no answer has none, so `--resume` asks it again).
     pub fn has(&self, name: &str) -> bool {
-        self.accepted_path(name).is_file() || self.rejected_path(name, "json").is_file()
+        self.accepted_path(name).is_file()
+            || self.draft_path(name).is_file()
+            || self.rejected_path(name, "json").is_file()
     }
 
     /// Saves an accepted proposal as the completed rules in canonical form: the file `check-rules --write` would write.
     pub fn save_accepted(&self, name: &str, rules: &Card) -> Result<PathBuf, CliError> {
         let path = self.accepted_path(name);
         write(&path, &canonical(rules))?;
+        Ok(path)
+    }
+
+    /// Saves a valid proposal with a construct that has no writer as the completed rules in canonical form: the file
+    /// `promote --draft` makes a draft of.
+    pub fn save_draft(&self, name: &str, rules: &Card) -> Result<PathBuf, CliError> {
+        let path = self.draft_path(name);
+        write(&path, &canonical(rules))?;
+        Ok(path)
+    }
+
+    /// Saves what became of a card, replacing the record an earlier run left.
+    pub fn save_record(&self, record: &CardRecord) -> Result<(), CliError> {
+        let json = serde_json::to_string_pretty(record).unwrap_or_default();
+        write(&self.record_path(&record.card), &format!("{json}\n"))
+    }
+
+    /// The records of every run in the folder, by card name.
+    pub fn records(&self) -> Result<Vec<CardRecord>, CliError> {
+        let folder = self.dir.join("records");
+        let Ok(entries) = fs::read_dir(&folder) else {
+            return Ok(Vec::new());
+        };
+        let mut records = Vec::new();
+        for entry in entries.flatten() {
+            let path = entry.path();
+            let text = fs::read_to_string(&path).map_err(|source| CliError::io(&path, source))?;
+            // A record that does not read is left out of the summary, not a reason to lose the run's other cards.
+            if let Ok(record) = serde_json::from_str::<CardRecord>(&text) {
+                records.push(record);
+            }
+        }
+        records.sort_by(|a, b| a.card.cmp(&b.card));
+        Ok(records)
+    }
+
+    /// Writes the summary TSV of every record in the folder and returns where it is; a run that asked about no card leaves
+    /// the folder as it was.
+    pub fn write_summary(&self) -> Result<PathBuf, CliError> {
+        let path = self.summary_path();
+        let records = self.records()?;
+        if !records.is_empty() {
+            write(&path, &render_summary(&records))?;
+        }
         Ok(path)
     }
 

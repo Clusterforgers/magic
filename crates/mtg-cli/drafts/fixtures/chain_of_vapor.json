@@ -1,0 +1,127 @@
+{
+  "object": "card",
+  "id": "38f741bf-13ee-4384-98ab-27833ebb9f6d",
+  "oracle_id": "2167ac25-d042-4b48-b770-8b94acc1a965",
+  "multiverse_ids": [
+    420701
+  ],
+  "tcgplayer_id": 124193,
+  "cardmarket_id": 293534,
+  "name": "Chain of Vapor",
+  "lang": "en",
+  "released_at": "2016-11-11",
+  "uri": "https://api.scryfall.com/cards/38f741bf-13ee-4384-98ab-27833ebb9f6d",
+  "scryfall_uri": "https://scryfall.com/card/c16/84/chain-of-vapor?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T10:04:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/8/38f741bf-13ee-4384-98ab-27833ebb9f6d.jpg?1783937074",
+    "normal": "https://cards.scryfall.io/normal/front/3/8/38f741bf-13ee-4384-98ab-27833ebb9f6d.jpg?1783937074",
+    "large": "https://cards.scryfall.io/large/front/3/8/38f741bf-13ee-4384-98ab-27833ebb9f6d.jpg?1783937074",
+    "png": "https://cards.scryfall.io/png/front/3/8/38f741bf-13ee-4384-98ab-27833ebb9f6d.png?1783937074",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/8/38f741bf-13ee-4384-98ab-27833ebb9f6d.jpg?1783937074",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/8/38f741bf-13ee-4384-98ab-27833ebb9f6d.jpg?1783937074",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/8/38f741bf-13ee-4384-98ab-27833ebb9f6d.webp?1783937074",
+    "grid": "https://cards.scryfall.io/grid/front/3/8/38f741bf-13ee-4384-98ab-27833ebb9f6d.webp?1783937074",
+    "display": "https://cards.scryfall.io/display/front/3/8/38f741bf-13ee-4384-98ab-27833ebb9f6d.webp?1783937074",
+    "art": "https://cards.scryfall.io/art/front/3/8/38f741bf-13ee-4384-98ab-27833ebb9f6d.webp?1783937074",
+    "crop": "https://cards.scryfall.io/crop/front/3/8/38f741bf-13ee-4384-98ab-27833ebb9f6d.webp?1783937074",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/8/38f741bf-13ee-4384-98ab-27833ebb9f6d.jpg?1783937074"
+  },
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Return target nonland permanent to its owner's hand. Then that permanent's controller may sacrifice a land of their choice. If the player does, they may copy this spell and may choose a new target for that copy.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "3e0d713a-b5cb-4287-81b9-a57d4dcaf415",
+  "set": "c16",
+  "set_name": "Commander 2016",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/3e0d713a-b5cb-4287-81b9-a57d4dcaf415",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac16&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c16?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/38f741bf-13ee-4384-98ab-27833ebb9f6d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2167ac25-d042-4b48-b770-8b94acc1a965&unique=prints",
+  "collector_number": "84",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Svetlin Velinov",
+  "artist_ids": [
+    "ffd063ae-c097-4f26-b2e6-b1e2137708bc"
+  ],
+  "illustration_id": "4d41e945-6ed9-4b81-ac9e-92cf428c88fc",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 990,
+  "prices": {
+    "usd": "15.94",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "10.21",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=420701&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DChain%2Bof%2BVapor",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DChain%2Bof%2BVapor",
+    "edhrec": "https://edhrec.com/route/?cc=Chain+of+Vapor"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F124193%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=293534&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Chain+of+Vapor&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,7 +1,7 @@
-//! The translation of a card with one gapped line, the oracle and Forge lines of that gap, and the translated lines of
-//! other cards that serve as examples.
+//! The translation of a card with one or two gapped lines, the oracle and Forge lines of each gap, and the translated lines
+//! of other cards that serve as examples, found by the shape of their Forge line first and their words second.
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -12,6 +12,10 @@ use serde_json::Value;
 
 use super::part::{Kind, Shown};
 use crate::forge::script::{Face, Params, Script};
+use crate::propose::forge_hint::ForgeHints;
+
+/// The most gapped lines a card may have for line mode.
+pub const MAX_GAPS: usize = 2;
 
 /// The longest example ability shown, in bytes.
 const MAX_EXAMPLE: usize = 600;
@@ -48,48 +52,54 @@ impl Translation {
         Ok(Translation { proposal, lines })
     }
 
-    /// The one gapped line of the translation: its face, tag, text, key and the place its ability goes. The error names
-    /// why the card is not one for line mode.
-    pub fn single_gap(&self) -> Result<GapAt, String> {
+    /// The gapped lines of the translation (at most [`MAX_GAPS`]) in script order, each with its face, tag, text, key and
+    /// the place its ability goes in the translation as it is. The error names why the card is not one for line mode.
+    pub fn gaps(&self) -> Result<Vec<GapAt>, String> {
         let mut seen: BTreeSet<(usize, &str, &str, &str)> = BTreeSet::new();
-        let mut first = None;
+        let mut firsts = Vec::new();
         for (at, line) in self.lines.iter().enumerate() {
             let Some(key) = &line.gap else { continue };
             if !line.abilities.is_empty() {
                 return Err("a line is partly translated".into());
             }
-            seen.insert((
+            let fresh = seen.insert((
                 line.face,
                 line.tag.as_str(),
                 line.text.as_str(),
                 key.as_str(),
             ));
-            first.get_or_insert(at);
+            if fresh {
+                firsts.push(at);
+            }
         }
-        let Some(first) = first else {
-            return Err("no gapped line".into());
-        };
-        if seen.len() > 1 {
-            return Err(format!("{} gapped lines", seen.len()));
+        match firsts.len() {
+            0 => return Err("no gapped line".into()),
+            count if count > MAX_GAPS => return Err(format!("{count} gapped lines")),
+            _ => {}
         }
-        let line = &self.lines[first];
-        let before = self.lines[..first]
-            .iter()
-            .filter(|row| row.face == line.face)
-            .flat_map(|row| row.abilities.iter())
-            .max()
-            .map_or(0, |last| last + 1);
-        Ok(GapAt {
-            face: line.face,
-            tag: line.tag.clone(),
-            text: line.text.clone(),
-            key: line.gap.clone().unwrap_or_default(),
-            at: before,
-        })
+        Ok(firsts
+            .into_iter()
+            .map(|first| {
+                let line = &self.lines[first];
+                let before = self.lines[..first]
+                    .iter()
+                    .filter(|row| row.face == line.face)
+                    .flat_map(|row| row.abilities.iter())
+                    .max()
+                    .map_or(0, |last| last + 1);
+                GapAt {
+                    face: line.face,
+                    tag: line.tag.clone(),
+                    text: line.text.clone(),
+                    key: line.gap.clone().unwrap_or_default(),
+                    at: before,
+                }
+            })
+            .collect())
     }
 }
 
-/// Where the gap is in the translation.
+/// Where a gap is in the translation.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GapAt {
     /// The face.
@@ -100,7 +110,7 @@ pub struct GapAt {
     pub text: String,
     /// The construct that stopped the line.
     pub key: String,
-    /// The index on the face where the ability goes.
+    /// The index on the face where the ability goes, in the translation as it is.
     pub at: usize,
 }
 
@@ -143,19 +153,74 @@ fn words(text: &str) -> BTreeSet<String> {
         .collect()
 }
 
-/// The script line of the gap and the named parts it reaches, as the script writes them.
-fn forge_lines(face: &Face, at: &GapAt) -> Option<(String, Kind)> {
-    let bodies = match at.tag.as_str() {
+/// The words of a line with the words of the card's own name masked out, so that a name does not count as a mechanic.
+fn masked(text: &str, name: &str) -> BTreeSet<String> {
+    let own = words(name);
+    words(text)
+        .into_iter()
+        .filter(|word| !own.contains(word))
+        .collect()
+}
+
+/// What a script line does: the verbs it and its named parts use (`api:Dig`, `mode:Attacks`) and the keys that vary them.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct Shape {
+    verbs: BTreeSet<String>,
+    keys: BTreeSet<String>,
+}
+
+impl Shape {
+    /// The shape of script lines as a gap shows them (`T:...`, `SVar:Name:...`, one a line).
+    pub fn of(forge: &str) -> Shape {
+        let mut shape = Shape::default();
+        for line in forge.lines() {
+            let body = match line.split_once(':') {
+                Some(("SVar", rest)) => rest.split_once(':').map_or(rest, |(_, body)| body),
+                Some(("K", rest)) => {
+                    let word = rest.split([':', ' ']).next().unwrap_or(rest);
+                    shape.verbs.insert(format!("kw:{word}"));
+                    continue;
+                }
+                Some((_, rest)) => rest,
+                None => line,
+            };
+            let params = Params::parse(body);
+            if let Some((key, value)) = params.iter().next() {
+                let key = match key {
+                    "SP" | "AB" | "DB" => "api",
+                    other => other,
+                };
+                shape.verbs.insert(format!("{key}:{}", value.trim()));
+            }
+            shape.keys.extend(params.meaningful_keys());
+        }
+        shape
+    }
+
+    fn shared(&self, other: &Shape) -> (usize, usize) {
+        (
+            self.verbs.intersection(&other.verbs).count(),
+            self.keys.intersection(&other.keys).count(),
+        )
+    }
+}
+
+/// The body of a script line by its tag and the words the ledger records for it.
+fn body_of<'f>(face: &'f Face, tag: &str, text: &str) -> Option<&'f String> {
+    let bodies = match tag {
         "K" => &face.keywords,
         "A" => &face.abilities,
         "T" => &face.triggers,
         "S" => &face.statics,
         _ => &face.replacements,
     };
-    let body = bodies
-        .iter()
-        .find(|body| text_of(&at.tag, body) == at.text)?;
-    let mut shown = vec![format!("{}:{body}", at.tag)];
+    bodies.iter().find(|body| text_of(tag, body) == text)
+}
+
+/// The script line of the gap and the named parts it reaches, as the script writes them.
+fn forge_lines(face: &Face, tag: &str, text: &str) -> Option<(String, Kind)> {
+    let body = body_of(face, tag, text)?;
+    let mut shown = vec![format!("{tag}:{body}")];
     let mut done: BTreeSet<&str> = BTreeSet::new();
     let mut todo = vec![body.as_str()];
     while let Some(text) = todo.pop() {
@@ -172,7 +237,7 @@ fn forge_lines(face: &Face, at: &GapAt) -> Option<(String, Kind)> {
             todo.push(value);
         }
     }
-    Some((shown.join("\n"), Kind::of(&at.tag, body)))
+    Some((shown.join("\n"), Kind::of(tag, body)))
 }
 
 /// The sentence of the printed face that shares most words with the line; the line itself when the card has no text.
@@ -190,10 +255,10 @@ fn oracle_line(card: &PrintedCard, face: usize, text: &str) -> String {
         .map_or_else(|| text.to_owned(), |(_, line)| line.to_owned())
 }
 
-/// The words the model gets for the gap of a card; `None` when the script has no line of that text.
+/// The words the model gets for a gap of a card; `None` when the script has no line of that text.
 pub fn describe(card: &PrintedCard, script: &str, at: &GapAt) -> Option<Gap> {
     let script = Script::parse(script);
-    let (forge, kind) = forge_lines(script.faces.get(at.face)?, at)?;
+    let (forge, kind) = forge_lines(script.faces.get(at.face)?, &at.tag, &at.text)?;
     Some(Gap {
         oracle: oracle_line(card, at.face, &at.text),
         forge,
@@ -204,16 +269,27 @@ pub fn describe(card: &PrintedCard, script: &str, at: &GapAt) -> Option<Gap> {
 
 /// The proposal with `ability` inserted on `face` at `at`; every other ability stays as it is.
 pub fn merge(proposal: &Value, face: usize, at: usize, ability: Value) -> Option<Value> {
+    merge_all(proposal, vec![(face, at, ability)])
+}
+
+/// The proposal with each `(face, at, ability)` inserted, every place counted in the proposal as it is; abilities for the
+/// same place keep their order.
+pub fn merge_all(proposal: &Value, parts: Vec<(usize, usize, Value)>) -> Option<Value> {
     let mut merged = proposal.clone();
-    let list = merged
-        .get_mut("faces")?
-        .get_mut(face)?
-        .get_mut("abilities")?
-        .as_array_mut()?;
-    if at > list.len() {
-        return None;
+    let mut parts: Vec<(usize, (usize, usize, Value))> = parts.into_iter().enumerate().collect();
+    // From the last place to the first, so that an insertion never moves a place still to come.
+    parts.sort_by_key(|part| std::cmp::Reverse((part.1.0, part.1.1, part.0)));
+    for (_, (face, at, ability)) in parts {
+        let list = merged
+            .get_mut("faces")?
+            .get_mut(face)?
+            .get_mut("abilities")?
+            .as_array_mut()?;
+        if at > list.len() {
+            return None;
+        }
+        list.insert(at, ability);
     }
-    list.insert(at, ability);
     Some(merged)
 }
 
@@ -226,9 +302,10 @@ struct Entry {
     tag: String,
     text: String,
     words: BTreeSet<String>,
+    shape: Shape,
 }
 
-/// The translated lines of whole translations (no gap), found by their words.
+/// The translated lines of whole translations (no gap), found by the shape of their script line and by their words.
 #[derive(Debug, Default)]
 pub struct Pool {
     dir: PathBuf,
@@ -236,8 +313,16 @@ pub struct Pool {
 }
 
 impl Pool {
-    /// Reads the ledgers under `<dir>/meta`; a card with a gap gives no line.
+    /// Reads the ledgers under `<dir>/meta`; a card with a gap gives no line. No line has a script shape.
     pub fn load(dir: &Path) -> Pool {
+        Pool::load_with(dir, None, &[])
+    }
+
+    /// [`Pool::load`] that also reads the shape of each line from the card's script in `forge`, the cards found by slug
+    /// among `cards`.
+    pub fn load_with(dir: &Path, forge: Option<&ForgeHints>, cards: &[PrintedCard]) -> Pool {
+        let by_slug: BTreeMap<String, &PrintedCard> =
+            cards.iter().map(|card| (slug(&card.name), card)).collect();
         let mut files: Vec<PathBuf> = fs::read_dir(dir.join("meta"))
             .into_iter()
             .flatten()
@@ -262,17 +347,31 @@ impl Pool {
             if lines.iter().any(|line| line.gap.is_some()) {
                 continue;
             }
+            let card = by_slug.get(stem).copied();
+            let script = forge
+                .zip(card)
+                .and_then(|(forge, card)| forge.script_of(card))
+                .map(|text| Script::parse(&text));
+            let name = card.map_or("", |card| card.name.as_str());
             for line in lines {
-                if let [ability] = line.abilities[..] {
-                    entries.push(Entry {
-                        slug: stem.to_owned(),
-                        face: line.face,
-                        ability,
-                        words: words(&line.text),
-                        tag: line.tag,
-                        text: line.text,
-                    });
-                }
+                let [ability] = line.abilities[..] else {
+                    continue;
+                };
+                let shape = script
+                    .as_ref()
+                    .and_then(|script| script.faces.get(line.face))
+                    .and_then(|face| forge_lines(face, &line.tag, &line.text))
+                    .map(|(shown, _)| Shape::of(&shown))
+                    .unwrap_or_default();
+                entries.push(Entry {
+                    slug: stem.to_owned(),
+                    face: line.face,
+                    ability,
+                    words: masked(&line.text, name),
+                    shape,
+                    tag: line.tag,
+                    text: line.text,
+                });
             }
         }
         Pool {
@@ -291,8 +390,16 @@ impl Pool {
         self.entries.is_empty()
     }
 
-    /// Up to `count` examples of `kind` whose words are nearest to `text`, nearest first, each ability once.
-    pub fn nearest(&self, kind: Kind, text: &str, count: usize) -> Vec<Shown> {
+    /// Up to `count` examples of `kind` nearest to a gap: the most verbs of its script shape shared first, then the most
+    /// varying keys, then the most words of its text (the card's `name` masked out); each ability once.
+    pub fn nearest(
+        &self,
+        kind: Kind,
+        shape: &Shape,
+        text: &str,
+        name: &str,
+        count: usize,
+    ) -> Vec<Shown> {
         let tag = match kind {
             Kind::Triggered => "T",
             Kind::Static => "S",
@@ -300,13 +407,19 @@ impl Pool {
             Kind::Keyword => "K",
             _ => "A",
         };
-        let mine = words(text);
-        let mut ranked: Vec<(usize, &Entry)> = self
+        let mine = masked(text, name);
+        let mut ranked: Vec<((usize, usize, usize), &Entry)> = self
             .entries
             .iter()
             .filter(|entry| entry.tag == tag)
-            .map(|entry| (entry.words.intersection(&mine).count(), entry))
-            .filter(|(shared, _)| *shared > 0)
+            .map(|entry| {
+                let (verbs, keys) = shape.shared(&entry.shape);
+                (
+                    (verbs, keys, entry.words.intersection(&mine).count()),
+                    entry,
+                )
+            })
+            .filter(|((verbs, _, shared), _)| *verbs > 0 || *shared > 0)
             .collect();
         ranked.sort_by(|a, b| {
             (b.0, a.1.text.len(), &a.1.slug).cmp(&(a.0, b.1.text.len(), &b.1.slug))

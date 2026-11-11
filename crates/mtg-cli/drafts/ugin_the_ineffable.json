@@ -1,0 +1,60 @@
+{
+  "oracle_id": "18bdc181-9592-4147-81fb-7f83ce137f70",
+  "name": "Ugin, the Ineffable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ugin, the Ineffable",
+      "oracle_fingerprint": "3046ef1b4ce9004854f04c82634d2b0f",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", "Colorless", { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}"
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "ExileTop": { "as": "exiled", "sealed": true } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Bound": "token" } }],
+                      "from": "Battlefield"
+                    }
+                  },
+                  "effects": [{ "Move": { "what": { "Bound": "exiled" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Not": "Colorless" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

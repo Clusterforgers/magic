@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8d0adc5c-3fdd-4e22-b783-5651f8e57b65",
+  "name": "Final Fortune",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Final Fortune",
+      "oracle_fingerprint": "4ff2666e8799fe2ff0d0c5fe40a6fc24",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExtraTurn": {} },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "this_turn": true,
+                        "effects": [{ "LoseGame": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

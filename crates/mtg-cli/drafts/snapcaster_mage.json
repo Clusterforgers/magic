@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2bb2eda7-3b38-4c56-870f-c3218a1056f5",
+  "name": "Snapcaster Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snapcaster Mage",
+      "oracle_fingerprint": "47bba58b8a49a847044a875978dcf55b",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

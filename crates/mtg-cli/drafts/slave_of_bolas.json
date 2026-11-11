@@ -23,7 +23,7 @@
                 "Continuous": {
                   "affected": { "Target": 0 },
                   "mods": [{ "AddKeyword": "Haste" }],
-                  "duration": "Forever"
+                  "duration": "UntilEndOfTurn"
                 }
               },
               {

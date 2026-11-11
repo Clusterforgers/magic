@@ -24,11 +24,11 @@ use rstest::rstest;
 
 use Support::{Partial, Verified};
 
-/// The corpus cards the engine does not play whole, each with the state its capabilities give it and the number of
-/// abilities its definition carries (mana abilities and rules together). Every other corpus card is Verified and carries
-/// the abilities of its file, and a basic land type adds the mana ability of that land type. A Manual card carries none
-/// (the table resolves it); a Partial card carries what the engine runs. A
-/// card joins this list when the engine cannot yet play it whole and leaves it when it can.
+/// The corpus cards whose state its file cannot give, each with the state its capabilities give it and the number of
+/// abilities its definition carries (mana abilities and rules together): a card the engine cannot yet play as its file
+/// says. Every other card arrives as its file says: Partial when the file leaves a clause to the table, else Verified, with
+/// the abilities of its file the engine runs; a basic land type adds the mana ability of that land type. A Manual card
+/// carries none (the table resolves it).
 const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Auspicious Starrix", Partial, 1),
     ("Aven Mindcensor", Partial, 2),
@@ -72,10 +72,28 @@ fn abilities_of_a_verified_card(name: &str) -> usize {
     file + land_types + sieges
 }
 
-/// The state and the number of abilities a corpus card is expected to arrive with.
+/// Whether the card's file leaves a clause to the table (`impl_status: Partial`).
+fn file_leaves_clauses(name: &str) -> bool {
+    let library = mtg_cards::builtin::library().unwrap();
+    library
+        .card_by_name(name)
+        .unwrap()
+        .abilities()
+        .any(|(_, ability)| ability.is_manual())
+}
+
+/// The state and the number of abilities a corpus card is expected to arrive with: a row of `NOT_VERIFIED`, else what its
+/// file says (Partial with a Manual clause, Verified without) with the abilities of the file the engine runs.
 fn expected_state(name: &str) -> (Support, usize) {
     NOT_VERIFIED.iter().find(|row| row.0 == name).map_or_else(
-        || (Verified, abilities_of_a_verified_card(name)),
+        || {
+            let state = if file_leaves_clauses(name) {
+                Partial
+            } else {
+                Verified
+            };
+            (state, abilities_of_a_verified_card(name))
+        },
         |row| (row.1, row.2),
     )
 }
@@ -115,7 +133,7 @@ fn each_corpus_card_arrives_as_its_support_record_says() {
         if (record.support, carried) != (state, abilities) {
             wrong.push(format!(
                 "{name}: {:?} with {carried} abilities, wanted {state:?} with {abilities} ({:?}); a card \
-                 the engine cannot play whole gets a row in NOT_VERIFIED (docs/cards-dsl.md, \"Adding a corpus card\")",
+                 the engine cannot play as its file says gets a row in NOT_VERIFIED (docs/cards-dsl.md, \"Adding a corpus card\")",
                 record.support, record.clauses
             ));
         }

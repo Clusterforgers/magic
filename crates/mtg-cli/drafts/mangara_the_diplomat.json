@@ -1,0 +1,34 @@
+{
+  "oracle_id": "cbcb6d9a-6ae5-4bcd-8013-2b657553764a",
+  "name": "Mangara, the Diplomat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mangara, the Diplomat",
+      "oracle_fingerprint": "d50c3a82ea28cca0b34a273423727a08",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [
+                  { "ControlledBy": "Opponents" },
+                  { "AttackingPlayerOrPlaneswalker": "You" }
+                ],
+                "at_least": 2
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "SpellCast": { "by": "Opponents" } }, "nth": 2 } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

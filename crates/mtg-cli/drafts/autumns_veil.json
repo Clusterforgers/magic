@@ -1,0 +1,35 @@
+{
+  "oracle_id": "03f5946b-e000-4b39-a49f-1c31668b51bd",
+  "name": "Autumn's Veil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Autumn's Veil",
+      "oracle_fingerprint": "393c1f7e1719a6803dc5b6007f049349",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                      "action": {
+                        "BeTargeted": [
+                          "Spell",
+                          { "AnyOf": [{ "Color": "Blue" }, { "Color": "Black" }] }
+                        ]
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

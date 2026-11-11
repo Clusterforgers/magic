@@ -123,6 +123,9 @@ pub struct Scope<'a> {
     /// Objects are judged as their snapshot in scope shows them, before the live object: a turn record's subject as it
     /// was when the record was made (CR 608.2h).
     pub(crate) as_was: bool,
+    /// The run of effects in the middle of an event (a replacement's steps), whose names, numbers and values the scope reads
+    /// in place of the state's resolution.
+    pub(crate) inline: Option<&'a super::Resolving>,
 }
 
 /// The targets a spell being cast has chosen so far (CR 601.2c).
@@ -340,6 +343,7 @@ impl<'a> Scope<'a> {
             caused: None,
             granter: None,
             as_was: false,
+            inline: None,
         }
     }
 
@@ -2028,38 +2032,38 @@ impl<'a> Scope<'a> {
     /// The number a `Let` of the resolving spell or ability fixed under the name, read only by the scope of that spell or
     /// ability; zero before it ran.
     fn kept_number(&self, name: &str) -> i64 {
-        let kept = self.state.resolving.as_ref().and_then(|resolving| {
-            let object = self.state.object(resolving.object)?;
-            if !std::ptr::eq(self.choices, object.choices()) {
-                return None;
-            }
-            resolving
-                .lets
-                .iter()
-                .find(|(kept, _)| kept == name)
-                .map(|(_, value)| *value)
-        });
-        kept.unwrap_or(0)
+        self.own_run()
+            .and_then(|resolving| {
+                resolving
+                    .lets
+                    .iter()
+                    .find(|(kept, _)| kept == name)
+                    .map(|(_, value)| *value)
+            })
+            .unwrap_or(0)
+    }
+
+    /// The run of the scope's own effects: the steps run inline, else the state's resolution when it is the resolution
+    /// of this scope's spell or ability.
+    fn own_run(&self) -> Option<&super::Resolving> {
+        if let Some(run) = self.inline {
+            return Some(run);
+        }
+        let resolving = self.state.resolving.as_ref()?;
+        let object = self.state.object(resolving.object)?;
+        std::ptr::eq(self.choices, object.choices()).then_some(resolving)
     }
 
     /// The X a payment of the resolving spell or ability announced ("you may pay {X}{R}. If you do"), read only by the
     /// scope of that spell or ability.
     fn w6c_paid_x(&self) -> Option<u32> {
-        let resolving = self.state.resolving.as_ref()?;
-        let object = self.state.object(resolving.object)?;
-        std::ptr::eq(self.choices, object.choices())
-            .then_some(resolving.w6c_paid_x)
-            .flatten()
+        self.own_run()?.w6c_paid_x
     }
 
     /// The value the resolving spell or ability chose under the name (`Effect::ChooseValue`), read only by the scope of
     /// that spell or ability.
     pub(crate) fn chosen_value(&self, name: &str) -> Option<&Chosen> {
-        let resolving = self.state.resolving.as_ref()?;
-        let object = self.state.object(resolving.object)?;
-        std::ptr::eq(self.choices, object.choices())
-            .then(|| resolving.chosen.get(name))
-            .flatten()
+        self.own_run()?.chosen.get(name)
     }
 
     /// Whether the object has what the source chose as it entered (a colour, a creature type, a card name) or what the

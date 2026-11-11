@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import type { CounterKind, ManaType, ObjectId } from '@/protocol/generated'
+import type { CounterKind, ManaType, ObjectId, TokenOfferView } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
 import { identityOf } from '../../commander'
 import { playerOf } from '../../selectors'
@@ -31,6 +31,7 @@ import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput } from './c
 
 const NO_COUNTERS: readonly (readonly [CounterKind, number])[] = []
 const NO_CARDS: readonly ObjectId[] = []
+const NO_TOKENS: readonly TokenOfferView[] = []
 
 /** The commands no other command takes back (the library's order is lost), and what their row says about it. */
 const LASTING: ReadonlySet<CommandId> = new Set<CommandId>(['mill', 'exileTop', 'bottomTop', 'shuffle'])
@@ -76,8 +77,9 @@ function usePanelInput(): PanelInput | null {
       return player === undefined ? null : identityOf(player, state.objectsById)
     }),
   )
+  const tokens = usePlay((state) => state.view?.tokens ?? NO_TOKENS)
   if (mine === null) return null
-  return { ...mine, name: nameOf(mine.seat), ...(identity === null ? {} : { identity }) }
+  return { ...mine, name: nameOf(mine.seat), tokens, ...(identity === null ? {} : { identity }) }
 }
 
 /**
@@ -265,7 +267,7 @@ function CommandForm({ id, command, input, onClose }: FormProps) {
           onSides={(sides) => set({ sides })}
         />
       ) : command.choice === undefined ? null : (
-        <Choice kind={command.choice} draft={draft} set={set} />
+        <Choice kind={command.choice} draft={draft} set={set} offers={input.tokens ?? NO_TOKENS} />
       )}
       {command.amount === undefined ? null : (
         <AmountField
@@ -307,8 +309,13 @@ interface PartProps {
 }
 
 /** The token or the kind of mana a command makes. */
-function Choice({ kind, draft, set }: PartProps & { kind: 'token' | 'mana' }) {
-  if (kind === 'token') return <TokenChoice draft={draft} set={set} />
+function Choice({
+  kind,
+  draft,
+  set,
+  offers,
+}: PartProps & { kind: 'token' | 'mana'; offers: readonly TokenOfferView[] }) {
+  if (kind === 'token') return <TokenChoice draft={draft} set={set} offers={offers} />
   return (
     <NativeSelect
       aria-label="Mana"

@@ -5,35 +5,33 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
+use mtg_core::card::CardType;
 use mtg_core::ids::ObjectId;
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::keywords::keywords_of;
 use mtg_engine::manual::ManualAction;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, PresetPermanent};
-use mtg_testkit::cards::{forest, free_creature, island, plains, swamp};
+use mtg_testkit::cards::{forest, free_creature, island, mountain, plains, swamp};
 use mtg_testkit::manual_cards::{
     manual_aura, manual_creature, manual_equipment, manual_instant, manual_sorcery,
     unverified_corpus_cards,
 };
-use mtg_testkit::{Driver, Scenario, ready};
+use mtg_testkit::{Driver, RandomBot, Scenario, ScriptError, ready};
 use rstest::rstest;
 
 use crate::common::casting::resolve;
 use crate::common::{name_of, pid};
 
+/// Three lands of each basic type: enough for a spell of up to three symbols of one color.
 fn lands() -> Vec<PresetPermanent> {
-    vec![
-        ready(forest()),
-        ready(forest()),
-        ready(plains()),
-        ready(plains()),
-        ready(island()),
-        ready(island()),
-        ready(swamp()),
-    ]
+    [forest, plains, island, swamp, mountain]
+        .into_iter()
+        .flat_map(|land| (0..3).map(move |_| ready(land())))
+        .collect()
 }
 
-/// Seat 0 holds the cards given and six lands in its first main phase; seat 1 has a creature.
+/// Seat 0 holds the cards given and lands of every color in its first main phase; seat 1 has a creature.
 fn game(hand: Vec<Arc<CardDefinition>>) -> Driver {
     Driver::from_scenario(
         Scenario::new(2)
@@ -60,11 +58,41 @@ fn zone_of(driver: &Driver, id: ObjectId) -> Zone {
     driver.state().object(id).unwrap().zone()
 }
 
+/// Starts casting the named spell, answers each choice before the payment (the face of a card with two faces, its
+/// targets) with a seeded random legal choice and pays automatically.
+fn cast_choosing_first(driver: &mut Driver, name: &str) -> Result<Vec<Event>, ScriptError> {
+    driver.begin_cast(name)?;
+    let mut bot = RandomBot::new(7, 0);
+    let mut events = Vec::new();
+    for _ in 0..8 {
+        let decision = driver.decision()?.clone();
+        if matches!(decision.kind, DecisionKind::PayMana(_)) {
+            break;
+        }
+        events.extend(driver.answer(bot.choose(&decision))?);
+    }
+    events.extend(driver.answer(Answer::PayMana(PayChoice::Auto))?);
+    Ok(events)
+}
+
 /// The events of a cast and its resolution.
 fn cast_and_resolve(driver: &mut Driver, name: &str) -> Vec<Event> {
-    let mut events = driver.cast(name).unwrap();
+    let mut events = cast_choosing_first(driver, name)
+        .unwrap_or_else(|error| panic!("{name} is not cast: {error:?}"));
     let before = driver.engine().events().len();
-    resolve(driver).unwrap();
+    resolve(driver).unwrap_or_else(|error| panic!("{name} does not resolve: {error:?}"));
+    // A choice as it resolves or enters ("As ~ enters, choose a color") takes the passive answer.
+    for _ in 0..8 {
+        if matches!(
+            driver.decision().map(|d| &d.kind),
+            Ok(DecisionKind::Priority(_))
+        ) {
+            break;
+        }
+        driver
+            .answer_passively()
+            .unwrap_or_else(|error| panic!("{name} does not resolve: {error:?}"));
+    }
     events.extend_from_slice(&driver.engine().events()[before..]);
     events
 }
@@ -171,8 +199,16 @@ fn every_corpus_card_that_is_not_verified_is_cast_and_resolves_with_its_clauses_
             !card.manual.is_empty(),
             "{name} shows no clause to the table"
         );
+        let land = card.types.contains(&CardType::Land);
         let mut driver = game(vec![card]);
-        cast_and_resolve(&mut driver, &name);
+        // A land is played, every other card cast.
+        if land {
+            driver
+                .play_land(&name)
+                .unwrap_or_else(|error| panic!("{name} is not played: {error:?}"));
+        } else {
+            cast_and_resolve(&mut driver, &name);
+        }
         let played = driver
             .state()
             .zone(Zone::Battlefield)

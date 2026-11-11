@@ -5,9 +5,12 @@ use mtg_core::ids::PlayerId;
 
 use super::repeat_each::{clear_pass, repeat_at};
 use super::wrong_effect;
-use crate::choose::Target;
+use crate::choose::{Said, Target, pick_yes_no};
 use crate::resolve::tree::is_next_pass;
 use crate::resolve::{CLEAR, Cx, Next, ResolveError, Run};
+
+/// The question a repeat that asks puts before a pass.
+const AGAIN: &str = "Repeat this process?";
 
 /// The name under which the passes made so far are counted, one name for each repeat; no card can write it, since a name
 /// has no `~`.
@@ -28,7 +31,9 @@ fn made(cx: &Cx<'_>, name: &str) -> usize {
 /// Begins a pass, at the effect itself and at the start of each next pass: the pass begins when fewer than `most` (and
 /// never more than [`MOST_PASSES`]) have been made and the condition holds in the state the passes before left (the
 /// first pass of an `at_least_once` repeat begins without it); the counter is bound anew at the first entry, so a repeat
-/// inside another starts from nought each time. Otherwise the repeat is done and the resolution goes on.
+/// inside another starts from nought each time. A pass that `ask` gates then waits for a yes from one of the players it
+/// names who are still in the game, asked in turn order; with none the repeat is done. Otherwise the repeat is done and
+/// the resolution goes on.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::RepeatWhile {
         condition,
@@ -36,6 +41,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         most,
         times,
         at_least_once,
+        ask,
     } = effect
     else {
         return Err(wrong_effect("RepeatWhile"));
@@ -49,7 +55,20 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     }
     let mut bound = Vec::new();
     let checked = count > 0 || !*at_least_once;
-    if count >= bound_on_passes || (checked && !cx.scope.holds(condition)?) {
+    let mut ends = count >= bound_on_passes || (checked && !cx.scope.holds(condition)?);
+    if let Some(ask) = ask.as_ref().filter(|_| checked && !ends) {
+        let players: Vec<PlayerId> = cx
+            .scope
+            .players(ask)?
+            .into_iter()
+            .filter(|player| cx.state().is_alive(*player))
+            .collect();
+        match pick_yes_no(cx, &players, AGAIN)? {
+            Said::Ask(decision) => return Ok(Run::Ask(decision)),
+            Said::Done(yes) => ends = !yes,
+        }
+    }
+    if ends {
         if cx.resolving.bindings().contains_key(&name) {
             bound.push((format!("{CLEAR}{name}"), Vec::new()));
         }

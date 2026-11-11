@@ -29,6 +29,10 @@ tapped?: boolean,
  */
 attacking?: AttackTarget, 
 /**
+ * It enters blocking this attacking creature: it was never declared as a blocker, so nothing triggers on its block.
+ */
+blocking?: ObjectId, 
+/**
  * The object it is a copy of, when the definition is the copiable values of that object (CR 111.10, 707.2).
  */
 copy_of?: ObjectRef, };

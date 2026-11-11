@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "003dc436-a3af-4e65-b4f8-387155fbcb85",
+  "oracle_id": "8027a610-613e-4640-9840-c8778694f312",
+  "multiverse_ids": [
+    496030
+  ],
+  "tcgplayer_id": 222396,
+  "cardmarket_id": 504045,
+  "name": "Lazav, Dimir Mastermind",
+  "lang": "en",
+  "released_at": "2020-09-25",
+  "uri": "https://api.scryfall.com/cards/003dc436-a3af-4e65-b4f8-387155fbcb85",
+  "scryfall_uri": "https://scryfall.com/card/znc/92/lazav-dimir-mastermind?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:57:38Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/0/003dc436-a3af-4e65-b4f8-387155fbcb85.jpg?1783929458",
+    "normal": "https://cards.scryfall.io/normal/front/0/0/003dc436-a3af-4e65-b4f8-387155fbcb85.jpg?1783929458",
+    "large": "https://cards.scryfall.io/large/front/0/0/003dc436-a3af-4e65-b4f8-387155fbcb85.jpg?1783929458",
+    "png": "https://cards.scryfall.io/png/front/0/0/003dc436-a3af-4e65-b4f8-387155fbcb85.png?1783929458",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/0/003dc436-a3af-4e65-b4f8-387155fbcb85.jpg?1783929458",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/0/003dc436-a3af-4e65-b4f8-387155fbcb85.jpg?1783929458",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/0/003dc436-a3af-4e65-b4f8-387155fbcb85.webp?1783929458",
+    "grid": "https://cards.scryfall.io/grid/front/0/0/003dc436-a3af-4e65-b4f8-387155fbcb85.webp?1783929458",
+    "display": "https://cards.scryfall.io/display/front/0/0/003dc436-a3af-4e65-b4f8-387155fbcb85.webp?1783929458",
+    "art": "https://cards.scryfall.io/art/front/0/0/003dc436-a3af-4e65-b4f8-387155fbcb85.webp?1783929458",
+    "crop": "https://cards.scryfall.io/crop/front/0/0/003dc436-a3af-4e65-b4f8-387155fbcb85.webp?1783929458",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/0/003dc436-a3af-4e65-b4f8-387155fbcb85.jpg?1783929458"
+  },
+  "mana_cost": "{U}{U}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Shapeshifter",
+  "oracle_text": "Hexproof\nWhenever a creature card is put into an opponent's graveyard from anywhere, you may have Lazav become a copy of that card, except its name is Lazav, Dimir Mastermind, it's legendary in addition to its other types, and it has hexproof and this ability.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Hexproof"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "25c6bd9b-4e10-40a4-b9b5-0f4d9b5852a1",
+  "set": "znc",
+  "set_name": "Zendikar Rising Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/25c6bd9b-4e10-40a4-b9b5-0f4d9b5852a1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aznc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/znc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/003dc436-a3af-4e65-b4f8-387155fbcb85/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8027a610-613e-4640-9840-c8778694f312&unique=prints",
+  "collector_number": "92",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "David Rapoza",
+  "artist_ids": [
+    "c5a2318d-5d04-499f-b121-57dee5a9dfe6"
+  ],
+  "illustration_id": "a1c25eff-0cd6-4f4a-9ab0-909f0065f898",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6986,
+  "prices": {
+    "usd": "0.68",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.79",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=496030&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLazav%252C%2BDimir%2BMastermind",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLazav%252C%2BDimir%2BMastermind",
+    "edhrec": "https://edhrec.com/route/?cc=Lazav%2C+Dimir+Mastermind"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F222396%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=504045&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Lazav%2C+Dimir+Mastermind&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

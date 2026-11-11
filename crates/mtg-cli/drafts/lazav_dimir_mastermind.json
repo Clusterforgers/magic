@@ -1,0 +1,45 @@
+{
+  "oracle_id": "8027a610-613e-4640-9840-c8778694f312",
+  "name": "Lazav, Dimir Mastermind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lazav, Dimir Mastermind",
+      "oracle_fingerprint": "eaa857696878552474528fef1930d0e2",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "OwnedBy": "Opponents" }],
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": "Triggering",
+                        "except": [
+                          { "SetName": "Lazav, Dimir Mastermind" },
+                          { "AddSupertype": "Legendary" },
+                          { "AddKeyword": "Hexproof" },
+                          "ThisAbility"
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

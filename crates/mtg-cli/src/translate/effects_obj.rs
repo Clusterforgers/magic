@@ -922,7 +922,7 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         pump_duration(p)?
     };
     let subject = subject(ctx, p, "Self", None)?;
-    if let Some(found) = player_keywords(p, &subject, duration) {
+    if let Some(found) = player_keywords(ctx, p, &subject, duration) {
         return found;
     }
     let affected = if p.get("Radiance") == Some("True") {
@@ -1000,7 +1000,12 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
 
 /// "You gain hexproof until end of turn": a pump of players that only gives keywords a player can have (hexproof, shroud) is
 /// a rule for the duration; `None` for a pump of objects or one that changes more.
-fn player_keywords(p: &Params, subject: &Value, duration: &str) -> Option<Tr<Vec<Value>>> {
+fn player_keywords(
+    ctx: &Ctx,
+    p: &Params,
+    subject: &Value,
+    duration: &str,
+) -> Option<Tr<Vec<Value>>> {
     let player = match subject {
         Value::String(word) => matches!(
             word.as_str(),
@@ -1033,6 +1038,16 @@ fn player_keywords(p: &Params, subject: &Value, duration: &str) -> Option<Tr<Vec
             "Hexproof" | "Shroud" => json!(word),
             // CR 702.16j: protection from everything is the protection keyword with no quality.
             "Protection from everything" => json!({"Protection": []}),
+            // "You gain hexproof from blue and from black": hexproof from a colour.
+            _ if word.strip_prefix("Hexproof:").is_some_and(|color| {
+                matches!(color, "White" | "Blue" | "Black" | "Red" | "Green")
+            }) =>
+            {
+                match super::keyword::keyword_value(ctx, word) {
+                    Ok(keyword) => keyword,
+                    Err(gap) => return Some(Err(gap)),
+                }
+            }
             _ => return Some(unmapped(format!("key:Pump.player-keyword-{word}"))),
         };
         rules.push(json!({"Rule": {"rule": {"PlayersHave": {"who": subject, "keyword": keyword}}, "duration": duration}}));
@@ -1235,6 +1250,33 @@ const ANIMATE_KEYS: [&str; 30] = [
     "sVars",
 ];
 
+/// What an `Animate` changes: the card or the target, or for `AnimateAll` the objects of a valid-string, of a target
+/// player's if it names one.
+fn animated(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
+    Ok(match p.get("ValidCards") {
+        Some(valid) if p.get("ValidTgts") == Some("Player") => of_target_player(ctx, p, valid)?,
+        // "Each creature target opponent controls": the group is read from the target unless the valid-string names it.
+        Some(valid)
+            if p.get("ValidTgts") == Some("Opponent") && !valid.contains("TargetedPlayer") =>
+        {
+            of_target_player(ctx, p, valid)?
+        }
+        Some(valid) if p.get("ValidTgts") == Some("Opponent") => {
+            json!({"Each": selector_any(ctx, valid)?})
+        }
+        Some(_)
+            if p.get("ValidTgts")
+                .is_some_and(|valid| valid.contains("Player")) =>
+        {
+            return unmapped("key:AnimateAll.ValidTgts=Player");
+        }
+        // Any other target beside the group would be dropped: the group is not read from it.
+        Some(_) if p.has("ValidTgts") => return unmapped("key:AnimateAll.ValidTgts"),
+        Some(valid) => json!({"Each": selector_any(ctx, valid)?}),
+        None => objects(subject(ctx, p, "Self", None)?)?,
+    })
+}
+
 fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     only(p, "Animate", &ANIMATE_KEYS)?;
     if spell_change_beyond_colors(p) {
@@ -1250,18 +1292,7 @@ fn animate(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         return unmapped("key:Animate.sVars");
     }
     let duration = animate_duration(ctx, p)?;
-    // `AnimateAll` names the objects by a valid-string.
-    let affected = match p.get("ValidCards") {
-        Some(valid) if p.get("ValidTgts") == Some("Player") => of_target_player(ctx, p, valid)?,
-        Some(_)
-            if p.get("ValidTgts")
-                .is_some_and(|valid| valid.contains("Player")) =>
-        {
-            return unmapped("key:AnimateAll.ValidTgts=Player");
-        }
-        Some(valid) => json!({"Each": selector_any(ctx, valid)?}),
-        None => objects(subject(ctx, p, "Self", None)?)?,
-    };
+    let affected = animated(ctx, p)?;
     let mut mods = Vec::new();
     match (p.get("Power"), p.get("Toughness")) {
         (Some(power), Some(toughness)) => {
@@ -2004,10 +2035,28 @@ fn gain_control(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             .map(|keyword| json!({ "AddKeyword": keyword }))
             .collect();
         effects.push(json!({"Continuous": {
-            "affected": affected, "mods": mods, "duration": duration,
+            "affected": affected, "mods": mods, "duration": added_keywords_last(ctx, p, duration)?,
         }}));
     }
     Ok(effects)
+}
+
+/// How long the keywords of a `GainControl` last. Forge keeps them as long as the control; without `LoseControl$` that is
+/// forever, but Oracle may end them sooner ("It gains haste until end of turn"), which the script cannot say. With the
+/// control kept forever, "until end of turn" in the text can only be the keywords'.
+fn added_keywords_last(ctx: &Ctx, p: &Params, control: &'static str) -> Tr<&'static str> {
+    if p.has("LoseControl") {
+        return Ok(control);
+    }
+    let text = p
+        .get("SpellDescription")
+        .unwrap_or(ctx.oracle)
+        .to_lowercase();
+    Ok(match text.matches("until end of turn").count() {
+        0 => control,
+        1 => "UntilEndOfTurn",
+        _ => return unmapped("key:GainControl.AddKWs-durations"),
+    })
 }
 
 /// Whether a group is read by who controls its objects.

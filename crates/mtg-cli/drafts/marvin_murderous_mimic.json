@@ -1,0 +1,29 @@
+{
+  "oracle_id": "22f0dbbb-9d8d-42bc-8903-fc0b65e00952",
+  "name": "Marvin, Murderous Mimic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marvin, Murderous Mimic",
+      "oracle_fingerprint": "44d447d77c4b9a05f5a4f651271c39db",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "You" },
+                    { "Not": { "SharesName": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

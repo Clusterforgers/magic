@@ -110,6 +110,7 @@ fn token_create(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
             "TokenOwner",
             "TokenTapped",
             "TokenAttacking",
+            "TokenBlocking",
             "TokenPower",
             "TokenToughness",
             "RememberTokens",
@@ -217,6 +218,7 @@ fn token_of(ctx: &mut Ctx, p: &Params, script: &str) -> Tr<Vec<Value>> {
         "tapped": flag(p, "TokenTapped")?,
     });
     entering_attacking(ctx, p, &mut create)?;
+    ep23_entering_blocking(ctx, p, &mut create)?;
     if flag(p, "RememberTokens")? {
         let name = match create.get("as") {
             Some(name) => name.clone(),
@@ -260,6 +262,19 @@ pub(super) fn entering_attacking(ctx: &Ctx, p: &Params, create: &mut Value) -> T
         };
         create["against"] = against;
     }
+    Ok(())
+}
+
+/// `TokenBlocking`: the tokens enter blocking the attacker of the block trigger ("create a 1/1 white Cat Soldier creature
+/// token with vigilance that's blocking that creature"); any other creature stays a gap.
+fn ep23_entering_blocking(ctx: &Ctx, p: &Params, create: &mut Value) -> Tr<()> {
+    let Some(word) = p.get("TokenBlocking") else {
+        return Ok(());
+    };
+    if word != "TriggeredAttacker" {
+        return unmapped(format!("key:TokenBlocking={word}"));
+    }
+    create["blocking"] = defined(ctx, word)?;
     Ok(())
 }
 
@@ -550,6 +565,14 @@ fn reflected(ctx: &Ctx, p: &Params) -> Tr<Value> {
     }
     if p.has("Defined") {
         return unmapped("key:ManaReflected.Defined");
+    }
+    // "Add one mana of any color among legendary permanents you control."
+    if p.get("ReflectProperty") == Some("Is")
+        && p.get("ColorOrType") == Some("Color")
+        && !p.has("Amount")
+    {
+        let among = super::ep24_mana::ep24_color_among(ctx, p.get("Valid").unwrap_or_default())?;
+        return Ok(json!({"AddMana": {"mana": {"AnyColorAmong": among}}}));
     }
     if p.get("ReflectProperty") != Some("Produce") {
         return unmapped("effect:ManaReflected-property");

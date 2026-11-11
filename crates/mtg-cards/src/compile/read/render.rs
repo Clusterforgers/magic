@@ -129,7 +129,7 @@ use super::where_x;
 use crate::ability::{Ability, Activators, Limit, Timing};
 use crate::compile::classify;
 use crate::cost::{Cost, CostItem};
-use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
+use crate::effect::{Destination, Effect, Mode, NewTargets, Order, Place, Produce, TokenRef};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable, ZoneKind};
 use crate::spend::{ManaLasts, SpendOn};
@@ -518,9 +518,23 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     if matches!(ability, Ability::Static { mods, .. } if statics::repeated_keyword(mods)) {
         return Vec::new();
     }
-    let mut texts = super::written_memo::written(ability, written_anew);
+    let texts = super::written_memo::written(ability, ep23_written_anew);
+    let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     // "that spell or ability's controller" has a meaning only after a trigger about what targets the card.
     texts.retain(|text| super::w19d_suffixes::w19d_targeting_controller(ability, text));
+    // A cost change in life is written only by the wording that names the life; a wording of its mana alone drops it.
+    if matches!(ability, Ability::CostModifier { life, .. } if *life > 0) {
+        texts.retain(|text| text.contains(" life to "));
+    }
+    texts
+}
+
+/// [`written_anew`] without the wordings that leave out a block the ability's tokens enter with.
+fn ep23_written_anew(ability: &Ability) -> Vec<String> {
+    let mut texts = written_anew(ability);
+    if texts.iter().any(|text| !text.contains(" blocking ")) {
+        texts.retain(|text| super::ep23_three::ep23_says_its_block(ability, text));
+    }
     texts
 }
 
@@ -537,6 +551,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
         .collect();
     texts.extend(another);
     super::ep22_everywhere::ep22_variants(ability, &mut texts);
+    super::ep24_rules::ep24_variants(ability, &mut texts);
     // A batch reads as its steps; the plain ability has no batch left, so this recurses once.
     if let Some(plain) = r11w_batch::flat_ability(ability) {
         for text in written_variants(&plain) {
@@ -586,6 +601,15 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     // Numbered bookkeeping names read as the plain ones; the twin has none left, so this recurses once.
     if let Some(plain) = super::t18_binds::t18_unnumbered(ability) {
         for text in written_variants(&plain) {
+            if !texts.contains(&text) {
+                texts.push(text);
+            }
+        }
+    }
+    // Created tokens bound by the translator's name read as the writers' name; the twin has none left, so this recurses
+    // once.
+    if let Some(renamed) = super::wf24_token_bind::wf24_tokens_renamed(ability) {
+        for text in written_variants(&renamed) {
             if !texts.contains(&text) {
                 texts.push(text);
             }
@@ -707,6 +731,8 @@ fn written_as_given(ability: &Ability) -> Vec<String> {
     w22_shields::w22_goad_wordings(&mut texts);
     w22_moves::w22_graved_wordings(&mut texts);
     w22_moves::w22_library_wordings(ability, &mut texts);
+    super::r7e_events::wf24_activated_wordings(&mut texts);
+    super::wf24_token_bind::wf24_and_attach(&mut texts);
     super::w19d_suffixes::add(&mut texts);
     super::r6b_wordings::add(ability, &mut texts);
     super::r7a_wordings::add(ability, &mut texts);
@@ -1531,6 +1557,9 @@ fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<
     {
         return Some(vec![format!("{} while saddled,", pattern_text(when)?)]);
     }
+    if let Some(head) = super::wf24_token_bind::wf24_head(when, condition) {
+        return Some(vec![head]);
+    }
     let event = player_events::text(when).or_else(|| pattern_text(when))?;
     let mut parts = vec![format!("{event},")];
     if let Some(condition) = condition {
@@ -1715,6 +1744,10 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::Flip { .. }
                 | Effect::TurnFaceUp { .. }
                 | Effect::CopySpell { .. }
+                | Effect::ChangeTargets {
+                    to: NewTargets::Another | NewTargets::One,
+                    ..
+                }
         )
 }
 
@@ -1895,6 +1928,7 @@ fn mana_text(mana: &Produce) -> Option<String> {
         Produce::CommanderIdentity(1) => {
             "one mana of any color in your commander's color identity".to_owned()
         }
+        Produce::AnyColorAmong(among) => super::ep24_rules::ep24_color_among_text(among)?,
         Produce::ProducedBy {
             among,
             count: 1,
@@ -2161,6 +2195,22 @@ impl Writer<'_> {
                 }
                 .to_owned(),
             ),
+            // The target an earlier step named: "tap target creature and put a stun counter on it".
+            Ref::Target(0)
+                if super::written_memo::last_resort()
+                    && self.named
+                    && self.targets.len() == 1
+                    && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
+            {
+                Some(
+                    if self.at_most_one(place) {
+                        "it"
+                    } else {
+                        "each of them"
+                    }
+                    .to_owned(),
+                )
+            }
             Ref::Target(0)
                 if self.at_most_one(place)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
@@ -2479,6 +2529,16 @@ impl Writer<'_> {
         Some(vec![format!("choose {target}"), format!("{each}, {token}")])
     }
 
+    /// A change of the targets of the one target, named the first time.
+    fn ep24_retarget(&mut self, effect: &Effect) -> Option<String> {
+        if self.named {
+            return None;
+        }
+        let text = super::ep24_retarget::ep24_retarget_text(effect, self.targets.first()?)?;
+        self.named = true;
+        Some(text)
+    }
+
     /// A copy of a spell or an ability, or the card that becomes a copy of the target, naming the one target the first
     /// time.
     fn copy_effect(&mut self, effect: &Effect) -> Option<String> {
@@ -2620,6 +2680,7 @@ impl Writer<'_> {
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
             Effect::DealDamage { .. } if unpreventable(effect) => self.g11b_hard(effect)?,
+            Effect::ChangeTargets { .. } => self.ep24_retarget(effect)?,
             Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
                 self.copy_effect(effect)?
             }
@@ -2814,6 +2875,7 @@ impl Writer<'_> {
             .or_else(|| cast::text(effect))
             .or_else(|| self.c11b_cast(effect))
             .or_else(|| self.keyword_action(effect))
+            .or_else(|| super::wf24_token_bind::wf24_attach_to_event(effect))
             .or_else(|| self.controller_search(effect))
             .or_else(|| self.control_for_good(effect))
             .or_else(|| self.w6e_exchanged(effect))

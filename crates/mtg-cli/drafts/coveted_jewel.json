@@ -1,0 +1,51 @@
+{
+  "oracle_id": "98492d7d-3b9e-4ae1-ac45-1b508d6d2670",
+  "name": "Coveted Jewel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Coveted Jewel",
+      "oracle_fingerprint": "7a11bde11d7488aed8d6ef111cfad4a0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 3 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "Unblocked": {
+                  "what": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    { "AttackingPlayer": "You" }
+                  ]
+                }
+              }
+            },
+            "effects": [
+              { "Draw": { "who": { "ControllerOf": "Triggering" }, "count": 3 } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "ControllerOf": "Triggering" } }],
+                  "duration": "Forever"
+                }
+              },
+              { "Untap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

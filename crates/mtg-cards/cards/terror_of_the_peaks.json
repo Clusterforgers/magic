@@ -1,0 +1,37 @@
+{
+  "oracle_id": "f8e17f4f-080d-4bba-bd05-ca27e94ccecc",
+  "name": "Terror of the Peaks",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Terror of the Peaks",
+      "oracle_fingerprint": "f69b0e5d7c284c46cf4205a04139a3e2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 94 } }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": { "Target": 0 },
+                  "amount": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
