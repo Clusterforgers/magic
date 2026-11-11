@@ -1,17 +1,28 @@
 {
   "oracle_id": "f334c57b-0a57-4fbd-8798-948371d6589d",
   "name": "Hierophant Bio-Titan",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Hierophant Bio-Titan",
       "oracle_fingerprint": "5a2135e727d77a36c488a72869c47712",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 210 }
+          "AdditionalCost": {
+            "cost": [
+              {
+                "RemoveCountersAmong": {
+                  "counter": "+1/+1",
+                  "count": "X",
+                  "from": [{ "Type": "Creature" }]
+                }
+              }
+            ],
+            "required": true
           }
+        },
+        {
+          "CostModifier": { "applies_to": ["This"], "change": "Reduce", "mana": "{2}", "per": "X" }
         },
         { "Keyword": "Reach" },
         { "Keyword": "Vigilance" },

@@ -77,6 +77,8 @@ mod defining;
 mod dk1a_attached;
 mod dk1c5_rooms;
 mod dk1d_by_paying;
+mod dk27_batches;
+mod dk27_pairs;
 mod draws;
 mod e10a_targets;
 mod e10c_granted;
@@ -386,10 +388,16 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
     reader.subtypes.clone_from(&own.subtypes);
-    let found = static_pairs::read(&mut reader)?;
-    if !reader.end() {
-        return None;
-    }
+    let found = match dk27_pairs::dk27_any_number_less(text) {
+        Some(found) => found,
+        None => {
+            let found = static_pairs::read(&mut reader)?;
+            if !reader.end() {
+                return None;
+            }
+            found
+        }
+    };
     let [first, second] = found.as_slice() else {
         return None;
     };

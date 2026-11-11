@@ -325,6 +325,7 @@ Crucible of Worlds
 Crucible of the Spirit Dragon
 Crush Contraband
 Crypt Ghast
+Cryptcaller Chariot
 Crystal Barricade
 Crystal Quarry
 Cuboid Colony
@@ -457,6 +458,7 @@ Durkwood Baloth
 Dusk Charger
 Dusk Mangler
 Duskshell Crawler
+Dying to Serve
 Dúnedain Blade
 Eagles of the North
 Earth-Cult Elemental
@@ -737,6 +739,7 @@ Hexavus
 Hidden Dragonslayer
 Hidden Hideout
 Hideous Laughter
+Hierophant Bio-Titan
 High Ground
 Highspire Artisan
 History of Benalia
@@ -939,6 +942,7 @@ Manaweft Sliver
 Manor Gate
 Map the Frontier
 Map the Wastes
+Marauding Mako
 March of Progress
 Marchesa's Decree
 Marchesa's Emissary
@@ -999,6 +1003,7 @@ Mirri, Weatherlight Duelist
 Mirror Image
 Mirrorweave
 Mishra's Workshop
+Mishra, Excavation Prodigy
 Mistmeadow Skulk
 Mizzium Mortars
 Mobilizer Mech
@@ -1325,6 +1330,7 @@ Scorn-Blade Berserker
 Scrabbling Claws
 Scrapshooter
 Screeching Scorchbeast
+Scrounging Skyray
 Scuzzback Marauders
 Scytheclaw
 Sea Gate
@@ -1440,6 +1446,7 @@ Sphinx of Magosi
 Sphinx of the Final Word
 Sphinx of the Steel Wind
 Spider-Islanders
+Spider-Man, New Champion
 Spikewheel Acrobat
 Spinerock Knoll
 Spinnerette, Arachnobat
@@ -1616,6 +1623,7 @@ Time Stretch
 Time Walk
 Time Warp
 Timeless Lotus
+Tinybones, Pocket Nuisance
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Titania, Nature's Force
@@ -1679,6 +1687,7 @@ Urza's Incubator
 Urza's Mine
 Urza's Power Plant
 Urza's Tower
+Urza, Powerstone Prodigy
 Uthros Research Craft
 Uthros Scanship
 Utopia Sprawl

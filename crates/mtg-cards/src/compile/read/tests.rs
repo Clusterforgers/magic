@@ -1214,6 +1214,7 @@ mod r9w;
 // r11w
 mod r11w;
 // e10c
+mod dk27_readers;
 mod e10c_writers;
 mod e17a_writers;
 mod e18a_writers;

@@ -641,6 +641,9 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             by,
         })
     } else if verb == if third { "sacrifices" } else { "sacrifice" } {
+        if r.words("one or more") {
+            return super::dk27_batches::dk27_sacrificed_batch(r, by);
+        }
         Some(TriggerPattern::Sacrificed {
             what: subject(r)?,
             by,
@@ -654,6 +657,9 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "draws" } else { "draw" } {
         draw_event(r, by, whose)
     } else if verb == if third { "discards" } else { "discard" } {
+        if r.words("one or more") {
+            return super::dk27_batches::dk27_discarded_batch(r, by);
+        }
         r.need("a card")?;
         Some(TriggerPattern::Discarded {
             what: Selector::default(),
