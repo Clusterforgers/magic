@@ -16,7 +16,10 @@ import { browserTimers } from '@/net/timers'
 import { createSession } from '@/play/session'
 import type { Session, SessionDeps } from '@/play/session'
 import type { PlayState } from '@/play/store'
+import { TutorialCoach } from '@/features/learn/LessonCoach'
+import { tutorialOf } from '@/features/learn/tutorials'
 import { GameTable } from '@/features/table/GameTable'
+import { TableOptionsContext } from '@/features/table/tableOptions'
 import { connectionOf } from './connection'
 import { ConnectionNotice } from './ConnectionNotice'
 import { GameContext } from './gameContext'
@@ -27,6 +30,9 @@ import { SeatLinkMissing } from './SeatLinkMissing'
 import { ServerNotice } from './ServerNotice'
 import { useGameInfo } from './useGameInfo'
 import { useTurnTitle } from './useTurnTitle'
+
+/** The table options of a tutorial game: its coach, not the table tour, greets the player. */
+const TUTORIAL_TABLE = { tour: false }
 
 /** The parts of `SessionDeps` a caller may replace, such as the socket and the clock in tests. */
 export type SessionOverrides = Omit<SessionDeps, 'game' | 'token' | 'name'>
@@ -135,6 +141,7 @@ function useConnected(session: Session): void {
 
 function SeatedGame({ gameId, token, name, api, decks, precons, deps }: SeatedGameProps) {
   const [session] = useState(() => createSession({ ...deps, game: gameId, token, name }))
+  const [tutorial] = useState(() => tutorialOf(gameId))
   useConnected(session)
   const state = useStore(session.store, useShallow(screenState))
   const lookup = useGameInfo(api, gameId, {
@@ -212,7 +219,15 @@ function SeatedGame({ gameId, token, name, api, decks, precons, deps }: SeatedGa
           {serverNotice === null ? null : <PageShell className="pb-0 sm:pb-0">{serverNotice}</PageShell>}
         </>
       )}
-      {screen}
+      {tutorial === null ? (
+        screen
+      ) : (
+        // A tutorial table runs its own coach, so the table tour does not start by itself over it.
+        <TableOptionsContext value={TUTORIAL_TABLE}>{screen}</TableOptionsContext>
+      )}
+      {tutorial !== null && screen !== null && (state.phase === 'playing' || over) ? (
+        <TutorialCoach tutorial={tutorial} />
+      ) : null}
     </GameContext>
   )
 }

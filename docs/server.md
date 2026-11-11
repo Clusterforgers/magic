@@ -116,6 +116,12 @@ A game has a visibility and each seat a state, so a visitor can claim an open se
 - The join code is eight symbols of `ABCDEFGHJKLMNPQRSTUVWXYZ23456789` (capitals and digits without `I`, `O`, `0` and `1`; 40 bits) from the OS CSPRNG, returned in clear only in `Created::code`. The registry and `games.code_digest` keep its SHA-256 (unique among `lobby` and `running` games). `Registry::find_by_code` ignores case, spaces and hyphens, compares every game's digest without stopping at a match and answers the game id or `None`; text that cannot be a code is the same `None`. Misses are counted per client network; a hit hands its count back, and over the limit the answer is `Err(Blocked)`, even for a right code.
 - `Registry::lobbies()` returns the public games whose actor has not started, newest first, at most `MAX_LISTED_LOBBIES` (50), as `ListedGame`. It holds no token, code, digest or link, and a full lobby stays in it.
 
+### Tutorial table
+
+- `POST /api/tutorial` (no body, no account needed) answers 201 `{game, seat, token}`: a running Commander game of two seats made by `tutorial::setup` and `Registry::register_tutorial`. It has no recipe, so it is never recorded, never listed, absent from My games and gone after a restart; it is invite only, every seat is held and no clock runs (`Pace` without lengths). Seat 0 is the player, named after the account or "You"; seat 1 is "Practice bot".
+- The setup skips the opening (`Start::At` the player's first main phase) with fixed hands and libraries, top card first: the player holds Forest, Plains, Grizzly Bears and Hero in Training over two Forests (one stays open for Giant Growth on the bot's turn), draws Plains, Giant Growth and Forest, and has Isamaru, Hound of Konda in the command zone; the bot holds Mountains and Goblin Piker over a Mountain and starts at `BOT_LIFE` (6). Cards come from `tutorial/scryfall.json` and the embedded rules.
+- `tutorial::spawn_bot` joins seat 1, sends `Ready` for both seats and answers each decision with `bot_answer`, which reads the decision alone: the first land, else the first castable spell, else a pass; every creature attacks the player; no blocks; anything else the table's fallback (`pace::fallback`). The lesson therefore plays the same way every time (`tests/it/tutorial.rs`).
+
 ### Game browser endpoints
 
 `lobbies.rs` puts the registry's calls on HTTP.

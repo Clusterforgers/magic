@@ -41,6 +41,7 @@ use crate::game_id::GameId;
 use crate::handle::{GameHandle, GameStatus};
 use crate::images::Warmer;
 use crate::join_code::JoinCode;
+use crate::pace::Pace;
 use crate::recipe::{Catalog, FormatKind, GameRecipe, RecipeError, merged_reads};
 use crate::recorder::Recorder;
 use crate::records::{
@@ -112,6 +113,8 @@ pub struct GameOptions {
     /// The format of a game made with [`Registry::create_decked`]; a game made from a recipe plays
     /// the recipe's.
     pub format: FormatKind,
+    /// The pace this game plays at in place of the server's; `None` for the server's.
+    pub pace: Option<Pace>,
 }
 
 /// A new game and the secret credential of each seat that is held.
@@ -521,6 +524,7 @@ impl Registry {
         setup.validate().map_err(RecipeError::from)?;
         self.admit(setup, names, Some(recipe), host, options, Some(decks))
             .await
+            .map(|(created, _)| created)
     }
 
     /// Creates a game from a recipe the caller made, whose decks may name cards by oracle id: their
@@ -559,6 +563,7 @@ impl Registry {
         let setup = recipe.build_with(&catalog)?;
         self.admit(setup, names, Some(recipe), host, options, None)
             .await
+            .map(|(created, _)| created)
     }
 
     /// Registers a game built by the caller (a missing name becomes "Seat N"). Needs a tokio runtime.
@@ -572,6 +577,30 @@ impl Registry {
     ) -> Result<Created, CreateError> {
         self.admit(setup, names, None, None, GameOptions::default(), None)
             .await
+            .map(|(created, _)| created)
+    }
+
+    /// Registers a tutorial game (`crate::tutorial`): a Commander game that is never recorded, invite only, with every
+    /// seat held and no response clock. Returns its tokens and its handle, for the bot that plays a seat.
+    pub async fn register_tutorial(
+        &self,
+        setup: GameSetup,
+        names: Vec<String>,
+    ) -> Result<(Created, GameHandle), CreateError> {
+        let pace = Pace {
+            response: None,
+            blocks: None,
+            think: None,
+            active: None,
+            extension: None,
+            ..self.shared.game.pace
+        };
+        let options = GameOptions {
+            format: FormatKind::Commander,
+            pace: Some(pace),
+            ..GameOptions::default()
+        };
+        self.admit(setup, names, None, None, options, None).await
     }
 
     /// Gives a validated setup its tokens, records it when it has a recipe and starts its actor.
@@ -585,9 +614,13 @@ impl Registry {
         host: Option<UserId>,
         options: GameOptions,
         decks: Option<Vec<Option<ChosenDeck>>>,
-    ) -> Result<Created, CreateError> {
+    ) -> Result<(Created, GameHandle), CreateError> {
         let seats = setup.players.len();
         let held = options.held.map_or(seats, |held| held.max(1).min(seats));
+        let config = GameConfig {
+            pace: options.pace.unwrap_or(self.shared.game.pace),
+            ..self.shared.game
+        };
         let tokens = (0..held)
             .map(|_| SeatToken::generate())
             .collect::<Result<Vec<_>, _>>()?;
@@ -614,7 +647,14 @@ impl Registry {
             SeatDecks::new(format, setup.seed, defaults).with_house_rules(house_rules.clone())
         });
         let handle = self
-            .start(id, setup, recipe.as_ref(), &meta, &slots, decks)
+            .start(
+                id,
+                setup,
+                recipe.as_ref().map(|recipe| (recipe, &meta)),
+                &slots,
+                decks,
+                config,
+            )
             .await?;
         let parts = Parts {
             visibility: options.visibility,
@@ -625,13 +665,13 @@ impl Registry {
             seats: slots,
         };
         self.games()
-            .insert(id, Entry::new(handle, parts, Instant::now()));
+            .insert(id, Entry::new(handle.clone(), parts, Instant::now()));
         let seats = tokens
             .into_iter()
             .enumerate()
             .map(|(seat, token)| (PlayerId::from_index(seat), token))
             .collect();
-        Ok(Created { id, seats, code })
+        Ok((Created { id, seats, code }, handle))
     }
 
     /// An id and a join code no live game has, if the cap leaves room for one more game.
@@ -673,18 +713,18 @@ impl Registry {
         &self,
         id: GameId,
         setup: GameSetup,
-        recipe: Option<&GameRecipe>,
-        meta: &NewGame,
+        recipe: Option<(&GameRecipe, &NewGame)>,
         slots: &[SeatSlot],
         decks: Option<SeatDecks>,
+        config: GameConfig,
     ) -> Result<GameHandle, CreateError> {
         let names: Vec<String> = slots.iter().map(|slot| slot.name.clone()).collect();
-        let (Some(records), Some(recipe)) = (&self.shared.records, recipe) else {
+        let (Some(records), Some((recipe, meta))) = (&self.shared.records, recipe) else {
             return Ok(spawn_named(
                 id,
                 setup,
                 MemoryStore::new(),
-                self.shared.game,
+                config,
                 None,
                 names,
                 decks,
@@ -707,7 +747,7 @@ impl Registry {
             id,
             setup,
             records.store(),
-            self.shared.game,
+            config,
             Some(recorder),
             names,
             decks,
