@@ -383,6 +383,8 @@ pub enum CombatQuirk {
     BlockIgnoringLandwalk,
     /// They can block creatures with shadow as though they had shadow (CR 702.28).
     BlockAsThoughShadow,
+    /// They block the creatures picked as though they had reach.
+    BlockAsThoughReach(Selector),
     /// They can block creatures with shadow as though those did not have shadow (CR 702.28).
     BlockIgnoringShadow,
     /// Tapped to crew or saddle, they count for another amount than their power.
@@ -727,6 +729,8 @@ pub enum GameRule {
     /// A deck can hold any number of cards with the card's name (CR 100.2a); it changes nothing in a game, and the rule is
     /// written without `from`.
     AnyNumberInDeck,
+    /// A booster draft rule: nothing in a game; no `from`.
+    Draft(DraftRule),
     /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
     /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
     /// the turn. `what` names the cards, not the stack object (no `Spell`).
@@ -860,6 +864,25 @@ pub enum GameRule {
         /// The type the mana becomes.
         into: ManaType,
     },
+}
+
+/// A rule of a booster draft; each variant is one printed sentence.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum DraftRule {
+    /// Draft it face up.
+    FaceUp,
+    /// Draft this many cards at random while face up.
+    AtRandom {
+        /// The cards drafted at random.
+        picks: u32,
+    },
+    /// Look at the next pick from the pack.
+    LookAtNextPick,
+    /// Last cards of packs go to its drafter.
+    LastCardsPassed,
+    /// Trade a card after the draft.
+    TradeAfterDraft,
 }
 
 /// How a `GameRule::ManaProduced` changes the mana of a tap.

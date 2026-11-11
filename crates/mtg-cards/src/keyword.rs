@@ -266,6 +266,8 @@ pub enum Keyword {
     Fabricate(u32),
     /// Ascend (CR 702.131): a permanent with it gives its controller the city's blessing as soon as they control ten or more permanents; the designation lasts for the rest of the game.
     Ascend,
+    /// Storied: its controller gets an enduring story for the game once they control three artifacts, legendaries or Sagas.
+    Storied,
     /// Vanishing N (CR 702.63): it enters with N time counters, at the beginning of its controller's upkeep one is removed, and it is sacrificed when the last is removed.
     Vanishing(u32),
     /// Fading N (CR 702.32): it enters with N fade counters, at the beginning of its controller's upkeep one is removed, and it is sacrificed if none can be.
@@ -560,6 +562,7 @@ impl Keyword {
         "Typecycling",
         "Fabricate",
         "Ascend",
+        "Storied",
         "Vanishing",
         "Fading",
         "Backup",
@@ -745,6 +748,7 @@ impl Keyword {
             Keyword::Typecycling { .. } => "Typecycling",
             Keyword::Fabricate(_) => "Fabricate",
             Keyword::Ascend => "Ascend",
+            Keyword::Storied => "Storied",
             other => other.counter_name(),
         }
     }
@@ -995,6 +999,7 @@ mod tests {
             },
             Keyword::Fabricate(1),
             Keyword::Ascend,
+            Keyword::Storied,
             Keyword::Vanishing(3),
             Keyword::Fading(3),
             Keyword::Backup {

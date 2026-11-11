@@ -754,11 +754,13 @@ const RUNS: &[&str] = &[
     "ReplaceBy.WithCounterOf",
     "Keyword.Fabricate",
     "Keyword.Ascend",
+    "Keyword.Storied",
     "Keyword.ForMirrodin",
     "Keyword.StartYourEngines",
     "Keyword.JobSelect",
     "Keyword.EquipTo",
     "Condition.CitysBlessing",
+    "Condition.EnduringStory",
     "Condition.MaxSpeed",
     "Effect.MyriadCopies",
     "Keyword.JumpStart",
@@ -816,6 +818,7 @@ const RUNS: &[&str] = &[
     "Condition.FirstCombat",
     "Rule.CanBeCommander",
     "Rule.AnyNumberInDeck",
+    "Rule.Draft",
     "Pred.Modified",
     "Pred.RingBearer",
     "Pred.HasAdventure",
@@ -1322,6 +1325,8 @@ mod tests {
     #[case::the_monarch("Condition.Monarch", true)]
     #[case::the_monarch_as_the_turn_began("Condition.MonarchAtTurnStart", true)]
     #[case::the_citys_blessing("Condition.CitysBlessing", true)]
+    #[case::rmt6_an_enduring_story("Condition.EnduringStory", true)]
+    #[case::rmt6_a_draft_rule("Rule.Draft", true)]
     #[case::max_speed("Condition.MaxSpeed", true)]
     #[case::becoming_day_or_night("Effect.BecomeDayNight", true)]
     #[case::it_is_day("Condition.IsDay", true)]

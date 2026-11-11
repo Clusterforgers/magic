@@ -270,6 +270,9 @@ fn designate(state: &mut GameState, event: &Event) {
         Event::CitysBlessingGained { player } => {
             state.citys_blessing.insert(*player);
         }
+        Event::EnduringStoryGained { player } => {
+            state.enduring_story.insert(*player);
+        }
         Event::SpeedChanged { player, speed } => crate::speed::set(state, *player, *speed),
         Event::RingBearerLost { player } => {
             if let Some(ring) = state.ring.get_mut(player) {
@@ -458,6 +461,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::RingTempted { .. }
         | Event::RingBearerLost { .. }
         | Event::CitysBlessingGained { .. }
+        | Event::EnduringStoryGained { .. }
         | Event::SpeedChanged { .. } => designate(state, event),
 
         Event::PermanentTapped { object } => {

@@ -1327,6 +1327,8 @@ pub enum Condition {
     MonarchAtTurnStart(Ref),
     /// The player has the city's blessing (CR 702.131).
     CitysBlessing(Ref),
+    /// A player the reference names has an enduring story (storied).
+    EnduringStory(Ref),
     /// A player the reference names has max speed, a speed of 4 (CR 702.179): "Max speed — ...".
     MaxSpeed(Ref),
     /// It is day (CR 726): "if it's day".

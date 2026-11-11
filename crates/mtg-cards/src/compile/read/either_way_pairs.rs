@@ -215,16 +215,18 @@ fn shield_texts(first: &Ability, second: &Ability) -> Vec<String> {
             && map.get("combat") == to.get("combat")
     };
     let attached_creature = json!([{"Type": "Creature"}, {"Is": "Attached"}]);
-    if !prevents(&first)
-        || !prevents(&second)
-        || to.get("to") != Some(&json!("Attached"))
-        || by.get("source") != Some(&attached_creature)
-        || !only(to, "to")
-        || !only(by, "source")
-    {
+    if !prevents(&first) || !prevents(&second) || !only(to, "to") || !only(by, "source") {
         return Vec::new();
     }
     let kind = if combat { "combat damage" } else { "damage" };
+    if to.get("to") == Some(&json!("This")) && by.get("source") == Some(&json!([{"Is": "This"}])) {
+        return vec![format!(
+            "Prevent all {kind} that would be dealt to and dealt by ~."
+        )];
+    }
+    if to.get("to") != Some(&json!("Attached")) || by.get("source") != Some(&attached_creature) {
+        return Vec::new();
+    }
     ["enchanted", "equipped"]
         .iter()
         .map(|holder| {

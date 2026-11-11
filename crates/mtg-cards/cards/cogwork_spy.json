@@ -1,17 +1,12 @@
 {
   "oracle_id": "adfd33cb-086c-48f4-b443-ba971ff43684",
   "name": "Cogwork Spy",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cogwork Spy",
       "oracle_fingerprint": "a10e928df718695eb10f28ca4096ee45",
-      "abilities": [
-        {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 95 } }
-        },
-        { "Keyword": "Flying" }
-      ]
+      "abilities": [{ "Rule": { "rule": { "Draft": "LookAtNextPick" } } }, { "Keyword": "Flying" }]
     }
   ]
 }

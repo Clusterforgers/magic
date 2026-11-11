@@ -199,6 +199,7 @@ mod return_damager;
 mod return_this_card;
 mod rmt1_wholes;
 mod rmt3_wordings;
+mod rmt6_writers;
 mod sacrifice_it;
 mod sacrifice_search;
 mod sacrifice_unless;
@@ -964,6 +965,7 @@ fn add_sz3(ability: &Ability, texts: &mut Vec<String>) {
     target_costs::add(ability, texts);
     that_many_tokens::add(ability, texts);
     trigger_again::add(ability, texts);
+    rmt6_writers::add(ability, texts);
     each_draw_sz2::add(ability, texts);
     each_sacrifice::add(ability, texts);
     you_create::add(ability, texts);

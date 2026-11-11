@@ -124,6 +124,7 @@ impl Gives {
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
             | Modification::AddSupertype(_)
+            | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)

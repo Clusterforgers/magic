@@ -600,6 +600,9 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         CombatQuirk::BlockIgnoringShadow => {
             format!("{who} can block creatures with shadow as though they didn't have shadow")
         }
+        CombatQuirk::BlockAsThoughReach(_) => {
+            format!("{who} can block some creatures with flying as though they had reach")
+        }
     }
 }
 

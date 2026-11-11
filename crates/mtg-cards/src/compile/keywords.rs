@@ -131,6 +131,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("read ahead", Params::None),
     ("exploit", Params::None),
     ("ascend", Params::None),
+    ("storied", Params::None),
     ("cipher", Params::None),
     ("conspire", Params::None),
     ("dethrone", Params::None),
@@ -789,6 +790,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "riot" => Keyword::Riot,
         "decayed" => Keyword::Decayed,
         "ascend" => Keyword::Ascend,
+        "storied" => Keyword::Storied,
         "jump-start" => Keyword::JumpStart,
         "retrace" => Keyword::Retrace,
         _ => return None,
@@ -1523,6 +1525,7 @@ mod tests {
     #[case::riot("Riot", Keyword::Riot)]
     #[case::decayed("Decayed", Keyword::Decayed)]
     #[case::ascend("Ascend", Keyword::Ascend)]
+    #[case::storied("Storied", Keyword::Storied)]
     #[case::fabricate("Fabricate 2", Keyword::Fabricate(2))]
     #[case::fabricate_lowercase("fabricate 1", Keyword::Fabricate(1))]
     #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
@@ -1962,6 +1965,7 @@ mod tests {
             "Plot {1}",
             "Fabricate 1",
             "Ascend",
+            "Storied",
             "Daybound",
             "Nightbound",
             "Wither",

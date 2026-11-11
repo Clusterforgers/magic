@@ -109,6 +109,8 @@ pub enum Modification {
     SetTypes(CardTypes),
     /// Adds a supertype (layer 4): "enchanted permanent is legendary".
     AddSupertype(Supertype),
+    /// Removes a supertype (layer 4): "~ isn't legendary if it's a token".
+    RemoveSupertype(Supertype),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4); the other subtypes stay (CR 205.1b).
@@ -231,6 +233,7 @@ impl Modification {
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
             | Modification::AddSupertype(_)
+            | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
@@ -280,6 +283,12 @@ impl Modification {
             Modification::AddSupertype(supertype) => {
                 if !chars.supertypes.contains(supertype) {
                     chars.supertypes.push(*supertype);
+                }
+            }
+            Modification::RemoveSupertype(supertype) => {
+                chars.supertypes.retain(|held| held != supertype);
+                if !chars.supertypes_removed.contains(supertype) {
+                    chars.supertypes_removed.push(*supertype);
                 }
             }
             Modification::AddSubtype(subtype) => {

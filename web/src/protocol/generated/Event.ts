@@ -750,6 +750,10 @@ speed: number, } } | { "CitysBlessingGained": {
 /**
  * Who got it.
  */
+player: PlayerId, } } | { "EnduringStoryGained": { 
+/**
+ * Who got it.
+ */
 player: PlayerId, } } | { "Ventured": W11dVentured } | { "DungeonCompleted": { 
 /**
  * Who completed it.

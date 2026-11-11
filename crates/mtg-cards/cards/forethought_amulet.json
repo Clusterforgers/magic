@@ -1,7 +1,7 @@
 {
   "oracle_id": "0edf0988-9ed8-4fe6-aa47-4921870f05a8",
   "name": "Forethought Amulet",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Forethought Amulet",
@@ -16,9 +16,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 77, "end": 178 }
+          "Replacement": {
+            "when": {
+              "Damage": {
+                "to": "You",
+                "source": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+              }
+            },
+            "by": { "Cap": 2 }
           }
         }
       ]

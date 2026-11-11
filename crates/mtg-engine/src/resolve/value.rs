@@ -1707,10 +1707,11 @@ impl<'a> Scope<'a> {
             Pred::Saddled(named) => self.crewed_by(named, true, reference)?,
             Pred::Type(card_type) => seen.chars.types.contains(*card_type),
             Pred::Supertype(supertype) => {
-                seen.chars.supertypes.contains(supertype)
+                (seen.chars.supertypes.contains(supertype)
                     || seen
                         .card
-                        .is_some_and(|c| c.card().supertypes.contains(supertype))
+                        .is_some_and(|c| c.card().supertypes.contains(supertype)))
+                    && !seen.chars.supertypes_removed.contains(supertype)
                     || (*supertype == mtg_core::card::Supertype::Legendary
                         && seen.zone == Zone::Battlefield
                         && crate::ring::is_legendary_bearer(self.state, reference.id))
@@ -2598,6 +2599,7 @@ impl<'a> Scope<'a> {
             Condition::Monarch(_) => self.state.monarch() == Some(*player),
             Condition::MonarchAtTurnStart(_) => began == Some(*player),
             Condition::MaxSpeed(_) => self.state.has_max_speed(*player),
+            Condition::EnduringStory(_) => self.state.has_enduring_story(*player),
             _ => self.state.has_citys_blessing(*player),
         }))
     }
@@ -2633,16 +2635,9 @@ impl<'a> Scope<'a> {
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
             Condition::Not(inner) => !self.holds(inner)?,
-            Condition::All(all) => {
-                let mut holds = true;
-                for inner in all {
-                    if !self.holds(inner)? {
-                        holds = false;
-                        break;
-                    }
-                }
-                holds
-            }
+            Condition::All(all) => all.iter().try_fold(true, |held, inner| {
+                Ok::<_, ResolveError>(held && self.holds(inner)?)
+            })?,
             Condition::Any(any) => {
                 let mut holds = false;
                 for inner in any {
@@ -2690,6 +2685,7 @@ impl<'a> Scope<'a> {
             | Condition::Monarch(who)
             | Condition::MonarchAtTurnStart(who)
             | Condition::CitysBlessing(who)
+            | Condition::EnduringStory(who)
             | Condition::MaxSpeed(who) => self.w11d_designation(condition, who)?,
             Condition::IsDay => self.state.day_night() == Some(DayNight::Day),
             Condition::IsNight => self.state.day_night() == Some(DayNight::Night),
