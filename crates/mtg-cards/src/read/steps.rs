@@ -26,7 +26,7 @@ pub(super) fn label(ability: &Ability) -> String {
         Ability::InstantActivation { .. } => "activation timing".to_owned(),
         Ability::CastOnly { .. } => "casting restriction".to_owned(),
         Ability::OpeningHand | Ability::OpeningHandWith { .. } | Ability::OpeningReveal { .. } => {
-            { "opening-hand ability" }.to_owned()
+            "opening-hand ability".to_owned()
         }
         Ability::Keyword(keyword) => format!("keyword {}", parts::keyword(&ctx, keyword)),
         Ability::Manual { .. } => "played by hand".to_owned(),
@@ -285,14 +285,9 @@ fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
             ));
             gate(&ctx, "if", condition.as_ref(), depth, out);
         }
-        Ability::OpeningHand => out.push(Step::new(
+        Ability::OpeningHand | Ability::OpeningHandWith { .. } => out.push(Step::new(
             depth,
             "may begin the game on the battlefield if in the opening hand".to_owned(),
-        )),
-        Ability::OpeningHandWith { .. } => out.push(Step::new(
-            depth,
-            "may begin the game on the battlefield if in the opening hand, with its riders"
-                .to_owned(),
         )),
         Ability::OpeningReveal {
             when,

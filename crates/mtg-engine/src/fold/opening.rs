@@ -118,28 +118,36 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             let settled = settled(state, *player);
             player_mut(state, *player)?.mulligan = settled;
         }
-        Event::OpeningCardsPlayed { player, cards } => {
-            expect_status(state, *player, MulliganStatus::Opening)?;
-            let mut exile = 0u32;
-            for card in cards {
-                if !state.zones.get(Zone::Hand(*player)).contains(card) {
-                    return Err(invalid("opening card is not in hand"));
-                }
-                let (_, owed) = crate::mulligan::dk26_opening_riders(state, *card);
-                super::zones::move_object(state, *card, Zone::Battlefield, Placement::Top)?;
-                exile = exile.saturating_add(owed);
-            }
-            // "If you do, exile a card from your hand": asked before the seat is done, when the hand holds a card.
-            let hand = state.zones.get(Zone::Hand(*player)).len();
-            let seat = player_mut(state, *player)?;
-            if exile > 0 && hand > 0 {
-                seat.opening_exile = exile;
-            } else {
-                seat.mulligan = MulliganStatus::Kept;
-            }
-        }
+        Event::OpeningCardsPlayed { player, cards } => opening_played(state, *player, cards)?,
         Event::MulliganPhaseEnded => state.stage = Stage::Turns,
         other => return Err(invalid(format!("not an opening event: {other:?}"))),
+    }
+    Ok(())
+}
+
+/// The cards chosen in the opening go onto the battlefield; a seat whose cards make it exile from its hand ("If you do,
+/// exile a card from your hand") is asked that before it is done, while its hand holds a card.
+fn opening_played(
+    state: &mut GameState,
+    player: PlayerId,
+    cards: &[ObjectId],
+) -> Result<(), EngineError> {
+    expect_status(state, player, MulliganStatus::Opening)?;
+    let mut exile = 0u32;
+    for card in cards {
+        if !state.zones.get(Zone::Hand(player)).contains(card) {
+            return Err(invalid("opening card is not in hand"));
+        }
+        let (_, owed) = crate::mulligan::dk26_opening_riders(state, *card);
+        super::zones::move_object(state, *card, Zone::Battlefield, Placement::Top)?;
+        exile = exile.saturating_add(owed);
+    }
+    let hand = state.zones.get(Zone::Hand(player)).len();
+    let seat = player_mut(state, player)?;
+    if exile > 0 && hand > 0 {
+        seat.opening_exile = exile;
+    } else {
+        seat.mulligan = MulliganStatus::Kept;
     }
     Ok(())
 }

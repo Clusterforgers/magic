@@ -4460,8 +4460,7 @@ impl Walker<'_> {
                 }
             }
             Ability::CastOnly { condition } => w.w17c_cast_only(condition),
-            Ability::OpeningHand => {}
-            Ability::OpeningHandWith { .. } => {}
+            Ability::OpeningHand | Ability::OpeningHandWith { .. } => {}
             Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
             Ability::Manual { reason, span } => {

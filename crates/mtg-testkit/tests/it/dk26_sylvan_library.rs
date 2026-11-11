@@ -98,7 +98,7 @@ fn sylvan_library_draws_two_and_charges_for_those_kept(
         );
         assert!(!offered.contains(&"Old Card".to_owned()));
     } else {
-        assert!(offered.is_empty());
+        assert_eq!(offered, Vec::<String>::new());
     }
     Ok(())
 }
