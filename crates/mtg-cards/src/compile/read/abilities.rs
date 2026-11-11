@@ -122,6 +122,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         TriggerPattern::Tapped { .. }
             | TriggerPattern::TappedNotAttacking { .. }
             | TriggerPattern::Untapped { .. }
+            | TriggerPattern::Unattached { .. }
     );
     if triggers::targeted_itself(&when) {
         r.it = Some(Ref::This);

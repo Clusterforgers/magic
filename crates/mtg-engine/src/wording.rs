@@ -791,6 +791,22 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 what.0 == [Pred::This],
             )
         }
+        TriggerPattern::Unattached { what, from } => {
+            let attachment = if what.is_empty() {
+                "an attachment".to_owned()
+            } else {
+                subject(what)
+            };
+            let host = if from.is_empty() {
+                "a permanent".to_owned()
+            } else {
+                subject(from)
+            };
+            (
+                format!("{attachment} becomes unattached from {host}"),
+                what.0 == [Pred::This],
+            )
+        }
         TriggerPattern::TappedForMana { what, by, produced } => {
             let (name, s) = who(by);
             let made = produced.map_or_else(

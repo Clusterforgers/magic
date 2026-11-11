@@ -65,6 +65,7 @@ const RUNS: &[&str] = &[
     "Trigger.PlayerCountersPut",
     "Trigger.Chapter",
     "Trigger.Attached",
+    "Trigger.Unattached",
     "Trigger.Cycled",
     "Trigger.BecomesMonarch",
     "Trigger.Proliferated",
@@ -1263,6 +1264,7 @@ mod tests {
     #[case::e16c_player_counter_triggers("Trigger.PlayerCountersPut", true)]
     #[case::chapter_triggers("Trigger.Chapter", true)]
     #[case::attach_triggers("Trigger.Attached", true)]
+    #[case::dk26_unattach_triggers("Trigger.Unattached", true)]
     #[case::cycle_triggers("Trigger.Cycled", true)]
     #[case::becoming_the_monarch_triggers("Trigger.BecomesMonarch", true)]
     #[case::proliferating_triggers("Trigger.Proliferated", true)]

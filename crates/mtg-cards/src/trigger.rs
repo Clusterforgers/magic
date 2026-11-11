@@ -377,6 +377,16 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         to: Selector,
     },
+    /// An Aura, Equipment or Fortification becomes unattached from a permanent: it is unattached, moves to another
+    /// host, or leaves the battlefield while attached; the permanent it left is the triggering object.
+    Unattached {
+        /// The attachment; any when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// The permanent it was attached to; any when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        from: Selector,
+    },
     /// A card is cycled (CR 702.29).
     Cycled {
         /// The card; any card when empty.

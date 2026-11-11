@@ -2299,6 +2299,7 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::BecomesBlocked { what, by, .. } => self.becomes_blocked(what, by),
             TriggerPattern::Attached { what, to } => self.w11b_attached(what, to),
+            TriggerPattern::Unattached { what, from } => self.w11b_attached(what, from),
             TriggerPattern::GroupAttacks { .. }
             | TriggerPattern::GroupAttacksAt { .. }
             | TriggerPattern::Chapter { .. } => {

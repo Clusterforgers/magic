@@ -757,6 +757,7 @@ mod allgaps;
 mod d20c;
 mod d20d;
 mod d20e;
+mod dk26;
 mod e10a;
 mod e10b;
 mod e10c;

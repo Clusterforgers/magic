@@ -262,6 +262,8 @@ mod died_under;
 mod digital_wordings;
 mod dk1b_attached_writers;
 mod dk1c5_rooms;
+mod dk26_forage;
+mod dk26_unattached;
 mod draws;
 mod e10a_writers;
 mod e10b_writers;

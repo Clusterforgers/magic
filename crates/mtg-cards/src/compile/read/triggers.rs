@@ -926,6 +926,11 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
             what: what.clone(),
             to: subject(r)?,
         });
+    } else if r.words("becomes unattached from a permanent") {
+        return Some(TriggerPattern::Unattached {
+            what: what.clone(),
+            from: Selector::default(),
+        });
     } else if r.word("deals") {
         return deals_damage(r, what);
     } else {
@@ -1432,6 +1437,9 @@ fn one_happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::Adapted { what } => said(what, "adapts"),
         TriggerPattern::Attached { what, to } if !what.is_empty() && !to.is_empty() => {
             said(what, &format!("becomes attached to {}", subject_text(to)?))
+        }
+        TriggerPattern::Unattached { what, from } if !what.is_empty() && from.is_empty() => {
+            said(what, "becomes unattached from a permanent")
         }
         TriggerPattern::BecomesTarget { what, by } => {
             let whose = match by.0.as_slice() {

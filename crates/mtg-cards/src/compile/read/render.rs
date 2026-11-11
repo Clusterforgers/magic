@@ -1639,6 +1639,10 @@ fn join_list(items: &[String]) -> String {
 
 /// "a creature or planeswalker", "an artifact": what a player sacrifices.
 fn sacrifice_text(filter: &Selector) -> Option<String> {
+    // "sacrifice that permanent": the permanent of the trigger's event.
+    if filter.0 == [Pred::Is(Ref::Triggering)] {
+        return Some("that permanent".to_owned());
+    }
     let text = phrase_text(filter, Form::Subject)?;
     // "another permanent" has its own determiner.
     if text.starts_with("another ") {
@@ -2718,6 +2722,14 @@ impl Writer<'_> {
                 count,
                 ..
             } if filter.0 == [Pred::This] && count.is_one() => "sacrifice ~".to_owned(),
+            Effect::Sacrifice {
+                who: Ref::You,
+                filter,
+                count,
+                ..
+            } if filter.0 == [Pred::Is(Ref::Triggering)] && count.is_one() => {
+                "sacrifice that permanent".to_owned()
+            }
             Effect::Draw { who, .. }
             | Effect::Mill { who, .. }
             | Effect::Discard { who, .. }
