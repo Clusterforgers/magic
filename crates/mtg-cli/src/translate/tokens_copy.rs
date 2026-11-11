@@ -50,12 +50,12 @@ pub fn copy_permanent(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     )?;
     // `DefinedName$ Gingerbrute`: the token the name stands for, made as a copy of its script.
     if let Some(name) = p.get("DefinedName") {
-        if name != "Gingerbrute" || p.meaningful_keys().len() != 1 {
-            return unmapped("key:CopyPermanent.DefinedName");
+        if name == "Gingerbrute" && p.meaningful_keys().len() == 1 {
+            return Ok(vec![
+                json!({"CreateToken": {"token": {"Named": name.to_lowercase()}}}),
+            ]);
         }
-        return Ok(vec![
-            json!({"CreateToken": {"token": {"Named": name.to_lowercase()}}}),
-        ]);
+        return ep31_card_token(ctx, p, name);
     }
     let remember = flag(p, "RememberTokens")?;
     let mut effects = Vec::new();
@@ -125,6 +125,43 @@ fn temporary_keywords(ctx: &Ctx, p: &Params) -> Tr<Option<Vec<Value>>> {
         (Some(_), Some("EOT" | "UntilYourNextTurn")) => pumped(ctx, p).map(Some),
         (Some(_), Some(other)) => unmapped(format!("key:CopyPermanent.PumpDuration={other}")),
     }
+}
+
+/// `DefinedName$ Tarmogoyf`: "Create a Tarmogoyf token", a copy of the card with that name, as many as `NumCopies$` says,
+/// tapped when `TokenTapped$` says so, for the player a target names. Exceptions, attachments and a target of its own are gaps.
+fn ep31_card_token(ctx: &mut Ctx, p: &Params, name: &str) -> Tr<Vec<Value>> {
+    for key in p.meaningful_keys() {
+        if !matches!(
+            key.as_str(),
+            "DefinedName" | "NumCopies" | "TokenTapped" | "Controller" | "RememberTokens"
+        ) {
+            return unmapped(format!("key:CopyPermanent.DefinedName-with-{key}"));
+        }
+    }
+    // "Create a Forest land token" is a described land token, not a copy of the card Forest.
+    if !ctx.oracle.contains(&format!("{name} token")) {
+        return unmapped("key:CopyPermanent.DefinedName-not-the-card");
+    }
+    let mut create = json!({"token": {"Card": name}});
+    if p.has("NumCopies") {
+        create["count"] = amount(ctx, p.get("NumCopies").unwrap_or("1"))?;
+    }
+    if flag(p, "TokenTapped")? {
+        create["tapped"] = json!(true);
+    }
+    match p.get("Controller") {
+        None | Some("You") => {}
+        Some(word @ ("TargetedController" | "TargetedPlayer")) => {
+            create["who"] = super::valid::defined(ctx, word)?;
+        }
+        Some(other) => return unmapped(format!("key:CopyPermanent.Controller={other}")),
+    }
+    if flag(p, "RememberTokens")? {
+        let bind = ctx.fresh("copy");
+        create["as"] = json!(bind);
+        ctx.remembered = Some(json!({ "Bound": bind }));
+    }
+    Ok(vec![json!({ "CreateToken": create })])
 }
 
 /// What the token copies: the subject of the line, the creature token populate chooses, or the one permanent `Choices$`

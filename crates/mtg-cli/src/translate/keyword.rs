@@ -57,6 +57,7 @@ pub fn keyword_name(word: &str) -> Option<&'static str> {
         "Split second" => "SplitSecond",
         "Undaunted" => "Undaunted",
         "Rebound" => "Rebound",
+        "Paradigm" => "Paradigm",
         "Aftermath" => "Aftermath",
         "Undying" => "Undying",
         "Persist" => "Persist",

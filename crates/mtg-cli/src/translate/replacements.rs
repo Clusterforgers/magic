@@ -62,7 +62,7 @@ fn single(ctx: &mut Ctx, body: &str) -> Tr<Value> {
     if let Some(found) = super::e15b_entering::day_if_neither(ctx, &p, line_condition.as_ref()) {
         return found;
     }
-    if let Some(found) = super::ep28_under::ep28_under_opponent(ctx, &p, line_condition.as_ref()) {
+    if let Some(found) = super::ep32_discard::ep32_own_moves(ctx, &p, line_condition.as_ref()) {
         return found;
     }
     let read = [

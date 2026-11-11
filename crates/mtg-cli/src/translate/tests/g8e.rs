@@ -129,6 +129,7 @@ fn a_given_prevention_the_nodes_cannot_say_stays_a_gap(
 #[rstest]
 #[case::each_color("Protection from each color", json!({"Protection": [{"Not": "Colorless"}]}))]
 #[case::everything("Protection from everything", json!({"Protection": []}))]
+#[case::dk25_outside_the_commanders_identity("Protection from NotCommanderColorID", json!({"Protection": ["OutsideCommanderIdentity"]}))]
 fn protection_from_each_color_or_everything_is_the_keyword(
     #[case] line: &str,
     #[case] expected: Value,

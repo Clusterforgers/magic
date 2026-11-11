@@ -408,7 +408,28 @@ pub fn selector(ctx: &Ctx, spec: &str) -> Tr<Vec<Value>> {
     if creature_type {
         preds.retain(|pred| *pred != json!({"Type": "Creature"}));
     }
+    ep31_type_before_creature(ctx, &mut preds);
     Ok(preds)
+}
+
+/// `Creature.Other+Enchantment` where the card says "other enchantment creatures": the printed type line puts the other
+/// card type before "creature", so the predicates take that order too.
+fn ep31_type_before_creature(ctx: &Ctx, preds: &mut Vec<Value>) {
+    let creature = json!({"Type": "Creature"});
+    let Some(at) = preds.iter().position(|pred| *pred == creature) else {
+        return;
+    };
+    for ty in ["Artifact", "Enchantment"] {
+        let printed = format!("{} creature", ty.to_lowercase());
+        let pred = json!({ "Type": ty });
+        if let Some(later) = preds.iter().skip(at + 1).position(|p| *p == pred)
+            && ctx.oracle.to_lowercase().contains(&printed)
+        {
+            let moved = preds.remove(at + 1 + later);
+            preds.insert(at, moved);
+            return;
+        }
+    }
 }
 
 /// The card types a permanent can have.

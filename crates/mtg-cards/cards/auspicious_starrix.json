@@ -1,7 +1,7 @@
 {
   "oracle_id": "8432df19-dbf4-457b-8c0b-1f4b3a0a37d2",
   "name": "Auspicious Starrix",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Auspicious Starrix",
@@ -9,9 +9,32 @@
       "abilities": [
         { "Keyword": { "Mutate": "{5}{G}" } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 187, "end": 400 }
+          "Triggered": {
+            "when": { "Did": { "action": "Mutated", "what": ["This"] } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    }
+                  ],
+                  "count": { "Mutations": "This" },
+                  "as": "found",
+                  "revealed_as": "revealed2"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "found_exiled" } },
+              { "Exile": { "what": { "Bound": "revealed2" } } },
+              { "Move": { "what": { "Bound": "found_exiled" }, "to": { "Battlefield": {} } } }
+            ]
           }
         }
       ]

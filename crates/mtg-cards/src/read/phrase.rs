@@ -319,6 +319,9 @@ fn part(ctx: &Ctx, pred: &Pred) -> Part {
         Pred::Subtype(subtype) => Part::Subtype(subtype.0.clone()),
         Pred::Color(color) => Part::Before(lower(color)),
         Pred::Colorless => Part::Before("colorless".to_owned()),
+        Pred::OutsideCommanderIdentity => {
+            Part::After("of a color outside your commander's color identity".to_owned())
+        }
         Pred::Token => Part::Before("token".to_owned()),
         Pred::Commander => Part::Before("commander".to_owned()),
         Pred::Spell => Part::Kind("spell".to_owned()),

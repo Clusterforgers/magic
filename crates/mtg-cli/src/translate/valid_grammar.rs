@@ -213,15 +213,6 @@ const fn row(word: &'static str, needs: &'static str) -> Unmapped {
 
 /// The atoms in use in Forge's scripts that no reader maps, with the reason each stays a gap (`valid:<atom>`).
 pub const UNMAPPED: &[Unmapped] = &[
-    row(
-        "hasManaAbility",
-        "the abilities an object has, as a selector",
-    ),
-    row(
-        "hasNonManaActivatedAbility",
-        "the abilities an object has, as a selector",
-    ),
-    row("NoAbilities", "the abilities an object has, as a selector"),
     row("hasAbility", "the abilities an object has, as a selector"),
     row(
         "firstTurnControlled",

@@ -463,10 +463,6 @@ fn clause_spans_cut_out_the_sentences_they_name() {
     }
     let expected = [
         (
-            "Auspicious Starrix",
-            "Whenever this creature mutates, exile cards from the top of your library until you exile X permanent cards, where X is the number of times this creature has mutated. Put those permanent cards onto the battlefield.",
-        ),
-        (
             "Aven Mindcensor",
             "If an opponent would search a library, that player searches the top four cards of that library instead.",
         ),

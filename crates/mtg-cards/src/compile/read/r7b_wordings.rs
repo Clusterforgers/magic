@@ -296,6 +296,8 @@ fn creature_last(before: &str) -> bool {
             }
             _ if after_all => {}
             "~" | "it" | "creatures" | "them" | "they" | "those" => return false,
+            // "this turn" names a time, not an object.
+            "this" if words.get(at + 1).is_some_and(|next| next == "turn") => {}
             other if OBJECTS.contains(&other) => return false,
             _ => {}
         }

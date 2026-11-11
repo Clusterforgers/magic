@@ -152,6 +152,17 @@ fn where_x_draws(texts: &[String]) -> Vec<String> {
         .collect()
 }
 
+/// "it can't be regenerated" for one object (one target, the card, what it is attached to), else "they can't be
+/// regenerated".
+fn wf26_unregenerated(single: bool, what: &Ref) -> String {
+    let pronoun = if single || matches!(what, Ref::This | Ref::Attached) {
+        "it"
+    } else {
+        "they"
+    };
+    format!("{pronoun} can't be regenerated")
+}
+
 /// "It can't be regenerated." after the destruction of one object is also "That creature can't be regenerated.".
 fn regeneration_wordings(texts: &[String]) -> Vec<String> {
     texts
@@ -639,7 +650,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
-    super::wf25_writers::wf25_wordings(ability, written_variants, &mut texts);
+    super::wf26_writers::wf25_wf26_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {
@@ -1405,8 +1416,7 @@ fn written(
                 } = effect
                     && !regenerate
                 {
-                    let pronoun = if writer.single(what) { "it" } else { "they" };
-                    sentences.push(format!("{pronoun} can't be regenerated"));
+                    sentences.push(wf26_unregenerated(writer.single(what), what));
                 }
             }
             group => sentences.push(
@@ -2741,6 +2751,10 @@ impl Writer<'_> {
                 ..
             } => self.returned_to_hand(what).or_else(|| self.moved(effect))?,
             Effect::AddMana { .. } => self.mana_added_by(effect)?,
+            // "look at target player's hand" (wf26).
+            Effect::LookAtHand { of: Ref::You } => "look at your hand".to_owned(),
+            Effect::LookAtHand { of } => format!("look at {}'s hand", self.player(of)?),
+            Effect::RingTempts { who: Ref::You } => "the Ring tempts you".to_owned(),
             // "you get {E}{E}": energy is a counter on the player, written with its symbol.
             Effect::PutCounters { count, .. } if gets_energy(effect) => {
                 format!("you get {}", costs::energy_text(count)?)
@@ -3248,6 +3262,26 @@ impl Writer<'_> {
         }
     }
 
+    /// "Each player shuffles their hand and graveyard into their library, then draws seven cards": a step of each player
+    /// shuffling cards away and their draw, one sentence with one subject.
+    fn ep31_each_shuffles_then_draws(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
+        let [
+            first @ Effect::Move { .. },
+            Effect::Draw {
+                who: Ref::EachPlayer,
+                count,
+                ..
+            },
+            ..,
+        ] = effects
+        else {
+            return None;
+        };
+        let moved = self.effect(first)?;
+        (moved.starts_with("each player shuffles ") && !moved.contains(", then")).then_some(())?;
+        Some((format!("{moved}, then draws {}", cards_text(count)?), 2))
+    }
+
     /// Two steps that are one sentence, which no joint splits: an explore twice, or a mill and the change it counts.
     fn then_steps(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
         self.explore_twice(effects)
@@ -3263,6 +3297,7 @@ impl Writer<'_> {
             .or_else(|| self.library_steps(effects))
             .or_else(|| self.library_then_return(effects))
             .or_else(|| wheel_text(effects))
+            .or_else(|| self.ep31_each_shuffles_then_draws(effects))
             .or_else(|| self.w2b_you_and_each(effects))
             .or_else(|| self.you_and_each_create(effects))
             .or_else(|| untapped::text(effects))

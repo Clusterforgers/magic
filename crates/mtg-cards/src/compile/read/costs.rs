@@ -435,6 +435,7 @@ fn item_text(item: &CostItem) -> Option<String> {
         }
         CostItem::PayEnergy(Amount::X) => "Pay X {E}".to_owned(),
         CostItem::Mill(count) => format!("Mill {}", cards_text(count)?),
+        CostItem::DiscardRandom(count) => format!("Discard {} at random", cards_text(count)?),
         CostItem::Exert => "Exert ~".to_owned(),
         CostItem::PutCounters { counter, count } => {
             format!("Put {} on ~", w2f_text(Some(counter), count)?)

@@ -105,7 +105,7 @@ fn a_verb_maps_to_its_node(#[case] line: &str, #[case] node: Value) {
     "key:NameCard.ChooseFromList"
 )]
 #[case::copy_ability(
-    "CopySpellAbility | ValidTgts$ Card | TargetType$ Activated | MayChooseTarget$ True",
+    "CopySpellAbility | ValidTgts$ Card | TargetType$ Activated,Instant | MayChooseTarget$ True",
     "key:CopySpellAbility.TargetType"
 )]
 #[case::copy_other_controller(

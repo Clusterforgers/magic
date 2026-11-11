@@ -166,6 +166,19 @@ impl GameState {
     }
 }
 
+/// The color identity of the commanders `player` owns (CR 903.4), empty when they own none.
+pub(crate) fn dk25_identity(state: &GameState, player: PlayerId) -> mtg_core::color::ColorSet {
+    state
+        .commanders()
+        .filter_map(|id| state.object(id))
+        .filter(|object| object.owner() == player)
+        .flat_map(|object| object.card().color_identity().iter())
+        .fold(
+            mtg_core::color::ColorSet::EMPTY,
+            mtg_core::color::ColorSet::with,
+        )
+}
+
 /// The most combat damage any one commander has dealt to `player`.
 pub(crate) fn damage_dealt_to(state: &GameState, player: PlayerId) -> u32 {
     state

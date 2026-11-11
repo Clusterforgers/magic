@@ -320,6 +320,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.UnderChosenOpponent",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
+    "Effect.CreateToken.Card",
     "Effect.CopySpell",
     "Effect.CopyAbility",
     "Effect.ChangeTargets",
@@ -636,6 +637,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Damage",
     "ReplaceWhen.ZoneChange",
     "ReplaceWhen.Countered",
+    "ReplaceWhen.Discarded",
     "ReplaceWhen.TurnedFaceUp",
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
@@ -686,6 +688,7 @@ const RUNS: &[&str] = &[
     "Keyword.Unearth",
     "Keyword.Escape",
     "Keyword.Rebound",
+    "Keyword.Paradigm",
     "Keyword.Aftermath",
     "Keyword.Dash",
     "Keyword.Bestow",
@@ -797,6 +800,7 @@ const RUNS: &[&str] = &[
     "Pred.Modified",
     "Pred.RingBearer",
     "Pred.HasAdventure",
+    "Pred.HasAbility",
     "Pred.FaceDown",
     "Pred.TargetsPlayer",
     "Pred.SpentFrom",
@@ -931,6 +935,7 @@ mod tests {
     #[case::replacing_token_creation("ReplaceWhen.TokenCreation", true)]
     #[case::replacing_damage("ReplaceWhen.Damage", true)]
     #[case::replacing_zone_changes("ReplaceWhen.ZoneChange", true)]
+    #[case::replacing_discards("ReplaceWhen.Discarded", true)]
     #[case::replacing_counters_put("ReplaceWhen.CountersPut", true)]
     #[case::replacing_life_gain("ReplaceWhen.LifeGain", true)]
     #[case::replacing_a_loss("ReplaceWhen.LoseGame", true)]
@@ -1326,6 +1331,7 @@ mod tests {
     #[case::unearth("Keyword.Unearth", true)]
     #[case::escape("Keyword.Escape", true)]
     #[case::rebound("Keyword.Rebound", true)]
+    #[case::paradigm("Keyword.Paradigm", true)]
     #[case::aftermath("Keyword.Aftermath", true)]
     #[case::dash("Keyword.Dash", true)]
     #[case::bestow("Keyword.Bestow", true)]

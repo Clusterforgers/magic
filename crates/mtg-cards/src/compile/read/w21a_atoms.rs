@@ -10,7 +10,20 @@ use super::amounts::stat_name;
 use super::defining;
 use super::selectors::{Form, phrase, stat_word};
 use super::tokens::Reader;
-use crate::refs::{Pred, Ref, Selector, ZoneKind};
+use crate::refs::{HeldAbility, Pred, Ref, Selector, ZoneKind};
+
+/// The words of an ability an object has or lacks, written and read the same way: the words, the kind and whether it has one.
+const EP31_HELD: [(&str, HeldAbility, bool); 5] = [
+    ("with no abilities", HeldAbility::Any, false),
+    ("with a mana ability", HeldAbility::Mana, true),
+    ("without mana abilities", HeldAbility::Mana, false),
+    (
+        "with an activated ability that isn't a mana ability",
+        HeldAbility::NonManaActivated,
+        true,
+    ),
+    ("with abilities", HeldAbility::Any, true),
+];
 
 /// "that were put into your graveyard from the battlefield this turn" ("that was" for one, "a graveyard" for any): the
 /// zone, its owner and `GravedThisTurn`.
@@ -197,6 +210,20 @@ pub(super) fn w21a_suffix(r: &mut Reader<'_>) -> Option<Pred> {
     if let Some(pred) = r.attempt(|r| w21a_targets(r)) {
         return Some(pred);
     }
+    if let Some(pred) = r.attempt(|r| {
+        EP31_HELD.iter().find_map(|(words, held, has)| {
+            r.words(words).then(|| {
+                let pred = Pred::HasAbility(*held);
+                if *has {
+                    pred
+                } else {
+                    Pred::Not(Box::new(pred))
+                }
+            })
+        })
+    }) {
+        return Some(pred);
+    }
     r.attempt(|r| {
         r.need("with")?;
         if r.words("no counters on it") || r.words("no counters on them") {
@@ -320,6 +347,19 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
                 "with no counters on it".to_owned()
             }
         }
+        Pred::HasAbility(held) => EP31_HELD
+            .iter()
+            .find(|(_, kind, has)| kind == held && *has)?
+            .0
+            .to_owned(),
+        Pred::Not(inner) => match **inner {
+            Pred::HasAbility(held) => EP31_HELD
+                .iter()
+                .find(|(_, kind, has)| *kind == held && !*has)?
+                .0
+                .to_owned(),
+            _ => return None,
+        },
         Pred::Compare { stat, op, to } => {
             let (words, _) = W21A_COMPARISONS.iter().find(|(_, held)| held == op)?;
             let name = stat_name(*stat)?;

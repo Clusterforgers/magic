@@ -103,6 +103,7 @@ pub fn process(
                 || returns_by_buyback(state, &item)
                 || exiles_by_adventure(state, &item)
                 || exiles_by_rebound(state, &item)
+                || exiles_by_paradigm(state, &item)
                 || moves_by_a_rule(state, event)
         })
     {
@@ -253,6 +254,9 @@ enum Origin {
     /// The spell with rebound that resolved after it was cast from a hand, which is exiled instead of going to its
     /// owner's graveyard and cast from exile at the next upkeep (CR 702.88a).
     Rebound,
+    /// The spell with paradigm that resolved, which is exiled instead of going to its owner's graveyard; the first spell of its
+    /// name its controller resolves sets up the casts of copies of the card (`keywords/paradigm.rs`).
+    Paradigm,
     /// The spell that resolved as an Adventure, which is exiled instead of going to its owner's graveyard (CR 715.4).
     Adventure,
     /// A commander that would be put into a hand or a library, which its owner may put into the command zone instead
@@ -359,6 +363,48 @@ fn exiles_by_rebound(state: &GameState, item: &Item) -> bool {
                     .iter()
                     .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Rebound))
         })
+}
+
+/// Whether the item is the resolution of a card spell with paradigm, which is exiled in place of going to the graveyard.
+fn exiles_by_paradigm(state: &GameState, item: &Item) -> bool {
+    let Item::One(event @ Event::SpellResolved { object }) = item else {
+        return false;
+    };
+    entering(state, event).is_none()
+        && state.object(*object).is_some_and(|spell| {
+            spell.kind() == ObjectKind::Card
+                && keywords::keywords_of(state, spell.id())
+                    .iter()
+                    .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Paradigm))
+        })
+}
+
+/// What the delayed trigger of paradigm does: copy the exiled card and cast the copy without paying its mana cost.
+fn paradigm_effects() -> Vec<mtg_cards::effect::Effect> {
+    use mtg_cards::effect::Effect;
+    vec![
+        Effect::CopyCard {
+            who: Ref::You,
+            what: Ref::This,
+            bind: "paradigm".to_owned(),
+        },
+        Effect::CastFromZone {
+            rather: None,
+            who: Ref::You,
+            what: Ref::Bound("paradigm".to_owned()),
+            free: true,
+            play: false,
+            way: None,
+            transformed: false,
+            bind: None,
+            otherwise: Vec::new(),
+        },
+    ]
+}
+
+/// Whether a delayed trigger is the one paradigm sets up.
+fn is_paradigm_cast(rules: &Ability) -> bool {
+    matches!(rules, Ability::Triggered { effects, .. } if *effects == paradigm_effects())
 }
 
 /// Whether the item moves a spell cast for its flashback cost or with jump-start, or the half of a split card with
@@ -606,7 +652,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Destroyed { what }
         | ReplaceWhen::Countered { what }
         | ReplaceWhen::TurnedFaceUp { what }
-        | ReplaceWhen::Discarded { what } => only_this(what),
+        | ReplaceWhen::Discarded { what, .. } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
         }
@@ -1035,15 +1081,25 @@ impl Pass<'_> {
                 scope.players(who)?.contains(player)
             }
             (
-                ReplaceWhen::Discarded { what },
+                ReplaceWhen::Discarded { what, by },
                 Unit::Move {
                     object,
                     to: Zone::Graveyard(_),
                     discard: true,
                     ..
                 },
-            )
-            | (
+            ) => {
+                let Some(reference) = self.reference(*object) else {
+                    return Ok(false);
+                };
+                let cause_fits = match (by, self.putter) {
+                    (None, _) => true,
+                    (Some(by), Some((player, _))) => scope.players(by)?.contains(&player),
+                    (Some(_), None) => false,
+                };
+                cause_fits && scope.selects(what, reference)?
+            }
+            (
                 ReplaceWhen::Destroyed { what },
                 Unit::Move {
                     object,
@@ -1195,6 +1251,7 @@ impl Pass<'_> {
             self.buyback_candidate(slot),
             self.adventure_candidate(slot),
             self.rebound_candidate(slot),
+            self.paradigm_candidate(slot),
             self.finality_candidate(slot),
         ]
         .into_iter()
@@ -1250,6 +1307,25 @@ impl Pass<'_> {
             action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Exile)),
             // The rule is no effect of the spell, so a replacement of the graveyard move (Rest in Peace) is ordered with it (CR 616.1).
             is_self: false,
+        })
+    }
+
+    /// The exile of a card spell with paradigm that resolved, when it has not been applied.
+    fn paradigm_candidate(&self, slot: &Slot) -> Option<Candidate> {
+        if slot.applied.contains(&Origin::Paradigm) || !exiles_by_paradigm(self.state, &slot.item) {
+            return None;
+        }
+        let Item::One(Event::SpellResolved { object }) = &slot.item else {
+            return None;
+        };
+        let spell = self.state.object(*object)?;
+        Some(Candidate {
+            origin: Origin::Paradigm,
+            object: spell.reference(),
+            controller: spell.controller(),
+            action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Exile)),
+            // "Then exile this spell" is an effect of the spell itself, so it applies before other replacements.
+            is_self: true,
         })
     }
 
@@ -1720,6 +1796,7 @@ impl Pass<'_> {
             Origin::Flashback => "If cast for its flashback cost, exile ~ instead.",
             Origin::Buyback => "If its buyback cost was paid, put ~ into its owner's hand instead.",
             Origin::Rebound => "If cast from your hand, exile ~ with rebound instead.",
+            Origin::Paradigm => "Exile ~ with paradigm instead.",
             Origin::Adventure => "Exile ~ instead of putting it into the graveyard.",
             Origin::Finality => {
                 "If ~ has a finality counter and would be put into a graveyard from the battlefield, exile it instead."
@@ -2503,6 +2580,51 @@ impl Pass<'_> {
         )))
     }
 
+    /// The delayed trigger of paradigm: at the beginning of each of its controller's precombat main phases for the rest of
+    /// the game, they may copy the card exiled with paradigm and cast the copy without paying its mana cost. Only the
+    /// first spell of a name its controller resolves sets it up: none when one of theirs already waits with that name.
+    fn paradigm_cast(&self, spell: ObjectId) -> Option<Event> {
+        let object = self.state.object(spell)?;
+        let name = &object.card().name;
+        let waiting = self.state.delayed.iter().any(|delayed| {
+            delayed.controller == object.controller()
+                && is_paradigm_cast(&delayed.rules)
+                && self
+                    .state
+                    .object(delayed.source.id)
+                    .is_some_and(|source| source.card().name == *name)
+        });
+        if waiting {
+            return None;
+        }
+        let mut snapshot = crate::snapshot::snapshot(self.state, spell)?;
+        snapshot.counter += 1;
+        snapshot.zone = Zone::Exile;
+        Some(Event::DelayedTriggerCreated(Box::new(
+            crate::triggers::DelayedCreated {
+                id: crate::triggers::DelayedId(self.state.next_delayed),
+                source: ObjectRef {
+                    id: spell,
+                    counter: object.counter() + 1,
+                },
+                snapshot,
+                controller: object.controller(),
+                ability: 0,
+                when: mtg_cards::trigger::TriggerPattern::StepBegins {
+                    step: mtg_cards::trigger::Step::Main1,
+                    whose: Ref::You,
+                },
+                once: false,
+                this_turn: false,
+                until: Some(mtg_cards::modify::Duration::Forever),
+                effects: paradigm_effects(),
+                targets: Vec::new(),
+                bindings: Vec::new(),
+                kept: None,
+            },
+        )))
+    }
+
     /// Sends the object that would move to `destination` instead.
     fn redirect(
         &mut self,
@@ -2546,6 +2668,12 @@ impl Pass<'_> {
                         applied
                             .contains(&Origin::Rebound)
                             .then(|| self.rebound_cast(object))
+                            .flatten(),
+                    )
+                    .chain(
+                        applied
+                            .contains(&Origin::Paradigm)
+                            .then(|| self.paradigm_cast(object))
                             .flatten(),
                     )
                     .chain(holder.map(|player| Event::PriorityGranted { player }))

@@ -1,7 +1,7 @@
 {
   "oracle_id": "2441696b-a9ba-4813-ba2e-e71f85281d05",
   "name": "Wilt-Leaf Liege",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Wilt-Leaf Liege",
@@ -34,9 +34,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 134, "end": 280 }
+          "Replacement": {
+            "when": { "Discarded": { "what": ["This"], "by": "Opponents" } },
+            "by": { "Instead": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }] },
+            "from": "Hand"
           }
         }
       ]
