@@ -26,12 +26,7 @@
       "name": "Cyclonus, Cybertronian Fighter",
       "oracle_fingerprint": "d930974cfd0b9f99866777ab5b847ad5",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 65 }
-          }
-        },
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
         { "Keyword": "Flying" },
         {
           "Manual": {

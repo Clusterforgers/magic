@@ -30,9 +30,25 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 232, "end": 299 }
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Phyrexian", "Beast"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": { "Toxic": 1 } }]
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         {

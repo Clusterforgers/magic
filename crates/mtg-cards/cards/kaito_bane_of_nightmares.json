@@ -1,0 +1,94 @@
+{
+  "oracle_id": "fa43077b-5d8b-4fb1-8dda-2a9185e6715e",
+  "name": "Kaito, Bane of Nightmares",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaito, Bane of Nightmares",
+      "oracle_fingerprint": "e1bd8542c4b499137bac17421116e0c4",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{1}{U}{B}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddType": "Creature" },
+              { "SetCreatureTypes": ["Ninja"] },
+              { "SetPT": { "power": 3, "toughness": 4 } },
+              { "AddKeyword": "Hexproof" }
+            ],
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": "loyalty" } },
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Static": {
+                        "affected": { "Each": [{ "Subtype": "Ninja" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              { "Surveil": { "count": 2 } },
+              {
+                "Draw": {
+                  "count": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" }, "count": 2 }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

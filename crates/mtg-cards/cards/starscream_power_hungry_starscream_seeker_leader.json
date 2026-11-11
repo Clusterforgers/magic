@@ -31,9 +31,7 @@
       "name": "Starscream, Seeker Leader",
       "oracle_fingerprint": "bc1963d2ee42679b676aef49b6e438c3",
       "abilities": [
-        {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 65 } }
-        },
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
         { "Keyword": "Flying" },
         { "Keyword": "Menace" },
         { "Keyword": "Haste" },

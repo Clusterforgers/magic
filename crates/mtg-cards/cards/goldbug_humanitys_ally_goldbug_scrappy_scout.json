@@ -33,9 +33,7 @@
       "name": "Goldbug, Scrappy Scout",
       "oracle_fingerprint": "15213e1031b5678f47d1d493d62d2132",
       "abilities": [
-        {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 65 } }
-        },
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
         {
           "Rule": {
             "rule": {

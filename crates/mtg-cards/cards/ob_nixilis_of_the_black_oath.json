@@ -1,7 +1,7 @@
 {
   "oracle_id": "cfc9a2f9-92fa-4608-b98d-f9763c89fc40",
   "name": "Ob Nixilis of the Black Oath",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ob Nixilis of the Black Oath",
@@ -40,9 +40,30 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 153, "end": 289 }
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Activated": {
+                        "cost": [
+                          { "Mana": "{1}{B}" },
+                          { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+                        ],
+                        "effects": [
+                          {
+                            "GainLife": { "amount": { "Stat": { "of": "Paid", "stat": "Power" } } }
+                          },
+                          { "Draw": { "count": { "Stat": { "of": "Paid", "stat": "Power" } } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         { "Rule": { "rule": "CanBeCommander" } }

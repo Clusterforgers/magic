@@ -30,9 +30,22 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 109, "end": 223 }
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }, "Other"] },
+                  "counter": "loyalty"
+                }
+              }
+            ]
           }
         },
         {

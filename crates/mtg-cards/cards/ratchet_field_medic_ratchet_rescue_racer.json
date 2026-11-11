@@ -26,12 +26,7 @@
       "name": "Ratchet, Rescue Racer",
       "oracle_fingerprint": "c8371f152b0b19e3135339c8d4944f8e",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 0, "end": 65 }
-          }
-        },
+        { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
         { "Keyword": "Lifelink" },
         {
           "Manual": {

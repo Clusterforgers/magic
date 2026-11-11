@@ -1,0 +1,785 @@
+[
+ [
+  {
+   "Keyword": {
+    "Macro": {
+     "amount": 0,
+     "name": "living metal"
+    }
+   }
+  },
+  "Living metal"
+ ],
+ [
+  {
+   "Keyword": {
+    "Equip": [
+     {
+      "PayLife": {
+       "Count": [
+        {
+         "In": "Hand"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Equip—Pay 1 life for each card in your hand."
+ ],
+ [
+  {
+   "Keyword": {
+    "Recover": [
+     {
+      "PayLife": {
+       "Half": {
+        "of": {
+         "Life": "You"
+        },
+        "up": true
+       }
+      }
+     }
+    ]
+   }
+  },
+  "Recover—Pay half your life, rounded up."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "CreateToken": {
+       "token": {
+        "Sized": {
+         "size": {
+          "Counters": {
+           "counter": "loyalty",
+           "on": "This"
+          }
+         },
+         "token": {
+          "colors": [
+           "Green"
+          ],
+          "name": "Phyrexian Horror",
+          "subtypes": [
+           "Phyrexian",
+           "Horror"
+          ],
+          "types": [
+           "Creature"
+          ]
+         }
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "+1: Create an X/X green Phyrexian Horror creature token, where X is ~'s loyalty."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "LookAtTop": {
+       "as": "top"
+      }
+     },
+     {
+      "Reveal": {
+       "what": {
+        "Bound": "top"
+       }
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Matches": {
+         "selector": [
+          {
+           "AnyOf": [
+            {
+             "Type": "Creature"
+            },
+            {
+             "Type": "Planeswalker"
+            }
+           ]
+          }
+         ],
+         "subject": {
+          "Bound": "top"
+         }
+        }
+       },
+       "otherwise": [
+        {
+         "May": {
+          "effects": [
+           {
+            "Move": {
+             "to": {
+              "Library": {
+               "place": "Bottom"
+              }
+             },
+             "what": {
+              "Bound": "top"
+             }
+            }
+           }
+          ]
+         }
+        }
+       ],
+       "then": [
+        {
+         "Move": {
+          "to": "Hand",
+          "what": {
+           "Bound": "top"
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "+1: Reveal the top card of your library. If it's a creature or planeswalker card, put it into your hand. Otherwise, you may put it on the bottom of your library."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 3
+    },
+    "effects": [
+     {
+      "PutCounters": {
+       "count": "Divided",
+       "counter": "+1/+1",
+       "on": {
+        "Target": 0
+       }
+      }
+     },
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "AddKeyword": "Vigilance"
+        }
+       ]
+      }
+     }
+    ],
+    "targets": [
+     {
+      "bounds": {
+       "max": 3,
+       "min": 0
+      },
+      "divide": 3,
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "−3: Distribute three +1/+1 counters among up to three target creatures. They gain vigilance until end of turn."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "RepeatEach": {
+       "as": "opponent",
+       "effects": [
+        {
+         "Pay": {
+          "cost": [
+           {
+            "Discard": {}
+           }
+          ],
+          "unpaid": [
+           {
+            "LoseLife": {
+             "amount": 2,
+             "who": {
+              "Bound": "opponent"
+             }
+            }
+           }
+          ],
+          "who": {
+           "Bound": "opponent"
+          }
+         }
+        }
+       ],
+       "over": "Opponents"
+      }
+     },
+     {
+      "If": {
+       "condition": {
+        "Compare": {
+         "left": {
+          "Count": [
+           {
+            "AnyOf": [
+             {
+              "Subtype": "Demon"
+             },
+             {
+              "Subtype": "Devil"
+             }
+            ]
+           },
+           {
+            "ControlledBy": "You"
+           }
+          ]
+         },
+         "op": "Ge",
+         "right": 1
+        }
+       },
+       "then": [
+        {
+         "GainLife": {
+          "amount": 2
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "+1: Each opponent loses 2 life unless they discard a card. If you control a Demon or Devil, you gain 2 life."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 8
+    },
+    "effects": [
+     {
+      "CreateEmblem": {
+       "abilities": [
+        {
+         "Activated": {
+          "cost": [
+           {
+            "Mana": "{1}{B}"
+           },
+           {
+            "Sacrifice": {
+             "filter": [
+              {
+               "Type": "Creature"
+              }
+             ]
+            }
+           }
+          ],
+          "effects": [
+           {
+            "GainLife": {
+             "amount": {
+              "Stat": {
+               "of": "Paid",
+               "stat": "Power"
+              }
+             }
+            }
+           },
+           {
+            "Draw": {
+             "count": {
+              "Stat": {
+               "of": "Paid",
+               "stat": "Power"
+              }
+             }
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "−8: You get an emblem with \"{1}{B}, Sacrifice a creature: You gain X life and draw X cards, where X is the sacrificed creature's power.\""
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 1
+    },
+    "effects": [
+     {
+      "Discard": {
+       "who": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "bounds": {
+       "max": null,
+       "min": 0
+      },
+      "what": "Player"
+     }
+    ]
+   }
+  },
+  "−1: Any number of target players each discard a card."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Minus": 3
+    },
+    "effects": [
+     {
+      "SetLife": {
+       "amount": 10,
+       "who": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": "Opponent"
+     }
+    ]
+   }
+  },
+  "−3: Target opponent's life total becomes 10."
+ ],
+ [
+  {
+   "Static": {
+    "affected": "This",
+    "condition": {
+     "All": [
+      "YourTurn",
+      {
+       "Compare": {
+        "left": {
+         "Counters": {
+          "counter": "loyalty",
+          "on": "This"
+         }
+        },
+        "op": "Ge",
+        "right": 1
+       }
+      }
+     ]
+    },
+    "mods": [
+     {
+      "AddType": "Creature"
+     },
+     {
+      "SetCreatureTypes": [
+       "Ninja"
+      ]
+     },
+     {
+      "SetPT": {
+       "power": 3,
+       "toughness": 4
+      }
+     },
+     {
+      "AddKeyword": "Hexproof"
+     }
+    ]
+   }
+  },
+  "During your turn, as long as ~ has one or more loyalty counters on him, he's a 3/4 Ninja creature and has hexproof."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": "Zero",
+    "effects": [
+     {
+      "Continuous": {
+       "affected": "This",
+       "duration": "UntilEndOfTurn",
+       "mods": [
+        {
+         "AddType": "Creature"
+        },
+        {
+         "SetCreatureTypes": [
+          "Human",
+          "Soldier"
+         ]
+        },
+        {
+         "SetPT": {
+          "power": 6,
+          "toughness": 6
+         }
+        }
+       ]
+      }
+     },
+     {
+      "Shield": {
+       "by": "Prevent",
+       "duration": "UntilEndOfTurn",
+       "when": {
+        "Damage": {
+         "to": "This"
+        }
+       }
+      }
+     }
+    ]
+   }
+  },
+  "0: Until end of turn, ~ becomes a 6/6 Human Soldier creature that's still a planeswalker. Prevent all damage that would be dealt to him this turn."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "Continuous": {
+       "affected": {
+        "Target": 0
+       },
+       "duration": "UntilYourNextTurn",
+       "mods": [
+        {
+         "AddKeyword": "Indestructible"
+        }
+       ]
+      }
+     },
+     {
+      "Untap": {
+       "what": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "+1: Until your next turn, target creature gains indestructible. Untap that creature."
+ ],
+ [
+  {
+   "Loyalty": {
+    "cost": {
+     "Plus": 1
+    },
+    "effects": [
+     {
+      "Draw": {
+       "count": 2
+      }
+     },
+     {
+      "Choose": {
+       "as": "back",
+       "from": {
+        "Each": [
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": "You"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "Move": {
+       "to": {
+        "Library": {
+         "place": "Bottom"
+        }
+       },
+       "what": {
+        "Bound": "back"
+       }
+      }
+     }
+    ]
+   }
+  },
+  "+1: Draw two cards, then put a card from your hand on the bottom of your library."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Surveil": {
+       "count": 2
+      }
+     },
+     {
+      "Pay": {
+       "cost": "{1}",
+       "times": {
+        "Count": [
+         {
+          "OwnedBy": "You"
+         },
+         {
+          "In": "Graveyard"
+         }
+        ]
+       },
+       "unpaid": [
+        {
+         "Counter": {
+          "what": {
+           "Target": 0
+          }
+         }
+        }
+       ],
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell"
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose target spell. Surveil 2, then counter the chosen spell unless its controller pays {1} for each card in your graveyard."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Pay": {
+       "cost": [
+        {
+         "DamageToYou": 4
+        }
+       ],
+       "unpaid": [
+        {
+         "Counter": {
+          "what": {
+           "Target": 0
+          }
+         }
+        }
+       ],
+       "who": {
+        "ControllerOf": {
+         "Target": 0
+        }
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        "Spell",
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Counter target instant or sorcery spell unless its controller has ~ deal 4 damage to them."
+ ],
+ [
+  {
+   "Spell": {
+    "effects": [
+     {
+      "Choose": {
+       "as": "giant",
+       "from": {
+        "Each": [
+         {
+          "Subtype": "Giant"
+         },
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "DealDamage": {
+       "amount": {
+        "Stat": {
+         "of": {
+          "Bound": "giant"
+         },
+         "stat": "Power"
+        }
+       },
+       "source": {
+        "Bound": "giant"
+       },
+       "to": {
+        "Target": 0
+       }
+      }
+     }
+    ],
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  "Choose a Giant creature you control. It deals damage equal to its power to target creature."
+ ],
+ [
+  {
+   "Spell": {
+    "targets": [
+     {
+      "what": {
+       "Object": [
+        {
+         "Subtype": "Aura"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     },
+     {
+      "what": {
+       "Object": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     }
+    ],
+    "effects": [
+     {
+      "Attach": {
+       "what": {
+        "Target": 0
+       },
+       "to": {
+        "Target": 1
+       }
+      }
+     },
+     {
+      "Draw": {}
+     }
+    ]
+   }
+  },
+  "Attach target Aura you control to target creature.\nDraw a card."
+ ]
+]

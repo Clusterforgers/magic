@@ -14,9 +14,25 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 140, "end": 224 }
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Counters": { "on": "This", "counter": "loyalty" } },
+                      "token": {
+                        "name": "Phyrexian Horror",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Phyrexian", "Horror"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         {
@@ -33,9 +49,27 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 269, "end": 369 }
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                        "toughness": {
+                          "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }]
+                        }
+                      }
+                    },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]
