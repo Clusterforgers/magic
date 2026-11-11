@@ -1,0 +1,64 @@
+{
+  "oracle_id": "5a8dd1b7-b63e-4997-9fe8-5e8816bc051b",
+  "name": "Tempt with Glory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempt with Glory",
+      "oracle_fingerprint": "7ebdbe7abeb0fc740b80e1cb2955226a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "opp" },
+                        "effects": [
+                          {
+                            "PutCounters": {
+                              "on": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": { "Bound": "opp" } }
+                                ]
+                              },
+                              "counter": "+1/+1"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "PutCounters": {
+                              "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                              "counter": "+1/+1"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

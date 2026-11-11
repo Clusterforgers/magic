@@ -1,0 +1,26 @@
+{
+  "oracle_id": "eaffdf95-8e20-408d-99fa-3adc9e19523d",
+  "name": "Misleading Signpost",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Misleading Signpost",
+      "oracle_fingerprint": "ea23eb5d8eb21594da053414f0d7f5f7",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 203 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "65bc4f8a-3226-4648-862b-3f62736ff1ae",
+  "name": "Borderland Explorer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Borderland Explorer",
+      "oracle_fingerprint": "ad3aad80471ac13e54b96780a3c6a870",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "player" },
+                        "cost": [{ "Discard": {} }],
+                        "paid": [
+                          {
+                            "Search": {
+                              "who": { "Bound": "player" },
+                              "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                              "count": { "min": 0, "max": 1 },
+                              "reveal": true,
+                              "as": "land"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+                          { "Shuffle": { "who": { "Bound": "player" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

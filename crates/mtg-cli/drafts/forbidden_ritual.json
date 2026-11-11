@@ -1,0 +1,74 @@
+{
+  "oracle_id": "4b5d9c76-8be8-4e25-b978-9750df3d8c15",
+  "name": "Forbidden Ritual",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forbidden Ritual",
+      "oracle_fingerprint": "6e74683cc30b0252e19a1896ec210503",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Not": "Token" }], "as": "sacrificed" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "sacrificed" },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "OneOf": {
+                              "who": { "Target": 0 },
+                              "options": [
+                                [
+                                  {
+                                    "Pay": {
+                                      "who": { "Target": 0 },
+                                      "cost": [{ "Sacrifice": { "filter": [] } }],
+                                      "unpaid": [
+                                        { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }
+                                      ]
+                                    }
+                                  }
+                                ],
+                                [
+                                  {
+                                    "Pay": {
+                                      "who": { "Target": 0 },
+                                      "cost": [{ "Discard": {} }],
+                                      "unpaid": [
+                                        { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true,
+                  "ask": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "adf41d29-403d-4936-9689-3148d103e700",
+  "name": "Ray of Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ray of Command",
+      "oracle_fingerprint": "4cd1ac361bc89ca581691bde0b6b2625",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Did": { "action": "ChangedController", "what": [{ "Is": { "Target": 0 } }] }
+                  },
+                  "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

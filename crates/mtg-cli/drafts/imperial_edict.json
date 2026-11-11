@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ac2b3adb-45bb-4f56-9d52-e08771164b35",
+  "name": "Imperial Edict",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Imperial Edict",
+      "oracle_fingerprint": "e2cc92c0a45b0b8922504330db861459",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "as": "chosen"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "chosen" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

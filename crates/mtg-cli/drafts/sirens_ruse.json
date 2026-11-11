@@ -1,0 +1,36 @@
+{
+  "oracle_id": "58a55d14-b03b-4648-b168-ad35ff088b19",
+  "name": "Siren's Ruse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siren's Ruse",
+      "oracle_fingerprint": "8be159645ad89f3d3b56d401872448c6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Exiled": [{ "Subtype": "Pirate" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

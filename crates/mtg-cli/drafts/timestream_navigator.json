@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d0896996-ee31-402e-b642-4e7cca4929fe",
+  "name": "Timestream Navigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timestream Navigator",
+      "oracle_fingerprint": "630d265bdfd7b7f1d90cabd640648297",
+      "abilities": [
+        { "Keyword": "Ascend" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{U}{U}" },
+              "Tap",
+              { "ToLibrary": { "from": "Battlefield", "filter": ["This"], "bottom": true } }
+            ],
+            "condition": { "CitysBlessing": "You" },
+            "effects": [{ "ExtraTurn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

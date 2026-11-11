@@ -1,0 +1,34 @@
+{
+  "oracle_id": "192aa7b2-a819-4ffd-bfbf-a270271898e6",
+  "name": "Aggravate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aggravate",
+      "oracle_fingerprint": "3f2bb5cb0397772812adb070595675f2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "amount": 1
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MustAttack": { "Each": [{ "Type": "Creature" }, { "DamagedBy": "This" }] }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

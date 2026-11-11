@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d0bb7a44-f93b-4acb-b69f-81efe0a3ae2d",
+  "name": "Motion Sickness",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Motion Sickness",
+      "oracle_fingerprint": "47e95489b621b6d5c22c8a31079de5d6",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Tap": { "what": "Attached" } }]
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": ["DoesntUntap"] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 133, "end": 218 }
+          }
+        }
+      ]
+    }
+  ]
+}

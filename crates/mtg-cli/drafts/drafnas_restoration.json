@@ -1,0 +1,38 @@
+{
+  "oracle_id": "24a78116-d5e0-4e30-b192-d8bffe347a0c",
+  "name": "Drafna's Restoration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drafna's Restoration",
+      "oracle_fingerprint": "b748adaa81e2f4e373c14a2e3ea1e9e8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": { "Target": 0 } }
+                  ]
+                },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 1 },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "5d258409-28d3-4eac-9f1a-3e494db818bf",
+  "name": "Cloak of Confusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloak of Confusion",
+      "oracle_fingerprint": "800861d2be9c039efc23c371e53a9277",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": [{ "HasAttached": ["This"] }] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Combat": { "who": "Triggering", "quirk": "AssignsNoCombatDamage" }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    { "Discard": { "who": "Defending", "random": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

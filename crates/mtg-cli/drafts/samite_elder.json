@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8feb27aa-1f62-46e5-ba20-72c712de0862",
+  "name": "Samite Elder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samite Elder",
+      "oracle_fingerprint": "99d1b1d938b72671862dc679703a5716",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": { "Protection": [{ "SharesColor": { "Target": 0 } }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

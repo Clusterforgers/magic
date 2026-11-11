@@ -1,0 +1,151 @@
+{
+  "object": "card",
+  "id": "762fa38f-a760-4e84-bdd5-c14cbc21db72",
+  "oracle_id": "ad645324-204a-49d2-b128-f98eee7c9bb9",
+  "multiverse_ids": [
+    456521
+  ],
+  "tcgplayer_id": 175211,
+  "cardmarket_id": 364344,
+  "name": "Militant Angel",
+  "lang": "en",
+  "released_at": "2018-11-16",
+  "uri": "https://api.scryfall.com/cards/762fa38f-a760-4e84-bdd5-c14cbc21db72",
+  "scryfall_uri": "https://scryfall.com/card/gnt/1/militant-angel?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:13:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/6/762fa38f-a760-4e84-bdd5-c14cbc21db72.jpg?1783933994",
+    "normal": "https://cards.scryfall.io/normal/front/7/6/762fa38f-a760-4e84-bdd5-c14cbc21db72.jpg?1783933994",
+    "large": "https://cards.scryfall.io/large/front/7/6/762fa38f-a760-4e84-bdd5-c14cbc21db72.jpg?1783933994",
+    "png": "https://cards.scryfall.io/png/front/7/6/762fa38f-a760-4e84-bdd5-c14cbc21db72.png?1783933994",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/6/762fa38f-a760-4e84-bdd5-c14cbc21db72.jpg?1783933994",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/6/762fa38f-a760-4e84-bdd5-c14cbc21db72.jpg?1783933994",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/6/762fa38f-a760-4e84-bdd5-c14cbc21db72.webp?1783933994",
+    "grid": "https://cards.scryfall.io/grid/front/7/6/762fa38f-a760-4e84-bdd5-c14cbc21db72.webp?1783933994",
+    "display": "https://cards.scryfall.io/display/front/7/6/762fa38f-a760-4e84-bdd5-c14cbc21db72.webp?1783933994",
+    "art": "https://cards.scryfall.io/art/front/7/6/762fa38f-a760-4e84-bdd5-c14cbc21db72.webp?1783933994",
+    "crop": "https://cards.scryfall.io/crop/front/7/6/762fa38f-a760-4e84-bdd5-c14cbc21db72.webp?1783933994",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/6/762fa38f-a760-4e84-bdd5-c14cbc21db72.jpg?1783933994"
+  },
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Creature — Angel",
+  "oracle_text": "Flying, lifelink\nWhen this creature enters, create a number of 2/2 white Knight creature tokens with vigilance equal to the number of opponents you attacked this turn.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Lifelink"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f4035134-a162-4651-86c5-ae006b6e0e20",
+      "component": "token",
+      "name": "Knight",
+      "type_line": "Token Creature — Knight",
+      "uri": "https://api.scryfall.com/cards/f4035134-a162-4651-86c5-ae006b6e0e20"
+    },
+    {
+      "object": "related_card",
+      "id": "762fa38f-a760-4e84-bdd5-c14cbc21db72",
+      "component": "combo_piece",
+      "name": "Militant Angel",
+      "type_line": "Creature — Angel",
+      "uri": "https://api.scryfall.com/cards/762fa38f-a760-4e84-bdd5-c14cbc21db72"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "cdbedc27-4f24-4d89-ace1-8da1b36ac78e",
+  "set": "gnt",
+  "set_name": "Game Night",
+  "set_type": "box",
+  "set_uri": "https://api.scryfall.com/sets/cdbedc27-4f24-4d89-ace1-8da1b36ac78e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Agnt&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/gnt?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/762fa38f-a760-4e84-bdd5-c14cbc21db72/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aad645324-204a-49d2-b128-f98eee7c9bb9&unique=prints",
+  "collector_number": "1",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Victor Adame Minguez",
+  "artist_ids": [
+    "bd8f7368-5b10-4554-b6b8-d052c6aca89f"
+  ],
+  "illustration_id": "9ae0fe79-dff0-4f13-9e04-3587111283aa",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 25216,
+  "prices": {
+    "usd": "1.72",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.13",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=456521&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMilitant%2BAngel",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMilitant%2BAngel",
+    "edhrec": "https://edhrec.com/route/?cc=Militant+Angel"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F175211%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=364344&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Militant+Angel&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

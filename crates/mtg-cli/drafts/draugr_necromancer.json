@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ccdf3399-b836-47ab-802d-af5a9c24d759",
+  "name": "Draugr Necromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Draugr Necromancer",
+      "oracle_fingerprint": "18611eccae97c9e5cc3fa24b224708fb",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "Opponents" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": {
+              "Instead": [
+                { "Exile": { "what": "Triggering", "as": "iced" } },
+                { "PutCounters": { "on": { "Bound": "iced" }, "counter": { "Other": "ice" } } }
+              ]
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  { "In": "Exile" },
+                  { "OwnedBy": "Opponents" },
+                  { "HasCounter": { "Other": "ice" } }
+                ],
+                "from": "Exile"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b377f717-d0c2-4db5-aba2-fa4bfa35de0f",
+  "name": "Shifting Borders",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Shifting Borders",
+      "oracle_fingerprint": "1b3c6a690ea9e0f62ffca528b0249eaf",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Land" }] }, "bounds": { "min": 2, "max": 2 } }
+            ],
+            "effects": [{ "ExchangeControl": { "what": [{ "Target": 0 }], "duration": "Forever" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 38, "end": 209 }
+          }
+        }
+      ]
+    }
+  ]
+}

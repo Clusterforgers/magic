@@ -1,0 +1,16 @@
+{
+  "oracle_id": "e9137b54-3464-4f57-95e3-f94bf2ac854e",
+  "name": "Brokkos, Apex of Forever",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brokkos, Apex of Forever",
+      "oracle_fingerprint": "6a85b14f30eda5faabf0d987443d067f",
+      "abilities": [
+        { "Keyword": { "Mutate": "{2}{G}{G}{U/B}" } },
+        { "Keyword": "Trample" },
+        { "AltCast": { "way": "Mutate", "cost": "{2}{G}{G}{U/B}", "from": "Graveyard" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "7271c442-2bd1-4d78-a049-b28bd5ee6876",
+  "name": "Grime Gorger",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Grime Gorger",
+      "oracle_fingerprint": "5d630dbced5fad769d5df3fe9f959837",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 180 }
+          }
+        }
+      ]
+    }
+  ]
+}

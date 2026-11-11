@@ -1,0 +1,20 @@
+{
+  "oracle_id": "333c15c6-c8fd-4cdd-89d2-06b921edeb8b",
+  "name": "Rowan, Scion of War",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rowan, Scion of War",
+      "oracle_fingerprint": "f897d973b5f56b115f9ccea565b85a26",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 164 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "c92802ff-484c-4d55-aba4-c3a000264113",
+  "name": "Kaboom!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaboom!",
+      "oracle_fingerprint": "e5d6deefa1dbcd2c996e3e8c07a2af6d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }] },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "Sum": [{ "Players": "EachPlayer" }, { "Count": [{ "Type": "Planeswalker" }] }]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "victim",
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "filter": [{ "Not": { "Type": "Land" } }],
+                        "as": "found",
+                        "revealed_as": "revealed"
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "to": { "Bound": "victim" },
+                        "amount": { "Stat": { "of": { "Bound": "found" }, "stat": "ManaValue" } }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "revealed" },
+                        "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

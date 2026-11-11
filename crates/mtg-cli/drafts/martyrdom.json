@@ -1,0 +1,57 @@
+{
+  "oracle_id": "f6a6da20-52c8-4921-9884-29d3a3051b0d",
+  "name": "Martyrdom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyrdom",
+      "oracle_fingerprint": "a399ddcafc12baa43187ec906160634a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{0}",
+                          "targets": [
+                            {
+                              "what": {
+                                "Either": [
+                                  { "Object": [{ "Type": "Creature" }] },
+                                  { "Object": [{ "Type": "Planeswalker" }] },
+                                  "Player"
+                                ]
+                              }
+                            }
+                          ],
+                          "effects": [
+                            {
+                              "Shield": {
+                                "when": { "Damage": { "to": { "Target": 0 } } },
+                                "by": { "RedirectUpTo": { "most": 1, "to": "This" } },
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

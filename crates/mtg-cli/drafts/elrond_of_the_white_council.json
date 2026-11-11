@@ -1,0 +1,60 @@
+{
+  "oracle_id": "5ae4a172-b846-4ec2-8178-a8b762134bfe",
+  "name": "Elrond of the White Council",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elrond of the White Council",
+      "oracle_fingerprint": "f2bda6eced1e1b443217def94aba7df8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Vote": { "options": { "Named": ["fellowship", "aid"] }, "secret": true } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "fellowship" },
+                  "as": "voter",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "voter" },
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Bound": "voter" } }]
+                        },
+                        "as": "picked"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "picked" }, "as": "chosen", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "chosen" },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "aid" },
+                  "as": "aidvoter",
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "counter": "+1/+1"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

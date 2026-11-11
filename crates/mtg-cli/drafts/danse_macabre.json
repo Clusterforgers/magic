@@ -1,0 +1,87 @@
+{
+  "oracle_id": "a9c58cfe-9630-48fa-84ad-50268eb725ed",
+  "name": "Danse Macabre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Danse Macabre",
+      "oracle_fingerprint": "05611fc0f3f2e514db136507f1d236e8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Type": "Creature" }, { "Not": "Token" }],
+                        "as": "mine"
+                      }
+                    },
+                    {
+                      "Sacrifice": {
+                        "who": "Opponents",
+                        "filter": [{ "Type": "Creature" }, { "Not": "Token" }],
+                        "as": "sacrificed"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Bind": { "what": { "Bound": "mine" }, "as": "sacrificed", "adds": true } },
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "plus": { "Stat": { "of": { "Bound": "mine" }, "stat": "Toughness" } },
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 14,
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Arrived": { "of": { "Bound": "sacrificed" }, "zone": "Graveyard" }
+                            },
+                            "as": "card"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "card" },
+                            "to": { "Battlefield": { "under": "You" } }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 15,
+                      "effects": [
+                        {
+                          "Choose": {
+                            "from": {
+                              "Arrived": { "of": { "Bound": "sacrificed" }, "zone": "Graveyard" }
+                            },
+                            "count": { "min": 0, "max": 2 },
+                            "as": "cards"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "cards" },
+                            "to": { "Battlefield": { "under": "You" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

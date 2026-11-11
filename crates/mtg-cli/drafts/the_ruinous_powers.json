@@ -1,0 +1,51 @@
+{
+  "oracle_id": "283054ed-5fbd-4202-bc02-294079aaff03",
+  "name": "The Ruinous Powers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Ruinous Powers",
+      "oracle_fingerprint": "e3bd19075e90e98c1a333fc94fdea61f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ChooseAtRandom": { "from": "Opponents", "as": "opponent" } },
+              { "ExileTop": { "who": { "Bound": "opponent" }, "as": "card" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "card" },
+                      "play": true,
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": { "what": [{ "SameCard": { "Bound": "card" } }], "by": "You" }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "OwnerOf": "Triggering" },
+                        "amount": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

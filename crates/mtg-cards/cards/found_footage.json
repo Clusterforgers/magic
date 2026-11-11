@@ -1,0 +1,22 @@
+{
+  "oracle_id": "ad37551c-9d20-4902-8190-6a0aa32a7947",
+  "name": "Found Footage",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Found Footage",
+      "oracle_fingerprint": "158d0b089cb35d4646188cbf03e4d8d6",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 68 } }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "SacrificeSelf"],
+            "effects": [{ "Surveil": { "count": 2 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

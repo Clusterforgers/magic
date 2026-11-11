@@ -1,0 +1,64 @@
+{
+  "oracle_id": "6c2e6447-c32b-4b92-a3e6-4d770e3dd250",
+  "name": "Rootweaver Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rootweaver Druid",
+      "oracle_fingerprint": "9a1b1ecce682016d400d988743de6eea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "p" },
+                        "effects": [
+                          {
+                            "Search": {
+                              "who": { "Bound": "p" },
+                              "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                              "count": { "min": 0, "max": 3 },
+                              "as": "lands"
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "who": { "Bound": "p" },
+                              "from": { "Bound": "lands" },
+                              "as": "yours",
+                              "rest_as": "theirs"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "yours" },
+                              "to": { "Battlefield": { "tapped": true, "under": "You" } }
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "theirs" },
+                              "to": { "Battlefield": { "tapped": true, "under": { "Bound": "p" } } }
+                            }
+                          },
+                          { "Shuffle": { "who": { "Bound": "p" } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

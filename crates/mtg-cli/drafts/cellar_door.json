@@ -1,0 +1,56 @@
+{
+  "oracle_id": "a2f79037-86c0-430c-ba91-62ac807a44ce",
+  "name": "Cellar Door",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cellar Door",
+      "oracle_fingerprint": "b190a2c2a5f7ad2ded37e6761953132a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }, "BottomOfLibrary"]
+                  },
+                  "to": "Graveyard",
+                  "as": "card"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "card" },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Zombie",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Zombie"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

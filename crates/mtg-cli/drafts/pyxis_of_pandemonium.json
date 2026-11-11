@@ -1,0 +1,67 @@
+{
+  "oracle_id": "4b746fe1-4c11-4dfd-bdc9-edd394478861",
+  "name": "Pyxis of Pandemonium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyxis of Pandemonium",
+      "oracle_fingerprint": "07e278c5cf0d381472058d4a172e5840",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    { "ExileTop": { "who": { "Bound": "player" }, "as": "exiled", "sealed": true } },
+                    { "Remember": { "what": { "Bound": "exiled" }, "slot": "pyxis" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{7}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Is": { "Remembered": { "on": "This", "slot": "pyxis" } } },
+                            { "In": "Exile" },
+                            { "OwnedBy": { "Bound": "player" } },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Creature" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" },
+                                { "Type": "Planeswalker" },
+                                { "Type": "Battle" }
+                              ]
+                            }
+                          ]
+                        },
+                        "to": { "Battlefield": { "under": { "Bound": "player" } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

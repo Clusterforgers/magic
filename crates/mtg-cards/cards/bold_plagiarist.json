@@ -1,0 +1,20 @@
+{
+  "oracle_id": "85277284-1eba-4f87-bf7b-abf1dcbb7691",
+  "name": "Bold Plagiarist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bold Plagiarist",
+      "oracle_fingerprint": "5f4bad1e19a369335f3795e61708ac09",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 144 }
+          }
+        }
+      ]
+    }
+  ]
+}

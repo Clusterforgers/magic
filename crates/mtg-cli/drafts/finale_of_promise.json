@@ -1,0 +1,76 @@
+{
+  "oracle_id": "d6fafb50-9531-4fbf-bb1e-ebb4dd39281c",
+  "name": "Finale of Promise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Finale of Promise",
+      "oracle_fingerprint": "8411bcba039c19abc2b43628ccabf81b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Instant" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Sorcery" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "CastFromZone": { "what": { "Target": 0 }, "free": true, "as": "cast1" } },
+              { "CastFromZone": { "what": { "Target": 1 }, "free": true, "as": "cast2" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [
+                        { "In": "Stack" },
+                        {
+                          "AnyOf": [{ "Is": { "Bound": "cast1" } }, { "Is": { "Bound": "cast2" } }]
+                        }
+                      ],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "X", "op": "Ge", "right": 10 } },
+                  "then": [
+                    {
+                      "CopySpell": { "what": { "Bound": "cast1" }, "count": 2, "new_targets": true }
+                    },
+                    {
+                      "CopySpell": { "what": { "Bound": "cast2" }, "count": 2, "new_targets": true }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

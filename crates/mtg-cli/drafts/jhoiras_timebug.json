@@ -1,0 +1,68 @@
+{
+  "oracle_id": "afe11d79-1edd-4175-9cdd-11e475240e7a",
+  "name": "Jhoira's Timebug",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jhoira's Timebug",
+      "oracle_fingerprint": "d1605d3f1b1925b8e339756d0fa25516",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "ControlledBy": "You" }] },
+                    { "Object": ["Suspended", { "OwnedBy": "You" }, { "In": "Exile" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "HasCounter": { "Other": "time" } }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Either": {
+                              "first": [
+                                {
+                                  "RemoveCounters": {
+                                    "from": { "Target": 0 },
+                                    "counter": { "Other": "time" }
+                                  }
+                                }
+                              ],
+                              "second": [
+                                {
+                                  "PutCounters": {
+                                    "on": { "Target": 0 },
+                                    "counter": { "Other": "time" }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

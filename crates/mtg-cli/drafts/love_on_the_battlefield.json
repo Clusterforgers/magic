@@ -1,0 +1,56 @@
+{
+  "oracle_id": "645dbd86-fe30-4897-a3ca-633f07ec5b54",
+  "name": "Love on the Battlefield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Love on the Battlefield",
+      "oracle_fingerprint": "0f5794f852a7db28d095393fd9e640eb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Attacking"]
+                },
+                "op": "Eq",
+                "right": 2
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "pair" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "pair" },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Is": { "Bound": "pair" } }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "until": "UntilEndOfCombat",
+                  "effects": [{ "PutCounters": { "on": "Dealer", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

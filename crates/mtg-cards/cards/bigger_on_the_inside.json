@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8f351961-69e3-4637-b010-d13f19daca39",
+  "name": "Bigger on the Inside",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bigger on the Inside",
+      "oracle_fingerprint": "fcf5c07b9b30b259b20e1778625e7207",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 25, "end": 386 }
+          }
+        }
+      ]
+    }
+  ]
+}

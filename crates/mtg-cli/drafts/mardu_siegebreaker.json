@@ -1,0 +1,70 @@
+{
+  "oracle_id": "1f82e4b9-e67f-4f34-ac4c-57b0b300ee42",
+  "name": "Mardu Siegebreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mardu Siegebreaker",
+      "oracle_fingerprint": "b4f0875022c7f0db45b404971795a2bd",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] }
+                          }
+                        },
+                        "tapped": true,
+                        "attacking": true,
+                        "against": { "Bound": "opp" },
+                        "as": "tokens"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                        "effects": [
+                          {
+                            "Sacrifice": {
+                              "filter": [{ "Is": { "Bound": "tokens" } }],
+                              "count": { "Count": [{ "Is": { "Bound": "tokens" } }] }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

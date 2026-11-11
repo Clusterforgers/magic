@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ad33ada7-4f89-4cab-88db-1f4d024baa36",
+  "name": "Johan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Johan",
+      "oracle_fingerprint": "aee2771de48c160a1471325cfd2153ed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": ["CantAttack"],
+                        "duration": "UntilEndOfCombat"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

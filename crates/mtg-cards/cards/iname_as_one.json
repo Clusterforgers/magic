@@ -1,0 +1,86 @@
+{
+  "oracle_id": "865e569b-6999-4a03-ad02-4bfd595d5820",
+  "name": "Iname as One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Iname as One",
+      "oracle_fingerprint": "45d663a98f4d7aa064398b5361722b9d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You", "from": "Hand" } }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Subtype": "Spirit" },
+                          {
+                            "AnyOf": [
+                              { "Type": "Artifact" },
+                              { "Type": "Creature" },
+                              { "Type": "Enchantment" },
+                              { "Type": "Land" },
+                              { "Type": "Planeswalker" },
+                              { "Type": "Battle" }
+                            ]
+                          }
+                        ],
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" },
+                    { "Subtype": "Spirit" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "May": { "effects": [{ "Exile": { "what": "This" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

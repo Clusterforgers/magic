@@ -1,0 +1,61 @@
+{
+  "oracle_id": "41ccd197-aaec-45cb-9e8f-919c0fb54bb0",
+  "name": "Dust of Moments",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dust of Moments",
+      "oracle_fingerprint": "40a9a2d22c6d06d040d0f4afbb34857a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "RemoveCounters": {
+                            "from": { "Each": [] },
+                            "counter": { "Other": "time" },
+                            "count": 2
+                          }
+                        },
+                        {
+                          "RemoveCounters": {
+                            "from": { "Each": ["Suspended", { "In": "Exile" }] },
+                            "counter": { "Other": "time" },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Each": [{ "HasCounter": { "Other": "time" } }] },
+                            "counter": { "Other": "time" },
+                            "count": 2
+                          }
+                        },
+                        {
+                          "PutCounters": {
+                            "on": { "Each": ["Suspended", { "In": "Exile" }] },
+                            "counter": { "Other": "time" },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "201f2434-96b3-408c-a5ce-74d0675920ed",
+  "name": "Sword of the Ages",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sword of the Ages",
+      "oracle_fingerprint": "d3f7e44db40c4b0fc92e6dace3f1201f",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 29, "end": 258 }
+          }
+        }
+      ]
+    }
+  ]
+}

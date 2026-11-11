@@ -1,0 +1,117 @@
+{
+  "oracle_id": "13a4f88b-6832-43a1-b4fa-c1ee60560bad",
+  "name": "Kaya the Inexorable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaya the Inexorable",
+      "oracle_fingerprint": "9bdcad97ff301027ea718a1b17abaa07",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": "Token" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "ghostform" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "AnyOf": [
+                              {
+                                "ZoneChange": {
+                                  "what": ["This"],
+                                  "from": "Battlefield",
+                                  "to": "Graveyard"
+                                }
+                              },
+                              { "ZoneChange": { "what": ["This"], "to": "Exile" } }
+                            ]
+                          },
+                          "effects": [
+                            { "Move": { "what": "Triggering", "to": "Hand" } },
+                            {
+                              "CreateToken": {
+                                "token": {
+                                  "Custom": {
+                                    "name": "Spirit",
+                                    "colors": ["White"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Spirit"],
+                                    "power": 1,
+                                    "toughness": 1,
+                                    "abilities": [{ "Keyword": "Flying" }]
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                        "effects": [
+                          {
+                            "CastFromZone": {
+                              "what": {
+                                "Each": [
+                                  { "Supertype": "Legendary" },
+                                  { "Not": { "Type": "Land" } },
+                                  { "OwnedBy": "You" },
+                                  {
+                                    "AnyOf": [
+                                      { "In": "Hand" },
+                                      { "In": "Graveyard" },
+                                      { "In": "Exile" }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "free": true
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

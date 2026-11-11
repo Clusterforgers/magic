@@ -1,0 +1,24 @@
+{
+  "oracle_id": "7472af8e-2e93-43b2-bc32-a3741f6d7502",
+  "name": "Ozai, the Phoenix King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ozai, the Phoenix King",
+      "oracle_fingerprint": "670f027886cfbb0fd2ee9181411ccdab",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": { "Macro": { "name": "firebending", "amount": 4 } } },
+        { "Keyword": "Haste" },
+        { "Rule": { "rule": { "UnspentManaBecomes": { "who": "You", "into": "Red" } } } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Indestructible" }],
+            "condition": { "Compare": { "left": { "ManaInPool": "You" }, "op": "Ge", "right": 6 } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "285ecbd5-ff7c-4919-ab0b-7fc05e5a0a0a",
+  "name": "Worldpurge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worldpurge",
+      "oracle_fingerprint": "4155d250f39f335848604c0bdc012b8e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Move": { "what": { "Each": [] }, "to": "Hand" } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "count": { "min": 0, "max": 7 },
+                        "as": "kept",
+                        "rest_as": "rest"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "rest" },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

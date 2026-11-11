@@ -1,0 +1,58 @@
+{
+  "oracle_id": "7df8a8aa-1856-4fe6-a543-5de65da4f49f",
+  "name": "Legion's End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legion's End",
+      "oracle_fingerprint": "9882860d6e361746733f44af72266901",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Bind": { "what": { "ControllerOf": { "Target": 0 } }, "as": "player" } },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": { "Bound": "player" } },
+                      { "AnyOf": [{ "Is": { "Target": 0 } }, { "SharesName": { "Target": 0 } }] }
+                    ]
+                  }
+                }
+              },
+              {
+                "Reveal": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] }
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                      { "OwnedBy": { "Bound": "player" } },
+                      { "SharesName": { "Target": 0 } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

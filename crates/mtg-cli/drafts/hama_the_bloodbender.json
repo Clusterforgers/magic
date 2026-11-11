@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ef80e174-78e8-412d-a6fe-89c7af746669",
+  "name": "Hama, the Bloodbender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hama, the Bloodbender",
+      "oracle_fingerprint": "b3cce94c9d23463902a522728c6a19e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": 3 } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

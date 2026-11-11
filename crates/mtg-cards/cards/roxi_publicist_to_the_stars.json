@@ -1,0 +1,26 @@
+{
+  "oracle_id": "5e24a352-7c90-458b-9bb2-bd4bc22bc748",
+  "name": "Roxi, Publicist to the Stars",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Roxi, Publicist to the Stars",
+      "oracle_fingerprint": "447b798e7ff4838d2a8a5799a39fcd1d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 152 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 153, "end": 249 }
+          }
+        }
+      ]
+    }
+  ]
+}

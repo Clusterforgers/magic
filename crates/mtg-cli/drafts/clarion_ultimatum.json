@@ -1,0 +1,49 @@
+{
+  "oracle_id": "5fbd39e9-8736-4722-bb9b-6a7da8e47c84",
+  "name": "Clarion Ultimatum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clarion Ultimatum",
+      "oracle_fingerprint": "7034dd2b05f31f47510157f9bd3a585a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "ControlledBy": "You" }] },
+                  "count": { "min": 5, "max": 5 },
+                  "as": "chosen"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "chosen" },
+                  "as": "perm",
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "SharesName": { "Bound": "perm" } }],
+                        "count": { "min": 0, "max": 1 },
+                        "as": "found_one"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "found_one" }, "as": "found", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

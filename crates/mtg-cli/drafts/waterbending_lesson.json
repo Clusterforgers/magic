@@ -1,0 +1,21 @@
+{
+  "oracle_id": "3d28886c-46bf-4d2e-a257-cb9016cc3573",
+  "name": "Waterbending Lesson",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waterbending Lesson",
+      "oracle_fingerprint": "a858e14a67c570dd6f3843e98cdd8027",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              { "Pay": { "cost": [{ "Waterbend": 2 }], "unpaid": [{ "Discard": {} }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

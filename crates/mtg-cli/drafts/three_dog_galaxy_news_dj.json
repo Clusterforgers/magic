@@ -1,0 +1,73 @@
+{
+  "oracle_id": "cc504f00-f177-4def-956d-92a2217438bb",
+  "name": "Three Dog, Galaxy News DJ",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Three Dog, Galaxy News DJ",
+      "oracle_fingerprint": "380c025c0347b6e57f8bf943cac75b18",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}",
+                  "paid": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Subtype": "Aura" }, { "AttachedTo": "This" }],
+                        "as": "aura"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "Reflexive": {
+                              "effects": [
+                                {
+                                  "RepeatEach": {
+                                    "over": {
+                                      "Each": [
+                                        { "Type": "Creature" },
+                                        "Attacking",
+                                        "Other",
+                                        { "ControlledBy": "You" }
+                                      ]
+                                    },
+                                    "as": "creature",
+                                    "effects": [
+                                      {
+                                        "CreateToken": {
+                                          "token": { "CopyOf": { "of": { "Bound": "aura" } } },
+                                          "as": "aura_copy"
+                                        }
+                                      },
+                                      {
+                                        "Attach": {
+                                          "what": { "Bound": "aura_copy" },
+                                          "to": { "Bound": "creature" }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

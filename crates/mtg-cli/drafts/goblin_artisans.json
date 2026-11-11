@@ -1,0 +1,50 @@
+{
+  "oracle_id": "ec85a375-fe38-4b11-af0e-f2b466181dd7",
+  "name": "Goblin Artisans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Artisans",
+      "oracle_fingerprint": "23d8b8540c1d4c400dacdfeaea2852d1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "In": "Stack" },
+                    { "Type": "Artifact" },
+                    { "ControlledBy": "You" },
+                    {
+                      "Not": {
+                        "TargetedBy": {
+                          "Each": [
+                            { "Ability": "Activated" },
+                            { "In": "Stack" },
+                            { "Named": "Goblin Artisans" },
+                            "Other"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [{ "Draw": {} }],
+                  "lose": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

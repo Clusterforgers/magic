@@ -1,0 +1,79 @@
+{
+  "oracle_id": "c3780529-d47e-48dc-86f6-c1a282c3b656",
+  "name": "Hiveheart Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hiveheart Shaman",
+      "oracle_fingerprint": "991cf8ceb1c8d71c549b73b3f61bb9b3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Supertype": "Basic" },
+                          { "Type": "Land" },
+                          {
+                            "Not": {
+                              "SharesSubtype": {
+                                "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                              }
+                            }
+                          }
+                        ],
+                        "as": "land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{G}",
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Insect",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Insect"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "as": "insect"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "insect" },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "BasicLandTypes"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

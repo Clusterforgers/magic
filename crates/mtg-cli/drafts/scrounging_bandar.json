@@ -1,0 +1,49 @@
+{
+  "oracle_id": "8e1eff5a-77e8-4ea2-96b8-547504f83b45",
+  "name": "Scrounging Bandar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrounging Bandar",
+      "oracle_fingerprint": "9b03fe5328cc851b59a642ade1e8e9ae",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ChooseValue": {
+                        "kind": {
+                          "Number": [0, { "Counters": { "on": "This", "counter": "+1/+1" } }]
+                        },
+                        "as": "n"
+                      }
+                    },
+                    {
+                      "MoveCounters": {
+                        "from": "This",
+                        "to": { "Target": 0 },
+                        "counter": "+1/+1",
+                        "count": { "ChosenAs": "n" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

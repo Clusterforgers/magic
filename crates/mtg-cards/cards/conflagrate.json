@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0de0bc10-9699-47f9-bb98-b5bac2063756",
+  "name": "Conflagrate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conflagrate",
+      "oracle_fingerprint": "13b620d8315ae4709255d0961e9f4ee6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 0, "max": "X" }, "divide": "X" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        },
+        { "Keyword": { "Flashback": [{ "Mana": "{R}{R}" }, { "Discard": { "count": "X" } }] } }
+      ]
+    }
+  ]
+}

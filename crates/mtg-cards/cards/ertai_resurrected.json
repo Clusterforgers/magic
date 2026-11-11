@@ -1,0 +1,65 @@
+{
+  "oracle_id": "3d038f7c-95fa-4b71-8f74-b9b4dd45cde0",
+  "name": "Ertai Resurrected",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ertai Resurrected",
+      "oracle_fingerprint": "227112bbe746e510927aad4e9e730be8",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 0, "max": 1 },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "AnyOf": [
+                                  "Spell",
+                                  { "Ability": "Activated" },
+                                  { "Ability": "Triggered" }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Counter": { "what": { "Target": 0 } } },
+                        { "Draw": { "who": { "ControllerOf": { "Target": 0 } } } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              "Other",
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Destroy": { "what": { "Target": 0 } } },
+                        { "Draw": { "who": { "ControllerOf": { "Target": 0 } } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "oracle_id": "93fe1d5b-3ab3-431a-9d78-175550ba9d43",
+  "name": "Ziatora's Envoy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ziatora's Envoy",
+      "oracle_fingerprint": "cc848c1de057a79a06e12d19fb2724ce",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Bound": "top" }, "selector": [{ "Type": "Land" }] }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "top" },
+                        "play": true,
+                        "otherwise": [{ "Move": { "what": { "Bound": "top" }, "to": "Hand" } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "top" },
+                            "selector": [
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": "Triggering" } }
+                            ]
+                          }
+                        },
+                        "then": [
+                          {
+                            "CastFromZone": {
+                              "what": { "Bound": "top" },
+                              "free": true,
+                              "otherwise": [
+                                { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+                              ]
+                            }
+                          }
+                        ],
+                        "otherwise": [{ "Move": { "what": { "Bound": "top" }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Blitz": "{2}{B}{R}{G}" } }
+      ]
+    }
+  ]
+}

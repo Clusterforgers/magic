@@ -1,0 +1,68 @@
+{
+  "oracle_id": "15e14a91-a596-465f-becc-cef2e7fbbd30",
+  "name": "Mikey & Mona, Mutant Sitters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mikey & Mona, Mutant Sitters",
+      "oracle_fingerprint": "a6df570968e1935f704dee652a8e0c00",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "different_players": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "who": { "Target": 0 },
+                            "from": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            "as": "picked"
+                          }
+                        },
+                        {
+                          "PutCounters": {
+                            "on": { "Bound": "picked" },
+                            "counter": "+1/+1",
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "Choose": {
+                            "who": { "Target": 0 },
+                            "from": {
+                              "Each": [
+                                { "AnyOf": [{ "Type": "Creature" }, { "Type": "Land" }] },
+                                { "In": "Graveyard" },
+                                { "OwnedBy": { "Target": 0 } }
+                              ]
+                            },
+                            "as": "card"
+                          }
+                        },
+                        { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

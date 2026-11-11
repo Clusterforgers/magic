@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ee2ab1ab-be1e-4e56-99f2-7784f7350b41",
+  "name": "Obstinate Baloth",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Obstinate Baloth",
+      "oracle_fingerprint": "5fb099825d51656fe7a5c2d4ac64dff0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 4 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 44, "end": 190 }
+          }
+        }
+      ]
+    }
+  ]
+}

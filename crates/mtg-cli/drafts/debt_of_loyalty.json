@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7a5cfc97-89cf-43bc-8e48-f8bf7a0c5fcd",
+  "name": "Debt of Loyalty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Debt of Loyalty",
+      "oracle_fingerprint": "4296e53aae83d85b8be6081c8a451cae",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Regenerate": { "what": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Did": { "action": "Regenerated", "what": [{ "Is": { "Target": 0 } }] }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

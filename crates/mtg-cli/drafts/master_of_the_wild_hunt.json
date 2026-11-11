@@ -1,0 +1,70 @@
+{
+  "oracle_id": "dd25cab9-15cc-40f5-9b68-8f345dd7e952",
+  "name": "Master of the Wild Hunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Master of the Wild Hunt",
+      "oracle_fingerprint": "a0a5c0d91f3b7b57f6d417d692737882",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Tap": {
+                  "what": {
+                    "Each": [
+                      "Untapped",
+                      { "Subtype": "Wolf" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "as": "wolves"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "wolves" },
+                  "as": "wolf",
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "source": { "Bound": "wolf" },
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Bound": "wolf" }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

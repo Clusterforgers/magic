@@ -1,0 +1,55 @@
+{
+  "oracle_id": "1fb3b5a3-ca4b-4cbf-ab58-71c960f3efd0",
+  "name": "Silumgar's Scorn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silumgar's Scorn",
+      "oracle_fingerprint": "3f5d7736a5039ddb593d09b41dbbe507",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "RevealFromHand": { "filter": [{ "Subtype": "Dragon" }] } }]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      "AdditionalCostPaid",
+                      {
+                        "AsCast": {
+                          "Compare": {
+                            "left": {
+                              "Count": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Counter": { "what": { "Target": 0 } } }],
+                  "otherwise": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "cost": "{1}",
+                        "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "oracle_id": "b4b5b928-8b98-4f65-9f15-212859874fe4",
+  "name": "Tadeas, Juniper Ascendant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tadeas, Juniper Ascendant",
+      "oracle_fingerprint": "c21f3c6177f0c525aa621a713f9b0d5d",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": { "Not": { "Matches": { "subject": "This", "selector": ["Attacking"] } } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasKeyword": "Reach" }
+                ]
+              }
+            },
+            "effects": [
+              { "Untap": { "what": "Triggering" } },
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "CantBeBlockedBy": [
+                        { "Type": "Creature" },
+                        {
+                          "Test": {
+                            "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                            "op": "Gt",
+                            "right": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

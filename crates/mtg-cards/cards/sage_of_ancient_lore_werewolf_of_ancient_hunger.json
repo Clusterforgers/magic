@@ -1,0 +1,73 @@
+{
+  "oracle_id": "a46454ad-d912-42f7-b228-492796161d82",
+  "name": "Sage of Ancient Lore // Werewolf of Ancient Hunger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sage of Ancient Lore",
+      "oracle_fingerprint": "264eed36f25a8fd04ed65fa6115d259b",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "toughness": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Eq", "right": 0 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Werewolf of Ancient Hunger",
+      "oracle_fingerprint": "7ea4c1c2823434f593c5c02c340c586a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "In": "Hand" }] },
+                  "toughness": { "Count": [{ "In": "Hand" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": { "left": { "CastLastTurn": "EachPlayer" }, "op": "Ge", "right": 2 }
+            },
+            "effects": [{ "Transform": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

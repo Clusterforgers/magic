@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "b9623c8c-01b4-4e8f-a5b9-eeea408ec027",
+  "oracle_id": "ed8184f8-f6a7-4f97-9f4e-bf72077af754",
+  "multiverse_ids": [
+    426923
+  ],
+  "mtgo_id": 64092,
+  "tcgplayer_id": 129824,
+  "cardmarket_id": 296765,
+  "name": "Failure // Comply",
+  "lang": "en",
+  "released_at": "2017-04-28",
+  "uri": "https://api.scryfall.com/cards/b9623c8c-01b4-4e8f-a5b9-eeea408ec027",
+  "scryfall_uri": "https://scryfall.com/card/akh/221/failure-comply?utm_source=api",
+  "layout": "split",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:54:14Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/9/b9623c8c-01b4-4e8f-a5b9-eeea408ec027.jpg?1783936454",
+    "normal": "https://cards.scryfall.io/normal/front/b/9/b9623c8c-01b4-4e8f-a5b9-eeea408ec027.jpg?1783936454",
+    "large": "https://cards.scryfall.io/large/front/b/9/b9623c8c-01b4-4e8f-a5b9-eeea408ec027.jpg?1783936454",
+    "png": "https://cards.scryfall.io/png/front/b/9/b9623c8c-01b4-4e8f-a5b9-eeea408ec027.png?1783936454",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/9/b9623c8c-01b4-4e8f-a5b9-eeea408ec027.jpg?1783936454",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/9/b9623c8c-01b4-4e8f-a5b9-eeea408ec027.jpg?1783936454",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/9/b9623c8c-01b4-4e8f-a5b9-eeea408ec027.webp?1783936454",
+    "grid": "https://cards.scryfall.io/grid/front/b/9/b9623c8c-01b4-4e8f-a5b9-eeea408ec027.webp?1783936454",
+    "display": "https://cards.scryfall.io/display/front/b/9/b9623c8c-01b4-4e8f-a5b9-eeea408ec027.webp?1783936454",
+    "art": "https://cards.scryfall.io/art/front/b/9/b9623c8c-01b4-4e8f-a5b9-eeea408ec027.webp?1783936454",
+    "crop": "https://cards.scryfall.io/crop/front/b/9/b9623c8c-01b4-4e8f-a5b9-eeea408ec027.webp?1783936454",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/9/b9623c8c-01b4-4e8f-a5b9-eeea408ec027.jpg?1783936454"
+  },
+  "mana_cost": "{1}{U} // {W}",
+  "cmc": 3.0,
+  "type_line": "Instant // Sorcery",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Aftermath"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Failure",
+      "mana_cost": "{1}{U}",
+      "type_line": "Instant",
+      "oracle_text": "Return target spell to its owner's hand.",
+      "artist": "Jason A. Engle",
+      "artist_id": "02e2b5de-4341-464c-8fdb-a1adbf873bc0",
+      "illustration_id": "9411a046-b1bb-4dee-be7a-c2eb4041e22e"
+    },
+    {
+      "object": "card_face",
+      "name": "Comply",
+      "mana_cost": "{W}",
+      "type_line": "Sorcery",
+      "oracle_text": "Aftermath (Cast this spell only from your graveyard. Then exile it.)\nChoose a card name. Until your next turn, your opponents can't cast spells with the chosen name.",
+      "artist": "Jason A. Engle",
+      "artist_id": "02e2b5de-4341-464c-8fdb-a1adbf873bc0"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "02d1c536-68bc-4208-9b65-7741ef1f9da8",
+  "set": "akh",
+  "set_name": "Amonkhet",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/02d1c536-68bc-4208-9b65-7741ef1f9da8",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aakh&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/akh?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b9623c8c-01b4-4e8f-a5b9-eeea408ec027/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aed8184f8-f6a7-4f97-9f4e-bf72077af754&unique=prints",
+  "collector_number": "221",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason A. Engle",
+  "artist_ids": [
+    "02e2b5de-4341-464c-8fdb-a1adbf873bc0"
+  ],
+  "illustration_id": "9411a046-b1bb-4dee-be7a-c2eb4041e22e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 21910,
+  "penny_rank": 5089,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": "0.36",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.42",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=426923&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFailure%2B%252F%252F%2BComply",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFailure%2B%252F%252F%2BComply",
+    "edhrec": "https://edhrec.com/route/?cc=Failure+%2F%2F+Comply"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F129824%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=296765&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/64092?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

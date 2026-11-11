@@ -1,0 +1,55 @@
+{
+  "oracle_id": "c58dfcbf-49e6-4ef0-bd31-ebd81b0cfa41",
+  "name": "Nettling Imp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nettling Imp",
+      "oracle_fingerprint": "01f8dfa9e47de9d534164a2569722255",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": { "All": [{ "Not": "YourTurn" }, "BeforeAttackers"] },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Subtype": "Wall" } },
+                    { "ControlledBy": "ActivePlayer" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Rule": { "rule": { "MustAttack": { "Target": 0 } }, "duration": "UntilEndOfTurn" }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Not": {
+                            "Matches": {
+                              "subject": { "Target": 0 },
+                              "selector": ["AttackedThisTurn"]
+                            }
+                          }
+                        },
+                        "then": [{ "Destroy": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

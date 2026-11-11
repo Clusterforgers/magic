@@ -1,0 +1,65 @@
+{
+  "oracle_id": "62e54c6d-d775-4597-bd4d-dc38460b33ec",
+  "name": "Push the Limit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Push the Limit",
+      "oracle_fingerprint": "4753d14025c0b82b7a94bb781d4508e5",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] }
+                    ]
+                  },
+                  "as": "cards"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "cards" },
+                  "to": { "Battlefield": {} },
+                  "as": "returned"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Is": { "Bound": "returned" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "returned" } }] }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

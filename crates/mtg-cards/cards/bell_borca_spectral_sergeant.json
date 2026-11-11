@@ -1,0 +1,38 @@
+{
+  "oracle_id": "5e29aea1-06e3-49ef-8a22-e3acff1fb679",
+  "name": "Bell Borca, Spectral Sergeant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bell Borca, Spectral Sergeant",
+      "oracle_fingerprint": "ec796bc3bf1ac4b4f1dbeeed886f17dc",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 56 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 57, "end": 131 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

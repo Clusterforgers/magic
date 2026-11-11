@@ -1,0 +1,53 @@
+{
+  "oracle_id": "35e2730e-b3aa-4080-aae8-7b3ad1e59848",
+  "name": "Kithkin Armor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kithkin Armor",
+      "oracle_fingerprint": "0db10f12288b60e6ecacdcc070b9bd25",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": "Attached", "source": [{ "Is": { "Bound": "source" } }] }
+                  },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

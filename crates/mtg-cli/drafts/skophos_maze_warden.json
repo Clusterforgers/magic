@@ -1,0 +1,44 @@
+{
+  "oracle_id": "7d9b7fca-9514-4aea-be51-b6c8debb3de4",
+  "name": "Skophos Maze-Warden",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skophos Maze-Warden",
+      "oracle_fingerprint": "049748cda5fc8d04150bcbfea63ebc5e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": -1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [{ "Type": "Creature" }, "Other"],
+                "by": [
+                  { "Type": "Land" },
+                  { "ControlledBy": "You" },
+                  { "Named": "Labyrinth of Skophos" }
+                ]
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Fight": { "what": "This", "with": "Triggering" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

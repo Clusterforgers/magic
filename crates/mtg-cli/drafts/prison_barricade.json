@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8531b38a-8cc9-452b-8373-3febc733a95b",
+  "name": "Prison Barricade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prison Barricade",
+      "oracle_fingerprint": "84cc872becdefb4224f96371fec8691a",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": { "Kicker": "{1}{W}" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCountersAnd": {
+                "counter": "+1/+1",
+                "count": 1,
+                "mods": [
+                  {
+                    "GrantAbility": {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "condition": "Kicked"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "af669df1-3526-46ca-b90c-19b112b7ba44",
+  "name": "Samite Ministration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samite Ministration",
+      "oracle_fingerprint": "3018e5fd86492efcd447713548df8f2a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Choose": { "from": { "Each": [] }, "as": "source" } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": {
+                    "PreventAnd": [
+                      {
+                        "If": {
+                          "condition": {
+                            "Matches": {
+                              "subject": { "Bound": "source" },
+                              "selector": [{ "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }]
+                            }
+                          },
+                          "then": [{ "GainLife": { "amount": "Triggering" } }]
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "80920ac0-2bbe-4439-a937-282f63e23141",
+  "name": "Clay Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clay Champion",
+      "oracle_fingerprint": "41145fd6cbedf9b6dfb1169a325dedcc",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Times": {
+                    "by": 3,
+                    "of": {
+                      "Quotient": { "of": { "ManaSpent": { "of": "Green" } }, "by": 2, "up": false }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": "+1/+1",
+                  "count": {
+                    "Quotient": { "of": { "ManaSpent": { "of": "White" } }, "by": 2, "up": false }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

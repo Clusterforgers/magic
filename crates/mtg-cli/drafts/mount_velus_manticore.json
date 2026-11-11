@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f434590f-3a5d-47dd-8ed0-d2a43a521f86",
+  "name": "Mount Velus Manticore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mount Velus Manticore",
+      "oracle_fingerprint": "b8da29773b51bd171c88d660ec9c2de1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "Discard": { "optional": true, "as": "discarded" } },
+              {
+                "Reflexive": {
+                  "targets": [{ "what": "AnyTarget" }],
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "CardTypes": [{ "Is": { "Bound": "discarded" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

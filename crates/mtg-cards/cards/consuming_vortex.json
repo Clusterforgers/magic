@@ -1,0 +1,25 @@
+{
+  "oracle_id": "863bb8d8-4571-4775-87e3-d6f3ec88c835",
+  "name": "Consuming Vortex",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Consuming Vortex",
+      "oracle_fingerprint": "aafc156c84146f358ca8e3ee66c4c740",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 44, "end": 215 }
+          }
+        }
+      ]
+    }
+  ]
+}

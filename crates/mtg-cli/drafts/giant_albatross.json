@@ -1,0 +1,50 @@
+{
+  "oracle_id": "8b59cacb-46ff-4400-a7f6-b258c81a9b14",
+  "name": "Giant Albatross",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Albatross",
+      "oracle_fingerprint": "b06bda99dd05cb5dd801af7b7bf3a92a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{U}",
+                  "paid": [
+                    {
+                      "RepeatEach": {
+                        "over": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "DidThisTurn": { "event": "Damaged", "to": "This" } }
+                          ]
+                        },
+                        "as": "c",
+                        "effects": [
+                          {
+                            "Pay": {
+                              "who": { "ControllerOf": { "Bound": "c" } },
+                              "cost": [{ "PayLife": 2 }],
+                              "unpaid": [
+                                { "Destroy": { "what": { "Bound": "c" }, "regenerate": false } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "952ab8fe-f7d3-4673-89de-8c6d3f8a081f",
+  "name": "Cavernous Maw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cavernous Maw",
+      "oracle_fingerprint": "a4cadab5ad184eb3a982db28a3d85695",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Sum": [
+                    { "Count": [{ "Subtype": "Cave" }, { "ControlledBy": "You" }, "Other"] },
+                    {
+                      "Count": [{ "Subtype": "Cave" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                    }
+                  ]
+                },
+                "op": "Ge",
+                "right": 3
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 3 } },
+                    { "SetCreatureTypes": ["Elemental"] },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

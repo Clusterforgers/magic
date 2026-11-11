@@ -1,0 +1,24 @@
+{
+  "oracle_id": "c880fbdc-bdd9-4f80-81d4-e3e1124f76ca",
+  "name": "Bjorna, Nightfall Alchemist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bjorna, Nightfall Alchemist",
+      "oracle_fingerprint": "7b3b6148b660f14e9a96f46ae1fed158",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              { "Goad": { "what": { "Target": 0 } } }
+            ]
+          }
+        },
+        { "Keyword": { "PartnerGroup": "Friends forever" } }
+      ]
+    }
+  ]
+}

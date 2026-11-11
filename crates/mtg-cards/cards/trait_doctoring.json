@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3b5b926b-ee8f-4c7a-8737-1de7d18ca60d",
+  "name": "Trait Doctoring",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Trait Doctoring",
+      "oracle_fingerprint": "bc585ec78fbf8b9961f296402422e6b5",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 148 }
+          }
+        },
+        { "Keyword": "Cipher" }
+      ]
+    }
+  ]
+}

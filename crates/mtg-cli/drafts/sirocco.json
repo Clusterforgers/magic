@@ -1,0 +1,52 @@
+{
+  "oracle_id": "a9bdf857-0c6b-4afa-afbb-aff7e4b61b09",
+  "name": "Sirocco",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sirocco",
+      "oracle_fingerprint": "36eaf625fdef09cae0a7cad9d421fc12",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Color": "Blue" },
+                      { "Type": "Instant" }
+                    ]
+                  },
+                  "as": "c",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Target": 0 },
+                        "cost": [{ "PayLife": 4 }],
+                        "unpaid": [
+                          {
+                            "Discard": {
+                              "who": { "Target": 0 },
+                              "filter": [{ "Is": { "Bound": "c" } }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

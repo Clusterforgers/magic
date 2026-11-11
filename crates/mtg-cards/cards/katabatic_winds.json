@@ -1,0 +1,20 @@
+{
+  "oracle_id": "70446c56-07de-4d7f-94ae-4da88fba41cf",
+  "name": "Katabatic Winds",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Katabatic Winds",
+      "oracle_fingerprint": "88ae471665f96bd9e088bd208bc221fb",
+      "abilities": [
+        { "Keyword": "Phasing" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 146, "end": 264 }
+          }
+        }
+      ]
+    }
+  ]
+}

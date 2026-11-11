@@ -1,0 +1,43 @@
+{
+  "oracle_id": "12956c07-e679-471b-8dcb-2a2d15b0be55",
+  "name": "Honest Work",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Honest Work",
+      "oracle_fingerprint": "0edeb7db5387dc08d1f65fad29a9d0de",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Tap": { "what": { "Each": [{ "Type": "Creature" }, { "HasAttached": ["This"] }] } }
+              },
+              { "RemoveAllCounters": { "from": "Attached" } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              "LoseAbilities",
+              { "SetCreatureTypes": ["Citizen"] },
+              { "SetPT": { "power": 1, "toughness": 1 } },
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

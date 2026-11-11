@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6bd38092-7788-4bb6-9447-16c56e11e603",
+  "name": "Sloppity Bilepiper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sloppity Bilepiper",
+      "oracle_fingerprint": "97a9bb1dd3c8f65dd525ee3c61be063a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "Type": "Creature" }],
+                      "benefit": { "Keyword": "Cascade" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

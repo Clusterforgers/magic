@@ -1,0 +1,33 @@
+{
+  "oracle_id": "8cf12b01-7c0a-488f-9527-404a545c70c4",
+  "name": "Keeper of the Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Keeper of the Flame",
+      "oracle_fingerprint": "355f6d380bdb27ec0ec89d0c27f360c2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Life": { "Target": 0 } },
+                      "op": "Gt",
+                      "right": { "Life": "You" }
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "6a0b78fb-3838-47d9-8d1a-b6b0c0e8927d",
+  "name": "Haldan, Avid Arcanist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haldan, Avid Arcanist",
+      "oracle_fingerprint": "b505843b1d353941d97c8b99d326b612",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Pako, Arcane Retriever" } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Not": { "Type": "Creature" } }, { "HasCounter": { "Other": "fetch" } }],
+                "from": "Exile",
+                "play": true,
+                "spend_as": "AnyColor"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

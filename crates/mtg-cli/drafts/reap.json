@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7fcb8472-1e77-4dcd-b18f-8abf8806da08",
+  "name": "Reap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reap",
+      "oracle_fingerprint": "fc61442eef72dee5871a7c81072dc696",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "bounds": {
+                  "min": 0,
+                  "max": {
+                    "CountedAsCast": {
+                      "Count": [{ "Color": "Black" }, { "ControlledBy": { "Target": 1 } }]
+                    }
+                  }
+                }
+              },
+              { "what": "Opponent" }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

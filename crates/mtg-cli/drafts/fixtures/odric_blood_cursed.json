@@ -1,0 +1,175 @@
+{
+  "object": "card",
+  "id": "81a79f5f-a65a-4b43-b58c-cdfa09cc7855",
+  "oracle_id": "690f79f3-e6a5-4542-8401-61a9bf645d55",
+  "multiverse_ids": [
+    541117
+  ],
+  "mtgo_id": 94862,
+  "arena_id": 79065,
+  "tcgplayer_id": 253673,
+  "cardmarket_id": 583260,
+  "name": "Odric, Blood-Cursed",
+  "lang": "en",
+  "released_at": "2021-11-19",
+  "uri": "https://api.scryfall.com/cards/81a79f5f-a65a-4b43-b58c-cdfa09cc7855",
+  "scryfall_uri": "https://scryfall.com/card/vow/243/odric-blood-cursed?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:39:53Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/1/81a79f5f-a65a-4b43-b58c-cdfa09cc7855.jpg?1783924793",
+    "normal": "https://cards.scryfall.io/normal/front/8/1/81a79f5f-a65a-4b43-b58c-cdfa09cc7855.jpg?1783924793",
+    "large": "https://cards.scryfall.io/large/front/8/1/81a79f5f-a65a-4b43-b58c-cdfa09cc7855.jpg?1783924793",
+    "png": "https://cards.scryfall.io/png/front/8/1/81a79f5f-a65a-4b43-b58c-cdfa09cc7855.png?1783924793",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/1/81a79f5f-a65a-4b43-b58c-cdfa09cc7855.jpg?1783924793",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/1/81a79f5f-a65a-4b43-b58c-cdfa09cc7855.jpg?1783924793",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/1/81a79f5f-a65a-4b43-b58c-cdfa09cc7855.webp?1783924793",
+    "grid": "https://cards.scryfall.io/grid/front/8/1/81a79f5f-a65a-4b43-b58c-cdfa09cc7855.webp?1783924793",
+    "display": "https://cards.scryfall.io/display/front/8/1/81a79f5f-a65a-4b43-b58c-cdfa09cc7855.webp?1783924793",
+    "art": "https://cards.scryfall.io/art/front/8/1/81a79f5f-a65a-4b43-b58c-cdfa09cc7855.webp?1783924793",
+    "crop": "https://cards.scryfall.io/crop/front/8/1/81a79f5f-a65a-4b43-b58c-cdfa09cc7855.webp?1783924793",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/1/81a79f5f-a65a-4b43-b58c-cdfa09cc7855.jpg?1783924793"
+  },
+  "mana_cost": "{1}{R}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Vampire Soldier",
+  "oracle_text": "When Odric enters, create X Blood tokens, where X is the number of abilities from among flying, first strike, double strike, deathtouch, haste, hexproof, indestructible, lifelink, menace, reach, trample, and vigilance found among creatures you control. (Count each ability only once.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Deathtouch",
+    "Lifelink",
+    "Reach",
+    "Indestructible",
+    "Hexproof",
+    "First strike",
+    "Haste",
+    "Trample",
+    "Menace",
+    "Double strike"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "a6f374bc-cd29-469f-808a-6a6c004ee8aa",
+      "component": "token",
+      "name": "Blood",
+      "type_line": "Token Artifact — Blood",
+      "uri": "https://api.scryfall.com/cards/a6f374bc-cd29-469f-808a-6a6c004ee8aa"
+    },
+    {
+      "object": "related_card",
+      "id": "7e8335a9-2880-4e12-8d93-b75a297272dc",
+      "component": "combo_piece",
+      "name": "Odric, Blood-Cursed",
+      "type_line": "Legendary Creature — Vampire Soldier",
+      "uri": "https://api.scryfall.com/cards/7e8335a9-2880-4e12-8d93-b75a297272dc"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set": "vow",
+  "set_name": "Innistrad: Crimson Vow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avow&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/vow?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/81a79f5f-a65a-4b43-b58c-cdfa09cc7855/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A690f79f3-e6a5-4542-8401-61a9bf645d55&unique=prints",
+  "collector_number": "243",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rallis",
+  "artist_ids": [
+    "a8e7b854-b15a-421a-b66d-6e68187ae285"
+  ],
+  "illustration_id": "d3e54908-b63f-477d-8fa2-2c8d1e570a5a",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19644,
+  "penny_rank": 16135,
+  "preview": {
+    "source": "Polygon",
+    "source_uri": "https://www.polygon.com/22763935/magic-the-gathering-innistrad-crimson-vow-preview-card-odric-blood-cursed-art",
+    "previewed_at": "2021-11-04"
+  },
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": "0.38",
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": "0.24",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=541117&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOdric%252C%2BBlood-Cursed",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOdric%252C%2BBlood-Cursed",
+    "edhrec": "https://edhrec.com/route/?cc=Odric%2C+Blood-Cursed"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F253673%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=583260&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/94862?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

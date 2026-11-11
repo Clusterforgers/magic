@@ -1,0 +1,31 @@
+{
+  "oracle_id": "6d9ab641-ba99-4b27-a84e-8c2ae57a2fc1",
+  "name": "Orochi Soul-Reaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orochi Soul-Reaver",
+      "oracle_fingerprint": "b2101b61d77c03bd02a6f2ee6b45d5b8",
+      "abilities": [
+        { "Keyword": { "Ninjutsu": "{3}{B}" } },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "treasure" } } },
+              { "Manifest": { "library": "TriggeringPlayer" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

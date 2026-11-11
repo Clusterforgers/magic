@@ -1,0 +1,44 @@
+{
+  "oracle_id": "07fe0fb5-cf34-4ba4-a3f3-ac0cc919bf91",
+  "name": "Ghost of Ramirez DePietro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost of Ramirez DePietro",
+      "oracle_fingerprint": "3af397338b1edf5c38b2bff1cf33a5a5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Toughness", "op": "Ge", "to": 3 } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Graveyard" },
+                    { "AnyOf": [{ "ArrivedFrom": "Hand" }, { "ArrivedFrom": "Library" }] }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "cdc6e187-73d2-4f79-a0ff-daa6d2de5bdb",
+  "name": "Barbed Wire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barbed Wire",
+      "oracle_fingerprint": "00cd5058efd7a124a18d98057d5fddfd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [{ "DealDamage": { "to": "ActivePlayer", "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": ["This"] } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "332716fb-cc1c-4a6f-b7d4-bd7f13cfa438",
+  "name": "Floating Shield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Floating Shield",
+      "oracle_fingerprint": "b0b51b07e899b9e96cc01392716afa27",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "AddKeyword": {
+                  "ProtectionSparing": { "from": ["ChosenColor"], "spares": ["This"] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Protection": ["ChosenColor"] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

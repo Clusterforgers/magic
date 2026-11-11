@@ -1,0 +1,31 @@
+{
+  "oracle_id": "77b24f10-93af-44b9-af78-3a2f5ab32251",
+  "name": "Shakedown Heavy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shakedown Heavy",
+      "oracle_fingerprint": "c5332617f8fed8a9adeb31524b113939",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "May": { "who": "Defending", "effects": [{ "Draw": {} }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "Untap": { "what": "This" } },
+                    { "RemoveFromCombat": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

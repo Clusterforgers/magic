@@ -1,0 +1,47 @@
+{
+  "oracle_id": "a6a7af21-e52c-4f7f-a57f-bd365d075966",
+  "name": "Superior Foes of Spider-Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Superior Foes of Spider-Man",
+      "oracle_fingerprint": "6ec74dfaf70cc776346e1b72f761141c",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "ExileTop": { "as": "impulse" } },
+                    { "Forget": { "slot": "foes" } },
+                    { "Remember": { "what": { "Bound": "impulse" }, "slot": "foes" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "only": { "Remembered": { "on": "This", "slot": "foes" } },
+                            "play": true
+                          }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

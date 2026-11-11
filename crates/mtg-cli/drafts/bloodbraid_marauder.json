@@ -1,0 +1,28 @@
+{
+  "oracle_id": "25ca4b6c-2c4a-40f1-aee8-3bd373572eb7",
+  "name": "Bloodbraid Marauder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodbraid Marauder",
+      "oracle_fingerprint": "f5c567610cc29a2ab75f94351d1f60a6",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Static": {
+            "affected": { "Each": ["This", { "In": "Stack" }] },
+            "mods": [{ "AddKeyword": "Cascade" }],
+            "condition": {
+              "Compare": {
+                "left": { "CardTypes": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 4
+              }
+            },
+            "from": "Stack"
+          }
+        }
+      ]
+    }
+  ]
+}

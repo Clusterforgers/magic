@@ -1,0 +1,578 @@
+{
+  "oracle_id": "730897a9-3ead-4990-9492-1a2040d8ccac",
+  "name": "Kathril, Aspect Warper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kathril, Aspect Warper",
+      "oracle_fingerprint": "19464c60a1abaf9b4ff77fb565792cd2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "HasKeyword": "Flying" }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "c1"
+                      }
+                    },
+                    { "PutCounters": { "on": { "Bound": "c1" }, "counter": { "Other": "flying" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "HasKeyword": "FirstStrike" }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "c2"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "c2" },
+                        "counter": { "Other": "first strike" }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "HasKeyword": "DoubleStrike" }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "c3"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "c3" },
+                        "counter": { "Other": "double strike" }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "HasKeyword": "Deathtouch" }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "c4"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "c4" },
+                        "counter": { "Other": "deathtouch" }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "HasKeyword": "Hexproof" }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "c5"
+                      }
+                    },
+                    {
+                      "PutCounters": { "on": { "Bound": "c5" }, "counter": { "Other": "hexproof" } }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "HasKeyword": "Indestructible" }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "c6"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "c6" },
+                        "counter": { "Other": "indestructible" }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "HasKeyword": "Lifelink" }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "c7"
+                      }
+                    },
+                    {
+                      "PutCounters": { "on": { "Bound": "c7" }, "counter": { "Other": "lifelink" } }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "HasKeyword": "Menace" }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "c8"
+                      }
+                    },
+                    { "PutCounters": { "on": { "Bound": "c8" }, "counter": { "Other": "menace" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "HasKeyword": "Reach" }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "c9"
+                      }
+                    },
+                    { "PutCounters": { "on": { "Bound": "c9" }, "counter": { "Other": "reach" } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "HasKeyword": "Trample" }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "c10"
+                      }
+                    },
+                    {
+                      "PutCounters": { "on": { "Bound": "c10" }, "counter": { "Other": "trample" } }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Creature" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "HasKeyword": "Vigilance" }
+                        ]
+                      },
+                      "op": "Gt",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "c11"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "c11" },
+                        "counter": { "Other": "vigilance" }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "Sum": [
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  { "HasKeyword": "Flying" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  { "HasKeyword": "FirstStrike" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  { "HasKeyword": "DoubleStrike" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  { "HasKeyword": "Deathtouch" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  { "HasKeyword": "Hexproof" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  { "HasKeyword": "Indestructible" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  { "HasKeyword": "Lifelink" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  { "HasKeyword": "Menace" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  { "HasKeyword": "Reach" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  { "HasKeyword": "Trample" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "In": "Graveyard" },
+                                  { "OwnedBy": "You" },
+                                  { "HasKeyword": "Vigilance" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

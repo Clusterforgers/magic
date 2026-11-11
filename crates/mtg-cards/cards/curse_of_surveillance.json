@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4fd061f2-7269-4eea-bc7c-95a123893efa",
+  "name": "Curse of Surveillance",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Curse of Surveillance",
+      "oracle_fingerprint": "2ab1ba331956a456e36e35f2cfcb0209",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 15, "end": 184 }
+          }
+        }
+      ]
+    }
+  ]
+}

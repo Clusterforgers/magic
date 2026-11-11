@@ -1,0 +1,73 @@
+{
+  "oracle_id": "78ed3e01-6d22-429a-a9db-baff38d7bc03",
+  "name": "Sycorax Commander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sycorax Commander",
+      "oracle_fingerprint": "c9e76025811fc2cd3d52b5e5180025db",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "VillainousChoice": {
+                        "who": { "Bound": "opp" },
+                        "first": [
+                          {
+                            "Discard": {
+                              "who": { "Bound": "opp" },
+                              "count": {
+                                "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "opp" } }]
+                              },
+                              "as": "discarded"
+                            }
+                          },
+                          {
+                            "Draw": {
+                              "who": { "Bound": "opp" },
+                              "count": {
+                                "Sum": [
+                                  {
+                                    "Count": [
+                                      { "In": "Graveyard" },
+                                      { "Is": { "Bound": "discarded" } }
+                                    ]
+                                  },
+                                  -1
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "second": [
+                          {
+                            "DealDamage": {
+                              "source": "This",
+                              "to": { "Bound": "opp" },
+                              "amount": {
+                                "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "opp" } }]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "9a664735-6e38-407f-9d2f-a6d279cd6309",
+  "name": "Repeated Reverberation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repeated Reverberation",
+      "oracle_fingerprint": "1e393788eddbf71e307a78186e76e9e6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      { "SpellCast": { "what": [{ "Type": "Instant" }], "by": "You" } },
+                      { "SpellCast": { "what": [{ "Type": "Sorcery" }], "by": "You" } },
+                      { "Did": { "action": "ActivatedLoyalty", "who": "You" } }
+                    ]
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": { "subject": "Triggering", "selector": ["Spell"] }
+                        },
+                        "then": [
+                          { "CopySpell": { "what": "Triggering", "count": 2, "new_targets": true } }
+                        ],
+                        "otherwise": [
+                          {
+                            "CopyAbility": { "what": "Triggering", "count": 2, "new_targets": true }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

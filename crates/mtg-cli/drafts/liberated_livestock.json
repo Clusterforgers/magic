@@ -1,0 +1,109 @@
+{
+  "oracle_id": "d080cb03-b3e5-42e8-b289-2ce2151b4cb8",
+  "name": "Liberated Livestock",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liberated Livestock",
+      "oracle_fingerprint": "ba4bed4cf9ea42cf933b45c6f94d4883",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cat",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  },
+                  "as": "cat"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "as": "bird"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Ox",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ox"],
+                      "power": 2,
+                      "toughness": 4
+                    }
+                  },
+                  "as": "ox"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Bound": "cat" } },
+                          { "Is": { "Bound": "bird" } },
+                          { "Is": { "Bound": "ox" } }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "token",
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                                  { "OwnedBy": "You" },
+                                  { "Subtype": "Aura" }
+                                ]
+                              },
+                              "as": "aura"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "aura" },
+                              "to": { "BattlefieldAttached": { "to": { "Bound": "token" } } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

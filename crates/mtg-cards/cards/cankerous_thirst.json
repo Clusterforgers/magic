@@ -1,0 +1,63 @@
+{
+  "oracle_id": "724390aa-240d-4023-9dcb-6bdb2c2090f5",
+  "name": "Cankerous Thirst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cankerous Thirst",
+      "oracle_fingerprint": "64b6607084776a4590ca6f2387f194a6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Black" },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 0 },
+                              "mods": [{ "ModifyPT": { "power": -3, "toughness": -3 } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Green" },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": { "Target": 1 },
+                              "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

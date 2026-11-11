@@ -1,0 +1,31 @@
+{
+  "oracle_id": "60808c8f-5257-451b-a9b6-389ba51598d5",
+  "name": "Kira, Great Glass-Spinner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kira, Great Glass-Spinner",
+      "oracle_fingerprint": "6b108ce58b065155b8e409ff79bfdc19",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": {
+                      "Nth": { "event": { "BecomesTarget": { "what": ["This"] } }, "nth": 1 }
+                    },
+                    "effects": [{ "Counter": { "what": "Dealer" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

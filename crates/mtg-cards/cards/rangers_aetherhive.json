@@ -1,0 +1,21 @@
+{
+  "oracle_id": "49d149d6-de94-48cf-974b-6bb4a37ce77c",
+  "name": "Rangers' Aetherhive",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rangers' Aetherhive",
+      "oracle_fingerprint": "3af2d5d81e779ba39fc00012b14946d6",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 10, "end": 119 }
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

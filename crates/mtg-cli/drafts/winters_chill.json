@@ -1,0 +1,108 @@
+{
+  "oracle_id": "ae78d498-11c7-427f-9d13-3f1b7096f803",
+  "name": "Winter's Chill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter's Chill",
+      "oracle_fingerprint": "0a51e85f65f390016ddeba9bdd4217da",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": { "Any": [{ "Step": "BeginCombat" }, { "Step": "DeclareAttackers" }] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking"] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "c",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "who": { "ControllerOf": { "Bound": "c" } },
+                        "options": [
+                          [
+                            {
+                              "Pay": {
+                                "who": { "ControllerOf": { "Bound": "c" } },
+                                "cost": "{2}",
+                                "unpaid": [
+                                  {
+                                    "DelayedTrigger": {
+                                      "when": { "StepBegins": { "step": "EndCombat" } },
+                                      "effects": [{ "Destroy": { "what": { "Bound": "c" } } }]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Pay": {
+                                "who": { "ControllerOf": { "Bound": "c" } },
+                                "cost": "{1}",
+                                "paid": [
+                                  {
+                                    "Shield": {
+                                      "when": {
+                                        "Damage": {
+                                          "source": [{ "Is": { "Bound": "c" } }],
+                                          "combat": true
+                                        }
+                                      },
+                                      "by": "Prevent",
+                                      "duration": "UntilEndOfCombat"
+                                    }
+                                  },
+                                  {
+                                    "Shield": {
+                                      "when": {
+                                        "Damage": { "to": { "Bound": "c" }, "combat": true }
+                                      },
+                                      "by": "Prevent",
+                                      "duration": "UntilEndOfCombat"
+                                    }
+                                  }
+                                ],
+                                "unpaid": [
+                                  {
+                                    "DelayedTrigger": {
+                                      "when": { "StepBegins": { "step": "EndCombat" } },
+                                      "effects": [{ "Destroy": { "what": { "Bound": "c" } } }]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "DelayedTrigger": {
+                                "when": { "StepBegins": { "step": "EndCombat" } },
+                                "effects": [{ "Destroy": { "what": { "Bound": "c" } } }]
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

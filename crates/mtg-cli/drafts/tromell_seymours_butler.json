@@ -1,0 +1,49 @@
+{
+  "oracle_id": "f088817a-570d-4480-bc59-f2ad6675a71b",
+  "name": "Tromell, Seymour's Butler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tromell, Seymour's Butler",
+      "oracle_fingerprint": "63bc1bbd19f15e3254b1ee49f29d11e2",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  "Other",
+                  { "Not": "Token" },
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Not": "Token" },
+                      { "ControlledBy": "You" },
+                      "EnteredThisTurn"
+                    ]
+                  },
+                  "as": "entered",
+                  "effects": [{ "Proliferate": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

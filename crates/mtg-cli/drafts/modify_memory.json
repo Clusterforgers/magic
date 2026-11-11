@@ -1,0 +1,44 @@
+{
+  "oracle_id": "2c37d4e1-6b76-4feb-933b-1752ecc6d3e8",
+  "name": "Modify Memory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Modify Memory",
+      "oracle_fingerprint": "2baa47c4d777684288c7bcd6c7bb99f2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": { "Object": [{ "Type": "Creature" }] },
+                    "rule": "DifferentControllers"
+                  }
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "ExchangeControl": { "what": [{ "Target": 0 }], "duration": "Forever" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "ControlledBy": "You" }],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": { "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

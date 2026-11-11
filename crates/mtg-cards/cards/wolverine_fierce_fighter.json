@@ -1,0 +1,32 @@
+{
+  "oracle_id": "8429ba6a-6c06-4a83-a6ee-023b64b825f8",
+  "name": "Wolverine, Fierce Fighter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wolverine, Fierce Fighter",
+      "oracle_fingerprint": "c5639dd00c143d7800ea3d997a2b9c1b",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Fight": { "what": "This", "with": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 72, "end": 193 }
+          }
+        }
+      ]
+    }
+  ]
+}

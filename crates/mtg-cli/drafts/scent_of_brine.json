@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c22b5968-adea-4f74-877d-8ac2ee452769",
+  "name": "Scent of Brine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scent of Brine",
+      "oracle_fingerprint": "80e9dec724f4694b7d1763dbe24431a2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "OwnedBy": "You" }, { "In": "Hand" }, { "Color": "Blue" }] },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "OwnedBy": "You" }, { "In": "Hand" }, { "Color": "Blue" }]
+                    }
+                  },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "CountOf": { "of": { "Bound": "revealed" }, "filter": [] } },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

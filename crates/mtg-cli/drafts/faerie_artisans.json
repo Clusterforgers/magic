@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7dda40f2-7b5f-479c-86b6-8bc11fff9f4a",
+  "name": "Faerie Artisans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Artisans",
+      "oracle_fingerprint": "a54f6287865a68edeec9bd40eb8d3ea9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "Opponents" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": "Triggering", "except": [{ "AddType": "Artifact" }] }
+                  },
+                  "as": "new"
+                }
+              },
+              { "Exile": { "what": { "Remembered": { "on": "This", "slot": "artisan_tokens" } } } },
+              { "Forget": { "slot": "artisan_tokens" } },
+              { "Remember": { "what": { "Bound": "new" }, "slot": "artisan_tokens" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

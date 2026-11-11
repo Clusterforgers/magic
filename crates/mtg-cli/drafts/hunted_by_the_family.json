@@ -1,0 +1,56 @@
+{
+  "oracle_id": "7d178f1c-faf7-4efd-87a6-201a40c55ec8",
+  "name": "Hunted by The Family",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunted by The Family",
+      "oracle_fingerprint": "a1a8eea47085a615bbd31f5b7641b310",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] },
+                "bounds": { "min": 0, "max": 4 }
+              }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "it",
+                  "effects": [
+                    {
+                      "VillainousChoice": {
+                        "who": { "ControllerOf": { "Bound": "it" } },
+                        "first": [
+                          {
+                            "Continuous": {
+                              "affected": { "Bound": "it" },
+                              "mods": [
+                                { "SetPT": { "power": 1, "toughness": 1 } },
+                                { "SetColors": ["White"] },
+                                { "SetCreatureTypes": ["Human"] },
+                                { "SetTypes": ["Creature"] },
+                                "LoseAbilities"
+                              ],
+                              "duration": "Forever"
+                            }
+                          }
+                        ],
+                        "second": [
+                          { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "it" } } } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

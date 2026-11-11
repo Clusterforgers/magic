@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b7fde102-7b89-48c7-818c-bdf0eb33c2ee",
+  "name": "Dream Leash",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Dream Leash",
+      "oracle_fingerprint": "6327c8c72a03bd2b72b19ea977ba76ad",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 18, "end": 95 }
+          }
+        },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

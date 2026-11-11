@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c8e0b90c-edfb-4024-9ed5-398966f4ac72",
+  "name": "Kang Prime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kang Prime",
+      "oracle_fingerprint": "57e10774df16717039e46d2874134e8c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "card",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "card" },
+                  "counter": { "Other": "time" },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

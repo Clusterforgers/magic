@@ -1,0 +1,40 @@
+{
+  "oracle_id": "be48877f-97b1-4a10-a618-cbc57515e617",
+  "name": "Doubling Chant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doubling Chant",
+      "oracle_fingerprint": "6893583ff1576e131c8349a735ee22fa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Type": "Creature" },
+                          { "SharesName": { "Bound": "creature" } }
+                        ],
+                        "count": { "min": 0, "max": 1 },
+                        "as": "found"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "found" }, "as": "cards", "adds": true } }
+                  ]
+                }
+              },
+              { "Move": { "what": { "Bound": "cards" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

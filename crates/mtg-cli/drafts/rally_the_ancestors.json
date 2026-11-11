@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9d612686-2d7f-49a3-b9c4-1e99a30134f6",
+  "name": "Rally the Ancestors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rally the Ancestors",
+      "oracle_fingerprint": "d38bf0fd9815c94bab52c02c3ca9c068",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "OwnedBy": "You" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "to": { "Battlefield": {} },
+                  "as": "returned"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "returned" } } }]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

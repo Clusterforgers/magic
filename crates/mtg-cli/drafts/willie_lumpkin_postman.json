@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b08633e9-7b8f-4f69-a3b7-8d982b17574c",
+  "name": "Willie Lumpkin, Postman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Willie Lumpkin, Postman",
+      "oracle_fingerprint": "cc09816be08f9cb192ed0a5959642a2e",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBeBlocked"] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents", "combat": true } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "May": {
+                  "who": "TriggeringPlayer",
+                  "effects": [{ "Draw": { "who": "TriggeringPlayer" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

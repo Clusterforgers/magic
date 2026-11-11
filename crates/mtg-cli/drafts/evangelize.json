@@ -1,0 +1,37 @@
+{
+  "oracle_id": "23a60803-6b0f-48ee-aa3b-12a3c5fc62cf",
+  "name": "Evangelize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evangelize",
+      "oracle_fingerprint": "1bbbc2e7e7a6b659e09c3dc3ce7a61a9",
+      "abilities": [
+        { "Keyword": { "Buyback": "{2}{W}{W}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": "Opponents",
+                    "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

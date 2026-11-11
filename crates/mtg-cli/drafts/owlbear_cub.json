@@ -1,0 +1,64 @@
+{
+  "oracle_id": "0c92432d-ac76-47d2-af7a-fdffd4b546a2",
+  "name": "Owlbear Cub",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Owlbear Cub",
+      "oracle_fingerprint": "65a045724910a02443d7d979e739a470",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayer": {
+                "what": ["This"],
+                "at": {
+                  "PlayersWhere": {
+                    "who": "EachPlayer",
+                    "test": {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": 8
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "effects": [
+              { "LookAtTop": { "count": 8, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Creature" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "kept" },
+                  "to": { "Battlefield": { "tapped": true } },
+                  "as": "put"
+                }
+              },
+              { "JoinAttack": { "what": { "Bound": "put" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

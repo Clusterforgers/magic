@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9c058107-b2a1-4300-8d97-c697c248df96",
+  "name": "Glarecaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glarecaster",
+      "oracle_fingerprint": "ede83cfb69e68353d5b2d00624b3ed1a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{5}{W}",
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "Redirect": { "to": { "Target": 0 }, "next": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You" } },
+                  "by": { "Redirect": { "to": { "Target": 0 }, "next": true } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

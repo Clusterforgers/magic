@@ -1,0 +1,45 @@
+{
+  "oracle_id": "721eb5a2-d7cf-4db0-8013-ef3f596c52a5",
+  "name": "Doomsday",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doomsday",
+      "oracle_fingerprint": "c2eb1dea2ca91b278fa7e7241b4489d8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [],
+                  "count": { "min": 5, "max": 5 },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Library" }, { "In": "Graveyard" }] },
+                      { "OwnedBy": "You" },
+                      { "Not": { "Is": { "Bound": "chosen" } } }
+                    ]
+                  }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "chosen" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              },
+              { "LoseLife": { "amount": { "Half": { "of": { "Life": "You" }, "up": true } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

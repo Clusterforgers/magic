@@ -1,0 +1,38 @@
+{
+  "oracle_id": "579225b5-50e2-4891-8871-0bf6dbc07e33",
+  "name": "Omnath, Locus of the Void",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Omnath, Locus of the Void",
+      "oracle_fingerprint": "5f91d99d4892a427b59b22e78aa0aa08",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "ManaInPool": "You" },
+                  "toughness": { "ManaInPool": "You" }
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "UnspentManaBecomes": { "who": "You", "into": "Colorless" } } } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

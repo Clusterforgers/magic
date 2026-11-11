@@ -1,0 +1,62 @@
+{
+  "oracle_id": "90dd050d-f58d-4590-9fc7-af624ee4a13f",
+  "name": "Colfenor, the Last Yew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colfenor, the Last Yew",
+      "oracle_fingerprint": "e9931a5e7e1a848418b1d1502e9e26ef",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Other" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "SameCard": "Triggering" } },
+                    {
+                      "Compare": {
+                        "stat": "Toughness",
+                        "op": "Lt",
+                        "to": { "Stat": { "of": "Triggering", "stat": "Toughness" } }
+                      }
+                    },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

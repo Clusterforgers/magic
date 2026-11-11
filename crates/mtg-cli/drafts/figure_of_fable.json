@@ -1,0 +1,83 @@
+{
+  "oracle_id": "5d4ea910-3b16-4f98-89be-c1b2cfff4bf0",
+  "name": "Figure of Fable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Figure of Fable",
+      "oracle_fingerprint": "9a60a74e7228e0c10891c62772c2aebb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{G/W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetCreatureTypes": ["Kithkin", "Scout"] },
+                    { "SetPT": { "power": 2, "toughness": 3 } }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{G/W}{G/W}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "Subtype": "Scout" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetCreatureTypes": ["Kithkin", "Soldier"] },
+                          { "SetPT": { "power": 4, "toughness": 5 } }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{G/W}{G/W}{G/W}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "Subtype": "Soldier" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetCreatureTypes": ["Kithkin", "Avatar"] },
+                          { "SetPT": { "power": 7, "toughness": 8 } },
+                          { "AddKeyword": { "Protection": [{ "ControlledBy": "Opponents" }] } }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

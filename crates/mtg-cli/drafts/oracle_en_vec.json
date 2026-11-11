@@ -1,0 +1,78 @@
+{
+  "oracle_id": "367faa8c-617a-41a0-901c-f65106e86d56",
+  "name": "Oracle en-Vec",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Oracle en-Vec",
+      "oracle_fingerprint": "5191ffbd66c9d7f674a71b96c76de38e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": "YourTurn",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }] },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                    }
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": { "Target": 0 } } },
+                  "effects": [
+                    {
+                      "Rule": {
+                        "rule": { "MustAttack": { "Each": [{ "Is": { "Bound": "chosen" } }] } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Not": { "Is": { "Bound": "chosen" } } }
+                          ]
+                        },
+                        "mods": ["CantAttack"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End", "whose": { "Target": 0 } } },
+                        "this_turn": true,
+                        "effects": [
+                          {
+                            "Destroy": {
+                              "what": {
+                                "Each": [
+                                  { "Is": { "Bound": "chosen" } },
+                                  { "Not": "AttackedThisTurn" }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

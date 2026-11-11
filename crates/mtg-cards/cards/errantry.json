@@ -1,0 +1,20 @@
+{
+  "oracle_id": "fee455f2-fcc4-47b1-a533-92fa1ae8ae63",
+  "name": "Errantry",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Errantry",
+      "oracle_fingerprint": "e7c328feb8b609191321356776c93015",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 73 }
+          }
+        }
+      ]
+    }
+  ]
+}

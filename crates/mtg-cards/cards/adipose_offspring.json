@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1e21e57e-3bc9-41a8-9746-57b583a5ad63",
+  "name": "Adipose Offspring",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Adipose Offspring",
+      "oracle_fingerprint": "1bad88b397150e57fa34ed2727df71c8",
+      "abilities": [
+        { "Keyword": { "Emerge": "{5}{W}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 132, "end": 322 }
+          }
+        }
+      ]
+    }
+  ]
+}

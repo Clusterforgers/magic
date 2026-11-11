@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2dba8d8d-891e-482e-8014-879f701d0619",
+  "name": "Zilortha, Strength Incarnate",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Zilortha, Strength Incarnate",
+      "oracle_fingerprint": "2a32547db4c758101df4350b5a716588",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 110 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f42c0b5b-7a86-4f79-a5d3-859ec25ed870",
+  "name": "Exterminator Magmarch",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Exterminator Magmarch",
+      "oracle_fingerprint": "050c26dd5d32161694d7306e2512b5f2",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 285 }
+          }
+        },
+        { "Activated": { "cost": "{1}{B}", "effects": [{ "Regenerate": { "what": "This" } }] } }
+      ]
+    }
+  ]
+}

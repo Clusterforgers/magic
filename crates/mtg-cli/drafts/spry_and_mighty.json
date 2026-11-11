@@ -1,0 +1,55 @@
+{
+  "oracle_id": "04cc9177-1ffc-4ac8-a64d-7995b4f33d23",
+  "name": "Spry and Mighty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spry and Mighty",
+      "oracle_fingerprint": "328cc7c835327f7b841113f7d070d134",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Let": {
+                  "as": "x",
+                  "amount": {
+                    "Difference": [
+                      {
+                        "Times": {
+                          "by": 2,
+                          "of": {
+                            "Greatest": { "of": [{ "Is": { "Bound": "chosen" } }], "stat": "Power" }
+                          }
+                        }
+                      },
+                      { "Total": { "of": [{ "Is": { "Bound": "chosen" } }], "stat": "Power" } }
+                    ]
+                  }
+                }
+              },
+              { "Draw": { "count": { "Bound": "x" } } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "chosen" },
+                  "mods": [
+                    { "ModifyPT": { "power": { "Bound": "x" }, "toughness": { "Bound": "x" } } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "oracle_id": "6106ba65-f07b-41ec-8b59-e052bbde5529",
+  "name": "Court of Locthwain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Court of Locthwain",
+      "oracle_fingerprint": "f61b0adb427233e54c1bc1f037b44f4a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "as": "card" } },
+              { "Remember": { "what": { "Bound": "card" }, "slot": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "card" },
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Monarch": "You" },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "from": "Exile",
+                            "free": true,
+                            "only": { "Remembered": { "on": "This", "slot": "exiled" } },
+                            "once": true
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

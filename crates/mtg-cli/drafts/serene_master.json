@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2ce0d583-81ca-4dca-bde0-52f86b683afd",
+  "name": "Serene Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Serene Master",
+      "oracle_fingerprint": "0c7630febca034eb87ac0128bd8d1894",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "BlockedBy": "This" }] } }],
+            "effects": [
+              { "Let": { "as": "mine", "amount": { "Stat": { "of": "This", "stat": "Power" } } } },
+              {
+                "Let": {
+                  "as": "theirs",
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPower": { "Bound": "theirs" } }],
+                  "duration": "UntilEndOfCombat"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPower": { "Bound": "mine" } }],
+                  "duration": "UntilEndOfCombat"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

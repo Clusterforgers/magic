@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d317e3f1-553f-44f6-8543-d6d4c42534ad",
+  "name": "Sonic Shrieker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sonic Shrieker",
+      "oracle_fingerprint": "ed347757e11698b898b94730b6cc5d42",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "source": "This", "to": { "Target": 0 }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Players": { "Target": 0 } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      { "Compare": { "left": "DamageDealtThisWay", "op": "Gt", "right": 0 } }
+                    ]
+                  },
+                  "then": [{ "Discard": { "who": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "f0bf2923-aea2-4bac-b061-64bc84437ef1",
+  "name": "Tenuous Truce",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tenuous Truce",
+      "oracle_fingerprint": "fd3033ed1e8fa8f835f4f7d1f25a3e50",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": { "opponent": true } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "AttachedPlayer" } },
+            "effects": [{ "Draw": {} }, { "Draw": { "who": "AttachedPlayer" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "GroupAttacks": {
+                    "what": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "AttackingPlayerOrPlaneswalker": "AttachedPlayer" }
+                    ]
+                  }
+                },
+                {
+                  "GroupAttacks": {
+                    "what": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "AttachedPlayer" },
+                      { "AttackingPlayerOrPlaneswalker": "You" }
+                    ]
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

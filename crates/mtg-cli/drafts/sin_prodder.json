@@ -1,0 +1,84 @@
+{
+  "oracle_id": "745efa76-7063-4971-9d1b-b2b4cb336a57",
+  "name": "Sin Prodder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sin Prodder",
+      "oracle_fingerprint": "9e69b309a1c78e68cfd64c6157099acc",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": {
+                              "Arrived": { "of": { "Bound": "top" }, "zone": "Graveyard" }
+                            },
+                            "selector": [],
+                            "op": "Eq",
+                            "right": 0
+                          }
+                        },
+                        "then": [
+                          {
+                            "May": {
+                              "who": { "Bound": "opp" },
+                              "effects": [
+                                { "Move": { "what": { "Bound": "top" }, "to": "Graveyard" } }
+                              ]
+                            }
+                          },
+                          {
+                            "If": {
+                              "condition": "Performed",
+                              "then": [
+                                {
+                                  "DealDamage": {
+                                    "source": "This",
+                                    "to": { "Bound": "opp" },
+                                    "amount": {
+                                      "Stat": { "of": { "Bound": "top" }, "stat": "ManaValue" }
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Arrived": { "of": { "Bound": "top" }, "zone": "Graveyard" } },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "top" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

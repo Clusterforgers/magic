@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "f8611a53-e54e-4625-8e28-03511f1550e8",
+  "oracle_id": "b636a16d-f5ca-443d-8e6f-a2c240700c36",
+  "multiverse_ids": [
+    574710
+  ],
+  "mtgo_id": 102936,
+  "arena_id": 82282,
+  "tcgplayer_id": 282828,
+  "cardmarket_id": 671633,
+  "name": "Golden Argosy",
+  "lang": "en",
+  "released_at": "2022-09-09",
+  "uri": "https://api.scryfall.com/cards/f8611a53-e54e-4625-8e28-03511f1550e8",
+  "scryfall_uri": "https://scryfall.com/card/dmu/230/golden-argosy?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:41:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/8/f8611a53-e54e-4625-8e28-03511f1550e8.jpg?1783921270",
+    "normal": "https://cards.scryfall.io/normal/front/f/8/f8611a53-e54e-4625-8e28-03511f1550e8.jpg?1783921270",
+    "large": "https://cards.scryfall.io/large/front/f/8/f8611a53-e54e-4625-8e28-03511f1550e8.jpg?1783921270",
+    "png": "https://cards.scryfall.io/png/front/f/8/f8611a53-e54e-4625-8e28-03511f1550e8.png?1783921270",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/8/f8611a53-e54e-4625-8e28-03511f1550e8.jpg?1783921270",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/8/f8611a53-e54e-4625-8e28-03511f1550e8.jpg?1783921270",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/8/f8611a53-e54e-4625-8e28-03511f1550e8.webp?1783921270",
+    "grid": "https://cards.scryfall.io/grid/front/f/8/f8611a53-e54e-4625-8e28-03511f1550e8.webp?1783921270",
+    "display": "https://cards.scryfall.io/display/front/f/8/f8611a53-e54e-4625-8e28-03511f1550e8.webp?1783921270",
+    "art": "https://cards.scryfall.io/art/front/f/8/f8611a53-e54e-4625-8e28-03511f1550e8.webp?1783921270",
+    "crop": "https://cards.scryfall.io/crop/front/f/8/f8611a53-e54e-4625-8e28-03511f1550e8.webp?1783921270",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/8/f8611a53-e54e-4625-8e28-03511f1550e8.jpg?1783921270"
+  },
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "type_line": "Legendary Artifact — Vehicle",
+  "oracle_text": "Whenever Golden Argosy attacks, exile each creature that crewed it this turn. Return them to the battlefield tapped under their owner's control at the beginning of the next end step.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+  "power": "3",
+  "toughness": "6",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Crew"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4e47a6cd-cdeb-4b0f-8f24-cfe1a0127cb3",
+  "set": "dmu",
+  "set_name": "Dominaria United",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/4e47a6cd-cdeb-4b0f-8f24-cfe1a0127cb3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Admu&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dmu?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f8611a53-e54e-4625-8e28-03511f1550e8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab636a16d-f5ca-443d-8e6f-a2c240700c36&unique=prints",
+  "collector_number": "230",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daniel Ljunggren",
+  "artist_ids": [
+    "0fbd4798-76eb-46d5-a5d4-1e3a25870e34"
+  ],
+  "illustration_id": "854cdadf-5d7f-4aac-b99b-c54b517979c5",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6095,
+  "penny_rank": 13230,
+  "preview": {
+    "source": "Sean Plott (Day9TV)",
+    "source_uri": "https://twitter.com/day9tv/status/1560650297361309698",
+    "previewed_at": "2022-08-19"
+  },
+  "prices": {
+    "usd": "0.70",
+    "usd_foil": "0.91",
+    "usd_etched": null,
+    "eur": "0.62",
+    "eur_foil": "0.67",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=574710&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGolden%2BArgosy",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGolden%2BArgosy",
+    "edhrec": "https://edhrec.com/route/?cc=Golden+Argosy"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F282828%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=671633&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/102936?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

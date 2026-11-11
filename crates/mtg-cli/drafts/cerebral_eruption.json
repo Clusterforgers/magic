@@ -1,0 +1,60 @@
+{
+  "oracle_id": "8143642e-ce93-47f1-a601-3a4f5731e1d7",
+  "name": "Cerebral Eruption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cerebral Eruption",
+      "oracle_fingerprint": "3c07b9fc360b887ba29781418e8e8124",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": ["TopOfLibrary", { "OwnedBy": { "Target": 0 } }, { "In": "Library" }]
+                  },
+                  "as": "revealed"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "revealed" } } },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "DealDamage": {
+                        "to": { "Target": 0 },
+                        "amount": { "Stat": { "of": { "Bound": "revealed" }, "stat": "ManaValue" } }
+                      }
+                    },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                        },
+                        "amount": { "Stat": { "of": { "Bound": "revealed" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "revealed" },
+                      "selector": [{ "Type": "Land" }]
+                    }
+                  },
+                  "then": [{ "Move": { "what": "This", "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "oracle_id": "7aa34ef4-5e11-491b-8dbe-6ef80e0ad26c",
+  "name": "Disorienting Choice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disorienting Choice",
+      "oracle_fingerprint": "9694b394bddf9dcb7f736c0bb30b0640",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "perm",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "ControllerOf": { "Bound": "perm" } },
+                        "effects": [{ "Exile": { "what": { "Bound": "perm" } } }]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Let": {
+                  "as": "remaining",
+                  "amount": {
+                    "CountOf": { "of": { "Target": 0 }, "filter": [{ "In": "Battlefield" }] }
+                  }
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "remaining" }, "op": "Ge", "right": 1 }
+                  },
+                  "then": [
+                    {
+                      "Search": {
+                        "filter": [{ "Type": "Land" }],
+                        "count": { "min": 0, "max": { "Bound": "remaining" } },
+                        "as": "lands"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "lands" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "9da83b07-4978-4af7-be51-8aa8f35ec0bb",
+  "oracle_id": "2f24637d-8d8e-49de-b229-4cdb97595ed7",
+  "multiverse_ids": [],
+  "resource_id": "BD3C3AED47C04157C53E7BC60F83F1C858B6BCEA83868CF54F5D4B3F05C30F84",
+  "mtgo_id": 142127,
+  "arena_id": 96197,
+  "tcgplayer_id": 631660,
+  "cardmarket_id": 826155,
+  "name": "Beatrix, Loyal General",
+  "lang": "en",
+  "released_at": "2025-06-13",
+  "uri": "https://api.scryfall.com/cards/9da83b07-4978-4af7-be51-8aa8f35ec0bb",
+  "scryfall_uri": "https://scryfall.com/card/fin/554/beatrix-loyal-general?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:33:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/d/9da83b07-4978-4af7-be51-8aa8f35ec0bb.jpg?1783906435",
+    "normal": "https://cards.scryfall.io/normal/front/9/d/9da83b07-4978-4af7-be51-8aa8f35ec0bb.jpg?1783906435",
+    "large": "https://cards.scryfall.io/large/front/9/d/9da83b07-4978-4af7-be51-8aa8f35ec0bb.jpg?1783906435",
+    "png": "https://cards.scryfall.io/png/front/9/d/9da83b07-4978-4af7-be51-8aa8f35ec0bb.png?1783906435",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/d/9da83b07-4978-4af7-be51-8aa8f35ec0bb.jpg?1783906435",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/d/9da83b07-4978-4af7-be51-8aa8f35ec0bb.jpg?1783906435",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/d/9da83b07-4978-4af7-be51-8aa8f35ec0bb.webp?1783906435",
+    "grid": "https://cards.scryfall.io/grid/front/9/d/9da83b07-4978-4af7-be51-8aa8f35ec0bb.webp?1783906435",
+    "display": "https://cards.scryfall.io/display/front/9/d/9da83b07-4978-4af7-be51-8aa8f35ec0bb.webp?1783906435",
+    "art": "https://cards.scryfall.io/art/front/9/d/9da83b07-4978-4af7-be51-8aa8f35ec0bb.webp?1783906435",
+    "crop": "https://cards.scryfall.io/crop/front/9/d/9da83b07-4978-4af7-be51-8aa8f35ec0bb.webp?1783906435",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/d/9da83b07-4978-4af7-be51-8aa8f35ec0bb.jpg?1783906435"
+  },
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Human Soldier",
+  "oracle_text": "Vigilance (Attacking doesn't cause this creature to tap.)\nAt the beginning of combat on your turn, you may attach any number of Equipment you control to target creature you control.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vigilance"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set": "fin",
+  "set_name": "Final Fantasy",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afin&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fin?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9da83b07-4978-4af7-be51-8aa8f35ec0bb/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2f24637d-8d8e-49de-b229-4cdb97595ed7&unique=prints",
+  "collector_number": "554",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I commend your courage, but I will show you no mercy.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bachzim",
+  "artist_ids": [
+    "c1a926d5-abed-4ecc-a653-17d389cac12a"
+  ],
+  "illustration_id": "84ecf6dd-e0f9-4624-9c65-6d417fc677c8",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "starterdeck",
+    "universesbeyond",
+    "ffix"
+  ],
+  "edhrec_rank": 8134,
+  "prices": {
+    "usd": "0.59",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.81",
+    "eur_foil": null,
+    "tix": "0.05"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBeatrix%252C%2BLoyal%2BGeneral",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBeatrix%252C%2BLoyal%2BGeneral",
+    "edhrec": "https://edhrec.com/route/?cc=Beatrix%2C+Loyal+General"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F631660%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=826155&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/142127?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

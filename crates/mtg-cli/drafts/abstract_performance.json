@@ -1,0 +1,64 @@
+{
+  "oracle_id": "3e0e3676-e634-4e64-bdfd-4aaa5885461f",
+  "name": "Abstract Performance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abstract Performance",
+      "oracle_fingerprint": "87d94a818cd08f1a3971bb441de05a5d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "ExileTop": { "count": 4, "as": "down", "sealed": true } },
+              { "ExileTop": { "count": 4, "as": "up" } },
+              {
+                "OneOf": {
+                  "who": "Opponents",
+                  "options": [
+                    [
+                      { "Move": { "what": { "Bound": "down" }, "to": "Graveyard" } },
+                      {
+                        "Choose": {
+                          "from": {
+                            "Each": [
+                              { "In": "Exile" },
+                              { "Is": { "Bound": "up" } },
+                              { "Not": { "Type": "Land" } }
+                            ]
+                          },
+                          "count": { "min": 0, "max": 1 },
+                          "as": "kept"
+                        }
+                      },
+                      { "CastFromZone": { "what": { "Bound": "kept" }, "free": true } },
+                      { "Move": { "what": { "Bound": "up" }, "to": "Hand" } }
+                    ],
+                    [
+                      { "Move": { "what": { "Bound": "up" }, "to": "Graveyard" } },
+                      {
+                        "Choose": {
+                          "from": {
+                            "Each": [
+                              { "In": "Exile" },
+                              { "Is": { "Bound": "down" } },
+                              { "Not": { "Type": "Land" } }
+                            ]
+                          },
+                          "count": { "min": 0, "max": 1 },
+                          "as": "kept"
+                        }
+                      },
+                      { "CastFromZone": { "what": { "Bound": "kept" }, "free": true } },
+                      { "Move": { "what": { "Bound": "down" }, "to": "Hand" } }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

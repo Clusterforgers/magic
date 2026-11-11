@@ -1,0 +1,32 @@
+{
+  "oracle_id": "baa337ce-edc6-4ee5-a898-68e9dbb4ab93",
+  "name": "Ultima, Origin of Oblivion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ultima, Origin of Oblivion",
+      "oracle_fingerprint": "dfa59794c46f7d6e01ae094c8fb40ddf",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 183 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "TappedForMana": {
+                "what": [{ "Type": "Land" }],
+                "by": "You",
+                "produced": "Colorless"
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

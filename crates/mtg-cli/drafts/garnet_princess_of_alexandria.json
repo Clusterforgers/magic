@@ -1,0 +1,53 @@
+{
+  "oracle_id": "8c709873-84b5-46c2-bb29-85b041a6df88",
+  "name": "Garnet, Princess of Alexandria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garnet, Princess of Alexandria",
+      "oracle_fingerprint": "a82f297f33dada30de228a26ea183886",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Saga" },
+                      { "ControlledBy": "You" },
+                      { "HasCounter": { "Other": "lore" } }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        { "Subtype": "Saga" },
+                        { "ControlledBy": "You" },
+                        { "HasCounter": { "Other": "lore" } }
+                      ]
+                    }
+                  },
+                  "as": "sagas"
+                }
+              },
+              {
+                "Let": {
+                  "as": "removed",
+                  "amount": { "CountOf": { "of": { "Bound": "sagas" }, "filter": [] } }
+                }
+              },
+              { "RemoveCounters": { "from": { "Bound": "sagas" }, "counter": { "Other": "lore" } } },
+              {
+                "PutCounters": { "on": "This", "counter": "+1/+1", "count": { "Bound": "removed" } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "135135f2-1643-40db-91f2-bb7b956d212c",
+  "name": "Spell Queller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spell Queller",
+      "oracle_fingerprint": "ff5b65f0e26cfa62b4fc4aaa1adb4c40",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "exiled" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "CastFromZone": {
+                  "who": { "OwnerOf": { "Remembered": { "on": "This", "slot": "exiled" } } },
+                  "what": { "Remembered": { "on": "This", "slot": "exiled" } },
+                  "free": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6107f9aa-3373-4166-b4b8-a26fd6d69c72",
+  "name": "Showdown of the Skalds",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Showdown of the Skalds",
+      "oracle_fingerprint": "2149bcb8353b6816e820574a06dbfe12",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "ExileTop": { "count": 4, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 194, "end": 292 }
+          }
+        }
+      ]
+    }
+  ]
+}

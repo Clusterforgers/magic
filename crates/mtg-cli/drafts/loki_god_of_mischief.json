@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c112852f-61d5-4b94-b864-c7d0b5333b29",
+  "name": "Loki, God of Mischief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loki, God of Mischief",
+      "oracle_fingerprint": "c347942f5476ea208dedcf6935688621",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [],
+                "by": [
+                  { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

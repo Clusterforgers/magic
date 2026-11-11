@@ -1,0 +1,58 @@
+{
+  "oracle_id": "298a6369-1c1f-4d75-aa97-69c56323c122",
+  "name": "Fast // Furious",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fast",
+      "oracle_fingerprint": "1d3146817f722164b1874b9a0378b564",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Haste" },
+                    {
+                      "CantBeBlockedBy": [
+                        {
+                          "Not": { "AnyOf": [{ "Subtype": "Vehicle" }, { "HasKeyword": "Haste" }] }
+                        }
+                      ]
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    },
+    {
+      "name": "Furious",
+      "oracle_fingerprint": "363eda621333f3d5c16fc6493ff62ab5",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Fuse" }
+      ]
+    }
+  ]
+}

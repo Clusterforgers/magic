@@ -1,0 +1,44 @@
+{
+  "oracle_id": "011ff7a5-6bce-4784-a19b-e74f7b49b8f1",
+  "name": "Campfire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Campfire",
+      "oracle_fingerprint": "62ec92fb9afc2f4a465b11be45480fa9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "ExileSelf"],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      "Commander",
+                      { "OwnedBy": "You" },
+                      { "AnyOf": [{ "In": "Command" }, { "In": "Graveyard" }] }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

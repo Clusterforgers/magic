@@ -1,0 +1,148 @@
+{
+  "object": "card",
+  "id": "5b6d7fa6-4de6-4bc8-b250-2ed6eb559618",
+  "oracle_id": "f9b6b1db-37c6-43d4-b762-6c9770da5964",
+  "multiverse_ids": [
+    652184
+  ],
+  "mtgo_id": 132443,
+  "tcgplayer_id": 539705,
+  "cardmarket_id": 757678,
+  "name": "Cass, Hand of Vengeance",
+  "lang": "en",
+  "released_at": "2024-03-08",
+  "uri": "https://api.scryfall.com/cards/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618",
+  "scryfall_uri": "https://scryfall.com/card/pip/97/cass-hand-of-vengeance?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:13:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/b/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618.jpg?1783912391",
+    "normal": "https://cards.scryfall.io/normal/front/5/b/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618.jpg?1783912391",
+    "large": "https://cards.scryfall.io/large/front/5/b/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618.jpg?1783912391",
+    "png": "https://cards.scryfall.io/png/front/5/b/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618.png?1783912391",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/b/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618.jpg?1783912391",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/b/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618.jpg?1783912391",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/b/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618.webp?1783912391",
+    "grid": "https://cards.scryfall.io/grid/front/5/b/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618.webp?1783912391",
+    "display": "https://cards.scryfall.io/display/front/5/b/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618.webp?1783912391",
+    "art": "https://cards.scryfall.io/art/front/5/b/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618.webp?1783912391",
+    "crop": "https://cards.scryfall.io/crop/front/5/b/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618.webp?1783912391",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/b/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618.jpg?1783912391"
+  },
+  "mana_cost": "{2}{R}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Ranger",
+  "oracle_text": "Vigilance\nWhenever Cass or another creature you control dies, if it was enchanted or equipped, return any number of Aura cards that were attached to it from your graveyard to the battlefield attached to target creature, then attach any number of Equipment that were attached to it to that creature.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [
+    "Vigilance"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set": "pip",
+  "set_name": "Fallout",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Apip&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/pip?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/5b6d7fa6-4de6-4bc8-b250-2ed6eb559618/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af9b6b1db-37c6-43d4-b762-6c9770da5964&unique=prints",
+  "collector_number": "97",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Dan Watson",
+  "artist_ids": [
+    "9afdb7a8-98b8-476a-8ce6-7ed1cf342b9e"
+  ],
+  "illustration_id": "4ef0c2ad-6322-4469-8692-8a4c56d211db",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 11063,
+  "preview": {
+    "source": "Polygon",
+    "source_uri": "https://www.polygon.com/24072016/fallout-magic-the-gathering-scrappy-survivors-decklist-reveal",
+    "previewed_at": "2024-02-20"
+  },
+  "prices": {
+    "usd": "0.31",
+    "usd_foil": "0.43",
+    "usd_etched": null,
+    "eur": "0.15",
+    "eur_foil": "0.61",
+    "tix": "0.28"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=652184&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCass%252C%2BHand%2Bof%2BVengeance",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCass%252C%2BHand%2Bof%2BVengeance",
+    "edhrec": "https://edhrec.com/route/?cc=Cass%2C+Hand+of+Vengeance"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F539705%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=757678&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/132443?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

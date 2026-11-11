@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3f60a7ce-c714-4e87-a2d9-3710f2d610fa",
+  "name": "Balduvian Fallen",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Balduvian Fallen",
+      "oracle_fingerprint": "620b5eb835b731286bd2f00153f1dbfd",
+      "abilities": [
+        { "Keyword": { "CumulativeUpkeep": "{1}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 172, "end": 291 }
+          }
+        }
+      ]
+    }
+  ]
+}

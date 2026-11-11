@@ -1,0 +1,62 @@
+{
+  "oracle_id": "47148b5d-3850-4614-822e-6ef2755996f8",
+  "name": "Phyresis Outbreak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyresis Outbreak",
+      "oracle_fingerprint": "2d7b142825a065d0c4ba2cbc4d880294",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "PutCounters": { "on": "Opponents", "counter": "poison" } },
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "creature" },
+                        "mods": [
+                          {
+                            "ModifyPT": {
+                              "power": {
+                                "Times": {
+                                  "by": -1,
+                                  "of": {
+                                    "Counters": {
+                                      "on": { "ControllerOf": { "Bound": "creature" } },
+                                      "counter": "poison"
+                                    }
+                                  }
+                                }
+                              },
+                              "toughness": {
+                                "Times": {
+                                  "by": -1,
+                                  "of": {
+                                    "Counters": {
+                                      "on": { "ControllerOf": { "Bound": "creature" } },
+                                      "counter": "poison"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

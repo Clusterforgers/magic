@@ -1,0 +1,26 @@
+{
+  "oracle_id": "bdd41af0-bbd1-4ecd-a699-99f006f5e5ce",
+  "name": "Thorin Oakenshield",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Thorin Oakenshield",
+      "oracle_fingerprint": "4b478cc10918b58f80d71a6e7b724f37",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 137 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 138, "end": 227 }
+          }
+        }
+      ]
+    }
+  ]
+}

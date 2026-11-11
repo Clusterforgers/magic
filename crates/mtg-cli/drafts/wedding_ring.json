@@ -1,0 +1,87 @@
+{
+  "oracle_id": "0c34e962-99d9-4163-b852-4f61886546aa",
+  "name": "Wedding Ring",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wedding Ring",
+      "oracle_fingerprint": "521bc44d9fb6fb5f893bae5508049115",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "WasCast": {} }] } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "CreateToken": { "who": { "Target": 0 }, "token": { "CopyOf": { "of": "This" } } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Drew": {
+                "who": {
+                  "PlayersWhere": {
+                    "who": "Opponents",
+                    "test": {
+                      "All": [
+                        {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Type": "Artifact" },
+                                { "Named": "Wedding Ring" },
+                                { "ControlledBy": "You" }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "YourTurn"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "LifeGained": {
+                "who": {
+                  "PlayersWhere": {
+                    "who": "Opponents",
+                    "test": {
+                      "All": [
+                        {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Type": "Artifact" },
+                                { "Named": "Wedding Ring" },
+                                { "ControlledBy": "You" }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "YourTurn"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "effects": [{ "GainLife": { "amount": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

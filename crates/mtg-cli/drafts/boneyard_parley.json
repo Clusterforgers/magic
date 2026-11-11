@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a3d048c8-e8df-4b50-a422-fc94a69f44bb",
+  "name": "Boneyard Parley",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boneyard Parley",
+      "oracle_fingerprint": "5ebe29494d8a7b14d7db8c9b2c41d3b7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                "bounds": { "min": 0, "max": 5 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "Choose": { "from": "Opponents", "as": "separator" } },
+              {
+                "SeparatePiles": {
+                  "who": { "Bound": "separator" },
+                  "what": { "Bound": "exiled" },
+                  "chooser": "You",
+                  "as": "pile",
+                  "rest_as": "rest"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "pile" }, "to": { "Battlefield": { "under": "You" } } }
+              },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

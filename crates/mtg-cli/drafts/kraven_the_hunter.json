@@ -1,0 +1,44 @@
+{
+  "oracle_id": "3e2bfa3a-ae83-453a-8e3f-ca6205a9af12",
+  "name": "Kraven the Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kraven the Hunter",
+      "oracle_fingerprint": "8e9007fc9d91e8fbc06c850c4e6928e9",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "Opponents" },
+                  {
+                    "Test": {
+                      "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                      "op": "Ge",
+                      "right": {
+                        "Greatest": {
+                          "of": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "ControllerOf": "Candidate" } }
+                          ],
+                          "stat": "Power"
+                        }
+                      }
+                    }
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }, { "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "oracle_id": "ce1e6ae2-78c1-4bc6-bb73-bb025dd67a90",
+  "name": "Historian's Boon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Historian's Boon",
+      "oracle_fingerprint": "de8c68a37adc980de1fbf462aba477ae",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Type": "Enchantment" },
+                      { "Not": "Token" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 121, "end": 254 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "af8fba92-f7e5-485d-a1da-a30c46a3992e",
+  "name": "Disruption Aura",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Disruption Aura",
+      "oracle_fingerprint": "198b87c7bbf39c5b862be044e876ccd7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Artifact" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                    "effects": [
+                      {
+                        "Pay": {
+                          "cost": ["OwnManaCost"],
+                          "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

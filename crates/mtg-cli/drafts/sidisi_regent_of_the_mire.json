@@ -1,0 +1,40 @@
+{
+  "oracle_id": "72074972-418d-4dce-83cf-ce8cf310fc42",
+  "name": "Sidisi, Regent of the Mire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sidisi, Regent of the Mire",
+      "oracle_fingerprint": "bec7c243756e8a41aa8a8a5dd337ea68",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                      "op": "Eq",
+                      "right": { "Sum": [{ "Stat": { "of": "Paid", "stat": "ManaValue" } }, 1] }
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

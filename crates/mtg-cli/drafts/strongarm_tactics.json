@@ -1,0 +1,41 @@
+{
+  "oracle_id": "04ec6f72-8b7e-487b-b075-84276cd6ecfd",
+  "name": "Strongarm Tactics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strongarm Tactics",
+      "oracle_fingerprint": "793a770bacc200eca5760bc824a93665",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Discard": { "who": "EachPlayer", "as": "d" } },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "d" },
+                            "selector": [{ "Type": "Creature" }, { "OwnedBy": { "Bound": "p" } }],
+                            "op": "Eq",
+                            "right": 0
+                          }
+                        },
+                        "then": [{ "LoseLife": { "who": { "Bound": "p" }, "amount": 4 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

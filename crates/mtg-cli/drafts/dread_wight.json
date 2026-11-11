@@ -1,0 +1,68 @@
+{
+  "oracle_id": "f9078d79-3250-44e8-aba1-ab52e0ba4425",
+  "name": "Dread Wight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dread Wight",
+      "oracle_fingerprint": "662a6db77205a46f9d2794a503699e7a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat" } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Blocks": "This" }, { "BlockedBy": "This" }] }
+                    ]
+                  },
+                  "as": "those"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "those" },
+                  "counter": { "Other": "paralyzation" }
+                }
+              },
+              { "Tap": { "what": { "Bound": "those" } } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "those" },
+                  "mods": ["DoesntUntap"],
+                  "duration": { "WhileHasCounter": { "Other": "paralyzation" } }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "those" },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": "{4}",
+                          "effects": [
+                            {
+                              "RemoveCounters": {
+                                "from": "This",
+                                "counter": { "Other": "paralyzation" }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

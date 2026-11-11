@@ -1,0 +1,57 @@
+{
+  "oracle_id": "78eb5399-8c8b-4310-b585-e4ccd9d7c9cc",
+  "name": "Wake to Slaughter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wake to Slaughter",
+      "oracle_fingerprint": "1bc8efe715ad3fd8d798777de5d8154c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": { "Target": 0 },
+                  "as": "chosen",
+                  "rest_as": "other"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "other" },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "returned"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "returned" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "returned" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{4}{B}{R}" } }
+      ]
+    }
+  ]
+}

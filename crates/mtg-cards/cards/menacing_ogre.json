@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8efcd591-c576-4d25-9670-578c5e3263a1",
+  "name": "Menacing Ogre",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Menacing Ogre",
+      "oracle_fingerprint": "3b81ace7ae531cb144358500ed9ecc88",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 15, "end": 245 }
+          }
+        }
+      ]
+    }
+  ]
+}

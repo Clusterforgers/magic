@@ -1,0 +1,34 @@
+{
+  "oracle_id": "5eef3d70-ef16-4722-8c3d-21a0311597bd",
+  "name": "Jade Orb of Dragonkind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jade Orb of Dragonkind",
+      "oracle_fingerprint": "2d5008a9985d391306785e569b1382dc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "only": [
+                    {
+                      "Enters": {
+                        "spell": { "types": ["Creature"], "subtypes": ["Dragon"] },
+                        "counters": 1,
+                        "keyword": "Hexproof"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

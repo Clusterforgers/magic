@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0fa2cb01-476e-4e82-94e6-9639e53a7743",
+  "name": "Equinox",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Equinox",
+      "oracle_fingerprint": "215d875202bed53e1dbe5f3798d10465",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 13, "end": 99 }
+          }
+        }
+      ]
+    }
+  ]
+}

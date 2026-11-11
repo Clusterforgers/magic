@@ -1,0 +1,61 @@
+{
+  "oracle_id": "eb226c0d-a71b-4f9c-9fce-47d61dcfa8f8",
+  "name": "Judgment of Alexander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Judgment of Alexander",
+      "oracle_fingerprint": "3560594f3b59f9a529a2b81c3d400fe9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "ControlledBy": "Opponents" }] } },
+                  "by": {
+                    "PreventAnd": [
+                      {
+                        "If": {
+                          "condition": {
+                            "Matches": { "subject": "Dealer", "selector": [{ "Type": "Creature" }] }
+                          },
+                          "then": [
+                            {
+                              "RepeatEach": {
+                                "over": {
+                                  "Each": [
+                                    { "Type": "Creature" },
+                                    "Commander",
+                                    { "ControlledBy": "You" }
+                                  ]
+                                },
+                                "as": "commander",
+                                "effects": [
+                                  {
+                                    "DealDamage": {
+                                      "source": { "Bound": "commander" },
+                                      "to": "Dealer",
+                                      "amount": {
+                                        "Stat": { "of": { "Bound": "commander" }, "stat": "Power" }
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "044d2788-6daa-4849-a813-1f577eef9295",
+  "name": "Pit of Offerings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pit of Offerings",
+      "oracle_fingerprint": "13ca63f88857da5f6416a2687ff8d6d3",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }] }, "bounds": { "min": 0, "max": 3 } }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColorAmong": [{ "ExiledWith": "This" }, { "In": "Exile" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

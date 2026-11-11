@@ -1,0 +1,40 @@
+{
+  "oracle_id": "366ea3b4-5e7e-4693-9f4b-1e549972609e",
+  "name": "Soul Exchange",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Exchange",
+      "oracle_fingerprint": "b1cae4de07e5babbb43ad3cca0d919cc",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "ExilePermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "PutCounters": {
+                  "on": { "Target": 0 },
+                  "counter": { "Other": "+2/+2" },
+                  "count": { "CountOf": { "of": "Paid", "filter": [{ "Subtype": "Thrull" }] } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

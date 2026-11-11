@@ -1,0 +1,63 @@
+{
+  "oracle_id": "71ac4d8c-5b58-4ea8-996b-f0289717c4bb",
+  "name": "Shilgengar, Sire of Famine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shilgengar, Sire of Famine",
+      "oracle_fingerprint": "f5290630cc808e02025788654251ea53",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Paid", "selector": [{ "Subtype": "Angel" }] }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": { "Named": "blood" },
+                        "count": { "Stat": { "of": "Paid", "stat": "Toughness" } }
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "CreateToken": { "token": { "Named": "blood" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{W/B}{W/B}{W/B}" },
+              { "Sacrifice": { "filter": ["Token", { "Subtype": "Blood" }], "count": 6 } }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "to": { "Battlefield": { "counters": [[{ "Other": "finality" }, 1]] } },
+                  "as": "returned"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "returned" },
+                  "mods": [{ "AddSubtype": "Vampire" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

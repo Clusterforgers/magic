@@ -1,0 +1,51 @@
+{
+  "oracle_id": "57012049-06d7-4354-8125-9ea9e742f14d",
+  "name": "Lightstall Inquisitor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightstall Inquisitor",
+      "oracle_fingerprint": "68c83a917c8d732911ae05c42754451a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "who": { "Bound": "player" },
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" },
+                            "play": true,
+                            "additional": "{1}"
+                          }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

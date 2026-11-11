@@ -1,0 +1,51 @@
+{
+  "oracle_id": "33300e69-29f6-41e4-92ab-82d8b018b217",
+  "name": "Emrakul, the World Anew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emrakul, the World Anew",
+      "oracle_fingerprint": "bc6577118cd2456fe5108df1c4636eb1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Keyword": {
+            "Protection": [{ "AnyOf": ["Spell", { "DidThisTurn": { "event": "SpellCast" } }] }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Madness": "{C}{C}{C}{C}{C}{C}" } }
+      ]
+    }
+  ]
+}

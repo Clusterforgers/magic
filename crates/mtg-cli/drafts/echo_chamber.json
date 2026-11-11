@@ -1,0 +1,45 @@
+{
+  "oracle_id": "75960649-93a4-4d56-b40f-f9fcbb4341d4",
+  "name": "Echo Chamber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Echo Chamber",
+      "oracle_fingerprint": "31125d805a6acfbad4096415403dccd4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": "Opponents",
+                    "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "as": "copy" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "copy" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "aff84707-f5f8-4f53-869e-feec78da8d8d",
+  "name": "Rock Hydra",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rock Hydra",
+      "oracle_fingerprint": "ffe75789722b70bd1237e35f4bcb24ba",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 50, "end": 196 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This" } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}{R}{R}",
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

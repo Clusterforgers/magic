@@ -1,0 +1,50 @@
+{
+  "oracle_id": "b28dcb41-5e47-4719-892f-da009a5d50b4",
+  "name": "The Stone Brain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Stone Brain",
+      "oracle_fingerprint": "62f00a2fefd06baa8f6d23e03ef244bc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "ExileSelf"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "OwnedBy": { "Target": 0 } },
+                      { "AnyOf": [{ "In": "Graveyard" }, { "In": "Hand" }, { "In": "Library" }] },
+                      { "ChosenAs": "name" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 4 },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" }, "as": "exiled" } },
+              { "Shuffle": { "who": { "Target": 0 } } },
+              {
+                "Draw": {
+                  "who": { "Target": 0 },
+                  "count": {
+                    "Count": [
+                      { "In": "Exile" },
+                      { "Is": { "Bound": "exiled" } },
+                      { "ArrivedFrom": "Hand" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

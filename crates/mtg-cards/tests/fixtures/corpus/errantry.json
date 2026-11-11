@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "01624057-cae4-42e8-b61b-34543c09488d",
+  "oracle_id": "fee455f2-fcc4-47b1-a533-92fa1ae8ae63",
+  "multiverse_ids": [
+    184741
+  ],
+  "mtgo_id": 30750,
+  "mtgo_foil_id": 30751,
+  "name": "Errantry",
+  "lang": "en",
+  "released_at": "2008-09-22",
+  "uri": "https://api.scryfall.com/cards/01624057-cae4-42e8-b61b-34543c09488d",
+  "scryfall_uri": "https://scryfall.com/card/me2/124/errantry?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T11:36:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/1/01624057-cae4-42e8-b61b-34543c09488d.jpg?1783942614",
+    "normal": "https://cards.scryfall.io/normal/front/0/1/01624057-cae4-42e8-b61b-34543c09488d.jpg?1783942614",
+    "large": "https://cards.scryfall.io/large/front/0/1/01624057-cae4-42e8-b61b-34543c09488d.jpg?1783942614",
+    "png": "https://cards.scryfall.io/png/front/0/1/01624057-cae4-42e8-b61b-34543c09488d.png?1783942614",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/1/01624057-cae4-42e8-b61b-34543c09488d.jpg?1783942614",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/1/01624057-cae4-42e8-b61b-34543c09488d.jpg?1783942614",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/1/01624057-cae4-42e8-b61b-34543c09488d.webp?1783942614",
+    "grid": "https://cards.scryfall.io/grid/front/0/1/01624057-cae4-42e8-b61b-34543c09488d.webp?1783942614",
+    "display": "https://cards.scryfall.io/display/front/0/1/01624057-cae4-42e8-b61b-34543c09488d.webp?1783942614",
+    "art": "https://cards.scryfall.io/art/front/0/1/01624057-cae4-42e8-b61b-34543c09488d.webp?1783942614",
+    "crop": "https://cards.scryfall.io/crop/front/0/1/01624057-cae4-42e8-b61b-34543c09488d.webp?1783942614",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/1/01624057-cae4-42e8-b61b-34543c09488d.jpg?1783942614"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature gets +3/+0 and can only attack alone.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Enchant"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set": "me2",
+  "set_name": "Masters Edition II",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/7d51a13b-dcd2-4ec2-b3a7-c89288e00b4e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ame2&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/me2?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/01624057-cae4-42e8-b61b-34543c09488d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afee455f2-fcc4-47b1-a533-92fa1ae8ae63&unique=prints",
+  "collector_number": "124",
+  "digital": true,
+  "rarity": "common",
+  "flavor_text": "\"There is no shame in solitude. The lone knight may succeed where a hundred founder.\"\n—Arna Kennerüd, skyknight",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Scott Kirschner",
+  "artist_ids": [
+    "a9199ae8-9891-4366-bf5b-42cfb662d840"
+  ],
+  "illustration_id": "9d092f89-efb9-41a8-9f7e-42e92aa9b57d",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18868,
+  "penny_rank": 17024,
+  "prices": {
+    "usd": null,
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=184741&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DErrantry",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DErrantry",
+    "edhrec": "https://edhrec.com/route/?cc=Errantry"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fmagic%2Fproduct%3FproductLineName%3Dmagic%26q%3DErrantry%26view%3Dgrid",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Errantry&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/30750?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -153,6 +153,7 @@ Blast Zone
 Blastoderm
 Blaze
 Blazing Archon
+Blazing Shoal
 Blazing Sunsteel
 Blight Mamba
 Blight Pile
@@ -784,6 +785,7 @@ Ixalli's Lorekeeper
 Izzet Charm
 Jace Beleren
 Jace's Archivist
+Jack-o'-Lantern
 Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
@@ -983,6 +985,7 @@ Mizzium Mortars
 Mobilizer Mech
 Moldgraf Millipede
 Molecule Man
+Molt Tender
 Molten Slagheap
 Mona Lisa, Science Geek
 Monastery Swiftspear
@@ -1037,6 +1040,7 @@ Nirkana Revenant
 Norn's Annex
 Norwood Riders
 Notion Rain
+Nourishing Shoal
 Novijen, Heart of Progress
 Nykthos Paragon
 Nylea's Colossus
@@ -1108,6 +1112,7 @@ Photon, Mighty Marvel
 Phyrexian Prowler
 Phyrexian Rebirth
 Phyrexian Soulgorger
+Pili-Pala
 Pillar of Origins
 Pillar of the Paruns
 Pinion Feast
@@ -1333,6 +1338,7 @@ Shifting Sliver
 Shiny Impetus
 Shipbreaker Kraken
 Shu Cavalry
+Sickening Shoal
 Siege Smash
 Siege Wurm
 Sigiled Paladin
@@ -1356,6 +1362,7 @@ Skeletal Changeling
 Skeletal Scrying
 Skewer the Critics
 Skinthinner
+Skirge Familiar
 Skirk Prospector
 Skitter Eel
 Skittering Crustacean
@@ -1733,6 +1740,7 @@ Wipe Away
 Wirewood Channeler
 Withering Boon
 Wizard Class
+Wizard's Rockets
 Wolfwillow Haven
 Wooded Bastion
 Woodripper

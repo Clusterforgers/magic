@@ -1,0 +1,30 @@
+{
+  "oracle_id": "0bbeb0ee-647b-43d3-91b3-6869d5ccb8b8",
+  "name": "Curse of Inertia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Inertia",
+      "oracle_fingerprint": "90ac4b829eb68977b421db2901601bdb",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "at": "AttachedPlayer" } },
+            "targets": [
+              { "what": { "ChosenBy": { "who": "Triggering", "what": { "Object": [] } } } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "who": "Triggering",
+                  "effects": [{ "TapOrUntap": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

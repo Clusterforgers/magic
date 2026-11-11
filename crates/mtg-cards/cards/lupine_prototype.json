@@ -1,0 +1,22 @@
+{
+  "oracle_id": "303f91ae-1acb-4250-a4a5-71207c228dcc",
+  "name": "Lupine Prototype",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lupine Prototype",
+      "oracle_fingerprint": "172d7ceb68d85826d2549f4073b850c7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantAttack", "CantBlock"],
+            "condition": {
+              "Compare": { "left": { "LowestHand": "EachPlayer" }, "op": "Gt", "right": 0 }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1182591d-8660-4a2e-8d77-2fc544b02b66",
+  "name": "Gauntlet of Power",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Gauntlet of Power",
+      "oracle_fingerprint": "f3b9f1db77d191dfad996da6a93cca5c",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "ChosenColor"] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 82, "end": 201 }
+          }
+        }
+      ]
+    }
+  ]
+}

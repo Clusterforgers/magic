@@ -1,0 +1,60 @@
+{
+  "oracle_id": "31cc5d9d-9384-4a9b-ba7f-6a4edbcb7a35",
+  "name": "Ultimate Magic: Meteor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ultimate Magic: Meteor",
+      "oracle_fingerprint": "b9e6675072e7e2b9d96e65bc5327a2b0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 7 } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "This",
+                      "selector": [{ "WasCast": { "from": "Exile" } }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "RepeatEach": {
+                        "over": "Opponents",
+                        "as": "opp",
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Land" }] },
+                                  { "ControlledBy": { "Bound": "opp" } }
+                                ]
+                              },
+                              "as": "chosen"
+                            }
+                          },
+                          {
+                            "Bind": {
+                              "what": { "Bound": "chosen" },
+                              "as": "all_chosen",
+                              "adds": true
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    { "Destroy": { "what": { "Bound": "all_chosen" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{5}{R}" } }
+      ]
+    }
+  ]
+}

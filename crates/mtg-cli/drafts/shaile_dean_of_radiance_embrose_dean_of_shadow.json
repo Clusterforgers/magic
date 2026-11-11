@@ -1,0 +1,65 @@
+{
+  "oracle_id": "b0907441-30fe-436a-b29c-585b57eabfc3",
+  "name": "Shaile, Dean of Radiance // Embrose, Dean of Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shaile, Dean of Radiance",
+      "oracle_fingerprint": "1d34a8f705c6582067f778369631dcce",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "DidThisTurn": { "event": "Entered", "by": "You" } }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Embrose, Dean of Shadow",
+      "oracle_fingerprint": "94a047b55f26ead5528a59705044cec2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasCounter": "+1/+1" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "561aed01-322b-4699-b7b0-f4416075aa9b",
+  "name": "Divert",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divert",
+      "oracle_fingerprint": "fc584446d4858b66b6d6c51b25634e21",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", "SingleTarget"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{2}",
+                  "unpaid": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "oracle_id": "5b8b1f03-9e2e-40f2-97e0-c9fb8d780d56",
+  "name": "Wave of Vitriol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wave of Vitriol",
+      "oracle_fingerprint": "1b33ff29e655d53f186df7628687d9bb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [
+                          {
+                            "AnyOf": [
+                              { "Type": "Artifact" },
+                              { "Type": "Enchantment" },
+                              { "Type": "Land" }
+                            ]
+                          },
+                          {
+                            "AnyOf": [
+                              { "Type": "Artifact" },
+                              { "Type": "Enchantment" },
+                              { "Not": { "Supertype": "Basic" } }
+                            ]
+                          }
+                        ],
+                        "count": {
+                          "Count": [
+                            { "ControlledBy": { "Bound": "player" } },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Enchantment" },
+                                { "Type": "Land" }
+                              ]
+                            },
+                            {
+                              "AnyOf": [
+                                { "Type": "Artifact" },
+                                { "Type": "Enchantment" },
+                                { "Not": { "Supertype": "Basic" } }
+                              ]
+                            }
+                          ]
+                        },
+                        "as": "sacrificed"
+                      }
+                    },
+                    {
+                      "Bind": {
+                        "what": { "Bound": "sacrificed" },
+                        "as": "all_sacrificed",
+                        "adds": true
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "searcher",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "searcher" },
+                        "effects": [
+                          {
+                            "Search": {
+                              "who": { "Bound": "searcher" },
+                              "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                              "count": {
+                                "min": 0,
+                                "max": {
+                                  "CountOf": {
+                                    "of": { "Bound": "all_sacrificed" },
+                                    "filter": [
+                                      { "Type": "Land" },
+                                      { "ControlledBy": { "Bound": "searcher" } }
+                                    ]
+                                  }
+                                }
+                              },
+                              "as": "lands"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "lands" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Searched": { "who": { "Bound": "searcher" }, "zone": "Library" }
+                        },
+                        "then": [{ "Shuffle": { "who": { "Bound": "searcher" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

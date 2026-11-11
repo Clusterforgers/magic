@@ -1,0 +1,86 @@
+{
+  "oracle_id": "1ce7f356-1f9b-44dc-9b05-f7b1ecc5d755",
+  "name": "Giant Slug",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Slug",
+      "oracle_fingerprint": "49dcd686c3ee694811beeb0afb9f3bf7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{5}",
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "options": [
+                          [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [
+                                  { "AddKeyword": { "Landwalk": [{ "Subtype": "Plains" }] } }
+                                ],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [
+                                  { "AddKeyword": { "Landwalk": [{ "Subtype": "Island" }] } }
+                                ],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [{ "AddKeyword": { "Landwalk": [{ "Subtype": "Swamp" }] } }],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [
+                                  { "AddKeyword": { "Landwalk": [{ "Subtype": "Mountain" }] } }
+                                ],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Continuous": {
+                                "affected": "This",
+                                "mods": [
+                                  { "AddKeyword": { "Landwalk": [{ "Subtype": "Forest" }] } }
+                                ],
+                                "duration": "UntilEndOfTurn"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

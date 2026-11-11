@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7d540860-ae94-4773-a526-aaffca3eb057",
+  "name": "Academy Loremaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Academy Loremaster",
+      "oracle_fingerprint": "5f6c325299736565ff7ffac8c17b99bb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw" } },
+            "effects": [
+              { "May": { "who": "Triggering", "effects": [{ "Draw": { "who": "Triggering" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "SpellCost": {
+                            "applies_to": ["Spell", { "ControlledBy": "Triggering" }],
+                            "change": "Increase",
+                            "mana": "{2}"
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

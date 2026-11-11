@@ -1,0 +1,48 @@
+{
+  "oracle_id": "14493624-fdc7-4630-9b1e-f35668651108",
+  "name": "Baldin, Century Herdmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baldin, Century Herdmaster",
+      "oracle_fingerprint": "5b7059d3da6e0f9c4fa3d8818c8a8683",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "Type": "Creature" }] },
+                "quirk": "AssignsByToughness"
+              }
+            },
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 100 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": 0,
+                        "toughness": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

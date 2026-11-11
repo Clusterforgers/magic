@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7e3085d8-9d46-41e0-ad9d-54c44d9ef267",
+  "name": "Freya Crescent",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Freya Crescent",
+      "oracle_fingerprint": "baffefa69e4876a626403129c961ebc5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 52, "end": 143 }
+          }
+        }
+      ]
+    }
+  ]
+}

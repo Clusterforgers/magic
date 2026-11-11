@@ -1,0 +1,35 @@
+{
+  "oracle_id": "30b03dda-409f-4615-b392-477d66eb49f4",
+  "name": "Maelstrom Muse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maelstrom Muse",
+      "oracle_fingerprint": "2ba337b2b39a608728b97385ff6630a4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Let": { "as": "x", "amount": { "Stat": { "of": "This", "stat": "Power" } } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                      "benefit": {
+                        "Cost": { "change": "Reduce", "mana": "{1}", "per": { "Bound": "x" } }
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "oracle_id": "a3a26df4-a9d5-48f5-942f-76862bdcd146",
+  "name": "Talent of the Telepath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talent of the Telepath",
+      "oracle_fingerprint": "9d2490a44a0aca37304067a39a99d640",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "count": 7, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          { "OwnedBy": "You" },
+                          { "In": "Graveyard" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Is": { "Bound": "top" } },
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                            { "In": "Library" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 2 },
+                        "as": "chosen"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Is": { "Bound": "top" } },
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                            { "In": "Library" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "chosen"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "chosen" },
+                  "as": "card",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card" }, "free": true } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "top" } }, { "In": "Library" }] },
+                  "to": "Graveyard"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

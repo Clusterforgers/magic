@@ -1,0 +1,55 @@
+{
+  "oracle_id": "1c6a0d19-c7dd-4353-95ad-dfdef2d5d2d9",
+  "name": "Laboratory Drudge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Laboratory Drudge",
+      "oracle_fingerprint": "84af57ae212cc70041feddae6a7a645e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Any": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "SpellCast",
+                              "who": "You",
+                              "filter": [{ "CastFrom": "Graveyard" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "Activated",
+                              "who": "You",
+                              "filter": [{ "In": "Graveyard" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

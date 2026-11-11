@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e01289ea-634b-4be5-8b8e-5e1179761a9b",
+  "name": "Daring Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Daring Thief",
+      "oracle_fingerprint": "149bc7ac32e81b5f8d4d3cb643e74cb2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Object": [{ "ControlledBy": "Opponents" }, { "SharesType": { "Target": 0 } }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "ExchangeControl": {
+                        "what": [{ "Target": 0 }, { "Target": 1 }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

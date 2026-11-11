@@ -1,0 +1,17 @@
+{
+  "oracle_id": "ed47dd31-f7cd-4ecb-960f-470cb8f4ed3c",
+  "name": "Aquamorph Entity",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aquamorph Entity",
+      "oracle_fingerprint": "3aff0a36a26d07bb2c5e9fb43ede5cdd",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 83 } }
+        },
+        { "Keyword": { "Morph": "{2}{U}" } }
+      ]
+    }
+  ]
+}

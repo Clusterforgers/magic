@@ -1,0 +1,36 @@
+{
+  "oracle_id": "808d5a67-8c38-42f5-9413-8771d8b4ae38",
+  "name": "Mistcaller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mistcaller",
+      "oracle_fingerprint": "a89c8ffd49b98b547f2575f9a6eebce9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf"],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [
+                        { "Type": "Creature" },
+                        { "Not": "Token" },
+                        { "Not": { "WasCast": {} } }
+                      ],
+                      "to": "Battlefield"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d71cd08e-3e84-41ff-b9db-9e343c0af6b4",
+  "name": "Remand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Remand",
+      "oracle_fingerprint": "f5a9b592b84ea611dbfa6dcd6825ad9b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Countered": { "what": [{ "Is": { "Target": 0 } }, "Spell"] } },
+                  "by": { "MoveTo": "Hand" },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

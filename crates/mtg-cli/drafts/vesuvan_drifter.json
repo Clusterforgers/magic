@@ -1,0 +1,55 @@
+{
+  "oracle_id": "727ef984-1643-4a09-8283-a665508e85dd",
+  "name": "Vesuvan Drifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vesuvan Drifter",
+      "oracle_fingerprint": "ba4b34378160a68d3b85b110e5b7642f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"] },
+                  "as": "top"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    { "Reveal": { "what": { "Bound": "top" } } },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "top" },
+                            "selector": [{ "Type": "Creature" }]
+                          }
+                        },
+                        "then": [
+                          {
+                            "BecomeCopy": {
+                              "what": "This",
+                              "of": { "Bound": "top" },
+                              "except": [{ "AddKeyword": "Flying" }],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

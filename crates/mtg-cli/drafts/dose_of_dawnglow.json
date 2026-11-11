@@ -1,0 +1,51 @@
+{
+  "oracle_id": "f852bc33-e2f8-43be-9e6e-7badd1f894ef",
+  "name": "Dose of Dawnglow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dose of Dawnglow",
+      "oracle_fingerprint": "5a37894ab6320d6127c5aa2ab4e6a0d8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "All": ["YourTurn", { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "as": "blighted"
+                      }
+                    },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "blighted" },
+                        "counter": "-1/-1",
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

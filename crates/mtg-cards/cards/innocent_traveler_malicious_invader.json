@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7950a7ff-7c2e-40fe-b64a-324f4fbcf528",
+  "name": "Innocent Traveler // Malicious Invader",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Innocent Traveler",
+      "oracle_fingerprint": "dcef743d5eb3df455da7b91ecb4bf478",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 128 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Malicious Invader",
+      "oracle_fingerprint": "a8538d26a102391265176df835088a77",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Human" }, { "ControlledBy": "Opponents" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

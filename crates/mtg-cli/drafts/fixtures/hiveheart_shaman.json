@@ -1,0 +1,158 @@
+{
+  "object": "card",
+  "id": "33efdb5a-7667-4475-9905-95f8fc9be2d3",
+  "oracle_id": "c3780529-d47e-48dc-86f6-c1a282c3b656",
+  "multiverse_ids": [
+    541065
+  ],
+  "mtgo_id": 94758,
+  "arena_id": 79013,
+  "tcgplayer_id": 253681,
+  "cardmarket_id": 583220,
+  "name": "Hiveheart Shaman",
+  "lang": "en",
+  "released_at": "2021-11-19",
+  "uri": "https://api.scryfall.com/cards/33efdb5a-7667-4475-9905-95f8fc9be2d3",
+  "scryfall_uri": "https://scryfall.com/card/vow/202/hiveheart-shaman?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:40:12Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/3/33efdb5a-7667-4475-9905-95f8fc9be2d3.jpg?1783924812",
+    "normal": "https://cards.scryfall.io/normal/front/3/3/33efdb5a-7667-4475-9905-95f8fc9be2d3.jpg?1783924812",
+    "large": "https://cards.scryfall.io/large/front/3/3/33efdb5a-7667-4475-9905-95f8fc9be2d3.jpg?1783924812",
+    "png": "https://cards.scryfall.io/png/front/3/3/33efdb5a-7667-4475-9905-95f8fc9be2d3.png?1783924812",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/3/33efdb5a-7667-4475-9905-95f8fc9be2d3.jpg?1783924812",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/3/33efdb5a-7667-4475-9905-95f8fc9be2d3.jpg?1783924812",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/3/33efdb5a-7667-4475-9905-95f8fc9be2d3.webp?1783924812",
+    "grid": "https://cards.scryfall.io/grid/front/3/3/33efdb5a-7667-4475-9905-95f8fc9be2d3.webp?1783924812",
+    "display": "https://cards.scryfall.io/display/front/3/3/33efdb5a-7667-4475-9905-95f8fc9be2d3.webp?1783924812",
+    "art": "https://cards.scryfall.io/art/front/3/3/33efdb5a-7667-4475-9905-95f8fc9be2d3.webp?1783924812",
+    "crop": "https://cards.scryfall.io/crop/front/3/3/33efdb5a-7667-4475-9905-95f8fc9be2d3.webp?1783924812",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/3/33efdb5a-7667-4475-9905-95f8fc9be2d3.jpg?1783924812"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Human Shaman",
+  "oracle_text": "Whenever this creature attacks, you may search your library for a basic land card that doesn't share a land type with a land you control, put that card onto the battlefield, then shuffle.\n{5}{G}: Create a 1/1 green Insect creature token. Put X +1/+1 counters on it, where X is the number of basic land types among lands you control. Activate only as a sorcery.",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2c150b7b-5a78-4f84-bff7-d5000e266a55",
+      "component": "combo_piece",
+      "name": "Hiveheart Shaman",
+      "type_line": "Creature — Human Shaman",
+      "uri": "https://api.scryfall.com/cards/2c150b7b-5a78-4f84-bff7-d5000e266a55"
+    },
+    {
+      "object": "related_card",
+      "id": "f3ac66f8-4bb2-42bd-9a18-7da9c3839c8b",
+      "component": "token",
+      "name": "Insect",
+      "type_line": "Token Creature — Insect",
+      "uri": "https://api.scryfall.com/cards/f3ac66f8-4bb2-42bd-9a18-7da9c3839c8b"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set": "vow",
+  "set_name": "Innistrad: Crimson Vow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avow&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/vow?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/33efdb5a-7667-4475-9905-95f8fc9be2d3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac3780529-d47e-48dc-86f6-c1a282c3b656&unique=prints",
+  "collector_number": "202",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Eric Deschamps",
+  "artist_ids": [
+    "37970e22-9cee-44c1-af44-5ee27cf26b76"
+  ],
+  "illustration_id": "2df0d714-74e6-4b50-991c-21171b969cbb",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 26693,
+  "preview": {
+    "source": "CulturaPop",
+    "source_uri": "https://www.tomshw.it/culturapop/lucca-comics-and-games-2021-e-quindi-uscimmo-a-riveder-lucca/",
+    "previewed_at": "2021-11-03"
+  },
+  "prices": {
+    "usd": "0.19",
+    "usd_foil": "0.20",
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": "0.18",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=541065&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHiveheart%2BShaman",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHiveheart%2BShaman",
+    "edhrec": "https://edhrec.com/route/?cc=Hiveheart+Shaman"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F253681%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=583220&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/94758?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

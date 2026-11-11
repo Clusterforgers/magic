@@ -1,0 +1,21 @@
+{
+  "oracle_id": "147d8a1f-fe82-4078-a281-29a2eed4c750",
+  "name": "Sigarda's Vanguard",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Sigarda's Vanguard",
+      "oracle_fingerprint": "b3021ca33bfecea35bcd302ae6ddc969",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 13, "end": 162 }
+          }
+        }
+      ]
+    }
+  ]
+}

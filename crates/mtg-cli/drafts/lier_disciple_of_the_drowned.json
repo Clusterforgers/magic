@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f224db3d-cdd2-43f2-b625-4b861efa6449",
+  "name": "Lier, Disciple of the Drowned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lier, Disciple of the Drowned",
+      "oracle_fingerprint": "7155b285e96f693f3594ee91276a28ad",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": { "Each": ["Spell"] } } } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "OwnedBy": "You" },
+                { "In": "Graveyard" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

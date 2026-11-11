@@ -1,0 +1,67 @@
+{
+  "oracle_id": "533767ca-7208-4c88-b160-375479b68285",
+  "name": "Fade from History",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fade from History",
+      "oracle_fingerprint": "83a0a80686ab59fc1343e8633d757022",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                                { "ControlledBy": { "Bound": "p" } }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "CreateToken": {
+                              "who": { "Bound": "p" },
+                              "token": {
+                                "Custom": {
+                                  "name": "Bear",
+                                  "colors": ["Green"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Bear"],
+                                  "power": 2,
+                                  "toughness": 2
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

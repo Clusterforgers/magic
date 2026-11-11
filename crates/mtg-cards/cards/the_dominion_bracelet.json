@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c017f8ae-9103-4965-a07a-f259f44a157d",
+  "name": "The Dominion Bracelet",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Dominion Bracelet",
+      "oracle_fingerprint": "9b415536d66215b1076ff8b1b5dea9fa",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 303 }
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

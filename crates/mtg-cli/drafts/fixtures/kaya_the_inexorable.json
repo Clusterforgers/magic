@@ -1,0 +1,168 @@
+{
+  "object": "card",
+  "id": "166c0bd1-b59d-4644-832f-888a4ca3a0aa",
+  "oracle_id": "13a4f88b-6832-43a1-b4fa-c1ee60560bad",
+  "multiverse_ids": [
+    503834
+  ],
+  "mtgo_id": 87779,
+  "arena_id": 75265,
+  "tcgplayer_id": 229252,
+  "cardmarket_id": 527515,
+  "name": "Kaya the Inexorable",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/166c0bd1-b59d-4644-832f-888a4ca3a0aa",
+  "scryfall_uri": "https://scryfall.com/card/khm/218/kaya-the-inexorable?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:36:34Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/6/166c0bd1-b59d-4644-832f-888a4ca3a0aa.jpg?1783928194",
+    "normal": "https://cards.scryfall.io/normal/front/1/6/166c0bd1-b59d-4644-832f-888a4ca3a0aa.jpg?1783928194",
+    "large": "https://cards.scryfall.io/large/front/1/6/166c0bd1-b59d-4644-832f-888a4ca3a0aa.jpg?1783928194",
+    "png": "https://cards.scryfall.io/png/front/1/6/166c0bd1-b59d-4644-832f-888a4ca3a0aa.png?1783928194",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/6/166c0bd1-b59d-4644-832f-888a4ca3a0aa.jpg?1783928194",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/6/166c0bd1-b59d-4644-832f-888a4ca3a0aa.jpg?1783928194",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/6/166c0bd1-b59d-4644-832f-888a4ca3a0aa.webp?1783928194",
+    "grid": "https://cards.scryfall.io/grid/front/1/6/166c0bd1-b59d-4644-832f-888a4ca3a0aa.webp?1783928194",
+    "display": "https://cards.scryfall.io/display/front/1/6/166c0bd1-b59d-4644-832f-888a4ca3a0aa.webp?1783928194",
+    "art": "https://cards.scryfall.io/art/front/1/6/166c0bd1-b59d-4644-832f-888a4ca3a0aa.webp?1783928194",
+    "crop": "https://cards.scryfall.io/crop/front/1/6/166c0bd1-b59d-4644-832f-888a4ca3a0aa.webp?1783928194",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/6/166c0bd1-b59d-4644-832f-888a4ca3a0aa.jpg?1783928194"
+  },
+  "mana_cost": "{3}{W}{B}",
+  "cmc": 5.0,
+  "type_line": "Legendary Planeswalker — Kaya",
+  "oracle_text": "+1: Put a ghostform counter on up to one target nontoken creature. It gains \"When this creature dies or is put into exile, return it to its owner's hand and create a 1/1 white Spirit creature token with flying.\"\n−3: Exile target nonland permanent.\n−7: You get an emblem with \"At the beginning of your upkeep, you may cast a legendary spell from your hand, from your graveyard, or from among cards you own in exile without paying its mana cost.\"",
+  "loyalty": "5",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "35e3a516-2989-4cac-892f-deb3d754ba7d",
+      "component": "combo_piece",
+      "name": "Kaya the Inexorable",
+      "type_line": "Legendary Planeswalker — Kaya",
+      "uri": "https://api.scryfall.com/cards/35e3a516-2989-4cac-892f-deb3d754ba7d"
+    },
+    {
+      "object": "related_card",
+      "id": "2b149bbf-5d2a-4f7e-aa87-23edd5848cde",
+      "component": "combo_piece",
+      "name": "Kaya the Inexorable Emblem",
+      "type_line": "Emblem",
+      "uri": "https://api.scryfall.com/cards/2b149bbf-5d2a-4f7e-aa87-23edd5848cde"
+    },
+    {
+      "object": "related_card",
+      "id": "95694c03-2b3b-455c-8361-0799c078bf04",
+      "component": "token",
+      "name": "Spirit",
+      "type_line": "Token Creature — Spirit",
+      "uri": "https://api.scryfall.com/cards/95694c03-2b3b-455c-8361-0799c078bf04"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/166c0bd1-b59d-4644-832f-888a4ca3a0aa/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A13a4f88b-6832-43a1-b4fa-c1ee60560bad&unique=prints",
+  "collector_number": "218",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Tyler Jacobson",
+  "artist_ids": [
+    "522af130-8db4-4b4b-950c-6e2b246339cf"
+  ],
+  "illustration_id": "391254fe-31d7-4ba7-8296-712d114dc1da",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 5912,
+  "penny_rank": 5196,
+  "preview": {
+    "source": "Oceans of Slumber",
+    "source_uri": "https://www.instagram.com/p/CI4FRlbo4YV/",
+    "previewed_at": "2020-12-16"
+  },
+  "prices": {
+    "usd": "3.98",
+    "usd_foil": "2.88",
+    "usd_etched": null,
+    "eur": "2.82",
+    "eur_foil": "3.45",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=503834&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKaya%2Bthe%2BInexorable",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKaya%2Bthe%2BInexorable",
+    "edhrec": "https://edhrec.com/route/?cc=Kaya+the+Inexorable"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F229252%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=527515&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87779?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "1f085891-0d99-46a6-8f09-b84f44d701f8",
+  "name": "Hunter's Ambush",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hunter's Ambush",
+      "oracle_fingerprint": "f1500dd1d2818b8955b547461407bbe7",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": {
+                      "source": [
+                        { "Type": "Creature" },
+                        { "Not": { "Color": "Green" } },
+                        { "In": "Battlefield" }
+                      ],
+                      "combat": true
+                    }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

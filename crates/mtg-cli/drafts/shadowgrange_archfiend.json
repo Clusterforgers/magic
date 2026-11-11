@@ -1,0 +1,58 @@
+{
+  "oracle_id": "8f3705ff-e8e5-48e7-ab68-df6849d78867",
+  "name": "Shadowgrange Archfiend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadowgrange Archfiend",
+      "oracle_fingerprint": "8aa6f95fc52b8d40ce5c3ee8cab78abe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "opp" },
+                        "filter": [
+                          { "Type": "Creature" },
+                          {
+                            "GreatestAmong": {
+                              "stat": "Power",
+                              "group": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": { "Bound": "opp" } }
+                              ]
+                            }
+                          }
+                        ],
+                        "as": "sac"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "sac" }, "as": "sacrificed", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Greatest": {
+                      "of": [{ "Is": { "Departed": { "Bound": "sacrificed" } } }],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Madness": [{ "Mana": "{2}{B}" }, { "PayLife": 8 }] } }
+      ]
+    }
+  ]
+}

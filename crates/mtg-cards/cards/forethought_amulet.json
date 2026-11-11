@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0edf0988-9ed8-4fe6-aa47-4921870f05a8",
+  "name": "Forethought Amulet",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Forethought Amulet",
+      "oracle_fingerprint": "0ac464e1490e1f8adb7dc05928ad70af",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Pay": { "cost": "{3}", "unpaid": [{ "Sacrifice": { "filter": ["This"] } }] } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 77, "end": 178 }
+          }
+        }
+      ]
+    }
+  ]
+}

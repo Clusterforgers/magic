@@ -1,0 +1,38 @@
+{
+  "oracle_id": "dc857129-533c-41d1-8e8b-1c0443030d69",
+  "name": "Day of Black Sun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Day of Black Sun",
+      "oracle_fingerprint": "c6187c396e01be3fa82280187c07b966",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                    ]
+                  },
+                  "as": "creatures"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "creatures" },
+                  "mods": ["LoseAbilities"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Destroy": { "what": { "Bound": "creatures" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

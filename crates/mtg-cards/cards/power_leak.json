@@ -1,0 +1,20 @@
+{
+  "oracle_id": "dc2f0000-870b-487f-9623-618fc8eb9765",
+  "name": "Power Leak",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Power Leak",
+      "oracle_fingerprint": "ae42616087aa2323f20568d9e14b1869",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Enchantment" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 20, "end": 253 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "549dc9f3-1fda-4ad3-87bc-8a990800380b",
+  "name": "Zabaz, the Glimmerwasp",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Zabaz, the Glimmerwasp",
+      "oracle_fingerprint": "3e953c7eacf0fcb602198be448cc3b0d",
+      "abilities": [
+        { "Keyword": { "Macro": { "name": "modular", "amount": 1 } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 10, "end": 161 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{R}",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

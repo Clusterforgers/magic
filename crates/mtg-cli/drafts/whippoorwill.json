@@ -1,0 +1,40 @@
+{
+  "oracle_id": "84050a10-e1f1-413e-aa21-5c1f47bb2a64",
+  "name": "Whippoorwill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whippoorwill",
+      "oracle_fingerprint": "93ff7825d3bfd98326908d586f3aa24b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}{G}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "CantBeRegenerated": { "Target": 0 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Target": 0 } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "Exile": { "what": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

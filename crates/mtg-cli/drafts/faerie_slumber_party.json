@@ -1,0 +1,73 @@
+{
+  "oracle_id": "48ee9007-2d1c-446f-aee3-795d23028e06",
+  "name": "Faerie Slumber Party",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Slumber Party",
+      "oracle_fingerprint": "b3be85e5fbab543ca9591a7fdb89e07b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }] },
+                  "to": "Hand",
+                  "as": "returned"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Faerie",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Faerie"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        {
+                          "Static": {
+                            "affected": "This",
+                            "mods": [
+                              {
+                                "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": {
+                    "Times": {
+                      "by": 2,
+                      "of": {
+                        "Players": {
+                          "PlayersWhere": {
+                            "who": "Opponents",
+                            "test": {
+                              "CountOf": {
+                                "subject": { "Departed": { "Bound": "returned" } },
+                                "selector": [{ "ControlledBy": "You" }],
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

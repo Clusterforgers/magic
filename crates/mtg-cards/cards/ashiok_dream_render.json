@@ -1,0 +1,28 @@
+{
+  "oracle_id": "93723b12-db34-4047-885e-8606415b1553",
+  "name": "Ashiok, Dream Render",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ashiok, Dream Render",
+      "oracle_fingerprint": "f4ef52299566fb626edf89fb9ba47543",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 97 } }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Mill": { "who": { "Target": 0 }, "count": 4 } },
+              {
+                "Exile": { "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "Opponents" }] } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

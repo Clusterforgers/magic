@@ -1,0 +1,79 @@
+{
+  "oracle_id": "7811b50d-af76-43cd-8753-43cf65fbefa3",
+  "name": "Dune Chanter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dune Chanter",
+      "oracle_fingerprint": "ad2796a22edd43d55a678fb5ea506af3",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Land" },
+                { "ControlledBy": "You" },
+                {
+                  "AnyOf": [
+                    { "In": "Battlefield" },
+                    { "In": "Stack" },
+                    { "In": "Hand" },
+                    { "In": "Library" },
+                    { "In": "Graveyard" },
+                    { "In": "Exile" },
+                    { "In": "Command" }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "AddSubtype": "Desert" }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Mill": { "count": 2, "as": "milled" } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [
+                      { "Is": { "Bound": "milled" } },
+                      {
+                        "AnyOf": [
+                          { "In": "Battlefield" },
+                          { "In": "Hand" },
+                          { "In": "Library" },
+                          { "In": "Graveyard" },
+                          { "In": "Exile" },
+                          { "In": "Stack" }
+                        ]
+                      },
+                      { "Type": "Land" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

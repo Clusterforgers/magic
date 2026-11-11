@@ -1,0 +1,45 @@
+{
+  "oracle_id": "e536e0d2-7117-4ca8-bdb4-e7dd380113c6",
+  "name": "Rampaging Geoderm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampaging Geoderm",
+      "oracle_fingerprint": "146b93a46f3e31f8e47855e0b94e819e",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Not": { "AttackingPlayerOrPlaneswalker": "EachPlayer" } }]
+                    }
+                  },
+                  "then": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }],
+                  "otherwise": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

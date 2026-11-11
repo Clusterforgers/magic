@@ -1,0 +1,35 @@
+{
+  "oracle_id": "655aece2-f33a-46e0-8f80-112ae8a457fe",
+  "name": "Convergence of Dominion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Convergence of Dominion",
+      "oracle_fingerprint": "59c1e5fa6ffcd44cab570af9e52ae64b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [{ "In": "Graveyard" }, { "OwnedBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "activating": "Any",
+            "least": 1
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [{ "Mill": { "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

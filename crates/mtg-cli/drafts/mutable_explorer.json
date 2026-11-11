@@ -1,0 +1,58 @@
+{
+  "oracle_id": "34b93a66-de1e-4133-a479-e0d90ba94a3a",
+  "name": "Mutable Explorer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mutable Explorer",
+      "oracle_fingerprint": "6b87f79cd30e3870c8c7cfd38176e6a3",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Mutavault",
+                      "types": ["Land"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                          }
+                        },
+                        {
+                          "Activated": {
+                            "cost": "{1}",
+                            "effects": [
+                              {
+                                "Continuous": {
+                                  "affected": "This",
+                                  "mods": [
+                                    { "SetPT": { "power": 2, "toughness": 2 } },
+                                    { "AddType": "Creature" },
+                                    "AddAllCreatureTypes"
+                                  ],
+                                  "duration": "UntilEndOfTurn"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

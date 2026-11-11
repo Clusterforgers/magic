@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f624c0f1-1c09-4b7a-b140-11329f27e3c7",
+  "name": "Trove of Temptation",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Trove of Temptation",
+      "oracle_fingerprint": "a28b25054342ef301045d738cbf26c73",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 107 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

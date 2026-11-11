@@ -1,0 +1,50 @@
+{
+  "oracle_id": "daa86c76-aacb-4244-9639-81f758c634b2",
+  "name": "Kaervek's Purge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kaervek's Purge",
+      "oracle_fingerprint": "98bfcd0cf56e2c358fe2a155fe9d3040",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Arrived": { "of": { "Target": 0 }, "zone": "Graveyard" } },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": { "ControllerOf": { "Target": 0 } },
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

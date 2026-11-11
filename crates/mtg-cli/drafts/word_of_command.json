@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e8ad3a77-b293-4d69-b080-27ca9f95d443",
+  "name": "Word of Command",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Word of Command",
+      "oracle_fingerprint": "25c8d7bd1a21942b0cf8bf135278774e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtHand": { "of": { "Target": 0 } } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "chosen"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

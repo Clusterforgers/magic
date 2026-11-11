@@ -1,0 +1,41 @@
+{
+  "oracle_id": "4db813f4-3bd1-4177-9cf7-6c9799a343c5",
+  "name": "Dawnglow Infusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dawnglow Infusion",
+      "oracle_fingerprint": "fe1f0be2f0b97465549e8a69bdf42c07",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Sum": [
+                      {
+                        "When": {
+                          "condition": { "ManaSpent": "Green" },
+                          "then": "X",
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": { "ManaSpent": "White" },
+                          "then": "X",
+                          "otherwise": 0
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

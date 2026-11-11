@@ -1,0 +1,55 @@
+{
+  "oracle_id": "377179d5-ac83-4d34-b5b1-f3d8caa60f79",
+  "name": "Subtlety",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Subtlety",
+      "oracle_fingerprint": "919a63d8382388b243e50d2418fd291e",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "In": "Stack" },
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "OneOf": {
+                  "who": { "OwnerOf": { "Target": 0 } },
+                  "options": [
+                    [
+                      {
+                        "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Top" } } }
+                      }
+                    ],
+                    [
+                      {
+                        "Move": {
+                          "what": { "Target": 0 },
+                          "to": { "Library": { "place": "Bottom" } }
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Evoke": [{ "ExileFromHand": { "filter": [{ "Color": "Blue" }] } }] } }
+      ]
+    }
+  ]
+}

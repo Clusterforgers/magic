@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ef71ef07-8a35-41ec-a851-d95e9e3a221b",
+  "name": "Bilbo's Gambit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bilbo's Gambit",
+      "oracle_fingerprint": "4431e1e01df675dda4276673afd410d4",
+      "abilities": [
+        { "Keyword": { "Gift": "Treasure" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Promised", "op": "Eq", "right": 1 } },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": { "CantCastSpells": { "who": "EachPlayer" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

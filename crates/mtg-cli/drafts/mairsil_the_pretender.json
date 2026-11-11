@@ -1,0 +1,61 @@
+{
+  "oracle_id": "ed5fbae0-2dca-44a5-84dc-62674b3a92a6",
+  "name": "Mairsil, the Pretender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mairsil, the Pretender",
+      "oracle_fingerprint": "0a24367dc166de788222f2464bceba61",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                            { "OwnedBy": "You" },
+                            { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }
+                          ]
+                        },
+                        "as": "caged"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "caged" } } },
+                    {
+                      "PutCounters": {
+                        "on": { "Arrived": { "of": { "Bound": "caged" }, "zone": "Exile" } },
+                        "counter": { "Other": "cage" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GainAbilitiesOf": {
+                  "Each": [
+                    { "OwnedBy": "You" },
+                    { "In": "Exile" },
+                    { "HasCounter": { "Other": "cage" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "oracle_id": "445ad01c-c899-424d-8666-ee7bb2a6e535",
+  "name": "Moira and Teshar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moira and Teshar",
+      "oracle_fingerprint": "c6ede343f0fa840416fb522ba5a71ec4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Supertype": "Legendary" },
+                      { "Subtype": "Saga" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    },
+                    { "Not": { "Type": "Land" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} }, "as": "it" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "it" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "it" } } }]
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": { "what": [{ "Is": { "Bound": "it" } }], "from": "Battlefield" }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

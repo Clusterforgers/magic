@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d1438681-241b-4d53-9470-4d04a7797ea8",
+  "name": "Maestros Ascendancy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maestros Ascendancy",
+      "oracle_fingerprint": "bd0b9824395915758ef8d707780cf308",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "from": "Graveyard",
+                "once": true,
+                "additional": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

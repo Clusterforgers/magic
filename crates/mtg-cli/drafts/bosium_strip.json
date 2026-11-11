@@ -1,0 +1,34 @@
+{
+  "oracle_id": "2fa6f1b1-00af-433f-b8e1-36db99cd9bba",
+  "name": "Bösium Strip",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bösium Strip",
+      "oracle_fingerprint": "aad3279a4eb6ce6dc02149c7a80f9410",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [
+                        { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                        "TopOfGraveyard"
+                      ],
+                      "from": "Graveyard"
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

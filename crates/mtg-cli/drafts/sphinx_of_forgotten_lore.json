@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ddb7e868-8f1d-4d57-9ee2-ebadb17b398a",
+  "name": "Sphinx of Forgotten Lore",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sphinx of Forgotten Lore",
+      "oracle_fingerprint": "69b0f9900bee54178ed6e1b714fd23f2",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

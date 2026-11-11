@@ -1,0 +1,22 @@
+{
+  "oracle_id": "5b42e91a-e3bd-4f69-9abf-ed6273715fff",
+  "name": "Brown Ouphe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brown Ouphe",
+      "oracle_fingerprint": "7a6dada4f0e616138327a7b1145eddf1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Ability": "Activated" }, { "Type": "Artifact" }] } }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "d2817b5f-f7a2-4254-a00f-e2e45d7a8cc0",
+  "name": "Joven's Ferrets",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Joven's Ferrets",
+      "oracle_fingerprint": "8a8ab9a2c1a7228726175f125d64ed38",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 0, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "EndCombat" } },
+            "effects": [
+              {
+                "Bind": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "DidThisTurn": { "event": "Blocked", "to": "This" } }
+                    ]
+                  },
+                  "as": "blockers"
+                }
+              },
+              { "Tap": { "what": { "Bound": "blockers" } } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "blockers" },
+                  "mods": ["DoesntUntap"],
+                  "duration": "NextUntapStep"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

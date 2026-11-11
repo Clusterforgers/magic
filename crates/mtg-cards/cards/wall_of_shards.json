@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8fab68ad-169d-46d3-93c4-5bdee4eea2ce",
+  "name": "Wall of Shards",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Wall of Shards",
+      "oracle_fingerprint": "8b30edb64e3cc976e54240d222b73d4c",
+      "abilities": [
+        { "Keyword": "Defender" },
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 210 }
+          }
+        }
+      ]
+    }
+  ]
+}

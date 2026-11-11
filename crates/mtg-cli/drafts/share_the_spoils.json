@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d39af66c-4997-48b8-a704-f21d93247d7d",
+  "name": "Share the Spoils",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Share the Spoils",
+      "oracle_fingerprint": "af2f2e40bfaac9c46ae2146171c14a63",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Did": { "action": "LostGame", "who": "Opponents" } }
+              ]
+            },
+            "effects": [
+              { "ExileTop": { "who": "EachPlayer", "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "spoils" } }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "who": "ActivePlayer",
+                "from": "Exile",
+                "only": { "Remembered": { "on": "This", "slot": "spoils" } },
+                "play": true,
+                "spend_as": "AnyColor"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

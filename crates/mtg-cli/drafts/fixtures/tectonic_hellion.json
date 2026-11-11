@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "1b86be51-1b0b-49d0-917c-508f12c85c17",
+  "oracle_id": "e67b8eb2-7b39-4fdb-9ee2-686d1d781cfa",
+  "multiverse_ids": [
+    470575
+  ],
+  "mtgo_id": 77112,
+  "tcgplayer_id": 196677,
+  "cardmarket_id": 392102,
+  "name": "Tectonic Hellion",
+  "lang": "en",
+  "released_at": "2019-08-23",
+  "uri": "https://api.scryfall.com/cards/1b86be51-1b0b-49d0-917c-508f12c85c17",
+  "scryfall_uri": "https://scryfall.com/card/c19/29/tectonic-hellion?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:53:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/b/1b86be51-1b0b-49d0-917c-508f12c85c17.jpg?1783932804",
+    "normal": "https://cards.scryfall.io/normal/front/1/b/1b86be51-1b0b-49d0-917c-508f12c85c17.jpg?1783932804",
+    "large": "https://cards.scryfall.io/large/front/1/b/1b86be51-1b0b-49d0-917c-508f12c85c17.jpg?1783932804",
+    "png": "https://cards.scryfall.io/png/front/1/b/1b86be51-1b0b-49d0-917c-508f12c85c17.png?1783932804",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/b/1b86be51-1b0b-49d0-917c-508f12c85c17.jpg?1783932804",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/b/1b86be51-1b0b-49d0-917c-508f12c85c17.jpg?1783932804",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/b/1b86be51-1b0b-49d0-917c-508f12c85c17.webp?1783932804",
+    "grid": "https://cards.scryfall.io/grid/front/1/b/1b86be51-1b0b-49d0-917c-508f12c85c17.webp?1783932804",
+    "display": "https://cards.scryfall.io/display/front/1/b/1b86be51-1b0b-49d0-917c-508f12c85c17.webp?1783932804",
+    "art": "https://cards.scryfall.io/art/front/1/b/1b86be51-1b0b-49d0-917c-508f12c85c17.webp?1783932804",
+    "crop": "https://cards.scryfall.io/crop/front/1/b/1b86be51-1b0b-49d0-917c-508f12c85c17.webp?1783932804",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/b/1b86be51-1b0b-49d0-917c-508f12c85c17.jpg?1783932804"
+  },
+  "mana_cost": "{5}{R}{R}",
+  "cmc": 7.0,
+  "type_line": "Creature — Hellion",
+  "oracle_text": "Haste\nWhenever this creature attacks, each player who controls the most lands sacrifices two lands of their choice.",
+  "power": "8",
+  "toughness": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2",
+  "set": "c19",
+  "set_name": "Commander 2019",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac19&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c19?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1b86be51-1b0b-49d0-917c-508f12c85c17/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae67b8eb2-7b39-4fdb-9ee2-686d1d781cfa&unique=prints",
+  "collector_number": "29",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Hellions measure their meals in mountains.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Piotr Dura",
+  "artist_ids": [
+    "aff176e8-1d15-432e-ad1d-207a474decba"
+  ],
+  "illustration_id": "a86300e9-2bdc-4ef6-80ee-c41f2ecde3cf",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 21363,
+  "penny_rank": 9243,
+  "preview": {
+    "source": "CubeApril",
+    "source_uri": "https://twitter.com/CubeApril/status/1159125002895208449",
+    "previewed_at": "2019-08-07"
+  },
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=470575&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTectonic%2BHellion",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTectonic%2BHellion",
+    "edhrec": "https://edhrec.com/route/?cc=Tectonic+Hellion"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F196677%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=392102&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/77112?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

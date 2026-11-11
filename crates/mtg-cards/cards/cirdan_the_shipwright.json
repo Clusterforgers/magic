@@ -1,0 +1,20 @@
+{
+  "oracle_id": "063e05b0-554f-4b55-9feb-e11f3927f3a6",
+  "name": "Círdan the Shipwright",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Círdan the Shipwright",
+      "oracle_fingerprint": "7d5d3ccc8e1a29a0b77341d0cb25182b",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 10, "end": 284 }
+          }
+        }
+      ]
+    }
+  ]
+}

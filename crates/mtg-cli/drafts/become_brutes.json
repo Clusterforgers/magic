@@ -1,0 +1,62 @@
+{
+  "oracle_id": "789e034c-7f4a-4fd5-9dd8-48313742126e",
+  "name": "Become Brutes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Become Brutes",
+      "oracle_fingerprint": "f4b90d799640ec5c08e7e5ca89cfa1ac",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 1, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "creature",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Monster Role",
+                            "types": ["Enchantment"],
+                            "subtypes": ["Aura", "Role"],
+                            "abilities": [
+                              { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+                              {
+                                "Static": {
+                                  "affected": "Attached",
+                                  "mods": [
+                                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                                    { "AddKeyword": "Trample" }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "as": "role"
+                      }
+                    },
+                    { "Attach": { "what": { "Bound": "role" }, "to": { "Bound": "creature" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

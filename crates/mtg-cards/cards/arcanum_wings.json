@@ -1,0 +1,21 @@
+{
+  "oracle_id": "b8cc7a78-a627-4e56-b1fc-0b2bd844ef68",
+  "name": "Arcanum Wings",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Arcanum Wings",
+      "oracle_fingerprint": "b65007aa0bdeea46cd22cb663999ba9a",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Flying" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 48, "end": 125 }
+          }
+        }
+      ]
+    }
+  ]
+}

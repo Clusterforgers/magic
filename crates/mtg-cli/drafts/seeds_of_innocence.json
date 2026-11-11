@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f5ebad5c-9675-4a37-b76c-760416083939",
+  "name": "Seeds of Innocence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seeds of Innocence",
+      "oracle_fingerprint": "fc742a6afb40d8a9fe8968f713781e54",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Artifact" }] },
+                  "regenerate": false,
+                  "as": "destroyed"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "destroyed" },
+                  "as": "artifact",
+                  "effects": [
+                    {
+                      "GainLife": {
+                        "who": { "ControllerOf": { "Bound": "artifact" } },
+                        "amount": { "Stat": { "of": { "Bound": "artifact" }, "stat": "ManaValue" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "ae791b61-5825-4987-a8c2-80813758d3f7",
+  "name": "Codecracker Hound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Codecracker Hound",
+      "oracle_fingerprint": "8fff18e4728c7c6da22edfe0a3769683",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } }
+            ]
+          }
+        },
+        { "AltCast": { "way": "Warp", "cost": "{2}{U}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "CastWith": "Warp" },
+            "effects": [
+              { "Choose": { "from": "This", "as": "warped" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Exile": { "what": { "Bound": "warped" }, "as": "warped_card" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": { "from": "Exile", "only": { "Bound": "warped_card" } }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

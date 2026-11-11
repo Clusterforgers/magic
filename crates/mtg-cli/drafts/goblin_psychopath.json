@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9369f131-3356-4926-9a9f-88a636305bd0",
+  "name": "Goblin Psychopath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Psychopath",
+      "oracle_fingerprint": "fee91c156431aa67b30e50668534b316",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "FlipCoin": {
+                  "lose": [
+                    {
+                      "Shield": {
+                        "when": { "Damage": { "source": ["This"], "combat": true } },
+                        "by": { "Redirect": { "to": "You", "next": true } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

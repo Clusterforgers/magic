@@ -1,0 +1,27 @@
+{
+  "oracle_id": "bfa0ec94-8851-4518-92e7-ab9f1f90a051",
+  "name": "Sanity Grinding",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanity Grinding",
+      "oracle_fingerprint": "10e1bed531976e7d6bc63b8089febd7e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 10, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "d438237b-c6f7-44d0-a3e6-6ec7d7465d33",
+  "oracle_id": "41d408dc-f6fe-45b2-b225-2ac25db9ad0f",
+  "multiverse_ids": [
+    559657
+  ],
+  "tcgplayer_id": 268384,
+  "cardmarket_id": 651586,
+  "name": "Perrie, the Pulverizer",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/d438237b-c6f7-44d0-a3e6-6ec7d7465d33",
+  "scryfall_uri": "https://scryfall.com/card/ncc/5/perrie-the-pulverizer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:16:21Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/4/d438237b-c6f7-44d0-a3e6-6ec7d7465d33.jpg?1783923381",
+    "normal": "https://cards.scryfall.io/normal/front/d/4/d438237b-c6f7-44d0-a3e6-6ec7d7465d33.jpg?1783923381",
+    "large": "https://cards.scryfall.io/large/front/d/4/d438237b-c6f7-44d0-a3e6-6ec7d7465d33.jpg?1783923381",
+    "png": "https://cards.scryfall.io/png/front/d/4/d438237b-c6f7-44d0-a3e6-6ec7d7465d33.png?1783923381",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/4/d438237b-c6f7-44d0-a3e6-6ec7d7465d33.jpg?1783923381",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/4/d438237b-c6f7-44d0-a3e6-6ec7d7465d33.jpg?1783923381",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/4/d438237b-c6f7-44d0-a3e6-6ec7d7465d33.webp?1783923381",
+    "grid": "https://cards.scryfall.io/grid/front/d/4/d438237b-c6f7-44d0-a3e6-6ec7d7465d33.webp?1783923381",
+    "display": "https://cards.scryfall.io/display/front/d/4/d438237b-c6f7-44d0-a3e6-6ec7d7465d33.webp?1783923381",
+    "art": "https://cards.scryfall.io/art/front/d/4/d438237b-c6f7-44d0-a3e6-6ec7d7465d33.webp?1783923381",
+    "crop": "https://cards.scryfall.io/crop/front/d/4/d438237b-c6f7-44d0-a3e6-6ec7d7465d33.webp?1783923381",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/4/d438237b-c6f7-44d0-a3e6-6ec7d7465d33.jpg?1783923381"
+  },
+  "mana_cost": "{1}{G}{W}{U}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Rhino Soldier",
+  "oracle_text": "When Perrie enters, put a shield counter on target creature. (If it would be dealt damage or destroyed, remove a shield counter from it instead.)\nWhenever Perrie attacks, target creature you control gains trample and gets +X/+X until end of turn, where X is the number of different kinds of counters among permanents you control.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c51de34b-d4d6-4179-a432-573744ded119",
+  "set": "ncc",
+  "set_name": "New Capenna Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c51de34b-d4d6-4179-a432-573744ded119",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ancc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ncc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d438237b-c6f7-44d0-a3e6-6ec7d7465d33/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A41d408dc-f6fe-45b2-b225-2ac25db9ad0f&unique=prints",
+  "collector_number": "5",
+  "digital": false,
+  "rarity": "mythic",
+  "watermark": "brokers",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Joshua Raphael",
+  "artist_ids": [
+    "553b2a73-780f-414b-b2d7-3b7888821082"
+  ],
+  "illustration_id": "12085670-dd4e-4f6c-a0a2-ff5b4c66d1b3",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 16765,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-image-gallery/streets-of-new-capenna-commander",
+    "previewed_at": "2022-04-08"
+  },
+  "prices": {
+    "usd": "0.48",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": "0.18",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=559657&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPerrie%252C%2Bthe%2BPulverizer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPerrie%252C%2Bthe%2BPulverizer",
+    "edhrec": "https://edhrec.com/route/?cc=Perrie%2C+the+Pulverizer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F268384%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=651586&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Perrie%2C+the+Pulverizer&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

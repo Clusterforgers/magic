@@ -1,0 +1,29 @@
+{
+  "oracle_id": "45392882-e4b9-4c74-a10f-985c2b4e2be9",
+  "name": "Stalwart Successor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stalwart Successor",
+      "oracle_fingerprint": "57efafca805f297f6d5adae3b15a67ae",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": {
+              "CountersPut": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "Triggering", "what": "CountersPut" } },
+                "op": "Eq",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

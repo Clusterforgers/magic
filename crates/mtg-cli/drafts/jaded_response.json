@@ -14,18 +14,15 @@
               {
                 "If": {
                   "condition": {
-                    "CountOf": {
+                    "Matches": {
                       "subject": { "Target": 0 },
                       "selector": [
-                        "Spell",
                         {
                           "SharesColor": {
                             "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
                           }
                         }
-                      ],
-                      "op": "Ge",
-                      "right": 1
+                      ]
                     }
                   },
                   "then": [{ "Counter": { "what": { "Target": 0 } } }]

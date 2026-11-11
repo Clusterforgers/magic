@@ -1,0 +1,68 @@
+{
+  "oracle_id": "2f33aced-c737-4b3c-ba25-aff7b340c2d7",
+  "name": "Infernal Denizen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Denizen",
+      "oracle_fingerprint": "c52e0bb21a0b79166038cf635d16c679",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Subtype": "Swamp" }], "count": 2 } },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [
+                    { "Tap": { "what": "This" } },
+                    { "Choose": { "from": "Opponents", "as": "opp" } },
+                    {
+                      "May": {
+                        "who": { "Bound": "opp" },
+                        "effects": [
+                          {
+                            "Choose": {
+                              "who": { "Bound": "opp" },
+                              "from": {
+                                "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                              },
+                              "as": "stolen"
+                            }
+                          },
+                          {
+                            "Continuous": {
+                              "affected": { "Bound": "stolen" },
+                              "mods": [{ "SetController": { "Bound": "opp" } }],
+                              "duration": "WhileSourceOnBattlefield"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

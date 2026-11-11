@@ -1,0 +1,52 @@
+{
+  "oracle_id": "228cb63f-0b93-4be5-94e5-4eaae9112eeb",
+  "name": "Dark Intimations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dark Intimations",
+      "oracle_fingerprint": "2803ba030f32d02b723dd7652feb8365",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              },
+              { "Discard": { "who": "Opponents" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Draw": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Type": "Planeswalker" }, { "Subtype": "Bolas" }],
+                "by": "You"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [{ "Exile": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

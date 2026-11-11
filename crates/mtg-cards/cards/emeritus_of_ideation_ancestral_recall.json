@@ -1,0 +1,41 @@
+{
+  "oracle_id": "24a29be4-5bc2-469b-b2ce-2fb305c3facb",
+  "name": "Emeritus of Ideation // Ancestral Recall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emeritus of Ideation",
+      "oracle_fingerprint": "a8eaff85bfcf7adfce55f68b2e381264",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "EntersPrepared" } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "ExileFromGraveyard": { "filter": [], "count": 8 } }],
+                  "paid": [{ "Prepare": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ancestral Recall",
+      "oracle_fingerprint": "4052c0f4f26d7377abf9c3663688ca42",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Draw": { "who": { "Target": 0 }, "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

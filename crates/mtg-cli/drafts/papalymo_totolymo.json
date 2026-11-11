@@ -1,0 +1,65 @@
+{
+  "oracle_id": "334e83cd-b513-4bd4-89a2-86875667e6c4",
+  "name": "Papalymo Totolymo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Papalymo Totolymo",
+      "oracle_fingerprint": "4bf884af4f4ebcff365ef83d95a0265b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "LifeLost" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  },
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "who": { "Bound": "player" },
+                        "filter": [
+                          { "Type": "Creature" },
+                          {
+                            "GreatestAmong": {
+                              "stat": "Power",
+                              "group": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": { "Bound": "player" } }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3b7e7a11-bf59-413d-8796-640d17c2c1c6",
+  "name": "Nephalia Academy",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Nephalia Academy",
+      "oracle_fingerprint": "c9f116f030faf9d55c1dc842f762f8cd",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 168 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "711cda97-bf57-4b22-b9c1-854ef448d27a",
+  "name": "Wild Dogs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wild Dogs",
+      "oracle_fingerprint": "7df04de707ba10f88909a56a30225394",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Compare": { "left": { "Players": "MostLife" }, "op": "Eq", "right": 1 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": "MostLife" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

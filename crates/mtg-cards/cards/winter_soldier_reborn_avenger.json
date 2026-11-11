@@ -1,0 +1,61 @@
+{
+  "oracle_id": "df81ecf2-b49e-4be2-8757-ee2050784c9e",
+  "name": "Winter Soldier, Reborn Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Winter Soldier, Reborn Avenger",
+      "oracle_fingerprint": "2903c0621bf6699a67d7ab6f150153b9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "ManaValue",
+                        "op": "Le",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Hero" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Target": 0 },
+                        "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

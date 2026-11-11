@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "49618217-1bbb-498a-a6f0-f269ce7166a6",
+  "oracle_id": "40cbf2c0-041a-44df-a775-580012caab67",
+  "multiverse_ids": [
+    553916
+  ],
+  "mtgo_id": 97786,
+  "tcgplayer_id": 263001,
+  "cardmarket_id": 608611,
+  "name": "Collision of Realms",
+  "lang": "en",
+  "released_at": "2022-02-18",
+  "uri": "https://api.scryfall.com/cards/49618217-1bbb-498a-a6f0-f269ce7166a6",
+  "scryfall_uri": "https://scryfall.com/card/nec/19/collision-of-realms?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:26:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/9/49618217-1bbb-498a-a6f0-f269ce7166a6.jpg?1783923992",
+    "normal": "https://cards.scryfall.io/normal/front/4/9/49618217-1bbb-498a-a6f0-f269ce7166a6.jpg?1783923992",
+    "large": "https://cards.scryfall.io/large/front/4/9/49618217-1bbb-498a-a6f0-f269ce7166a6.jpg?1783923992",
+    "png": "https://cards.scryfall.io/png/front/4/9/49618217-1bbb-498a-a6f0-f269ce7166a6.png?1783923992",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/9/49618217-1bbb-498a-a6f0-f269ce7166a6.jpg?1783923992",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/9/49618217-1bbb-498a-a6f0-f269ce7166a6.jpg?1783923992",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/9/49618217-1bbb-498a-a6f0-f269ce7166a6.webp?1783923992",
+    "grid": "https://cards.scryfall.io/grid/front/4/9/49618217-1bbb-498a-a6f0-f269ce7166a6.webp?1783923992",
+    "display": "https://cards.scryfall.io/display/front/4/9/49618217-1bbb-498a-a6f0-f269ce7166a6.webp?1783923992",
+    "art": "https://cards.scryfall.io/art/front/4/9/49618217-1bbb-498a-a6f0-f269ce7166a6.webp?1783923992",
+    "crop": "https://cards.scryfall.io/crop/front/4/9/49618217-1bbb-498a-a6f0-f269ce7166a6.webp?1783923992",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/9/49618217-1bbb-498a-a6f0-f269ce7166a6.jpg?1783923992"
+  },
+  "mana_cost": "{6}{R}",
+  "cmc": 7.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each player shuffles all creatures they own into their library. Each player who shuffled a nontoken creature into their library this way reveals cards from the top of their library until they reveal a creature card, then puts that card onto the battlefield and the rest on the bottom of their library in a random order.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5b4d929d-bdf9-4bbf-858e-e248f53325ad",
+  "set": "nec",
+  "set_name": "Neon Dynasty Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/5b4d929d-bdf9-4bbf-858e-e248f53325ad",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Anec&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/nec?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/49618217-1bbb-498a-a6f0-f269ce7166a6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A40cbf2c0-041a-44df-a775-580012caab67&unique=prints",
+  "collector_number": "19",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Piotr Dura",
+  "artist_ids": [
+    "aff176e8-1d15-432e-ad1d-207a474decba"
+  ],
+  "illustration_id": "c8b23fdf-9eb8-456e-8890-c9f3ba97d88e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 16309,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.24",
+    "eur_foil": null,
+    "tix": "0.28"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=553916&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCollision%2Bof%2BRealms",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCollision%2Bof%2BRealms",
+    "edhrec": "https://edhrec.com/route/?cc=Collision+of+Realms"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F263001%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=608611&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/97786?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

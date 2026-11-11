@@ -1,0 +1,27 @@
+{
+  "oracle_id": "39f4bf0e-47d5-4ae8-a504-71acda849850",
+  "name": "Kozilek, the Broken Reality",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kozilek, the Broken Reality",
+      "oracle_fingerprint": "0869ee8038e8fd0b7f2f0a0c15cdd737",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 291 }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "Colorless", "Other", { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

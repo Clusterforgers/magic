@@ -1,0 +1,44 @@
+{
+  "oracle_id": "3688ad0d-653b-4d5d-a57e-444db679d83e",
+  "name": "The Serpent Society",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Serpent Society",
+      "oracle_fingerprint": "7e2597c6dd3608f98c00c1441c22a723",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 11, "end": 101 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "ControlledBy": "You" },
+                  { "HasKeyword": "Deathtouch" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Creature" }, { "Not": "Token" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d379a919-02cd-46fd-a6ce-b66a77745ae7",
+  "name": "April O'Neil, Hacktivist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "April O'Neil, Hacktivist",
+      "oracle_fingerprint": "5f39f95175d9b71ed8d44bc08cc57773",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "CardTypes": [{ "DidThisTurn": { "event": "SpellCast", "by": "You" } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

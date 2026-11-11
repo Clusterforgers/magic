@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9167a585-b742-427d-b840-e024f6878a5c",
+  "name": "TARDIS",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "TARDIS",
+      "oracle_fingerprint": "5a31b2e60c87c56184fe36d6cc537b56",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Time Lord" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "NextSpell": { "benefit": { "Keyword": "Cascade" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "May": { "effects": [{ "Planechase": { "act": "Planeswalk" } }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

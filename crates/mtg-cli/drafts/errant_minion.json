@@ -1,0 +1,41 @@
+{
+  "oracle_id": "80459049-bd89-4736-82f8-03c603644033",
+  "name": "Errant Minion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Errant Minion",
+      "oracle_fingerprint": "8f4eb4a12062152ae603ce4415c719ee",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Attached" },
+                  "cost": "{2}",
+                  "unpaid": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": "Attached" },
+                        "cost": "{1}",
+                        "paid": [
+                          { "DealDamage": { "to": { "ControllerOf": "Attached" }, "amount": 1 } }
+                        ],
+                        "unpaid": [
+                          { "DealDamage": { "to": { "ControllerOf": "Attached" }, "amount": 2 } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "c93bb65a-a74a-499b-a538-65272079aab8",
+  "name": "Giant Koi",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Koi",
+      "oracle_fingerprint": "e6e110b41d261b831b47227ad2a24f9e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Waterbend": 3 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Island" }], "cost": "{2}" } } }
+      ]
+    }
+  ]
+}

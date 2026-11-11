@@ -1,0 +1,119 @@
+{
+  "oracle_id": "e711a213-2a6b-4b34-a788-95b6c0b7ba48",
+  "name": "Inventive Iteration // Living Breakthrough",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inventive Iteration",
+      "oracle_fingerprint": "7364a5fd6b6260d659c84e9848750e39",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Artifact" },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Artifact" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Living Breakthrough",
+      "oracle_fingerprint": "8bfbc566141360ebf70eb07d926a438a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "You" } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": "Opponents",
+                      "action": {
+                        "Cast": {
+                          "filter": [
+                            {
+                              "Compare": {
+                                "stat": "ManaValue",
+                                "op": "Eq",
+                                "to": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

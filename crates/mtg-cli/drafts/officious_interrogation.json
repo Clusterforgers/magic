@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e57e448b-1186-4662-a6b0-01a9ce33b961",
+  "name": "Officious Interrogation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Officious Interrogation",
+      "oracle_fingerprint": "884f2ef9e898d83ebd7d01912f1cd889",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{W}{U}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player", "bounds": { "min": 0, "max": null } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "clue" },
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

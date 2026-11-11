@@ -1,0 +1,45 @@
+{
+  "oracle_id": "5ce47fb9-4e4f-4419-af75-309d2743f5f9",
+  "name": "The Caves of Androzani",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "The Caves of Androzani",
+      "oracle_fingerprint": "56c11d55f9f1c4c02f967fd435d89327",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Tapped"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" }, "count": 2 }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 160, "end": 288 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Doctor" }], "reveal": true, "as": "card" } },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

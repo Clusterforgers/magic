@@ -1,0 +1,65 @@
+{
+  "oracle_id": "7217ea53-3685-48d6-9df1-58a551f8c979",
+  "name": "Rescue from the Underworld",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rescue from the Underworld",
+      "oracle_fingerprint": "7d11f68c0572f7ead8ee3138f0e572e6",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              { "Bind": { "what": { "Target": 0 }, "as": "card" } },
+              {
+                "Bind": {
+                  "what": { "Arrived": { "of": "Paid", "zone": "Graveyard" } },
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [
+                    {
+                      "Together": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "card" },
+                              "to": { "Battlefield": { "under": "You" } }
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "sacrificed" },
+                              "to": { "Battlefield": { "under": "You" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

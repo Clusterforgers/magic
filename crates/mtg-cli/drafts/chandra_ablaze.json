@@ -1,0 +1,69 @@
+{
+  "oracle_id": "3fae28e6-2ffc-460e-9dd3-e321e8a53ba9",
+  "name": "Chandra Ablaze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chandra Ablaze",
+      "oracle_fingerprint": "27a65b88e955db1cb628def8e81360ef",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "Discard": { "as": "discarded" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Color": "Red" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "Discard": {
+                  "who": "EachPlayer",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "EachPlayer" }] }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 3 } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "CastFromZone": {
+                  "what": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      { "Color": "Red" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "free": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

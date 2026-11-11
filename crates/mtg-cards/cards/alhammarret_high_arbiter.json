@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c2531360-61f8-4edc-886b-408811a0639d",
+  "name": "Alhammarret, High Arbiter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Alhammarret, High Arbiter",
+      "oracle_fingerprint": "6b9df28ee6b7275937b8f1207bc717c2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 120 }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "Opponents", "action": { "Cast": { "filter": ["ChosenName"] } } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

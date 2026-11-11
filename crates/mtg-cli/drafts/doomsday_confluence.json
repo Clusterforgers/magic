@@ -1,0 +1,57 @@
+{
+  "oracle_id": "01bc8bfa-2e46-4324-a848-cc68bc9330d0",
+  "name": "Doomsday Confluence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doomsday Confluence",
+      "oracle_fingerprint": "c478ba4186d9a60a328889cfe124c8c1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": "X", "max": "X" },
+                  "repeat": true,
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Sacrifice": {
+                            "who": "EachPlayer",
+                            "filter": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Dalek",
+                                "colors": ["Black"],
+                                "types": ["Artifact", "Creature"],
+                                "subtypes": ["Dalek"],
+                                "power": 3,
+                                "toughness": 3,
+                                "abilities": [{ "Keyword": "Menace" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "Discard": { "who": "Opponents" } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

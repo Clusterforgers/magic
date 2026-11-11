@@ -1,0 +1,56 @@
+{
+  "oracle_id": "cae6d903-3fd6-422d-b21b-92201b78fa1b",
+  "name": "Fervent Mastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fervent Mastery",
+      "oracle_fingerprint": "9612b36ed49553323a4c2d8138c0d713",
+      "abilities": [
+        { "AltCast": { "way": "Alternative", "cost": "{2}{R}{R}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "CastWith": "Alternative" },
+                  "then": [
+                    { "Choose": { "from": "Opponents", "as": "opp" } },
+                    {
+                      "Choose": {
+                        "who": { "Bound": "opp" },
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "opp" } }] },
+                        "count": {
+                          "min": 0,
+                          "max": { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "opp" } }] }
+                        },
+                        "as": "cards"
+                      }
+                    },
+                    {
+                      "Discard": {
+                        "who": { "Bound": "opp" },
+                        "count": { "CountOf": { "of": { "Bound": "cards" }, "filter": [] } },
+                        "filter": [{ "Is": { "Bound": "cards" } }]
+                      }
+                    },
+                    {
+                      "Draw": {
+                        "who": { "Bound": "opp" },
+                        "count": { "CountOf": { "of": { "Bound": "cards" }, "filter": [] } }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Search": { "filter": [], "count": { "min": 0, "max": 3 }, "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": {} },
+              { "Discard": { "count": 3, "random": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

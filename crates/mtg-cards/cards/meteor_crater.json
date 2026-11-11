@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ebddf68c-1b22-4313-83e1-13a5c1aec19e",
+  "name": "Meteor Crater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meteor Crater",
+      "oracle_fingerprint": "128d0f39f126df47fb58d93e849cd638",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColorAmong": [{ "ControlledBy": "You" }] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

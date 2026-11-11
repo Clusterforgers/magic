@@ -1,0 +1,62 @@
+{
+  "oracle_id": "0332f7b5-dad3-4fd0-b86c-78bd8301f59d",
+  "name": "Gnawing Crescendo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnawing Crescendo",
+      "oracle_fingerprint": "551361bc4eaa9b4f3dfb7a3eacc30c96",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [
+                        { "Type": "Creature" },
+                        { "Not": "Token" },
+                        { "ControlledBy": "You" }
+                      ],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Rat",
+                            "colors": ["Black"],
+                            "types": ["Creature"],
+                            "subtypes": ["Rat"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [
+                              { "Static": { "affected": "This", "mods": ["CantBlock"] } }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

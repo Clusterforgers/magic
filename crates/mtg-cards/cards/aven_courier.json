@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a01746f3-8e6f-47ce-a95b-e44556d1f73e",
+  "name": "Aven Courier",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aven Courier",
+      "oracle_fingerprint": "79f6ea371a15b2be86f975db50e766c7",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 191 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7022ae9a-2589-493b-a050-a230fd02f80b",
+  "name": "Storm of Souls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storm of Souls",
+      "oracle_fingerprint": "6ed80e5e66629c6a011b20f17618f6c4",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "to": { "Battlefield": {} },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [
+                    { "SetPT": { "power": 1, "toughness": 1 } },
+                    { "AddSubtype": "Spirit" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

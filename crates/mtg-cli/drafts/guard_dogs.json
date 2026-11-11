@@ -1,0 +1,43 @@
+{
+  "oracle_id": "490af644-2e85-49c7-af63-d5f0a9babff8",
+  "name": "Guard Dogs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guard Dogs",
+      "oracle_fingerprint": "6aebd13da642c053a756a752ab5bb502",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Choose": { "from": { "Each": [{ "ControlledBy": "You" }] }, "as": "perm" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "SharesColor": { "Bound": "perm" } }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Shield": {
+                        "when": {
+                          "Damage": { "source": [{ "Is": { "Target": 0 } }], "combat": true }
+                        },
+                        "by": "Prevent",
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

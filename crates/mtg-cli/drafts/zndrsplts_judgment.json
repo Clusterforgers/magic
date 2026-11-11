@@ -1,0 +1,68 @@
+{
+  "oracle_id": "7aacfc42-be6c-46a8-b474-f43a1b6b2ef8",
+  "name": "Zndrsplt's Judgment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zndrsplt's Judgment",
+      "oracle_fingerprint": "c5773a3969b450869c4eabbf22897afa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "OneOf": {
+                        "options": [
+                          [
+                            {
+                              "Choose": {
+                                "who": { "Bound": "player" },
+                                "from": {
+                                  "Each": [
+                                    { "Type": "Creature" },
+                                    { "ControlledBy": { "Bound": "player" } }
+                                  ]
+                                },
+                                "as": "copied"
+                              }
+                            },
+                            {
+                              "CreateToken": {
+                                "who": { "Bound": "player" },
+                                "token": { "CopyOf": { "of": { "Bound": "copied" } } }
+                              }
+                            }
+                          ],
+                          [
+                            {
+                              "Choose": {
+                                "who": { "Bound": "player" },
+                                "from": {
+                                  "Each": [
+                                    { "Type": "Creature" },
+                                    { "ControlledBy": { "Bound": "player" } }
+                                  ]
+                                },
+                                "as": "returned"
+                              }
+                            },
+                            { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+                          ]
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

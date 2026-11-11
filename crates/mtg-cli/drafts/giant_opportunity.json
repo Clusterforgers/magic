@@ -1,0 +1,41 @@
+{
+  "oracle_id": "395aa62e-0786-4bd8-a88f-998e4700742e",
+  "name": "Giant Opportunity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Opportunity",
+      "oracle_fingerprint": "e15ecc60c4369a0c005c3613c26b1504",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Food" }], "count": 2 } }],
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Giant",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Giant"],
+                            "power": 7,
+                            "toughness": 7
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "unpaid": [{ "CreateToken": { "token": { "Named": "food" }, "count": 3 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

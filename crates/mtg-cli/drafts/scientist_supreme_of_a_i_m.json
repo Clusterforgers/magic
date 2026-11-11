@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c09c424b-6aba-4190-9f55-f0307d746386",
+  "name": "Scientist Supreme of A.I.M.",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scientist Supreme of A.I.M.",
+      "oracle_fingerprint": "f81b4899c3192315be25a18f82dcfadd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 2 }],
+            "condition": "YourTurn",
+            "limit": "OncePerTurn",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] },
+                    { "ControlledBy": "You" },
+                    { "Type": "Artifact" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopyAbility": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

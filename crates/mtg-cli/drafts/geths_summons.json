@@ -1,0 +1,49 @@
+{
+  "oracle_id": "c345be5e-243d-44c8-a7c7-280bdb235223",
+  "name": "Geth's Summons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geth's Summons",
+      "oracle_fingerprint": "06aefc5c0e327be2fa8fb100894f777f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "Compare": {
+                            "left": { "Counters": { "on": "You", "counter": "poison" } },
+                            "op": "Ge",
+                            "right": 3
+                          }
+                        }
+                      }
+                    },
+                    "what": [{ "Type": "Creature" }, { "In": "Graveyard" }]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
+              { "Move": { "what": { "Target": 1 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

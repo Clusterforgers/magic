@@ -1,0 +1,40 @@
+{
+  "oracle_id": "585eb5bc-5a3d-44d8-b593-1ff0d67f96a7",
+  "name": "Lightning, Army of One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning, Army of One",
+      "oracle_fingerprint": "28d4e160bdb88786984a5af17c678893",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "player" } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Bound": "player" } } },
+                  "by": { "Multiply": 2 },
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Each": [{ "ControlledBy": { "Bound": "player" } }] } }
+                  },
+                  "by": { "Multiply": 2 },
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

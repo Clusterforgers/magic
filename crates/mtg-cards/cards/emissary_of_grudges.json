@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b415684e-40f0-43c1-b8d5-1a90b75c5a47",
+  "name": "Emissary of Grudges",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Emissary of Grudges",
+      "oracle_fingerprint": "b38fde31241175568bb60f495edbb1ae",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 14, "end": 67 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 68, "end": 253 }
+          }
+        }
+      ]
+    }
+  ]
+}

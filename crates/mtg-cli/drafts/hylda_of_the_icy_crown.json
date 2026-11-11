@@ -1,0 +1,73 @@
+{
+  "oracle_id": "1733c71b-fd28-48dd-8a3d-41afd4b22f0e",
+  "name": "Hylda of the Icy Crown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hylda of the Icy Crown",
+      "oracle_fingerprint": "5279dbd58fb624c3ca548074b4cc28b7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Tapped": { "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+                },
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "effects": [
+                          {
+                            "OneOf": {
+                              "options": [
+                                [
+                                  {
+                                    "CreateToken": {
+                                      "token": {
+                                        "Custom": {
+                                          "name": "Elemental",
+                                          "colors": ["White", "Blue"],
+                                          "types": ["Creature"],
+                                          "subtypes": ["Elemental"],
+                                          "power": 4,
+                                          "toughness": 4
+                                        }
+                                      }
+                                    }
+                                  }
+                                ],
+                                [
+                                  {
+                                    "PutCounters": {
+                                      "on": {
+                                        "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                                      },
+                                      "counter": "+1/+1"
+                                    }
+                                  }
+                                ],
+                                [{ "Scry": { "count": 2 } }, { "Draw": {} }]
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

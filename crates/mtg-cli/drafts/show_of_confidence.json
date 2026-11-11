@@ -1,0 +1,45 @@
+{
+  "oracle_id": "6f7c29ff-955c-496b-9300-2efb9e99ba2d",
+  "name": "Show of Confidence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Show of Confidence",
+      "oracle_fingerprint": "3db6dd2119863a49b0bb52b945fb2479",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [
+              {
+                "CopySpell": {
+                  "what": "This",
+                  "count": {
+                    "Sum": [{ "Tallied": { "who": "You", "what": "InstantsAndSorceriesCast" } }, -1]
+                  },
+                  "new_targets": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Vigilance" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

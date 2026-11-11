@@ -1,0 +1,44 @@
+{
+  "oracle_id": "5941374b-eeb8-4d0e-9367-f7f0f8b79739",
+  "name": "Cycle of Life",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cycle of Life",
+      "oracle_fingerprint": "be68c65990e9d3a907f66ddd938107c1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "ReturnToHand": { "filter": ["This"] } }],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "WasCast": { "by": "You" } },
+                    "EnteredThisTurn"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetPT": { "power": 0, "toughness": 1 } }],
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

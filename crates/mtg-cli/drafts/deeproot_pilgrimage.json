@@ -1,0 +1,41 @@
+{
+  "oracle_id": "188656d8-4ea8-4e58-88da-b010a16eb6f2",
+  "name": "Deeproot Pilgrimage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deeproot Pilgrimage",
+      "oracle_fingerprint": "a3e30272f90d487424262813604e1b7c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "Tapped": {
+                  "what": [{ "Subtype": "Merfolk" }, { "Not": "Token" }, { "ControlledBy": "You" }]
+                }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Merfolk",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Merfolk"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Hexproof" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

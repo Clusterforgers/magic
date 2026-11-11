@@ -1,0 +1,20 @@
+{
+  "oracle_id": "cd2ae326-1a74-4b67-9718-92b6a209303b",
+  "name": "Exhumer Thrull",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Exhumer Thrull",
+      "oracle_fingerprint": "88609881d9598afb0d15ef0129ff9ef0",
+      "abilities": [
+        { "Keyword": "Haunt" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 68, "end": 187 }
+          }
+        }
+      ]
+    }
+  ]
+}

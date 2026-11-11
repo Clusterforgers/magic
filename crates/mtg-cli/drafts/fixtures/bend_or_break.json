@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "b76b6660-d4b2-44de-a1a7-8d00811f90f6",
+  "oracle_id": "4362efe4-339d-40e1-bd72-3cc9e41bf93f",
+  "multiverse_ids": [
+    23099
+  ],
+  "mtgo_id": 14927,
+  "mtgo_foil_id": 14928,
+  "tcgplayer_id": 7436,
+  "cardmarket_id": 3431,
+  "name": "Bend or Break",
+  "lang": "en",
+  "released_at": "2000-10-02",
+  "uri": "https://api.scryfall.com/cards/b76b6660-d4b2-44de-a1a7-8d00811f90f6",
+  "scryfall_uri": "https://scryfall.com/card/inv/137/bend-or-break?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:28:07Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/7/b76b6660-d4b2-44de-a1a7-8d00811f90f6.jpg?1783945687",
+    "normal": "https://cards.scryfall.io/normal/front/b/7/b76b6660-d4b2-44de-a1a7-8d00811f90f6.jpg?1783945687",
+    "large": "https://cards.scryfall.io/large/front/b/7/b76b6660-d4b2-44de-a1a7-8d00811f90f6.jpg?1783945687",
+    "png": "https://cards.scryfall.io/png/front/b/7/b76b6660-d4b2-44de-a1a7-8d00811f90f6.png?1783945687",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/7/b76b6660-d4b2-44de-a1a7-8d00811f90f6.jpg?1783945687",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/7/b76b6660-d4b2-44de-a1a7-8d00811f90f6.jpg?1783945687",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/7/b76b6660-d4b2-44de-a1a7-8d00811f90f6.webp?1783945687",
+    "grid": "https://cards.scryfall.io/grid/front/b/7/b76b6660-d4b2-44de-a1a7-8d00811f90f6.webp?1783945687",
+    "display": "https://cards.scryfall.io/display/front/b/7/b76b6660-d4b2-44de-a1a7-8d00811f90f6.webp?1783945687",
+    "art": "https://cards.scryfall.io/art/front/b/7/b76b6660-d4b2-44de-a1a7-8d00811f90f6.webp?1783945687",
+    "crop": "https://cards.scryfall.io/crop/front/b/7/b76b6660-d4b2-44de-a1a7-8d00811f90f6.webp?1783945687",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/7/b76b6660-d4b2-44de-a1a7-8d00811f90f6.jpg?1783945687"
+  },
+  "mana_cost": "{3}{R}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Each player separates all nontoken lands they control into two piles. For each player, one of their piles is chosen by one of their opponents of their choice. Destroy all lands in the chosen piles. Tap all lands in the other piles.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set": "inv",
+  "set_name": "Invasion",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b9ae5e02-7726-47ca-b5e4-5ec402b41cd1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ainv&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/inv?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/b76b6660-d4b2-44de-a1a7-8d00811f90f6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4362efe4-339d-40e1-bd72-3cc9e41bf93f&unique=prints",
+  "collector_number": "137",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Arnie Swekel",
+  "artist_ids": [
+    "af10ecf2-eb82-4100-97b2-6c236b0fa644"
+  ],
+  "illustration_id": "2abeab06-d52f-4a1a-bf05-a1ff0393a32e",
+  "border_color": "black",
+  "frame": "1997",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 19682,
+  "prices": {
+    "usd": "2.19",
+    "usd_foil": "17.49",
+    "usd_etched": null,
+    "eur": "0.53",
+    "eur_foil": "5.03",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=23099&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBend%2Bor%2BBreak",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBend%2Bor%2BBreak",
+    "edhrec": "https://edhrec.com/route/?cc=Bend+or+Break"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F7436%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=3431&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/14927?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

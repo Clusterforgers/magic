@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3561cd52-961f-4098-9287-58ee43970f0f",
+  "name": "Galloping Lizrog",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Galloping Lizrog",
+      "oracle_fingerprint": "2c5937ab1dbdc5da05c7e99c9c4765ad",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 176 }
+          }
+        }
+      ]
+    }
+  ]
+}

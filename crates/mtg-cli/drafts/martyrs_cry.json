@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b636f17d-b54a-4a72-9a5e-ce13e7b4f00a",
+  "name": "Martyr's Cry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyr's Cry",
+      "oracle_fingerprint": "dc8fa07c2eb17b04cd6f8990cac90d05",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "Color": "White" }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Together": {
+                  "effects": [
+                    {
+                      "RepeatEach": {
+                        "over": { "Bound": "exiled" },
+                        "as": "each2",
+                        "effects": [
+                          {
+                            "Draw": {
+                              "who": { "ControllerOf": { "Departed": { "Bound": "each2" } } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

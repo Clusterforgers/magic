@@ -1,0 +1,17 @@
+{
+  "oracle_id": "6d9746bc-0b72-4ac4-b48a-742b63b1c41b",
+  "name": "Backslide",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Backslide",
+      "oracle_fingerprint": "a1c84aadf7fcab18d3f92ff63cf919c9",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 52 } }
+        },
+        { "Keyword": { "Cycling": "{U}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "49e3c192-862f-483e-abd1-e22863ea88dd",
+  "name": "Tales of the Ancestors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tales of the Ancestors",
+      "oracle_fingerprint": "ebc674b52c2eb166ad7736e8161e8f1c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Let": {
+                  "as": "most",
+                  "amount": { "Largest": { "who": "EachPlayer", "of": [{ "In": "Hand" }] } }
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Draw": {
+                        "who": { "Bound": "player" },
+                        "count": {
+                          "Difference": [
+                            { "Bound": "most" },
+                            { "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "player" } }] }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{1}{U}" } }
+      ]
+    }
+  ]
+}

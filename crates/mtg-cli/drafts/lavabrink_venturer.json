@@ -1,0 +1,57 @@
+{
+  "oracle_id": "ea66ffa3-d084-434f-91a6-fdff49806285",
+  "name": "Lavabrink Venturer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lavabrink Venturer",
+      "oracle_fingerprint": "404cf468d46ee256323c670b36cd791a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["odd", "even"] }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Protection": [
+                    {
+                      "Test": {
+                        "left": {
+                          "Sum": [
+                            { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                            {
+                              "Times": {
+                                "by": -2,
+                                "of": {
+                                  "Quotient": {
+                                    "of": { "Stat": { "of": "Candidate", "stat": "ManaValue" } },
+                                    "by": 2,
+                                    "up": false
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "op": "Eq",
+                        "right": {
+                          "When": { "condition": { "EnteredAs": "odd" }, "then": 1, "otherwise": 0 }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "bda0468f-1c72-4d3d-ad94-15d446c75313",
+  "name": "The Ever-Changing 'Dane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Ever-Changing 'Dane",
+      "oracle_fingerprint": "e95dc2aa8ed5a3eb7b24b1bca791b239",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": "Paid",
+                  "except": ["ThisAbility"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "11720db4-5b6b-49ba-bf31-4d944921d6f1",
+  "name": "Rocket Launcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rocket Launcher",
+      "oracle_fingerprint": "392dab9a2d43b0cf7764fcfe13c509b3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "condition": { "Not": { "NewlyControlled": "This" } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 1 } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Destroy": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

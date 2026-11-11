@@ -1,0 +1,42 @@
+{
+  "oracle_id": "cb02daf6-9013-4ccc-bf1f-773b757ac468",
+  "name": "Essence Leak",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Essence Leak",
+      "oracle_fingerprint": "dc7d08e766a4229c0f7af443664e4614",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                    "effects": [
+                      {
+                        "Pay": {
+                          "cost": ["OwnManaCost"],
+                          "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Matches": {
+                "subject": "Attached",
+                "selector": [{ "AnyOf": [{ "Color": "Red" }, { "Color": "Green" }] }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "86df1de7-967a-4420-847f-7a77d0217a15",
+  "name": "Holy Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Holy Avenger",
+      "oracle_fingerprint": "1dc184f778d535a2be70f208b63d1c8d",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "DoubleStrike" }] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "Is": "Attached" }], "combat": true } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Subtype": "Aura" }]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "aura"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "aura" },
+                        "to": { "BattlefieldAttached": { "to": "Attached" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}{W}" } }
+      ]
+    }
+  ]
+}

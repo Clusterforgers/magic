@@ -1,0 +1,59 @@
+{
+  "oracle_id": "d8e6cdab-234a-46b9-8b6c-164034cf2bc7",
+  "name": "Monoxa, Midway Manager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monoxa, Midway Manager",
+      "oracle_fingerprint": "7ce24f5ad09b01acf7daf6701454c63d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DiceRolled": { "who": "You" } },
+            "if": { "Compare": { "left": "Triggering", "op": "Ge", "right": 3 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Triggering", "op": "Ge", "right": 4 } },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Menace" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "Triggering", "op": "Ge", "right": 5 } },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Lifelink" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": { "cost": "{6}", "effects": [{ "RollDice": { "sides": 6, "results": [] } }] }
+        }
+      ]
+    }
+  ]
+}

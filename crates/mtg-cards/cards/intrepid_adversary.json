@@ -1,0 +1,33 @@
+{
+  "oracle_id": "b72fde5e-862a-45e8-9880-f2c16975a9ac",
+  "name": "Intrepid Adversary",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Intrepid Adversary",
+      "oracle_fingerprint": "6bda2dbcc612ff53b5a9239e08194f4c",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 9, "end": 164 }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "valor" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "valor" } } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

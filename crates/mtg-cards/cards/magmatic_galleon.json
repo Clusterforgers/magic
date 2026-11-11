@@ -1,0 +1,29 @@
+{
+  "oracle_id": "59322432-591a-4e8d-aff5-12ca1feb1028",
+  "name": "Magmatic Galleon",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Magmatic Galleon",
+      "oracle_fingerprint": "acdeba0ee7e4f0cd5e52bd459c3b3d49",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 85, "end": 198 }
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "549fe3ff-70aa-4543-b427-40b814b29894",
+  "name": "Temporal Aperture",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporal Aperture",
+      "oracle_fingerprint": "4531b09b4cdf8527b55ebc1e69029198",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "effects": [
+              { "Shuffle": {} },
+              {
+                "Bind": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"] },
+                  "as": "top"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              { "Rule": { "rule": { "RevealTop": "You" }, "duration": "UntilEndOfTurn" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Library",
+                      "free": true,
+                      "only": { "Bound": "top" },
+                      "play": true,
+                      "when": {
+                        "Matches": { "subject": { "Bound": "top" }, "selector": ["TopOfLibrary"] }
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

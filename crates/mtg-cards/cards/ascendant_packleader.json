@@ -1,0 +1,42 @@
+{
+  "oracle_id": "7e81853c-d0c0-40bc-80fc-13a5964878b2",
+  "name": "Ascendant Packleader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ascendant Packleader",
+      "oracle_fingerprint": "b94bc37381da405617cb54ac4f6a589c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } },
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "ControlledBy": "You" },
+                    { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

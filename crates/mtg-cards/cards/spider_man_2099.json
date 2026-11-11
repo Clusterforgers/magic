@@ -1,0 +1,27 @@
+{
+  "oracle_id": "19845456-3d96-48a4-89fa-9b8e583774c9",
+  "name": "Spider-Man 2099",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Spider-Man 2099",
+      "oracle_fingerprint": "db3fe80aecaadb33c45a8a9bfaccd2d3",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 103 }
+          }
+        },
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 129, "end": 312 }
+          }
+        }
+      ]
+    }
+  ]
+}

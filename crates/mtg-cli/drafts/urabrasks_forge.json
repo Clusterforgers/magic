@@ -1,0 +1,45 @@
+{
+  "oracle_id": "7c4b2203-a937-4d91-8e39-2283fe686b45",
+  "name": "Urabrask's Forge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Urabrask's Forge",
+      "oracle_fingerprint": "607717e7d0e1a460b663d54331f4ee12",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "oil" } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Counters": { "on": "This", "counter": { "Other": "oil" } } },
+                      "toughness": 1,
+                      "token": {
+                        "name": "Phyrexian Horror",
+                        "colors": ["Red"],
+                        "types": ["Creature"],
+                        "subtypes": ["Phyrexian", "Horror"],
+                        "abilities": [{ "Keyword": "Trample" }, { "Keyword": "Haste" }]
+                      }
+                    }
+                  },
+                  "as": "tokens"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "tokens" } }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

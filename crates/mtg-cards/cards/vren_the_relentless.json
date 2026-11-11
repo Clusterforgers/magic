@@ -1,0 +1,32 @@
+{
+  "oracle_id": "1216900e-93e3-41a4-b354-9c81938639c2",
+  "name": "Vren, the Relentless",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Vren, the Relentless",
+      "oracle_fingerprint": "fe19120fb62087f68554592a090cdba6",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Replacement": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "by": { "MoveTo": "Exile" }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 73, "end": 300 }
+          }
+        }
+      ]
+    }
+  ]
+}

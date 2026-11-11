@@ -1,0 +1,24 @@
+{
+  "oracle_id": "7ea9bb3b-76e9-4150-9e4f-1cd3abfe8ad7",
+  "name": "Diamond Lion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Diamond Lion",
+      "oracle_fingerprint": "6546ca89831591cc6e666085c7689d1e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              "SacrificeSelf"
+            ],
+            "timing": "AsInstant",
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

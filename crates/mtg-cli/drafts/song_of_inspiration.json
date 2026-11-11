@@ -1,0 +1,76 @@
+{
+  "oracle_id": "bdb80d7b-672c-4e2a-b93b-9b96721b93f2",
+  "name": "Song of Inspiration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Song of Inspiration",
+      "oracle_fingerprint": "e2a2a0a37706c08d6b8e75e9b60a0f0c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "OwnedBy": "You" },
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 20,
+                  "plus": {
+                    "Total": {
+                      "of": [{ "Is": { "Target": 0 } }, { "In": "Graveyard" }],
+                      "stat": "ManaValue"
+                    }
+                  },
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 14,
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "from": 15,
+                      "effects": [
+                        {
+                          "Let": {
+                            "as": "total",
+                            "amount": {
+                              "Total": {
+                                "of": [{ "Is": { "Target": 0 } }, { "In": "Graveyard" }],
+                                "stat": "ManaValue"
+                              }
+                            }
+                          }
+                        },
+                        { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+                        { "GainLife": { "amount": { "Bound": "total" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

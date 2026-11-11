@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f33d1132-064d-42f1-8814-95d27fde8bf8",
+  "name": "Shadow of the Grave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadow of the Grave",
+      "oracle_fingerprint": "0c2a72b569ee35c60db7f9f5b63791e0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "OwnedBy": "You" }, { "ArrivedFrom": "Hand" }, { "In": "Graveyard" }]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "13ab2f3f-f65e-42b5-b743-39b30a4c4751",
+  "name": "Scarlet Spider, Ben Reilly",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Scarlet Spider, Ben Reilly",
+      "oracle_fingerprint": "5aedb247a77cefa9b9e089cafbd54a0b",
+      "abilities": [
+        {
+          "AltCast": {
+            "way": "WebSlinging",
+            "cost": [
+              { "Mana": "{R}{G}" },
+              {
+                "ReturnToHand": {
+                  "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 135, "end": 292 }
+          }
+        }
+      ]
+    }
+  ]
+}

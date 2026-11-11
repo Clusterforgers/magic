@@ -1,0 +1,90 @@
+{
+  "oracle_id": "8e356df5-ca92-4be2-871e-8965c2510fbe",
+  "name": "Tempt with Vengeance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tempt with Vengeance",
+      "oracle_fingerprint": "bae52917114f19e5f79a2e21be2d4a19",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  },
+                  "count": "X"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "p" },
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "Bound": "p" },
+                              "token": {
+                                "Custom": {
+                                  "name": "Elemental",
+                                  "colors": ["Red"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Elemental"],
+                                  "power": 1,
+                                  "toughness": 1,
+                                  "abilities": [{ "Keyword": "Haste" }]
+                                }
+                              },
+                              "count": "X"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "Custom": {
+                                  "name": "Elemental",
+                                  "colors": ["Red"],
+                                  "types": ["Creature"],
+                                  "subtypes": ["Elemental"],
+                                  "power": 1,
+                                  "toughness": 1,
+                                  "abilities": [{ "Keyword": "Haste" }]
+                                }
+                              },
+                              "count": "X"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

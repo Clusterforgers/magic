@@ -1,0 +1,71 @@
+{
+  "oracle_id": "2143f413-7baa-4fd6-a7ca-32f52bfa553f",
+  "name": "Shadrix Silverquill",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shadrix Silverquill",
+      "oracle_fingerprint": "6919370c0bdf1f40171ef1dfcee3fe38",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "DoubleStrike" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "different_players": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "who": { "Target": 0 },
+                            "token": {
+                              "Custom": {
+                                "name": "Inkling",
+                                "colors": ["White", "Black"],
+                                "types": ["Creature"],
+                                "subtypes": ["Inkling"],
+                                "power": 2,
+                                "toughness": 1,
+                                "abilities": [{ "Keyword": "Flying" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        { "Draw": { "who": { "Target": 0 } } },
+                        { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": {
+                              "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                            },
+                            "counter": "+1/+1"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

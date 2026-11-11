@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e1bce9c3-300c-4a9d-abe0-a1f02d3a1105",
+  "name": "Underrealm Lich",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Underrealm Lich",
+      "oracle_fingerprint": "13c9a90cea47d31e3406f75236d975e3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [
+                { "LookAtTop": { "count": 3, "as": "top" } },
+                { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
+                { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+                { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 4 }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Tap": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

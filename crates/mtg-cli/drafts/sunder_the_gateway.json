@@ -1,0 +1,60 @@
+{
+  "oracle_id": "88d49309-e7d7-486d-8696-cd66bec2fe33",
+  "name": "Sunder the Gateway",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunder the Gateway",
+      "oracle_fingerprint": "807a2eaec75e3687e1f5e4aa26426e73",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                              { "Not": "Token" },
+                              { "ControlledBy": "Opponents" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Destroy": { "what": { "Target": 0 } } },
+                        { "Incubate": { "count": 2 } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "Incubate": { "count": 2 } },
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "Subtype": "Incubator" },
+                                "Token",
+                                { "ControlledBy": "You" }
+                              ]
+                            },
+                            "as": "incubator"
+                          }
+                        },
+                        { "Transform": { "what": { "Bound": "incubator" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

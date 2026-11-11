@@ -1,0 +1,40 @@
+{
+  "oracle_id": "d9c4996a-35eb-4d38-9680-57d9d039ed82",
+  "name": "Cursecloth Wrappings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cursecloth Wrappings",
+      "oracle_fingerprint": "8466da2ef817a65fec38f43f7be51813",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Embalm": ["OwnManaCost"] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

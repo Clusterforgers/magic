@@ -1,0 +1,61 @@
+{
+  "oracle_id": "a800bec4-bacc-43f9-a773-dd795959935b",
+  "name": "Locke, Treasure Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Locke, Treasure Hunter",
+      "oracle_fingerprint": "fa45cdf30843700588dd1189498ad8f6",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  {
+                    "Compare": {
+                      "stat": "Power",
+                      "op": "Gt",
+                      "to": { "Stat": { "of": "This", "stat": "Power" } }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Mill": { "who": "EachPlayer", "as": "milled" } },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "milled" },
+                      "selector": [{ "Type": "Land" }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Graveyard", "only": { "Bound": "milled" }, "once": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

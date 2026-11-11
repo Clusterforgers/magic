@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c60ba5e9-dbfa-441b-a96f-9cc7fdfd2d76",
+  "name": "Cogwork Tracker",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cogwork Tracker",
+      "oracle_fingerprint": "d9fe025a412d76ff4aef49ab6bf08e73",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 74 } }
+        },
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 118, "end": 211 }
+          }
+        }
+      ]
+    }
+  ]
+}

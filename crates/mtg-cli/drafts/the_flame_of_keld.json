@@ -1,0 +1,43 @@
+{
+  "oracle_id": "26b41c78-c5ee-4c50-93be-e3acc35ab355",
+  "name": "The Flame of Keld",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Flame of Keld",
+      "oracle_fingerprint": "49c64fdba84958f055c7e535db3f0c18",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "source": [{ "Color": "Red" }, { "ControlledBy": "You" }] }
+                  },
+                  "by": { "Add": 2 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

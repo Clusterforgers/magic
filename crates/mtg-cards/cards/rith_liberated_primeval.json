@@ -1,0 +1,27 @@
+{
+  "oracle_id": "f89de40f-52d3-44b1-8faa-6ddaa32880d0",
+  "name": "Rith, Liberated Primeval",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Rith, Liberated Primeval",
+      "oracle_fingerprint": "be4436fd51762f4f1c0773e4cc048a12",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Dragon" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": { "Ward": "{2}" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 58, "end": 232 }
+          }
+        }
+      ]
+    }
+  ]
+}

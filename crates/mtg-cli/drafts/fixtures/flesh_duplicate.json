@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "512e9bd2-77b9-4c1c-8d30-e6249dbd930e",
+  "oracle_id": "1869eb1e-7786-4fea-8a92-2bd839de47df",
+  "multiverse_ids": [
+    634739
+  ],
+  "tcgplayer_id": 519221,
+  "cardmarket_id": 738558,
+  "name": "Flesh Duplicate",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/512e9bd2-77b9-4c1c-8d30-e6249dbd930e",
+  "scryfall_uri": "https://scryfall.com/card/who/44/flesh-duplicate?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:51:10Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/1/512e9bd2-77b9-4c1c-8d30-e6249dbd930e.jpg?1783914670",
+    "normal": "https://cards.scryfall.io/normal/front/5/1/512e9bd2-77b9-4c1c-8d30-e6249dbd930e.jpg?1783914670",
+    "large": "https://cards.scryfall.io/large/front/5/1/512e9bd2-77b9-4c1c-8d30-e6249dbd930e.jpg?1783914670",
+    "png": "https://cards.scryfall.io/png/front/5/1/512e9bd2-77b9-4c1c-8d30-e6249dbd930e.png?1783914670",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/1/512e9bd2-77b9-4c1c-8d30-e6249dbd930e.jpg?1783914670",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/1/512e9bd2-77b9-4c1c-8d30-e6249dbd930e.jpg?1783914670",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/1/512e9bd2-77b9-4c1c-8d30-e6249dbd930e.webp?1783914670",
+    "grid": "https://cards.scryfall.io/grid/front/5/1/512e9bd2-77b9-4c1c-8d30-e6249dbd930e.webp?1783914670",
+    "display": "https://cards.scryfall.io/display/front/5/1/512e9bd2-77b9-4c1c-8d30-e6249dbd930e.webp?1783914670",
+    "art": "https://cards.scryfall.io/art/front/5/1/512e9bd2-77b9-4c1c-8d30-e6249dbd930e.webp?1783914670",
+    "crop": "https://cards.scryfall.io/crop/front/5/1/512e9bd2-77b9-4c1c-8d30-e6249dbd930e.webp?1783914670",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/1/512e9bd2-77b9-4c1c-8d30-e6249dbd930e.jpg?1783914670"
+  },
+  "mana_cost": "{U}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Shapeshifter Rebel",
+  "oracle_text": "You may have this creature enter as a copy of any creature on the battlefield, except it has vanishing 3 if that creature doesn't have vanishing. (A permanent with vanishing 3 enters with three time counters on it. At the beginning of your upkeep, remove a time counter from it. When the last is removed, sacrifice it.)",
+  "power": "0",
+  "toughness": "0",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/512e9bd2-77b9-4c1c-8d30-e6249dbd930e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1869eb1e-7786-4fea-8a92-2bd839de47df&unique=prints",
+  "collector_number": "44",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kekai Kotaki",
+  "artist_ids": [
+    "4b771085-c049-4308-930d-ec9665f803a4"
+  ],
+  "illustration_id": "6be0fad5-25e4-490c-927b-64be9eb94d3d",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 2735,
+  "preview": {
+    "source": "Princess Weekes",
+    "source_uri": "https://youtu.be/yhFHKNTnMkg?si=t6VKcCCJVv54YfUf",
+    "previewed_at": "2023-10-03"
+  },
+  "prices": {
+    "usd": "8.99",
+    "usd_foil": "10.83",
+    "usd_etched": null,
+    "eur": "5.27",
+    "eur_foil": "9.17",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634739&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DFlesh%2BDuplicate",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DFlesh%2BDuplicate",
+    "edhrec": "https://edhrec.com/route/?cc=Flesh+Duplicate"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F519221%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738558&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Flesh+Duplicate&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

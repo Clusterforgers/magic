@@ -1,0 +1,88 @@
+{
+  "oracle_id": "ef9a8bdc-3361-440d-89f6-0bf5ff7a09e8",
+  "name": "Garruk, Apex Predator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garruk, Apex Predator",
+      "oracle_fingerprint": "65312036bee899571645918fd9e55ca9",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [{ "what": { "Object": [{ "Type": "Planeswalker" }, "Other"] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Deathtouch" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "GainLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } } }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "who": { "Target": 0 },
+                  "abilities": [
+                    {
+                      "Triggered": {
+                        "when": {
+                          "AttacksPlayer": { "what": [{ "Type": "Creature" }], "at": "You" }
+                        },
+                        "effects": [
+                          {
+                            "Continuous": {
+                              "affected": "Triggering",
+                              "mods": [
+                                { "ModifyPT": { "power": 5, "toughness": 5 } },
+                                { "AddKeyword": "Trample" }
+                              ],
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "34cadd9d-b8e6-422c-b0ec-a2420cd983ad",
+  "name": "Mourner's Shield",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mourner's Shield",
+      "oracle_fingerprint": "e40f1586cfdaee346d9a860f2583f190",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [{ "May": { "effects": [{ "Exile": { "what": { "Target": 0 } } }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "SharesColor": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] } }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

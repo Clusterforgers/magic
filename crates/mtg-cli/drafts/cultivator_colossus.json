@@ -1,0 +1,73 @@
+{
+  "oracle_id": "4d8505d3-c8a1-4850-95d4-5ddb8ad49770",
+  "name": "Cultivator Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cultivator Colossus",
+      "oracle_fingerprint": "347fc9aa59153e5871de6a2f9078af44",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": { "left": { "Bound": "again" }, "op": "Eq", "right": 1 }
+                  },
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
+                              },
+                              "as": "card"
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": { "Bound": "card" },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [{ "Draw": {} }, { "Let": { "as": "again", "amount": 1 } }],
+                        "otherwise": [{ "Let": { "as": "again", "amount": 0 } }]
+                      }
+                    }
+                  ],
+                  "most": 100,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

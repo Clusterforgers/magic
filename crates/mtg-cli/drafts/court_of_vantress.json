@@ -1,0 +1,67 @@
+{
+  "oracle_id": "ad82b43b-b15e-48f4-86ab-5ee2c448cf14",
+  "name": "Court of Vantress",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Court of Vantress",
+      "oracle_fingerprint": "6d6708dde363740f48518dacc2d4f7bf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Enchantment" }, { "Type": "Artifact" }] },
+                    "Other"
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Monarch": "You" },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "BecomeCopy": {
+                              "what": "This",
+                              "of": { "Target": 0 },
+                              "except": ["ThisAbility"],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

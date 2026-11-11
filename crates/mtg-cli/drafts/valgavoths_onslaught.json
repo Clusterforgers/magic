@@ -1,0 +1,48 @@
+{
+  "oracle_id": "663d9559-6619-46fe-8ff4-655f1d5e0e4c",
+  "name": "Valgavoth's Onslaught",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valgavoth's Onslaught",
+      "oracle_fingerprint": "17af04c063212f567a5abde5ed301f3e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 1, "op": "Eq", "right": 1 } },
+                  "effects": [
+                    { "LookAtTop": { "count": 2, "as": "looked" } },
+                    {
+                      "Choose": { "from": { "Bound": "looked" }, "as": "kept2", "rest_as": "rest3" }
+                    },
+                    { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } },
+                    { "Manifest": { "as": "manifested" } },
+                    {
+                      "Bind": {
+                        "what": { "Bound": "manifested" },
+                        "as": "all_manifested",
+                        "adds": true
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "times": "X"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": { "Bound": "all_manifested" },
+                  "counter": "+1/+1",
+                  "count": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

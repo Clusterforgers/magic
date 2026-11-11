@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8089c3eb-99a8-40ca-882a-c1d4e30075ee",
+  "name": "Bane's Contingency",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bane's Contingency",
+      "oracle_fingerprint": "e52ffa0fca751cbae91f7ca9652eedd2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Targeting": ["Commander", { "ControlledBy": "You" }] }]
+                    }
+                  },
+                  "then": [
+                    { "Counter": { "what": { "Target": 0 } } },
+                    { "Scry": { "count": 2 } },
+                    { "Draw": {} }
+                  ],
+                  "otherwise": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

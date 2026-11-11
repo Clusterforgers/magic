@@ -1,0 +1,50 @@
+{
+  "oracle_id": "fc09cbc0-2d28-44c6-b9a9-b95e9e58bb1b",
+  "name": "Complicate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Complicate",
+      "oracle_fingerprint": "ed1a55dc4a8a3e642df459813edc0676",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{3}",
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}{U}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Target": 0 } },
+                        "cost": "{1}",
+                        "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

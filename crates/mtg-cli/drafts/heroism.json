@@ -1,0 +1,48 @@
+{
+  "oracle_id": "74716642-fc8c-4f62-a556-154ed0b4af0e",
+  "name": "Heroism",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heroism",
+      "oracle_fingerprint": "d8338601c219f2715cf84932a6faaa67",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "White" }] } }],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Type": "Creature" }, { "Color": "Red" }, "Attacking"] },
+                  "as": "attacker",
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "ControllerOf": { "Bound": "attacker" } },
+                        "cost": "{2}{R}",
+                        "unpaid": [
+                          {
+                            "Shield": {
+                              "when": {
+                                "Damage": {
+                                  "source": [{ "Is": { "Bound": "attacker" } }],
+                                  "combat": true
+                                }
+                              },
+                              "by": "Prevent",
+                              "duration": "UntilEndOfTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

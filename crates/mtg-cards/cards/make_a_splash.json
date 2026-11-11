@@ -1,0 +1,23 @@
+{
+  "oracle_id": "fe2601a4-cbd5-4866-92a2-5586f737c9af",
+  "name": "Make a _____ Splash",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Make a _____ Splash",
+      "oracle_fingerprint": "434926b165ec6a3173713484a8c2fc3a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 6, "end": 69 } }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 70, "end": 214 }
+          }
+        }
+      ]
+    }
+  ]
+}

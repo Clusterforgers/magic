@@ -1,0 +1,65 @@
+{
+  "oracle_id": "e17d8c0e-16e7-477b-830d-0818cedcb354",
+  "name": "Ore-Rich Stalactite // Cosmium Catalyst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ore-Rich Stalactite",
+      "oracle_fingerprint": "240a30ab92fd9a536c0698eacb9db608",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "only": [
+                    { "Spell": { "types": ["Instant"] } },
+                    { "Spell": { "types": ["Sorcery"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{3}{R}{R}" },
+              {
+                "Craft": {
+                  "filter": [
+                    { "Color": "Red" },
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                  ],
+                  "least": 4
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cosmium Catalyst",
+      "oracle_fingerprint": "b94941dab693b4cbec98c7a6544cfa90",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "as": "crafted"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "crafted" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

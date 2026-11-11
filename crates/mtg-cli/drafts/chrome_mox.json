@@ -1,0 +1,59 @@
+{
+  "oracle_id": "ec3d4466-547c-4e02-b1b5-a156ec4637e9",
+  "name": "Chrome Mox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chrome Mox",
+      "oracle_fingerprint": "f0a67c470c34d7089eb8828d13620d17",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Not": { "Type": "Artifact" } },
+                            { "Not": { "Type": "Land" } },
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "picked"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "picked" }, "as": "exiled2" } },
+                    { "Remember": { "what": { "Bound": "exiled2" }, "slot": "imprinted" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColorAmong": [
+                      { "Is": { "Remembered": { "on": "This", "slot": "imprinted" } } },
+                      { "In": "Exile" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

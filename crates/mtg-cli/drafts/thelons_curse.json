@@ -1,0 +1,59 @@
+{
+  "oracle_id": "f6880f71-a05a-4752-ba33-ffbc450606bf",
+  "name": "Thelon's Curse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thelon's Curse",
+      "oracle_fingerprint": "021a3c257279b13975a9e452a2794422",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Color": "Blue" }, { "Type": "Creature" }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": {
+                    "Each": [
+                      "Tapped",
+                      { "Color": "Blue" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "Triggering" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        "Tapped",
+                        { "Color": "Blue" },
+                        { "Type": "Creature" },
+                        { "ControlledBy": "Triggering" }
+                      ]
+                    }
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{U}",
+                  "times": { "CountOf": { "of": { "Bound": "chosen" }, "filter": [] } },
+                  "paid": [{ "Untap": { "what": { "Bound": "chosen" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

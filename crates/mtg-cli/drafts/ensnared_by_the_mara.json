@@ -1,0 +1,57 @@
+{
+  "oracle_id": "16090270-0ac5-404c-b0c8-a6c8a4b508a4",
+  "name": "Ensnared by the Mara",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ensnared by the Mara",
+      "oracle_fingerprint": "e40416ab67e82a93086a859f49db5492",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "VillainousChoice": {
+                        "who": { "Bound": "opp" },
+                        "first": [
+                          {
+                            "ExileUntil": {
+                              "who": { "Bound": "opp" },
+                              "filter": [{ "Not": { "Type": "Land" } }],
+                              "as": "found",
+                              "exiled_as": "exiled"
+                            }
+                          },
+                          { "CastFromZone": { "what": { "Bound": "found" }, "free": true } }
+                        ],
+                        "second": [
+                          { "ExileTop": { "who": { "Bound": "opp" }, "count": 4, "as": "top" } },
+                          {
+                            "DealDamage": {
+                              "to": { "Bound": "opp" },
+                              "amount": {
+                                "Total": {
+                                  "of": [{ "Is": { "Bound": "top" } }, { "In": "Exile" }],
+                                  "stat": "ManaValue"
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

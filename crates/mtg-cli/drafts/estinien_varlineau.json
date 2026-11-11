@@ -1,0 +1,59 @@
+{
+  "oracle_id": "29cf1dc2-3a6a-4a8b-8d61-4b6f0e74f271",
+  "name": "Estinien Varlineau",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Estinien Varlineau",
+      "oracle_fingerprint": "afba2cc45bb68830fe00eec65b0b107c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+            "effects": [
+              {
+                "Let": {
+                  "as": "x",
+                  "amount": {
+                    "Players": {
+                      "PlayersWhere": {
+                        "who": "Opponents",
+                        "test": {
+                          "CountOf": {
+                            "subject": { "Each": [{ "AnyOf": ["This", { "Subtype": "Dragon" }] }] },
+                            "selector": [
+                              { "DidThisTurn": { "event": "Damaged", "to": "You", "combat": true } }
+                            ],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              { "Draw": { "count": { "Bound": "x" } } },
+              { "LoseLife": { "amount": { "Bound": "x" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

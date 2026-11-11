@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9028f726-50c7-49f3-8386-e584415dcba2",
+  "name": "Raiyuu, Storm's Edge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raiyuu, Storm's Edge",
+      "oracle_fingerprint": "2d2e01f17d8af53399ec21633f262518",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksAlone": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Samurai" }, { "Subtype": "Warrior" }] },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "effects": [
+              { "Untap": { "what": "Triggering" } },
+              {
+                "If": {
+                  "condition": "FirstCombat",
+                  "then": [{ "AddPhase": { "phases": ["Combat"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

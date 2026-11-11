@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7feba745-7d27-4225-bc9d-9b7a8692872d",
+  "name": "Erg Raiders",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Erg Raiders",
+      "oracle_fingerprint": "488eb67768b5db92d9d6865d32ea84ec",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": { "Not": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } } },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "Not": { "NewlyControlled": "This" } },
+                  "then": [{ "DealDamage": { "source": "This", "to": "You", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "9b515bb8-6e37-4b2d-8d56-bb517c3b267c",
+  "name": "Moonhold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonhold",
+      "oracle_fingerprint": "3a32a97c61af949b4b621d7066bec45a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": { "ManaSpent": "Red" },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": { "Cant": { "who": { "Target": 0 }, "action": "PlayLand" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "ManaSpent": "White" },
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Cant": {
+                            "who": { "Target": 0 },
+                            "action": { "Cast": { "filter": [{ "Type": "Creature" }] } }
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "f64ea1a7-0e10-4549-8056-25ebc2ce0175",
+  "name": "Cinder Cloud",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cinder Cloud",
+      "oracle_fingerprint": "efd501acaaa7485152ed4bf6e5c01109",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Destroyed": [{ "Type": "Creature" }, { "Color": "White" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "DealDamage": {
+                        "to": { "ControllerOf": { "Target": 0 } },
+                        "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

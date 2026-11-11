@@ -1,0 +1,42 @@
+{
+  "oracle_id": "a019e34d-00c4-4687-9d41-fe550bf1dbdc",
+  "name": "Talion, the Kindly Lord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talion, the Kindly Lord",
+      "oracle_fingerprint": "90e2958d2c919f4fcd5f29c5b74b02ed",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "Number": { "min": 1, "max": 10 } } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "Chosen" } },
+                      { "Compare": { "stat": "Power", "op": "Eq", "to": "Chosen" } },
+                      { "Compare": { "stat": "Toughness", "op": "Eq", "to": "Chosen" } }
+                    ]
+                  }
+                ],
+                "by": "Opponents"
+              }
+            },
+            "effects": [
+              { "LoseLife": { "who": { "ControllerOf": "Triggering" }, "amount": 2 } },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "oracle_id": "e7c5a568-3855-4a20-9edf-01a8a6a4ba97",
+  "name": "Vraska, the Silencer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vraska, the Silencer",
+      "oracle_fingerprint": "030ba0a01df19d7cd36faa75b74702bc",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Not": "Token" },
+                  { "ControlledBy": "Opponents" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "Move": {
+                        "what": "Triggering",
+                        "to": { "Battlefield": { "tapped": true, "under": "You" } },
+                        "as": "returned"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "returned" },
+                        "mods": [
+                          { "SetTypes": ["Artifact"] },
+                          { "AddSubtype": "Treasure" },
+                          {
+                            "GrantAbility": {
+                              "Activated": {
+                                "cost": ["Tap", "SacrificeSelf"],
+                                "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

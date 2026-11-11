@@ -1,0 +1,49 @@
+{
+  "oracle_id": "a40bebe3-6f00-4754-9f70-351055e3b524",
+  "name": "Trial // Error",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trial",
+      "oracle_fingerprint": "a42c4545740e2349f19d5343f1eb33a9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Blocks": { "Target": 0 } }, { "BlockedBy": { "Target": 0 } }] }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error",
+      "oracle_fingerprint": "75697c2565b1e9ea53e49b97fc5f77b4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

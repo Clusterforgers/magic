@@ -1,0 +1,28 @@
+{
+  "oracle_id": "048f4bb9-c5da-42d4-9af0-bd8754afce1a",
+  "name": "Venser's Diffusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Venser's Diffusion",
+      "oracle_fingerprint": "86c6c958e402cbc185101bff0cf34bcb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    { "Object": [{ "Not": { "Type": "Land" } }] },
+                    { "Object": [{ "In": "Exile" }, "Suspended"] }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f0f7c3df-52f8-4835-a18f-69e56ffa3432",
+  "name": "Ethereal Valkyrie",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ethereal Valkyrie",
+      "oracle_fingerprint": "3a6b7d8d028f0b7853ba1a4f9cbc6721",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 283 }
+          }
+        }
+      ]
+    }
+  ]
+}

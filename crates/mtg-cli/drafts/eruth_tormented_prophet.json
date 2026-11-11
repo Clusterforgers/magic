@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a0380b63-58ef-4545-beec-6ad307bbc21b",
+  "name": "Eruth, Tormented Prophet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eruth, Tormented Prophet",
+      "oracle_fingerprint": "599f36667412961b52645055a39ef8b9",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [
+                { "ExileTop": { "count": 2, "as": "impulse" } },
+                {
+                  "Rule": {
+                    "rule": {
+                      "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                    },
+                    "duration": "UntilEndOfTurn"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

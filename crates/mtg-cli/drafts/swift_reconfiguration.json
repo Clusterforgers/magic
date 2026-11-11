@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5d47e820-913f-441a-a6cc-37ab3181d79a",
+  "name": "Swift Reconfiguration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swift Reconfiguration",
+      "oracle_fingerprint": "50105e96691ca3f8a5352d9a4decec03",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Keyword": {
+            "Enchant": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Vehicle" }] }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetTypes": ["Artifact"] },
+              { "AddSubtype": "Vehicle" },
+              { "AddKeyword": { "Crew": 5 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

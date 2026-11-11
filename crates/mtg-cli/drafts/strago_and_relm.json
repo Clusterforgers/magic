@@ -1,0 +1,68 @@
+{
+  "oracle_id": "316e7c28-2b7a-40ae-961b-909644109fe4",
+  "name": "Strago and Relm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Strago and Relm",
+      "oracle_fingerprint": "ffa3520e0fe893039121da9c4dfdfec0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ExileUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Instant" },
+                        { "Type": "Sorcery" },
+                        { "Type": "Creature" }
+                      ]
+                    }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "found" }, "free": true, "as": "cast" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "cast" },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "cast" },
+                        "mods": [
+                          { "AddKeyword": "Haste" },
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": { "StepBegins": { "step": "End" } },
+                                "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

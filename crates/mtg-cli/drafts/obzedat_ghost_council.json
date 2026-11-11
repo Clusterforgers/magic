@@ -1,0 +1,54 @@
+{
+  "oracle_id": "6c3df703-e96a-4ee4-b449-b8e1e3460bd3",
+  "name": "Obzedat, Ghost Council",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obzedat, Ghost Council",
+      "oracle_fingerprint": "818f45dd4a363f2b0e73764e4e62b5ee",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Exile": { "what": "This", "as": "exiled" } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                        "effects": [
+                          { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } },
+                          {
+                            "Continuous": {
+                              "affected": {
+                                "Arrived": { "of": { "Bound": "exiled" }, "zone": "Battlefield" }
+                              },
+                              "mods": [{ "AddKeyword": "Haste" }],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

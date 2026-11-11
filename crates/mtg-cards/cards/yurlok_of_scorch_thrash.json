@@ -1,0 +1,28 @@
+{
+  "oracle_id": "7baaf462-b0e6-4e21-86a7-73a883c4c9f7",
+  "name": "Yurlok of Scorch Thrash",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Yurlok of Scorch Thrash",
+      "oracle_fingerprint": "b0a2d50c2e7c366062dde2d548f42c86",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 10, "end": 81 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              { "AddMana": { "who": "EachPlayer", "mana": { "Fixed": ["Black", "Red", "Green"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

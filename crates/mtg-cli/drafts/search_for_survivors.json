@@ -1,0 +1,37 @@
+{
+  "oracle_id": "02fd4da6-6c6e-4143-a915-495c668de148",
+  "name": "Search for Survivors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Search for Survivors",
+      "oracle_fingerprint": "9e6f825ac5d38e0851e02ecf5480651d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "card" },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }],
+                  "otherwise": [{ "Exile": { "what": { "Bound": "card" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

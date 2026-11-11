@@ -1,0 +1,20 @@
+{
+  "oracle_id": "159098f1-172f-408e-a962-86763a29a8e1",
+  "name": "Storrev, Devkarin Lich",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Storrev, Devkarin Lich",
+      "oracle_fingerprint": "02b5a413e578dda692feb1c6f0508a6d",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 8, "end": 183 }
+          }
+        }
+      ]
+    }
+  ]
+}

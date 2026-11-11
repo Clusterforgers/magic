@@ -9,7 +9,7 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "when": { "DealsDamage": { "source": [], "to": "This" } },
             "effects": [
               {
                 "May": {
@@ -27,7 +27,7 @@
                             "abilities": [
                               {
                                 "Triggered": {
-                                  "when": { "Batch": { "DealsDamage": { "source": ["This"] } } },
+                                  "when": { "DealsDamage": { "source": ["This"] } },
                                   "effects": [{ "Sacrifice": { "filter": ["This"] } }]
                                 }
                               }
@@ -45,7 +45,13 @@
         {
           "Triggered": {
             "when": { "DiceRolled": { "who": "You" } },
-            "effects": [{ "May": { "effects": [{ "DealDamage": { "to": "This", "amount": 1 } }] } }]
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "DealDamage": { "source": "This", "to": "This", "amount": 1 } }]
+                }
+              }
+            ]
           }
         }
       ]

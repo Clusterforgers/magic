@@ -1,0 +1,68 @@
+{
+  "oracle_id": "dd91f4f2-ea46-48c5-8a80-0dc4ae5b79c4",
+  "name": "Godsend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Godsend",
+      "oracle_fingerprint": "1a6fbff238fa8970ea8627048ffb5d88",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Blocks": { "what": [{ "Is": "Attached" }] } },
+                {
+                  "BecomesBlocked": {
+                    "what": [{ "Is": "Attached" }],
+                    "by": [{ "Type": "Creature" }],
+                    "once": true
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "AnyOf": [{ "Blocks": "Attached" }, { "BlockedBy": "Attached" }] }
+                          ]
+                        },
+                        "as": "creature"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "creature" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "Opponents",
+                "action": {
+                  "Cast": { "filter": [{ "SharesName": { "Each": [{ "ExiledWith": "This" }] } }] }
+                }
+              }
+            }
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

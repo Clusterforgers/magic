@@ -1,0 +1,35 @@
+{
+  "oracle_id": "24315f60-731a-40bb-85ba-eedba1b011ff",
+  "name": "Carrionette",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carrionette",
+      "oracle_fingerprint": "4649e7ab3b4501a08e0607666fdf5d42",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}{B}{B}",
+            "from": "Graveyard",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{2}",
+                  "unpaid": [
+                    {
+                      "Exile": {
+                        "what": { "Each": [{ "AnyOf": ["This", { "Is": { "Target": 0 } }] }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

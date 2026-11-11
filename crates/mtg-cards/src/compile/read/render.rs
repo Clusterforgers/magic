@@ -639,9 +639,7 @@ fn written_anew(ability: &Ability) -> Vec<String> {
             }
         }
     }
-    super::wf25_writers::wf25_removed_wordings(ability, written_variants, &mut texts);
-    super::wf25_writers::wf25_event_object_wordings(ability, written_variants, &mut texts);
-    super::wf25_writers::wf25_block_wordings(&mut texts);
+    super::wf25_writers::wf25_wordings(ability, written_variants, &mut texts);
     let more = super::t18_words::t18_wordings(&texts);
     for text in more {
         if !texts.contains(&text) {

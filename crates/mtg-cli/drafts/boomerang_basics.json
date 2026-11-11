@@ -1,0 +1,32 @@
+{
+  "oracle_id": "acd881eb-f3b4-4174-9fc2-e3c7c213886b",
+  "name": "Boomerang Basics",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boomerang Basics",
+      "oracle_fingerprint": "41ed3d2ed57fdbe5dc2d37c97cd56759",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Departed": { "Target": 0 } },
+                      "selector": [{ "ControlledBy": "You" }]
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

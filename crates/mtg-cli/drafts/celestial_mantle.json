@@ -1,0 +1,41 @@
+{
+  "oracle_id": "7417bc73-a75a-4c3a-88d2-17b43e225c2c",
+  "name": "Celestial Mantle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celestial Mantle",
+      "oracle_fingerprint": "efdb788e594827320027ad82ae40bf2b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "HasAttached": ["This"] }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "SetLife": {
+                  "who": { "ControllerOf": "Attached" },
+                  "amount": {
+                    "Times": { "by": 2, "of": { "Life": { "ControllerOf": "Attached" } } }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

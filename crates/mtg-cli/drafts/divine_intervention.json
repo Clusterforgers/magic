@@ -1,0 +1,47 @@
+{
+  "oracle_id": "0158a440-6573-4f12-958b-a5f0cf190d5b",
+  "name": "Divine Intervention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Divine Intervention",
+      "oracle_fingerprint": "d9fa240e55745f79e7203a393339b62b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "intervention" }, "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "RemoveCounters": { "from": "This", "counter": { "Other": "intervention" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "CountersRemoved": { "what": ["This"], "counter": { "Other": "intervention" } }
+                },
+                "by": "You"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "intervention" } } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [{ "DrawGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

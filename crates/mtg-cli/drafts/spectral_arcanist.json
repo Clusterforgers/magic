@@ -1,0 +1,54 @@
+{
+  "oracle_id": "aba60536-ffbd-480c-8e8f-9639bdc53d4b",
+  "name": "Spectral Arcanist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Arcanist",
+      "oracle_fingerprint": "02cbed5d92af3b247f123f845bd844d2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Count": [{ "Subtype": "Spirit" }, { "ControlledBy": "You" }] }
+                        }
+                      },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "card" }, "free": true, "as": "cast" } },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                      "from": "Stack",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

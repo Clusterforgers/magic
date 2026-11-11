@@ -1,0 +1,33 @@
+{
+  "oracle_id": "158a6225-a246-4fd6-aa57-0df8067b4383",
+  "name": "Lutri, the Spellchaser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lutri, the Spellchaser",
+      "oracle_fingerprint": "cd41cfebbad7a13d3b367fbb76eaf786",
+      "abilities": [
+        { "Keyword": { "Companion": { "Distinct": { "of": [{ "Not": { "Type": "Land" } }] } } } },
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "WasCast": { "by": "You" } }] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

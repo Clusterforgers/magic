@@ -1,0 +1,26 @@
+{
+  "oracle_id": "f6d8e6cb-0878-4f2c-9a89-ce84cb4f5bbc",
+  "name": "Rampaging Soulrager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampaging Soulrager",
+      "oracle_fingerprint": "e8c0bd7d934607a4ec0360c1a56baead",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Doors": [{ "Subtype": "Room" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

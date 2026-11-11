@@ -1,0 +1,22 @@
+{
+  "oracle_id": "04853f06-3fd2-445d-9b0d-d68d0f116635",
+  "name": "Verrak, Warped Sengir",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Verrak, Warped Sengir",
+      "oracle_fingerprint": "6223a58e5cf17f39048ba4503dd84269",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 29, "end": 226 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "oracle_id": "c3a46eb3-38d9-4f47-9b71-26c9ea7ef1ce",
+  "name": "The Dragon-Kami Reborn // Dragon-Kami's Egg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Dragon-Kami Reborn",
+      "oracle_fingerprint": "ce5719fd905bc7f8a123ef1532600072",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "AnyOf": [{ "Chapter": { "number": 1 } }, { "Chapter": { "number": 2 } }] },
+            "effects": [
+              { "GainLife": { "amount": 2 } },
+              { "LookAtTop": { "count": 3, "as": "looked" } },
+              { "Choose": { "from": { "Bound": "looked" }, "as": "chosen", "rest_as": "rest" } },
+              { "ExileHidden": { "what": { "Bound": "chosen" }, "as": "egg" } },
+              { "PutCounters": { "on": { "Bound": "egg" }, "counter": { "Other": "hatching" } } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dragon-Kami's Egg",
+      "oracle_fingerprint": "8e150827ff6d41ea20a031b84ac79944",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CastFromZone": {
+                        "what": {
+                          "Each": [
+                            { "In": "Exile" },
+                            { "OwnedBy": "You" },
+                            { "HasCounter": { "Other": "hatching" } },
+                            { "Type": "Creature" }
+                          ]
+                        },
+                        "free": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "oracle_id": "b9d7341e-10e7-43f9-bee2-e8053b287acd",
+  "name": "The Great Aurora",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Great Aurora",
+      "oracle_fingerprint": "ecfd101acf05330310e98ce2e00c7e79",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Let": {
+                        "as": "n",
+                        "amount": {
+                          "Count": [
+                            { "AnyOf": [{ "In": "Hand" }, { "In": "Battlefield" }] },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "AnyOf": [{ "In": "Hand" }, { "In": "Battlefield" }] },
+                            { "OwnedBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "to": { "Library": { "place": "Shuffled" } }
+                      }
+                    },
+                    { "Draw": { "who": { "Bound": "player" }, "count": { "Bound": "n" } } }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player2",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player2" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "player2" } }
+                          ]
+                        },
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [
+                              { "Type": "Land" },
+                              { "In": "Hand" },
+                              { "OwnedBy": { "Bound": "player2" } }
+                            ]
+                          }
+                        },
+                        "as": "lands"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "lands" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

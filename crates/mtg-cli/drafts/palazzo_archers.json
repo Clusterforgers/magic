@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4887b9e1-ea84-4543-b272-c106a13a33dc",
+  "name": "Palazzo Archers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Palazzo Archers",
+      "oracle_fingerprint": "b77c2b27df21d4ea16a42b4d31c96dd2",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayerOrPlaneswalker": {
+                "what": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }],
+                "at": "You"
+              }
+            },
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": "This",
+                  "to": "TriggeringFirst",
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

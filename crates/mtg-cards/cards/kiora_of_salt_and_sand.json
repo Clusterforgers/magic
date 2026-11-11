@@ -1,0 +1,46 @@
+{
+  "oracle_id": "e70bb7f8-8098-49c5-929c-68f63cd821c5",
+  "name": "Kiora of Salt and Sand",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kiora of Salt and Sand",
+      "oracle_fingerprint": "8234a33c0ba912e3fd187b9521116ea0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": { "event": { "KindActivated": "Loyalty" }, "who": "You", "filter": [] }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 134, "end": 231 }
+          }
+        }
+      ]
+    }
+  ]
+}

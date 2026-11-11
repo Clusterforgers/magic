@@ -1,0 +1,39 @@
+{
+  "oracle_id": "fa9a6617-fd89-490e-9ca5-8e6da99d89ed",
+  "name": "Shape Stealer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shape Stealer",
+      "oracle_fingerprint": "e0e31dd0f1579afe2eb01fb625e57613",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Blocks": { "what": ["This"], "blocking": [{ "Type": "Creature" }] } },
+                { "BecomesBlocked": { "what": ["This"], "by": [{ "Type": "Creature" }] } }
+              ]
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "SetPT": {
+                        "power": { "Stat": { "of": "Against", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "Against", "stat": "Toughness" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e1208d39-86e7-4eae-8dd6-b5bfb29def84",
+  "name": "Mongrel Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mongrel Pack",
+      "oracle_fingerprint": "375edeacfaec25ebfb3221dc4922b582",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": { "AtTrigger": "InCombat" },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dog",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dog"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 4
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

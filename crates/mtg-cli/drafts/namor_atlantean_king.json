@@ -1,0 +1,72 @@
+{
+  "oracle_id": "171a0a09-4aee-466c-aebd-3b0d4c1f51b4",
+  "name": "Namor, Atlantean King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Namor, Atlantean King",
+      "oracle_fingerprint": "ed5e3ae8ab5026cf1d819a9828f977b3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Merfolk",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Merfolk"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AttacksPlayer": {
+                "what": ["This"],
+                "at": {
+                  "PlayersWhere": {
+                    "who": "EachPlayer",
+                    "test": {
+                      "Compare": {
+                        "left": { "Life": "You" },
+                        "op": "Gt",
+                        "right": { "Life": "Asker" }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      "Other",
+                      { "AttackingPlayer": "Defending" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "1a7c5807-afdc-4855-afd5-39839d96fc77",
+  "name": "Magma Pummeler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magma Pummeler",
+      "oracle_fingerprint": "368157f818a26646398ea61600deaac0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": {
+              "PreventAnd": [
+                { "RemoveCounters": { "from": "This", "counter": "+1/+1", "count": "Triggering" } }
+              ]
+            },
+            "condition": {
+              "Matches": { "subject": "This", "selector": [{ "HasCounter": "+1/+1" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

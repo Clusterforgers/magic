@@ -1,0 +1,53 @@
+{
+  "oracle_id": "68a203a3-2283-4e29-b177-b3be43f76899",
+  "name": "Infernal Tutor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Tutor",
+      "oracle_fingerprint": "a405d7a57894249fe74e75865e7d8c4e",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    { "Search": { "filter": [], "as": "any" } },
+                    { "Move": { "what": { "Bound": "any" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ],
+                  "otherwise": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "as": "revealed"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed" } } },
+                    {
+                      "Search": {
+                        "filter": [{ "SharesName": { "Bound": "revealed" } }],
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

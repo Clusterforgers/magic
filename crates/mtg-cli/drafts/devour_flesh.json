@@ -1,0 +1,35 @@
+{
+  "oracle_id": "6c40f825-836e-4b76-8e43-267b4abf013b",
+  "name": "Devour Flesh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Devour Flesh",
+      "oracle_fingerprint": "3da6fbdd81975f54473d51cb503dd527",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "sacrificed"
+                }
+              },
+              {
+                "GainLife": {
+                  "who": { "Target": 0 },
+                  "amount": {
+                    "Stat": { "of": { "Departed": { "Bound": "sacrificed" } }, "stat": "Toughness" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

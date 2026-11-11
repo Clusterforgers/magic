@@ -1,0 +1,59 @@
+{
+  "oracle_id": "a524ae69-2594-467d-af0a-27b9984d4300",
+  "name": "Samite Blessing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samite Blessing",
+      "oracle_fingerprint": "fcfb4474abfb1cad763c7c723494584c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                    "effects": [
+                      {
+                        "Choose": {
+                          "from": {
+                            "Each": [
+                              {
+                                "AnyOf": [
+                                  { "In": "Battlefield" },
+                                  { "In": "Stack" },
+                                  { "In": "Command" }
+                                ]
+                              }
+                            ]
+                          },
+                          "as": "source"
+                        }
+                      },
+                      {
+                        "Shield": {
+                          "when": {
+                            "Damage": {
+                              "to": { "Target": 0 },
+                              "source": [{ "Is": { "Bound": "source" } }]
+                            }
+                          },
+                          "by": "PreventNext",
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

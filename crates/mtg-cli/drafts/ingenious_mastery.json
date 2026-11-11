@@ -1,0 +1,38 @@
+{
+  "oracle_id": "dad43a2d-5b30-45f2-a34d-9e68d1fbb716",
+  "name": "Ingenious Mastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ingenious Mastery",
+      "oracle_fingerprint": "7f8ff3d529283db0317098f8fd8efccf",
+      "abilities": [
+        { "FreeCast": { "cost": "{2}{U}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "CastWith": "Alternative" },
+                  "then": [
+                    { "Draw": { "count": 3 } },
+                    { "Choose": { "from": "Opponents", "as": "opponent" } },
+                    {
+                      "CreateToken": {
+                        "who": { "Bound": "opponent" },
+                        "token": { "Named": "treasure" },
+                        "count": 2
+                      }
+                    },
+                    { "Scry": { "who": { "Bound": "opponent" }, "count": 2 } }
+                  ],
+                  "otherwise": [{ "Draw": { "count": "X" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

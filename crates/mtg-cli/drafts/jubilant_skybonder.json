@@ -1,0 +1,40 @@
+{
+  "oracle_id": "aab55af7-8084-47b6-910f-75a75a6313a4",
+  "name": "Jubilant Skybonder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jubilant Skybonder",
+      "oracle_fingerprint": "ad335faabca9b00ed067298ed0e8c1a4",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "HasKeyword": "Flying" }
+              ]
+            },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "CostModifier": {
+                    "applies_to": [
+                      "Spell",
+                      { "ControlledBy": "Opponents" },
+                      { "Targeting": ["This", { "Type": "Creature" }] }
+                    ],
+                    "change": "Increase",
+                    "mana": "{2}"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

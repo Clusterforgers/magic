@@ -1,0 +1,157 @@
+{
+  "object": "card",
+  "id": "946a0fb7-0e36-47d5-8083-09f48725dff1",
+  "oracle_id": "c99e4768-192c-49bf-8f51-c204a2248326",
+  "multiverse_ids": [
+    470650
+  ],
+  "mtgo_id": 77322,
+  "tcgplayer_id": 196456,
+  "cardmarket_id": 391347,
+  "name": "Bane of the Living",
+  "lang": "en",
+  "released_at": "2019-08-23",
+  "uri": "https://api.scryfall.com/cards/946a0fb7-0e36-47d5-8083-09f48725dff1",
+  "scryfall_uri": "https://scryfall.com/card/c19/104/bane-of-the-living?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:52:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/4/946a0fb7-0e36-47d5-8083-09f48725dff1.jpg?1783932772",
+    "normal": "https://cards.scryfall.io/normal/front/9/4/946a0fb7-0e36-47d5-8083-09f48725dff1.jpg?1783932772",
+    "large": "https://cards.scryfall.io/large/front/9/4/946a0fb7-0e36-47d5-8083-09f48725dff1.jpg?1783932772",
+    "png": "https://cards.scryfall.io/png/front/9/4/946a0fb7-0e36-47d5-8083-09f48725dff1.png?1783932772",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/4/946a0fb7-0e36-47d5-8083-09f48725dff1.jpg?1783932772",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/4/946a0fb7-0e36-47d5-8083-09f48725dff1.jpg?1783932772",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/4/946a0fb7-0e36-47d5-8083-09f48725dff1.webp?1783932772",
+    "grid": "https://cards.scryfall.io/grid/front/9/4/946a0fb7-0e36-47d5-8083-09f48725dff1.webp?1783932772",
+    "display": "https://cards.scryfall.io/display/front/9/4/946a0fb7-0e36-47d5-8083-09f48725dff1.webp?1783932772",
+    "art": "https://cards.scryfall.io/art/front/9/4/946a0fb7-0e36-47d5-8083-09f48725dff1.webp?1783932772",
+    "crop": "https://cards.scryfall.io/crop/front/9/4/946a0fb7-0e36-47d5-8083-09f48725dff1.webp?1783932772",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/4/946a0fb7-0e36-47d5-8083-09f48725dff1.jpg?1783932772"
+  },
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "type_line": "Creature — Insect",
+  "oracle_text": "Morph {X}{B}{B} (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)\nWhen this creature is turned face up, all creatures get -X/-X until end of turn.",
+  "power": "4",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Morph"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "e9375cbe-93c0-41a5-a6e3-fb4416f54a69",
+      "component": "combo_piece",
+      "name": "Morph",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/e9375cbe-93c0-41a5-a6e3-fb4416f54a69"
+    },
+    {
+      "object": "related_card",
+      "id": "946a0fb7-0e36-47d5-8083-09f48725dff1",
+      "component": "combo_piece",
+      "name": "Bane of the Living",
+      "type_line": "Creature — Insect",
+      "uri": "https://api.scryfall.com/cards/946a0fb7-0e36-47d5-8083-09f48725dff1"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2",
+  "set": "c19",
+  "set_name": "Commander 2019",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac19&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c19?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/946a0fb7-0e36-47d5-8083-09f48725dff1/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac99e4768-192c-49bf-8f51-c204a2248326&unique=prints",
+  "collector_number": "104",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Filip Burburan",
+  "artist_ids": [
+    "66082c3b-a623-4d34-be51-2475214b85d3"
+  ],
+  "illustration_id": "0cfac519-4c90-4347-a85b-e7af12a3aa7e",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 10204,
+  "preview": {
+    "source": "LoadingReadyRun",
+    "source_uri": "https://youtu.be/xcmqMjttCVY",
+    "previewed_at": "2019-08-05"
+  },
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=470650&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBane%2Bof%2Bthe%2BLiving",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBane%2Bof%2Bthe%2BLiving",
+    "edhrec": "https://edhrec.com/route/?cc=Bane+of+the+Living"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F196456%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=391347&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/77322?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

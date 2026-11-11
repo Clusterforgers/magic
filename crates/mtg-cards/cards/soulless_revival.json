@@ -1,0 +1,31 @@
+{
+  "oracle_id": "5f00dcc4-38e7-4dde-96d4-f8d4c08b334a",
+  "name": "Soulless Revival",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Soulless Revival",
+      "oracle_fingerprint": "413afe3845f3a126104ace6e4d6a631b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 62, "end": 233 }
+          }
+        }
+      ]
+    }
+  ]
+}

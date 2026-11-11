@@ -1,0 +1,49 @@
+{
+  "oracle_id": "61bfab3f-d8f0-4ff5-9ddf-3fd605070c8f",
+  "name": "Vorpal Sword",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vorpal Sword",
+      "oracle_fingerprint": "fcb3e8de7d7ac024bd4f87247d3cf7ee",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }, { "AddKeyword": "Deathtouch" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{B}{B}{B}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": [{ "Is": "Attached" }],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [{ "LoseGame": { "who": "Triggering" } }]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{B}{B}" } }
+      ]
+    }
+  ]
+}

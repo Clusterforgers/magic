@@ -1,0 +1,20 @@
+{
+  "oracle_id": "054c00b4-c940-455a-ad88-b8aa35931ecf",
+  "name": "Alter Reality",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Alter Reality",
+      "oracle_fingerprint": "81c59e10dda93d4f4dc74c043b14ae5d",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 137 }
+          }
+        },
+        { "Keyword": { "Flashback": "{1}{U}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "f0428cba-a895-4dbd-b495-8f358bb632cf",
+  "oracle_id": "8ac43884-9f03-4945-98ea-c744d0403f32",
+  "multiverse_ids": [
+    598128
+  ],
+  "tcgplayer_id": 269472,
+  "cardmarket_id": 652403,
+  "name": "Contractual Safeguard",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/f0428cba-a895-4dbd-b495-8f358bb632cf",
+  "scryfall_uri": "https://scryfall.com/card/ncc/14/contractual-safeguard?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:16:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/0/f0428cba-a895-4dbd-b495-8f358bb632cf.jpg?1783923376",
+    "normal": "https://cards.scryfall.io/normal/front/f/0/f0428cba-a895-4dbd-b495-8f358bb632cf.jpg?1783923376",
+    "large": "https://cards.scryfall.io/large/front/f/0/f0428cba-a895-4dbd-b495-8f358bb632cf.jpg?1783923376",
+    "png": "https://cards.scryfall.io/png/front/f/0/f0428cba-a895-4dbd-b495-8f358bb632cf.png?1783923376",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/0/f0428cba-a895-4dbd-b495-8f358bb632cf.jpg?1783923376",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/0/f0428cba-a895-4dbd-b495-8f358bb632cf.jpg?1783923376",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/0/f0428cba-a895-4dbd-b495-8f358bb632cf.webp?1783923376",
+    "grid": "https://cards.scryfall.io/grid/front/f/0/f0428cba-a895-4dbd-b495-8f358bb632cf.webp?1783923376",
+    "display": "https://cards.scryfall.io/display/front/f/0/f0428cba-a895-4dbd-b495-8f358bb632cf.webp?1783923376",
+    "art": "https://cards.scryfall.io/art/front/f/0/f0428cba-a895-4dbd-b495-8f358bb632cf.webp?1783923376",
+    "crop": "https://cards.scryfall.io/crop/front/f/0/f0428cba-a895-4dbd-b495-8f358bb632cf.webp?1783923376",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/0/f0428cba-a895-4dbd-b495-8f358bb632cf.jpg?1783923376"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Addendum — If you cast this spell during your main phase, put a shield counter on a creature you control. (If it would be dealt damage or destroyed, remove a shield counter from it instead.)\nChoose a kind of counter on a creature you control. Put a counter of that kind on each other creature you control.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Addendum"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "c51de34b-d4d6-4179-a432-573744ded119",
+  "set": "ncc",
+  "set_name": "New Capenna Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c51de34b-d4d6-4179-a432-573744ded119",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ancc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ncc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f0428cba-a895-4dbd-b495-8f358bb632cf/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8ac43884-9f03-4945-98ea-c744d0403f32&unique=prints",
+  "collector_number": "14",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "brokers",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Gaboleps",
+  "artist_ids": [
+    "0c37cdfe-5651-4ae6-a3c8-e7153509f970"
+  ],
+  "illustration_id": "34f34726-3f92-4946-84ff-60a4f073a502",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9613,
+  "prices": {
+    "usd": "2.49",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.51",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=598128&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DContractual%2BSafeguard",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DContractual%2BSafeguard",
+    "edhrec": "https://edhrec.com/route/?cc=Contractual+Safeguard"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F269472%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=652403&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Contractual+Safeguard&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

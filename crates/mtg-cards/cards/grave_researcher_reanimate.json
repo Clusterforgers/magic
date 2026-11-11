@@ -1,0 +1,56 @@
+{
+  "oracle_id": "6cb8b8c4-0674-4f14-9d89-010969fbb80e",
+  "name": "Grave Researcher // Reanimate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grave Researcher",
+      "oracle_fingerprint": "9fe2c448e0ffa8d2a528b004d2af8c30",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "Surveil": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" },
+                          { "Type": "Creature" }
+                        ]
+                      },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [{ "Prepare": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reanimate",
+      "oracle_fingerprint": "f1ecf392c79ffa7860a72a61d01db556",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } },
+              {
+                "LoseLife": { "amount": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "0d804d47-1f7b-47bd-9eac-aa539eda9af7",
+  "oracle_id": "d7b69fd7-e575-4009-8549-f576249ba641",
+  "multiverse_ids": [
+    620764
+  ],
+  "mtgo_id": 113188,
+  "tcgplayer_id": 499682,
+  "cardmarket_id": 717142,
+  "name": "Model of Unity",
+  "lang": "en",
+  "released_at": "2023-06-23",
+  "uri": "https://api.scryfall.com/cards/0d804d47-1f7b-47bd-9eac-aa539eda9af7",
+  "scryfall_uri": "https://scryfall.com/card/ltc/78/model-of-unity?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:13:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/d/0d804d47-1f7b-47bd-9eac-aa539eda9af7.jpg?1783916009",
+    "normal": "https://cards.scryfall.io/normal/front/0/d/0d804d47-1f7b-47bd-9eac-aa539eda9af7.jpg?1783916009",
+    "large": "https://cards.scryfall.io/large/front/0/d/0d804d47-1f7b-47bd-9eac-aa539eda9af7.jpg?1783916009",
+    "png": "https://cards.scryfall.io/png/front/0/d/0d804d47-1f7b-47bd-9eac-aa539eda9af7.png?1783916009",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/d/0d804d47-1f7b-47bd-9eac-aa539eda9af7.jpg?1783916009",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/d/0d804d47-1f7b-47bd-9eac-aa539eda9af7.jpg?1783916009",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/d/0d804d47-1f7b-47bd-9eac-aa539eda9af7.webp?1783916009",
+    "grid": "https://cards.scryfall.io/grid/front/0/d/0d804d47-1f7b-47bd-9eac-aa539eda9af7.webp?1783916009",
+    "display": "https://cards.scryfall.io/display/front/0/d/0d804d47-1f7b-47bd-9eac-aa539eda9af7.webp?1783916009",
+    "art": "https://cards.scryfall.io/art/front/0/d/0d804d47-1f7b-47bd-9eac-aa539eda9af7.webp?1783916009",
+    "crop": "https://cards.scryfall.io/crop/front/0/d/0d804d47-1f7b-47bd-9eac-aa539eda9af7.webp?1783916009",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/d/0d804d47-1f7b-47bd-9eac-aa539eda9af7.jpg?1783916009"
+  },
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "type_line": "Artifact",
+  "oracle_text": "Whenever players finish voting, you and each opponent who voted for a choice you voted for may scry 2.\n{T}: Add one mana of any color.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Scry"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set": "ltc",
+  "set_name": "Tales of Middle-earth Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/e567c19c-0fe4-446e-a7bf-fce8a150cd2e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Altc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ltc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0d804d47-1f7b-47bd-9eac-aa539eda9af7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad7b69fd7-e575-4009-8549-f576249ba641&unique=prints",
+  "collector_number": "78",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Rivendell is a perfect house, whether you like food or sleep or storytelling or singing, or a pleasant mixture of them all.\"\n—Bilbo",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Yuriy Chemezov",
+  "artist_ids": [
+    "0e2c4292-9cb6-4973-9b1f-9ff4b6ec166e"
+  ],
+  "illustration_id": "a7f92e8b-6dbb-450e-bd35-8f10c40c64cb",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 8820,
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": null,
+    "tix": "0.36"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=620764&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DModel%2Bof%2BUnity",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DModel%2Bof%2BUnity",
+    "edhrec": "https://edhrec.com/route/?cc=Model+of+Unity"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F499682%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=717142&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/113188?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

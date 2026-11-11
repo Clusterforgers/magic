@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "428e255d-bdda-4265-91cf-d02962e818e4",
+  "oracle_id": "f1bd0d32-7513-4d1d-94aa-d06101a940c0",
+  "multiverse_ids": [
+    662243
+  ],
+  "mtgo_id": 126199,
+  "arena_id": 90940,
+  "tcgplayer_id": 553220,
+  "cardmarket_id": 772363,
+  "name": "Etched Slith",
+  "lang": "en",
+  "released_at": "2024-06-14",
+  "uri": "https://api.scryfall.com/cards/428e255d-bdda-4265-91cf-d02962e818e4",
+  "scryfall_uri": "https://scryfall.com/card/mh3/91/etched-slith?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:54:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/2/428e255d-bdda-4265-91cf-d02962e818e4.jpg?1783911281",
+    "normal": "https://cards.scryfall.io/normal/front/4/2/428e255d-bdda-4265-91cf-d02962e818e4.jpg?1783911281",
+    "large": "https://cards.scryfall.io/large/front/4/2/428e255d-bdda-4265-91cf-d02962e818e4.jpg?1783911281",
+    "png": "https://cards.scryfall.io/png/front/4/2/428e255d-bdda-4265-91cf-d02962e818e4.png?1783911281",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/2/428e255d-bdda-4265-91cf-d02962e818e4.jpg?1783911281",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/2/428e255d-bdda-4265-91cf-d02962e818e4.jpg?1783911281",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/2/428e255d-bdda-4265-91cf-d02962e818e4.webp?1783911281",
+    "grid": "https://cards.scryfall.io/grid/front/4/2/428e255d-bdda-4265-91cf-d02962e818e4.webp?1783911281",
+    "display": "https://cards.scryfall.io/display/front/4/2/428e255d-bdda-4265-91cf-d02962e818e4.webp?1783911281",
+    "art": "https://cards.scryfall.io/art/front/4/2/428e255d-bdda-4265-91cf-d02962e818e4.webp?1783911281",
+    "crop": "https://cards.scryfall.io/crop/front/4/2/428e255d-bdda-4265-91cf-d02962e818e4.webp?1783911281",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/2/428e255d-bdda-4265-91cf-d02962e818e4.jpg?1783911281"
+  },
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Artifact Creature — Phyrexian Slith",
+  "oracle_text": "Menace\nWhenever this creature deals combat damage to a player, put a +1/+1 counter on it. When you do, you may remove a counter from another target permanent or opponent.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Menace"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set": "mh3",
+  "set_name": "Modern Horizons 3",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/3ed80bb6-77e8-4aa7-8262-95377a38aba1",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh3&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh3?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/428e255d-bdda-4265-91cf-d02962e818e4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af1bd0d32-7513-4d1d-94aa-d06101a940c0&unique=prints",
+  "collector_number": "91",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The inherently adaptive bodies of the slith made them coveted subjects for *compleation*.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Allen Williams",
+  "artist_ids": [
+    "8a56d854-b424-45ec-9262-e993a382a961"
+  ],
+  "illustration_id": "d19d5e7b-dfe7-41a6-a970-db7ac6368f94",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 18203,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://twitter.com/mtgjp/status/1795387288438104530",
+    "previewed_at": "2024-05-28"
+  },
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.29",
+    "usd_etched": null,
+    "eur": "0.08",
+    "eur_foil": "0.18",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=662243&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEtched%2BSlith",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEtched%2BSlith",
+    "edhrec": "https://edhrec.com/route/?cc=Etched+Slith"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F553220%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=772363&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/126199?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

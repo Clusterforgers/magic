@@ -1,0 +1,59 @@
+{
+  "oracle_id": "3fe9367b-def1-4820-9e23-92ce3d7a4afc",
+  "name": "Moxite Refinery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moxite Refinery",
+      "oracle_fingerprint": "917184b8bdb5618eb57bd1c122ddf64f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              {
+                "RemoveCounters": {
+                  "count": "X",
+                  "from": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Target": 0 },
+                            "counter": "charge",
+                            "count": "X"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "X" }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

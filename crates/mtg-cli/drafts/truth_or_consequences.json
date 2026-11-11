@@ -1,0 +1,30 @@
+{
+  "oracle_id": "58d944fb-d1ba-4141-baaf-37dd10978656",
+  "name": "Truth or Consequences",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Truth or Consequences",
+      "oracle_fingerprint": "c38b64bf3029dcbc63615d9043c5b3ef",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Vote": { "options": { "Named": ["truth", "consequences"] }, "secret": true } },
+              { "Draw": { "count": { "Players": { "Bound": "truth" } } } },
+              { "ChooseAtRandom": { "from": "Opponents", "as": "opp" } },
+              {
+                "DealDamage": {
+                  "to": { "Bound": "opp" },
+                  "amount": {
+                    "Times": { "by": 3, "of": { "Players": { "Bound": "consequences" } } }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

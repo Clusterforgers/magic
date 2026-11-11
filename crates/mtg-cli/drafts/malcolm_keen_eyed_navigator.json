@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a66f8b44-0163-4456-b152-4acefab896a4",
+  "name": "Malcolm, Keen-Eyed Navigator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Malcolm, Keen-Eyed Navigator",
+      "oracle_fingerprint": "e9dff38c26c1d75068fcb532a17646ba",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Pirate" }, { "ControlledBy": "You" }],
+                  "to": "Opponents"
+                }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": { "Players": "Triggering" }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Partner" }
+      ]
+    }
+  ]
+}

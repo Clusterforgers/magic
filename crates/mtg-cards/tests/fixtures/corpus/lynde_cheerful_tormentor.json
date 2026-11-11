@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "4df484de-4d9b-4a4b-9d10-df993e36f1a8",
+  "oracle_id": "dc386f6c-bd4a-462a-8d42-0e7a552a4f17",
+  "multiverse_ids": [
+    540755
+  ],
+  "tcgplayer_id": 248854,
+  "cardmarket_id": 575450,
+  "name": "Lynde, Cheerful Tormentor",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/4df484de-4d9b-4a4b-9d10-df993e36f1a8",
+  "scryfall_uri": "https://scryfall.com/card/mic/38/lynde-cheerful-tormentor?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:49:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/d/4df484de-4d9b-4a4b-9d10-df993e36f1a8.jpg?1783925369",
+    "normal": "https://cards.scryfall.io/normal/front/4/d/4df484de-4d9b-4a4b-9d10-df993e36f1a8.jpg?1783925369",
+    "large": "https://cards.scryfall.io/large/front/4/d/4df484de-4d9b-4a4b-9d10-df993e36f1a8.jpg?1783925369",
+    "png": "https://cards.scryfall.io/png/front/4/d/4df484de-4d9b-4a4b-9d10-df993e36f1a8.png?1783925369",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/d/4df484de-4d9b-4a4b-9d10-df993e36f1a8.jpg?1783925369",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/d/4df484de-4d9b-4a4b-9d10-df993e36f1a8.jpg?1783925369",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/d/4df484de-4d9b-4a4b-9d10-df993e36f1a8.webp?1783925369",
+    "grid": "https://cards.scryfall.io/grid/front/4/d/4df484de-4d9b-4a4b-9d10-df993e36f1a8.webp?1783925369",
+    "display": "https://cards.scryfall.io/display/front/4/d/4df484de-4d9b-4a4b-9d10-df993e36f1a8.webp?1783925369",
+    "art": "https://cards.scryfall.io/art/front/4/d/4df484de-4d9b-4a4b-9d10-df993e36f1a8.webp?1783925369",
+    "crop": "https://cards.scryfall.io/crop/front/4/d/4df484de-4d9b-4a4b-9d10-df993e36f1a8.webp?1783925369",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/d/4df484de-4d9b-4a4b-9d10-df993e36f1a8.jpg?1783925369"
+  },
+  "mana_cost": "{1}{U}{B}{R}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Warlock",
+  "oracle_text": "Deathtouch\nWhenever a Curse is put into your graveyard from the battlefield, return it to the battlefield attached to you at the beginning of the next end step.\nAt the beginning of your upkeep, you may attach a Curse attached to you to one of your opponents. If you do, draw two cards.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "B",
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Deathtouch"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "7f9a4deb-715e-47d2-afac-3843ef92f39b",
+  "set": "mic",
+  "set_name": "Midnight Hunt Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/7f9a4deb-715e-47d2-afac-3843ef92f39b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4df484de-4d9b-4a4b-9d10-df993e36f1a8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adc386f6c-bd4a-462a-8d42-0e7a552a4f17&unique=prints",
+  "collector_number": "38",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anna Steinbauer",
+  "artist_ids": [
+    "3516496c-c279-4b56-8239-720683d03ae0"
+  ],
+  "illustration_id": "5f6c3512-5785-4399-94b8-a9b718512390",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 12356,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1143922637",
+    "previewed_at": "2021-09-09"
+  },
+  "prices": {
+    "usd": "1.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.85",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=540755&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLynde%252C%2BCheerful%2BTormentor",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLynde%252C%2BCheerful%2BTormentor",
+    "edhrec": "https://edhrec.com/route/?cc=Lynde%2C+Cheerful+Tormentor"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F248854%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=575450&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Lynde%2C+Cheerful+Tormentor&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

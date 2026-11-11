@@ -1,0 +1,51 @@
+{
+  "oracle_id": "af206aed-1f58-4f5a-ba42-0e0d1f282940",
+  "name": "Athreos, God of Passage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Athreos, God of Passage",
+      "oracle_fingerprint": "cd2239e689ac1450b81e85642c906d45",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": { "left": { "Devotion": ["White", "Black"] }, "op": "Lt", "right": 7 }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "OwnedBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "Target": 0 },
+                  "cost": [{ "PayLife": 3 }],
+                  "unpaid": [
+                    {
+                      "Move": {
+                        "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                        "to": "Hand"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

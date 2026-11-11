@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a483b1fd-751a-447e-8e4f-a54b1c194d2c",
+  "name": "Ogre Geargrabber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ogre Geargrabber",
+      "oracle_fingerprint": "b0de569bd9ed2260207e3f6ecc72f411",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "Opponents" }] }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Attach": { "what": { "Target": 0 }, "to": "This" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Did": { "action": "ChangedController", "what": [{ "Is": { "Target": 0 } }] }
+                  },
+                  "effects": [{ "Unattach": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

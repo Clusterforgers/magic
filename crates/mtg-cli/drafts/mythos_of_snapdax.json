@@ -1,0 +1,188 @@
+{
+  "oracle_id": "4b0b4d16-1d2b-497e-a1ae-bfb89eece665",
+  "name": "Mythos of Snapdax",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mythos of Snapdax",
+      "oracle_fingerprint": "a756f4f1f31a1e5429bfe44abbfe1e48",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": { "All": [{ "ManaSpent": "Black" }, { "ManaSpent": "Red" }] },
+                  "then": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "player",
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "Type": "Artifact" },
+                                  { "Not": { "Type": "Land" } },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "as": "artifact"
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "Not": { "Type": "Land" } },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "as": "creature"
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "Type": "Enchantment" },
+                                  { "Not": { "Type": "Land" } },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "as": "enchantment"
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "Type": "Planeswalker" },
+                                  { "Not": { "Type": "Land" } },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "as": "planeswalker"
+                            }
+                          },
+                          {
+                            "Sacrifice": {
+                              "who": { "Bound": "player" },
+                              "filter": [
+                                { "Not": { "Type": "Land" } },
+                                { "Not": { "Is": { "Bound": "artifact" } } },
+                                { "Not": { "Is": { "Bound": "creature" } } },
+                                { "Not": { "Is": { "Bound": "enchantment" } } },
+                                { "Not": { "Is": { "Bound": "planeswalker" } } }
+                              ],
+                              "count": {
+                                "Count": [
+                                  { "Not": { "Type": "Land" } },
+                                  { "ControlledBy": { "Bound": "player" } },
+                                  { "Not": { "Is": { "Bound": "artifact" } } },
+                                  { "Not": { "Is": { "Bound": "creature" } } },
+                                  { "Not": { "Is": { "Bound": "enchantment" } } },
+                                  { "Not": { "Is": { "Bound": "planeswalker" } } }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "player",
+                        "effects": [
+                          {
+                            "Choose": {
+                              "who": { "Bound": "player" },
+                              "from": {
+                                "Each": [
+                                  { "Type": "Artifact" },
+                                  { "Not": { "Type": "Land" } },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "as": "artifact"
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "who": { "Bound": "player" },
+                              "from": {
+                                "Each": [
+                                  { "Type": "Creature" },
+                                  { "Not": { "Type": "Land" } },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "as": "creature"
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "who": { "Bound": "player" },
+                              "from": {
+                                "Each": [
+                                  { "Type": "Enchantment" },
+                                  { "Not": { "Type": "Land" } },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "as": "enchantment"
+                            }
+                          },
+                          {
+                            "Choose": {
+                              "who": { "Bound": "player" },
+                              "from": {
+                                "Each": [
+                                  { "Type": "Planeswalker" },
+                                  { "Not": { "Type": "Land" } },
+                                  { "ControlledBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "as": "planeswalker"
+                            }
+                          },
+                          {
+                            "Sacrifice": {
+                              "who": { "Bound": "player" },
+                              "filter": [
+                                { "Not": { "Type": "Land" } },
+                                { "Not": { "Is": { "Bound": "artifact" } } },
+                                { "Not": { "Is": { "Bound": "creature" } } },
+                                { "Not": { "Is": { "Bound": "enchantment" } } },
+                                { "Not": { "Is": { "Bound": "planeswalker" } } }
+                              ],
+                              "count": {
+                                "Count": [
+                                  { "Not": { "Type": "Land" } },
+                                  { "ControlledBy": { "Bound": "player" } },
+                                  { "Not": { "Is": { "Bound": "artifact" } } },
+                                  { "Not": { "Is": { "Bound": "creature" } } },
+                                  { "Not": { "Is": { "Bound": "enchantment" } } },
+                                  { "Not": { "Is": { "Bound": "planeswalker" } } }
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "oracle_id": "e0709843-0a91-4a21-9512-d7481707f3c9",
+  "name": "Carth the Lion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Carth the Lion",
+      "oracle_fingerprint": "d521aaeb32aa1a8c2ad8b267048b45ef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "LookAtTop": { "count": 7, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Type": "Planeswalker" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 243, "end": 325 }
+          }
+        }
+      ]
+    }
+  ]
+}

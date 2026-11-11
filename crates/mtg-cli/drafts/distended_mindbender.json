@@ -1,0 +1,61 @@
+{
+  "oracle_id": "36d32194-d547-4e2d-894f-f4bf13cf7da6",
+  "name": "Distended Mindbender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Distended Mindbender",
+      "oracle_fingerprint": "a4b7b039da450a79ea061211703b41e2",
+      "abilities": [
+        { "Keyword": { "Emerge": "{5}{B}{B}" } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Not": { "Type": "Land" } },
+                      { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                    ]
+                  },
+                  "as": "low"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }
+                    ]
+                  },
+                  "as": "high"
+                }
+              },
+              {
+                "Discard": {
+                  "who": { "Target": 0 },
+                  "count": 2,
+                  "filter": [
+                    { "AnyOf": [{ "Is": { "Bound": "low" } }, { "Is": { "Bound": "high" } }] }
+                  ],
+                  "by": "You"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

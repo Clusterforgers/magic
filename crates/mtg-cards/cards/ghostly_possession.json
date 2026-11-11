@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8104a51d-f07b-45d6-aaa7-c6386d6de8bf",
+  "name": "Ghostly Possession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghostly Possession",
+      "oracle_fingerprint": "a87fffa720826dc13a6d143b993e83d3",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Flying" }] } },
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "Attached", "combat": true } },
+            "by": "Prevent"
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Damage": { "source": [{ "Type": "Creature" }, { "Is": "Attached" }], "combat": true }
+            },
+            "by": "Prevent"
+          }
+        }
+      ]
+    }
+  ]
+}

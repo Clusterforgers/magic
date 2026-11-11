@@ -1,0 +1,74 @@
+{
+  "oracle_id": "b19ff0dd-2041-461f-aa62-6dc273e4bbe5",
+  "name": "Lighthouse Chronologist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lighthouse Chronologist",
+      "oracle_fingerprint": "89ad1ff5e4a858eba6c5c274dd88d3b3",
+      "abilities": [
+        { "Keyword": { "LevelUp": "{U}" } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 2, "toughness": 4 } }],
+            "condition": {
+              "All": [
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Ge",
+                    "right": 4
+                  }
+                },
+                {
+                  "Compare": {
+                    "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                    "op": "Le",
+                    "right": 6
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetPT": { "power": 3, "toughness": 5 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "StepBegins": { "step": "End" } },
+                    "if": { "Not": "YourTurn" },
+                    "effects": [{ "ExtraTurn": {} }]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "level" } } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

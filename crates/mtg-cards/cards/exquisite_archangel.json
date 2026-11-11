@@ -1,0 +1,20 @@
+{
+  "oracle_id": "472efb69-47c8-4c93-b60a-f6dba4364b8c",
+  "name": "Exquisite Archangel",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Exquisite Archangel",
+      "oracle_fingerprint": "f6b0bdacd22c1da8e479d071f72ecc71",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 125 }
+          }
+        }
+      ]
+    }
+  ]
+}

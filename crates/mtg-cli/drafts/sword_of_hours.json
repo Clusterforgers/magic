@@ -1,0 +1,63 @@
+{
+  "oracle_id": "abaddcce-9039-4b4e-baf8-fdab304b5c52",
+  "name": "Sword of Hours",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of Hours",
+      "oracle_fingerprint": "989150a0654f9e2fd2b13d886bbf14f8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "HasAttached": ["This"] }] } },
+            "effects": [{ "PutCounters": { "on": "Triggering", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [{ "HasAttached": ["This"] }], "combat": true } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 12,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 12,
+                      "effects": [
+                        {
+                          "If": {
+                            "condition": {
+                              "Any": [
+                                {
+                                  "Compare": {
+                                    "left": { "DieResult": "Only" },
+                                    "op": "Gt",
+                                    "right": "Triggering"
+                                  }
+                                },
+                                {
+                                  "Compare": {
+                                    "left": { "DieResult": "Only" },
+                                    "op": "Eq",
+                                    "right": 12
+                                  }
+                                }
+                              ]
+                            },
+                            "then": [{ "MultiplyCounters": { "on": "Dealer", "counter": "+1/+1" } }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

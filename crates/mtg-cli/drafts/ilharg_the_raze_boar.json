@@ -1,0 +1,72 @@
+{
+  "oracle_id": "8d571129-9030-47e0-9624-a49fb63e5a1b",
+  "name": "Ilharg, the Raze-Boar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ilharg, the Raze-Boar",
+      "oracle_fingerprint": "46e0c4d8c4fddf5beb15266d7bb36178",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                        },
+                        "as": "c"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "c" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Bound": "c" } } },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Move": { "what": { "Bound": "c" }, "to": "Hand" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Exile" } }
+              ]
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": "Triggering",
+                        "to": { "Library": { "place": { "Below": 2 } } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

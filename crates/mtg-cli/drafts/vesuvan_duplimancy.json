@@ -1,0 +1,49 @@
+{
+  "oracle_id": "6058fab1-9878-42b7-93be-b0a5aa99bd6d",
+  "name": "Vesuvan Duplimancy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vesuvan Duplimancy",
+      "oracle_fingerprint": "1e892f4d23c4458c0f6b795260a18d95",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  "SingleTarget",
+                  {
+                    "Targeting": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": {
+                        "Each": [
+                          { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                          { "ControlledBy": "You" },
+                          { "TargetedBy": "Triggering" }
+                        ]
+                      },
+                      "except": [{ "RemoveSupertype": "Legendary" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

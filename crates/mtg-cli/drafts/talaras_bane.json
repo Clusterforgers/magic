@@ -1,0 +1,42 @@
+{
+  "oracle_id": "2a573cc3-0a2f-4f06-bbac-c762adb9bae4",
+  "name": "Talara's Bane",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talara's Bane",
+      "oracle_fingerprint": "a506c6e8f4b20b99c650974eea0b38a2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Type": "Creature" },
+                      { "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] }
+                    ]
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Stat": { "of": { "Bound": "chosen" }, "stat": "Toughness" } }
+                }
+              },
+              { "Discard": { "who": { "Target": 0 }, "filter": [{ "Is": { "Bound": "chosen" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "oracle_id": "917f2b4b-79ec-4ded-b4c8-cbcf363cb23b",
+  "name": "Eureka",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eureka",
+      "oracle_fingerprint": "0539b51a4cd3d0ec6bf82b5e92624322",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Count": [{ "In": "Hand" }] },
+                      "op": "Lt",
+                      "right": { "Bound": "hand_before" }
+                    }
+                  },
+                  "effects": [
+                    { "Let": { "as": "hand_before", "amount": { "Count": [{ "In": "Hand" }] } } },
+                    {
+                      "RepeatEach": {
+                        "over": "EachPlayer",
+                        "as": "player",
+                        "effects": [
+                          {
+                            "Choose": {
+                              "who": { "Bound": "player" },
+                              "from": {
+                                "Each": [
+                                  {
+                                    "AnyOf": [
+                                      { "Type": "Artifact" },
+                                      { "Type": "Battle" },
+                                      { "Type": "Creature" },
+                                      { "Type": "Enchantment" },
+                                      { "Type": "Land" },
+                                      { "Type": "Planeswalker" }
+                                    ]
+                                  },
+                                  { "In": "Hand" },
+                                  { "OwnedBy": { "Bound": "player" } }
+                                ]
+                              },
+                              "count": { "min": 0, "max": 1 },
+                              "as": "picked"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "picked" }, "to": { "Battlefield": {} } } }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

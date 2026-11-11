@@ -1,0 +1,68 @@
+{
+  "oracle_id": "9e095761-cdae-4ab2-b2d3-099b0b39600a",
+  "name": "Goblin Sappers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Sappers",
+      "oracle_fingerprint": "f7f78c6608eef704e9d4a17d85cbda97",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}{R}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [
+                    {
+                      "Together": {
+                        "effects": [
+                          { "Destroy": { "what": { "Target": 0 } } },
+                          { "Destroy": { "what": "This" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}{R}{R}{R}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "EndCombat" } },
+                  "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

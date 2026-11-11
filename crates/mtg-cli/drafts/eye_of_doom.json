@@ -1,0 +1,46 @@
+{
+  "oracle_id": "e808a11e-29bd-4e99-a24e-67fa8f6fe502",
+  "name": "Eye of Doom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eye of Doom",
+      "oracle_fingerprint": "4baccd317b479874b5bde93c3ffa9212",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": { "Each": [{ "Not": { "Type": "Land" } }] },
+                        "as": "chosen"
+                      }
+                    },
+                    {
+                      "PutCounters": { "on": { "Bound": "chosen" }, "counter": { "Other": "doom" } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "HasCounter": { "Other": "doom" } }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

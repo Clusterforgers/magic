@@ -1,0 +1,26 @@
+{
+  "oracle_id": "bfd6a73e-d126-4afe-99db-98cf716a1772",
+  "name": "Dream Strix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Strix",
+      "oracle_fingerprint": "868a6054f703666a792f90e763dd8bc9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": ["This"], "by": ["Spell"] } },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "Learn": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

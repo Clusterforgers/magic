@@ -1,0 +1,88 @@
+{
+  "oracle_id": "a56c5ca5-70eb-4d5f-8116-2acbe5f5a3cb",
+  "name": "Jaya Ballard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jaya Ballard",
+      "oracle_fingerprint": "59f19057fc472dc4e37ed74cd307ee09",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red", "Red", "Red"] },
+                  "only": [{ "Spell": { "types": ["Instant", "Sorcery"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 0, "max": 3 },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Discard": {
+                  "count": { "Count": [{ "Is": { "Bound": "chosen" } }] },
+                  "filter": [{ "Is": { "Bound": "chosen" } }],
+                  "as": "discarded"
+                }
+              },
+              { "Draw": { "count": { "Count": [{ "Is": { "Bound": "discarded" } }] } } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                            "from": "Graveyard"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "Replacement": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [
+                              "Spell",
+                              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                              { "CastFrom": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ],
+                            "from": "Stack",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "by": { "MoveTo": "Exile" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

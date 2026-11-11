@@ -1,0 +1,124 @@
+{
+  "oracle_id": "a4b37d16-95b3-4143-a0b2-ad9f2aba91f8",
+  "name": "Welcome to . . . // Jurassic Park",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Welcome to . . .",
+      "oracle_fingerprint": "6c21371ee371d162eea7bfb073923923",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [{ "Type": "Artifact" }, { "Not": { "Type": "Creature" } }]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "SetPT": { "power": 0, "toughness": 4 } },
+                    { "AddType": "Creature" },
+                    { "AddSubtype": "Wall" },
+                    { "AddKeyword": "Defender" }
+                  ],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dinosaur",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dinosaur"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Subtype": "Wall" }] } } },
+              { "Exile": { "what": "This", "as": "exiled" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Battlefield": { "under": "You", "transformed": true } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jurassic Park",
+      "oracle_fingerprint": "9b727ca24ded8ecefd2d28942cb047b9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Subtype": "Dinosaur" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+            },
+            "mods": [
+              {
+                "AddKeyword": {
+                  "Escape": [
+                    "OwnManaCost",
+                    { "ExileFromGraveyard": { "filter": ["Other"], "count": 3 } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": { "Count": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

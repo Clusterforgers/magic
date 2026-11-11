@@ -1,0 +1,52 @@
+{
+  "oracle_id": "d49c94fa-712a-47c0-b571-4db7e064a590",
+  "name": "Ride the Avalanche",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ride the Avalanche",
+      "oracle_fingerprint": "35e346317fe1765c3f97b63336bdc811",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "NextSpell": { "benefit": "Flash" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "by": "You" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": { "Object": [{ "Type": "Creature" }] },
+                            "bounds": { "min": 0, "max": 1 }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "PutCounters": {
+                              "on": { "Target": 0 },
+                              "counter": "+1/+1",
+                              "count": { "Stat": { "of": "Triggering", "stat": "ManaValue" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

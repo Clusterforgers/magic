@@ -1,0 +1,35 @@
+{
+  "oracle_id": "889d1056-4d3d-42f0-96f2-16529a4a94e3",
+  "name": "Herald of Anafenza",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Herald of Anafenza",
+      "oracle_fingerprint": "75b6f621037c5778bf60f42465c3a514",
+      "abilities": [
+        { "Keyword": { "Outlast": "{2}{W}" } },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Activated", "who": "You", "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Warrior",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Warrior"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

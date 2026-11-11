@@ -1,0 +1,138 @@
+{
+  "object": "card",
+  "id": "47af956c-e2ba-47c5-bc5d-ec0ab345ce57",
+  "oracle_id": "5c2d0ead-8bfc-4ca7-9b38-2fc07af1c1d5",
+  "multiverse_ids": [
+    438605
+  ],
+  "mtgo_id": 65957,
+  "mtgo_foil_id": 65958,
+  "tcgplayer_id": 145281,
+  "cardmarket_id": 301430,
+  "name": "Yosei, the Morning Star",
+  "lang": "en",
+  "released_at": "2017-11-17",
+  "uri": "https://api.scryfall.com/cards/47af956c-e2ba-47c5-bc5d-ec0ab345ce57",
+  "scryfall_uri": "https://scryfall.com/card/ima/39/yosei-the-morning-star?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:39:13Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/7/47af956c-e2ba-47c5-bc5d-ec0ab345ce57.jpg?1783935553",
+    "normal": "https://cards.scryfall.io/normal/front/4/7/47af956c-e2ba-47c5-bc5d-ec0ab345ce57.jpg?1783935553",
+    "large": "https://cards.scryfall.io/large/front/4/7/47af956c-e2ba-47c5-bc5d-ec0ab345ce57.jpg?1783935553",
+    "png": "https://cards.scryfall.io/png/front/4/7/47af956c-e2ba-47c5-bc5d-ec0ab345ce57.png?1783935553",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/7/47af956c-e2ba-47c5-bc5d-ec0ab345ce57.jpg?1783935553",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/7/47af956c-e2ba-47c5-bc5d-ec0ab345ce57.jpg?1783935553",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/7/47af956c-e2ba-47c5-bc5d-ec0ab345ce57.webp?1783935553",
+    "grid": "https://cards.scryfall.io/grid/front/4/7/47af956c-e2ba-47c5-bc5d-ec0ab345ce57.webp?1783935553",
+    "display": "https://cards.scryfall.io/display/front/4/7/47af956c-e2ba-47c5-bc5d-ec0ab345ce57.webp?1783935553",
+    "art": "https://cards.scryfall.io/art/front/4/7/47af956c-e2ba-47c5-bc5d-ec0ab345ce57.webp?1783935553",
+    "crop": "https://cards.scryfall.io/crop/front/4/7/47af956c-e2ba-47c5-bc5d-ec0ab345ce57.webp?1783935553",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/7/47af956c-e2ba-47c5-bc5d-ec0ab345ce57.jpg?1783935553"
+  },
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Dragon Spirit",
+  "oracle_text": "Flying\nWhen Yosei dies, target player skips their next untap step. Tap up to five target permanents that player controls.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "741bcd30-7709-4133-8919-f4b46483bed7",
+  "set": "ima",
+  "set_name": "Iconic Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/741bcd30-7709-4133-8919-f4b46483bed7",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aima&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ima?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/47af956c-e2ba-47c5-bc5d-ec0ab345ce57/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5c2d0ead-8bfc-4ca7-9b38-2fc07af1c1d5&unique=prints",
+  "collector_number": "39",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The caress of the morning star frees all from the clutch of darkness.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rahn",
+  "artist_ids": [
+    "7742047e-0f80-4c0f-a530-d07460165e86"
+  ],
+  "illustration_id": "faebad51-1782-47f6-9f17-b82cd10909c5",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 10262,
+  "penny_rank": 2044,
+  "prices": {
+    "usd": "0.81",
+    "usd_foil": "5.53",
+    "usd_etched": null,
+    "eur": "0.84",
+    "eur_foil": "4.17",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=438605&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DYosei%252C%2Bthe%2BMorning%2BStar",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DYosei%252C%2Bthe%2BMorning%2BStar",
+    "edhrec": "https://edhrec.com/route/?cc=Yosei%2C+the+Morning+Star"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F145281%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=301430&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/65957?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

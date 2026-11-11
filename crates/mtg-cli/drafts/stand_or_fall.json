@@ -1,0 +1,48 @@
+{
+  "oracle_id": "927d0085-9bd9-4454-8ac5-0e374237ed35",
+  "name": "Stand or Fall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stand or Fall",
+      "oracle_fingerprint": "49f97c726c2f13609c6e2ae5a57d5d69",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "SeparatePiles": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "ControlledBy": { "Bound": "player" } }
+                          ]
+                        },
+                        "chooser": { "Bound": "player" },
+                        "as": "chosen",
+                        "rest_as": "rest"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "rest" },
+                        "mods": ["CantBlock"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

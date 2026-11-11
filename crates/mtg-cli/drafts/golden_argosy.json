@@ -1,0 +1,35 @@
+{
+  "oracle_id": "b636a16d-f5ca-443d-8e6f-a2c240700c36",
+  "name": "Golden Argosy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golden Argosy",
+      "oracle_fingerprint": "c0412d6aa9c7cc217922632f9a69662d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Exile": { "what": { "Each": [{ "Crewed": "This" }] }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 1 } }
+      ]
+    }
+  ]
+}

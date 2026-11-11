@@ -1,0 +1,64 @@
+{
+  "oracle_id": "0e7cf14a-6149-4ba9-b3f5-c5faf9f772bc",
+  "name": "Quicksilver Fountain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quicksilver Fountain",
+      "oracle_fingerprint": "1a2f1b63f87e291f3c769c34148ce201",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": "Triggering",
+                    "what": {
+                      "Object": [
+                        { "Type": "Land" },
+                        { "Not": { "Subtype": "Island" } },
+                        { "ControlledBy": "Triggering" }
+                      ]
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "flood" } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetLandTypes": ["Island"] }],
+                  "duration": { "WhileHasCounter": { "Other": "flood" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "Not": { "Subtype": "Island" } }] },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "RemoveAllCounters": {
+                  "from": { "Each": [{ "Type": "Land" }] },
+                  "counter": { "Other": "flood" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

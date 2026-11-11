@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7e4a1286-cac6-491f-a32d-64fb98d35de2",
+  "name": "Stigma Lasher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stigma Lasher",
+      "oracle_fingerprint": "d797d1a22340a9072113eb5f0c80354b",
+      "abilities": [
+        { "Keyword": "Wither" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "effects": [
+              { "Rule": { "rule": { "CantGainLife": "Triggering" }, "duration": "Forever" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "oracle_id": "6f34d70e-7a3a-43f7-b2c9-f89519804d3c",
+  "name": "Skull Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skull Storm",
+      "oracle_fingerprint": "71b942afad633c0864d83d551afde67e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [{ "CopySpell": { "what": "This", "count": { "CommanderCasts": "You" } } }]
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Count": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": { "Bound": "opp" } }
+                              ]
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Sacrifice": {
+                              "who": { "Bound": "opp" },
+                              "filter": [{ "Type": "Creature" }]
+                            }
+                          }
+                        ],
+                        "otherwise": [
+                          {
+                            "LoseLife": {
+                              "who": { "Bound": "opp" },
+                              "amount": {
+                                "Half": { "of": { "Life": { "Bound": "opp" } }, "up": true }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

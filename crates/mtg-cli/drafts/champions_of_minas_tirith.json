@@ -1,0 +1,45 @@
+{
+  "oracle_id": "464a930a-79d5-4436-864d-3ce9f29475ae",
+  "name": "Champions of Minas Tirith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champions of Minas Tirith",
+      "oracle_fingerprint": "97267714182ea5af8e805f49332ef763",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "Opponents" } },
+            "if": { "Monarch": "You" },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{1}",
+                  "times": { "Count": [{ "In": "Hand" }, { "OwnedBy": "Triggering" }] },
+                  "unpaid": [
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": "Triggering" }]
+                        },
+                        "mods": [{ "CantAttackYou": "Player" }],
+                        "duration": "UntilEndOfCombat"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

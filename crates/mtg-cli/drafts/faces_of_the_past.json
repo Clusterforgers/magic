@@ -1,0 +1,56 @@
+{
+  "oracle_id": "c8cd2b52-6d32-413f-9b26-2f9d436dbeae",
+  "name": "Faces of the Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faces of the Past",
+      "oracle_fingerprint": "d17bbc78ee5d13b8bdf4c591df496adf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Either": {
+                  "first": [
+                    {
+                      "Tap": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            "Untapped",
+                            { "SharesSubtype": "Triggering" }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "second": [
+                    {
+                      "Untap": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            "Tapped",
+                            { "SharesSubtype": "Triggering" }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

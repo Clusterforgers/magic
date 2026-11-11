@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1e267dbd-b009-4e98-bfef-19f8558cde29",
+  "name": "Rakdos Augermage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rakdos Augermage",
+      "oracle_fingerprint": "08389c90439afcaff72fa66252fefe66",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              { "Discard": { "by": { "Target": 0 } } },
+              {
+                "Reveal": { "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] } }
+              },
+              { "Discard": { "who": { "Target": 0 }, "by": "You" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

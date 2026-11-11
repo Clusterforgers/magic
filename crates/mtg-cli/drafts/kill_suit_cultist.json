@@ -1,0 +1,29 @@
+{
+  "oracle_id": "52ddf96d-3d6a-439c-b486-d806cbc32d77",
+  "name": "Kill-Suit Cultist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kill-Suit Cultist",
+      "oracle_fingerprint": "fbb7f65c737692cedd7dd6fbd710bdcf",
+      "abilities": [
+        { "Rule": { "rule": { "MustAttack": "This" } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{B}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "InsteadNext": [{ "Destroy": { "what": { "Target": 0 } } }] },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

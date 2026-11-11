@@ -1,0 +1,30 @@
+{
+  "oracle_id": "bb0eb9c2-c26d-452d-9e02-fc0bec2655c4",
+  "name": "Extract Brain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extract Brain",
+      "oracle_fingerprint": "8005127a90aad77e13e56969e404b01f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "count": { "min": "X", "max": "X" },
+                  "as": "chosen"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "chosen" } } },
+              { "CastFromZone": { "what": { "Bound": "chosen" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

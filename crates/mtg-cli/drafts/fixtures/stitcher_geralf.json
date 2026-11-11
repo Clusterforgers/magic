@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "a4ce6c30-a301-4a8a-ac3a-abacaf358a56",
+  "oracle_id": "da394a25-79c9-4b75-9ce6-741f64ae6913",
+  "multiverse_ids": [
+    622729
+  ],
+  "mtgo_id": 115341,
+  "tcgplayer_id": 504964,
+  "cardmarket_id": 722799,
+  "name": "Stitcher Geralf",
+  "lang": "en",
+  "released_at": "2023-08-04",
+  "uri": "https://api.scryfall.com/cards/a4ce6c30-a301-4a8a-ac3a-abacaf358a56",
+  "scryfall_uri": "https://scryfall.com/card/cmm/121/stitcher-geralf?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T04:08:09Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/4/a4ce6c30-a301-4a8a-ac3a-abacaf358a56.jpg?1783915689",
+    "normal": "https://cards.scryfall.io/normal/front/a/4/a4ce6c30-a301-4a8a-ac3a-abacaf358a56.jpg?1783915689",
+    "large": "https://cards.scryfall.io/large/front/a/4/a4ce6c30-a301-4a8a-ac3a-abacaf358a56.jpg?1783915689",
+    "png": "https://cards.scryfall.io/png/front/a/4/a4ce6c30-a301-4a8a-ac3a-abacaf358a56.png?1783915689",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/4/a4ce6c30-a301-4a8a-ac3a-abacaf358a56.jpg?1783915689",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/4/a4ce6c30-a301-4a8a-ac3a-abacaf358a56.jpg?1783915689",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/4/a4ce6c30-a301-4a8a-ac3a-abacaf358a56.webp?1783915689",
+    "grid": "https://cards.scryfall.io/grid/front/a/4/a4ce6c30-a301-4a8a-ac3a-abacaf358a56.webp?1783915689",
+    "display": "https://cards.scryfall.io/display/front/a/4/a4ce6c30-a301-4a8a-ac3a-abacaf358a56.webp?1783915689",
+    "art": "https://cards.scryfall.io/art/front/a/4/a4ce6c30-a301-4a8a-ac3a-abacaf358a56.webp?1783915689",
+    "crop": "https://cards.scryfall.io/crop/front/a/4/a4ce6c30-a301-4a8a-ac3a-abacaf358a56.webp?1783915689",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/4/a4ce6c30-a301-4a8a-ac3a-abacaf358a56.jpg?1783915689"
+  },
+  "mana_cost": "{3}{U}{U}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "{2}{U}, {T}: Each player mills three cards. Exile up to two creature cards put into graveyards this way. Create an X/X blue Zombie creature token, where X is the total power of the cards exiled this way.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Mill"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "f7ee09ec-0d88-469d-b61c-976f3be47766",
+      "component": "token",
+      "name": "Zombie",
+      "type_line": "Token Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/f7ee09ec-0d88-469d-b61c-976f3be47766"
+    },
+    {
+      "object": "related_card",
+      "id": "eef3fec7-2d32-439d-a956-1982d82f1450",
+      "component": "combo_piece",
+      "name": "Stitcher Geralf",
+      "type_line": "Legendary Creature — Human Wizard",
+      "uri": "https://api.scryfall.com/cards/eef3fec7-2d32-439d-a956-1982d82f1450"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set": "cmm",
+  "set_name": "Commander Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a4ce6c30-a301-4a8a-ac3a-abacaf358a56/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ada394a25-79c9-4b75-9ce6-741f64ae6913&unique=prints",
+  "collector_number": "121",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Karla Ortiz",
+  "artist_ids": [
+    "286a7773-06e5-465c-8a2a-76dfcb4ad110"
+  ],
+  "illustration_id": "6cd26254-701e-40b4-9340-66674335c9ad",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13703,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": "0.33",
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": "0.70",
+    "tix": "0.15"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=622729&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStitcher%2BGeralf",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStitcher%2BGeralf",
+    "edhrec": "https://edhrec.com/route/?cc=Stitcher+Geralf"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F504964%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=722799&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/115341?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

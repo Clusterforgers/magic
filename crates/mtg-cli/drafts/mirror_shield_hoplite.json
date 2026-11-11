@@ -1,0 +1,26 @@
+{
+  "oracle_id": "23f01235-b5a5-4b2e-a90b-b49fc0c7b18d",
+  "name": "Mirror-Shield Hoplite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror-Shield Hoplite",
+      "oracle_fingerprint": "dda7685c973648046f1dda830e85081e",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "by": [{ "Ability": "Triggered" }, { "HasKeywordNamed": "Backup" }]
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "CopyAbility": { "what": "Dealer", "new_targets": true } }]
+          }
+        }
+      ]
+    }
+  ]
+}

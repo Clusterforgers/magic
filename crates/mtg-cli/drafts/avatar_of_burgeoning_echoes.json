@@ -1,0 +1,92 @@
+{
+  "oracle_id": "08e8a63c-9fcc-48cf-a9af-15cbaeec943f",
+  "name": "Avatar of Burgeoning Echoes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avatar of Burgeoning Echoes",
+      "oracle_fingerprint": "9f63394656f7077ee7c1dcf1789e73fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }]
+                      },
+                      "op": "Lt",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Jace",
+                            "colors": ["Blue"],
+                            "types": ["Planeswalker"],
+                            "subtypes": ["Jace"],
+                            "abilities": [
+                              {
+                                "Loyalty": {
+                                  "cost": { "Minus": 1 },
+                                  "effects": [{ "Surveil": {} }]
+                                }
+                              },
+                              { "Loyalty": { "cost": { "Minus": 3 }, "effects": [{ "Draw": {} }] } }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "jace"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "jace" }, "counter": "loyalty", "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Loyalty": {
+                    "cost": { "Minus": 10 },
+                    "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                    "effects": [
+                      {
+                        "PutCounters": {
+                          "on": { "Target": 0 },
+                          "counter": "+1/+1",
+                          "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

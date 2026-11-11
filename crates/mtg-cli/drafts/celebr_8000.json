@@ -1,0 +1,211 @@
+{
+  "oracle_id": "058f74f6-eeed-4ee8-8574-f95fea8d8f14",
+  "name": "Celebr-8000",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celebr-8000",
+      "oracle_fingerprint": "2148ab202d120d38ee1179d75e981243",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 1,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 2,
+                      "to": 2,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Menace" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 3,
+                      "to": 3,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Vigilance" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 4,
+                      "to": 4,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Lifelink" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 5,
+                      "to": 5,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Flying" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 6,
+                      "to": 6,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Indestructible" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              { "Let": { "as": "first", "amount": { "DieResult": "Only" } } },
+              {
+                "RollDice": {
+                  "sides": 6,
+                  "results": [
+                    {
+                      "from": 1,
+                      "to": 1,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 2,
+                      "to": 2,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Menace" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 3,
+                      "to": 3,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Vigilance" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 4,
+                      "to": 4,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Lifelink" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 5,
+                      "to": 5,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Flying" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "from": 6,
+                      "to": 6,
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Indestructible" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Bound": "first" },
+                      "op": "Eq",
+                      "right": { "DieResult": "Only" }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "DoubleStrike" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "18ac2282-83af-4acc-b20b-6a95771da688",
+  "name": "Loxodon Smiter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Loxodon Smiter",
+      "oracle_fingerprint": "35414283044a2f0592a8212b96eff8de",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 31, "end": 177 }
+          }
+        }
+      ]
+    }
+  ]
+}

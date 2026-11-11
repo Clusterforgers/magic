@@ -1,0 +1,30 @@
+{
+  "oracle_id": "690ba846-964e-44ba-8637-9a1ce62f5931",
+  "name": "Bone Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bone Shaman",
+      "oracle_fingerprint": "7644fdaa400f761d65f79a4cebd51ad7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{B}",
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "CantBeRegenerated": {
+                      "Each": [{ "Type": "Creature" }, { "DamagedBy": "This" }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

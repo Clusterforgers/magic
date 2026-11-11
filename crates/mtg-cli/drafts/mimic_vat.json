@@ -1,0 +1,77 @@
+{
+  "oracle_id": "6ebdc9f3-6b23-4716-8011-48f00d7e30c8",
+  "name": "Mimic Vat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mimic Vat",
+      "oracle_fingerprint": "c302ed183e05937fb968b810213b118d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Exile": {
+                        "what": { "Arrived": { "of": "Triggering", "zone": "Graveyard" } },
+                        "as": "exiled"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "In": "Exile" },
+                            { "ExiledWith": "This" },
+                            { "Not": { "Is": { "Bound": "exiled" } } }
+                          ]
+                        },
+                        "to": "Graveyard"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "as": "card"
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": { "of": { "Bound": "card" }, "except": [{ "AddKeyword": "Haste" }] }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

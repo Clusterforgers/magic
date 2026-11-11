@@ -1,0 +1,35 @@
+{
+  "oracle_id": "12a8c546-d0d1-4c3d-bfca-c1e59cef349a",
+  "name": "Moonlight Geist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonlight Geist",
+      "oracle_fingerprint": "3282b50c797e4135db9a4972dc03381b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{3}{W}",
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "This", "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": "This" }], "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

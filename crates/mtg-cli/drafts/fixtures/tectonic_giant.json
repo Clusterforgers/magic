@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "4134a2aa-623c-49fc-bd87-26b861860ad5",
+  "oracle_id": "0e5e46e3-f9af-47cc-a740-bf808d5cb4b1",
+  "multiverse_ids": [
+    676041
+  ],
+  "mtgo_id": 130959,
+  "tcgplayer_id": 578985,
+  "cardmarket_id": 788826,
+  "name": "Tectonic Giant",
+  "lang": "en",
+  "released_at": "2024-09-27",
+  "uri": "https://api.scryfall.com/cards/4134a2aa-623c-49fc-bd87-26b861860ad5",
+  "scryfall_uri": "https://scryfall.com/card/dsc/168/tectonic-giant?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:26:52Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/1/4134a2aa-623c-49fc-bd87-26b861860ad5.jpg?1783909612",
+    "normal": "https://cards.scryfall.io/normal/front/4/1/4134a2aa-623c-49fc-bd87-26b861860ad5.jpg?1783909612",
+    "large": "https://cards.scryfall.io/large/front/4/1/4134a2aa-623c-49fc-bd87-26b861860ad5.jpg?1783909612",
+    "png": "https://cards.scryfall.io/png/front/4/1/4134a2aa-623c-49fc-bd87-26b861860ad5.png?1783909612",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/1/4134a2aa-623c-49fc-bd87-26b861860ad5.jpg?1783909612",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/1/4134a2aa-623c-49fc-bd87-26b861860ad5.jpg?1783909612",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/1/4134a2aa-623c-49fc-bd87-26b861860ad5.webp?1783909612",
+    "grid": "https://cards.scryfall.io/grid/front/4/1/4134a2aa-623c-49fc-bd87-26b861860ad5.webp?1783909612",
+    "display": "https://cards.scryfall.io/display/front/4/1/4134a2aa-623c-49fc-bd87-26b861860ad5.webp?1783909612",
+    "art": "https://cards.scryfall.io/art/front/4/1/4134a2aa-623c-49fc-bd87-26b861860ad5.webp?1783909612",
+    "crop": "https://cards.scryfall.io/crop/front/4/1/4134a2aa-623c-49fc-bd87-26b861860ad5.webp?1783909612",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/1/4134a2aa-623c-49fc-bd87-26b861860ad5.jpg?1783909612"
+  },
+  "mana_cost": "{2}{R}{R}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elemental Giant",
+  "oracle_text": "Whenever this creature attacks or becomes the target of a spell an opponent controls, choose one —\n• This creature deals 3 damage to each opponent.\n• Exile the top two cards of your library. Choose one of them. Until the end of your next turn, you may play that card.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "4c822528-83c3-42c7-8708-dd1d37166819",
+  "set": "dsc",
+  "set_name": "Duskmourn: House of Horror Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/4c822528-83c3-42c7-8708-dd1d37166819",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adsc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/dsc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/4134a2aa-623c-49fc-bd87-26b861860ad5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0e5e46e3-f9af-47cc-a740-bf808d5cb4b1&unique=prints",
+  "collector_number": "168",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Slawomir Maniak",
+  "artist_ids": [
+    "d887bc66-2779-416c-a1ff-d8720242063e"
+  ],
+  "illustration_id": "3729e102-ddd5-482c-8a49-95f302edb9e2",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3097,
+  "penny_rank": 694,
+  "prices": {
+    "usd": "0.64",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.28",
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=676041&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTectonic%2BGiant",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTectonic%2BGiant",
+    "edhrec": "https://edhrec.com/route/?cc=Tectonic+Giant"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F578985%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=788826&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/130959?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "8f94754d-fb2a-4634-a1de-049c82fa6f30",
+  "name": "Tizerus Charger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tizerus Charger",
+      "oracle_fingerprint": "6db189c89bed15efee0ef9ebb675fb4b",
+      "abilities": [
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{4}{B}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 5 } }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounterOf": ["+1/+1", { "Other": "flying" }] },
+            "condition": { "CastWith": "Escape" }
+          }
+        }
+      ]
+    }
+  ]
+}

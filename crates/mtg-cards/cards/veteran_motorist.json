@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3e6f51ae-7239-4fcc-919f-aa2437e8ef15",
+  "name": "Veteran Motorist",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Veteran Motorist",
+      "oracle_fingerprint": "b8c86de9d460bc11f50d72cbeeeeb93c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 35, "end": 117 }
+          }
+        }
+      ]
+    }
+  ]
+}

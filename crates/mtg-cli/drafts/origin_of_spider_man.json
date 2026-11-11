@@ -1,0 +1,70 @@
+{
+  "oracle_id": "7fbe9056-190f-40a1-bee9-59ebd6f981f5",
+  "name": "Origin of Spider-Man",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Origin of Spider-Man",
+      "oracle_fingerprint": "9640dd28c88b82a2373c575fc5e6d461",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spider",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spider"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddSubtype": "Spider" }, { "AddSubtype": "Hero" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

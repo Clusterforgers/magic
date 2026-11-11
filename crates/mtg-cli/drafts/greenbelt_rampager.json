@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c63a17b8-d183-48c7-bb04-edbfffba1e03",
+  "name": "Greenbelt Rampager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greenbelt Rampager",
+      "oracle_fingerprint": "6c5b47d3a811cc3e61727ceef900f31b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "You", "counter": { "Other": "energy" } } },
+                      "op": "Ge",
+                      "right": 2
+                    }
+                  },
+                  "then": [
+                    {
+                      "RemoveCounters": {
+                        "from": "You",
+                        "counter": { "Other": "energy" },
+                        "count": 2
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    { "Move": { "what": "This", "to": "Hand" } },
+                    { "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

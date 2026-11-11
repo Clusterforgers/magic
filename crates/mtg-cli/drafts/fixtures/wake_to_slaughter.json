@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "7f02a544-716c-4f09-8ae9-dbfe7ef136d7",
+  "oracle_id": "78eb5399-8c8b-4310-b585-e4ccd9d7c9cc",
+  "multiverse_ids": [
+    535047
+  ],
+  "resource_id": "443DC9F92908B93817FB7DC014D7FA2B110770D05F318090EFA769B63E57EBAE",
+  "mtgo_id": 93508,
+  "arena_id": 78618,
+  "tcgplayer_id": 248089,
+  "cardmarket_id": 574916,
+  "name": "Wake to Slaughter",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/7f02a544-716c-4f09-8ae9-dbfe7ef136d7",
+  "scryfall_uri": "https://scryfall.com/card/mid/250/wake-to-slaughter?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:52:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/f/7f02a544-716c-4f09-8ae9-dbfe7ef136d7.jpg?1783925551",
+    "normal": "https://cards.scryfall.io/normal/front/7/f/7f02a544-716c-4f09-8ae9-dbfe7ef136d7.jpg?1783925551",
+    "large": "https://cards.scryfall.io/large/front/7/f/7f02a544-716c-4f09-8ae9-dbfe7ef136d7.jpg?1783925551",
+    "png": "https://cards.scryfall.io/png/front/7/f/7f02a544-716c-4f09-8ae9-dbfe7ef136d7.png?1783925551",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/f/7f02a544-716c-4f09-8ae9-dbfe7ef136d7.jpg?1783925551",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/f/7f02a544-716c-4f09-8ae9-dbfe7ef136d7.jpg?1783925551",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/f/7f02a544-716c-4f09-8ae9-dbfe7ef136d7.webp?1783925551",
+    "grid": "https://cards.scryfall.io/grid/front/7/f/7f02a544-716c-4f09-8ae9-dbfe7ef136d7.webp?1783925551",
+    "display": "https://cards.scryfall.io/display/front/7/f/7f02a544-716c-4f09-8ae9-dbfe7ef136d7.webp?1783925551",
+    "art": "https://cards.scryfall.io/art/front/7/f/7f02a544-716c-4f09-8ae9-dbfe7ef136d7.webp?1783925551",
+    "crop": "https://cards.scryfall.io/crop/front/7/f/7f02a544-716c-4f09-8ae9-dbfe7ef136d7.webp?1783925551",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/f/7f02a544-716c-4f09-8ae9-dbfe7ef136d7.jpg?1783925551"
+  },
+  "mana_cost": "{3}{B}{R}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose up to two target creature cards in your graveyard. An opponent chooses one of them. Return that card to your hand. Return the other to the battlefield under your control. It gains haste. Exile it at the beginning of the next end step.\nFlashback {4}{B}{R} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "colors": [
+    "B",
+    "R"
+  ],
+  "color_identity": [
+    "B",
+    "R"
+  ],
+  "keywords": [
+    "Flashback"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set": "mid",
+  "set_name": "Innistrad: Midnight Hunt",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/44b8eb8f-fa23-401a-98b5-1fbb9871128e",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amid&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mid?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7f02a544-716c-4f09-8ae9-dbfe7ef136d7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A78eb5399-8c8b-4310-b585-e4ccd9d7c9cc&unique=prints",
+  "collector_number": "250",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Cold",
+  "artist_ids": [
+    "2622d22b-3fd8-4831-9b2b-adc5fac01b85"
+  ],
+  "illustration_id": "2b6e4600-2d93-43d4-9e51-77baafabc481",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 20199,
+  "penny_rank": 15435,
+  "preview": {
+    "source": "PLAYlive Nation",
+    "source_uri": "https://www.facebook.com/PLAYliveDeerbrook/photos/a.614160755696758/1254728651639962/",
+    "previewed_at": "2021-09-07"
+  },
+  "prices": {
+    "usd": "0.25",
+    "usd_foil": "0.21",
+    "usd_etched": null,
+    "eur": "0.14",
+    "eur_foil": "0.24",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=535047&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWake%2Bto%2BSlaughter",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWake%2Bto%2BSlaughter",
+    "edhrec": "https://edhrec.com/route/?cc=Wake+to+Slaughter"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F248089%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=574916&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/93508?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

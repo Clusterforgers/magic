@@ -1,0 +1,46 @@
+{
+  "oracle_id": "feabe30a-3c28-43a1-b538-b0207758520c",
+  "name": "Sea Troll",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sea Troll",
+      "oracle_fingerprint": "85a20f96ca3f61dd332c906736f108db",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{U}",
+            "condition": {
+              "Any": [
+                {
+                  "CountOf": {
+                    "subject": { "Each": [{ "Type": "Creature" }, { "Color": "Blue" }] },
+                    "selector": [{ "DidThisTurn": { "event": "Blocked", "to": "This" } }],
+                    "op": "Ge",
+                    "right": 1
+                  }
+                },
+                {
+                  "CountOf": {
+                    "subject": "This",
+                    "selector": [
+                      {
+                        "DidThisTurn": {
+                          "event": "Blocked",
+                          "to": { "Each": [{ "Type": "Creature" }, { "Color": "Blue" }] }
+                        }
+                      }
+                    ],
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Regenerate": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

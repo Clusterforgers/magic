@@ -1,0 +1,33 @@
+{
+  "oracle_id": "c027a8ef-6cdd-4c14-9d4f-b21c63312874",
+  "name": "Kodama's Might",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kodama's Might",
+      "oracle_fingerprint": "223c606742396038c9a6bad3fc14602f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 46, "end": 214 }
+          }
+        }
+      ]
+    }
+  ]
+}

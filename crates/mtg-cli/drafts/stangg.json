@@ -1,0 +1,50 @@
+{
+  "oracle_id": "739eac91-3029-4ce7-9885-0af3ddea472e",
+  "name": "Stangg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stangg",
+      "oracle_fingerprint": "a19744d6c86c1626a11d66b2d528ec7b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Stangg Twin",
+                      "colors": ["Red", "Green"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Warrior"],
+                      "power": 3,
+                      "toughness": 4
+                    }
+                  },
+                  "as": "twin"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "twin" } } }]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": { "what": [{ "Is": { "Bound": "twin" } }], "from": "Battlefield" }
+                  },
+                  "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

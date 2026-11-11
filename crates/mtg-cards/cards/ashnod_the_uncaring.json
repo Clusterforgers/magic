@@ -1,0 +1,20 @@
+{
+  "oracle_id": "dcd5ab1b-adc5-486e-a1e0-636af6ee9470",
+  "name": "Ashnod the Uncaring",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ashnod the Uncaring",
+      "oracle_fingerprint": "6a5cd1f35b18b31ea10e1f374d1d9157",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 11, "end": 296 }
+          }
+        }
+      ]
+    }
+  ]
+}

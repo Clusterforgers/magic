@@ -1,0 +1,48 @@
+{
+  "oracle_id": "c0a18a53-d520-4795-9b3b-0f93bcf35848",
+  "name": "Eon Frolicker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eon Frolicker",
+      "oracle_fingerprint": "8d415bca0631f63e06ead22de0c454c9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExtraTurn": { "who": { "Target": 0 } } },
+              {
+                "Rule": {
+                  "rule": {
+                    "PlayersHave": {
+                      "who": "You",
+                      "keyword": { "Protection": [{ "ControlledBy": { "Target": 0 } }] }
+                    }
+                  },
+                  "duration": "UntilYourNextTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "AddKeyword": { "Protection": [{ "ControlledBy": { "Target": 0 } }] } }
+                  ],
+                  "duration": "UntilYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

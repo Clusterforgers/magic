@@ -1,0 +1,70 @@
+{
+  "oracle_id": "9abecd23-a2d9-43c7-8d01-f8afdc53026e",
+  "name": "Arvinox, the Mind Flail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arvinox, the Mind Flail",
+      "oracle_fingerprint": "28574b015293cd9271776e0e42270d53",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "RemoveType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "ControlledBy": "You" }, { "Not": { "OwnedBy": "You" } }] },
+                "op": "Lt",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "ExileHidden": {
+                  "what": {
+                    "Each": [{ "In": "Library" }, "BottomOfLibrary", { "OwnedBy": "Opponents" }]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "LookAtExiled": { "only": { "Bound": "exiled" } } },
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Creature" },
+                            { "Type": "Enchantment" },
+                            { "Type": "Planeswalker" },
+                            { "Type": "Battle" }
+                          ]
+                        }
+                      ],
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "spend_as": "AnyColor"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

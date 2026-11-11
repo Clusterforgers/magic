@@ -1,0 +1,155 @@
+{
+  "object": "card",
+  "id": "ca09bb5f-feab-4754-ac6b-3f06327d3fe9",
+  "oracle_id": "6c044dd1-8938-4d62-a7b2-e2298de08f70",
+  "multiverse_ids": [],
+  "resource_id": "60EDEFF31FD6F6E0558989F7E7297760F05456F7ED728A665B408D67644C1D77",
+  "mtgo_id": 149147,
+  "tcgplayer_id": 687661,
+  "cardmarket_id": 881674,
+  "name": "Zimone, All-Questioning",
+  "lang": "en",
+  "released_at": "2026-04-24",
+  "uri": "https://api.scryfall.com/cards/ca09bb5f-feab-4754-ac6b-3f06327d3fe9",
+  "scryfall_uri": "https://scryfall.com/card/soc/340/zimone-all-questioning?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T00:49:02Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/a/ca09bb5f-feab-4754-ac6b-3f06327d3fe9.jpg?1783903742",
+    "normal": "https://cards.scryfall.io/normal/front/c/a/ca09bb5f-feab-4754-ac6b-3f06327d3fe9.jpg?1783903742",
+    "large": "https://cards.scryfall.io/large/front/c/a/ca09bb5f-feab-4754-ac6b-3f06327d3fe9.jpg?1783903742",
+    "png": "https://cards.scryfall.io/png/front/c/a/ca09bb5f-feab-4754-ac6b-3f06327d3fe9.png?1783903742",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/a/ca09bb5f-feab-4754-ac6b-3f06327d3fe9.jpg?1783903742",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/a/ca09bb5f-feab-4754-ac6b-3f06327d3fe9.jpg?1783903742",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/a/ca09bb5f-feab-4754-ac6b-3f06327d3fe9.webp?1783903742",
+    "grid": "https://cards.scryfall.io/grid/front/c/a/ca09bb5f-feab-4754-ac6b-3f06327d3fe9.webp?1783903742",
+    "display": "https://cards.scryfall.io/display/front/c/a/ca09bb5f-feab-4754-ac6b-3f06327d3fe9.webp?1783903742",
+    "art": "https://cards.scryfall.io/art/front/c/a/ca09bb5f-feab-4754-ac6b-3f06327d3fe9.webp?1783903742",
+    "crop": "https://cards.scryfall.io/crop/front/c/a/ca09bb5f-feab-4754-ac6b-3f06327d3fe9.webp?1783903742",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/a/ca09bb5f-feab-4754-ac6b-3f06327d3fe9.jpg?1783903742"
+  },
+  "mana_cost": "{1}{G}{U}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "At the beginning of your end step, if a land entered the battlefield under your control this turn and you control a prime number of lands, create Primo, the Indivisible, a legendary 0/0 green and blue Fractal creature token, then put that many +1/+1 counters on it. (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, and 31 are prime numbers.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "c990db6b-e1f2-4802-b8b1-80a8b768be0e",
+      "component": "token",
+      "name": "Primo, the Indivisible",
+      "type_line": "Token Legendary Creature — Fractal",
+      "uri": "https://api.scryfall.com/cards/c990db6b-e1f2-4802-b8b1-80a8b768be0e"
+    },
+    {
+      "object": "related_card",
+      "id": "ca09bb5f-feab-4754-ac6b-3f06327d3fe9",
+      "component": "combo_piece",
+      "name": "Zimone, All-Questioning",
+      "type_line": "Legendary Creature — Human Wizard",
+      "uri": "https://api.scryfall.com/cards/ca09bb5f-feab-4754-ac6b-3f06327d3fe9"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "97fab8d1-480a-419d-ab14-663968e29b9c",
+  "set": "soc",
+  "set_name": "Secrets of Strixhaven Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/97fab8d1-480a-419d-ab14-663968e29b9c",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/soc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ca09bb5f-feab-4754-ac6b-3f06327d3fe9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6c044dd1-8938-4d62-a7b2-e2298de08f70&unique=prints",
+  "collector_number": "340",
+  "digital": false,
+  "rarity": "rare",
+  "watermark": "quandrix",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ekaterina Burmak",
+  "artist_ids": [
+    "2a9f3780-fcc8-4ec5-b403-ee1d1370d3b4"
+  ],
+  "illustration_id": "31dbfb1a-83e4-4178-a7ec-92431f85032e",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 11752,
+  "penny_rank": 12675,
+  "prices": {
+    "usd": "0.16",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.16",
+    "eur_foil": null,
+    "tix": "0.11"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DZimone%252C%2BAll-Questioning",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DZimone%252C%2BAll-Questioning",
+    "edhrec": "https://edhrec.com/route/?cc=Zimone%2C+All-Questioning"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F687661%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=881674&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/149147?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

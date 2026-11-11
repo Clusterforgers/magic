@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4c27ba61-6812-4dd7-8efc-65435a8df7b5",
+  "name": "Hellcat, Undying Vigilante",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hellcat, Undying Vigilante",
+      "oracle_fingerprint": "720f0cb9d4531ca1d89cebfb40f7dcdd",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "Triggering",
+                  "to": {
+                    "Battlefield": {
+                      "under": { "OwnerOf": "Triggering" },
+                      "counters": [["+1/+1", 1]]
+                    }
+                  },
+                  "as": "hellcat"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "hellcat" },
+                  "mods": ["LoseAbilities", { "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

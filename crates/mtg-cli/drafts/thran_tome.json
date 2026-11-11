@@ -1,0 +1,32 @@
+{
+  "oracle_id": "78d2a3fd-864c-49f3-b531-c71dc3b35977",
+  "name": "Thran Tome",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thran Tome",
+      "oracle_fingerprint": "4c2150983e0b6957d58cd2c45876bea7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "as": "chosen"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Graveyard" } },
+              { "Draw": { "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "22abc3e8-49bb-475a-8248-0ce85274913c",
+  "name": "Glass Asp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glass Asp",
+      "oracle_fingerprint": "40ea23006a779602439009da0e487264",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{2}",
+                  "unpaid": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "Draw", "whose": "Triggering" } },
+                        "effects": [{ "LoseLife": { "who": "Triggering", "amount": 2 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

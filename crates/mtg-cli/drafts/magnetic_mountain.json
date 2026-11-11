@@ -1,0 +1,59 @@
+{
+  "oracle_id": "5c28fc22-7da6-4f15-b02b-6ff10981466c",
+  "name": "Magnetic Mountain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magnetic Mountain",
+      "oracle_fingerprint": "6877a1a2c6f1d5318964c668782bb126",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Color": "Blue" }, { "Type": "Creature" }] },
+            "mods": ["DoesntUntap"]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "Triggering",
+                  "from": {
+                    "Each": [
+                      "Tapped",
+                      { "Color": "Blue" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "Triggering" }
+                    ]
+                  },
+                  "count": {
+                    "min": 0,
+                    "max": {
+                      "Count": [
+                        "Tapped",
+                        { "Color": "Blue" },
+                        { "Type": "Creature" },
+                        { "ControlledBy": "Triggering" }
+                      ]
+                    }
+                  },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{4}",
+                  "times": { "CountOf": { "of": { "Bound": "chosen" }, "filter": [] } },
+                  "paid": [{ "Untap": { "what": { "Bound": "chosen" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "oracle_id": "81c2913f-42b7-4cfa-adc0-b3416fbe2ec6",
+  "name": "Desert Were-Worm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desert Were-Worm",
+      "oracle_fingerprint": "aaadcaee410dc9b3f3cbb79dd8d3a883",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] }
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Total": {
+                    "of": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 12
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] } } },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

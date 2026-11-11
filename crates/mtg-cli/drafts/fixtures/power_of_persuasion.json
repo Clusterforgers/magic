@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "8d84cb72-d0a0-4af0-aded-47e5fb7addef",
+  "oracle_id": "5c615c99-77b7-4bea-9286-1e8d257153fb",
+  "multiverse_ids": [
+    527354
+  ],
+  "mtgo_id": 91636,
+  "arena_id": 77172,
+  "tcgplayer_id": 243276,
+  "cardmarket_id": 571370,
+  "name": "Power of Persuasion",
+  "lang": "en",
+  "released_at": "2021-07-23",
+  "uri": "https://api.scryfall.com/cards/8d84cb72-d0a0-4af0-aded-47e5fb7addef",
+  "scryfall_uri": "https://scryfall.com/card/afr/67/power-of-persuasion?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:08:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/d/8d84cb72-d0a0-4af0-aded-47e5fb7addef.jpg?1783926511",
+    "normal": "https://cards.scryfall.io/normal/front/8/d/8d84cb72-d0a0-4af0-aded-47e5fb7addef.jpg?1783926511",
+    "large": "https://cards.scryfall.io/large/front/8/d/8d84cb72-d0a0-4af0-aded-47e5fb7addef.jpg?1783926511",
+    "png": "https://cards.scryfall.io/png/front/8/d/8d84cb72-d0a0-4af0-aded-47e5fb7addef.png?1783926511",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/d/8d84cb72-d0a0-4af0-aded-47e5fb7addef.jpg?1783926511",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/d/8d84cb72-d0a0-4af0-aded-47e5fb7addef.jpg?1783926511",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/d/8d84cb72-d0a0-4af0-aded-47e5fb7addef.webp?1783926511",
+    "grid": "https://cards.scryfall.io/grid/front/8/d/8d84cb72-d0a0-4af0-aded-47e5fb7addef.webp?1783926511",
+    "display": "https://cards.scryfall.io/display/front/8/d/8d84cb72-d0a0-4af0-aded-47e5fb7addef.webp?1783926511",
+    "art": "https://cards.scryfall.io/art/front/8/d/8d84cb72-d0a0-4af0-aded-47e5fb7addef.webp?1783926511",
+    "crop": "https://cards.scryfall.io/crop/front/8/d/8d84cb72-d0a0-4af0-aded-47e5fb7addef.webp?1783926511",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/d/8d84cb72-d0a0-4af0-aded-47e5fb7addef.jpg?1783926511"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Choose target creature an opponent controls, then roll a d20.\n1—9 | Return it to its owner's hand.\n10—19 | Its owner puts it on their choice of the top or bottom of their library.\n20 | Gain control of it until the end of your next turn.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "e1ef87ba-ba92-4573-817f-543b996d2851",
+  "set": "afr",
+  "set_name": "Adventures in the Forgotten Realms",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/e1ef87ba-ba92-4573-817f-543b996d2851",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aafr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/afr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/8d84cb72-d0a0-4af0-aded-47e5fb7addef/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5c615c99-77b7-4bea-9286-1e8d257153fb&unique=prints",
+  "collector_number": "67",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Brian Valeza",
+  "artist_ids": [
+    "bb2a9339-bbe4-445f-9736-3c43379ee076"
+  ],
+  "illustration_id": "59023a41-98d6-4f5e-86d9-d33df5ddc6f3",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14911,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/1073767683",
+    "previewed_at": "2021-07-01"
+  },
+  "prices": {
+    "usd": "0.20",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": "0.24",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=527354&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPower%2Bof%2BPersuasion",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPower%2Bof%2BPersuasion",
+    "edhrec": "https://edhrec.com/route/?cc=Power+of+Persuasion"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F243276%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=571370&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/91636?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "18aa69d5-9611-49fe-8aa4-7b91d5980dbc",
+  "name": "Swordsworn Cavalier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swordsworn Cavalier",
+      "oracle_fingerprint": "2778c2572cd67160fe369a59815d0bfe",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "FirstStrike" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [{ "Subtype": "Knight" }, "Other", { "ControlledBy": "You" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

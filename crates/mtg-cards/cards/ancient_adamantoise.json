@@ -1,0 +1,36 @@
+{
+  "oracle_id": "e6873252-653a-47a8-99b7-b2ef70aa1f7f",
+  "name": "Ancient Adamantoise",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ancient Adamantoise",
+      "oracle_fingerprint": "382cec6cf9d2ccf3923615cd6fce4b71",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Ward": "{3}" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 20, "end": 81 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 82, "end": 187 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              { "Exile": { "what": "This" } },
+              { "CreateToken": { "token": { "Named": "treasure" }, "count": 10, "tapped": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3f47ec32-4ee9-4bc0-96f2-310a939cb973",
+  "name": "Ace's Baseball Bat",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Ace's Baseball Bat",
+      "oracle_fingerprint": "cdb25d965c393d83c956833083f464d4",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 30, "end": 132 }
+          }
+        },
+        { "Keyword": { "EquipTo": { "to": [{ "Supertype": "Legendary" }], "cost": "{1}" } } },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

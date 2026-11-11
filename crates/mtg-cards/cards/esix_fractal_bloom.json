@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9d22960b-babc-4cf3-b228-d32e13bc6014",
+  "name": "Esix, Fractal Bloom",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Esix, Fractal Bloom",
+      "oracle_fingerprint": "4af8321ea1bad2e4a37ac1004736d139",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 196 }
+          }
+        }
+      ]
+    }
+  ]
+}

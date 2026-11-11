@@ -1,0 +1,21 @@
+{
+  "oracle_id": "dcc323d6-ddae-4fd9-9c9e-466b07895d73",
+  "name": "Voracious Bibliophile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voracious Bibliophile",
+      "oracle_fingerprint": "2e8ac46636d395cc57c9e06d9f58c86c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Targeting": [] }], "by": "You" } },
+            "effects": [{ "Draw": { "count": "TriggeringTargets" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

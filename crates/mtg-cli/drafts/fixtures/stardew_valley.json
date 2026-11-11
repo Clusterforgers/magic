@@ -1,0 +1,130 @@
+{
+  "object": "card",
+  "id": "9979db80-83f6-41ed-aea2-0c222e923add",
+  "oracle_id": "6a4ee425-b3b8-487d-866c-9e2d73682466",
+  "multiverse_ids": [],
+  "tcgplayer_id": 707340,
+  "cardmarket_id": 899749,
+  "name": "Stardew Valley",
+  "lang": "en",
+  "released_at": "2026-07-27",
+  "uri": "https://api.scryfall.com/cards/9979db80-83f6-41ed-aea2-0c222e923add",
+  "scryfall_uri": "https://scryfall.com/card/sld/2801/stardew-valley?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-29T10:47:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/9/9979db80-83f6-41ed-aea2-0c222e923add.jpg?1785322037",
+    "normal": "https://cards.scryfall.io/normal/front/9/9/9979db80-83f6-41ed-aea2-0c222e923add.jpg?1785322037",
+    "large": "https://cards.scryfall.io/large/front/9/9/9979db80-83f6-41ed-aea2-0c222e923add.jpg?1785322037",
+    "png": "https://cards.scryfall.io/png/front/9/9/9979db80-83f6-41ed-aea2-0c222e923add.png?1785322037",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/9/9979db80-83f6-41ed-aea2-0c222e923add.jpg?1785322037",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/9/9979db80-83f6-41ed-aea2-0c222e923add.jpg?1785322037",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/9/9979db80-83f6-41ed-aea2-0c222e923add.webp?1785322037",
+    "grid": "https://cards.scryfall.io/grid/front/9/9/9979db80-83f6-41ed-aea2-0c222e923add.webp?1785322037",
+    "display": "https://cards.scryfall.io/display/front/9/9/9979db80-83f6-41ed-aea2-0c222e923add.webp?1785322037",
+    "art": "https://cards.scryfall.io/art/front/9/9/9979db80-83f6-41ed-aea2-0c222e923add.webp?1785322037",
+    "crop": "https://cards.scryfall.io/crop/front/9/9/9979db80-83f6-41ed-aea2-0c222e923add.webp?1785322037",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/9/9979db80-83f6-41ed-aea2-0c222e923add.jpg?1785322037"
+  },
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{2}, {T}, Tap an untapped creature you control: Create a Food token.\n{3}, {T}: Choose target permanent you control. Draw a card, then another player of your choice may gain control of that permanent. Activate only as a sorcery.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Food"
+  ],
+  "produced_mana": [
+    "C"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set": "sld",
+  "set_name": "Secret Lair Drop",
+  "set_type": "box",
+  "set_uri": "https://api.scryfall.com/sets/4d92a8a7-ccb0-437d-abdc-9d70fc5ed672",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asld&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/sld?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9979db80-83f6-41ed-aea2-0c222e923add/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A6a4ee425-b3b8-487d-866c-9e2d73682466&unique=prints",
+  "collector_number": "2801",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "ConcernedApe",
+  "artist_ids": [
+    "dabee858-4eb7-47c5-ab67-dcd2ac73b30b"
+  ],
+  "illustration_id": "8697c343-a7a0-47f1-8921-12d4da098832",
+  "border_color": "borderless",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 13748,
+  "prices": {
+    "usd": "10.35",
+    "usd_foil": "12.46",
+    "usd_etched": null,
+    "eur": "9.73",
+    "eur_foil": "9.35",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStardew%2BValley",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStardew%2BValley",
+    "edhrec": "https://edhrec.com/route/?cc=Stardew+Valley"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F707340%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=899749&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Stardew+Valley&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

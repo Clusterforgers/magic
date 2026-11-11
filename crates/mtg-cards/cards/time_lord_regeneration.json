@@ -1,0 +1,61 @@
+{
+  "oracle_id": "a9a17d40-1675-49d9-9cbd-f6fe1b075d0c",
+  "name": "Time Lord Regeneration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Time Lord Regeneration",
+      "oracle_fingerprint": "3a82ad75d9784c589fc705403a46a9da",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Time Lord" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "ZoneChange": {
+                              "what": ["This"],
+                              "from": "Battlefield",
+                              "to": "Graveyard"
+                            }
+                          },
+                          "effects": [
+                            {
+                              "RevealUntil": {
+                                "filter": [{ "Subtype": "Time Lord" }, { "Type": "Creature" }],
+                                "as": "found",
+                                "revealed_as": "revealed"
+                              }
+                            },
+                            {
+                              "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } }
+                            },
+                            {
+                              "Move": {
+                                "what": { "Bound": "revealed" },
+                                "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

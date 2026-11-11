@@ -1,0 +1,61 @@
+{
+  "oracle_id": "f4497af5-8b81-46b3-bb52-eaed1999809b",
+  "name": "Unexpected Request",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unexpected Request",
+      "oracle_fingerprint": "0d8ac7718513465be6e3643ae147a9c7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                        "as": "equipment"
+                      }
+                    },
+                    { "Attach": { "what": { "Bound": "equipment" }, "to": { "Target": 0 } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [{ "Unattach": { "what": { "Bound": "equipment" } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

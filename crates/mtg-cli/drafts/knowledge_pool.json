@@ -1,0 +1,47 @@
+{
+  "oracle_id": "cb53bd72-dee8-46fa-b0f9-1eee3a99379a",
+  "name": "Knowledge Pool",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Knowledge Pool",
+      "oracle_fingerprint": "8321f4b0025d970655c0034ba79d2177",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "ExileTop": { "who": "EachPlayer", "count": 3, "as": "pool" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "CastFrom": "Hand" }] } },
+            "effects": [
+              { "Exile": { "what": "Triggering", "as": "exiled" } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "who": "TriggeringPlayer",
+                        "what": {
+                          "Each": [
+                            { "In": "Exile" },
+                            { "ExiledWith": "This" },
+                            { "Not": { "SameCard": "Triggering" } }
+                          ]
+                        },
+                        "free": true
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

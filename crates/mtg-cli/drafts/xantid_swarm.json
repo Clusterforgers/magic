@@ -1,0 +1,27 @@
+{
+  "oracle_id": "13ba9ef8-2010-4d3f-8c62-85b7c5620031",
+  "name": "Xantid Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Xantid Swarm",
+      "oracle_fingerprint": "4ee3c620b3b25053a9c965751c231b0f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "CantCastSpells": { "who": "Defending" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

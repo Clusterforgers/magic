@@ -1,0 +1,64 @@
+{
+  "oracle_id": "8a6eda31-2791-4def-b9e7-3adde155a4f0",
+  "name": "The Second Doctor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Second Doctor",
+      "oracle_fingerprint": "06fb54cc113b4bf09ad66601b4391868",
+      "abilities": [
+        { "Rule": { "rule": { "NoMaxHandSize": "EachPlayer" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "Draw": {} }] } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [{ "Draw": { "who": { "Bound": "player" } } }]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "DelayedTrigger": {
+                              "when": {
+                                "StepBegins": { "step": "Upkeep", "whose": { "Bound": "player" } }
+                              },
+                              "effects": [
+                                {
+                                  "Continuous": {
+                                    "affected": {
+                                      "Each": [
+                                        { "Type": "Creature" },
+                                        { "ControlledBy": { "Bound": "player" } }
+                                      ]
+                                    },
+                                    "mods": [{ "CantAttackYou": "Both" }],
+                                    "duration": "UntilEndOfTurn"
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "oracle_id": "0b9be4fa-5238-4afd-a9f6-f9022e67e5ab",
+  "name": "Kibo, Uktabi Prince",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kibo, Uktabi Prince",
+      "oracle_fingerprint": "a2e830bd6d96b456dad8cee79f003bce",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "EachPlayer",
+                  "token": {
+                    "Custom": {
+                      "name": "Banana",
+                      "types": ["Artifact"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap", "SacrificeSelf"],
+                            "effects": [
+                              { "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } },
+                              { "GainLife": { "amount": 2 } }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "AnyOf": [{ "Subtype": "Ape" }, { "Subtype": "Monkey" }] }
+                    ]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [{ "Sacrifice": { "who": "Defending", "filter": [{ "Type": "Artifact" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

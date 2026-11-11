@@ -1,0 +1,50 @@
+{
+  "oracle_id": "cc21b29f-2d1a-4769-9b65-f92bd2ca1cc8",
+  "name": "From the Catacombs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "From the Catacombs",
+      "oracle_fingerprint": "29e96f2c21532629b9381a14bd997aa8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": {
+                    "Battlefield": { "under": "You", "counters": [[{ "Other": "corpse" }, 1]] }
+                  },
+                  "as": "creature"
+                }
+              },
+              { "TakeInitiative": {} },
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Bound": "creature" } }],
+                      "from": "Battlefield"
+                    }
+                  },
+                  "by": { "MoveTo": "Exile" },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{3}{B}{B}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 5 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "55ad6a6b-1c44-4397-86ae-dd9221892b22",
+  "name": "Ivy, Gleeful Spellthief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ivy, Gleeful Spellthief",
+      "oracle_fingerprint": "cef748f53d0f74753bca5d03a0995537",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": ["SingleTarget", { "Targeting": [{ "Type": "Creature" }, "Other"] }]
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "CopySpell": { "what": "Triggering", "each_target": ["This"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

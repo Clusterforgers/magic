@@ -1,0 +1,56 @@
+{
+  "oracle_id": "91c835d1-22ca-4c90-9ba6-c8e01bbc0347",
+  "name": "Generous Plunderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Generous Plunderer",
+      "oracle_fingerprint": "653bec8951622a84be737d4970a4e1c6",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": "Opponent" }],
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "Target": 0 },
+                              "token": { "Named": "treasure" },
+                              "tapped": true
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "Defending",
+                  "amount": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "Defending" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

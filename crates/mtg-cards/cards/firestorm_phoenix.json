@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5653b40f-c566-4a14-b188-a9268ea36218",
+  "name": "Firestorm Phoenix",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Firestorm Phoenix",
+      "oracle_fingerprint": "442e5d46b2746979915e09a468c0535d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 179 }
+          }
+        }
+      ]
+    }
+  ]
+}

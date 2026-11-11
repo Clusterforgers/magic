@@ -1,0 +1,30 @@
+{
+  "oracle_id": "898e480d-c44e-4080-910a-f53e4ee471e1",
+  "name": "Dovin's Acuity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dovin's Acuity",
+      "oracle_fingerprint": "a97fd0868920ba094c6f179995966b7f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 2 } }, { "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Instant" }], "by": "You" } },
+            "if": {
+              "AtTrigger": {
+                "All": ["YourTurn", { "Any": [{ "Step": "Main1" }, { "Step": "Main2" }] }]
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

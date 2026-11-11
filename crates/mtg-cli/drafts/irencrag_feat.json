@@ -1,0 +1,51 @@
+{
+  "oracle_id": "2d550e17-7340-4b11-8b25-1d4f1a58f82f",
+  "name": "Irencrag Feat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Irencrag Feat",
+      "oracle_fingerprint": "eab46ba5b81e2ddc81aea10a1d401260",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red", "Red", "Red", "Red", "Red", "Red", "Red"] }
+                }
+              },
+              {
+                "Let": {
+                  "as": "cast",
+                  "amount": { "Tallied": { "who": "You", "what": "SpellsCast" } }
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "Cant": {
+                      "who": "You",
+                      "action": {
+                        "Cast": {
+                          "unless": {
+                            "Compare": {
+                              "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                              "op": "Le",
+                              "right": { "Sum": [{ "Bound": "cast" }, 1] }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

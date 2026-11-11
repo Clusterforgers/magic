@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ae0d17f6-859c-4b41-8b66-b68abb837bbb",
+  "name": "Quick Draw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quick Draw",
+      "oracle_fingerprint": "754e171999ed672d2bfbf6f03e92906d",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": "Opponent" }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 1 } }]
+                  },
+                  "mods": [{ "RemoveKeyword": "FirstStrike" }, { "RemoveKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

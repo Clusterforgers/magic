@@ -1,0 +1,25 @@
+{
+  "oracle_id": "04505544-8341-4bd9-afa7-b31d6b415c47",
+  "name": "Titans' Nest",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Titans' Nest",
+      "oracle_fingerprint": "24f94a0c111b920b3c1b6c71eff98595",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 127, "end": 262 }
+          }
+        }
+      ]
+    }
+  ]
+}

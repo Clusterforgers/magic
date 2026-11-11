@@ -1,0 +1,56 @@
+{
+  "oracle_id": "34c8fffd-1b23-4f40-ad29-1f0acb519e7e",
+  "name": "Cemetery Protector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cemetery Protector",
+      "oracle_fingerprint": "3d9669da88b1f4c341b2f6c944f21128",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Choose": { "from": { "Each": [{ "In": "Graveyard" }] }, "as": "card" } },
+              { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+              { "Remember": { "what": { "Bound": "exiled" }, "slot": "exiled" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Did": { "action": "PlayedLand", "who": "You" } },
+                { "SpellCast": { "by": "You" } }
+              ]
+            },
+            "if": {
+              "Matches": {
+                "subject": "Triggering",
+                "selector": [{ "SharesType": { "Remembered": { "on": "This", "slot": "exiled" } } }]
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

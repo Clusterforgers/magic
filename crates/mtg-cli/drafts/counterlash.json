@@ -1,0 +1,33 @@
+{
+  "oracle_id": "16de96d0-a58e-42a7-9a13-45358542a246",
+  "name": "Counterlash",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Counterlash",
+      "oracle_fingerprint": "449da4c194647d12fa31019cd180fced",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "CastFromZone": {
+                  "what": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      { "SharesType": { "Target": 0 } }
+                    ]
+                  },
+                  "free": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

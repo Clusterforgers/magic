@@ -1,0 +1,28 @@
+{
+  "oracle_id": "0c38f159-367b-4e4b-94cd-bf1b0721c3a8",
+  "name": "Magebane Lizard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magebane Lizard",
+      "oracle_fingerprint": "fb026c684ff6793519564d6658551f2f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }] } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": "TriggeringPlayer",
+                  "amount": {
+                    "Tallied": { "who": "TriggeringPlayer", "what": "NoncreatureSpellsCast" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

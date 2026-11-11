@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b0c28b2b-a2dd-4b76-bb1c-cec55a0a6784",
+  "name": "Flotsam // Jetsam",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flotsam",
+      "oracle_fingerprint": "649dc736a1ae5c95db6f83db4ca14471",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 3 } },
+              { "CreateToken": { "token": { "Named": "clue" } } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jetsam",
+      "oracle_fingerprint": "0d6a7b3d56ceef6c8b40b144d8755c79",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "who": "Opponents", "count": 3 } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "opp" } },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "card"
+                      }
+                    },
+                    { "CastFromZone": { "what": { "Bound": "card" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

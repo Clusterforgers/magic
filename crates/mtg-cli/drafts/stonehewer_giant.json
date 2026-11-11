@@ -1,0 +1,37 @@
+{
+  "oracle_id": "b3d99ea0-d61f-4394-8913-b4057c38ff3e",
+  "name": "Stonehewer Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stonehewer Giant",
+      "oracle_fingerprint": "0267ef00eddd7a228ba2f084a20faf36",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "Tap"],
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Equipment" }], "as": "found" } },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": {} },
+                  "as": "equipment"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "as": "creature"
+                }
+              },
+              { "Attach": { "what": { "Bound": "equipment" }, "to": { "Bound": "creature" } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

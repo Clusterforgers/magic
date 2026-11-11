@@ -1,0 +1,20 @@
+{
+  "oracle_id": "20046568-b067-49fb-93b4-2ee86421f14b",
+  "name": "Aerialephant",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Aerialephant",
+      "oracle_fingerprint": "0cc999bc1ee74bf432897c75a40aa688",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 105 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "a549d54f-2640-455c-8a93-bef4df2f9e8b",
+  "name": "Cairn Wanderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cairn Wanderer",
+      "oracle_fingerprint": "1e2ba5cc77a48a1bc6c07a9db6c1c1c4",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "HasKeyword": "Flying" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

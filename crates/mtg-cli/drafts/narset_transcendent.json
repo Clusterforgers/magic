@@ -1,0 +1,94 @@
+{
+  "oracle_id": "e1de0c94-0ecc-425a-9b92-27c2745d07e7",
+  "name": "Narset Transcendent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Narset Transcendent",
+      "oracle_fingerprint": "03627ca8da94912bedf74c94fe1e93da",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Not": { "Type": "Creature" } }, { "Not": { "Type": "Land" } }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          { "Reveal": { "what": { "Bound": "top" } } },
+                          { "Move": { "what": { "Bound": "top" }, "to": "Hand" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [
+                        { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                        { "CastFrom": "Hand" }
+                      ],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [{ "AddKeyword": "Rebound" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 9 },
+            "effects": [
+              {
+                "CreateEmblem": {
+                  "abilities": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "Cant": {
+                            "who": "Opponents",
+                            "action": { "Cast": { "filter": [{ "Not": { "Type": "Creature" } }] } }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

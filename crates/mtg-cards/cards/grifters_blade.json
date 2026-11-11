@@ -1,0 +1,27 @@
+{
+  "oracle_id": "fe8b7835-a9b2-4a8d-964a-471430f1d143",
+  "name": "Grifter's Blade",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Grifter's Blade",
+      "oracle_fingerprint": "511c867d849f3e1ecde3d81fbbf4cd68",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 6, "end": 134 }
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

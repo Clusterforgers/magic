@@ -1,0 +1,49 @@
+{
+  "oracle_id": "3b143227-f373-4403-b246-ee1c9a0dc85a",
+  "name": "Hidden Predators",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Predators",
+      "oracle_fingerprint": "665dd625bb45a870cd36a8d2908f7965",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "CountOf": {
+                    "subject": {
+                      "Each": [
+                        { "Type": "Creature" },
+                        { "ControlledBy": "Opponents" },
+                        { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                      ]
+                    },
+                    "selector": [],
+                    "op": "Ge",
+                    "right": 1
+                  }
+                }
+              }
+            },
+            "if": { "Matches": { "subject": "This", "selector": [{ "Type": "Enchantment" }] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddType": "Creature" },
+                    { "SetPT": { "power": 4, "toughness": 4 } },
+                    { "AddSubtype": "Beast" }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

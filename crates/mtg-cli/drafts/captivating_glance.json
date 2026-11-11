@@ -1,0 +1,45 @@
+{
+  "oracle_id": "11a372c7-3c7c-431c-9532-f2bae93f1c33",
+  "name": "Captivating Glance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captivating Glance",
+      "oracle_fingerprint": "d724afbbb6ccfb2713179ed96aa9338f",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "Choose": { "from": "Opponents", "as": "opp" } },
+              {
+                "Clash": {
+                  "win": [
+                    {
+                      "Continuous": {
+                        "affected": "Attached",
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ],
+                  "lose": [
+                    {
+                      "Continuous": {
+                        "affected": "Attached",
+                        "mods": [{ "SetController": { "Bound": "opp" } }],
+                        "duration": "Forever"
+                      }
+                    }
+                  ],
+                  "with": { "Bound": "opp" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

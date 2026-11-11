@@ -1,0 +1,39 @@
+{
+  "oracle_id": "056b651e-e0e2-4333-9235-d1ffe8fcca29",
+  "name": "Stingcaster Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stingcaster Mage",
+      "oracle_fingerprint": "fccb4ca548e6d984b3c3c99cc46a45ec",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

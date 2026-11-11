@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4c702b96-3288-435d-9154-5b7454419896",
+  "name": "Corrupted Grafstone",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Corrupted Grafstone",
+      "oracle_fingerprint": "06010097956e750ab6abfea4a7ecfa6b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 29, "end": 105 }
+          }
+        }
+      ]
+    }
+  ]
+}

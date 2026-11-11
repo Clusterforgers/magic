@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ba95f24d-42da-48ce-bcf1-1b7c4b3c45b5",
+  "name": "Skirge Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Skirge Familiar",
+      "oracle_fingerprint": "f0b2c9df1ad1ae4f1774a3862067e884",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Discard": {} }],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

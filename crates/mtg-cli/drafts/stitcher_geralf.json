@@ -1,0 +1,55 @@
+{
+  "oracle_id": "da394a25-79c9-4b75-9ce6-741f64ae6913",
+  "name": "Stitcher Geralf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stitcher Geralf",
+      "oracle_fingerprint": "530dc77ed7e8520b8f523f055141b07f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{U}" }, "Tap"],
+            "effects": [
+              { "Mill": { "who": "EachPlayer", "count": 3, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "milled" } },
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 2 },
+                  "as": "chosen"
+                }
+              },
+              { "Exile": { "what": { "Bound": "chosen" }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": {
+                        "Total": {
+                          "of": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }],
+                          "stat": "Power"
+                        }
+                      },
+                      "token": {
+                        "name": "Zombie",
+                        "colors": ["Blue"],
+                        "types": ["Creature"],
+                        "subtypes": ["Zombie"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

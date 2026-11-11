@@ -1,0 +1,188 @@
+{
+  "object": "card",
+  "id": "ea6d3242-8059-4203-aa06-58a6a3925eda",
+  "oracle_id": "e711a213-2a6b-4b34-a788-95b6c0b7ba48",
+  "multiverse_ids": [
+    548353,
+    548354
+  ],
+  "mtgo_id": 97030,
+  "arena_id": 79480,
+  "tcgplayer_id": 262768,
+  "cardmarket_id": 607651,
+  "name": "Inventive Iteration // Living Breakthrough",
+  "lang": "en",
+  "released_at": "2022-02-18",
+  "uri": "https://api.scryfall.com/cards/ea6d3242-8059-4203-aa06-58a6a3925eda",
+  "scryfall_uri": "https://scryfall.com/card/neo/57/inventive-iteration-living-breakthrough?utm_source=api",
+  "layout": "transform",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:25:09Z",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga // Enchantment Creature — Moonfolk",
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Transform"
+  ],
+  "card_faces": [
+    {
+      "object": "card_face",
+      "name": "Inventive Iteration",
+      "mana_cost": "{3}{U}",
+      "type_line": "Enchantment — Saga",
+      "oracle_text": "(As this Saga enters and after your draw step, add a lore counter.)\nI — Return up to one target creature or planeswalker to its owner's hand.\nII — Return an artifact card from your graveyard to your hand. If you can't, draw a card.\nIII — Exile this Saga, then return it to the battlefield transformed under your control.",
+      "colors": [
+        "U"
+      ],
+      "artist": "Néstor Ossandón Leal",
+      "artist_id": "7a6f1667-a8ac-47f5-a302-f71cb54b2adf",
+      "illustration_id": "ffec18fe-f3fe-4fd9-8c2f-b43e849204ba",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/front/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.jpg?1783923909",
+        "normal": "https://cards.scryfall.io/normal/front/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.jpg?1783923909",
+        "large": "https://cards.scryfall.io/large/front/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.jpg?1783923909",
+        "png": "https://cards.scryfall.io/png/front/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.png?1783923909",
+        "art_crop": "https://cards.scryfall.io/art_crop/front/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.jpg?1783923909",
+        "border_crop": "https://cards.scryfall.io/border_crop/front/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.jpg?1783923909",
+        "thumb": "https://cards.scryfall.io/thumb/front/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.webp?1783923909",
+        "grid": "https://cards.scryfall.io/grid/front/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.webp?1783923909",
+        "display": "https://cards.scryfall.io/display/front/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.webp?1783923909",
+        "art": "https://cards.scryfall.io/art/front/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.webp?1783923909",
+        "crop": "https://cards.scryfall.io/crop/front/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.webp?1783923909",
+        "jpeg": "https://cards.scryfall.io/normal/front/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.jpg?1783923909"
+      }
+    },
+    {
+      "object": "card_face",
+      "name": "Living Breakthrough",
+      "mana_cost": "",
+      "type_line": "Enchantment Creature — Moonfolk",
+      "oracle_text": "Flying\nWhenever you cast a spell, your opponents can't cast spells with the same mana value as that spell until your next turn.",
+      "colors": [
+        "U"
+      ],
+      "color_indicator": [
+        "U"
+      ],
+      "power": "3",
+      "toughness": "3",
+      "flavor_text": "\"While they squabble below, let us rise above.\"\n—Emire, director of the Saiba Futurists",
+      "artist": "Néstor Ossandón Leal",
+      "artist_id": "7a6f1667-a8ac-47f5-a302-f71cb54b2adf",
+      "illustration_id": "7e67541e-3a0d-4b71-974c-c1f4b4e7239f",
+      "image_uris": {
+        "small": "https://cards.scryfall.io/small/back/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.jpg?1783923909",
+        "normal": "https://cards.scryfall.io/normal/back/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.jpg?1783923909",
+        "large": "https://cards.scryfall.io/large/back/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.jpg?1783923909",
+        "png": "https://cards.scryfall.io/png/back/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.png?1783923909",
+        "art_crop": "https://cards.scryfall.io/art_crop/back/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.jpg?1783923909",
+        "border_crop": "https://cards.scryfall.io/border_crop/back/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.jpg?1783923909",
+        "thumb": "https://cards.scryfall.io/thumb/back/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.webp?1783923909",
+        "grid": "https://cards.scryfall.io/grid/back/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.webp?1783923909",
+        "display": "https://cards.scryfall.io/display/back/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.webp?1783923909",
+        "art": "https://cards.scryfall.io/art/back/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.webp?1783923909",
+        "crop": "https://cards.scryfall.io/crop/back/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.webp?1783923909",
+        "jpeg": "https://cards.scryfall.io/normal/back/e/a/ea6d3242-8059-4203-aa06-58a6a3925eda.jpg?1783923909"
+      }
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "59a2059f-5482-433f-8761-eb2e17859b71",
+  "set": "neo",
+  "set_name": "Kamigawa: Neon Dynasty",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/59a2059f-5482-433f-8761-eb2e17859b71",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aneo&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/neo?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ea6d3242-8059-4203-aa06-58a6a3925eda/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae711a213-2a6b-4b34-a788-95b6c0b7ba48&unique=prints",
+  "collector_number": "57",
+  "digital": false,
+  "rarity": "rare",
+  "artist": "Néstor Ossandón Leal",
+  "artist_ids": [
+    "7a6f1667-a8ac-47f5-a302-f71cb54b2adf"
+  ],
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "fandfc",
+    "enchantment"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 9854,
+  "penny_rank": 9874,
+  "preview": {
+    "source": "Corocoro",
+    "source_uri": "https://corocoro.jp/322616/",
+    "previewed_at": "2022-02-01"
+  },
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.30",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.31",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=548353&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DInventive%2BIteration%2B%252F%252F%2BLiving%2BBreakthrough",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DInventive%2BIteration%2B%252F%252F%2BLiving%2BBreakthrough",
+    "edhrec": "https://edhrec.com/route/?cc=Inventive+Iteration"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F262768%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=607651&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/97030?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

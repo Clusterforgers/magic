@@ -1,0 +1,79 @@
+{
+  "oracle_id": "10c2428f-6e4a-4b92-9087-720242a5c25c",
+  "name": "Queen Kayla bin-Kroog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Queen Kayla bin-Kroog",
+      "oracle_fingerprint": "9d64f59dace70ad0c422a73c509b0a64",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Discard": {
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "discarded"
+                }
+              },
+              { "Draw": { "count": { "Count": [{ "Is": { "Bound": "discarded" } }] } } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "discarded" } },
+                      { "In": "Graveyard" },
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 1 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "one"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "discarded" } },
+                      { "In": "Graveyard" },
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 2 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "two"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "discarded" } },
+                      { "In": "Graveyard" },
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 3 } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "three"
+                }
+              },
+              {
+                "Together": {
+                  "effects": [
+                    { "Move": { "what": { "Bound": "one" }, "to": { "Battlefield": {} } } },
+                    { "Move": { "what": { "Bound": "two" }, "to": { "Battlefield": {} } } },
+                    { "Move": { "what": { "Bound": "three" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

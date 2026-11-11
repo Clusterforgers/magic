@@ -1,0 +1,84 @@
+{
+  "oracle_id": "1ae29791-aa7c-4050-bf72-dd0f739b11b8",
+  "name": "Will of the Abzan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Will of the Abzan",
+      "oracle_fingerprint": "c344a5bb08323d68ea03b11561bd5602",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "all_if": {
+                    "Compare": {
+                      "left": { "Count": ["Commander", { "ControlledBy": "You" }] },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": "Opponent",
+                          "bounds": { "min": 0, "max": { "Players": "Opponents" } }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "RepeatEach": {
+                            "over": { "Target": 0 },
+                            "as": "opp",
+                            "effects": [
+                              {
+                                "Sacrifice": {
+                                  "who": { "Bound": "opp" },
+                                  "filter": [
+                                    { "Type": "Creature" },
+                                    {
+                                      "GreatestAmong": {
+                                        "stat": "Power",
+                                        "group": [
+                                          { "Type": "Creature" },
+                                          { "ControlledBy": { "Bound": "opp" } }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              { "LoseLife": { "who": { "Bound": "opp" }, "amount": 3 } }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

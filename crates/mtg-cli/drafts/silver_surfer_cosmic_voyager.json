@@ -1,0 +1,66 @@
+{
+  "oracle_id": "3ce1f550-d044-4cb1-991b-e98449f74507",
+  "name": "Silver Surfer, Cosmic Voyager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Silver Surfer, Cosmic Voyager",
+      "oracle_fingerprint": "387df38a802e2e2715476b026bd6555d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "ControlledBy": "You" }, "Other"] },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Together": {
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [
+                                  { "Is": { "Bound": "exiled" } },
+                                  { "In": "Exile" },
+                                  { "Not": { "Type": "Land" } }
+                                ]
+                              },
+                              "to": { "Battlefield": {} }
+                            }
+                          },
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [
+                                  { "Is": { "Bound": "exiled" } },
+                                  { "In": "Exile" },
+                                  { "Type": "Land" }
+                                ]
+                              },
+                              "to": { "Battlefield": { "tapped": true } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

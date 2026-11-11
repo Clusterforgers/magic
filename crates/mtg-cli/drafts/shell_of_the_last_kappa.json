@@ -1,0 +1,47 @@
+{
+  "oracle_id": "a8b24b38-019c-45e7-a5f4-a1bc3014f7a2",
+  "name": "Shell of the Last Kappa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shell of the Last Kappa",
+      "oracle_fingerprint": "1f627cc0e623d8561f3d4d4a45de811c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "TargetsPlayer": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              { "Remember": { "what": { "Target": 0 }, "slot": "exiled" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Remembered": { "on": "This", "slot": "exiled" } },
+                  "as": "card"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "card" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

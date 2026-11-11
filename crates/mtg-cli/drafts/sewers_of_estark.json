@@ -1,0 +1,64 @@
+{
+  "oracle_id": "2482f98a-eadf-450d-9e73-fc441b572862",
+  "name": "Sewers of Estark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sewers of Estark",
+      "oracle_fingerprint": "aed47d09ab7b21b702460381b5823b60",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": ["Attacking"] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": ["CantBeBlocked"],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": ["Blocking"] }
+                  },
+                  "then": [
+                    {
+                      "Shield": {
+                        "when": {
+                          "Damage": {
+                            "source": [
+                              {
+                                "AnyOf": [
+                                  { "Is": { "Target": 0 } },
+                                  { "BlockedBy": { "Target": 0 } }
+                                ]
+                              }
+                            ],
+                            "combat": true
+                          }
+                        },
+                        "by": "Prevent",
+                        "duration": "UntilEndOfCombat"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

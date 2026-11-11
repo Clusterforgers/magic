@@ -1,0 +1,71 @@
+{
+  "oracle_id": "6fdcb563-9279-4365-8a78-26e75fbfd917",
+  "name": "Gogo, Mysterious Mime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gogo, Mysterious Mime",
+      "oracle_fingerprint": "6467c8618a03432b673f31fd777161c5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "BecomeCopy": {
+                        "what": "This",
+                        "of": { "Target": 0 },
+                        "except": [{ "SetName": "Gogo, Mysterious Mime" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "ModifyPT": { "power": 2, "toughness": 0 } },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [
+                          { "ModifyPT": { "power": 2, "toughness": 0 } },
+                          { "AddKeyword": "Haste" }
+                        ],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    { "Rule": { "rule": { "MustAttack": "This" }, "duration": "UntilEndOfTurn" } },
+                    {
+                      "Rule": {
+                        "rule": { "MustAttack": { "Target": 0 } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

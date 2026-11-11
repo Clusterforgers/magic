@@ -1,0 +1,12 @@
+{
+  "oracle_id": "1463795b-ec0c-44d6-ae1a-55f78d9843ec",
+  "name": "Spirit of the Labyrinth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spirit of the Labyrinth",
+      "oracle_fingerprint": "1892842231c83d48e408e3dfeb03f1ea",
+      "abilities": [{ "Rule": { "rule": { "DrawLimit": { "who": "EachPlayer", "most": 1 } } } }]
+    }
+  ]
+}

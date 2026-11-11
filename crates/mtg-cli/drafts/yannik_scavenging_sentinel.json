@@ -1,0 +1,58 @@
+{
+  "oracle_id": "81ab8947-8046-4944-ae58-006a6eefa08a",
+  "name": "Yannik, Scavenging Sentinel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yannik, Scavenging Sentinel",
+      "oracle_fingerprint": "d5e96e3ea8a81f0cff1a4f1d456f6b55",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Nikara, Lair Scavenger" } },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "as": "chosen"
+                }
+              },
+              {
+                "Exile": {
+                  "what": { "Bound": "chosen" },
+                  "as": "exiled",
+                  "duration": "WhileSourceOnBattlefield"
+                }
+              },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": { "Object": [{ "Type": "Creature" }] },
+                      "bounds": {
+                        "min": 0,
+                        "max": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Power" } }
+                      },
+                      "divide": { "Stat": { "of": { "Bound": "exiled" }, "stat": "Power" } }
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": { "Target": 0 },
+                        "counter": "+1/+1",
+                        "count": "Divided"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

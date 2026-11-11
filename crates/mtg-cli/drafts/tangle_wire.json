@@ -1,0 +1,45 @@
+{
+  "oracle_id": "c4ea0931-43e0-4214-9e0b-213eee3a7e69",
+  "name": "Tangle Wire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tangle Wire",
+      "oracle_fingerprint": "347d75e1e382335c39ac911a4852e73b",
+      "abilities": [
+        { "Keyword": { "Fading": 4 } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "Choose": {
+                  "who": "TriggeringPlayer",
+                  "from": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Land" }
+                        ]
+                      },
+                      "Untapped",
+                      { "ControlledBy": "TriggeringPlayer" }
+                    ]
+                  },
+                  "count": {
+                    "min": { "Counters": { "on": "This", "counter": { "Other": "fade" } } },
+                    "max": { "Counters": { "on": "This", "counter": { "Other": "fade" } } }
+                  },
+                  "as": "tapped"
+                }
+              },
+              { "Tap": { "what": { "Bound": "tapped" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

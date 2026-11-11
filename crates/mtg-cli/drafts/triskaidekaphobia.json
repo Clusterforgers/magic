@@ -1,0 +1,60 @@
+{
+  "oracle_id": "d5b131c7-29d4-4745-95e3-70bdf9bf54b3",
+  "name": "Triskaidekaphobia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triskaidekaphobia",
+      "oracle_fingerprint": "089204cac40604a102f02314fc12cbf6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "LoseGame": {
+                            "who": {
+                              "PlayersWhere": {
+                                "who": "EachPlayer",
+                                "test": {
+                                  "Compare": { "left": { "Life": "You" }, "op": "Eq", "right": 13 }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        { "GainLife": { "who": "EachPlayer", "amount": 1 } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "LoseGame": {
+                            "who": {
+                              "PlayersWhere": {
+                                "who": "EachPlayer",
+                                "test": {
+                                  "Compare": { "left": { "Life": "You" }, "op": "Eq", "right": 13 }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        { "LoseLife": { "who": "EachPlayer", "amount": 1 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

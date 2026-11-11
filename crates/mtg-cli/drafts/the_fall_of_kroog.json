@@ -1,0 +1,39 @@
+{
+  "oracle_id": "bfd8d447-7253-40d0-a153-78e9700045d7",
+  "name": "The Fall of Kroog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Fall of Kroog",
+      "oracle_fingerprint": "36dd7d693f8023dc200973d56ac5ca31",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Opponent" },
+              { "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": { "Target": 0 } }] } }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 1 } } },
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
+                    {
+                      "DealDamage": {
+                        "to": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
+                        },
+                        "amount": 1
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

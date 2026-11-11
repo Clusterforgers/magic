@@ -1,0 +1,33 @@
+{
+  "oracle_id": "52c3fe55-74ee-44cb-b62b-dc6c5dfdc33e",
+  "name": "Detective's Phoenix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Detective's Phoenix",
+      "oracle_fingerprint": "3fb53ce3b2faacefc3459a96704a85d2",
+      "abilities": [
+        { "Keyword": { "Bestow": [{ "Mana": "{R}" }, { "CollectEvidence": 6 }] } },
+        { "Keyword": "Flying" },
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        },
+        {
+          "AltCast": {
+            "way": "Bestow",
+            "cost": [{ "Mana": "{R}" }, { "CollectEvidence": 6 }],
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

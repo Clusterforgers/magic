@@ -1,0 +1,57 @@
+{
+  "oracle_id": "75ffebc4-8db9-4de6-a330-e3f41cdccecc",
+  "name": "Archmage's Newt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archmage's Newt",
+      "oracle_fingerprint": "f069cfc8c7d089986c3d4c7e0c49437c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "HasKeyword": "Saddled" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": { "Flashback": "{0}" } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Saddle": 3 } }
+      ]
+    }
+  ]
+}

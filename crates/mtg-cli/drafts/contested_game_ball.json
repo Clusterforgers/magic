@@ -1,0 +1,52 @@
+{
+  "oracle_id": "876c9620-216c-45dd-b8a6-b9e0cba63e3d",
+  "name": "Contested Game Ball",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Contested Game Ball",
+      "oracle_fingerprint": "8371e734cc98392ddab4f4b1645e1116",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": [], "to": "You", "combat": true } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetController": { "ControllerOf": "Dealer" } }],
+                  "duration": "Forever"
+                }
+              },
+              { "Untap": { "what": "This" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              { "Draw": {} },
+              { "PutCounters": { "on": "This", "counter": { "Other": "point" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "point" } } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [
+                    { "Sacrifice": { "filter": ["This"] } },
+                    { "CreateToken": { "token": { "Named": "treasure" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

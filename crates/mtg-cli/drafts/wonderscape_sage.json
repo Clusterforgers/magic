@@ -1,0 +1,53 @@
+{
+  "oracle_id": "99994c36-21ec-4a28-b850-d3f2ba8b7f19",
+  "name": "Wonderscape Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wonderscape Sage",
+      "oracle_fingerprint": "cd9f88da765eb490e91711f27ffbef07",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap", { "ReturnToHand": { "filter": [{ "Type": "Land" }] } }],
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "Matches": {
+                        "subject": "Paid",
+                        "selector": [
+                          {
+                            "AnyOf": [
+                              { "Subtype": "Cave" },
+                              { "Subtype": "Cloud" },
+                              { "Subtype": "Desert" },
+                              { "Subtype": "Gate" },
+                              { "Subtype": "Lair" },
+                              { "Subtype": "Locus" },
+                              { "Subtype": "Mine" },
+                              { "Subtype": "Power-Plant" },
+                              { "Subtype": "Sphere" },
+                              { "Subtype": "Tower" },
+                              { "Subtype": "Town" },
+                              { "Subtype": "Urza's" },
+                              { "Subtype": "Planet" }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "then": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

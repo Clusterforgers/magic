@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0a5e6223-ca31-4605-9c33-9ce492aaf556",
+  "name": "Minimus Containment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minimus Containment",
+      "oracle_fingerprint": "f60f050dcde1ed9e51d51b8f7e5d9130",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Not": { "Type": "Land" } }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "SetTypes": ["Artifact"] },
+              { "AddSubtype": "Treasure" },
+              "LoseAbilities",
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap", "SacrificeSelf"],
+                    "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

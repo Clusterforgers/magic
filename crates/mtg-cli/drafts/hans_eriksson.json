@@ -1,0 +1,48 @@
+{
+  "oracle_id": "8a37ac5c-341b-48ab-9b0b-5ef8bf097aab",
+  "name": "Hans Eriksson",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hans Eriksson",
+      "oracle_fingerprint": "b0a6ff64a4b1e0fccbcc011f916b6f55",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "top" },
+                      "selector": [{ "Type": "Creature" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "top" },
+                        "to": { "Battlefield": { "tapped": true } },
+                        "as": "entered"
+                      }
+                    },
+                    { "JoinAttack": { "what": { "Bound": "entered" } } },
+                    {
+                      "Reflexive": {
+                        "effects": [{ "Fight": { "what": { "Bound": "entered" }, "with": "This" } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "top" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

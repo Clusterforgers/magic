@@ -1,0 +1,57 @@
+{
+  "oracle_id": "9e73f938-0aa4-4639-a97a-f7e68f645623",
+  "name": "Deliver Unto Evil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deliver Unto Evil",
+      "oracle_fingerprint": "a74bf3943543cd4ff08387bceed57e58",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "bounds": { "min": 0, "max": 4 }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": {
+                        "Each": [
+                          { "Type": "Planeswalker" },
+                          { "Subtype": "Bolas" },
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }],
+                  "otherwise": [
+                    {
+                      "Choose": {
+                        "who": "Opponents",
+                        "from": { "Target": 0 },
+                        "count": { "min": 2, "max": 2 },
+                        "as": "chosen",
+                        "rest_as": "rest"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "rest" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

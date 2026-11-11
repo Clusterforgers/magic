@@ -1,0 +1,72 @@
+{
+  "oracle_id": "3fa2d51c-d549-4287-ac3b-76bc72bcd8bc",
+  "name": "Alacrian Armory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alacrian Armory",
+      "oracle_fingerprint": "871530432fca1b3148c3ed9302ded706",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 0, "toughness": 1 } }, { "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": [{ "Subtype": "Mount" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Saddled" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Subtype": "Vehicle" }]
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddType": "Artifact" }, { "AddType": "Creature" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

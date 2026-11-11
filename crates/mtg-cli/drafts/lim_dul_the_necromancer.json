@@ -1,0 +1,66 @@
+{
+  "oracle_id": "820052b3-d217-4b30-acc4-fa5af7465e9e",
+  "name": "Lim-Dûl the Necromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lim-Dûl the Necromancer",
+      "oracle_fingerprint": "de30e7a1830a8f95edb6fdea6a7c9901",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{B}",
+                  "paid": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "In": "Graveyard" }, { "SameCard": "Triggering" }] },
+                        "to": { "Battlefield": { "under": "You" } },
+                        "as": "returned"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Matches": {
+                            "subject": { "Bound": "returned" },
+                            "selector": [{ "Type": "Creature" }]
+                          }
+                        },
+                        "then": [
+                          {
+                            "Continuous": {
+                              "affected": { "Bound": "returned" },
+                              "mods": [{ "AddSubtype": "Zombie" }],
+                              "duration": "Forever"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "targets": [{ "what": { "Object": [{ "Subtype": "Zombie" }] } }],
+            "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

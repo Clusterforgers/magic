@@ -1,0 +1,38 @@
+{
+  "oracle_id": "7818d6e0-74d8-46ae-94f6-d2a349c9507b",
+  "name": "Penance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Penance",
+      "oracle_fingerprint": "7722259bcd4139b0bbcf7dd52014cf1e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "ToLibrary": { "from": "Hand", "filter": [] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

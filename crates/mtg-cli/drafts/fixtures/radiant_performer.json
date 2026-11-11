@@ -1,0 +1,150 @@
+{
+  "object": "card",
+  "id": "e8faedf4-1178-4f5d-8f46-7277dfe1ae2c",
+  "oracle_id": "ad16f918-5603-437b-b143-49c69ceae17d",
+  "multiverse_ids": [
+    518450
+  ],
+  "tcgplayer_id": 236370,
+  "cardmarket_id": 558760,
+  "name": "Radiant Performer",
+  "lang": "en",
+  "released_at": "2021-04-23",
+  "uri": "https://api.scryfall.com/cards/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c",
+  "scryfall_uri": "https://scryfall.com/card/c21/54/radiant-performer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:26:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/8/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c.jpg?1783927591",
+    "normal": "https://cards.scryfall.io/normal/front/e/8/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c.jpg?1783927591",
+    "large": "https://cards.scryfall.io/large/front/e/8/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c.jpg?1783927591",
+    "png": "https://cards.scryfall.io/png/front/e/8/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c.png?1783927591",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/8/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c.jpg?1783927591",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/8/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c.jpg?1783927591",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/8/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c.webp?1783927591",
+    "grid": "https://cards.scryfall.io/grid/front/e/8/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c.webp?1783927591",
+    "display": "https://cards.scryfall.io/display/front/e/8/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c.webp?1783927591",
+    "art": "https://cards.scryfall.io/art/front/e/8/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c.webp?1783927591",
+    "crop": "https://cards.scryfall.io/crop/front/e/8/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c.webp?1783927591",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/8/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c.jpg?1783927591"
+  },
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Flash\nWhen this creature enters, if you cast it from your hand, choose target spell or ability that targets only a single permanent or player. Copy that spell or ability for each other permanent or player the spell or ability could target. Each copy targets a different one of those permanents and players.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Flash"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "c7ba6540-3743-445c-99bf-feb5af2fd56d",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/c7ba6540-3743-445c-99bf-feb5af2fd56d"
+    },
+    {
+      "object": "related_card",
+      "id": "dea0ea77-1c78-45ec-b3d9-813d4035c34b",
+      "component": "combo_piece",
+      "name": "Radiant Performer",
+      "type_line": "Creature — Human Wizard",
+      "uri": "https://api.scryfall.com/cards/dea0ea77-1c78-45ec-b3d9-813d4035c34b"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "27bf6dbd-a9e1-4904-afa7-d28fc7745c4f",
+  "set": "c21",
+  "set_name": "Commander 2021",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/27bf6dbd-a9e1-4904-afa7-d28fc7745c4f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac21&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c21?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/e8faedf4-1178-4f5d-8f46-7277dfe1ae2c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aad16f918-5603-437b-b143-49c69ceae17d&unique=prints",
+  "collector_number": "54",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Alessandra Pisano",
+  "artist_ids": [
+    "15869690-bf3c-4498-a577-409a6bde5c83"
+  ],
+  "illustration_id": "cc2fe57b-3133-4243-bd25-99b439cb8d73",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 11223,
+  "prices": {
+    "usd": "1.05",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.44",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=518450&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRadiant%2BPerformer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRadiant%2BPerformer",
+    "edhrec": "https://edhrec.com/route/?cc=Radiant+Performer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F236370%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=558760&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Radiant+Performer&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

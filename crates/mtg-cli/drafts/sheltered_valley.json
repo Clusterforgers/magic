@@ -1,0 +1,50 @@
+{
+  "oracle_id": "cd535fa3-6fd8-4227-97fd-3ef07cb0598d",
+  "name": "Sheltered Valley",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sheltered Valley",
+      "oracle_fingerprint": "1169b96eede82323ed6b4fc73bae4eb8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "Instead": [
+                {
+                  "Sacrifice": {
+                    "filter": ["Other", { "Named": "Sheltered Valley" }],
+                    "count": {
+                      "Count": ["Other", { "Named": "Sheltered Valley" }, { "ControlledBy": "You" }]
+                    }
+                  }
+                },
+                { "Move": { "what": "This", "to": { "Battlefield": {} } } }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "op": "Le",
+                "right": 3
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "f4b30f6c-09ac-407e-9c72-da64d212ce93",
+  "name": "Guided Passage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guided Passage",
+      "oracle_fingerprint": "8e26381e5b20b04efde5c75211d26327",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Reveal": { "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }] } } },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                  },
+                  "as": "creature"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, { "Type": "Land" }]
+                  },
+                  "as": "land"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "OwnedBy": "You" },
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "as": "other"
+                }
+              },
+              { "Move": { "what": { "Bound": "creature" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "other" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

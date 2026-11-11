@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "3cab0df1-d53f-4208-9ff9-d015aac20141",
+  "oracle_id": "06c25d71-f3f4-4089-b9bc-de96fbad73a5",
+  "multiverse_ids": [
+    634814
+  ],
+  "tcgplayer_id": 519920,
+  "cardmarket_id": 738708,
+  "name": "The Cyber-Controller",
+  "lang": "en",
+  "released_at": "2023-10-13",
+  "uri": "https://api.scryfall.com/cards/3cab0df1-d53f-4208-9ff9-d015aac20141",
+  "scryfall_uri": "https://scryfall.com/card/who/119/the-cyber-controller?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:50:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/c/3cab0df1-d53f-4208-9ff9-d015aac20141.jpg?1783914639",
+    "normal": "https://cards.scryfall.io/normal/front/3/c/3cab0df1-d53f-4208-9ff9-d015aac20141.jpg?1783914639",
+    "large": "https://cards.scryfall.io/large/front/3/c/3cab0df1-d53f-4208-9ff9-d015aac20141.jpg?1783914639",
+    "png": "https://cards.scryfall.io/png/front/3/c/3cab0df1-d53f-4208-9ff9-d015aac20141.png?1783914639",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/c/3cab0df1-d53f-4208-9ff9-d015aac20141.jpg?1783914639",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/c/3cab0df1-d53f-4208-9ff9-d015aac20141.jpg?1783914639",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/c/3cab0df1-d53f-4208-9ff9-d015aac20141.webp?1783914639",
+    "grid": "https://cards.scryfall.io/grid/front/3/c/3cab0df1-d53f-4208-9ff9-d015aac20141.webp?1783914639",
+    "display": "https://cards.scryfall.io/display/front/3/c/3cab0df1-d53f-4208-9ff9-d015aac20141.webp?1783914639",
+    "art": "https://cards.scryfall.io/art/front/3/c/3cab0df1-d53f-4208-9ff9-d015aac20141.webp?1783914639",
+    "crop": "https://cards.scryfall.io/crop/front/3/c/3cab0df1-d53f-4208-9ff9-d015aac20141.webp?1783914639",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/c/3cab0df1-d53f-4208-9ff9-d015aac20141.jpg?1783914639"
+  },
+  "mana_cost": "{X}{U}{U}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Artifact Creature — Cyberman",
+  "oracle_text": "When The Cyber-Controller enters, each opponent mills X cards. Put all creature cards milled this way onto the battlefield face down under your control. They're 2/2 Cyberman artifact creatures.\nOther artifact creatures you control get +1/+1.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B",
+    "U"
+  ],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [
+    "Mill"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "fa858045-c3cf-457b-b7f9-a0b4fa70f2df",
+      "component": "combo_piece",
+      "name": "The Cyber-Controller",
+      "type_line": "Legendary Artifact Creature — Cyberman",
+      "uri": "https://api.scryfall.com/cards/fa858045-c3cf-457b-b7f9-a0b4fa70f2df"
+    },
+    {
+      "object": "related_card",
+      "id": "392db1d2-9d75-4d19-88e0-9b0ffdc88541",
+      "component": "combo_piece",
+      "name": "Cyberman",
+      "type_line": "Artifact Creature — Cyberman",
+      "uri": "https://api.scryfall.com/cards/392db1d2-9d75-4d19-88e0-9b0ffdc88541"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set": "who",
+  "set_name": "Doctor Who",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/efdfdd99-cee7-4c11-a5e9-03d60f88bdd6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Awho&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/who?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3cab0df1-d53f-4208-9ff9-d015aac20141/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A06c25d71-f3f4-4089-b9bc-de96fbad73a5&unique=prints",
+  "collector_number": "119",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Pavel Kolomeyets",
+  "artist_ids": [
+    "13435e52-d47a-4143-adfa-2ae0a6858292"
+  ],
+  "illustration_id": "9b5c0d6f-2fed-4f80-b5f4-af41ffdf0021",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "triangle",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 8286,
+  "prices": {
+    "usd": "0.39",
+    "usd_foil": "2.44",
+    "usd_etched": null,
+    "eur": "0.26",
+    "eur_foil": "0.96",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=634814&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BCyber-Controller",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BCyber-Controller",
+    "edhrec": "https://edhrec.com/route/?cc=The+Cyber-Controller"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F519920%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=738708&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=The+Cyber-Controller&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

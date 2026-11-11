@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "a08b8ff8-13e4-46e7-b028-d055e4548f6a",
+  "oracle_id": "dcb9337b-d5fd-4cd2-a41f-900d170a5ded",
+  "multiverse_ids": [
+    580705
+  ],
+  "tcgplayer_id": 287253,
+  "cardmarket_id": 676501,
+  "name": "The Most Dangerous Gamer",
+  "lang": "en",
+  "released_at": "2022-10-07",
+  "uri": "https://api.scryfall.com/cards/a08b8ff8-13e4-46e7-b028-d055e4548f6a",
+  "scryfall_uri": "https://scryfall.com/card/unf/174/the-most-dangerous-gamer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T05:29:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/0/a08b8ff8-13e4-46e7-b028-d055e4548f6a.jpg?1783920540",
+    "normal": "https://cards.scryfall.io/normal/front/a/0/a08b8ff8-13e4-46e7-b028-d055e4548f6a.jpg?1783920540",
+    "large": "https://cards.scryfall.io/large/front/a/0/a08b8ff8-13e4-46e7-b028-d055e4548f6a.jpg?1783920540",
+    "png": "https://cards.scryfall.io/png/front/a/0/a08b8ff8-13e4-46e7-b028-d055e4548f6a.png?1783920540",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/0/a08b8ff8-13e4-46e7-b028-d055e4548f6a.jpg?1783920540",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/0/a08b8ff8-13e4-46e7-b028-d055e4548f6a.jpg?1783920540",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/0/a08b8ff8-13e4-46e7-b028-d055e4548f6a.webp?1783920540",
+    "grid": "https://cards.scryfall.io/grid/front/a/0/a08b8ff8-13e4-46e7-b028-d055e4548f6a.webp?1783920540",
+    "display": "https://cards.scryfall.io/display/front/a/0/a08b8ff8-13e4-46e7-b028-d055e4548f6a.webp?1783920540",
+    "art": "https://cards.scryfall.io/art/front/a/0/a08b8ff8-13e4-46e7-b028-d055e4548f6a.webp?1783920540",
+    "crop": "https://cards.scryfall.io/crop/front/a/0/a08b8ff8-13e4-46e7-b028-d055e4548f6a.webp?1783920540",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/0/a08b8ff8-13e4-46e7-b028-d055e4548f6a.jpg?1783920540"
+  },
+  "mana_cost": "{2}{B}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Gamer Guest",
+  "oracle_text": "Deathtouch\nWhenever The Most Dangerous Gamer enters or attacks, open an Attraction.\nWhenever you open an Attraction, put a +1/+1 counter on The Most Dangerous Gamer.\nWhenever you claim the prize of an Attraction, destroy target permanent.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [
+    "Deathtouch",
+    "Open an Attraction"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "banned",
+    "pauper": "not_legal",
+    "vintage": "banned",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "banned",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "banned",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set": "unf",
+  "set_name": "Unfinity",
+  "set_type": "funny",
+  "set_uri": "https://api.scryfall.com/sets/b314f553-8f07-4ba9-96c8-16be7784eff3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aunf&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/unf?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a08b8ff8-13e4-46e7-b028-d055e4548f6a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Adcb9337b-d5fd-4cd2-a41f-900d170a5ded&unique=prints",
+  "collector_number": "174",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Aaron J. Riley",
+  "artist_ids": [
+    "f21b412c-aef5-4d15-88be-4f40615acde3"
+  ],
+  "illustration_id": "74195097-6c11-4522-b553-08a75e7c6101",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 16495,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-preview/most-dangerous-gamer-2022-09-22",
+    "previewed_at": "2022-09-22"
+  },
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.34",
+    "usd_etched": null,
+    "eur": "0.19",
+    "eur_foil": "0.42",
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=580705&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BMost%2BDangerous%2BGamer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BMost%2BDangerous%2BGamer",
+    "edhrec": "https://edhrec.com/route/?cc=The+Most+Dangerous+Gamer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F287253%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=676501&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=The+Most+Dangerous+Gamer&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

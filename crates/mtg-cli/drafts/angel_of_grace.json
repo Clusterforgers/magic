@@ -1,0 +1,35 @@
+{
+  "oracle_id": "fcfcac6b-6d26-4ffe-ae9e-b0ee7fa49787",
+  "name": "Angel of Grace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of Grace",
+      "oracle_fingerprint": "07af2a99167bc4afa41cbf8c203f6cd1",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "LifeFloor": { "who": "You", "floor": 1 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{W}{W}" }, "ExileSelf"],
+            "from": "Graveyard",
+            "effects": [{ "SetLife": { "amount": 10 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

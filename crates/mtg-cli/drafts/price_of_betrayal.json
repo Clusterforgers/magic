@@ -1,0 +1,40 @@
+{
+  "oracle_id": "43a2bfe4-9705-4d0f-901a-21f9803b50f1",
+  "name": "Price of Betrayal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Price of Betrayal",
+      "oracle_fingerprint": "a4c1ee395a91a400f7c582ef0140326a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    {
+                      "Object": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Artifact" },
+                            { "Type": "Creature" },
+                            { "Type": "Planeswalker" }
+                          ]
+                        }
+                      ]
+                    },
+                    "Opponent"
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "RemoveCounters": { "from": { "Target": 0 }, "count": 5, "up_to": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

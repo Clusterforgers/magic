@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "f1b07082-c5a5-4283-a2f5-5b1e0120d752",
+  "oracle_id": "42b10f0f-19cd-45d2-a2db-d5463ddc5e5b",
+  "multiverse_ids": [
+    479578
+  ],
+  "mtgo_id": 80125,
+  "arena_id": 71125,
+  "tcgplayer_id": 212803,
+  "cardmarket_id": 455163,
+  "name": "Mythos of Illuna",
+  "lang": "en",
+  "released_at": "2020-04-24",
+  "uri": "https://api.scryfall.com/cards/f1b07082-c5a5-4283-a2f5-5b1e0120d752",
+  "scryfall_uri": "https://scryfall.com/card/iko/58/mythos-of-illuna?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:24:32Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/1/f1b07082-c5a5-4283-a2f5-5b1e0120d752.jpg?1783931072",
+    "normal": "https://cards.scryfall.io/normal/front/f/1/f1b07082-c5a5-4283-a2f5-5b1e0120d752.jpg?1783931072",
+    "large": "https://cards.scryfall.io/large/front/f/1/f1b07082-c5a5-4283-a2f5-5b1e0120d752.jpg?1783931072",
+    "png": "https://cards.scryfall.io/png/front/f/1/f1b07082-c5a5-4283-a2f5-5b1e0120d752.png?1783931072",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/1/f1b07082-c5a5-4283-a2f5-5b1e0120d752.jpg?1783931072",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/1/f1b07082-c5a5-4283-a2f5-5b1e0120d752.jpg?1783931072",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/1/f1b07082-c5a5-4283-a2f5-5b1e0120d752.webp?1783931072",
+    "grid": "https://cards.scryfall.io/grid/front/f/1/f1b07082-c5a5-4283-a2f5-5b1e0120d752.webp?1783931072",
+    "display": "https://cards.scryfall.io/display/front/f/1/f1b07082-c5a5-4283-a2f5-5b1e0120d752.webp?1783931072",
+    "art": "https://cards.scryfall.io/art/front/f/1/f1b07082-c5a5-4283-a2f5-5b1e0120d752.webp?1783931072",
+    "crop": "https://cards.scryfall.io/crop/front/f/1/f1b07082-c5a5-4283-a2f5-5b1e0120d752.webp?1783931072",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/1/f1b07082-c5a5-4283-a2f5-5b1e0120d752.jpg?1783931072"
+  },
+  "mana_cost": "{2}{U}{U}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Create a token that's a copy of target permanent. If {R}{G} was spent to cast this spell, instead create a token that's a copy of that permanent, except the token has \"When this token enters, if it's a creature, it fights up to one target creature you don't control.\"",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Fight"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "edf1cdf3-2543-4b91-b6a8-ac0d04a9c045",
+      "component": "combo_piece",
+      "name": "Mythos of Illuna",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/edf1cdf3-2543-4b91-b6a8-ac0d04a9c045"
+    },
+    {
+      "object": "related_card",
+      "id": "4b976756-e988-4211-95c2-0e3587118488",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/4b976756-e988-4211-95c2-0e3587118488"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "19feda43-15ab-427e-a0e4-148a4bf2b03a",
+  "set": "iko",
+  "set_name": "Ikoria: Lair of Behemoths",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/19feda43-15ab-427e-a0e4-148a4bf2b03a",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aiko&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/iko?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f1b07082-c5a5-4283-a2f5-5b1e0120d752/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A42b10f0f-19cd-45d2-a2db-d5463ddc5e5b&unique=prints",
+  "collector_number": "58",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Seb McKinnon",
+  "artist_ids": [
+    "ad4caca0-8d89-44ce-a1a6-d5ca905bd6fb"
+  ],
+  "illustration_id": "eb388b73-317c-4c4d-bb70-8c5630d07659",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 13466,
+  "penny_rank": 6679,
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": "0.37",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=479578&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMythos%2Bof%2BIlluna",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMythos%2Bof%2BIlluna",
+    "edhrec": "https://edhrec.com/route/?cc=Mythos+of+Illuna"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212803%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=455163&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/80125?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

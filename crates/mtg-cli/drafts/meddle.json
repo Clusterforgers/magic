@@ -1,0 +1,31 @@
+{
+  "oracle_id": "67d6fbcb-2df7-4b5a-8464-158f6b720a2e",
+  "name": "Meddle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meddle",
+      "oracle_fingerprint": "a0e68cad87818488a19c2bd91754387a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": ["SingleTarget", { "Targeting": [{ "Type": "Creature" }] }]
+                    }
+                  },
+                  "then": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Another" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

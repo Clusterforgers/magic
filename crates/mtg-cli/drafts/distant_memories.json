@@ -1,0 +1,31 @@
+{
+  "oracle_id": "12c78cc4-7fbe-4639-bef7-bf959a0d6d68",
+  "name": "Distant Memories",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Distant Memories",
+      "oracle_fingerprint": "99143984e85c43c9e17a992ad5abf1d9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Search": { "filter": [], "as": "card" } },
+              { "Exile": { "what": { "Bound": "card" } } },
+              { "Shuffle": {} },
+              {
+                "May": {
+                  "who": "Opponents",
+                  "effects": [{ "Move": { "what": { "Bound": "card" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "If": { "condition": { "Not": "Performed" }, "then": [{ "Draw": { "count": 3 } }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

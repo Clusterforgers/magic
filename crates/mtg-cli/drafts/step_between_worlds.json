@@ -1,0 +1,48 @@
+{
+  "oracle_id": "48b43d53-9a8a-47a2-8610-a54d276d7be7",
+  "name": "Step Between Worlds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Step Between Worlds",
+      "oracle_fingerprint": "b2171ca8a6942b8b3efcbd585ce9adcb",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "p",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "p" },
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": {
+                                "Each": [
+                                  { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                                  { "OwnedBy": { "Bound": "p" } }
+                                ]
+                              },
+                              "to": { "Library": { "place": "Shuffled" } }
+                            }
+                          },
+                          { "Draw": { "who": { "Bound": "p" }, "count": 7 } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        },
+        { "Keyword": { "Plot": "{4}{U}{U}" } }
+      ]
+    }
+  ]
+}

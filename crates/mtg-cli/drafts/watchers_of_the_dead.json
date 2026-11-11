@@ -1,0 +1,40 @@
+{
+  "oracle_id": "9ac46f46-3099-4ad9-ae58-bf25d7270e87",
+  "name": "Watchers of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Watchers of the Dead",
+      "oracle_fingerprint": "220d4a6825f974185621cf4c25cd49f3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["ExileSelf"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "opp" },
+                        "from": {
+                          "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Bound": "opp" } }]
+                        },
+                        "count": { "min": 2, "max": 2 },
+                        "as": "kept",
+                        "rest_as": "rest"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "rest" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

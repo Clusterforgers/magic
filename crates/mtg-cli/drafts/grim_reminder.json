@@ -1,0 +1,58 @@
+{
+  "oracle_id": "12684e95-2652-4c3c-b2c7-021b62344d77",
+  "name": "Grim Reminder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Reminder",
+      "oracle_fingerprint": "422eae4f56e7ac3ac0373163e9162337",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "reveal": true,
+                  "as": "card"
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "SpellCast",
+                              "who": "You",
+                              "filter": [{ "SharesName": { "Bound": "card" } }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  },
+                  "amount": 6
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{B}{B}",
+            "condition": { "All": ["YourTurn", { "Step": "Upkeep" }] },
+            "from": "Graveyard",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

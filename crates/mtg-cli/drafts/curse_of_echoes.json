@@ -1,0 +1,53 @@
+{
+  "oracle_id": "c99bac4b-7eec-4fdf-b344-0cf9639ff073",
+  "name": "Curse of Echoes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Echoes",
+      "oracle_fingerprint": "fdea60e1632d049862d1084fc0ab8212",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "AttachedPlayer"
+              }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Not": { "Among": "TriggeringPlayer" } }
+                    }
+                  },
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "CopySpell": {
+                              "what": "Triggering",
+                              "who": { "Bound": "player" },
+                              "new_targets": true
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

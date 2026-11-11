@@ -1,0 +1,88 @@
+{
+  "oracle_id": "728e2960-1d85-4b3f-8b5b-915f9b9ffd2f",
+  "name": "Chaos Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chaos Moon",
+      "oracle_fingerprint": "f197ba38bc27d6d3180c2a8d63d8be84",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              { "Let": { "as": "permanents", "amount": { "Count": [] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Difference": [
+                          { "Bound": "permanents" },
+                          {
+                            "Times": {
+                              "by": 2,
+                              "of": {
+                                "Quotient": {
+                                  "of": { "Bound": "permanents" },
+                                  "by": 2,
+                                  "up": false
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "Color": "Red" }] },
+                        "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "TappedForMana": { "what": [{ "Subtype": "Mountain" }] } },
+                        "once": false,
+                        "this_turn": true,
+                        "effects": [
+                          { "AddMana": { "who": "Triggering", "mana": { "Fixed": ["Red"] } } }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "Color": "Red" }] },
+                        "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "ManaProduced": {
+                            "what": [{ "Subtype": "Mountain" }],
+                            "who": "EachPlayer",
+                            "change": { "OnlyType": "Colorless" }
+                          }
+                        },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

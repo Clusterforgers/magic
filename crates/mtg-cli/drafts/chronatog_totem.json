@@ -1,0 +1,55 @@
+{
+  "oracle_id": "24542d66-e67a-4403-91a8-bb4231ea1f50",
+  "name": "Chronatog Totem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chronatog Totem",
+      "oracle_fingerprint": "9ffc3765a863e2f3bb8285e809e6e6da",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 1, "toughness": 2 } },
+                    { "SetColors": ["Blue"] },
+                    { "SetCreatureTypes": ["Atog"] },
+                    { "AddType": "Artifact" },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{0}",
+            "condition": { "Matches": { "subject": "This", "selector": [{ "Type": "Creature" }] } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

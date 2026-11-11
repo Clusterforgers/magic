@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6aba2a04-0117-429e-a5df-6ba4645129d8",
+  "name": "Ichneumon Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ichneumon Druid",
+      "oracle_fingerprint": "1ccb3d66cd6e6c217383221d2405f403",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Instant" }], "by": "Opponents" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "SpellCast",
+                    "who": "TriggeringPlayer",
+                    "filter": [{ "Type": "Instant" }]
+                  }
+                },
+                "op": "Ge",
+                "right": 2
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

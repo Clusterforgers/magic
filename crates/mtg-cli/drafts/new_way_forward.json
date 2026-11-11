@@ -1,0 +1,47 @@
+{
+  "oracle_id": "429368e6-3de1-4a44-a062-86cbbb73e243",
+  "name": "New Way Forward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "New Way Forward",
+      "oracle_fingerprint": "0dd8c7fc59bdee0bd6e92466cbd19348",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": {
+                    "InsteadNext": [
+                      {
+                        "DealDamage": {
+                          "source": "This",
+                          "to": { "ControllerOf": { "Bound": "source" } },
+                          "amount": "Triggering"
+                        }
+                      },
+                      { "Draw": { "count": "Triggering" } }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

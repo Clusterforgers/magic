@@ -1,0 +1,35 @@
+{
+  "oracle_id": "da7bc9d6-a0cc-407a-bed9-d677c2dd74f2",
+  "name": "Nafs Asp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nafs Asp",
+      "oracle_fingerprint": "5c4f90b4c31789919a124451b4c4d5fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer" } },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "player" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Draw", "whose": { "Bound": "player" } } },
+                  "effects": [
+                    {
+                      "Pay": {
+                        "who": { "Bound": "player" },
+                        "cost": "{1}",
+                        "unpaid": [{ "LoseLife": { "who": { "Bound": "player" }, "amount": 1 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

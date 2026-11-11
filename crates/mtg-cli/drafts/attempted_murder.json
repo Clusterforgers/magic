@@ -1,0 +1,138 @@
+{
+  "oracle_id": "89e90361-822f-42b6-9ed9-d94e6d24fb95",
+  "name": "Attempted Murder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Attempted Murder",
+      "oracle_fingerprint": "733624c049d0928330dfec5fb37bf862",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [
+                    {
+                      "RollDice": {
+                        "sides": 6,
+                        "results": [
+                          {
+                            "from": 1,
+                            "to": 1,
+                            "effects": [
+                              {
+                                "CreateToken": {
+                                  "token": {
+                                    "Custom": {
+                                      "name": "Storm Crow",
+                                      "colors": ["Blue"],
+                                      "types": ["Creature"],
+                                      "subtypes": ["Bird"],
+                                      "power": 1,
+                                      "toughness": 2,
+                                      "abilities": [{ "Keyword": "Flying" }]
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "from": 2,
+                            "to": 2,
+                            "effects": [
+                              {
+                                "PutCounters": {
+                                  "on": { "Target": 0 },
+                                  "counter": "-1/-1",
+                                  "count": 2
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "from": 3,
+                            "to": 3,
+                            "effects": [
+                              {
+                                "CreateToken": {
+                                  "token": {
+                                    "Custom": {
+                                      "name": "Storm Crow",
+                                      "colors": ["Blue"],
+                                      "types": ["Creature"],
+                                      "subtypes": ["Bird"],
+                                      "power": 1,
+                                      "toughness": 2,
+                                      "abilities": [{ "Keyword": "Flying" }]
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "from": 4,
+                            "to": 4,
+                            "effects": [
+                              {
+                                "PutCounters": {
+                                  "on": { "Target": 0 },
+                                  "counter": "-1/-1",
+                                  "count": 2
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "from": 5,
+                            "to": 5,
+                            "effects": [
+                              {
+                                "CreateToken": {
+                                  "token": {
+                                    "Custom": {
+                                      "name": "Storm Crow",
+                                      "colors": ["Blue"],
+                                      "types": ["Creature"],
+                                      "subtypes": ["Bird"],
+                                      "power": 1,
+                                      "toughness": 2,
+                                      "abilities": [{ "Keyword": "Flying" }]
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "from": 6,
+                            "to": 6,
+                            "effects": [
+                              {
+                                "PutCounters": {
+                                  "on": { "Target": 0 },
+                                  "counter": "-1/-1",
+                                  "count": 2
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "times": "X"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

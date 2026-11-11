@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "d5b9db8f-93b5-44e3-9e2b-728c80dfbb37",
+  "oracle_id": "5d7747b4-061d-4459-ba80-51361526cbfa",
+  "multiverse_ids": [
+    2696
+  ],
+  "tcgplayer_id": 4764,
+  "cardmarket_id": 6472,
+  "name": "Kjeldoran Knight",
+  "lang": "en",
+  "released_at": "1995-06-03",
+  "uri": "https://api.scryfall.com/cards/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37",
+  "scryfall_uri": "https://scryfall.com/card/ice/36/kjeldoran-knight?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T12:58:43Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/5/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37.jpg?1783947523",
+    "normal": "https://cards.scryfall.io/normal/front/d/5/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37.jpg?1783947523",
+    "large": "https://cards.scryfall.io/large/front/d/5/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37.jpg?1783947523",
+    "png": "https://cards.scryfall.io/png/front/d/5/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37.png?1783947523",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/5/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37.jpg?1783947523",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/5/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37.jpg?1783947523",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/5/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37.webp?1783947523",
+    "grid": "https://cards.scryfall.io/grid/front/d/5/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37.webp?1783947523",
+    "display": "https://cards.scryfall.io/display/front/d/5/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37.webp?1783947523",
+    "art": "https://cards.scryfall.io/art/front/d/5/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37.webp?1783947523",
+    "crop": "https://cards.scryfall.io/crop/front/d/5/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37.webp?1783947523",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/5/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37.jpg?1783947523"
+  },
+  "mana_cost": "{W}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Knight",
+  "oracle_text": "Banding (Any creatures with banding, and up to one without, can attack in a band. Bands are blocked as a group. If any creatures with banding you control are blocking or being blocked by a creature, you divide that creature's combat damage, not its controller, among any of the creatures it's being blocked by or is blocking.)\n{1}{W}: This creature gets +1/+0 until end of turn.\n{W}{W}: This creature gets +0/+2 until end of turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Banding"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": true,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set": "ice",
+  "set_name": "Ice Age",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b0e08eea-5c01-4406-a6e2-dcd09c5e5b67",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aice&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ice?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d5b9db8f-93b5-44e3-9e2b-728c80dfbb37/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5d7747b4-061d-4459-ba80-51361526cbfa&unique=prints",
+  "collector_number": "36",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Those who do not ride the wind on Aesthir still command loyalty and respect.\"\n—Arna Kennerüd, Skyknight",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ron Spencer",
+  "artist_ids": [
+    "dab52c11-0564-4207-a4a1-c1735c946a65"
+  ],
+  "illustration_id": "ad08aad2-2707-4693-810e-2ea7a67d692b",
+  "border_color": "black",
+  "frame": "1993",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 23663,
+  "prices": {
+    "usd": "1.45",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.28",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=2696&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKjeldoran%2BKnight",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKjeldoran%2BKnight",
+    "edhrec": "https://edhrec.com/route/?cc=Kjeldoran+Knight"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F4764%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=6472&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Kjeldoran+Knight&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

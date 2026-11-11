@@ -1,0 +1,30 @@
+{
+  "oracle_id": "6e62d553-d0d0-400e-a423-f0c3c1fdc911",
+  "name": "Cultivator Drone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cultivator Drone",
+      "oracle_fingerprint": "7446eacdc3e94339cb7fae4204373c1a",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless"] },
+                  "only": [
+                    { "Spell": { "facts": ["Colorless"] } },
+                    { "Ability": { "facts": ["Colorless", "OnBattlefield"] } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

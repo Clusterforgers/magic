@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ba5bc14b-db2c-4561-a6a4-a02443791260",
+  "name": "Carnival Carnivore",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Carnival Carnivore",
+      "oracle_fingerprint": "d71ef7fa6002ec9909d4cf9474c44810",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 11, "end": 115 }
+          }
+        }
+      ]
+    }
+  ]
+}

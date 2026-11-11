@@ -1,0 +1,67 @@
+{
+  "oracle_id": "89bd056d-8f5b-4d0e-b80a-58a984e21100",
+  "name": "Jace's Machinations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace's Machinations",
+      "oracle_fingerprint": "f686ceb321456b4e1f4329c9334f362d",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [
+                          { "Type": "Planeswalker" },
+                          { "Subtype": "Jace" },
+                          "Token",
+                          { "ControlledBy": "You" }
+                        ]
+                      },
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Jace",
+                            "colors": ["Blue"],
+                            "types": ["Planeswalker"],
+                            "subtypes": ["Jace"],
+                            "abilities": [
+                              {
+                                "Loyalty": {
+                                  "cost": { "Minus": 1 },
+                                  "effects": [{ "Surveil": {} }]
+                                }
+                              },
+                              { "Loyalty": { "cost": { "Minus": 3 }, "effects": [{ "Draw": {} }] } }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Subtype": "Jace" }, "Token", { "ControlledBy": "You" }] },
+                  "as": "jace"
+                }
+              },
+              { "PutCounters": { "on": { "Bound": "jace" }, "counter": "loyalty", "count": 8 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

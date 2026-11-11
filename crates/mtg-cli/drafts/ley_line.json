@@ -1,0 +1,36 @@
+{
+  "oracle_id": "230d79dd-15dd-431d-af22-bdc6eaf86341",
+  "name": "Ley Line",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ley Line",
+      "oracle_fingerprint": "c74bff62a384831245047f91f53d99e8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": "Triggering",
+                    "what": { "Object": [{ "Type": "Creature" }] }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "who": "Triggering",
+                  "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

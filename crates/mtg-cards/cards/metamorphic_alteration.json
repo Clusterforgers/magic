@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2518a4f2-607f-41bb-9389-2009138d6b09",
+  "name": "Metamorphic Alteration",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Metamorphic Alteration",
+      "oracle_fingerprint": "1a133d1e0bf708340530970e2fd81aee",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 17, "end": 56 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 57, "end": 109 }
+          }
+        }
+      ]
+    }
+  ]
+}

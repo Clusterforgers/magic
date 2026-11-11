@@ -1,0 +1,78 @@
+{
+  "oracle_id": "ba26ff0a-e714-44f2-95cf-1a5a6088edf9",
+  "name": "The Skullspore Nexus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Skullspore Nexus",
+      "oracle_fingerprint": "a83371e1435687f18e241671e886706d",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Greatest": {
+                "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "stat": "Power"
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "ZoneChange": {
+                  "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                  "from": "Battlefield",
+                  "to": "Graveyard"
+                }
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Total": { "of": [{ "Is": "Triggering" }], "stat": "Power" } },
+                      "token": {
+                        "name": "Fungus Dinosaur",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Fungus", "Dinosaur"]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

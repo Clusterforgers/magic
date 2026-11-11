@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d8d5d0a4-9a56-404c-b459-a37dc5ae6bc1",
+  "name": "Botanical Brawler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Botanical Brawler",
+      "oracle_fingerprint": "1b0a8b120565e87aa822373685b3ad12",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "CountersPut": { "what": ["Other", { "ControlledBy": "You" }], "counter": "+1/+1" }
+            },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "PlusOneCountersPut",
+                    "who": "EachPlayer",
+                    "filter": [{ "Is": "Triggering" }]
+                  }
+                },
+                "op": "Eq",
+                "right": 1
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

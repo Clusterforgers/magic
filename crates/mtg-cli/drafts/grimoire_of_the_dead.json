@@ -1,0 +1,44 @@
+{
+  "oracle_id": "922c6e1b-abcf-40e0-847e-9ebb7d0b6fd4",
+  "name": "Grimoire of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grimoire of the Dead",
+      "oracle_fingerprint": "526f37e9180d302755ff72c849165027",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", { "Discard": {} }],
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "study" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "study" }, "count": 3 } },
+              "SacrificeSelf"
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                  "to": { "Battlefield": { "under": "You" } },
+                  "as": "moved"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "moved" },
+                  "mods": [{ "AddSubtype": "Zombie" }, { "AddColors": ["Black"] }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

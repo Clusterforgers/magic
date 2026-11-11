@@ -1,0 +1,56 @@
+{
+  "oracle_id": "b97a11c2-7119-4399-9565-bf69520d3988",
+  "name": "Galadriel, Elven-Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galadriel, Elven-Queen",
+      "oracle_fingerprint": "9d6e89981f7c5f0523555556aefc0271",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Subtype": "Elf" },
+                    "Other",
+                    { "ControlledBy": "You" },
+                    "EnteredThisTurn"
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              { "Vote": { "options": { "Named": ["dominion", "guidance"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Players": { "Bound": "dominion" } },
+                      "op": "Gt",
+                      "right": { "Players": { "Bound": "guidance" } }
+                    }
+                  },
+                  "then": [
+                    { "RingTempts": {} },
+                    {
+                      "PutCounters": {
+                        "on": { "Each": ["RingBearer", { "ControlledBy": "You" }] },
+                        "counter": "+1/+1"
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

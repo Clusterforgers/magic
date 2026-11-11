@@ -1,0 +1,97 @@
+{
+  "oracle_id": "a5425d4f-cd6c-4240-89a4-dd13e0e1a95f",
+  "name": "Trial of a Time Lord",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trial of a Time Lord",
+      "oracle_fingerprint": "973c32f5bf3447c0c98774f424ecf7ba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": "Token" },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": "Token" },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": "Token" },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "duration": "WhileSourceOnBattlefield" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              { "Vote": { "options": { "Named": ["innocent", "guilty"] } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Players": { "Bound": "guilty" } },
+                      "op": "Gt",
+                      "right": { "Players": { "Bound": "innocent" } }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "ExiledWith": "This" }, { "In": "Exile" }] },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

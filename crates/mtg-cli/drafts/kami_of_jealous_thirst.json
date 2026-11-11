@@ -1,0 +1,39 @@
+{
+  "oracle_id": "5973d8f6-242c-4014-b66e-aa5c78440be7",
+  "name": "Kami of Jealous Thirst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kami of Jealous Thirst",
+      "oracle_fingerprint": "fd15ecc961c3954f1f744d1919e67566",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}{B}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{4}{B}",
+                  "condition": {
+                    "Compare": {
+                      "left": { "Tallied": { "who": "You", "what": "Drawn" } },
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerTurn",
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

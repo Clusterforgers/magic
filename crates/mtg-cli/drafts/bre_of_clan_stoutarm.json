@@ -1,0 +1,79 @@
+{
+  "oracle_id": "59384481-3ca0-49dd-b94f-d3680b336f1e",
+  "name": "Bre of Clan Stoutarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bre of Clan Stoutarm",
+      "oracle_fingerprint": "364400660afc969f6ef280280f3ba15e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{W}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "found" },
+                      "selector": [
+                        {
+                          "Compare": {
+                            "stat": "ManaValue",
+                            "op": "Le",
+                            "to": { "Tallied": { "who": "You", "what": "LifeGainedTotal" } }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "then": [
+                    {
+                      "CastFromZone": {
+                        "what": { "Bound": "found" },
+                        "free": true,
+                        "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                      }
+                    }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

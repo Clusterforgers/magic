@@ -1,0 +1,36 @@
+{
+  "oracle_id": "bb1b4786-3804-486b-9fd9-85848d24d362",
+  "name": "Ghost Ark",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost Ark",
+      "oracle_fingerprint": "969e8e2ad78273a19e89913d31f5e3fe",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "BecomesCrewed": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": { "Unearth": "{3}" } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

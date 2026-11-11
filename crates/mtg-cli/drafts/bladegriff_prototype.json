@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9fff90b6-98ef-4f78-b08d-7e46dfc03403",
+  "name": "Bladegriff Prototype",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bladegriff Prototype",
+      "oracle_fingerprint": "20c28709f660afeb3cd31abf425fdd3c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": "Triggering",
+                    "what": {
+                      "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

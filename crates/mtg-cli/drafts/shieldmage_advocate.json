@@ -1,0 +1,35 @@
+{
+  "oracle_id": "57188b3d-567c-4dff-8b93-7cc7a47894be",
+  "name": "Shieldmage Advocate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shieldmage Advocate",
+      "oracle_fingerprint": "a530ced16cd711eacea5f584d22551b9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "Opponents" }] } },
+              { "what": "AnyTarget" }
+            ],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": "Hand" } },
+              { "Choose": { "from": { "Each": [] }, "as": "source" } },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Target": 1 }, "source": [{ "Is": { "Bound": "source" } }] }
+                  },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

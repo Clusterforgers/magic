@@ -1,0 +1,25 @@
+{
+  "oracle_id": "d4fddf20-6b3a-42c3-a245-002dacbb4725",
+  "name": "Absolute Virtue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Absolute Virtue",
+      "oracle_fingerprint": "132b52ae30d9e885980e995282ea93aa",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Flying" },
+        {
+          "Rule": {
+            "rule": {
+              "PlayersHave": {
+                "who": "You",
+                "keyword": { "Protection": [{ "ControlledBy": "Opponents" }] }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

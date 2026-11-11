@@ -1,0 +1,47 @@
+{
+  "oracle_id": "c53c75a0-c248-4e76-8d28-f7e53b2dcc49",
+  "name": "Deadly Complication",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadly Complication",
+      "oracle_fingerprint": "3d39b8adc6c49997351b278d199a481b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              "Suspected",
+                              { "ControlledBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+                        { "May": { "effects": [{ "Unsuspect": { "what": { "Target": 0 } } }] } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

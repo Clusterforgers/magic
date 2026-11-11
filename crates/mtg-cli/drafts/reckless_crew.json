@@ -1,0 +1,68 @@
+{
+  "oracle_id": "ced584a8-7548-4b4e-8ccf-04b66d255539",
+  "name": "Reckless Crew",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Crew",
+      "oracle_fingerprint": "9fdf02b71c6085b7ed60fb1c3dae5f07",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dwarf Berserker",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dwarf", "Berserker"],
+                      "power": 2,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Sum": [
+                      { "Count": [{ "Subtype": "Vehicle" }, { "ControlledBy": "You" }] },
+                      { "Count": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] }
+                    ]
+                  },
+                  "as": "tokens"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "tokens" },
+                  "as": "token",
+                  "effects": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }]
+                              },
+                              "as": "equipment"
+                            }
+                          },
+                          {
+                            "Attach": {
+                              "what": { "Bound": "equipment" },
+                              "to": { "Bound": "token" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

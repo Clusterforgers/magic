@@ -1,0 +1,44 @@
+{
+  "oracle_id": "e4a85647-0b8c-40b2-a5d5-43c78877ce36",
+  "name": "Aether Spike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Spike",
+      "oracle_fingerprint": "1f74c7568bee9bb27601975c3a8a863a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } },
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "Number": [0, { "Counters": { "on": "You", "counter": { "Other": "energy" } } }]
+                  },
+                  "as": "paid"
+                }
+              },
+              {
+                "RemoveCounters": {
+                  "from": "You",
+                  "counter": { "Other": "energy" },
+                  "count": { "ChosenAs": "paid" }
+                }
+              },
+              {
+                "Pay": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "cost": "{1}",
+                  "times": { "ChosenAs": "paid" },
+                  "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

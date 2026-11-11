@@ -1,0 +1,35 @@
+{
+  "oracle_id": "c4949d62-c2f9-4425-a77e-444824955ecc",
+  "name": "Zombie Boa",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zombie Boa",
+      "oracle_fingerprint": "ef713b5253e97192e9c7ff5783ed1165",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{B}",
+            "timing": "Sorcery",
+            "effects": [
+              { "ChooseValue": { "kind": "Color", "as": "color" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "BecomesBlocked": {
+                      "what": ["This"],
+                      "by": [{ "Type": "Creature" }, { "ChosenAs": "color" }]
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Destroy": { "what": "Dealer" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "oracle_id": "020d561b-2e5d-439e-9e6a-318d23e73542",
+  "name": "Uldaros Theorix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Uldaros Theorix",
+      "oracle_fingerprint": "1d17791866673b6690f7d402088781a8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Type": "Battle" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Type": "Enchantment" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Type": "Instant" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Type": "Kindred" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Planeswalker" },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": {
+                  "Object": [{ "Type": "Sorcery" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "e0" } },
+              { "Exile": { "what": { "Target": 1 }, "as": "e1" } },
+              { "Exile": { "what": { "Target": 2 }, "as": "e2" } },
+              { "Exile": { "what": { "Target": 3 }, "as": "e3" } },
+              { "Exile": { "what": { "Target": 4 }, "as": "e4" } },
+              { "Exile": { "what": { "Target": 5 }, "as": "e5" } },
+              { "Exile": { "what": { "Target": 6 }, "as": "e6" } },
+              { "Exile": { "what": { "Target": 7 }, "as": "e7" } },
+              { "CopyCard": { "what": { "Bound": "e0" }, "as": "c0" } },
+              { "CopyCard": { "what": { "Bound": "e1" }, "as": "c1" } },
+              { "CopyCard": { "what": { "Bound": "e2" }, "as": "c2" } },
+              { "CopyCard": { "what": { "Bound": "e3" }, "as": "c3" } },
+              { "CopyCard": { "what": { "Bound": "e4" }, "as": "c4" } },
+              { "CopyCard": { "what": { "Bound": "e5" }, "as": "c5" } },
+              { "CopyCard": { "what": { "Bound": "e6" }, "as": "c6" } },
+              { "CopyCard": { "what": { "Bound": "e7" }, "as": "c7" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

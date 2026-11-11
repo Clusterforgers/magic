@@ -1,0 +1,47 @@
+{
+  "oracle_id": "22fa2860-d746-4429-b7e3-3403bef27f7b",
+  "name": "Midnight Crusader Shuttle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Midnight Crusader Shuttle",
+      "oracle_fingerprint": "cfcb3bfd4845d1622f64c7fdd822aefd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "VillainousChoice": {
+                  "who": "Defending",
+                  "first": [
+                    { "Sacrifice": { "who": "Defending", "filter": [{ "Type": "Creature" }] } }
+                  ],
+                  "second": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }]
+                        },
+                        "as": "stolen"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "stolen" },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    { "Tap": { "what": { "Bound": "stolen" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

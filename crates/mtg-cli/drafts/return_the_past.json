@@ -1,0 +1,26 @@
+{
+  "oracle_id": "be2b3954-e4d7-438c-a549-252bd7f4a9bd",
+  "name": "Return the Past",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Return the Past",
+      "oracle_fingerprint": "f9261c8f79e587598f125910f4f9f7c2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                { "OwnedBy": "You" },
+                { "In": "Graveyard" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Flashback": ["OwnManaCost"] } }],
+            "condition": "YourTurn"
+          }
+        }
+      ]
+    }
+  ]
+}

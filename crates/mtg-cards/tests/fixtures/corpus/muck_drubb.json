@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "cb2aaec8-43a0-4639-8190-3ce1273a2711",
+  "oracle_id": "032a5616-bbaf-4659-86c4-43edf29b9788",
+  "multiverse_ids": [
+    509491
+  ],
+  "mtgo_id": 86615,
+  "tcgplayer_id": 234334,
+  "cardmarket_id": 548136,
+  "name": "Muck Drubb",
+  "lang": "en",
+  "released_at": "2021-03-19",
+  "uri": "https://api.scryfall.com/cards/cb2aaec8-43a0-4639-8190-3ce1273a2711",
+  "scryfall_uri": "https://scryfall.com/card/tsr/126/muck-drubb?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:30:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/b/cb2aaec8-43a0-4639-8190-3ce1273a2711.jpg?1783927816",
+    "normal": "https://cards.scryfall.io/normal/front/c/b/cb2aaec8-43a0-4639-8190-3ce1273a2711.jpg?1783927816",
+    "large": "https://cards.scryfall.io/large/front/c/b/cb2aaec8-43a0-4639-8190-3ce1273a2711.jpg?1783927816",
+    "png": "https://cards.scryfall.io/png/front/c/b/cb2aaec8-43a0-4639-8190-3ce1273a2711.png?1783927816",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/b/cb2aaec8-43a0-4639-8190-3ce1273a2711.jpg?1783927816",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/b/cb2aaec8-43a0-4639-8190-3ce1273a2711.jpg?1783927816",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/b/cb2aaec8-43a0-4639-8190-3ce1273a2711.webp?1783927816",
+    "grid": "https://cards.scryfall.io/grid/front/c/b/cb2aaec8-43a0-4639-8190-3ce1273a2711.webp?1783927816",
+    "display": "https://cards.scryfall.io/display/front/c/b/cb2aaec8-43a0-4639-8190-3ce1273a2711.webp?1783927816",
+    "art": "https://cards.scryfall.io/art/front/c/b/cb2aaec8-43a0-4639-8190-3ce1273a2711.webp?1783927816",
+    "crop": "https://cards.scryfall.io/crop/front/c/b/cb2aaec8-43a0-4639-8190-3ce1273a2711.webp?1783927816",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/b/cb2aaec8-43a0-4639-8190-3ce1273a2711.jpg?1783927816"
+  },
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "Flash\nWhen this creature enters, change the target of target spell that targets only a single creature to this creature.\nMadness {2}{B} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Madness",
+    "Flash"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "11e90d1b-0502-43e6-b056-e24836523c13",
+  "set": "tsr",
+  "set_name": "Time Spiral Remastered",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/11e90d1b-0502-43e6-b056-e24836523c13",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atsr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tsr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/cb2aaec8-43a0-4639-8190-3ce1273a2711/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A032a5616-bbaf-4659-86c4-43edf29b9788&unique=prints",
+  "collector_number": "126",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jim Nelson",
+  "artist_ids": [
+    "aa9f64d1-29e1-4c82-877e-44c18183f40b"
+  ],
+  "illustration_id": "f135d148-1e1b-4834-a666-d894a2c33d29",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14844,
+  "penny_rank": 17561,
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "1.55",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.66",
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=509491&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMuck%2BDrubb",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMuck%2BDrubb",
+    "edhrec": "https://edhrec.com/route/?cc=Muck+Drubb"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F234334%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=548136&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/86615?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

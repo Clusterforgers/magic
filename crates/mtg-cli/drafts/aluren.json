@@ -1,0 +1,28 @@
+{
+  "oracle_id": "44e02e70-07ab-4795-8037-55185bd11d54",
+  "name": "Aluren",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aluren",
+      "oracle_fingerprint": "f09cde0816b51c36e21aec505a235ad6",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "who": "EachPlayer",
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                ],
+                "free": true,
+                "flash": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "19dc29a7-8ccc-4e54-829b-86cc102b082d",
+  "name": "Tin Street Gossip",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tin Street Gossip",
+      "oracle_fingerprint": "7a17f0018c71234d36ac02359b596df0",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 10, "end": 102 }
+          }
+        }
+      ]
+    }
+  ]
+}

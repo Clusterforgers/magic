@@ -1,0 +1,52 @@
+{
+  "oracle_id": "22647b1a-5a7c-41b5-b820-b2e9f49c7aad",
+  "name": "Eye for an Eye",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eye for an Eye",
+      "oracle_fingerprint": "09079672fa33bb5fabde1cb3480685af",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": {
+                    "InsteadNext": [
+                      {
+                        "DealDamage": {
+                          "source": { "Bound": "source" },
+                          "to": "You",
+                          "amount": "Triggering"
+                        }
+                      },
+                      {
+                        "DealDamage": {
+                          "to": { "ControllerOf": { "Bound": "source" } },
+                          "amount": "Triggering"
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

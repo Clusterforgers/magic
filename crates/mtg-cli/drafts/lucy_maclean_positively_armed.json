@@ -1,0 +1,53 @@
+{
+  "oracle_id": "1196a4cb-544c-4e7b-91cd-f0820b21a80d",
+  "name": "Lucy MacLean, Positively Armed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lucy MacLean, Positively Armed",
+      "oracle_fingerprint": "689b91d38107d8e886b0836659eec2a1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["Token"], "to": "Battlefield" } },
+            "limit": "OncePerTurnDone",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "who": { "Target": 0 },
+                        "token": { "CopyOf": { "of": "Triggering" } }
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Players": {
+                                "PlayersWhere": {
+                                  "who": "Opponents",
+                                  "test": { "Among": { "Target": 0 } }
+                                }
+                              }
+                            },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Draw": {} }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

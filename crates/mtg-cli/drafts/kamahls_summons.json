@@ -1,0 +1,67 @@
+{
+  "oracle_id": "8b6ef0a2-cd90-44c8-8f11-e1983f2b1dfd",
+  "name": "Kamahl's Summons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kamahl's Summons",
+      "oracle_fingerprint": "9250cf3cfd8c73ebac291cc1bda612aa",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "each" },
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Bound": "each" } }
+                          ]
+                        },
+                        "count": {
+                          "min": 0,
+                          "max": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              { "In": "Hand" },
+                              { "OwnedBy": { "Bound": "each" } }
+                            ]
+                          }
+                        },
+                        "as": "revealed"
+                      }
+                    },
+                    { "Reveal": { "what": { "Bound": "revealed" } } },
+                    {
+                      "CreateToken": {
+                        "who": { "Bound": "each" },
+                        "token": {
+                          "Custom": {
+                            "name": "Bear",
+                            "colors": ["Green"],
+                            "types": ["Creature"],
+                            "subtypes": ["Bear"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "count": { "Count": [{ "Is": { "Bound": "revealed" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

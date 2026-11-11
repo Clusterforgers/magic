@@ -112,6 +112,18 @@ pub(super) fn wf25_predicate(mods: &[Modification], conditional: bool) -> Option
     }
 }
 
+/// Adds the wordings of the wf25 twins and their other printed words: mana for each counter removed, the object of the
+/// event, the block rules.
+pub(super) fn wf25_wordings(
+    ability: &Ability,
+    written: fn(&Ability) -> Vec<String>,
+    texts: &mut Vec<String>,
+) {
+    wf25_removed_wordings(ability, written, texts);
+    wf25_event_object_wordings(ability, written, texts);
+    wf25_block_wordings(texts);
+}
+
 /// The ability with every counter of one kind removed as its cost ("Remove any number of storage counters from ~") paid
 /// for mana: the twin that adds the mana once, the counter's name, and whether a first mana comes before the counted.
 fn removed_twin(ability: &Ability) -> Option<(Ability, String, bool)> {
@@ -129,36 +141,36 @@ fn removed_twin(ability: &Ability) -> Option<(Ability, String, bool)> {
     if removed.get("from").is_some() {
         return None;
     }
-    let counter = serde_json::from_value(removed.get("counter")?.clone()).ok()?;
-    let one = counters::text(&counter, &Amount::one())?;
-    let name = one
+    let kind = serde_json::from_value(removed.get("counter")?.clone()).ok()?;
+    let singular = counters::text(&kind, &Amount::one())?;
+    let name = singular
         .strip_prefix("an ")
-        .or_else(|| one.strip_prefix("a "))?
+        .or_else(|| singular.strip_prefix("a "))?
         .to_owned();
     let effects = body.get("effects")?.as_array()?;
-    let counted = |effect: &Value| -> Option<Value> {
+    let without_times = |effect: &Value| -> Option<Value> {
         let mut add = effect.get("AddMana")?.clone();
         (add.get("times")? == "X").then_some(())?;
         add.as_object_mut()?.remove("times");
         Some(add)
     };
-    let (once, first) = match effects.as_slice() {
-        [only] => (counted(only)?, false),
+    let (single, first) = match effects.as_slice() {
+        [only] => (without_times(only)?, false),
         [first, then] => {
-            let once = counted(then)?;
-            (first.get("AddMana")? == &once).then_some(())?;
-            (once, true)
+            let single = without_times(then)?;
+            (first.get("AddMana")? == &single).then_some(())?;
+            (single, true)
         }
         _ => return None,
     };
     let mut twin = value.clone();
-    twin["Activated"]["effects"] = Value::Array(vec![serde_json::json!({ "AddMana": once })]);
+    twin["Activated"]["effects"] = Value::Array(vec![serde_json::json!({ "AddMana": single })]);
     Some((serde_json::from_value(twin).ok()?, name, first))
 }
 
 /// "{T}, Remove any number of storage counters from ~: Add {R} for each storage counter removed this way.", "..., then
 /// add an additional {B} for each charge counter removed this way."
-pub(super) fn wf25_removed_wordings(
+fn wf25_removed_wordings(
     ability: &Ability,
     written: fn(&Ability) -> Vec<String>,
     texts: &mut Vec<String>,
@@ -358,7 +370,7 @@ fn split_head<'t>(text: &'t str, heads: &[String]) -> Option<(&'t str, &'t str)>
 /// "Whenever a creature is dealt damage, destroy it.", "When a player casts a spell, counter that spell.", "Whenever
 /// this creature deals combat damage to a creature, tap that creature and it doesn't untap during its controller's next
 /// untap step.": the object of the event named in its steps. "It" stands only when the head does not name the card.
-pub(super) fn wf25_event_object_wordings(
+fn wf25_event_object_wordings(
     ability: &Ability,
     written: fn(&Ability) -> Vec<String>,
     texts: &mut Vec<String>,
@@ -585,7 +597,7 @@ pub(super) fn wf25_either_event_texts(first: &Ability, second: &Ability) -> Vec<
 /// The block rules in their other printed words: "can block any number of creatures" is also printed "can block an
 /// additional ninety-nine creatures each combat", and "can't block creatures with power 2 or greater and can't be
 /// blocked by creatures with power 2 or greater" is "can't block or be blocked by creatures with power 2 or greater".
-pub(super) fn wf25_block_wordings(texts: &mut Vec<String>) {
+fn wf25_block_wordings(texts: &mut Vec<String>) {
     let mut more = Vec::new();
     for text in texts.iter() {
         if text.contains("can block any number of creatures") {

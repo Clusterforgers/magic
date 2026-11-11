@@ -1,0 +1,257 @@
+{
+  "oracle_id": "690f79f3-e6a5-4542-8401-61a9bf645d55",
+  "name": "Odric, Blood-Cursed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Odric, Blood-Cursed",
+      "oracle_fingerprint": "ddd6a63a0a43ccebee20809dff7931bd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "blood" },
+                  "count": {
+                    "Sum": [
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "HasKeyword": "Flying" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "HasKeywordNamed": "First strike" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "HasKeywordNamed": "Double strike" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "HasKeyword": "Deathtouch" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "HasKeyword": "Haste" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "HasKeyword": "Hexproof" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "HasKeyword": "Indestructible" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "HasKeyword": "Lifelink" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "HasKeyword": "Menace" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "HasKeyword": "Reach" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "HasKeyword": "Trample" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      },
+                      {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" },
+                                  { "HasKeyword": "Vigilance" }
+                                ]
+                              },
+                              "op": "Gt",
+                              "right": 0
+                            }
+                          },
+                          "then": 1,
+                          "otherwise": 0
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

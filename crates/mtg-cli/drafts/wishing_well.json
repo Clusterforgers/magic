@@ -1,0 +1,60 @@
+{
+  "oracle_id": "78dbbc15-9304-4178-b9b2-1db6c64ca11a",
+  "name": "Wishing Well",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wishing Well",
+      "oracle_fingerprint": "8ab8714764d8cbaec163871fd2b594be",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "coin" } } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": {
+                        "Object": [
+                          { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Eq",
+                              "to": { "Counters": { "on": "This", "counter": { "Other": "coin" } } }
+                            }
+                          },
+                          { "In": "Graveyard" },
+                          { "OwnedBy": "You" }
+                        ]
+                      }
+                    }
+                  ],
+                  "effects": [
+                    { "CastFromZone": { "what": { "Target": 0 }, "free": true, "as": "cast" } },
+                    {
+                      "Shield": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                            "from": "Stack",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "by": { "MoveTo": "Exile" },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

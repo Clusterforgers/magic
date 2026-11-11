@@ -1,0 +1,41 @@
+{
+  "oracle_id": "436e7548-f8d5-43af-947d-b382da0d19b3",
+  "name": "Arna Kennerüd, Skycaptain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arna Kennerüd, Skycaptain",
+      "oracle_fingerprint": "4b17fd24f4b8ecaa5be2d3a355fc164d",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": { "Ward": [{ "Discard": {} }] } },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": { "what": ["Modified", { "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "MultiplyCounters": { "on": "Triggering" } },
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Not": "Token" }, { "AttachedTo": "Triggering" }] },
+                  "as": "attachment",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": { "CopyOf": { "of": { "Bound": "attachment" } } },
+                        "as": "copy"
+                      }
+                    },
+                    { "Attach": { "what": { "Bound": "copy" }, "to": "Triggering" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

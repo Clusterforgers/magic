@@ -1,0 +1,65 @@
+{
+  "oracle_id": "a7ac5d98-805e-4212-be94-333a0c0c44a7",
+  "name": "Brudiclad, Telchor Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brudiclad, Telchor Engineer",
+      "oracle_fingerprint": "5d062466a0455be45191ab98df47c1d1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Myr",
+                      "colors": ["Blue"],
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Myr"],
+                      "power": 2,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": ["Token", { "ControlledBy": "You" }] },
+                        "as": "chosen"
+                      }
+                    },
+                    {
+                      "BecomeCopy": {
+                        "what": {
+                          "Each": [
+                            "Token",
+                            { "ControlledBy": "You" },
+                            { "Not": { "Is": { "Bound": "chosen" } } }
+                          ]
+                        },
+                        "of": { "Bound": "chosen" },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

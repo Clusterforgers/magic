@@ -1,0 +1,33 @@
+{
+  "oracle_id": "776ea0c7-fc5b-44b4-9302-5a3514ff843b",
+  "name": "Tyrannical Pitlord",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Tyrannical Pitlord",
+      "oracle_fingerprint": "0f634cc4cde551e2f51f12aed3017c58",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 16, "end": 77 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 78, "end": 124 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 125, "end": 198 }
+          }
+        }
+      ]
+    }
+  ]
+}

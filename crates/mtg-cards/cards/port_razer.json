@@ -1,0 +1,30 @@
+{
+  "oracle_id": "653e4b68-3184-4352-ac91-127f7e6d7c12",
+  "name": "Port Razer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Port Razer",
+      "oracle_fingerprint": "7d810dff7be355a474a86040ca78915e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              },
+              { "AddPhase": { "phases": ["Combat"] } }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 144, "end": 214 }
+          }
+        }
+      ]
+    }
+  ]
+}

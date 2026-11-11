@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ea14c26b-bf2f-48b4-b879-6e63069ded1f",
+  "name": "Chain of Smog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chain of Smog",
+      "oracle_fingerprint": "7022d36f04093ff19cb6a29f8163ac33",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Discard": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "May": {
+                  "who": { "Target": 0 },
+                  "effects": [
+                    { "CopySpell": { "what": "This", "who": { "Target": 0 }, "new_targets": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "ad6e1ba7-047b-41a3-8ab4-17a5c5476749",
+  "oracle_id": "2dd1450e-902e-480a-9c42-1c47549d2eeb",
+  "multiverse_ids": [
+    470563
+  ],
+  "mtgo_id": 77088,
+  "tcgplayer_id": 196442,
+  "cardmarket_id": 391327,
+  "name": "Gift of Doom",
+  "lang": "en",
+  "released_at": "2019-08-23",
+  "uri": "https://api.scryfall.com/cards/ad6e1ba7-047b-41a3-8ab4-17a5c5476749",
+  "scryfall_uri": "https://scryfall.com/card/c19/17/gift-of-doom?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:53:29Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/d/ad6e1ba7-047b-41a3-8ab4-17a5c5476749.jpg?1783932809",
+    "normal": "https://cards.scryfall.io/normal/front/a/d/ad6e1ba7-047b-41a3-8ab4-17a5c5476749.jpg?1783932809",
+    "large": "https://cards.scryfall.io/large/front/a/d/ad6e1ba7-047b-41a3-8ab4-17a5c5476749.jpg?1783932809",
+    "png": "https://cards.scryfall.io/png/front/a/d/ad6e1ba7-047b-41a3-8ab4-17a5c5476749.png?1783932809",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/d/ad6e1ba7-047b-41a3-8ab4-17a5c5476749.jpg?1783932809",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/d/ad6e1ba7-047b-41a3-8ab4-17a5c5476749.jpg?1783932809",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/d/ad6e1ba7-047b-41a3-8ab4-17a5c5476749.webp?1783932809",
+    "grid": "https://cards.scryfall.io/grid/front/a/d/ad6e1ba7-047b-41a3-8ab4-17a5c5476749.webp?1783932809",
+    "display": "https://cards.scryfall.io/display/front/a/d/ad6e1ba7-047b-41a3-8ab4-17a5c5476749.webp?1783932809",
+    "art": "https://cards.scryfall.io/art/front/a/d/ad6e1ba7-047b-41a3-8ab4-17a5c5476749.webp?1783932809",
+    "crop": "https://cards.scryfall.io/crop/front/a/d/ad6e1ba7-047b-41a3-8ab4-17a5c5476749.webp?1783932809",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/d/ad6e1ba7-047b-41a3-8ab4-17a5c5476749.jpg?1783932809"
+  },
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant creature\nEnchanted creature has deathtouch and indestructible.\nMorph—Sacrifice another creature. (You may cast this card face down as a 2/2 creature for {3}. Turn it face up any time for its morph cost.)\nAs this Aura is turned face up, you may attach it to a creature.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Morph",
+    "Enchant"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ad6e1ba7-047b-41a3-8ab4-17a5c5476749",
+      "component": "combo_piece",
+      "name": "Gift of Doom",
+      "type_line": "Enchantment — Aura",
+      "uri": "https://api.scryfall.com/cards/ad6e1ba7-047b-41a3-8ab4-17a5c5476749"
+    },
+    {
+      "object": "related_card",
+      "id": "e9375cbe-93c0-41a5-a6e3-fb4416f54a69",
+      "component": "combo_piece",
+      "name": "Morph",
+      "type_line": "Creature",
+      "uri": "https://api.scryfall.com/cards/e9375cbe-93c0-41a5-a6e3-fb4416f54a69"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2",
+  "set": "c19",
+  "set_name": "Commander 2019",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac19&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c19?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ad6e1ba7-047b-41a3-8ab4-17a5c5476749/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2dd1450e-902e-480a-9c42-1c47549d2eeb&unique=prints",
+  "collector_number": "17",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "James Zapata",
+  "artist_ids": [
+    "c93d6885-ef0f-45cc-8339-423b6f86ab8d"
+  ],
+  "illustration_id": "d2d5b6ec-e463-4b80-8bc0-f1af65d0e1ad",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6693,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/making-magic/need-i-say-morph-2019-08-05?",
+    "previewed_at": "2019-08-05"
+  },
+  "prices": {
+    "usd": "4.44",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "4.05",
+    "eur_foil": null,
+    "tix": "2.30"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=470563&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGift%2Bof%2BDoom",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGift%2Bof%2BDoom",
+    "edhrec": "https://edhrec.com/route/?cc=Gift+of+Doom"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F196442%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=391327&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/77088?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

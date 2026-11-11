@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8266dd1c-e262-4467-a893-6b3b5eedb427",
+  "name": "Total War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Total War",
+      "oracle_fingerprint": "917f89df99073f3698c3c6204df00569",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "PlayerAttacks": { "at": "EachPlayer" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      "Untapped",
+                      { "Not": { "Subtype": "Wall" } },
+                      { "ControlledBy": "Triggering" },
+                      { "Not": "AttackedThisTurn" },
+                      { "Not": "SummoningSick" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

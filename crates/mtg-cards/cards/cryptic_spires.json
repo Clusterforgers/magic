@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6d6a25fb-0432-4c7d-b0e6-e787ddc71218",
+  "name": "Cryptic Spires",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Cryptic Spires",
+      "oracle_fingerprint": "5e32080da2fcf5524d80084c80a522fc",
+      "abilities": [
+        {
+          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 56 } }
+        },
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 82, "end": 132 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "oracle_id": "65b28ec7-1099-4f9d-8d57-2ffd8a5b0e91",
+  "name": "Monk Class",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monk Class",
+      "oracle_fingerprint": "c73b39e1ed1878a12480401428efe447",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                "op": "Eq",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}{U}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 1 } },
+            "effects": [{ "BecomeLevel": { "level": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "BecomesLevel": { "what": ["This"], "level": 2 } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 2 } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Not": { "Type": "Land" } }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}{U}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Level": { "of": "This", "op": "Ge", "level": 3 } },
+            "effects": [
+              { "ExileTop": { "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "from": "Exile",
+                      "only": { "Bound": "exiled" },
+                      "when": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "SpellsCast" } },
+                          "op": "Ge",
+                          "right": 2
+                        }
+                      }
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

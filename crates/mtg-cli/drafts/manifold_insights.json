@@ -1,0 +1,49 @@
+{
+  "oracle_id": "9c793037-6ba8-400a-b24d-6032141e8dae",
+  "name": "Manifold Insights",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Manifold Insights",
+      "oracle_fingerprint": "88a47468b1d3ef103cd0496c3eb3aea9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 10, "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "opp" },
+                        "from": {
+                          "Each": [
+                            { "In": "Library" },
+                            { "Is": { "Bound": "top" } },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        },
+                        "as": "pick"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "pick" }, "to": "Hand" } }
+                  ]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Library" }, { "Is": { "Bound": "top" } }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

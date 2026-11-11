@@ -1,0 +1,79 @@
+{
+  "oracle_id": "596237da-3d51-4052-a8ca-2218efc1afb3",
+  "name": "Dovin, Grand Arbiter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dovin, Grand Arbiter",
+      "oracle_fingerprint": "5d2fb56e398555a581b75e94bb6f77dc",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "until": "UntilEndOfTurn",
+                  "effects": [{ "PutCounters": { "on": "This", "counter": "loyalty" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              { "LookAtTop": { "count": 10, "as": "seen" } },
+              {
+                "Choose": {
+                  "from": { "Bound": "seen" },
+                  "count": { "min": 3, "max": 3 },
+                  "as": "kept",
+                  "rest_as": "rest"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

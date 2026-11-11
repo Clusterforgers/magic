@@ -1,0 +1,36 @@
+{
+  "oracle_id": "837e3fde-241f-4826-ad04-f146fdcf2278",
+  "name": "Tasigur, the Golden Fang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tasigur, the Golden Fang",
+      "oracle_fingerprint": "2f8aa8f188ca01e396198e873d41c096",
+      "abilities": [
+        { "Keyword": "Delve" },
+        {
+          "Activated": {
+            "cost": "{2}{G/U}{G/U}",
+            "effects": [
+              { "Mill": { "count": 2 } },
+              {
+                "Choose": {
+                  "who": "Opponents",
+                  "from": {
+                    "Each": [
+                      { "Not": { "Type": "Land" } },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

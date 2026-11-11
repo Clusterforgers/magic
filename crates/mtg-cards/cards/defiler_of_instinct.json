@@ -1,0 +1,44 @@
+{
+  "oracle_id": "590137df-af61-4e93-b6f1-3a2e438b8037",
+  "name": "Defiler of Instinct",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Defiler of Instinct",
+      "oracle_fingerprint": "74a466a95cee687e842d8ecd84943c3b",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 13, "end": 203 }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Color": "Red" },
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "oracle_id": "e469bb22-57f1-4555-b3c0-9ea108e6cc12",
+  "name": "Bladecoil Serpent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bladecoil Serpent",
+      "oracle_fingerprint": "146d8680a7fc9edd25e006515da8f725",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Half": { "of": { "ManaSpent": { "of": "Blue" } }, "up": false } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Discard": {
+                  "who": "Opponents",
+                  "count": { "Half": { "of": { "ManaSpent": { "of": "Black" } }, "up": false } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Half": { "of": { "ManaSpent": { "of": "Red" } }, "up": false } },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Half": { "of": { "ManaSpent": { "of": "Red" } }, "up": false } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "AddKeyword": "Trample" }, { "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

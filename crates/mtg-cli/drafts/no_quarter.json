@@ -1,0 +1,53 @@
+{
+  "oracle_id": "d238a5c1-f992-4f89-851a-de75b59f6793",
+  "name": "No Quarter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "No Quarter",
+      "oracle_fingerprint": "e1132ced6055faa5bdbd529dfe2f2eb3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [{ "Type": "Creature" }],
+                "by": [
+                  { "Type": "Creature" },
+                  {
+                    "Test": {
+                      "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                      "op": "Lt",
+                      "right": { "Stat": { "of": "Triggering", "stat": "Power" } }
+                    }
+                  }
+                ]
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Dealer" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesBlocked": {
+                "what": [
+                  { "Type": "Creature" },
+                  {
+                    "Test": {
+                      "left": { "Stat": { "of": "Candidate", "stat": "Power" } },
+                      "op": "Lt",
+                      "right": { "Stat": { "of": "Dealer", "stat": "Power" } }
+                    }
+                  }
+                ],
+                "by": [{ "Type": "Creature" }]
+              }
+            },
+            "effects": [{ "Destroy": { "what": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

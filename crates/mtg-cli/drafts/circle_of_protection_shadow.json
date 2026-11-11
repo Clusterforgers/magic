@@ -1,0 +1,33 @@
+{
+  "oracle_id": "07c42f46-800e-4d2a-b844-c125ab93190d",
+  "name": "Circle of Protection: Shadow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Circle of Protection: Shadow",
+      "oracle_fingerprint": "597c18250063393dc38bb801b71df390",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Shadow" }] },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

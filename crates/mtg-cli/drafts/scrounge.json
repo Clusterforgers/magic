@@ -1,0 +1,34 @@
+{
+  "oracle_id": "e6f0d7a9-41bd-4297-a07a-b81554a30262",
+  "name": "Scrounge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scrounge",
+      "oracle_fingerprint": "fa0d4d0857be5b0ebd2d015328ba884f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": { "Target": 0 } }
+                    ]
+                  },
+                  "as": "c"
+                }
+              },
+              { "Move": { "what": { "Bound": "c" }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "307813c5-c3a8-46c5-8ed4-3b244dd169dc",
+  "name": "Season of the Witch",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Season of the Witch",
+      "oracle_fingerprint": "b61afb796b94cf8813520c3a8dffaeb5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "PayLife": 2 }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 83, "end": 220 }
+          }
+        }
+      ]
+    }
+  ]
+}

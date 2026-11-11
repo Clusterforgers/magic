@@ -1,0 +1,40 @@
+{
+  "oracle_id": "c425fe26-0027-4319-80a9-a053925651cb",
+  "name": "Charm Peddler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Charm Peddler",
+      "oracle_fingerprint": "0b098bddf1e3d0ae630c96f26e945092",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}" }, "Tap", { "Discard": {} }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] }
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": {
+                    "Damage": { "to": { "Target": 0 }, "source": [{ "Is": { "Bound": "source" } }] }
+                  },
+                  "by": "PreventNext",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

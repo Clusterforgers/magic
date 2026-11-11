@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ff94e2d5-8ba1-4f6c-916d-58235a60743e",
+  "name": "Leori, Sparktouched Hunter",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Leori, Sparktouched Hunter",
+      "oracle_fingerprint": "0170fda82e96a34fb62658d9dbdee6eb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 18, "end": 239 }
+          }
+        }
+      ]
+    }
+  ]
+}

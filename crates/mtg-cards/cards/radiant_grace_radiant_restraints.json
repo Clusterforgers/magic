@@ -1,0 +1,41 @@
+{
+  "oracle_id": "93cddbad-92ef-4b30-a0e7-981aee714bce",
+  "name": "Radiant Grace // Radiant Restraints",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Radiant Grace",
+      "oracle_fingerprint": "7559632ad72805d426ba0608652cb51b",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Vigilance" }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 66, "end": 191 }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Radiant Restraints",
+      "oracle_fingerprint": "24a262926a557045ec782bb5291d8399",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "AttachedPlayer" }] }
+            },
+            "by": "Tapped"
+          }
+        }
+      ]
+    }
+  ]
+}

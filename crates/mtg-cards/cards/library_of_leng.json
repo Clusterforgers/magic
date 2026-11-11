@@ -1,0 +1,20 @@
+{
+  "oracle_id": "867def48-4be8-4056-bcf1-d6b00450b9a3",
+  "name": "Library of Leng",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Library of Leng",
+      "oracle_fingerprint": "e75c3cd8abb336d61dc0ed340a49818f",
+      "abilities": [
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 31, "end": 159 }
+          }
+        }
+      ]
+    }
+  ]
+}

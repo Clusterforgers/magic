@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ade898df-14a5-460b-94f6-1f3f74d3ff95",
+  "name": "Odric, Master Tactician",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Odric, Master Tactician",
+      "oracle_fingerprint": "d58346baf9cc1f44c20f3aa8b7c56961",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 88, "end": 221 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "oracle_id": "09d7a2d5-9e6e-4d84-8f97-c36b11ccc6fb",
+  "name": "The Sea Devils",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Sea Devils",
+      "oracle_fingerprint": "1aecb5af871978e9a637e1697a6b2c86",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Alien Salamander",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Alien", "Salamander"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Alien Salamander",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Alien", "Salamander"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Subtype": "Salamander" }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Object": [
+                                { "Type": "Creature" },
+                                { "ControlledBy": "TriggeringPlayer" }
+                              ]
+                            }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "DealDamage": {
+                              "source": "Dealer",
+                              "to": { "Target": 0 },
+                              "amount": "Triggering"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

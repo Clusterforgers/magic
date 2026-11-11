@@ -1,0 +1,33 @@
+{
+  "oracle_id": "88188cc1-3211-4bf8-a591-613b66192695",
+  "name": "Kodama of the Center Tree",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Kodama of the Center Tree",
+      "oracle_fingerprint": "6b58dce5ab5cd44abdd5572f64269eb5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Spirit" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Spirit" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 101, "end": 310 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "1f4ff059-e505-4746-ba4f-6b78a502f523",
+  "name": "Elemental Resonance",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Elemental Resonance",
+      "oracle_fingerprint": "78923d8ce8986bf5feae318fd223a587",
+      "abilities": [
+        { "Keyword": { "Enchant": [] } },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 18, "end": 189 }
+          }
+        }
+      ]
+    }
+  ]
+}

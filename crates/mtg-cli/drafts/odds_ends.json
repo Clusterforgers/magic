@@ -1,0 +1,52 @@
+{
+  "oracle_id": "82922f3a-a444-49cf-b136-f30a3c85f791",
+  "name": "Odds // Ends",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Odds",
+      "oracle_fingerprint": "51f3991d3e75e79e8fb1cbe18f810e37",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "FlipCoin": {
+                  "win": [{ "Counter": { "what": { "Target": 0 } } }],
+                  "lose": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ends",
+      "oracle_fingerprint": "9befab4cf474842538d7e2b22adf120a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }, "Attacking"],
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "0db3b29e-e21c-4240-8e5e-959ba6bcf706",
+  "name": "Bronzehide Lion",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bronzehide Lion",
+      "oracle_fingerprint": "ae608084a2eb6aaecfccf21087f52b71",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{W}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 62, "end": 282 }
+          }
+        }
+      ]
+    }
+  ]
+}

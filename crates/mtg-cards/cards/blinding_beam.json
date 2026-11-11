@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0766cf02-ea55-4271-8c73-213c93b0baac",
+  "name": "Blinding Beam",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Blinding Beam",
+      "oracle_fingerprint": "656b24d88378fdd1ad92181981c8e491",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 0, "end": 104 }
+          }
+        },
+        { "Keyword": { "Entwine": "{1}" } }
+      ]
+    }
+  ]
+}

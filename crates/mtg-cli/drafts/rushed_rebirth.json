@@ -1,0 +1,59 @@
+{
+  "oracle_id": "8ee64f9d-54c4-4a75-a8ac-6bb0a060b960",
+  "name": "Rushed Rebirth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rushed Rebirth",
+      "oracle_fingerprint": "8be138d070a860988d4cb8b78931b205",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Bind": { "what": { "Target": 0 }, "as": "creature" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Is": { "Bound": "creature" } }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [
+                          { "Type": "Creature" },
+                          {
+                            "Compare": {
+                              "stat": "ManaValue",
+                              "op": "Lt",
+                              "to": {
+                                "Stat": { "of": { "Bound": "creature" }, "stat": "ManaValue" }
+                              }
+                            }
+                          }
+                        ],
+                        "as": "found"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "found" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "oracle_id": "c12e2563-4ad4-4637-b9ae-72f23cca31d8",
+  "name": "Benthic Anomaly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benthic Anomaly",
+      "oracle_fingerprint": "9ee17415767889a384d984d7288ba0c1",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opp",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Bound": "opp" } }]
+                        },
+                        "as": "pick"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "pick" }, "as": "chosen", "adds": true } }
+                  ]
+                }
+              },
+              { "Choose": { "from": { "Bound": "chosen" }, "as": "original" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Bound": "original" },
+                      "except": [
+                        {
+                          "SetPT": {
+                            "power": {
+                              "Total": { "of": [{ "Is": { "Bound": "chosen" } }], "stat": "Power" }
+                            },
+                            "toughness": {
+                              "Total": {
+                                "of": [{ "Is": { "Bound": "chosen" } }],
+                                "stat": "Toughness"
+                              }
+                            }
+                          }
+                        },
+                        { "SetColors": [] },
+                        { "AddType": "Creature" },
+                        { "SetCreatureTypes": ["Eldrazi"] }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
