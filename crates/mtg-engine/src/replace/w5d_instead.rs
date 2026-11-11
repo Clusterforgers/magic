@@ -110,6 +110,13 @@ impl Pass<'_> {
         if matches!(by, ReplaceBy::PreventAnd(_)) {
             return self.w9c_prevent_and(at, candidate, effects, unit, &applied);
         }
+        if let ReplaceBy::PreventCountedAnd { most, .. } = by {
+            let most = match most {
+                mtg_cards::value::Amount::Fixed(most) => u32::try_from(*most).unwrap_or(0),
+                _ => 0,
+            };
+            return self.r283_prevent_counted_and(at, candidate, most, effects, unit, &applied);
+        }
         let events = match self.w5d_run(at, candidate, effects, unit) {
             Ran::Events(events) => events,
             Ran::Ask(decision) => return Some(decision),

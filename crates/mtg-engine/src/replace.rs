@@ -30,7 +30,7 @@ use mtg_cards::definition::Layout;
 use mtg_cards::modify::Modification;
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
-use mtg_cards::value::{CastWay, CounterKind};
+use mtg_cards::value::{Amount, CastWay, CounterKind};
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
@@ -705,8 +705,11 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
             matches!(unit, Unit::Damage { .. })
         }
         ReplaceBy::Dredge(_) => matches!(unit, Unit::Draw { .. }),
-        // Only a shield counts its amount, and it begins as `PreventUpTo`.
+        // Only a shield counts its amount, and it begins as `PreventUpTo`; one with effects names the damage left to it.
         ReplaceBy::PreventCounted(_) => false,
+        ReplaceBy::PreventCountedAnd { most, .. } => {
+            matches!(most, Amount::Fixed(_)) && matches!(unit, Unit::Damage { .. })
+        }
         ReplaceBy::UmbraArmor => matches!(
             unit,
             Unit::Move {
@@ -813,6 +816,7 @@ impl Action {
                     | ReplaceBy::PreventHalf
                     | ReplaceBy::PreventRemovingCounter(_)
                     | ReplaceBy::PreventAnd(_)
+                    | ReplaceBy::PreventCountedAnd { .. }
                     | ReplaceBy::PreventAllBut(_)
             )
         )
@@ -1608,6 +1612,10 @@ impl Pass<'_> {
             } else {
                 match self.left.get(&effect.id) {
                     Some(0) => continue,
+                    Some(left) if !shield.then.is_empty() => ReplaceBy::PreventCountedAnd {
+                        most: Amount::Fixed(i32::try_from(*left).unwrap_or(i32::MAX)),
+                        effects: shield.then.clone(),
+                    },
                     Some(left) => ReplaceBy::PreventUpTo(*left),
                     None if shield.then.is_empty() => ReplaceBy::Prevent,
                     None => ReplaceBy::PreventAnd(shield.then.clone()),
@@ -2109,6 +2117,7 @@ impl Pass<'_> {
     }
 
     /// Applies one effect to the item at `at`.
+    #[allow(clippy::too_many_lines)]
     fn apply(&mut self, at: usize, candidate: &Candidate) -> Result<Applied, EngineError> {
         let mut applied = self.slots[at].applied.clone();
         applied.push(candidate.origin);
@@ -2144,7 +2153,8 @@ impl Pass<'_> {
                 self.w9c_prevent_all_but(at, candidate, *kept, applied);
             }
             (ReplaceBy::Instead(effects) | ReplaceBy::Plus(effects), _)
-            | (ReplaceBy::PreventAnd(effects), Unit::Damage { .. }) => {
+            | (ReplaceBy::PreventAnd(effects), Unit::Damage { .. })
+            | (ReplaceBy::PreventCountedAnd { effects, .. }, Unit::Damage { .. }) => {
                 let asked = self.w5d_instead(at, candidate, by, effects, &unit, applied);
                 return Ok(asked.map_or(Applied::Done, Applied::Ask));
             }
@@ -3568,6 +3578,7 @@ mod r6f_redirect;
 mod w13a_moved;
 mod w5d_instead;
 
+mod r283_prevent;
 mod w9c_prevent;
 
 #[cfg(test)]

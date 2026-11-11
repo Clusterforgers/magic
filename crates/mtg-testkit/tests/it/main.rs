@@ -506,6 +506,7 @@ mod r1c;
 mod r1fix;
 mod r283_counted_pay;
 mod r283_keyword_x;
+mod r283_prevent_counted;
 mod r2e_cost_parts;
 mod r4_audit;
 mod r4a_amplify;

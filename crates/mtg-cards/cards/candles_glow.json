@@ -1,0 +1,33 @@
+{
+  "oracle_id": "7509b934-6fbc-42fd-9040-cdf16bbfff42",
+  "name": "Candles' Glow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Candles' Glow",
+      "oracle_fingerprint": "9a20e81f735111c3de6c2f7abbb961ff",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": {
+                    "PreventCountedAnd": {
+                      "most": 3,
+                      "effects": [{ "GainLife": { "amount": "Triggering" } }]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Splice": { "onto": "Arcane", "cost": "{1}{W}" } } }
+      ]
+    }
+  ]
+}

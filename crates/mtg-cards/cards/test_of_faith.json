@@ -1,0 +1,40 @@
+{
+  "oracle_id": "3397aa3d-bf73-4ca3-a806-059361603079",
+  "name": "Test of Faith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Test of Faith",
+      "oracle_fingerprint": "437b26df22665cae9efb7b9f6e8c1705",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": {
+                    "PreventCountedAnd": {
+                      "most": 3,
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": "Triggering",
+                            "counter": "+1/+1",
+                            "count": "Triggering"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

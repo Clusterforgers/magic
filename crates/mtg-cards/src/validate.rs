@@ -73,6 +73,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
         by,
         ReplaceBy::PreventUpTo(_)
             | ReplaceBy::PreventCounted(_)
+            | ReplaceBy::PreventCountedAnd { .. }
             | ReplaceBy::PreventHalf
             | ReplaceBy::PreventAllBut(_)
             | ReplaceBy::PreventNext
@@ -5161,6 +5162,16 @@ impl Walker<'_> {
                 }
                 self.at("PreventCounted", |w| w.amount(amount));
             }
+            ReplaceBy::PreventCountedAnd { most, effects }
+                if matches!(when, ReplaceWhen::Damage { .. }) =>
+            {
+                self.at("most", |w| w.amount(most));
+                // The effects run as each damage event is lessened, where no target of the spell is read.
+                if serde_json::to_string(effects).is_ok_and(|json| json.contains("\"Target\"")) {
+                    self.problem("the effects of a counted prevention read no target; `Triggering` is the damaged one");
+                }
+                self.w9c_prevent_and(when, effects);
+            }
             ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
             ReplaceBy::Plus(effects) => self.ep21_plus(when, effects),
             _ => {}
@@ -5176,6 +5187,7 @@ impl Walker<'_> {
                 | ReplaceBy::RedirectUpTo { .. }
                 | ReplaceBy::Redirect { .. }
                 | ReplaceBy::PreventCounted(_)
+                | ReplaceBy::PreventCountedAnd { .. }
         ) {
             self.problem("only a shield changes the next damage");
         }

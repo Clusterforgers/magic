@@ -634,6 +634,19 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             out.push(Step::new(depth, "prevent it, then:"));
             effects::list(ctx, list, depth + 1, out);
         }
+        ReplaceBy::PreventCountedAnd {
+            most,
+            effects: list,
+        } => {
+            out.push(Step::new(
+                depth,
+                format!(
+                    "prevent up to {} of it in all, then with the damage prevented:",
+                    generic::node(ctx, most)
+                ),
+            ));
+            effects::list(ctx, list, depth + 1, out);
+        }
         other => out.push(Step::new(depth, generic::node(ctx, other))),
     }
 }

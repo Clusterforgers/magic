@@ -5,7 +5,7 @@ use crate::ability::Ability;
 use std::sync::LazyLock;
 
 /// The abilities, as JSON, each with its wording (the card's name as `~`; the lines of one spell joined by a newline).
-const R283_WHOLES: [(&str, &str); 32] = [
+const R283_WHOLES: [(&str, &str); 38] = [
     // avacyn_s_judgment#0.1
     (
         r#"{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":0,"max":{"When":{"condition":{"CastWith":"Madness"},"then":"X","otherwise":2}}},"divide":{"When":{"condition":{"CastWith":"Madness"},"then":"X","otherwise":2}}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"Divided"}}]}}"#,
@@ -20,6 +20,21 @@ const R283_WHOLES: [(&str, &str); 32] = [
     (
         r#"{"Spell":{"effects":[{"Exile":{"what":{"Each":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]},{"Compare":{"stat":"ManaValue","op":"Lt","to":{"Stat":{"of":"Paid","stat":"ManaValue"}}}}]}}}]}}"#,
         r"Exile each creature and planeswalker with mana value less than the revealed card's mana value.",
+    ),
+    // candles_glow#0.0
+    (
+        r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"Shield":{"when":{"Damage":{"to":{"Target":0}}},"by":{"PreventCountedAnd":{"most":3,"effects":[{"GainLife":{"amount":"Triggering"}}]}},"duration":"UntilEndOfTurn"}}]}}"#,
+        r"Prevent the next 3 damage that would be dealt to any target this turn. You gain life equal to the damage prevented this way.",
+    ),
+    // command_the_stage#0.0
+    (
+        r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Cadet","types":["Creature"],"subtypes":["Wizard","Soldier"],"power":2,"toughness":2}},"as":"token"}},{"PutCounters":{"on":{"Each":[{"Subtype":"Wizard"},{"Not":{"Is":{"Bound":"token"}}},"Token",{"ControlledBy":"You"}]},"counter":"+1/+1"}}]}}"#,
+        r"Create a 2/2 colorless Wizard Soldier creature token named Cadet, then put a +1/+1 counter on each other Wizard token you control.",
+    ),
+    // command_the_stage#0.1
+    (
+        r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep"}},"from":"Graveyard","if":{"Compare":{"left":{"TalliedLastTurn":{"who":"Opponents","what":"NoncombatDamageTaken"}},"op":"Ge","right":1}},"effects":[{"Move":{"what":"This","to":"Hand"}}]}}"#,
+        r"At the beginning of each upkeep, if an opponent was dealt noncombat damage last turn, return this card from your graveyard to your hand.",
     ),
     // crush_of_tentacles#0.1
     (
@@ -147,6 +162,16 @@ Draw a card.",
         r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Angel Warrior","colors":["White"],"types":["Creature"],"subtypes":["Angel","Warrior"],"power":4,"toughness":4,"abilities":[{"Keyword":"Flying"},{"Keyword":"Vigilance"}]}},"count":{"When":{"condition":{"CastWith":"Foretold"},"then":"X","otherwise":1}}}}]}}"#,
         r"Create a 4/4 white Angel Warrior creature token with flying and vigilance. If this spell was foretold, create X of those tokens instead.",
     ),
+    // temper#0.0
+    (
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Shield":{"when":{"Damage":{"to":{"Target":0}}},"by":{"PreventCountedAnd":{"most":"X","effects":[{"PutCounters":{"on":"Triggering","counter":"+1/+1","count":"Triggering"}}]}},"duration":"UntilEndOfTurn"}}]}}"#,
+        r"Prevent the next X damage that would be dealt to target creature this turn. For each 1 damage prevented this way, put a +1/+1 counter on that creature.",
+    ),
+    // test_of_faith#0.0
+    (
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Shield":{"when":{"Damage":{"to":{"Target":0}}},"by":{"PreventCountedAnd":{"most":3,"effects":[{"PutCounters":{"on":"Triggering","counter":"+1/+1","count":"Triggering"}}]}},"duration":"UntilEndOfTurn"}}]}}"#,
+        r"Prevent the next 3 damage that would be dealt to target creature this turn. For each 1 damage prevented this way, put a +1/+1 counter on that creature.",
+    ),
     // the_crowd_goes_wild#0.1
     (
         r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":"X"}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1"}},{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"HasCounter":"+1/+1"}]},"mods":[{"AddKeyword":"Trample"}],"duration":"UntilEndOfTurn"}}]}}"#,
@@ -162,6 +187,11 @@ Each creature with a +1/+1 counter on it gains trample until end of turn.",
     (
         r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"If":{"condition":{"Compare":{"left":{"Stat":{"of":{"Target":0},"stat":"Power"}},"op":"Le","right":{"Stat":{"of":"Paid","stat":"Power"}}}},"then":[{"Exile":{"what":{"Target":0}}}]}}]}}"#,
         r"Exile target creature if its power is less than or equal to the revealed card's power.",
+    ),
+    // wake_the_dead#0.1
+    (
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]},"bounds":{"min":"X","max":"X"}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{}},"as":"returned"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"End"}},"effects":[{"Sacrifice":{"filter":[{"Is":{"Bound":"returned"}}],"count":{"Count":[{"Is":{"Bound":"returned"}}]}}}]}}]}}"#,
+        r"Return X target creature cards from your graveyard to the battlefield. Sacrifice those creatures at the beginning of the next end step.",
     ),
     // winds_of_change#0.0
     (
