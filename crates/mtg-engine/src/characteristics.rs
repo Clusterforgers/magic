@@ -29,6 +29,10 @@ pub struct Characteristics {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Supertype>>", optional))]
     pub supertypes: Vec<Supertype>,
+    /// The supertypes effects took away, printed ones included ("~ isn't legendary if it's a token").
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Supertype>>", optional))]
+    pub supertypes_removed: Vec<Supertype>,
     /// An effect replaced the creature types: the printed ones no longer count, only those in `subtypes` do.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
@@ -76,6 +80,7 @@ impl Characteristics {
             types: CardTypes::default(),
             subtypes: Vec::new(),
             supertypes: Vec::new(),
+            supertypes_removed: Vec::new(),
             creature_types_set: false,
             land_types_set: false,
             all_creature_types: false,
@@ -100,12 +105,16 @@ pub fn characteristics(state: &GameState, id: ObjectId) -> Option<Characteristic
 
 /// Whether the object `id` has `supertype`: printed on its card or given by an effect (CR 205.4).
 pub(crate) fn has_supertype(state: &GameState, id: ObjectId, supertype: Supertype) -> bool {
-    state
+    let printed = state
         .object(id)
-        .is_some_and(|object| object.card().supertypes.contains(&supertype))
-        || (state.possible.supertypes
-            && characteristics(state, id)
-                .is_some_and(|chars| chars.supertypes.contains(&supertype)))
+        .is_some_and(|object| object.card().supertypes.contains(&supertype));
+    if !state.possible.supertypes {
+        return printed;
+    }
+    characteristics(state, id).is_some_and(|chars| {
+        (printed || chars.supertypes.contains(&supertype))
+            && !chars.supertypes_removed.contains(&supertype)
+    })
 }
 
 /// The characteristics and the controller of `id` from one reading of the layers: what the value evaluator and the
@@ -360,6 +369,7 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
             Vec::new()
         },
         supertypes: Vec::new(),
+        supertypes_removed: Vec::new(),
         creature_types_set: false,
         land_types_set: false,
         all_creature_types: false,

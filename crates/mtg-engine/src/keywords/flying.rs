@@ -15,12 +15,13 @@ impl KeywordRules for Flying {
         &self,
         state: &GameState,
         keyword: &Keyword,
-        _attacker: ObjectId,
+        attacker: ObjectId,
         blocker: ObjectId,
     ) -> bool {
         !keywords_of(state, blocker)
             .into_iter()
             .any(|held| rules(held).answers_evasion(held, keyword))
+            && !crate::combat_quirks::rmt6_blocks_as_though_reach(state, attacker, blocker)
     }
 
     fn answers_evasion(&self, _keyword: &Keyword, evasion: &Keyword) -> bool {

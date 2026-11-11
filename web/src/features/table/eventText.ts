@@ -953,6 +953,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('CitysBlessingGained' in event) {
     return line(`${n.seat(event.CitysBlessingGained.player)} gets the city's blessing`)
   }
+  if ('EnduringStoryGained' in event) {
+    return line(`${n.seat(event.EnduringStoryGained.player)} gets an enduring story`)
+  }
   if ('RingTempted' in event) {
     const { player, level, bearer } = event.RingTempted
     const chosen = bearer === undefined ? '' : ` and chooses ${n.card(bearer)} as their Ring-bearer`

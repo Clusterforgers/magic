@@ -217,6 +217,8 @@ A copy effect gives an object the copiable values of another (`CreateToken` with
 | Payment keywords | Convoke, improvise and delve have no hook: the payment reads the keywords. |
 | Keyword macros | `mtg_cards::macros` holds two tables of JSON templates with `$N` (the number) and `$ON` (the object): `KEYWORDS` expand into abilities and `ACTIONS` into effects. `Keyword::Macro { name, amount }` adds the abilities of its entry through the one engine file `keywords/macro_keyword.rs`, and the validator walks the expansion, so a card is as supported as the nodes the entry uses. A new keyword or action that is a template of existing nodes is one `Entry`, not an engine file; the renderer writes an action back by matching its effects to the entry. |
 | Dungeons | A dungeon is a file under `crates/mtg-cards/dungeons/`; the check refuses a dungeon with no room, a doubled name, an arrow up or to no room, an unreached room or a last room with an arrow, and validates each room ability. |
+| Storied | `Keyword::Storied` gives its controller an enduring story, a designation kept for the rest of the game, once they control three or more artifacts, legendaries and/or Sagas, checked with the state-based actions as ascend gives the city's blessing (`rmt6_storied.rs`); `Condition::EnduringStory` reads it. |
+| Draft rules | `GameRule::Draft(DraftRule)` holds a rule that works only during a booster draft ("Draft ~ face up."); no game has a draft, so it changes nothing in a game and is written without `from`, as `AnyNumberInDeck` is. |
 | Siege | A Battle with the subtype Siege has two rules by that subtype (`assemble::siege_rules`, CR 310.11), which no rules file repeats. |
 
 ## Validation

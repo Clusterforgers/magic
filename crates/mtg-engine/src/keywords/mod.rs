@@ -137,6 +137,7 @@ mod split_second;
 mod squad;
 mod start_your_engines;
 mod station;
+mod storied;
 mod storm;
 mod sunburst;
 pub(crate) mod suspend;
@@ -563,6 +564,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Harmonize(_) => &c9_emerge_harmonize::Harmonize,
         Keyword::ReadAhead => &w2b_read_ahead::ReadAhead,
         Keyword::Ascend => &ascend::Ascend,
+        Keyword::Storied => &storied::Storied,
         Keyword::ForMirrodin => &for_mirrodin::ForMirrodin,
         Keyword::StartYourEngines => &start_your_engines::StartYourEngines,
         Keyword::JobSelect => &job_select::JobSelect,
@@ -921,6 +923,7 @@ mod tests {
             },
             Keyword::Fabricate(1),
             Keyword::Ascend,
+            Keyword::Storied,
             Keyword::Vanishing(3),
             Keyword::Fading(3),
             Keyword::Backup {
@@ -1119,6 +1122,7 @@ mod tests {
         "Keyword.Typecycling",
         "Keyword.Fabricate",
         "Keyword.Ascend",
+        "Keyword.Storied",
         "Keyword.ForMirrodin",
         "Keyword.StartYourEngines",
         "Keyword.JobSelect",
@@ -1326,6 +1330,7 @@ mod tests {
     #[case::decayed(Keyword::Decayed, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::fabricate(Keyword::Fabricate(2), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ascend(Keyword::Ascend, Hooks::none())]
+    #[case::storied(Keyword::Storied, Hooks::none())]
     #[case::start_your_engines(Keyword::StartYourEngines, Hooks::none())]
     #[case::for_mirrodin(Keyword::ForMirrodin, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::job_select(Keyword::JobSelect, Hooks { abilities: 1, ..Hooks::none() })]

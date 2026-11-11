@@ -586,6 +586,7 @@ Fungal Fortitude
 Fungal Reaches
 Furtive Homunculus
 Fury Storm
+Fíli the Pathfinder
 Gadwick, the Wizened
 Gaea's Cradle
 Gaea's Might
@@ -1562,6 +1563,7 @@ Thieving Magpie
 Thieving Varmint
 Thinking Cap
 Thopter Fabricator
+Thorin Oakenshield
 Thorn-Thrash Viashino
 Thought Monitor
 Thought Reflection
@@ -1771,3 +1773,4 @@ Zndrsplt, Eye of Wisdom
 Zodiac Goat
 Zoetic Cavern
 Zombie Master
+Óin the Brave

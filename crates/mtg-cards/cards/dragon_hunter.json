@@ -1,7 +1,7 @@
 {
   "oracle_id": "11c8e218-0cd5-4356-89fd-f39f989e487b",
   "name": "Dragon Hunter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Dragon Hunter",
@@ -9,9 +9,13 @@
       "abilities": [
         { "Keyword": { "Protection": [{ "Subtype": "Dragon" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 24, "end": 79 }
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": "This",
+                "quirk": { "BlockAsThoughReach": [{ "Subtype": "Dragon" }] }
+              }
+            }
           }
         }
       ]

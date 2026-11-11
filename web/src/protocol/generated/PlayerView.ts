@@ -41,6 +41,11 @@ counters?: Array<[CounterKind, number]>,
  */
 citys_blessing?: boolean, 
 /**
+ * Whether the player has an enduring story (storied), which they keep for the rest of the game; public, and left out
+ * while they do not.
+ */
+enduring_story?: boolean, 
+/**
  * The player's speed (CR 702.179), 1 to 4 with 4 max speed; public, and left out while they have none.
  */
 speed?: number, 

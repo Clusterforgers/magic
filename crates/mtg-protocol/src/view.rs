@@ -447,6 +447,11 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "is_false")]
     #[ts(as = "Option<bool>", optional)]
     pub citys_blessing: bool,
+    /// Whether the player has an enduring story (storied), which they keep for the rest of the game; public, and left out
+    /// while they do not.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub enduring_story: bool,
     /// The player's speed (CR 702.179), 1 to 4 with 4 max speed; public, and left out while they have none.
     #[serde(default, skip_serializing_if = "is_zero_level")]
     #[ts(as = "Option<u8>", optional)]

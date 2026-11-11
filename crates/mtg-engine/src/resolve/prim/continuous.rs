@@ -240,7 +240,8 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::RemoveType(ty) => Modification::RemoveType(*ty),
         Wanted::SetTypes(types) => Modification::SetTypes(types.iter().copied().collect()),
         Wanted::AddSupertype(supertype) => Modification::AddSupertype(*supertype),
-        Wanted::RemoveSupertype(_) | Wanted::SetName(_) | Wanted::ThisAbility => {
+        Wanted::RemoveSupertype(supertype) => Modification::RemoveSupertype(*supertype),
+        Wanted::SetName(_) | Wanted::ThisAbility => {
             return Err(ResolveError::Unsupported(
                 "Mod.RemoveSupertype outside the exceptions of a copy",
             ));

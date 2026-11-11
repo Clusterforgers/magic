@@ -780,6 +780,11 @@ pub enum Event {
         /// Who got it.
         player: PlayerId,
     },
+    /// A player got an enduring story (storied): a designation they keep for the rest of the game.
+    EnduringStoryGained {
+        /// Who got it.
+        player: PlayerId,
+    },
     /// A player ventured into the dungeon (CR 701.49).
     Ventured(Box<crate::w11d_dungeon::W11dVentured>),
     /// A player completed a dungeon, which leaves the game (CR 309.7).
@@ -1182,6 +1187,7 @@ impl Event {
             | Event::DayNightChanged { .. }
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }
+            | Event::EnduringStoryGained { .. }
             | Event::SpeedChanged { .. }
             | Event::RingTempted { .. }
             | Event::RingBearerLost { .. }

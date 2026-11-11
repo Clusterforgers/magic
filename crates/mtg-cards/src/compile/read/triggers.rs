@@ -1190,6 +1190,8 @@ pub fn monarch_condition(r: &mut Reader<'_>) -> Option<Condition> {
         Some(no_monarch())
     } else if r.words("you have the city's blessing") {
         Some(Condition::CitysBlessing(Ref::You))
+    } else if r.words("you have an enduring story") {
+        Some(Condition::EnduringStory(Ref::You))
     } else if r.words("you've completed a dungeon") {
         Some(Condition::CompletedDungeon(Ref::You))
     } else if r.words("you have the initiative") {
@@ -1217,6 +1219,7 @@ pub fn monarch_text(condition: &Condition) -> Option<String> {
             "an opponent was the monarch as the turn began".to_owned()
         }
         Condition::CitysBlessing(Ref::You) => "you have the city's blessing".to_owned(),
+        Condition::EnduringStory(Ref::You) => "you have an enduring story".to_owned(),
         Condition::CompletedDungeon(Ref::You) => "you've completed a dungeon".to_owned(),
         Condition::Initiative(Ref::You) => "you have the initiative".to_owned(),
         condition if *condition == no_monarch() => "there is no monarch".to_owned(),

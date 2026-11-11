@@ -49,7 +49,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         Modification::AddType(_) | Modification::RemoveType(_) | Modification::SetTypes(_) => {
             Traits::TYPES.or(Traits::SUBTYPES)
         }
-        Modification::AddSupertype(_) => Traits::SUPERTYPES,
+        Modification::AddSupertype(_) | Modification::RemoveSupertype(_) => Traits::SUPERTYPES,
         Modification::AddSubtype(_)
         | Modification::SetCreatureTypes(_)
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
@@ -118,7 +118,6 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SwitchPT => Traits::POWER.or(Traits::TOUGHNESS),
         Wanted::GrantAbility(_)
         | Wanted::GainAbilitiesOf(_)
-        | Wanted::RemoveSupertype(_)
         | Wanted::SetName(_)
         | Wanted::ThisAbility
         | Wanted::CantAttack
@@ -133,7 +132,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::MaxBlockers(_)
         | Wanted::BlocksAdditional(_) => Traits::NONE,
         Wanted::Goaded => Traits::GOADED,
-        Wanted::AddSupertype(_) => Traits::SUPERTYPES,
+        Wanted::AddSupertype(_) | Wanted::RemoveSupertype(_) => Traits::SUPERTYPES,
     }
 }
 
@@ -476,6 +475,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::CompletedDungeon(who)
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who)
+        | Condition::EnduringStory(who)
         | Condition::MaxSpeed(who)
         | Condition::Among(who)
         | Condition::StartingPlayer(who)

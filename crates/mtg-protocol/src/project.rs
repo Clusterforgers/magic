@@ -557,6 +557,7 @@ impl PlayerView {
                 .map(|(kind, count)| (kind.clone(), count))
                 .collect(),
             citys_blessing: state.has_citys_blessing(seat),
+            enduring_story: state.has_enduring_story(seat),
             speed: state.speed(seat),
             ring_level: state.ring_level(seat),
             ring_bearer: state.ring_bearer(seat),

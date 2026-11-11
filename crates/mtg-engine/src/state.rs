@@ -82,6 +82,8 @@ pub(crate) struct Possible {
     pub(crate) day_night: bool,
     /// Some card has ascend, so the city's blessing is watched.
     pub(crate) ascend: bool,
+    /// Some card has storied, so the enduring story is watched.
+    pub(crate) storied: bool,
     /// Some card has start your engines!, so the speed it starts is watched.
     pub(crate) engines: bool,
     /// Some card, token or player has protection or an effect that gives it, so damage is checked against it.
@@ -314,6 +316,8 @@ pub struct GameState {
     pub(crate) monarch: Option<PlayerId>,
     /// The players who have the city's blessing (CR 702.131), for the rest of the game.
     pub(crate) citys_blessing: std::collections::BTreeSet<PlayerId>,
+    /// The players who have an enduring story (storied), for the rest of the game.
+    pub(crate) enduring_story: std::collections::BTreeSet<PlayerId>,
     /// Each player's speed (CR 702.179) and the rise the turn owes.
     pub(crate) speeds: crate::speed::Speeds,
     /// Each tempted player's Ring (CR 701.54).
@@ -929,6 +933,10 @@ impl Hash for GameState {
         // Likewise a game where nobody has the city's blessing.
         if !self.citys_blessing.is_empty() {
             self.citys_blessing.hash(state);
+        }
+        // Likewise a game where nobody has an enduring story.
+        if !self.enduring_story.is_empty() {
+            self.enduring_story.hash(state);
         }
         // Likewise a game where nobody has speed.
         if !self.speeds.is_empty() {

@@ -134,6 +134,26 @@ pub(crate) fn landwalk_ignored(
     }) || quirks.has(blocker, |q| matches!(q, CombatQuirk::BlockIgnoringLandwalk))
 }
 
+/// Whether a rule lets the blocker block the attacker as though it had reach: the attacker is one the rule's selector
+/// picks, judged for the blocker's controller ("~ can block Dragons as though it had reach").
+pub(crate) fn rmt6_blocks_as_though_reach(
+    state: &GameState,
+    attacker: ObjectId,
+    blocker: ObjectId,
+) -> bool {
+    let (Some(held), Some(attacking)) = (state.object(blocker), state.object(attacker)) else {
+        return false;
+    };
+    let controller = crate::characteristics::controller_of_object(state, held);
+    let scope = Scope::announcing(state, controller, held.reference());
+    state.rules().quirks.has(blocker, |quirk| match quirk {
+        CombatQuirk::BlockAsThoughReach(attackers) => scope
+            .selects(attackers, attacking.reference())
+            .unwrap_or(false),
+        _ => false,
+    })
+}
+
 /// What a creature counts for when it is tapped to crew or saddle (CR 702.122): its power, or its toughness when a rule
 /// says so, and the greater amounts rules add to it; never below nothing.
 pub(crate) fn tap_value(state: &GameState, id: ObjectId, power: i32, toughness: i32) -> u32 {

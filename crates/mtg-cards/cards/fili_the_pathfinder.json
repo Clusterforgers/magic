@@ -1,22 +1,18 @@
 {
   "oracle_id": "c91c7d6b-a502-4b66-9509-3c1eda00e763",
   "name": "Fíli the Pathfinder",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fíli the Pathfinder",
       "oracle_fingerprint": "201b31af7fca4f9b633b81d050c0be8f",
       "abilities": [
+        { "Keyword": "Storied" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 129 }
-          }
-        },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 130, "end": 201 }
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": { "EnduringStory": "You" }
           }
         },
         {

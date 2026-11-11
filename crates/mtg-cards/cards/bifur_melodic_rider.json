@@ -1,18 +1,13 @@
 {
   "oracle_id": "b8d563e4-e2bc-4e8b-8841-6655beff9138",
   "name": "Bifur, Melodic Rider",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bifur, Melodic Rider",
       "oracle_fingerprint": "651f86c3caf079c8694bc1cb285eac7e",
       "abilities": [
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 129 }
-          }
-        },
+        { "Keyword": "Storied" },
         {
           "Triggered": {
             "when": {
@@ -26,9 +21,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 204, "end": 340 }
+          "Rule": {
+            "rule": {
+              "TriggerAgain": { "source": [{ "Subtype": "Dwarf" }, { "ControlledBy": "You" }] }
+            },
+            "condition": { "EnduringStory": "You" }
           }
         }
       ]

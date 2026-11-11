@@ -138,6 +138,9 @@ pub mod replace;
 pub mod resolve;
 pub mod retargeted;
 mod ring;
+#[cfg(test)]
+mod rmt6_pieces_tests;
+mod rmt6_storied;
 pub mod rng;
 #[cfg(test)]
 mod rule_options;

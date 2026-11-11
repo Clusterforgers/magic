@@ -1291,6 +1291,7 @@ impl<'a> Walker<'a> {
             Condition::Initiative(who) => self.player_condition("Initiative", who),
             Condition::MonarchAtTurnStart(who) => self.player_condition("MonarchAtTurnStart", who),
             Condition::CitysBlessing(who) => self.player_condition("CitysBlessing", who),
+            Condition::EnduringStory(who) => self.player_condition("EnduringStory", who),
             Condition::MaxSpeed(who) => self.player_condition("MaxSpeed", who),
             Condition::IsDay => self.uses("Condition", "IsDay"),
             Condition::IsNight => self.uses("Condition", "IsNight"),
@@ -2165,10 +2166,11 @@ impl<'a> Walker<'a> {
                 w.modification(modification);
                 if matches!(
                     modification,
-                    Modification::RemoveSupertype(_)
-                        | Modification::SetName(_)
-                        | Modification::ThisAbility
-                ) || matches!(modification, Modification::AddSupertype(_)) && !w.scope.in_static
+                    Modification::SetName(_) | Modification::ThisAbility
+                ) || matches!(
+                    modification,
+                    Modification::AddSupertype(_) | Modification::RemoveSupertype(_)
+                ) && !w.scope.in_static
                 {
                     w.problem("a supertype, a name or this ability changes only the copiable values of a copy (`except`)");
                 }
@@ -3838,6 +3840,9 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::CanBeCommander) {
                     w.problem("a card can be a commander by a static ability, not by an effect");
                 }
+                if matches!(rule, GameRule::Draft(_)) {
+                    w.problem("a card follows a draft rule by a static ability, not by an effect");
+                }
                 if matches!(rule, GameRule::AnyNumberInDeck) {
                     w.problem("a deck holds any number of a card by a static ability, not by an effect");
                 }
@@ -4585,7 +4590,7 @@ impl Walker<'_> {
                 }
             }),
             GameRule::PlayersHave { who, .. } => self.at(tag, |w| w.reference(who, Kind::Player)),
-            GameRule::CanBeCommander | GameRule::AnyNumberInDeck => {}
+            GameRule::CanBeCommander | GameRule::AnyNumberInDeck | GameRule::Draft(_) => {}
             GameRule::GraveyardCardsUntargetable
             | GameRule::CantLoseGame { .. }
             | GameRule::CantCastSpells { .. }
@@ -4765,7 +4770,7 @@ impl Walker<'_> {
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
                 w.problem("a card can be a commander in every zone: write the rule without `from`");
             }),
-            _ if matches!(rule, GameRule::AnyNumberInDeck) => self.at("from", |w| {
+            _ if matches!(rule, GameRule::AnyNumberInDeck | GameRule::Draft(_)) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),
             _ => self.at("from", |w| {
@@ -6135,7 +6140,7 @@ mod tests {
         "a colour or card type is chosen as an effect begins, so only a `Continuous` effect adds protection from it"
     )]
     #[case::a_supertype_goes_with_a_copy_only(
-        r#"{"Static":{"affected":"This","mods":[{"RemoveSupertype":"Legendary"}]}}"#,
+        r#"{"Static":{"affected":"This","mods":["ThisAbility"]}}"#,
         "a supertype, a name or this ability changes only the copiable values of a copy (`except`)"
     )]
     #[case::a_player_takes_only_the_keywords_players_have(
