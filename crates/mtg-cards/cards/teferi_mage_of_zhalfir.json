@@ -5,31 +5,19 @@
   "faces": [
     {
       "name": "Teferi, Mage of Zhalfir",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "596b63685177defe9292c5a14d65cf04",
       "abilities": [
-        {
-          "Keyword": "Flash"
-        },
+        { "Keyword": "Flash" },
         {
           "Manual": {
             "reason": "you apply this static ability by hand",
-            "span": {
-              "start": 6,
-              "end": 71
-            }
+            "span": { "start": 6, "end": 71 }
           }
         },
         {
           "Rule": {
             "rule": {
-              "Cant": {
-                "who": "Opponents",
-                "action": {
-                  "Cast": {
-                    "unless": "SorceryTiming"
-                  }
-                }
-              }
+              "Cant": { "who": "Opponents", "action": { "Cast": { "unless": "SorceryTiming" } } }
             }
           }
         }

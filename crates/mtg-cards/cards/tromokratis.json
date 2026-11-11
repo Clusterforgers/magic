@@ -5,28 +5,17 @@
   "faces": [
     {
       "name": "Tromokratis",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "bb715f798c5e249285ca753f63c6a348",
       "abilities": [
         {
           "Static": {
             "affected": "This",
-            "mods": [
-              {
-                "AddKeyword": "Hexproof"
-              }
-            ],
+            "mods": [{ "AddKeyword": "Hexproof" }],
             "condition": {
               "Not": {
                 "Matches": {
                   "subject": "This",
-                  "selector": [
-                    {
-                      "AnyOf": [
-                        "Attacking",
-                        "Blocking"
-                      ]
-                    }
-                  ]
+                  "selector": [{ "AnyOf": ["Attacking", "Blocking"] }]
                 }
               }
             }
@@ -35,10 +24,7 @@
         {
           "Manual": {
             "reason": "you apply this clause by hand",
-            "span": {
-              "start": 60,
-              "end": 234
-            }
+            "span": { "start": 60, "end": 234 }
           }
         }
       ]

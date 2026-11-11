@@ -651,6 +651,7 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         CombatQuirk::AttackDespiteDefender => {
             format!("{who} can attack as though they didn't have defender")
         }
+        CombatQuirk::AttackAsThoughHaste => format!("{who} can attack as though they had haste"),
         CombatQuirk::BlockWhileTapped => format!("{who} can block as though they were untapped"),
         CombatQuirk::MayStayTapped => {
             format!("{who} may choose not to untap during their controller's untap step")

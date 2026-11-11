@@ -5,40 +5,22 @@
   "faces": [
     {
       "name": "Teferi, Time Raveler",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "cfe7077bff19b307dbb9a7ff2a2faede",
       "abilities": [
         {
           "Rule": {
             "rule": {
-              "Cant": {
-                "who": "Opponents",
-                "action": {
-                  "Cast": {
-                    "unless": "SorceryTiming"
-                  }
-                }
-              }
+              "Cant": { "who": "Opponents", "action": { "Cast": { "unless": "SorceryTiming" } } }
             }
           }
         },
         {
           "Loyalty": {
-            "cost": {
-              "Plus": 1
-            },
+            "cost": { "Plus": 1 },
             "effects": [
               {
                 "Rule": {
-                  "rule": {
-                    "MayCast": {
-                      "what": [
-                        {
-                          "Type": "Sorcery"
-                        }
-                      ],
-                      "flash": true
-                    }
-                  },
+                  "rule": { "MayCast": { "what": [{ "Type": "Sorcery" }], "flash": true } },
                   "duration": "UntilYourNextTurn"
                 }
               }
@@ -47,47 +29,24 @@
         },
         {
           "Loyalty": {
-            "cost": {
-              "Minus": 3
-            },
+            "cost": { "Minus": 3 },
             "targets": [
               {
                 "what": {
                   "Object": [
                     {
                       "AnyOf": [
-                        {
-                          "Type": "Artifact"
-                        },
-                        {
-                          "Type": "Creature"
-                        },
-                        {
-                          "Type": "Enchantment"
-                        }
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" }
                       ]
                     }
                   ]
                 },
-                "bounds": {
-                  "min": 0,
-                  "max": 1
-                }
+                "bounds": { "min": 0, "max": 1 }
               }
             ],
-            "effects": [
-              {
-                "Move": {
-                  "what": {
-                    "Target": 0
-                  },
-                  "to": "Hand"
-                }
-              },
-              {
-                "Draw": {}
-              }
-            ]
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "Draw": {} }]
           }
         }
       ]

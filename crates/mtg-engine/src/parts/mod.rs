@@ -390,6 +390,7 @@ impl Part {
             CostItem::Exert => (Part::Exert, false),
             // Read off the card by the layers before any cost is paid: an unread one is a part nobody can pay.
             CostItem::OwnManaCost => return Err("OwnManaCost"),
+            CostItem::OwnManaValue => return Err("OwnManaValue"),
             CostItem::RemoveCountersAmong {
                 counter,
                 count,

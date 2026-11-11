@@ -395,6 +395,14 @@ pub enum TallyEvent {
     /// An ability of the kind was activated (the source, as for `Activated`): "the first equip ability you activate each
     /// turn", "if you've activated a loyalty ability this turn", "if you cycled two or more cards this turn".
     KindActivated(crate::ability::ActivationKind),
+    /// A permanent was destroyed by a spell or ability (as it last existed on the battlefield, for the player who controlled
+    /// the spell or ability): "if a noncreature permanent under your control was destroyed this turn by a spell or ability
+    /// an opponent controlled".
+    Destroyed,
+    /// A spell was countered by a spell or ability (as it was on the stack, for the player who controlled the spell or
+    /// ability that countered it): "if a creature spell you cast this turn was countered by a spell or ability an opponent
+    /// controlled".
+    Countered,
 }
 
 /// Which result of the latest die roll an amount reads.

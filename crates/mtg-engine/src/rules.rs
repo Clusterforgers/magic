@@ -1603,10 +1603,13 @@ fn gather(state: &GameState) -> RulesInForce {
     // A rule that a permanent has works from the battlefield, one a spell has for itself from the stack, and a card's
     // permission to cast itself from its owner's graveyard, from exile or from a hand ("you may cast this spell as though
     // it had flash if ...", CR 601.2a, 113.6) from there.
+    // A rule that works from the command zone ("as long as ~ is in the command zone or on the battlefield") works
+    // from its owner's command zone.
     let graveyards = state.players().iter().flat_map(|player| {
         [
             (Zone::Graveyard(player.id()), ZoneKind::Graveyard),
             (Zone::Hand(player.id()), ZoneKind::Hand),
+            (Zone::Command(player.id()), ZoneKind::Command),
         ]
     });
     for (zone, from) in [

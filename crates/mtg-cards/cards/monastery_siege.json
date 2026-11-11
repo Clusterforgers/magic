@@ -5,73 +5,33 @@
   "faces": [
     {
       "name": "Monastery Siege",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "efbf9d767caa19e5486f3bf5f1f88249",
       "abilities": [
         {
           "Replacement": {
-            "when": {
-              "Enters": {
-                "what": [
-                  "This"
-                ]
-              }
-            },
-            "by": {
-              "ChooseWord": [
-                "Khans",
-                "Dragons"
-              ]
-            }
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "ChooseWord": ["Khans", "Dragons"] }
           }
         },
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "Draw",
-                "whose": "You"
-              }
-            },
-            "if": {
-              "EnteredAs": "Khans"
-            },
-            "effects": [
-              {
-                "Draw": {}
-              },
-              {
-                "Discard": {}
-              }
-            ]
+            "when": { "StepBegins": { "step": "Draw", "whose": "You" } },
+            "if": { "EnteredAs": "Khans" },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
           }
         },
         {
           "CostModifier": {
             "applies_to": [
               "Spell",
+              { "ControlledBy": "Opponents" },
               {
-                "ControlledBy": "Opponents"
-              },
-              {
-                "AnyOf": [
-                  {
-                    "TargetsPlayer": "You"
-                  },
-                  {
-                    "Targeting": [
-                      {
-                        "ControlledBy": "You"
-                      }
-                    ]
-                  }
-                ]
+                "AnyOf": [{ "TargetsPlayer": "You" }, { "Targeting": [{ "ControlledBy": "You" }] }]
               }
             ],
             "change": "Increase",
             "mana": "{2}",
-            "condition": {
-              "EnteredAs": "Dragons"
-            }
+            "condition": { "EnteredAs": "Dragons" }
           }
         }
       ]

@@ -1,7 +1,7 @@
 {
   "oracle_id": "899007b5-6a07-4491-9104-bb537106b07d",
   "name": "Thunderous Velocipede",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Thunderous Velocipede",
@@ -9,9 +9,33 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 8, "end": 194 }
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Vehicle" }, { "Type": "Creature" }] },
+                  "Other",
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                ]
+              }
+            },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 1 } }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Vehicle" }, { "Type": "Creature" }] },
+                  "Other",
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "ManaValue", "op": "Gt", "to": 4 } }
+                ]
+              }
+            },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } }
           }
         },
         { "Keyword": { "Crew": 3 } }

@@ -5,28 +5,17 @@
   "faces": [
     {
       "name": "Fire Lord Zuko",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "a3eb398bcbd20779e3eb5ac14ffce184",
       "abilities": [
         {
           "Keyword": {
-            "MacroX": {
-              "name": "firebending",
-              "x": {
-                "Stat": {
-                  "of": "This",
-                  "stat": "Power"
-                }
-              }
-            }
+            "MacroX": { "name": "firebending", "x": { "Stat": { "of": "This", "stat": "Power" } } }
           }
         },
         {
           "Manual": {
             "reason": "you apply this clause by hand",
-            "span": {
-              "start": 132,
-              "end": 274
-            }
+            "span": { "start": 132, "end": 274 }
           }
         }
       ]

@@ -5,7 +5,7 @@
   "faces": [
     {
       "name": "Grafdigger's Cage",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "f5420d3679159b9872fda725b1026678",
       "abilities": [
         {
           "Rule": {
@@ -13,26 +13,8 @@
               "Cant": {
                 "who": {
                   "Union": [
-                    {
-                      "Each": [
-                        {
-                          "Type": "Creature"
-                        },
-                        {
-                          "In": "Graveyard"
-                        }
-                      ]
-                    },
-                    {
-                      "Each": [
-                        {
-                          "Type": "Creature"
-                        },
-                        {
-                          "In": "Library"
-                        }
-                      ]
-                    }
+                    { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                    { "Each": [{ "Type": "Creature" }, { "In": "Library" }] }
                   ]
                 },
                 "action": "EnterBattlefield"
@@ -46,20 +28,7 @@
               "Cant": {
                 "who": "EachPlayer",
                 "action": {
-                  "Cast": {
-                    "filter": [
-                      {
-                        "AnyOf": [
-                          {
-                            "In": "Graveyard"
-                          },
-                          {
-                            "In": "Library"
-                          }
-                        ]
-                      }
-                    ]
-                  }
+                  "Cast": { "filter": [{ "AnyOf": [{ "In": "Graveyard" }, { "In": "Library" }] }] }
                 }
               }
             }

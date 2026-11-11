@@ -140,6 +140,7 @@ const RUNS: &[&str] = &[
     "Cost.PutCounters",
     "Cost.Exert",
     "Cost.OwnManaCost",
+    "Cost.OwnManaValue",
     "Cost.RemoveCountersAmong",
     "Cost.PayLife.Counted.Activated",
     "Cost.PayEnergy.Counted.Activated",

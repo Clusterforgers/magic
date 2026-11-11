@@ -83,6 +83,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::UntapPermanents { .. } => "Cost.UntapPermanents",
         CostItem::Exert => "Cost.Exert",
         CostItem::OwnManaCost => "Cost.OwnManaCost",
+        CostItem::OwnManaValue => "Cost.OwnManaValue",
         CostItem::RemoveCountersAmong { .. } => "Cost.RemoveCountersAmong",
         CostItem::TapPermanents { .. } => "Cost.TapPermanents",
         CostItem::TapPower { .. } => "Cost.TapPower",

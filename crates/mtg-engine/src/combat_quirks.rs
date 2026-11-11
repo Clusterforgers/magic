@@ -181,6 +181,14 @@ pub(crate) fn attacks_despite_defender(state: &GameState, id: ObjectId) -> bool 
         .has(id, |q| matches!(q, CombatQuirk::AttackDespiteDefender))
 }
 
+/// Whether the creature may attack as though it had haste.
+pub(crate) fn attacks_as_though_haste(state: &GameState, id: ObjectId) -> bool {
+    state
+        .rules()
+        .quirks
+        .has(id, |q| matches!(q, CombatQuirk::AttackAsThoughHaste))
+}
+
 /// Whether the creature may block as though it were untapped.
 pub(crate) fn blocks_while_tapped(state: &GameState, id: ObjectId) -> bool {
     state

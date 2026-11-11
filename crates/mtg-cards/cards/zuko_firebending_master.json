@@ -5,46 +5,22 @@
   "faces": [
     {
       "name": "Zuko, Firebending Master",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "76d9a3d5bf742ddab89b79fab55181b2",
       "abilities": [
-        {
-          "Keyword": "FirstStrike"
-        },
+        { "Keyword": "FirstStrike" },
         {
           "Keyword": {
             "MacroX": {
               "name": "firebending",
-              "x": {
-                "Counters": {
-                  "on": "You",
-                  "counter": {
-                    "Other": "experience"
-                  }
-                }
-              }
+              "x": { "Counters": { "on": "You", "counter": { "Other": "experience" } } }
             }
           }
         },
         {
           "Triggered": {
-            "when": {
-              "SpellCast": {
-                "by": "You"
-              }
-            },
-            "if": {
-              "AtTrigger": "InCombat"
-            },
-            "effects": [
-              {
-                "PutCounters": {
-                  "on": "You",
-                  "counter": {
-                    "Other": "experience"
-                  }
-                }
-              }
-            ]
+            "when": { "SpellCast": { "by": "You" } },
+            "if": { "AtTrigger": "InCombat" },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "experience" } } }]
           }
         }
       ]

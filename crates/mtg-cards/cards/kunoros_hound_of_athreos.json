@@ -5,31 +5,16 @@
   "faces": [
     {
       "name": "Kunoros, Hound of Athreos",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "8415e22a8c9099da70fd005ab1e025d9",
       "abilities": [
-        {
-          "Keyword": "Vigilance"
-        },
-        {
-          "Keyword": "Menace"
-        },
-        {
-          "Keyword": "Lifelink"
-        },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Menace" },
+        { "Keyword": "Lifelink" },
         {
           "Rule": {
             "rule": {
               "Cant": {
-                "who": {
-                  "Each": [
-                    {
-                      "Type": "Creature"
-                    },
-                    {
-                      "In": "Graveyard"
-                    }
-                  ]
-                },
+                "who": { "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
                 "action": "EnterBattlefield"
               }
             }
@@ -40,15 +25,7 @@
             "rule": {
               "Cant": {
                 "who": "EachPlayer",
-                "action": {
-                  "Cast": {
-                    "filter": [
-                      {
-                        "In": "Graveyard"
-                      }
-                    ]
-                  }
-                }
+                "action": { "Cast": { "filter": [{ "In": "Graveyard" }] } }
               }
             }
           }

@@ -836,7 +836,8 @@ impl Keyword {
         }
     }
 
-    /// The keyword with the `OwnManaCost` part of its cost read as `mana`, the mana cost of the card it is on; the keywords a
+    /// The keyword with the `OwnManaCost` part of its cost read as `mana`, the mana cost of the card it is on, and the
+    /// `OwnManaValue` part as generic mana of its mana value; the keywords a
     /// static ability gives with "equal to its mana cost" (escape, replicate, scavenge, encore, emerge, flashback).
     #[must_use]
     pub fn with_own_mana_cost(mut self, mana: &mtg_core::mana::ManaCost) -> Keyword {
@@ -851,6 +852,11 @@ impl Keyword {
                 if matches!(item, crate::cost::CostItem::OwnManaCost) {
                     *item =
                         crate::cost::CostItem::Mana(crate::mana::ManaCostX::new(0, mana.clone()));
+                } else if matches!(item, crate::cost::CostItem::OwnManaValue) {
+                    let generic = mtg_core::mana::ManaCost::from_symbols([
+                        mtg_core::mana::ManaSymbol::Generic(mana.mana_value()),
+                    ]);
+                    *item = crate::cost::CostItem::Mana(crate::mana::ManaCostX::new(0, generic));
                 }
             }
         }

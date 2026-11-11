@@ -317,7 +317,8 @@ fn is_untapped_creature(state: &GameState, id: ObjectId) -> bool {
 pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> bool {
     controller_of(state, id) == Some(player)
         && !cant_attack(state, id)
-        && !keywords::summoning_sick(state, id)
+        && (!keywords::summoning_sick(state, id)
+            || crate::combat_quirks::attacks_as_though_haste(state, id))
         && (!keywords::forbids_attacking(state, id) || attacks_despite_defender(state, id))
         && is_untapped_creature(state, id)
 }

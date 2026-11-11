@@ -1475,6 +1475,7 @@ impl<'a> Walker<'a> {
                     }
                     CostItem::Mana(_)
                     | CostItem::OwnManaCost
+                    | CostItem::OwnManaValue
                     | CostItem::Tap
                     | CostItem::Exert
                     | CostItem::Untap
@@ -4994,7 +4995,7 @@ impl Walker<'_> {
 
     /// A rule works from the battlefield, "this spell can't be countered" from the stack (CR 113.6b), and a card's
     /// permission to cast itself from its graveyard or from exile from there (CR 113.6), and its permission to cast itself
-    /// from its owner's hand as though it had flash from the hand.
+    /// from its owner's hand as though it had flash from the hand; a spell cost change also works from the command zone.
     fn rule_zone(&mut self, rule: &GameRule, from: ZoneKind) {
         let spell = matches!(rule, GameRule::CantBeCountered(Ref::This));
         let c8_eg_itself = matches!(
@@ -5012,6 +5013,8 @@ impl Walker<'_> {
             ZoneKind::Stack if spell => {}
             ZoneKind::Graveyard | ZoneKind::Exile if c8_eg_itself => {}
             ZoneKind::Hand if ep27_flash => {}
+            // Eminence: "As long as ~ is in the command zone or on the battlefield, ...".
+            ZoneKind::Command if matches!(rule, GameRule::SpellCost { .. }) => {}
             _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
                 w.problem("a card can be a commander in every zone: write the rule without `from`");
             }),

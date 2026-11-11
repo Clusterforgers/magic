@@ -22,9 +22,30 @@
       "oracle_fingerprint": "95eaf38193e98219723515fccde6e104",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 152 }
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "PutCounters": {
+                        "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "counter": "+1/+1"
+                      }
+                    },
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "mods": [{ "AddKeyword": "Trample" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -562,6 +562,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
             let before = state.objects.get(object).map(|o| o.controller);
             log_sacrifice(state, (*cause, *from), before, *object);
+            super::r285_ruin::log_ruin(state, *cause, *from, *object);
             move_object(state, *object, *to, Placement::Top)?;
             if *cause == ZoneCause::Discarded
                 && let Zone::Hand(player) = *from
