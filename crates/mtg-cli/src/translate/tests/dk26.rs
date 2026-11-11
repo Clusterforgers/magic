@@ -1,6 +1,7 @@
 //! Goal: any target with a fact of the turn (`ValidTgts$ Any.wasDealtDamageThisTurn`) translates as the creatures,
 //! planeswalkers and battles with the property or a player the same fact holds for, never as a permanent alone; a
-//! property no player can have stays a gap, and a target player dealt damage this turn is a `PlayerAmong`.
+//! property no player can have stays a gap, one no player has (`Any.!EnchantedBy`) takes every player, and a target
+//! player dealt damage this turn is a `PlayerAmong`.
 use rstest::rstest;
 use serde_json::json;
 
@@ -33,8 +34,24 @@ fn dk26_any_target_dealt_damage_this_turn() {
 #[rstest]
 #[case::a_permanent_property("Any.tapped")]
 #[case::by_the_source("Any.wasDealtDamageThisTurnBySource")]
+#[case::another_negation("Any.!Opponent")]
 fn dk26_any_target_of_a_property_no_player_has_stays_a_gap(#[case] valid: &str) {
     assert!(!gaps(&needle(valid)).is_empty(), "{valid}");
+}
+
+#[rstest]
+#[case::not_the_enchanted_creature("Any.!EnchantedBy", "Attached")]
+#[case::not_a_commander("Any.!IsCommander", "Commander")]
+fn dk26_any_target_without_a_card_property_takes_every_player(
+    #[case] valid: &str,
+    #[case] word: &str,
+) {
+    let script = needle(valid);
+    assert_eq!(gaps(&script), Vec::<String>::new());
+    let what = &abilities(&script)[0]["Spell"]["targets"][0]["what"];
+    let kinds = what["Either"].as_array().expect("either");
+    assert!(kinds[0]["Object"].to_string().contains(word), "{what}");
+    assert_eq!(kinds[1], json!("Player"));
 }
 
 #[test]

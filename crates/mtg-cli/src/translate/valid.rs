@@ -1170,7 +1170,15 @@ fn dk26_any_target_where(ctx: &Ctx, word: &str, zone: Option<&str>) -> Tr<Vec<Va
     let Some(prop) = word.strip_prefix("Any.") else {
         return unmapped(format!("valid-target:{word}"));
     };
-    let Some(players) = ep28_player_among(&format!("Player.{prop}")) else {
+    // A property of cards a player never has ("any other target", "any target that isn't a Dragon"): every player.
+    let negated_card_property = prop.strip_prefix('!').is_some_and(|rest| {
+        matches!(rest, "EnchantedBy" | "IsCommander") || ctx.world.subtypes.contains(rest)
+    });
+    let players = if negated_card_property {
+        json!("Player")
+    } else if let Some(among) = ep28_player_among(&format!("Player.{prop}")) {
+        among
+    } else {
         return unmapped(format!("valid-target:{word}"));
     };
     let objects = format!("Creature.{prop},Planeswalker.{prop},Battle.{prop}");
