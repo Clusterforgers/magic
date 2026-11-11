@@ -617,11 +617,17 @@ fn check_bookkeeping(state: &GameState) -> Result<(), Violation> {
     }
     if let Some(resolving) = state.resolving() {
         let id = resolving.object();
-        let Some(at) = state.stack().iter().position(|object| *object == id) else {
+        // A spell may move itself off the stack as it resolves ("Exile Ill-Gotten Gains") and resolve on from there.
+        let moved_itself = state.object(id).is_some_and(|o| {
+            o.kind() != ObjectKind::Ability && !matches!(o.zone(), Zone::Stack | Zone::Battlefield)
+        });
+        let at = state.stack().iter().position(|object| *object == id);
+        if at.is_none() && !moved_itself {
             return Err(book(format!("{id:?} is resolving but is not on the stack")));
-        };
+        }
         // What its resolution put on the stack (a copy, a spell cast during it) lies above it until it ends.
-        for above in &state.stack()[at + 1..] {
+        let above_it = at.map_or(&[][..], |at| &state.stack()[at + 1..]);
+        for above in above_it {
             let put_by_it = state
                 .object(*above)
                 .is_some_and(|o| o.kind() == ObjectKind::Card || o.copied_from().is_some());

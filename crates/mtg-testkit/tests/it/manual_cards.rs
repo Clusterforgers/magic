@@ -1,4 +1,4 @@
-//! Goal: a card the engine does not run whole is cast and resolves without effects for the clauses it leaves to the table (a spell goes to the graveyard, a permanent enters with the abilities the engine does run), the clauses stay on the card for every seat to read, an Aura or an Equipment of that kind waits on the battlefield until its controller attaches it by hand, and every corpus card that is not Verified can be cast and played this way.
+//! Goal: a card the engine does not run whole is cast and resolves without effects for the clauses it leaves to the table (a spell goes to the graveyard, a permanent enters with the abilities the engine does run), the clauses stay on the card for every seat to read, an Aura or an Equipment of that kind waits on the battlefield until its controller attaches it by hand, and every corpus card that is not Verified and has a mana cost can be cast and played this way at a table with lands, a creature, an artifact and an enchantment of its own.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -193,15 +193,27 @@ fn every_corpus_card_that_is_not_verified_is_cast_and_resolves_with_its_clauses_
     );
     for full_name in names {
         let card = mtg_testkit::corpus::card(&full_name).unwrap();
-        // The card plays under the name of its front face.
+        // The card plays under the name of its front face, a Room under the name of the door cast; a card with two
+        // faces may leave its clauses on the back.
         let name = card.name.clone();
+        let names: Vec<String> = std::iter::once(name.clone())
+            .chain(card.faces.iter().map(|face| face.name.clone()))
+            .collect();
         assert!(
-            !card.manual.is_empty(),
+            !card.manual.is_empty() || card.faces.iter().any(|face| !face.manual.is_empty()),
             "{name} shows no clause to the table"
         );
         let land = card.types.contains(&CardType::Land);
-        let mut driver = game(vec![card]);
-        // A land is played, every other card cast.
+        // A card without a mana cost (CR 202.1b) is cast only by another rule (suspend, splice) or not at all.
+        if !land
+            && card.mana_cost.is_none()
+            && card.faces.iter().all(|face| face.mana_cost.is_none())
+        {
+            continue;
+        }
+        let mut driver = table(vec![card]);
+        // A land is played, every other card cast; what it puts on the stack (a storm copy, a door's trigger) resolves,
+        // and an enters trigger may exile the card itself.
         if land {
             driver
                 .play_land(&name)
@@ -209,12 +221,63 @@ fn every_corpus_card_that_is_not_verified_is_cast_and_resolves_with_its_clauses_
         } else {
             cast_and_resolve(&mut driver, &name);
         }
+        settle(&mut driver, &name);
+        for _ in 0..8 {
+            if driver.state().zone(Zone::Stack).is_empty() {
+                break;
+            }
+            resolve(&mut driver)
+                .unwrap_or_else(|error| panic!("{name} does not resolve: {error:?}"));
+            settle(&mut driver, &name);
+        }
         let played = driver
             .state()
             .zone(Zone::Battlefield)
             .iter()
             .chain(driver.state().zone(Zone::Graveyard(pid(0))))
-            .any(|id| name_of(driver.state(), *id) == name);
+            .chain(driver.state().zone(Zone::Exile))
+            .any(|id| names.contains(&name_of(driver.state(), *id)));
         assert!(played, "{name} was cast and did not resolve");
+    }
+}
+
+/// Four lands of each basic type: enough for a spell of up to four symbols of one color.
+fn more_lands() -> Vec<PresetPermanent> {
+    [forest, plains, island, swamp, mountain]
+        .into_iter()
+        .flat_map(|land| (0..4).map(move |_| ready(land())))
+        .collect()
+}
+
+/// Seat 0 holds the cards given, lands of every color, a creature, an artifact and an enchantment, and a legendary
+/// creature card in its graveyard (something for each Aura and target to name); seat 1 has a creature.
+fn table(hand: Vec<Arc<CardDefinition>>) -> Driver {
+    let corpus = |name: &str| mtg_testkit::corpus::card(name).unwrap();
+    let mut own = more_lands();
+    own.extend(["Grizzly Bears", "Sol Ring", "Glorious Anthem"].map(|name| ready(corpus(name))));
+    Driver::from_scenario(
+        Scenario::new(2)
+            .hand(0, hand)
+            .library(0, vec![forest(); 8])
+            .library(1, vec![forest(); 8])
+            .graveyard(0, [corpus("Kongming, \"Sleeping Dragon\"")])
+            .battlefield(0, own)
+            .battlefield(1, [ready(free_creature("Theirs", 3, 3))]),
+    )
+    .unwrap()
+}
+
+/// Answers the choices a permanent asks for as it enters ("As this land enters, choose a basic land type") passively.
+fn settle(driver: &mut Driver, name: &str) {
+    for _ in 0..8 {
+        if matches!(
+            driver.decision().map(|d| &d.kind),
+            Ok(DecisionKind::Priority(_))
+        ) {
+            break;
+        }
+        driver
+            .answer_passively()
+            .unwrap_or_else(|error| panic!("{name} does not settle: {error:?}"));
     }
 }

@@ -272,3 +272,46 @@ fn a_creature_that_dies_of_damage_and_comes_back_within_one_stretch_of_the_log_h
         .observe(driver.state(), driver.engine().events())
         .map_err(|e| e.to_string())
 }
+
+#[test]
+fn a_spell_that_exiles_itself_as_it_resolves_keeps_every_invariant_while_it_resolves_on()
+-> Result<(), String> {
+    use mtg_engine::decision::DecisionKind;
+    use mtg_engine::zones::Zone;
+    use mtg_testkit::cards::swamp;
+    use mtg_testkit::corpus::card;
+    use mtg_testkit::{Driver, ScriptError};
+
+    let fail = |e: ScriptError| e.to_string();
+    // Ill-Gotten Gains exiles itself first, then each player picks cards from a graveyard: it resolves from exile.
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .battlefield(0, (0..4).map(|_| ready(swamp())))
+            .hand(
+                0,
+                [
+                    card("Ill-Gotten Gains").map_err(|e| e.to_string())?,
+                    forest(),
+                ],
+            )
+            .hand(1, [forest()]),
+    )
+    .map_err(fail)?;
+    driver.cast("Ill-Gotten Gains").map_err(fail)?;
+    let gains = *driver.state().stack().last().unwrap();
+    driver.pass().map_err(fail)?;
+    driver.pass().map_err(fail)?;
+    assert!(
+        matches!(
+            driver.decision().map(|d| &d.kind),
+            Ok(DecisionKind::ChooseCards(_))
+        ),
+        "a player picks cards while it resolves"
+    );
+    assert_eq!(driver.state().object(gains).unwrap().zone(), Zone::Exile);
+    assert_eq!(check_state(driver.state()), Ok(()));
+    let mut checker = InvariantChecker::new(driver.engine().setup()).map_err(|e| e.to_string())?;
+    checker
+        .observe(driver.state(), driver.engine().events())
+        .map_err(|e| e.to_string())
+}
