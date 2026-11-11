@@ -228,7 +228,10 @@ fn copy_target_ability(
     let mut selector = match kinds {
         [(kind, _)] => vec![json!({ "Ability": kind })],
         _ => {
-            let any: Vec<Value> = kinds.iter().map(|(kind, _)| json!({ "Ability": kind })).collect();
+            let any: Vec<Value> = kinds
+                .iter()
+                .map(|(kind, _)| json!({ "Ability": kind }))
+                .collect();
             vec![json!({ "AnyOf": any })]
         }
     };

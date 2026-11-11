@@ -10,7 +10,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use mtg_cards::ability::Ability;
 use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::refs::{AbilityKind, HeldAbility, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::refs::{
+    AbilityKind, HeldAbility, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind,
+};
 use mtg_cards::value::{
     Amount, CastWay, Condition, CounterKind, DayNight, DieResult, StatKind, TallyEvent, TurnTally,
 };
@@ -311,6 +313,9 @@ fn ep31_has_ability(state: &GameState, seen: &Seen<'_>, held: HeldAbility) -> bo
         }),
     }
 }
+
+#[cfg(test)]
+mod ep31_held_tests;
 
 /// Whether `seen` is an ability on the stack of this kind.
 fn is_ability(seen: &Seen<'_>, kind: AbilityKind) -> bool {

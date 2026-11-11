@@ -214,7 +214,11 @@ pub(super) fn w21a_suffix(r: &mut Reader<'_>) -> Option<Pred> {
         EP31_HELD.iter().find_map(|(words, held, has)| {
             r.words(words).then(|| {
                 let pred = Pred::HasAbility(*held);
-                if *has { pred } else { Pred::Not(Box::new(pred)) }
+                if *has {
+                    pred
+                } else {
+                    Pred::Not(Box::new(pred))
+                }
             })
         })
     }) {

@@ -250,6 +250,9 @@ fn made_from(cx: &Cx<'_>, token: &TokenRef) -> Result<Vec<MadeFrom>, ResolveErro
     })
 }
 
+#[cfg(test)]
+mod ep31_card_token;
+
 /// Each player `who` names who is still in the game creates `count` tokens, which enter tapped when the effect says
 /// so. A token that enters attacking (CR 508.4) was never declared as an attacker, so nothing triggers on its
 /// attack; its controller chooses the player or planeswalker it attacks when there is more than one (an attack by
